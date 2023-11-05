@@ -28,7 +28,7 @@ import com.vaadin.flow.component.HasSize;
 import com.vaadin.flow.component.HasStyle;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.dialog.Dialog.DialogResizeEvent;
-import com.vaadin.flow.component.dialog.GeneratedVaadinDialog.OpenedChangeEvent;
+import com.vaadin.flow.component.dialog.Dialog.OpenedChangeEvent;
 
 /**
  * Abstract {@link DialogConfigurator}.
@@ -108,7 +108,7 @@ public abstract class AbstractDialogConfigurator<C extends DialogConfigurator<C>
 	 * withOpenedChangeListener(com.vaadin.flow. component.ComponentEventListener)
 	 */
 	@Override
-	public C withOpenedChangeListener(ComponentEventListener<OpenedChangeEvent<Dialog>> listener) {
+	public C withOpenedChangeListener(ComponentEventListener<OpenedChangeEvent> listener) {
 		ObjectUtils.argumentNotNull(listener, "Event listener must be not null");
 		getComponent().addOpenedChangeListener(listener);
 		return getConfigurator();

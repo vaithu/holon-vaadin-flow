@@ -38,8 +38,10 @@ import java.util.WeakHashMap;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import javax.annotation.security.PermitAll;
-import javax.annotation.security.RolesAllowed;
+import com.vaadin.flow.router.RouteConfiguration;
+import com.vaadin.flow.server.VaadinService;
+import jakarta.annotation.security.PermitAll;
+import jakarta.annotation.security.RolesAllowed;
 
 import com.holonplatform.auth.annotations.Authenticate;
 import com.holonplatform.core.i18n.Caption;
@@ -98,7 +100,7 @@ public class DefaultNavigationTargetConfiguration implements NavigationTargetCon
 		this.authorization = roles.orElse(Collections.emptySet());
 		this.authenticationRequired = (this.authenticate != null) || roles.isPresent();
 		if (navigationTarget.isAnnotationPresent(Route.class)) {
-			this.routePath = RouteUtil.resolve(navigationTarget, navigationTarget.getAnnotation(Route.class));
+			this.routePath = RouteUtil.resolve(VaadinService.getCurrent().getContext(),navigationTarget);
 		} else {
 			this.routePath = null;
 		}
@@ -197,10 +199,10 @@ public class DefaultNavigationTargetConfiguration implements NavigationTargetCon
 		}
 		// check parent layouts
 		final String route = navigationTarget.isAnnotationPresent(Route.class)
-				? RouteUtil.getRoutePath(navigationTarget, navigationTarget.getAnnotation(Route.class))
+				 ? RouteUtil.getRoutePath(VaadinService.getCurrent().getContext(), navigationTarget)
 				: null;
 		final List<Class<? extends RouterLayout>> layouts = (route != null)
-				? RouteUtil.getParentLayouts(navigationTarget, route)
+				? RouteUtil.getParentLayouts(VaadinService.getCurrent().getContext(),navigationTarget, route)
 				: RouteUtil.getParentLayoutsForNonRouteTarget(navigationTarget);
 		for (Class<? extends RouterLayout> layout : layouts) {
 			if (layout.isAnnotationPresent(Authenticate.class)) {
@@ -529,7 +531,7 @@ public class DefaultNavigationTargetConfiguration implements NavigationTargetCon
 			Boolean present = SECURITY_ANNOTATIONS_PRESENT.get(classLoader);
 			return (present != null && present.booleanValue());
 		}
-		boolean present = ClassUtils.isPresent("javax.annotation.security.RolesAllowed", classLoader);
+		boolean present = ClassUtils.isPresent("jakarta.annotation.security.RolesAllowed", classLoader);
 		SECURITY_ANNOTATIONS_PRESENT.put(classLoader, present);
 		return present;
 	}

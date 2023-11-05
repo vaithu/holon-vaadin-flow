@@ -35,7 +35,6 @@ import com.vaadin.flow.component.KeyModifier;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.icon.Icon;
-import com.vaadin.flow.component.icon.IronIcon;
 
 /**
  * Base {@link ButtonConfigurator} implementation.
@@ -99,6 +98,7 @@ public abstract class AbstractButtonConfigurator<C extends ButtonConfigurator<C>
 		return getConfigurator();
 	}
 
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -108,18 +108,6 @@ public abstract class AbstractButtonConfigurator<C extends ButtonConfigurator<C>
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	public IconConfigurator<C> iconConfigurator(Icon icon) {
-		return new DefaultIconConfigurator(this, icon);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.holonplatform.vaadin.flow.components.builders.HasIconConfigurator#
-	 * iconConfigurator(com.vaadin.flow.component. icon.IronIcon)
-	 */
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	@Override
-	public IconConfigurator<C> iconConfigurator(IronIcon icon) {
 		return new DefaultIronIconConfigurator(this, icon);
 	}
 

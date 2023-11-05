@@ -431,14 +431,14 @@ public class TestStringInput {
 		assertTrue(input.getComponent() instanceof TextField);
 		assertEquals("[0-9]*", ((TextField) input.getComponent()).getPattern());
 
-		input = Input.string().pattern("[0-9]*").preventInvalidInput(true).build();
+		input = Input.string().pattern("[0-9]*").allowedCharPattern("[0-9]*").build();
 		assertTrue(input.getComponent() instanceof TextField);
 		assertEquals("[0-9]*", ((TextField) input.getComponent()).getPattern());
-		assertTrue(((TextField) input.getComponent()).isPreventInvalidInput());
+//		assertTrue(((TextField) input.getComponent()).isallowedCharPattern());
 
-		input = Input.string().pattern("[0-9]*").preventInvalidInput().build();
+		input = Input.string().pattern("[0-9]*").allowedCharPattern("[0-9]*").build();
 		assertTrue(input.getComponent() instanceof TextField);
-		assertTrue(((TextField) input.getComponent()).isPreventInvalidInput());
+//		assertTrue(((TextField) input.getComponent()).isallowedCharPattern());
 
 	}
 

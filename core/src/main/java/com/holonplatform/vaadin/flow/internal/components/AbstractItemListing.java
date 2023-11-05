@@ -113,7 +113,7 @@ import com.vaadin.flow.component.HasEnabled;
 import com.vaadin.flow.component.HasSize;
 import com.vaadin.flow.component.HasStyle;
 import com.vaadin.flow.component.Key;
-import com.vaadin.flow.component.contextmenu.GeneratedVaadinContextMenu.OpenedChangeEvent;
+import com.vaadin.flow.component.contextmenu.ContextMenuBase.OpenedChangeEvent;
 import com.vaadin.flow.component.grid.ColumnTextAlign;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.Grid.Column;
@@ -2194,6 +2194,11 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
 			return type;
 		}
 
+		@Override
+		public boolean isGenericType() {
+			return false;
+		}
+
 		/*
 		 * (non-Javadoc)
 		 * 
@@ -2964,11 +2969,11 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
 		 * 
 		 * @see
 		 * com.holonplatform.vaadin.flow.components.builders.ItemListingConfigurator#
-		 * heightByRows(boolean)
+		 * allRowsVisible(boolean)
 		 */
 		@Override
-		public C heightByRows(boolean heightByRows) {
-			instance.getGrid().setHeightByRows(heightByRows);
+		public C allRowsVisible(boolean allRowsVisible) {
+			instance.getGrid().setAllRowsVisible(allRowsVisible);
 			return getConfigurator();
 		}
 
@@ -3091,18 +3096,6 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
 			return getConfigurator();
 		}
 
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see
-		 * com.holonplatform.vaadin.flow.components.builders.ItemListingConfigurator#
-		 * verticalScrollingEnabled(boolean)
-		 */
-		@Override
-		public C verticalScrollingEnabled(boolean enabled) {
-			instance.getGrid().setVerticalScrollingEnabled(enabled);
-			return getConfigurator();
-		}
 
 		/*
 		 * (non-Javadoc)

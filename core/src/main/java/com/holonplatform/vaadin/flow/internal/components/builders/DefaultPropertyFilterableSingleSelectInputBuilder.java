@@ -112,7 +112,7 @@ public class DefaultPropertyFilterableSingleSelectInputBuilder<T> extends Abstra
 			if (item != null) {
 				return selectionProperty.present(item.getValue(selectionProperty));
 			}
-			return String.valueOf(item);
+			return null;
 		});
 		if (itemConverter instanceof PropertyItemConverter) {
 			this.propertyItemConverter = (PropertyItemConverter<T>) itemConverter;
@@ -740,11 +740,11 @@ public class DefaultPropertyFilterableSingleSelectInputBuilder<T> extends Abstra
 	 * 
 	 * @see
 	 * com.holonplatform.vaadin.flow.components.builders.HasPatternConfigurator#
-	 * preventInvalidInput(boolean)
+	 * allowedCharPattern(String)
 	 */
 	@Override
-	public PropertyFilterableSingleSelectInputBuilder<T> preventInvalidInput(boolean preventInvalidInput) {
-		builder.preventInvalidInput(preventInvalidInput);
+	public PropertyFilterableSingleSelectInputBuilder<T> allowedCharPattern(String pattern) {
+		builder.allowedCharPattern(pattern);
 		return this;
 	}
 
@@ -1340,12 +1340,12 @@ public class DefaultPropertyFilterableSingleSelectInputBuilder<T> extends Abstra
 		 * 
 		 * @see
 		 * com.holonplatform.vaadin.flow.components.builders.HasPatternConfigurator#
-		 * preventInvalidInput(boolean)
+		 * allowedCharPattern(String)
 		 */
 		@Override
-		public ValidatablePropertyFilterableSingleSelectInputBuilder<T> preventInvalidInput(
-				boolean preventInvalidInput) {
-			builder.preventInvalidInput(preventInvalidInput);
+		public ValidatablePropertyFilterableSingleSelectInputBuilder<T> allowedCharPattern(
+				String pattern) {
+			builder.allowedCharPattern(pattern);
 			return this;
 		}
 
@@ -2101,11 +2101,11 @@ public class DefaultPropertyFilterableSingleSelectInputBuilder<T> extends Abstra
 		 * 
 		 * @see
 		 * com.holonplatform.vaadin.flow.components.builders.HasPatternConfigurator#
-		 * preventInvalidInput(boolean)
+		 * allowedCharPattern(String)
 		 */
 		@Override
-		public DatastorePropertyFilterableSingleSelectInputBuilder<T> preventInvalidInput(boolean preventInvalidInput) {
-			builder.preventInvalidInput(preventInvalidInput);
+		public DatastorePropertyFilterableSingleSelectInputBuilder<T> allowedCharPattern(String pattern) {
+			builder.allowedCharPattern(pattern);
 			return this;
 		}
 
@@ -2801,12 +2801,12 @@ public class DefaultPropertyFilterableSingleSelectInputBuilder<T> extends Abstra
 		 * 
 		 * @see
 		 * com.holonplatform.vaadin.flow.components.builders.HasPatternConfigurator#
-		 * preventInvalidInput(boolean)
+		 * allowedCharPattern(String)
 		 */
 		@Override
-		public ValidatableDatastorePropertyFilterableSingleSelectInputBuilder<T> preventInvalidInput(
-				boolean preventInvalidInput) {
-			builder.preventInvalidInput(preventInvalidInput);
+		public ValidatableDatastorePropertyFilterableSingleSelectInputBuilder<T> allowedCharPattern(
+				String pattern) {
+			builder.allowedCharPattern(pattern);
 			return this;
 		}
 

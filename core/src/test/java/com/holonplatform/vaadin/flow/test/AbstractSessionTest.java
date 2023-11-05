@@ -23,7 +23,7 @@ import java.util.Collections;
 import java.util.Locale;
 import java.util.Properties;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -77,8 +77,8 @@ public abstract class AbstractSessionTest {
 
 	protected VaadinService createVaadinService() throws Exception {
 		VaadinServletService vaadinService = mock(VaadinServletService.class);
-		when(vaadinService.getDeploymentConfiguration())
-				.thenReturn(new DefaultDeploymentConfiguration(VaadinServletService.class, getDeploymentProperties()));
+		/*when(vaadinService.getDeploymentConfiguration())
+				.thenReturn(new DefaultDeploymentConfiguration(VaadinServletService.class, getDeploymentProperties()));*/
 		when(vaadinService.getMainDivId(any(VaadinSession.class), any(VaadinRequest.class)))
 				.thenReturn("test-main-div-id");
 		when(vaadinService.getInstantiator()).thenReturn(new DefaultInstantiator(vaadinService));

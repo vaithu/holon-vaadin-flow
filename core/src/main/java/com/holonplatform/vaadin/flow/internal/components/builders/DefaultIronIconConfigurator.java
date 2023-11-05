@@ -18,10 +18,10 @@ package com.holonplatform.vaadin.flow.internal.components.builders;
 import com.holonplatform.core.internal.utils.ObjectUtils;
 import com.holonplatform.vaadin.flow.components.builders.HasIconConfigurator;
 import com.holonplatform.vaadin.flow.components.builders.HasIconConfigurator.IconConfigurator;
-import com.vaadin.flow.component.icon.IronIcon;
+import com.vaadin.flow.component.icon.Icon;
 
 /**
- * Default {@link IconConfigurator} implementation using an {@link IronIcon}.
+ * Default {@link IconConfigurator} implementation using an {@link Icon}.
  * 
  * @param <C> Parent configurator type
  *
@@ -31,7 +31,7 @@ public class DefaultIronIconConfigurator<C extends HasIconConfigurator<C>> imple
 
 	private final C parent;
 
-	private final IronIcon icon;
+	private final Icon icon;
 
 	private final DefaultHasStyleConfigurator styleConfigurator;
 
@@ -40,7 +40,7 @@ public class DefaultIronIconConfigurator<C extends HasIconConfigurator<C>> imple
 	 * @param parent Parent configurator (not null)
 	 * @param icon Icon instance (not null)
 	 */
-	public DefaultIronIconConfigurator(C parent, IronIcon icon) {
+	public DefaultIronIconConfigurator(C parent, Icon icon) {
 		super();
 		ObjectUtils.argumentNotNull(parent, "Parent must be not null");
 		ObjectUtils.argumentNotNull(icon, "Icon must be not null");

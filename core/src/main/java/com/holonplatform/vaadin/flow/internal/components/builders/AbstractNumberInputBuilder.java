@@ -175,7 +175,7 @@ public abstract class AbstractNumberInputBuilder<T extends Number, C extends Num
 
 		// pattern
 		component.setPattern(getConverter().getValidationPattern());
-		component.setPreventInvalidInput(true);
+//		component.setallowedCharPattern(true);
 
 		final Input<String> input = Input.builder(component).emptyValueSupplier(field -> null)
 				.requiredPropertyHandler((f, c) -> f.isRequired(), (f, c, v) -> f.setRequired(v))
@@ -300,11 +300,11 @@ public abstract class AbstractNumberInputBuilder<T extends Number, C extends Num
 
 	/*
 	 * (non-Javadoc)
-	 * @see com.holonplatform.vaadin.flow.components.builders.TextInputConfigurator#preventInvalidInput(boolean)
+	 * @see com.holonplatform.vaadin.flow.components.builders.TextInputConfigurator#allowedCharPattern(String)
 	 */
 	@Override
-	public C preventInvalidInput(boolean preventInvalidInput) {
-		getComponent().setPreventInvalidInput(preventInvalidInput);
+	public C allowedCharPattern(String pattern) {
+		getComponent().setAllowedCharPattern(pattern);
 		return getConfigurator();
 	}
 

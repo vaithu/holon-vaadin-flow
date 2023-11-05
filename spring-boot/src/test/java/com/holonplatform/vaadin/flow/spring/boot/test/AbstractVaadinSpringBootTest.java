@@ -23,7 +23,7 @@ import java.util.Collections;
 import java.util.Locale;
 import java.util.Properties;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -85,8 +85,8 @@ public abstract class AbstractVaadinSpringBootTest {
 	protected VaadinSession createVaadinSession(Locale locale) throws Exception {
 		WrappedSession wrappedSession = mock(WrappedSession.class);
 		VaadinServletService vaadinService = mock(VaadinServletService.class);
-		when(vaadinService.getDeploymentConfiguration())
-				.thenReturn(new DefaultDeploymentConfiguration(VaadinServletService.class, getDeploymentProperties()));
+		/*when(vaadinService.getDeploymentConfiguration())
+				.thenReturn(new DefaultDeploymentConfiguration(VaadinServletService.class, getDeploymentProperties()));*/
 		when(vaadinService.getMainDivId(any(VaadinSession.class), any(VaadinRequest.class)))
 				.thenReturn("test-main-div-id");
 		SpringVaadinSession session = mock(SpringVaadinSession.class);
@@ -135,7 +135,7 @@ public abstract class AbstractVaadinSpringBootTest {
 	 */
 	protected Properties getDeploymentProperties() {
 		Properties properties = new Properties();
-		properties.put(InitParameters.SERVLET_PARAMETER_COMPATIBILITY_MODE, "true");
+//		properties.put(InitParameters.SERVLET_PARAMETER_COMPATIBILITY_MODE, "true");
 		return properties;
 	}
 

@@ -26,7 +26,7 @@ import java.util.Locale;
 import java.util.Properties;
 import java.util.stream.Collectors;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
@@ -144,8 +144,10 @@ public abstract class AbstractNavigatorTest {
 
 	protected VaadinService createVaadinService() throws Exception {
 		TestVaadinService vaadinService = mock(TestVaadinService.class);
-		when(vaadinService.getDeploymentConfiguration())
-				.thenReturn(new DefaultDeploymentConfiguration(VaadinServletService.class, getDeploymentProperties()));
+		/*when(vaadinService.getDeploymentConfiguration())
+				.thenReturn(new DefaultDeploymentConfiguration(
+
+						VaadinServletService.class, getDeploymentProperties()));*/
 		when(vaadinService.getMainDivId(any(VaadinSession.class), any(VaadinRequest.class)))
 				.thenReturn("test-main-div-id");
 		when(vaadinService.getRouter()).thenReturn(router);
@@ -165,8 +167,8 @@ public abstract class AbstractNavigatorTest {
 		when(session.hasLock()).thenReturn(true);
 		when(session.getLocale()).thenReturn(locale != null ? locale : Locale.US);
 		Properties p = new Properties();
-		p.setProperty(InitParameters.SERVLET_PARAMETER_COMPATIBILITY_MODE, "true");
-		when(session.getConfiguration()).thenReturn(new DefaultDeploymentConfiguration(getClass(), p));
+//		p.setProperty(InitParameters.SERVLET_PARAMETER_COMPATIBILITY_MODE, "true");
+//		when(session.getConfiguration()).thenReturn(new DefaultDeploymentConfiguration(getClass(), p));
 		return session;
 	}
 
@@ -202,7 +204,7 @@ public abstract class AbstractNavigatorTest {
 
 	protected Properties getDeploymentProperties() {
 		Properties properties = new Properties();
-		properties.put(InitParameters.SERVLET_PARAMETER_COMPATIBILITY_MODE, "true");
+//		properties.put(InitParameters.SERVLET_PARAMETER_COMPATIBILITY_MODE, "true");
 		return properties;
 	}
 
@@ -211,10 +213,10 @@ public abstract class AbstractNavigatorTest {
 
 		public TestRouteRegistry(List<Class<? extends Component>> navigationTargets,
 				List<Class<? extends Component>> errors) throws InvalidRouteConfigurationException {
-			super();
+			super(VaadinService.getCurrent().getContext());
 			navigationTargets.forEach(navigationTarget -> {
-				String route = RouteUtil.getRoutePath(navigationTarget, navigationTarget.getAnnotation(Route.class));
-				setRoute(route, navigationTarget, RouteUtil.getParentLayouts(navigationTarget, route));
+				String route = RouteUtil.getRoutePath(VaadinService.getCurrent().getContext(),navigationTarget);
+				setRoute(route, navigationTarget, RouteUtil.getParentLayouts(VaadinService.getCurrent().getContext(),navigationTarget, route));
 			});
 			setErrorNavigationTargets(errors.stream().collect(Collectors.toSet()));
 		}

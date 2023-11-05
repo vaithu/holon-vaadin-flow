@@ -1110,11 +1110,11 @@ public class DefaultPropertyListing extends AbstractItemListing<PropertyBox, Pro
 		 * 
 		 * @see
 		 * com.holonplatform.vaadin.flow.components.builders.ItemListingConfigurator#
-		 * heightByRows(boolean)
+		 * allRowsVisible(boolean)
 		 */
 		@Override
-		public DatastorePropertyListingBuilder heightByRows(boolean heightByRows) {
-			builder.heightByRows(heightByRows);
+		public DatastorePropertyListingBuilder allRowsVisible(boolean allRowsVisible) {
+			builder.allRowsVisible(allRowsVisible);
 			return this;
 		}
 
@@ -1235,18 +1235,6 @@ public class DefaultPropertyListing extends AbstractItemListing<PropertyBox, Pro
 			return this;
 		}
 
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see
-		 * com.holonplatform.vaadin.flow.components.builders.ItemListingConfigurator#
-		 * verticalScrollingEnabled(boolean)
-		 */
-		@Override
-		public DatastorePropertyListingBuilder verticalScrollingEnabled(boolean enabled) {
-			builder.verticalScrollingEnabled(enabled);
-			return this;
-		}
 
 		/*
 		 * (non-Javadoc)

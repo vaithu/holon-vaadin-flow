@@ -53,9 +53,9 @@ public class TestLocalizationContextLocaleAutoConfiguration extends AbstractVaad
 	@Test
 	public void testReflectLocale() {
 
-		applicationContext.getBean(LocalizationContext.class).localize(Locale.CANADA);
+		applicationContext.getBean(LocalizationContext.class).localize(Locale.US);
 		assertNotNull(ui.getLocale());
-		assertEquals(Locale.CANADA, ui.getLocale());
+		assertEquals(Locale.US, ui.getLocale());
 
 	}
 

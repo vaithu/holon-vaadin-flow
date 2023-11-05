@@ -7,8 +7,10 @@ vaadin:
 
 ---
 spring:
-  profiles: i18n-disabled
-  
+  config:
+    activate:
+      on-profile: i18n-disabled
+
 holon:
   vaadin:
     localization-context: 

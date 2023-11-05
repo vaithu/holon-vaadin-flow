@@ -347,6 +347,15 @@ public interface FilterableSingleSelectConfigurator<T, ITEM, B extends Filterabl
 			DatastoreFilterableSingleSelectInputConfigurator<T, ITEM, ValidatableDatastoreFilterableSingleSelectInputBuilder<T, ITEM>>,
 			BaseValidatableInputBuilder<T, ValidatableSingleSelect<T>, ValidatableDatastoreFilterableSingleSelectInputBuilder<T, ITEM>> {
 
+		/*
+		 * (non-Javadoc)
+		 *
+		 * @see
+		 * com.holonplatform.vaadin.flow.components.builders.HasPatternConfigurator#
+		 * allowedCharPattern(String)
+		 */
+		ValidatableDatastoreFilterableSingleSelectInputBuilder<T, ITEM> allowedCharPattern(
+				String allowedCharPattern);
 	}
 
 	/**

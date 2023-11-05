@@ -18,7 +18,7 @@ package com.holonplatform.vaadin.flow.navigator.internal.config;
 import java.io.Serializable;
 import java.util.Set;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 
 import com.holonplatform.core.internal.utils.ClassUtils;
 import com.holonplatform.core.internal.utils.ObjectUtils;

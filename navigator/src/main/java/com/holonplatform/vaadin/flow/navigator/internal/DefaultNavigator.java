@@ -160,7 +160,8 @@ public class DefaultNavigator implements Navigator {
 	@Override
 	public String getUrl(Class<? extends Component> navigationTarget) {
 		ObjectUtils.argumentNotNull(navigationTarget, "The navigation target class must be not null");
-		return RouteConfiguration.forRegistry(getUI().getRouter().getRegistry()).getUrlBase(navigationTarget)
+		return RouteConfiguration.forRegistry(getUI()
+				.getInternals().getRouter().getRegistry()).getUrlBase(navigationTarget)
 				.orElseThrow(() -> new IllegalArgumentException(
 						"No route registered for target [" + navigationTarget.getName() + "]"));
 	}
@@ -174,7 +175,7 @@ public class DefaultNavigator implements Navigator {
 			List<T> parameters) {
 		ObjectUtils.argumentNotNull(navigationTarget, "The navigation target class must be not null");
 		ObjectUtils.argumentNotNull(parameters, "URL parameters must be not null");
-		return RouteConfiguration.forRegistry(getUI().getRouter().getRegistry()).getUrl(navigationTarget, parameters);
+		return RouteConfiguration.forSessionScope().getUrl(navigationTarget,parameters);
 	}
 
 	/*

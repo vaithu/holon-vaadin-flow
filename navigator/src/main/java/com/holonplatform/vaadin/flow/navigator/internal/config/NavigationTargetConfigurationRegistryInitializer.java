@@ -18,10 +18,10 @@ package com.holonplatform.vaadin.flow.navigator.internal.config;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import javax.servlet.ServletContainerInitializer;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import javax.servlet.annotation.HandlesTypes;
+import jakarta.servlet.ServletContainerInitializer;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.HandlesTypes;
 
 import com.holonplatform.core.internal.Logger;
 import com.holonplatform.vaadin.flow.internal.VaadinLogger;

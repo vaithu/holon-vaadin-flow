@@ -36,7 +36,7 @@ IMPORTANT: The Spring Security dependency must be explicitly provided by the pro
 
 In order to use the `@Secured` annotation based authorization control, a `SecurityContext` must be available and properly configured.
 
-When the `javax.annotation.security.RolesAllowed` annotation is used, *any of the specified role name* must be granted to the current authenticated user in order to allow the route access.
+When the `jakarta.annotation.security.RolesAllowed` annotation is used, *any of the specified role name* must be granted to the current authenticated user in order to allow the route access.
 
 When the authorization control fails, a link:{apidir}/com/holonplatform/vaadin/flow/navigator/exceptions/ForbiddenNavigationException.html[ForbiddenNavigationException^] is used to notify the error and interrupt the navigation.
 

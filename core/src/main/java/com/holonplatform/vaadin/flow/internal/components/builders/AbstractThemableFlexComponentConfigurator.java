@@ -34,7 +34,7 @@ import com.vaadin.flow.component.orderedlayout.ThemableLayout;
  *
  * @since 5.2.0
  */
-public abstract class AbstractThemableFlexComponentConfigurator<L extends Component & FlexComponent<L> & ThemableLayout, C extends ThemableFlexComponentConfigurator<C>>
+public abstract class AbstractThemableFlexComponentConfigurator<L extends Component & FlexComponent & ThemableLayout, C extends ThemableFlexComponentConfigurator<C>>
 		extends AbstractComponentConfigurator<L, C> implements ThemableFlexComponentConfigurator<C> {
 
 	private final DefaultFlexComponentConfigurator<L> flexComponentConfigurator;

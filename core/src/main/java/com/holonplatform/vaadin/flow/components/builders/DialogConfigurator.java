@@ -21,7 +21,7 @@ import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.dialog.Dialog.DialogResizeEvent;
-import com.vaadin.flow.component.dialog.GeneratedVaadinDialog.OpenedChangeEvent;
+import com.vaadin.flow.component.dialog.Dialog.OpenedChangeEvent;
 
 /**
  * {@link Dialog} component configurator.
@@ -82,7 +82,7 @@ public interface DialogConfigurator<C extends DialogConfigurator<C>> extends Com
 	 * @param listener the listener to add (not null)
 	 * @return this
 	 */
-	C withOpenedChangeListener(ComponentEventListener<OpenedChangeEvent<Dialog>> listener);
+	C withOpenedChangeListener(ComponentEventListener<OpenedChangeEvent> listener);
 
 	/**
 	 * Adds a listener that is called after user finishes resizing the overlay. It

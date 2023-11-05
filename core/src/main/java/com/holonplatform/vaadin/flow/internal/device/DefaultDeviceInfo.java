@@ -68,7 +68,7 @@ public class DefaultDeviceInfo implements DeviceInfo, BrowserWindowResizeListene
 			});
 			ui.getElement().appendVirtualChild(windowSizeReceiver.getElement());
 			try {
-				ui.getPage().executeJavaScript(
+				ui.getPage().executeJs(
 						"$0.$server.windowSize(document.body.clientWidth,document.body.clientHeight);",
 						windowSizeReceiver);
 			} catch (Exception e) {

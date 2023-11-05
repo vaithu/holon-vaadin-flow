@@ -70,7 +70,7 @@ import com.vaadin.flow.component.HasSize;
 import com.vaadin.flow.component.HasStyle;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.combobox.ComboBox;
-import com.vaadin.flow.component.combobox.GeneratedVaadinComboBox.CustomValueSetEvent;
+import com.vaadin.flow.component.combobox.ComboBoxBase.CustomValueSetEvent;
 import com.vaadin.flow.data.provider.DataProvider;
 import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.data.provider.QuerySortOrder;
@@ -185,7 +185,7 @@ public class DefaultFilterableSingleSelectInputBuilder<T, ITEM> extends
 		// check DataProvider
 		if (!new ExceptionSwallowingSupplier<>(() -> component.getDataProvider()).get().isPresent()) {
 			// default data provider
-			component.setDataProvider(DataProvider.ofCollection(Collections.emptySet()));
+			component.setItems(DataProvider.ofCollection(Collections.emptySet()));
 		}
 
 		// configure captions
@@ -218,6 +218,13 @@ public class DefaultFilterableSingleSelectInputBuilder<T, ITEM> extends
 		}
 		return select;
 	}
+
+	@Override
+	public FilterableSingleSelectInputBuilder<T, ITEM> allowedCharPattern(String pattern) {
+		getComponent().setAllowedCharPattern(pattern);
+		return getConfigurator();
+	}
+
 
 	@SuppressWarnings("serial")
 	private class SingleSelectCustomValueSetListener
@@ -361,7 +368,7 @@ public class DefaultFilterableSingleSelectInputBuilder<T, ITEM> extends
 	 */
 	@Override
 	public FilterableSingleSelectInputBuilder<T, ITEM> dataSource(DataProvider<ITEM, String> dataProvider) {
-		getComponent().setDataProvider(dataProvider);
+		getComponent().setItems(dataProvider);
 		return this;
 	}
 
@@ -381,7 +388,7 @@ public class DefaultFilterableSingleSelectInputBuilder<T, ITEM> extends
 			Function<String, QueryFilter> filterConverter, Iterable<P> properties) {
 		final DatastoreDataProvider<ITEM, String> datastoreDataProvider = DatastoreDataProvider.create(datastore,
 				target, DatastoreDataProvider.asPropertySet(properties), itemConverter, filterConverter);
-		getComponent().setDataProvider(datastoreDataProvider);
+		getComponent().setItems(datastoreDataProvider);
 		return new DefaultDatastoreFilterableSingleSelectInputBuilder<>(this, datastoreDataProvider);
 	}
 
@@ -398,7 +405,7 @@ public class DefaultFilterableSingleSelectInputBuilder<T, ITEM> extends
 			Function<String, QueryFilter> filterConverter) {
 		final DatastoreDataProvider<ITEM, String> datastoreDataProvider = DatastoreDataProvider.create(datastore,
 				target, getItemType(), filterConverter);
-		getComponent().setDataProvider(datastoreDataProvider);
+		getComponent().setItems(datastoreDataProvider);
 		return new DefaultDatastoreFilterableSingleSelectInputBuilder<>(this, datastoreDataProvider);
 	}
 
@@ -425,7 +432,7 @@ public class DefaultFilterableSingleSelectInputBuilder<T, ITEM> extends
 	 */
 	@Override
 	public FilterableSingleSelectInputBuilder<T, ITEM> dataSource(ListDataProvider<ITEM> dataProvider) {
-		getComponent().setDataProvider(dataProvider);
+		getComponent().setItems(dataProvider);
 		return getConfigurator();
 	}
 
@@ -574,13 +581,13 @@ public class DefaultFilterableSingleSelectInputBuilder<T, ITEM> extends
 	 * 
 	 * @see
 	 * com.holonplatform.vaadin.flow.components.builders.HasPatternConfigurator#
-	 * preventInvalidInput(boolean)
+	 * allowedCharPattern(String)
 	 */
-	@Override
-	public FilterableSingleSelectInputBuilder<T, ITEM> preventInvalidInput(boolean preventInvalidInput) {
-		getComponent().setPreventInvalidInput(preventInvalidInput);
+	/*@Override
+	public FilterableSingleSelectInputBuilder<T, ITEM> allowedCharPattern(String pattern) {
+		getComponent().setAllowedCharPattern(pattern);
 		return getConfigurator();
-	}
+	}*/
 
 	/*
 	 * (non-Javadoc)
@@ -1119,11 +1126,11 @@ public class DefaultFilterableSingleSelectInputBuilder<T, ITEM> extends
 		 * 
 		 * @see
 		 * com.holonplatform.vaadin.flow.components.builders.HasPatternConfigurator#
-		 * preventInvalidInput(boolean)
+		 * allowedCharPattern(String)
 		 */
 		@Override
-		public ValidatableFilterableSingleSelectInputBuilder<T, ITEM> preventInvalidInput(boolean preventInvalidInput) {
-			builder.preventInvalidInput(preventInvalidInput);
+		public ValidatableFilterableSingleSelectInputBuilder<T, ITEM> allowedCharPattern(String pattern) {
+			builder.allowedCharPattern(pattern);
 			return this;
 		}
 
@@ -1848,11 +1855,11 @@ public class DefaultFilterableSingleSelectInputBuilder<T, ITEM> extends
 		 * 
 		 * @see
 		 * com.holonplatform.vaadin.flow.components.builders.HasPatternConfigurator#
-		 * preventInvalidInput(boolean)
+		 * allowedCharPattern(String)
 		 */
 		@Override
-		public DatastoreFilterableSingleSelectInputBuilder<T, ITEM> preventInvalidInput(boolean preventInvalidInput) {
-			builder.preventInvalidInput(preventInvalidInput);
+		public DatastoreFilterableSingleSelectInputBuilder<T, ITEM> allowedCharPattern(String pattern) {
+			builder.allowedCharPattern(pattern);
 			return this;
 		}
 
@@ -2461,12 +2468,12 @@ public class DefaultFilterableSingleSelectInputBuilder<T, ITEM> extends
 		 * 
 		 * @see
 		 * com.holonplatform.vaadin.flow.components.builders.HasPatternConfigurator#
-		 * preventInvalidInput(boolean)
+		 * allowedCharPattern(String)
 		 */
 		@Override
-		public ValidatableDatastoreFilterableSingleSelectInputBuilder<T, ITEM> preventInvalidInput(
-				boolean preventInvalidInput) {
-			builder.preventInvalidInput(preventInvalidInput);
+		public ValidatableDatastoreFilterableSingleSelectInputBuilder<T, ITEM> allowedCharPattern(
+				String pattern) {
+			builder.allowedCharPattern(pattern);
 			return this;
 		}
 
@@ -2679,6 +2686,7 @@ public class DefaultFilterableSingleSelectInputBuilder<T, ITEM> extends
 		public ValidatableSingleSelect<T> build() {
 			return validatableInputConfigurator.configure(ValidatableSingleSelect.from(builder.build()));
 		}
+
 
 	}
 

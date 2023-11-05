@@ -341,7 +341,7 @@ public class DefaultNavigationLink extends RouterLink implements NavigationLink 
 		private static Router getRouter() {
 			Router router = VaadinService.getCurrent().getRouter();
 			if (router == null && UI.getCurrent() != null) {
-				return UI.getCurrent().getRouter();
+				return UI.getCurrent().getInternals().getRouter();
 			}
 			if (router == null) {
 				throw new IllegalStateException(

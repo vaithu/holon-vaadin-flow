@@ -461,9 +461,9 @@ public abstract class AbstractLocalDateTimeInputBuilder<C extends LocalDateTimeI
 		if (localization.getFirstDayOfWeek() != null) {
 			dpi.setFirstDayOfWeek(localization.getFirstDayOfWeek().intValue());
 		}
-		localization.getWeek().ifPresent(m -> dpi.setWeek(LocalizationProvider.localize(m).orElse("")));
+		/*localization.getWeek().ifPresent(m -> dpi.setWeek(LocalizationProvider.localize(m).orElse("")));
 		localization.getCalendar().ifPresent(m -> dpi.setCalendar(LocalizationProvider.localize(m).orElse("")));
-		localization.getClear().ifPresent(m -> dpi.setClear(LocalizationProvider.localize(m).orElse("")));
+		localization.getClear().ifPresent(m -> dpi.setClear(LocalizationProvider.localize(m).orElse("")));*/
 		localization.getToday().ifPresent(m -> dpi.setToday(LocalizationProvider.localize(m).orElse("")));
 		localization.getCancel().ifPresent(m -> dpi.setCancel(LocalizationProvider.localize(m).orElse("")));
 		return dpi;

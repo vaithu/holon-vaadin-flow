@@ -34,13 +34,13 @@ import com.vaadin.flow.dom.DomEventListener;
 public class DefaultFlexComponentConfigurator<C extends Component>
 		implements FlexComponentConfigurator<DefaultFlexComponentConfigurator<C>> {
 
-	private final FlexComponent<C> component;
+	private final FlexComponent component;
 
 	protected final DefaultHasSizeConfigurator sizeConfigurator;
 	protected final DefaultHasStyleConfigurator styleConfigurator;
 	protected final DefaultHasEnabledConfigurator enabledConfigurator;
 
-	public DefaultFlexComponentConfigurator(FlexComponent<C> component) {
+	public DefaultFlexComponentConfigurator(FlexComponent component) {
 		super();
 		ObjectUtils.argumentNotNull(component, "The component to configure must be not null");
 		this.component = component;

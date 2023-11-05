@@ -308,7 +308,7 @@ public class DefaultSingleSelectInputBuilder<T, ITEM>
 	@Override
 	public SingleSelectInputBuilder<T, ITEM> withPrefixComponent(Component component) {
 		ObjectUtils.argumentNotNull(component, "Component must be not null");
-		getComponent().addToPrefix(component);
+		getComponent().setPrefixComponent(component);
 		return getConfigurator();
 	}
 

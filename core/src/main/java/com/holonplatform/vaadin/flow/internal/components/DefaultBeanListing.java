@@ -88,6 +88,7 @@ import com.vaadin.flow.data.renderer.Renderer;
 import com.vaadin.flow.dom.DomEventListener;
 import com.vaadin.flow.dom.Element;
 import com.vaadin.flow.function.ValueProvider;
+import org.apache.commons.lang3.NotImplementedException;
 
 /**
  * Default {@link BeanListing} implementation.
@@ -268,7 +269,8 @@ public class DefaultBeanListing<T> extends AbstractItemListing<T, String> implem
 	@SuppressWarnings("unchecked")
 	@Override
 	protected <V> Optional<Input<V>> buildPropertyEditor(ItemListingColumn<String, T, V> configuration) {
-		return propertySet.getProperty(configuration.getProperty()).flatMap(p -> {
+		throw new NotImplementedException("This is not available for Bean class - use PropertyBox-Babu");
+		/*return propertySet.getProperty(configuration.getProperty()).flatMap(p -> {
 			final Property<V> property = (Property<V>) p;
 			// check custom renderer
 			Optional<Input<V>> component = configuration.getEditorInputRenderer().map(r -> r.render(property));
@@ -283,7 +285,7 @@ public class DefaultBeanListing<T> extends AbstractItemListing<T, String> implem
 				// use default
 				return property.renderIfAvailable(Input.class).map(c -> (Input<V>) c);
 			}
-		});
+		});*/
 	}
 
 	/*
@@ -891,11 +893,11 @@ public class DefaultBeanListing<T> extends AbstractItemListing<T, String> implem
 
 		/*
 		 * (non-Javadoc)
-		 * @see com.holonplatform.vaadin.flow.components.builders.ItemListingConfigurator# heightByRows(boolean)
+		 * @see com.holonplatform.vaadin.flow.components.builders.ItemListingConfigurator# allRowsVisible(boolean)
 		 */
 		@Override
-		public DatastoreBeanListingBuilder<T> heightByRows(boolean heightByRows) {
-			builder.heightByRows(heightByRows);
+		public DatastoreBeanListingBuilder<T> allRowsVisible(boolean allRowsVisible) {
+			builder.allRowsVisible(allRowsVisible);
 			return this;
 		}
 
@@ -971,16 +973,6 @@ public class DefaultBeanListing<T> extends AbstractItemListing<T, String> implem
 			return this;
 		}
 
-		/*
-		 * (non-Javadoc)
-		 * @see com.holonplatform.vaadin.flow.components.builders.ItemListingConfigurator#
-		 * verticalScrollingEnabled(boolean)
-		 */
-		@Override
-		public DatastoreBeanListingBuilder<T> verticalScrollingEnabled(boolean enabled) {
-			builder.verticalScrollingEnabled(enabled);
-			return this;
-		}
 
 		/*
 		 * (non-Javadoc)

@@ -256,11 +256,11 @@ public abstract class AbstractPasswordInputBuilder<C extends PasswordInputConfig
 
 	/*
 	 * (non-Javadoc)
-	 * @see com.holonplatform.vaadin.flow.components.builders.TextInputConfigurator#preventInvalidInput(boolean)
+	 * @see com.holonplatform.vaadin.flow.components.builders.TextInputConfigurator#allowedCharPattern(String)
 	 */
 	@Override
-	public C preventInvalidInput(boolean preventInvalidInput) {
-		getComponent().setPreventInvalidInput(preventInvalidInput);
+	public C allowedCharPattern(String pattern) {
+		getComponent().setAllowedCharPattern(pattern);
 		return getConfigurator();
 	}
 
