@@ -15,10 +15,6 @@
  */
 package com.holonplatform.vaadin.flow.internal.components;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
-
 import com.holonplatform.core.Registration;
 import com.holonplatform.core.Validator;
 import com.holonplatform.core.Validator.ValidationException;
@@ -26,20 +22,18 @@ import com.holonplatform.core.beans.Validators;
 import com.holonplatform.core.internal.utils.ObjectUtils;
 import com.holonplatform.vaadin.flow.components.HasLabel;
 import com.holonplatform.vaadin.flow.components.HasPlaceholder;
-import com.holonplatform.vaadin.flow.components.HasTitle;
-import com.holonplatform.vaadin.flow.components.Input;
-import com.holonplatform.vaadin.flow.components.ValidatableInput;
-import com.holonplatform.vaadin.flow.components.ValidationStatusHandler;
+import com.holonplatform.vaadin.flow.components.*;
 import com.holonplatform.vaadin.flow.components.ValidationStatusHandler.ValidationStatusEvent;
+import com.holonplatform.vaadin.flow.components.builders.KeyNotifierConfigurator;
 import com.holonplatform.vaadin.flow.components.events.InvalidChangeEventNotifier;
 import com.holonplatform.vaadin.flow.components.events.ReadonlyChangeListener;
 import com.holonplatform.vaadin.flow.internal.components.support.DefaultUserInputValidator;
-import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.HasEnabled;
-import com.vaadin.flow.component.HasSize;
-import com.vaadin.flow.component.HasStyle;
-import com.vaadin.flow.component.HasValidation;
+import com.vaadin.flow.component.*;
 import com.vaadin.flow.data.value.HasValueChangeMode;
+
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * Base adapter to convert an {@link Input} instance into a {@link ValidatableInput} one.
@@ -123,6 +117,36 @@ public abstract class AbstractValidatableInputAdapter<T, I extends Input<T>> imp
 	@Override
 	public Registration addReadonlyChangeListener(ReadonlyChangeListener listener) {
 		return input.addReadonlyChangeListener(listener);
+	}
+
+	@Override
+	public KeyNotifierConfigurator withKeyDownListener(ComponentEventListener listener) {
+		return input.withKeyDownListener(listener);
+	}
+
+	@Override
+	public KeyNotifierConfigurator withKeyPressListener(ComponentEventListener listener) {
+		return input.withKeyPressListener(listener);
+	}
+
+	@Override
+	public KeyNotifierConfigurator withKeyUpListener(ComponentEventListener listener) {
+		return input.withKeyUpListener(listener);
+	}
+
+	@Override
+	public KeyNotifierConfigurator withKeyDownListener(Key key, ComponentEventListener listener, KeyModifier... modifiers) {
+		return input.withKeyDownListener(key, listener, modifiers);
+	}
+
+	@Override
+	public KeyNotifierConfigurator withKeyPressListener(Key key, ComponentEventListener listener, KeyModifier... modifiers) {
+		return input.withKeyPressListener(key, listener, modifiers);
+	}
+
+	@Override
+	public KeyNotifierConfigurator withKeyUpListener(Key key, ComponentEventListener listener, KeyModifier... modifiers) {
+		return input.withKeyUpListener(key, listener, modifiers);
 	}
 
 	/*

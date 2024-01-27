@@ -16,6 +16,7 @@
 package com.holonplatform.vaadin.flow.components.builders;
 
 import com.holonplatform.vaadin.flow.internal.components.builders.DefaultButtonBuilder;
+import com.holonplatform.vaadin.flow.internal.components.builders.DefaultDeleteButtonBuilder;
 import com.vaadin.flow.component.button.Button;
 
 /**
@@ -31,6 +32,10 @@ public interface ButtonBuilder extends ButtonConfigurator<ButtonBuilder>, Compon
 	 */
 	static ButtonBuilder create() {
 		return new DefaultButtonBuilder();
+	}
+
+	static ButtonBuilder createDelBtn() {
+		return new DefaultDeleteButtonBuilder();
 	}
 
 }

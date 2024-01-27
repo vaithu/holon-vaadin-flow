@@ -1,12 +1,12 @@
 /*
  * Copyright 2016-2018 Axioma srl.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -88,7 +88,6 @@ import com.vaadin.flow.data.renderer.Renderer;
 import com.vaadin.flow.dom.DomEventListener;
 import com.vaadin.flow.dom.Element;
 import com.vaadin.flow.function.ValueProvider;
-import org.apache.commons.lang3.NotImplementedException;
 
 /**
  * Default {@link BeanListing} implementation.
@@ -269,8 +268,7 @@ public class DefaultBeanListing<T> extends AbstractItemListing<T, String> implem
 	@SuppressWarnings("unchecked")
 	@Override
 	protected <V> Optional<Input<V>> buildPropertyEditor(ItemListingColumn<String, T, V> configuration) {
-		throw new NotImplementedException("This is not available for Bean class - use PropertyBox-Babu");
-		/*return propertySet.getProperty(configuration.getProperty()).flatMap(p -> {
+		return propertySet.getProperty(configuration.getProperty()).flatMap(p -> {
 			final Property<V> property = (Property<V>) p;
 			// check custom renderer
 			Optional<Input<V>> component = configuration.getEditorInputRenderer().map(r -> r.render(property));
@@ -280,12 +278,12 @@ public class DefaultBeanListing<T> extends AbstractItemListing<T, String> implem
 			// check specific registry
 			if (getPropertyRendererRegistry().isPresent()) {
 				return getPropertyRendererRegistry().get().getRenderer(Input.class, property)
-						.map(r -> r.render(property));
+						.map(r -> (Input<V>) r.render(property));
 			} else {
 				// use default
 				return property.renderIfAvailable(Input.class).map(c -> (Input<V>) c);
 			}
-		});*/
+		});
 	}
 
 	/*
@@ -381,7 +379,7 @@ public class DefaultBeanListing<T> extends AbstractItemListing<T, String> implem
 		@SuppressWarnings({ "unchecked", "rawtypes" })
 		@Override
 		public BeanListingBuilder<T> withValueChangeListener(String property,
-				ValueChangeListener<?, GroupValueChangeEvent<?, String, Input<?>, EditorComponentGroup<String, T>>> listener) {
+															 ValueChangeListener<?, GroupValueChangeEvent<?, String, Input<?>, EditorComponentGroup<String, T>>> listener) {
 			ObjectUtils.argumentNotNull(property, "Property must be not null");
 			getInstance().getColumnConfiguration(property).addValueChangeListener((ValueChangeListener) listener);
 			return getConfigurator();
@@ -399,6 +397,12 @@ public class DefaultBeanListing<T> extends AbstractItemListing<T, String> implem
 			final String columnId = getInstance().addColumnProperty();
 			getInstance().getColumnConfiguration(columnId).setRenderer(new ComponentRenderer<>(valueProvider));
 			return new DefaultItemListingColumnBuilder<>(columnId, getInstance(), this);
+		}
+
+		@Override
+		public BeanListingBuilder<T> hiddenColumns(List<? extends String> hiddenColumns) {
+			hiddenColumns.forEach(s -> hidden(s));
+			return getConfigurator();
 		}
 
 		/*
@@ -424,7 +428,7 @@ public class DefaultBeanListing<T> extends AbstractItemListing<T, String> implem
 		@SuppressWarnings("rawtypes")
 		@Override
 		public <P extends Property> DatastoreBeanListingBuilder<T> dataSource(Datastore datastore, DataTarget<?> target,
-				Function<PropertyBox, T> itemConverter, Iterable<P> properties) {
+																			  Function<PropertyBox, T> itemConverter, Iterable<P> properties) {
 			final DatastoreDataProvider<T, QueryFilter> datastoreDataProvider = DatastoreDataProvider.create(datastore,
 					target, DatastoreDataProvider.asPropertySet(properties), itemConverter, Function.identity());
 			getInstance().setDataProvider(datastoreDataProvider);
@@ -471,7 +475,7 @@ public class DefaultBeanListing<T> extends AbstractItemListing<T, String> implem
 		private final DatastoreDataProvider<T, QueryFilter> datastoreDataProvider;
 
 		public DefaultDatastoreBeanListingBuilder(DefaultBeanListingBuilder<T> builder,
-				DatastoreDataProvider<T, QueryFilter> datastoreDataProvider) {
+												  DatastoreDataProvider<T, QueryFilter> datastoreDataProvider) {
 			super();
 			this.builder = builder;
 			this.datastoreDataProvider = datastoreDataProvider;
@@ -552,7 +556,7 @@ public class DefaultBeanListing<T> extends AbstractItemListing<T, String> implem
 		 */
 		@Override
 		public DatastoreBeanListingBuilder<T> editorComponent(String property,
-				Function<T, ? extends Component> editorComponentProvider) {
+															  Function<T, ? extends Component> editorComponentProvider) {
 			builder.editorComponent(property, editorComponentProvider);
 			return this;
 		}
@@ -737,7 +741,7 @@ public class DefaultBeanListing<T> extends AbstractItemListing<T, String> implem
 		 */
 		@Override
 		public DatastoreBeanListingBuilder<T> styleNameGenerator(String property,
-				Function<T, String> styleNameGenerator) {
+																 Function<T, String> styleNameGenerator) {
 			builder.styleNameGenerator(property, styleNameGenerator);
 			return this;
 		}
@@ -826,7 +830,7 @@ public class DefaultBeanListing<T> extends AbstractItemListing<T, String> implem
 		 */
 		@Override
 		public DatastoreBeanListingBuilder<T> sortProvider(String property,
-				Function<SortDirection, Stream<ItemSort<String>>> sortProvider) {
+														   Function<SortDirection, Stream<ItemSort<String>>> sortProvider) {
 			builder.sortProvider(property, sortProvider);
 			return this;
 		}
@@ -891,15 +895,21 @@ public class DefaultBeanListing<T> extends AbstractItemListing<T, String> implem
 			return this;
 		}
 
-		/*
-		 * (non-Javadoc)
-		 * @see com.holonplatform.vaadin.flow.components.builders.ItemListingConfigurator# allRowsVisible(boolean)
-		 */
 		@Override
 		public DatastoreBeanListingBuilder<T> allRowsVisible(boolean allRowsVisible) {
-			builder.allRowsVisible(allRowsVisible);
+			 builder.allRowsVisible(allRowsVisible);
 			return this;
 		}
+
+		/*
+		 * (non-Javadoc)
+		 * @see com.holonplatform.vaadin.flow.components.builders.ItemListingConfigurator# heightByRows(boolean)
+		 */
+		/*@Override
+		public DatastoreBeanListingBuilder<T> heightByRows(boolean heightByRows) {
+			builder.heightByRows(heightByRows);
+			return this;
+		}*/
 
 		/*
 		 * (non-Javadoc)
@@ -973,6 +983,16 @@ public class DefaultBeanListing<T> extends AbstractItemListing<T, String> implem
 			return this;
 		}
 
+		/*
+		 * (non-Javadoc)
+		 * @see com.holonplatform.vaadin.flow.components.builders.ItemListingConfigurator#
+		 * verticalScrollingEnabled(boolean)
+		 */
+		/*@Override
+		public DatastoreBeanListingBuilder<T> verticalScrollingEnabled(boolean enabled) {
+			builder.verticalScrollingEnabled(enabled);
+			return this;
+		}*/
 
 		/*
 		 * (non-Javadoc)
@@ -1100,7 +1120,7 @@ public class DefaultBeanListing<T> extends AbstractItemListing<T, String> implem
 		 */
 		@Override
 		public DatastoreBeanListingBuilder<T> withValueChangeListener(String property,
-				ValueChangeListener<?, GroupValueChangeEvent<?, String, Input<?>, EditorComponentGroup<String, T>>> listener) {
+																	  ValueChangeListener<?, GroupValueChangeEvent<?, String, Input<?>, EditorComponentGroup<String, T>>> listener) {
 			builder.withValueChangeListener(property, listener);
 			return this;
 		}
@@ -1168,7 +1188,7 @@ public class DefaultBeanListing<T> extends AbstractItemListing<T, String> implem
 		 */
 		@Override
 		public DatastoreBeanListingBuilder<T> validationStatusHandler(String property,
-				ValidationStatusHandler<Input<?>> validationStatusHandler) {
+																	  ValidationStatusHandler<Input<?>> validationStatusHandler) {
 			builder.validationStatusHandler(property, validationStatusHandler);
 			return this;
 		}
@@ -1220,6 +1240,12 @@ public class DefaultBeanListing<T> extends AbstractItemListing<T, String> implem
 			final String columnId = builder.getInstance().addColumnProperty();
 			builder.getInstance().getColumnConfiguration(columnId).setRenderer(new ComponentRenderer<>(valueProvider));
 			return new DefaultItemListingColumnBuilder<>(columnId, builder.getInstance(), this);
+		}
+
+		@Override
+		public DatastoreBeanListingBuilder<T> hiddenColumns(List<? extends String> hiddenColumns) {
+			builder.hiddenColumns(hiddenColumns);
+			return this;
 		}
 
 		/*
@@ -1343,7 +1369,7 @@ public class DefaultBeanListing<T> extends AbstractItemListing<T, String> implem
 		 */
 		@Override
 		public DatastoreBeanListingBuilder<T> withEventListener(String eventType, DomEventListener listener,
-				String filter) {
+																String filter) {
 			builder.withEventListener(eventType, listener, filter);
 			return this;
 		}

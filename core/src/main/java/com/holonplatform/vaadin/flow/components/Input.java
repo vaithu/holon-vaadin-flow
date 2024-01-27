@@ -15,48 +15,25 @@
  */
 package com.holonplatform.vaadin.flow.components;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.util.Date;
-import java.util.Optional;
-import java.util.function.BiFunction;
-import java.util.function.Function;
-
 import com.holonplatform.core.Registration;
 import com.holonplatform.core.internal.utils.ObjectUtils;
 import com.holonplatform.core.operation.TriConsumer;
-import com.holonplatform.core.property.Property;
-import com.holonplatform.core.property.PropertyBox;
-import com.holonplatform.core.property.PropertyRenderer;
-import com.holonplatform.core.property.PropertyRendererRegistry;
+import com.holonplatform.core.property.*;
 import com.holonplatform.core.property.PropertyRendererRegistry.NoSuitableRendererAvailableException;
-import com.holonplatform.core.property.PropertyValueConverter;
 import com.holonplatform.vaadin.flow.components.ValueHolder.ValueChangeEvent;
-import com.holonplatform.vaadin.flow.components.builders.BooleanInputBuilder;
-import com.holonplatform.vaadin.flow.components.builders.DateInputBuilder;
-import com.holonplatform.vaadin.flow.components.builders.DateTimeInputBuilder;
+import com.holonplatform.vaadin.flow.components.builders.*;
 import com.holonplatform.vaadin.flow.components.builders.FilterableSingleSelectConfigurator.FilterableSingleSelectInputBuilder;
 import com.holonplatform.vaadin.flow.components.builders.FilterableSingleSelectConfigurator.PropertyFilterableSingleSelectInputBuilder;
-import com.holonplatform.vaadin.flow.components.builders.HasValueInputBuilder;
-import com.holonplatform.vaadin.flow.components.builders.InputConverterBuilder;
 import com.holonplatform.vaadin.flow.components.builders.ListMultiSelectConfigurator.ListMultiSelectInputBuilder;
 import com.holonplatform.vaadin.flow.components.builders.ListMultiSelectConfigurator.PropertyListMultiSelectInputBuilder;
 import com.holonplatform.vaadin.flow.components.builders.ListSingleSelectConfigurator.ListSingleSelectInputBuilder;
 import com.holonplatform.vaadin.flow.components.builders.ListSingleSelectConfigurator.PropertyListSingleSelectInputBuilder;
-import com.holonplatform.vaadin.flow.components.builders.LocalDateInputBuilder;
-import com.holonplatform.vaadin.flow.components.builders.LocalDateTimeInputBuilder;
-import com.holonplatform.vaadin.flow.components.builders.LocalTimeInputBuilder;
-import com.holonplatform.vaadin.flow.components.builders.NumberInputBuilder;
 import com.holonplatform.vaadin.flow.components.builders.OptionsMultiSelectConfigurator.OptionsMultiSelectInputBuilder;
 import com.holonplatform.vaadin.flow.components.builders.OptionsMultiSelectConfigurator.PropertyOptionsMultiSelectInputBuilder;
 import com.holonplatform.vaadin.flow.components.builders.OptionsSingleSelectConfigurator.OptionsSingleSelectInputBuilder;
 import com.holonplatform.vaadin.flow.components.builders.OptionsSingleSelectConfigurator.PropertyOptionsSingleSelectInputBuilder;
-import com.holonplatform.vaadin.flow.components.builders.PasswordInputBuilder;
 import com.holonplatform.vaadin.flow.components.builders.SingleSelectConfigurator.PropertySingleSelectInputBuilder;
 import com.holonplatform.vaadin.flow.components.builders.SingleSelectConfigurator.SingleSelectInputBuilder;
-import com.holonplatform.vaadin.flow.components.builders.StringAreaInputBuilder;
-import com.holonplatform.vaadin.flow.components.builders.StringInputBuilder;
 import com.holonplatform.vaadin.flow.components.events.InvalidChangeEventNotifier;
 import com.holonplatform.vaadin.flow.components.events.ReadonlyChangeListener;
 import com.holonplatform.vaadin.flow.data.ItemConverter;
@@ -76,6 +53,14 @@ import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
 import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.data.converter.Converter;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.Date;
+import java.util.Optional;
+import java.util.function.BiFunction;
+import java.util.function.Function;
+
 /**
  * Input component representation, i.e. a UI component that has a user-editable
  * value.
@@ -92,7 +77,7 @@ import com.vaadin.flow.data.converter.Converter;
  * 
  * @since 5.2.0
  */
-public interface Input<T> extends ValueHolder<T, ValueChangeEvent<T>>, ValueComponent<T> {
+public interface Input<T> extends ValueHolder<T, ValueChangeEvent<T>>, ValueComponent<T>, KeyNotifierConfigurator {
 
 	/**
 	 * Sets the read-only mode of this input component. The user can't change the

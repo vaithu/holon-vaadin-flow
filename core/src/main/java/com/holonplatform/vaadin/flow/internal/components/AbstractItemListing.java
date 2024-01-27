@@ -15,26 +15,6 @@
  */
 package com.holonplatform.vaadin.flow.internal.components;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 import com.holonplatform.core.Registration;
 import com.holonplatform.core.Validator;
 import com.holonplatform.core.i18n.Localizable;
@@ -42,106 +22,58 @@ import com.holonplatform.core.internal.Logger;
 import com.holonplatform.core.internal.utils.ObjectUtils;
 import com.holonplatform.core.property.PropertyRendererRegistry;
 import com.holonplatform.core.property.VirtualProperty;
-import com.holonplatform.vaadin.flow.components.GroupValidationStatusHandler;
-import com.holonplatform.vaadin.flow.components.Input;
-import com.holonplatform.vaadin.flow.components.ItemListing;
+import com.holonplatform.vaadin.flow.components.*;
 import com.holonplatform.vaadin.flow.components.ItemListing.EditorComponentGroup;
-import com.holonplatform.vaadin.flow.components.Validatable;
-import com.holonplatform.vaadin.flow.components.ValidationStatusHandler;
 import com.holonplatform.vaadin.flow.components.ValidationStatusHandler.Status;
 import com.holonplatform.vaadin.flow.components.ValidationStatusHandler.ValidationStatusEvent;
-import com.holonplatform.vaadin.flow.components.ValueHolder;
 import com.holonplatform.vaadin.flow.components.ValueHolder.ValueChangeListener;
 import com.holonplatform.vaadin.flow.components.builders.ContextMenuConfigurator;
 import com.holonplatform.vaadin.flow.components.builders.ContextMenuConfigurator.MenuItemBuilder;
 import com.holonplatform.vaadin.flow.components.builders.HasDataProviderConfigurator;
 import com.holonplatform.vaadin.flow.components.builders.ItemListingConfigurator;
-import com.holonplatform.vaadin.flow.components.builders.ItemListingConfigurator.ColumnAlignment;
-import com.holonplatform.vaadin.flow.components.builders.ItemListingConfigurator.ColumnConfigurator;
-import com.holonplatform.vaadin.flow.components.builders.ItemListingConfigurator.ColumnPostProcessor;
-import com.holonplatform.vaadin.flow.components.builders.ItemListingConfigurator.EditableItemListingSection;
-import com.holonplatform.vaadin.flow.components.builders.ItemListingConfigurator.ItemListingColumnBuilder;
-import com.holonplatform.vaadin.flow.components.builders.ItemListingConfigurator.ItemListingContextMenuBuilder;
+import com.holonplatform.vaadin.flow.components.builders.ItemListingConfigurator.*;
 import com.holonplatform.vaadin.flow.components.builders.ShortcutConfigurator;
-import com.holonplatform.vaadin.flow.components.events.ClickEventListener;
-import com.holonplatform.vaadin.flow.components.events.ColumnReorderListener;
-import com.holonplatform.vaadin.flow.components.events.ColumnResizeListener;
-import com.holonplatform.vaadin.flow.components.events.GroupValueChangeEvent;
 import com.holonplatform.vaadin.flow.components.events.ItemClickEvent;
-import com.holonplatform.vaadin.flow.components.events.ItemEvent;
-import com.holonplatform.vaadin.flow.components.events.ItemEventListener;
-import com.holonplatform.vaadin.flow.components.events.ItemListingDnDListener;
-import com.holonplatform.vaadin.flow.components.events.ItemListingDragEndEvent;
-import com.holonplatform.vaadin.flow.components.events.ItemListingDragStartEvent;
-import com.holonplatform.vaadin.flow.components.events.ItemListingDropEvent;
-import com.holonplatform.vaadin.flow.components.events.ItemListingItemEvent;
+import com.holonplatform.vaadin.flow.components.events.*;
 import com.holonplatform.vaadin.flow.data.ItemListingDataProviderAdapter;
 import com.holonplatform.vaadin.flow.data.ItemSort;
 import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
 import com.holonplatform.vaadin.flow.internal.VaadinLogger;
-import com.holonplatform.vaadin.flow.internal.components.builders.AbstractComponentConfigurator;
-import com.holonplatform.vaadin.flow.internal.components.builders.DefaultHasEnabledConfigurator;
-import com.holonplatform.vaadin.flow.internal.components.builders.DefaultHasSizeConfigurator;
-import com.holonplatform.vaadin.flow.internal.components.builders.DefaultHasStyleConfigurator;
-import com.holonplatform.vaadin.flow.internal.components.builders.DefaultShortcutConfigurator;
-import com.holonplatform.vaadin.flow.internal.components.events.DefaultColumnReorderEvent;
-import com.holonplatform.vaadin.flow.internal.components.events.DefaultColumnResizeEvent;
-import com.holonplatform.vaadin.flow.internal.components.events.DefaultGroupValidationStatusEvent;
-import com.holonplatform.vaadin.flow.internal.components.events.DefaultGroupValueChangeEvent;
-import com.holonplatform.vaadin.flow.internal.components.events.DefaultItemEditorEvent;
-import com.holonplatform.vaadin.flow.internal.components.events.DefaultItemEvent;
-import com.holonplatform.vaadin.flow.internal.components.events.DefaultItemListingClickEvent;
-import com.holonplatform.vaadin.flow.internal.components.events.DefaultItemListingDragEndEvent;
-import com.holonplatform.vaadin.flow.internal.components.events.DefaultItemListingDragStartEvent;
-import com.holonplatform.vaadin.flow.internal.components.events.DefaultItemListingDropEvent;
-import com.holonplatform.vaadin.flow.internal.components.events.DefaultItemListingItemEvent;
-import com.holonplatform.vaadin.flow.internal.components.events.DefaultSelectionEvent;
-import com.holonplatform.vaadin.flow.internal.components.support.DefaultItemListingColumn;
-import com.holonplatform.vaadin.flow.internal.components.support.DefaultItemListingFooterSection;
-import com.holonplatform.vaadin.flow.internal.components.support.DefaultItemListingHeaderSection;
-import com.holonplatform.vaadin.flow.internal.components.support.DefaultUserInputValidator;
-import com.holonplatform.vaadin.flow.internal.components.support.ItemListingColumn;
+import com.holonplatform.vaadin.flow.internal.components.builders.*;
+import com.holonplatform.vaadin.flow.internal.components.events.*;
+import com.holonplatform.vaadin.flow.internal.components.support.*;
 import com.holonplatform.vaadin.flow.internal.components.support.ItemListingColumn.SortMode;
 import com.holonplatform.vaadin.flow.internal.utils.CollectionUtils;
-import com.vaadin.flow.component.BlurNotifier;
+import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.BlurNotifier.BlurEvent;
-import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.ComponentEventListener;
-import com.vaadin.flow.component.FocusNotifier;
 import com.vaadin.flow.component.FocusNotifier.FocusEvent;
-import com.vaadin.flow.component.HasEnabled;
-import com.vaadin.flow.component.HasSize;
-import com.vaadin.flow.component.HasStyle;
-import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.contextmenu.ContextMenuBase.OpenedChangeEvent;
-import com.vaadin.flow.component.grid.ColumnTextAlign;
-import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.grid.*;
 import com.vaadin.flow.component.grid.Grid.Column;
-import com.vaadin.flow.component.grid.GridMultiSelectionModel;
 import com.vaadin.flow.component.grid.GridMultiSelectionModel.SelectAllCheckboxVisibility;
-import com.vaadin.flow.component.grid.GridNoneSelectionModel;
-import com.vaadin.flow.component.grid.GridSelectionModel;
-import com.vaadin.flow.component.grid.GridSortOrder;
-import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.grid.contextmenu.GridContextMenu;
 import com.vaadin.flow.component.grid.contextmenu.GridContextMenu.GridContextMenuItemClickEvent;
 import com.vaadin.flow.component.grid.contextmenu.GridMenuItem;
 import com.vaadin.flow.component.grid.contextmenu.GridSubMenu;
 import com.vaadin.flow.component.grid.dnd.GridDropMode;
 import com.vaadin.flow.component.grid.editor.Editor;
-import com.vaadin.flow.data.binder.Binder;
+import com.vaadin.flow.data.binder.*;
 import com.vaadin.flow.data.binder.Binder.BindingBuilder;
-import com.vaadin.flow.data.binder.BinderValidationStatus;
-import com.vaadin.flow.data.binder.PropertyDefinition;
-import com.vaadin.flow.data.binder.PropertySet;
-import com.vaadin.flow.data.binder.Setter;
-import com.vaadin.flow.data.binder.ValidationResult;
 import com.vaadin.flow.data.provider.DataChangeEvent.DataRefreshEvent;
 import com.vaadin.flow.data.provider.DataProvider;
 import com.vaadin.flow.data.provider.QuerySortOrder;
 import com.vaadin.flow.data.provider.SortDirection;
 import com.vaadin.flow.data.renderer.Renderer;
 import com.vaadin.flow.function.ValueProvider;
+
+import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Abstract {@link ItemListing} implementation using a {@link Grid}.
@@ -165,6 +97,11 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
 	 * Selection mode
 	 */
 	private SelectionMode selectionMode = SelectionMode.NONE;
+
+	/**
+	 * Optional hidden columns
+	 */
+	private transient List<P> hiddenColumns = Collections.emptyList();
 
 	/**
 	 * Optional visible columns
@@ -614,6 +551,18 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
 
 	/*
 	 * (non-Javadoc)
+	 *
+	 * @see com.holonplatform.vaadin.flow.components.ItemListing#getHiddenColumns()
+	 */
+	@Override
+	public List<P> getHiddenColumns() {
+		return getHiddenColumnProperties().stream()
+				.filter(property -> getColumn(property).map(column -> !column.isVisible()).orElse(true))
+				.collect(Collectors.toList());
+	}
+
+	/*
+	 * (non-Javadoc)
 	 * 
 	 * @see
 	 * com.holonplatform.vaadin.flow.components.ItemListing#setColumnVisible(java.
@@ -812,6 +761,14 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
 	 */
 	protected List<P> getVisibleColumnProperties() {
 		return visibileColumns.isEmpty() ? properties : visibileColumns;
+	}
+
+	/**
+	 * Get the hidden columns properties.
+	 * @return the hideen columns properties
+	 */
+	protected List<P> getHiddenColumnProperties() {
+		return hiddenColumns.isEmpty() ? properties : hiddenColumns;
 	}
 
 	/**
@@ -3683,6 +3640,30 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
 		public MenuItemBuilder<ItemEventListener<GridMenuItem<T>, T, ItemListingItemEvent<GridMenuItem<T>, T, P>>, GridContextMenu<T>, GridMenuItem<T>, GridSubMenu<T>, B> checkable(
 				boolean checkable) {
 			menuItem.setCheckable(checkable);
+			return this;
+		}
+		/*
+		 * (non-Javadoc)
+		 *
+		 * @see
+		 * com.holonplatform.vaadin.flow.components.builders.ContextMenuConfigurator.
+		 * MenuItemBuilder#styleName(String)
+		 */
+        @Override
+        public MenuItemBuilder<ItemEventListener<GridMenuItem<T>, T, ItemListingItemEvent<GridMenuItem<T>, T, P>>, GridContextMenu<T>, GridMenuItem<T>, GridSubMenu<T>, B> styleName(String styleName) {
+            menuItem.addClassName(styleName);
+			return this;
+        }
+		/*
+		 * (non-Javadoc)
+		 *
+		 * @see
+		 * com.holonplatform.vaadin.flow.components.builders.ContextMenuConfigurator.
+		 * MenuItemBuilder#styleNames(String...)
+		 */
+		@Override
+		public MenuItemBuilder<ItemEventListener<GridMenuItem<T>, T, ItemListingItemEvent<GridMenuItem<T>, T, P>>, GridContextMenu<T>, GridMenuItem<T>, GridSubMenu<T>, B> styleNames(String... styleNames) {
+			menuItem.addClassNames(styleNames);
 			return this;
 		}
 

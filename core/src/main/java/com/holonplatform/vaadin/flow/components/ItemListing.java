@@ -48,7 +48,14 @@ public interface ItemListing<T, P> extends ItemSet, Selectable<T>, HasComponent 
 	 */
 	List<P> getVisibleColumns();
 
-	/**
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.holonplatform.vaadin.flow.components.ItemListing#getHiddenColumns()
+     */
+    List<P> getHiddenColumns();
+
+    /**
 	 * Show or hide the column which corresponds to given <code>property</code> id.
 	 * @param property The property which represents the column (not null)
 	 * @param visible  <code>true</code> to show the column, <code>false</code> to

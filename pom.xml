@@ -59,9 +59,9 @@
 		<holon.core.version>5.5.1-SNAPSHOT</holon.core.version>
 
 		<!-- Vaadin -->
-		<vaadin.version>24.2.1</vaadin.version>
-		<vaadin.spring.version>24.2.1</vaadin.spring.version>
-		<vaadin.flow.version>24.2.1</vaadin.flow.version>
+		<vaadin.version>24.3.3</vaadin.version>
+		<vaadin.spring.version>24.3.3</vaadin.spring.version>
+		<vaadin.flow.version>24.3.3</vaadin.flow.version>
 
 		<!-- Servlet API -->
 		<servlet.version>6.0.0</servlet.version>

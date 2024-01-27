@@ -15,31 +15,13 @@
  */
 package com.holonplatform.vaadin.flow.internal.components;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 import com.holonplatform.core.Path;
 import com.holonplatform.core.Validator;
 import com.holonplatform.core.datastore.DataTarget;
 import com.holonplatform.core.datastore.Datastore;
 import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.core.internal.utils.ObjectUtils;
-import com.holonplatform.core.property.Property;
-import com.holonplatform.core.property.PropertyBox;
-import com.holonplatform.core.property.PropertyRenderer;
-import com.holonplatform.core.property.PropertyRendererRegistry;
-import com.holonplatform.core.property.PropertySet;
-import com.holonplatform.core.property.VirtualProperty;
+import com.holonplatform.core.property.*;
 import com.holonplatform.core.query.QueryConfigurationProvider;
 import com.holonplatform.core.query.QueryFilter;
 import com.holonplatform.core.query.QuerySort;
@@ -52,29 +34,15 @@ import com.holonplatform.vaadin.flow.components.ValueHolder.ValueChangeListener;
 import com.holonplatform.vaadin.flow.components.builders.PropertyListingBuilder;
 import com.holonplatform.vaadin.flow.components.builders.PropertyListingBuilder.DatastorePropertyListingBuilder;
 import com.holonplatform.vaadin.flow.components.builders.ShortcutConfigurator;
-import com.holonplatform.vaadin.flow.components.events.ClickEventListener;
-import com.holonplatform.vaadin.flow.components.events.ColumnReorderListener;
-import com.holonplatform.vaadin.flow.components.events.ColumnResizeListener;
-import com.holonplatform.vaadin.flow.components.events.GroupValueChangeEvent;
-import com.holonplatform.vaadin.flow.components.events.ItemClickEvent;
-import com.holonplatform.vaadin.flow.components.events.ItemEvent;
-import com.holonplatform.vaadin.flow.components.events.ItemEventListener;
-import com.holonplatform.vaadin.flow.components.events.ItemListingDnDListener;
-import com.holonplatform.vaadin.flow.components.events.ItemListingDragEndEvent;
-import com.holonplatform.vaadin.flow.components.events.ItemListingDragStartEvent;
-import com.holonplatform.vaadin.flow.components.events.ItemListingDropEvent;
+import com.holonplatform.vaadin.flow.components.events.*;
 import com.holonplatform.vaadin.flow.data.DatastoreDataProvider;
 import com.holonplatform.vaadin.flow.data.ItemSort;
 import com.holonplatform.vaadin.flow.internal.components.builders.DefaultShortcutConfigurator;
 import com.holonplatform.vaadin.flow.internal.components.support.ItemListingColumn;
 import com.holonplatform.vaadin.flow.internal.components.support.ItemListingColumn.SortMode;
-import com.vaadin.flow.component.AttachEvent;
+import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.BlurNotifier.BlurEvent;
-import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.ComponentEventListener;
-import com.vaadin.flow.component.DetachEvent;
 import com.vaadin.flow.component.FocusNotifier.FocusEvent;
-import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.grid.Grid.Column;
 import com.vaadin.flow.component.grid.GridMultiSelectionModel.SelectAllCheckboxVisibility;
 import com.vaadin.flow.component.grid.GridVariant;
@@ -86,6 +54,11 @@ import com.vaadin.flow.data.renderer.Renderer;
 import com.vaadin.flow.dom.DomEventListener;
 import com.vaadin.flow.dom.Element;
 import com.vaadin.flow.function.ValueProvider;
+
+import java.util.*;
+import java.util.function.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Default {@link PropertyListing} implementation.
@@ -109,6 +82,24 @@ public class DefaultPropertyListing extends AbstractItemListing<PropertyBox, Pro
 	public <P extends Property<?>> DefaultPropertyListing(Iterable<P> properties) {
 		super();
 		ObjectUtils.argumentNotNull(properties, "Property set must be not null");
+		this.propertySet = (properties instanceof PropertySet<?>) ? (PropertySet<?>) properties
+				: PropertySet.of(properties);
+		// add properties as columns
+		for (Property<?> property : propertySet) {
+			addPropertyColumn(property);
+		}
+	}
+//this is not fully implemented
+	public <P extends Property<?>> DefaultPropertyListing(boolean defaultIndex,Iterable<P> properties) {
+		super();
+		ObjectUtils.argumentNotNull(properties, "Property set must be not null");
+		if (defaultIndex) {
+			VirtualProperty<String> ID = VirtualProperty.create(String.class)
+					.message("#ID");
+			ItemListingColumn<Property<?>, PropertyBox, ?> rowIndex = addPropertyColumn(ID);
+			rowIndex.setFlexGrow(0);
+//			rowIndex.setDefaultValueProvider();
+		}
 		this.propertySet = (properties instanceof PropertySet<?>) ? (PropertySet<?>) properties
 				: PropertySet.of(properties);
 		// add properties as columns
@@ -418,6 +409,12 @@ public class DefaultPropertyListing extends AbstractItemListing<PropertyBox, Pro
 			return withComponentColumn(VirtualProperty.create(Component.class, item -> valueProvider.apply(item)));
 		}
 
+		@Override
+		public PropertyListingBuilder hiddenColumns(List<? extends Property<?>> hiddenColumns) {
+			hiddenColumns.forEach(property -> hidden(property));
+			return getConfigurator();
+		}
+
 		/*
 		 * (non-Javadoc)
 		 * 
@@ -602,6 +599,12 @@ public class DefaultPropertyListing extends AbstractItemListing<PropertyBox, Pro
 				ValueProvider<PropertyBox, Component> valueProvider) {
 			ObjectUtils.argumentNotNull(valueProvider, "ValueProvider must be not null");
 			return withComponentColumn(VirtualProperty.create(Component.class, item -> valueProvider.apply(item)));
+		}
+
+		@Override
+		public DatastorePropertyListingBuilder hiddenColumns(List<? extends Property<?>> hiddenColumns) {
+			builder.hiddenColumns(hiddenColumns);
+			return this;
 		}
 
 		/*

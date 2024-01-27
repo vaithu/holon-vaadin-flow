@@ -1,12 +1,12 @@
 /*
  * Copyright 2016-2018 Axioma srl.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -26,9 +26,7 @@ import com.vaadin.flow.dom.DomEventListener;
 
 /**
  * Default {@link FlexComponentConfigurator} implementation.
- * 
  * @param <C> Actual component type
- *
  * @since 5.2.0
  */
 public class DefaultFlexComponentConfigurator<C extends Component>
@@ -52,7 +50,8 @@ public class DefaultFlexComponentConfigurator<C extends Component>
 
 	/*
 	 * (non-Javadoc)
-	 * @see com.holonplatform.vaadin.flow.components.builders.HasComponentsConfigurator#add(com.vaadin.flow.component.
+	 * @see
+	 * com.holonplatform.vaadin.flow.components.builders.HasComponentsConfigurator#add(com.vaadin.flow.component.
 	 * Component[])
 	 */
 	@Override
@@ -73,7 +72,8 @@ public class DefaultFlexComponentConfigurator<C extends Component>
 
 	/*
 	 * (non-Javadoc)
-	 * @see com.holonplatform.vaadin.flow.components.builders.HasElementConfigurator#withEventListener(java.lang.String,
+	 * @see
+	 * com.holonplatform.vaadin.flow.components.builders.HasElementConfigurator#withEventListener(java.lang.String,
 	 * com.vaadin.flow.dom.DomEventListener)
 	 */
 	@Override
@@ -84,12 +84,13 @@ public class DefaultFlexComponentConfigurator<C extends Component>
 
 	/*
 	 * (non-Javadoc)
-	 * @see com.holonplatform.vaadin.flow.components.builders.HasElementConfigurator#withEventListener(java.lang.String,
+	 * @see
+	 * com.holonplatform.vaadin.flow.components.builders.HasElementConfigurator#withEventListener(java.lang.String,
 	 * com.vaadin.flow.dom.DomEventListener, java.lang.String)
 	 */
 	@Override
 	public DefaultFlexComponentConfigurator<C> withEventListener(String eventType, DomEventListener listener,
-			String filter) {
+																 String filter) {
 		component.getElement().addEventListener(eventType, listener).setFilter(filter);
 		return this;
 	}
@@ -186,9 +187,8 @@ public class DefaultFlexComponentConfigurator<C extends Component>
 
 	/*
 	 * (non-Javadoc)
-	 * @see
-	 * com.holonplatform.vaadin.flow.components.builders.FlexComponentConfigurator#alignItems(com.vaadin.flow.component.
-	 * orderedlayout.FlexComponent.Alignment)
+	 * @see com.holonplatform.vaadin.flow.components.builders.FlexComponentConfigurator#alignItems(com.vaadin.flow.
+	 * component. orderedlayout.FlexComponent.Alignment)
 	 */
 	@Override
 	public DefaultFlexComponentConfigurator<C> alignItems(Alignment alignment) {
@@ -198,9 +198,8 @@ public class DefaultFlexComponentConfigurator<C extends Component>
 
 	/*
 	 * (non-Javadoc)
-	 * @see
-	 * com.holonplatform.vaadin.flow.components.builders.FlexComponentConfigurator#alignSelf(com.vaadin.flow.component.
-	 * orderedlayout.FlexComponent.Alignment, com.vaadin.flow.component.HasElement[])
+	 * @see com.holonplatform.vaadin.flow.components.builders.FlexComponentConfigurator#alignSelf(com.vaadin.flow.
+	 * component. orderedlayout.FlexComponent.Alignment, com.vaadin.flow.component.HasElement[])
 	 */
 	@Override
 	public DefaultFlexComponentConfigurator<C> alignSelf(Alignment alignment, HasElement... elementContainers) {
@@ -222,8 +221,8 @@ public class DefaultFlexComponentConfigurator<C extends Component>
 	/*
 	 * (non-Javadoc)
 	 * @see
-	 * com.holonplatform.vaadin.flow.components.builders.FlexComponentConfigurator#justifyContentMode(com.vaadin.flow.
-	 * component.orderedlayout.FlexComponent.JustifyContentMode)
+	 * com.holonplatform.vaadin.flow.components.builders.FlexComponentConfigurator#justifyContentMode(com.vaadin.
+	 * flow. component.orderedlayout.FlexComponent.JustifyContentMode)
 	 */
 	@Override
 	public DefaultFlexComponentConfigurator<C> justifyContentMode(JustifyContentMode justifyContentMode) {

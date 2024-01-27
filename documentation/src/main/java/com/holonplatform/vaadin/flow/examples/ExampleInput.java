@@ -15,44 +15,23 @@
  */
 package com.holonplatform.vaadin.flow.examples;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 import com.holonplatform.core.Registration;
 import com.holonplatform.core.Validator;
 import com.holonplatform.core.Validator.ValidationException;
 import com.holonplatform.core.datastore.DataTarget;
 import com.holonplatform.core.datastore.Datastore;
-import com.holonplatform.core.property.BooleanProperty;
-import com.holonplatform.core.property.NumericProperty;
-import com.holonplatform.core.property.Property;
-import com.holonplatform.core.property.PropertyBox;
-import com.holonplatform.core.property.PropertyRendererRegistry;
-import com.holonplatform.core.property.PropertySet;
-import com.holonplatform.core.property.PropertyValueConverter;
-import com.holonplatform.core.property.StringProperty;
+import com.holonplatform.core.property.*;
 import com.holonplatform.core.query.QueryConfigurationProvider;
-import com.holonplatform.vaadin.flow.components.Components;
-import com.holonplatform.vaadin.flow.components.Composable;
-import com.holonplatform.vaadin.flow.components.Input;
+import com.holonplatform.vaadin.flow.components.*;
 import com.holonplatform.vaadin.flow.components.Input.InputPropertyRenderer;
-import com.holonplatform.vaadin.flow.components.MultiSelect;
-import com.holonplatform.vaadin.flow.components.PropertyInputForm;
-import com.holonplatform.vaadin.flow.components.PropertyInputGroup;
-import com.holonplatform.vaadin.flow.components.SingleSelect;
-import com.holonplatform.vaadin.flow.components.ValidatableInput;
 import com.holonplatform.vaadin.flow.components.ValidationStatusHandler.Status;
+import com.holonplatform.vaadin.flow.components.builders.KeyNotifierConfigurator;
 import com.holonplatform.vaadin.flow.components.events.ReadonlyChangeListener;
 import com.holonplatform.vaadin.flow.data.ItemConverter;
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.ComponentEventListener;
+import com.vaadin.flow.component.Key;
+import com.vaadin.flow.component.KeyModifier;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.notification.Notification;
@@ -61,6 +40,13 @@ import com.vaadin.flow.component.textfield.Autocapitalize;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.converter.StringToIntegerConverter;
 import com.vaadin.flow.data.provider.DataProvider;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @SuppressWarnings("unused")
 public class ExampleInput {
@@ -192,6 +178,35 @@ public class ExampleInput {
 		public void focus() {
 		}
 
+		@Override
+		public KeyNotifierConfigurator withKeyDownListener(ComponentEventListener listener) {
+			return null;
+		}
+
+		@Override
+		public KeyNotifierConfigurator withKeyPressListener(ComponentEventListener listener) {
+			return null;
+		}
+
+		@Override
+		public KeyNotifierConfigurator withKeyUpListener(ComponentEventListener listener) {
+			return null;
+		}
+
+		@Override
+		public KeyNotifierConfigurator withKeyDownListener(Key key, ComponentEventListener listener, KeyModifier... modifiers) {
+			return null;
+		}
+
+		@Override
+		public KeyNotifierConfigurator withKeyPressListener(Key key, ComponentEventListener listener, KeyModifier... modifiers) {
+			return null;
+		}
+
+		@Override
+		public KeyNotifierConfigurator withKeyUpListener(Key key, ComponentEventListener listener, KeyModifier... modifiers) {
+			return null;
+		}
 	}
 
 	public void input5() {

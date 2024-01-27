@@ -162,6 +162,38 @@ public interface ItemListingConfigurator<T, P, L extends ItemListing<T, P>, C ex
 	}
 
 	/**
+	 * Set the hidden columns list, using the item properties as column reference.
+	 * The columns will be displayed in the order thay are provided.
+	 * <p>
+	 * Any property display order declaration configured using
+	 * {@link #displayAsFirst(Object)}, {@link #displayAsLast(Object)},
+	 * {@link #displayBefore(Object, Object)} and
+	 * {@link #displayAfter(Object, Object)} will be ignored.
+	 * </p>
+	 * @param hiddenColumns The visible column properties (not null)
+	 * @return this
+	 */
+	@SuppressWarnings("unchecked")
+	default C hiddenColumns(P... hiddenColumns) {
+		return hiddenColumns(Arrays.asList(hiddenColumns));
+	}
+
+	/**
+	 * Set the hidden columns list, using the item properties as column reference.
+	 * The columns will be displayed in the order thay are provided.
+	 * <p>
+	 * Any property display order declaration configured using
+	 * {@link #displayAsFirst(Object)}, {@link #displayAsLast(Object)},
+	 * {@link #displayBefore(Object, Object)} and
+	 * {@link #displayAfter(Object, Object)} will be ignored.
+	 * </p>
+	 * @param hiddenColumns The hidden column properties (not null)
+	 * @return this
+	 */
+	C hiddenColumns(List<? extends P> hiddenColumns);
+
+
+	/**
 	 * Set the visible columns list, using the item properties as column reference.
 	 * The columns will be displayed in the order thay are provided.
 	 * <p>

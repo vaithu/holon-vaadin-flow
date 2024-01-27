@@ -18,15 +18,7 @@ package com.holonplatform.vaadin.flow.components.builders;
 import com.holonplatform.vaadin.flow.internal.components.builders.DefaultLabelBuilder;
 import com.vaadin.flow.component.ClickNotifier;
 import com.vaadin.flow.component.HtmlContainer;
-import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.component.html.H1;
-import com.vaadin.flow.component.html.H2;
-import com.vaadin.flow.component.html.H3;
-import com.vaadin.flow.component.html.H4;
-import com.vaadin.flow.component.html.H5;
-import com.vaadin.flow.component.html.H6;
-import com.vaadin.flow.component.html.Paragraph;
-import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.html.*;
 
 /**
  * Builder to create <em>label</em> components, i.e. components to display a text.
@@ -109,6 +101,10 @@ public interface LabelBuilder<L extends HtmlContainer & ClickNotifier>
 	 */
 	static LabelBuilder<H6> h6() {
 		return new DefaultLabelBuilder<>(new H6());
+	}
+
+	static LabelBuilder<Emphasis> emphasis() {
+		return new DefaultLabelBuilder<>(new Emphasis());
 	}
 
 }

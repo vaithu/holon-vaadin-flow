@@ -15,15 +15,6 @@
  */
 package com.holonplatform.vaadin.flow.components;
 
-import java.time.Duration;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.util.Date;
-import java.util.Locale;
-import java.util.Optional;
-import java.util.function.Function;
-
 import com.holonplatform.core.Context;
 import com.holonplatform.core.config.ConfigProperty;
 import com.holonplatform.core.i18n.Localizable;
@@ -32,57 +23,28 @@ import com.holonplatform.core.property.Property;
 import com.holonplatform.core.property.PropertyBox;
 import com.holonplatform.core.property.PropertySet;
 import com.holonplatform.vaadin.flow.components.Composable.Composer;
-import com.holonplatform.vaadin.flow.components.builders.BeanListingBuilder;
-import com.holonplatform.vaadin.flow.components.builders.BooleanInputBuilder;
-import com.holonplatform.vaadin.flow.components.builders.ButtonBuilder;
-import com.holonplatform.vaadin.flow.components.builders.ButtonConfigurator;
+import com.holonplatform.vaadin.flow.components.builders.*;
 import com.holonplatform.vaadin.flow.components.builders.ButtonConfigurator.BaseButtonConfigurator;
-import com.holonplatform.vaadin.flow.components.builders.ContextMenuBuilder;
-import com.holonplatform.vaadin.flow.components.builders.DateInputBuilder;
-import com.holonplatform.vaadin.flow.components.builders.DateTimeInputBuilder;
-import com.holonplatform.vaadin.flow.components.builders.DialogBuilder;
 import com.holonplatform.vaadin.flow.components.builders.DialogBuilder.ConfirmDialogBuilder;
 import com.holonplatform.vaadin.flow.components.builders.DialogBuilder.MessageDialogBuilder;
 import com.holonplatform.vaadin.flow.components.builders.DialogBuilder.QuestionDialogBuilder;
 import com.holonplatform.vaadin.flow.components.builders.DialogBuilder.QuestionDialogCallback;
 import com.holonplatform.vaadin.flow.components.builders.FilterableSingleSelectConfigurator.FilterableSingleSelectInputBuilder;
 import com.holonplatform.vaadin.flow.components.builders.FilterableSingleSelectConfigurator.PropertyFilterableSingleSelectInputBuilder;
-import com.holonplatform.vaadin.flow.components.builders.FormLayoutBuilder;
-import com.holonplatform.vaadin.flow.components.builders.FormLayoutConfigurator;
 import com.holonplatform.vaadin.flow.components.builders.FormLayoutConfigurator.BaseFormLayoutConfigurator;
-import com.holonplatform.vaadin.flow.components.builders.HorizontalLayoutBuilder;
-import com.holonplatform.vaadin.flow.components.builders.LabelBuilder;
-import com.holonplatform.vaadin.flow.components.builders.LabelConfigurator;
 import com.holonplatform.vaadin.flow.components.builders.LabelConfigurator.BaseLabelConfigurator;
 import com.holonplatform.vaadin.flow.components.builders.ListMultiSelectConfigurator.ListMultiSelectInputBuilder;
 import com.holonplatform.vaadin.flow.components.builders.ListMultiSelectConfigurator.PropertyListMultiSelectInputBuilder;
 import com.holonplatform.vaadin.flow.components.builders.ListSingleSelectConfigurator.ListSingleSelectInputBuilder;
 import com.holonplatform.vaadin.flow.components.builders.ListSingleSelectConfigurator.PropertyListSingleSelectInputBuilder;
-import com.holonplatform.vaadin.flow.components.builders.LocalDateInputBuilder;
-import com.holonplatform.vaadin.flow.components.builders.LocalDateTimeInputBuilder;
-import com.holonplatform.vaadin.flow.components.builders.LocalTimeInputBuilder;
-import com.holonplatform.vaadin.flow.components.builders.NativeButtonBuilder;
-import com.holonplatform.vaadin.flow.components.builders.NumberInputBuilder;
 import com.holonplatform.vaadin.flow.components.builders.OptionsMultiSelectConfigurator.OptionsMultiSelectInputBuilder;
 import com.holonplatform.vaadin.flow.components.builders.OptionsMultiSelectConfigurator.PropertyOptionsMultiSelectInputBuilder;
 import com.holonplatform.vaadin.flow.components.builders.OptionsSingleSelectConfigurator.OptionsSingleSelectInputBuilder;
 import com.holonplatform.vaadin.flow.components.builders.OptionsSingleSelectConfigurator.PropertyOptionsSingleSelectInputBuilder;
-import com.holonplatform.vaadin.flow.components.builders.PasswordInputBuilder;
-import com.holonplatform.vaadin.flow.components.builders.PropertyInputFormBuilder;
-import com.holonplatform.vaadin.flow.components.builders.PropertyInputGroupBuilder;
-import com.holonplatform.vaadin.flow.components.builders.PropertyListingBuilder;
-import com.holonplatform.vaadin.flow.components.builders.PropertyViewFormBuilder;
-import com.holonplatform.vaadin.flow.components.builders.PropertyViewGroupBuilder;
-import com.holonplatform.vaadin.flow.components.builders.ScrollerBuilder;
 import com.holonplatform.vaadin.flow.components.builders.SingleSelectConfigurator.PropertySingleSelectInputBuilder;
 import com.holonplatform.vaadin.flow.components.builders.SingleSelectConfigurator.SingleSelectInputBuilder;
-import com.holonplatform.vaadin.flow.components.builders.StringAreaInputBuilder;
-import com.holonplatform.vaadin.flow.components.builders.StringInputBuilder;
-import com.holonplatform.vaadin.flow.components.builders.ThemableFlexComponentConfigurator;
 import com.holonplatform.vaadin.flow.components.builders.ThemableFlexComponentConfigurator.HorizontalLayoutConfigurator;
 import com.holonplatform.vaadin.flow.components.builders.ThemableFlexComponentConfigurator.VerticalLayoutConfigurator;
-import com.holonplatform.vaadin.flow.components.builders.VerticalLayoutBuilder;
-import com.holonplatform.vaadin.flow.components.builders.ViewComponentBuilder;
 import com.holonplatform.vaadin.flow.components.events.ClickEvent;
 import com.holonplatform.vaadin.flow.components.events.ClickEventListener;
 import com.holonplatform.vaadin.flow.data.ItemConverter;
@@ -96,16 +58,8 @@ import com.vaadin.flow.component.checkbox.CheckboxGroup;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.contextmenu.ContextMenu;
 import com.vaadin.flow.component.formlayout.FormLayout;
-import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.component.html.H1;
-import com.vaadin.flow.component.html.H2;
-import com.vaadin.flow.component.html.H3;
-import com.vaadin.flow.component.html.H4;
-import com.vaadin.flow.component.html.H5;
-import com.vaadin.flow.component.html.H6;
-import com.vaadin.flow.component.html.NativeButton;
-import com.vaadin.flow.component.html.Paragraph;
-import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.listbox.ListBox;
 import com.vaadin.flow.component.listbox.MultiSelectListBox;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -116,6 +70,15 @@ import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
 import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.i18n.I18NProvider;
 import com.vaadin.flow.server.VaadinService;
+
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.Date;
+import java.util.Locale;
+import java.util.Optional;
+import java.util.function.Function;
 
 /**
  * Main provider of UI components builders and configurators.
@@ -231,6 +194,282 @@ public interface Components {
 	}
 
 	/**
+	 * Obtain a {@link LabelBuilder} to create a badge component using a
+	 * {@link Span} tag.
+	 * @return The {@link LabelBuilder} to configure and obtain the component
+	 *         instance
+	 */
+	static LabelBuilder<Span> badge() {
+		LabelBuilder<Span> span = LabelBuilder.span();
+		span.elementConfiguration(element -> element.getThemeList().add("badge"));
+		return span;
+	}
+
+	/**
+	 * Obtain a {@link LabelBuilder} to create a badge success component using a
+	 * {@link Span} tag.
+	 * @return The {@link LabelBuilder} to configure and obtain the component
+	 *         instance
+	 */
+	static LabelBuilder<Span> badgeSuccess() {
+		LabelBuilder<Span> span = LabelBuilder.span();
+		span.elementConfiguration(element -> element.getThemeList().add("badge success"));
+		return span;
+	}
+
+	/**
+	 * Obtain a {@link LabelBuilder} to create a badge error component using a
+	 * {@link Span} tag.
+	 * @return The {@link LabelBuilder} to configure and obtain the component
+	 *         instance
+	 */
+	static LabelBuilder<Span> badgeError() {
+		LabelBuilder<Span> span = LabelBuilder.span();
+		span.elementConfiguration(element -> element.getThemeList().add("badge error"));
+		return span;
+	}
+
+	/**
+	 * Obtain a {@link LabelBuilder} to create a badge primary component using a
+	 * {@link Span} tag.
+	 * @return The {@link LabelBuilder} to configure and obtain the component
+	 *         instance
+	 */
+	static LabelBuilder<Span> badgePrimary() {
+		LabelBuilder<Span> span = LabelBuilder.span();
+		span.elementConfiguration(element -> element.getThemeList().add("badge primary"));
+		return span;
+	}
+
+	/**
+	 * Obtain a {@link LabelBuilder} to create a badge success primary component using a
+	 * {@link Span} tag.
+	 * @return The {@link LabelBuilder} to configure and obtain the component
+	 *         instance
+	 */
+	static LabelBuilder<Span> badgePrimarySuccess() {
+		LabelBuilder<Span> span = LabelBuilder.span();
+		span.elementConfiguration(element -> element.getThemeList().add("badge success primary"));
+		return span;
+	}
+
+	/**
+	 * Obtain a {@link LabelBuilder} to create a badge contrast component using a
+	 * {@link Span} tag.
+	 * @return The {@link LabelBuilder} to configure and obtain the component
+	 *         instance
+	 */
+	static LabelBuilder<Span> badgePrimaryError() {
+		LabelBuilder<Span> span = LabelBuilder.span();
+		span.elementConfiguration(element -> element.getThemeList().add("badge error primary"));
+		return span;
+	}
+
+	/**
+	 * Obtain a {@link LabelBuilder} to create a badge contrast component using a
+	 * {@link Span} tag.
+	 * @return The {@link LabelBuilder} to configure and obtain the component
+	 *         instance
+	 */
+	static LabelBuilder<Span> badgePrimaryContrast() {
+		LabelBuilder<Span> span = LabelBuilder.span();
+		span.elementConfiguration(element -> element.getThemeList().add("badge contrast primary"));
+		return span;
+	}
+
+	/**
+	 * Obtain a {@link LabelBuilder} to create a badge small component using a
+	 * {@link Span} tag.
+	 * @return The {@link LabelBuilder} to configure and obtain the component
+	 *         instance
+	 */
+	static LabelBuilder<Span> badgeSmall() {
+		LabelBuilder<Span> span = LabelBuilder.span();
+		span.elementConfiguration(element -> element.getThemeList().add("badge small"));
+		return span;
+	}
+
+	/**
+	 * Obtain a {@link LabelBuilder} to create a badge contrast component using a
+	 * {@link Span} tag.
+	 * @return The {@link LabelBuilder} to configure and obtain the component
+	 *         instance
+	 */
+	static LabelBuilder<Span> badgeSmallSuccess() {
+		LabelBuilder<Span> span = LabelBuilder.span();
+		span.elementConfiguration(element -> element.getThemeList().add("badge success small"));
+		return span;
+	}
+
+	/**
+	 * Obtain a {@link LabelBuilder} to create a badge error small component using a
+	 * {@link Span} tag.
+	 * @return The {@link LabelBuilder} to configure and obtain the component
+	 *         instance
+	 */
+	static LabelBuilder<Span> badgeSmallError() {
+		LabelBuilder<Span> span = LabelBuilder.span();
+		span.elementConfiguration(element -> element.getThemeList().add("badge error small"));
+		return span;
+	}
+
+	/**
+	 * Obtain a {@link LabelBuilder} to create a badge contrast small component using a
+	 * {@link Span} tag.
+	 * @return The {@link LabelBuilder} to configure and obtain the component
+	 *         instance
+	 */
+	static LabelBuilder<Span> badgeSmallContrast() {
+		LabelBuilder<Span> span = LabelBuilder.span();
+		span.elementConfiguration(element -> element.getThemeList().add("badge contrast small"));
+		return span;
+	}
+
+	/**
+	 * Obtain a {@link LabelBuilder} to create a badge small primary component using a
+	 * {@link Span} tag.
+	 * @return The {@link LabelBuilder} to configure and obtain the component
+	 *         instance
+	 */
+	static LabelBuilder<Span> badgeSmallPrimary() {
+		LabelBuilder<Span> span = LabelBuilder.span();
+		span.elementConfiguration(element -> element.getThemeList().add("badge small primary"));
+		return span;
+	}
+
+	/**
+	 * Obtain a {@link LabelBuilder} to create a badge success small primary component using a
+	 * {@link Span} tag.
+	 * @return The {@link LabelBuilder} to configure and obtain the component
+	 *         instance
+	 */
+	static LabelBuilder<Span> badgeSmallPrimarySuccess() {
+		LabelBuilder<Span> span = LabelBuilder.span();
+		span.elementConfiguration(element -> element.getThemeList().add("badge success small primary"));
+		return span;
+	}
+
+	/**
+	 * Obtain a {@link LabelBuilder} to create a badge error small primary component using a
+	 * {@link Span} tag.
+	 * @return The {@link LabelBuilder} to configure and obtain the component
+	 *         instance
+	 */
+	static LabelBuilder<Span> badgeSmallPrimaryError() {
+		LabelBuilder<Span> span = LabelBuilder.span();
+		span.elementConfiguration(element -> element.getThemeList().add("badge error small primary"));
+		return span;
+	}
+
+	/**
+	 * Obtain a {@link LabelBuilder} to create a badge contrast small primary component using a
+	 * {@link Span} tag.
+	 * @return The {@link LabelBuilder} to configure and obtain the component
+	 *         instance
+	 */
+	static LabelBuilder<Span> badgeSmallPrimaryContrast() {
+		LabelBuilder<Span> span = LabelBuilder.span();
+		span.elementConfiguration(element -> element.getThemeList().add("badge contrast small primary"));
+		return span;
+	}
+
+	/**
+	 * Obtain a {@link LabelBuilder} to create a badge pill component using a
+	 * {@link Span} tag.
+	 * @return The {@link LabelBuilder} to configure and obtain the component
+	 *         instance
+	 */
+	static LabelBuilder<Span> badgePill() {
+		LabelBuilder<Span> span = LabelBuilder.span();
+		span.elementConfiguration(element -> element.getThemeList().add("badge pill"));
+		return span;
+	}
+
+	/**
+	 * Obtain a {@link LabelBuilder} to create a badge success pill component using a
+	 * {@link Span} tag.
+	 * @return The {@link LabelBuilder} to configure and obtain the component
+	 *         instance
+	 */
+	static LabelBuilder<Span> badgePillSuccess() {
+		LabelBuilder<Span> span = LabelBuilder.span();
+		span.elementConfiguration(element -> element.getThemeList().add("badge success pill"));
+		return span;
+	}
+
+	/**
+	 * Obtain a {@link LabelBuilder} to create a badge error pill component using a
+	 * {@link Span} tag.
+	 * @return The {@link LabelBuilder} to configure and obtain the component
+	 *         instance
+	 */
+	static LabelBuilder<Span> badgePillError() {
+		LabelBuilder<Span> span = LabelBuilder.span();
+		span.elementConfiguration(element -> element.getThemeList().add("badge error pill"));
+		return span;
+	}
+
+	/**
+	 * Obtain a {@link LabelBuilder} to create a badge contrast pill component using a
+	 * {@link Span} tag.
+	 * @return The {@link LabelBuilder} to configure and obtain the component
+	 *         instance
+	 */
+	static LabelBuilder<Span> badgePillContrast() {
+		LabelBuilder<Span> span = LabelBuilder.span();
+		span.elementConfiguration(element -> element.getThemeList().add("badge contrast pill"));
+		return span;
+	}
+
+	/**
+	 * Obtain a {@link LabelBuilder} to create a badge primary pill component using a
+	 * {@link Span} tag.
+	 * @return The {@link LabelBuilder} to configure and obtain the component
+	 *         instance
+	 */
+	static LabelBuilder<Span> badgePillPrimary() {
+		LabelBuilder<Span> span = LabelBuilder.span();
+		span.elementConfiguration(element -> element.getThemeList().add("badge primary pill"));
+		return span;
+	}
+
+	/**
+	 * Obtain a {@link LabelBuilder} to create a badge success primary pill component using a
+	 * {@link Span} tag.
+	 * @return The {@link LabelBuilder} to configure and obtain the component
+	 *         instance
+	 */
+	static LabelBuilder<Span> badgePillPrimarySuccess() {
+		LabelBuilder<Span> span = LabelBuilder.span();
+		span.elementConfiguration(element -> element.getThemeList().add("badge success primary pill"));
+		return span;
+	}
+
+	/**
+	 * Obtain a {@link LabelBuilder} to create a badge error primary pill component using a
+	 * {@link Span} tag.
+	 * @return The {@link LabelBuilder} to configure and obtain the component
+	 *         instance
+	 */
+	static LabelBuilder<Span> badgePillPrimaryError() {
+		LabelBuilder<Span> span = LabelBuilder.span();
+		span.elementConfiguration(element -> element.getThemeList().add("badge error primary pill"));
+		return span;
+	}
+
+	/**
+	 * Obtain a {@link LabelBuilder} to create a badge contrast primary pill component using a
+	 * {@link Span} tag.
+	 * @return The {@link LabelBuilder} to configure and obtain the component
+	 *         instance
+	 */
+	static LabelBuilder<Span> badgePillPrimaryContrast() {
+		LabelBuilder<Span> span = LabelBuilder.span();
+		span.elementConfiguration(element -> element.getThemeList().add("badge contrast primary pill"));
+		return span;
+	}
+
+	/**
 	 * Obtain a {@link LabelBuilder} to create a label component using a {@link Div}
 	 * tag.
 	 * @return The {@link LabelBuilder} to configure and obtain the component
@@ -268,6 +507,10 @@ public interface Components {
 	 */
 	static LabelBuilder<H2> h2() {
 		return LabelBuilder.h2();
+	}
+
+	static LabelBuilder<Emphasis> emphasis() {
+		return LabelBuilder.emphasis();
 	}
 
 	/**
@@ -318,6 +561,14 @@ public interface Components {
 		return ButtonBuilder.create();
 	}
 
+	static ButtonBuilder deleteButton() {
+		return ButtonBuilder.createDelBtn();
+	}
+
+	static Button deleteButton(String text, ClickEventListener<Button, ClickEvent<Button>> clickListener) {
+		return ButtonBuilder.createDelBtn().text(text).onClick(clickListener).build();
+	}
+
 	/**
 	 * Create a {@link Button} with given text and given <code>click</code> event
 	 * listener.
@@ -328,6 +579,14 @@ public interface Components {
 	 */
 	static Button button(String text, ClickEventListener<Button, ClickEvent<Button>> clickListener) {
 		return ButtonBuilder.create().text(text).onClick(clickListener).build();
+	}
+
+	static <T> Grid<T> grid(Class<T> tClass) {
+		return new Grid<T>(tClass);
+	}
+
+	static <T> Grid<T> grid(Class<T> tClass,boolean autoCreateColumns) {
+		return new Grid<T>(tClass,autoCreateColumns);
 	}
 
 	/**
@@ -484,6 +743,10 @@ public interface Components {
 			return DialogBuilder.confirm();
 		}
 
+		static ConfirmDialogBuilder confirm(PropertyInputForm inputForm) {
+			return DialogBuilder.confirm(inputForm);
+		}
+
 		/**
 		 * Show a confirm dialog with given localizable message text.
 		 * @param message The dialog message text
@@ -533,6 +796,46 @@ public interface Components {
 		}
 
 		/**
+		 * Get a builder to create a save dialog, with a <em>confirm</em> button and
+		 * a <em>deny</em> button in the dialog toolbar which will trigger the given
+		 * <code>questionDialogCallback</code> to react to the user choice.
+		 * <p>
+		 * The default <em>confirm</em> button message localization code is
+		 * {@link DialogBuilder#DEFAULT_CONFIRM_BUTTON_MESSAGE_CODE}. The default
+		 * <em>deny</em> button message localization code is
+		 * {@link DialogBuilder#DEFAULT_DENY_BUTTON_MESSAGE_CODE}.
+		 * </p>
+		 * @param questionDialogCallback The callback function use to react to the user
+		 *                               selection (not null)
+		 * @return A new {@link QuestionDialogBuilder}
+		 */
+		static QuestionDialogBuilder save(QuestionDialogCallback questionDialogCallback) {
+			return DialogBuilder.question(questionDialogCallback);
+		}
+
+		/**
+		 * Get a builder to create a delete dialog, with a <em>confirm</em> button and
+		 * a <em>deny</em> button in the dialog toolbar which will trigger the given
+		 * <code>deleteDialogCallback</code> to react to the user choice.
+		 * <p>
+		 * The default <em>confirm</em> button message localization code is
+		 * {@link DialogBuilder#DEFAULT_CONFIRM_BUTTON_MESSAGE_CODE}. The default
+		 * <em>deny</em> button message localization code is
+		 * {@link DialogBuilder#DEFAULT_DENY_BUTTON_MESSAGE_CODE}.
+		 * </p>
+		 * @param deleteDialogCallback The callback function use to react to the user
+		 *                               selection (not null)
+		 * @return A new {@link DialogBuilder.DeleteDialogBuilder}
+		 */
+		static DialogBuilder.DeleteDialogBuilder delete(DialogBuilder.DeleteDialogCallback deleteDialogCallback) {
+			return DialogBuilder.delete(deleteDialogCallback);
+		}
+
+		static DialogBuilder.SaveAndNewDialogBuilder saveAndNew(QuestionDialogCallback questionDialogCallback) {
+			return DialogBuilder.saveAndNew(questionDialogCallback);
+		}
+
+		/**
 		 * Show a question dialog with given localizable message text.
 		 * @param questionDialogCallback The callback function use to react to the user
 		 *                               selection (not null)
@@ -566,6 +869,43 @@ public interface Components {
 		static void showQuestion(QuestionDialogCallback questionDialogCallback, String defaultMessage,
 				String messageCode, Object... arguments) {
 			showQuestion(questionDialogCallback, Localizable.builder().message(defaultMessage).messageCode(messageCode)
+					.messageArguments(arguments).build());
+		}
+
+		/**
+		 * Show a delete dialog with given localizable message text.
+		 * @param deleteDialogCallback The callback function use to react to the user
+		 *                               selection (not null)
+		 * @param message                The dialog message text
+		 */
+		static void showDelete(DialogBuilder.DeleteDialogCallback deleteDialogCallback, Localizable message) {
+			delete(deleteDialogCallback).text(message).open();
+		}
+
+		/**
+		 * Show a delete dialog with given message text.
+		 * @param deleteDialogCallback The callback function use to react to the user
+		 *                               selection (not null)
+		 * @param message                The dialog message text
+		 */
+		static void showDelete(DialogBuilder.DeleteDialogCallback deleteDialogCallback, String message) {
+			showDelete(deleteDialogCallback, Localizable.of(message));
+		}
+
+		/**
+		 * Show a delete dialog with given localizable message text.
+		 * @param deleteDialogCallback The callback function use to react to the user
+		 *                               selection (not null)
+		 * @param defaultMessage         Default dialog message if no translation is
+		 *                               available for given <code>messageCode</code>
+		 *                               for current {@link Locale}
+		 * @param messageCode            Dialog message translation message key
+		 * @param arguments              Optional dialog message translation arguments
+		 * @see LocalizationProvider
+		 */
+		static void showDelete(DialogBuilder.DeleteDialogCallback deleteDialogCallback, String defaultMessage,
+							   String messageCode, Object... arguments) {
+			showDelete(deleteDialogCallback, Localizable.builder().message(defaultMessage).messageCode(messageCode)
 					.messageArguments(arguments).build());
 		}
 

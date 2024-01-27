@@ -15,17 +15,20 @@
  */
 package com.holonplatform.vaadin.flow.internal.components;
 
-import java.util.Optional;
-import java.util.stream.Stream;
-
 import com.holonplatform.core.internal.utils.ObjectUtils;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasStyle;
+import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dialog.Dialog;
-import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment;
-import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.theme.lumo.LumoUtility;
+
+import java.util.Optional;
+import java.util.stream.Stream;
 
 /**
  * Default {@link Dialog} to be used with dialog builders.
@@ -37,8 +40,14 @@ public class DefaultDialog extends Dialog implements HasStyle {
 	private static final long serialVersionUID = 5017183187214693820L;
 
 	private final VerticalLayout content;
-	private final Div message;
-	private final HorizontalLayout toolbar;
+//	private final Div message;
+	private final DialogFooter footer;
+
+	private static final int MAX_WIDTH = 900;
+	private static final int MAX_HEIGHT = 450;
+
+	private static final String PIXELS = "px";
+
 
 	/**
 	 * Constructor.
@@ -46,26 +55,34 @@ public class DefaultDialog extends Dialog implements HasStyle {
 	public DefaultDialog() {
 		super();
 
+
 		// default CSS style class name
 		getElement().getClassList().add("h-dialog");
 
-		this.message = new Div();
-		this.message.addClassName("message");
-		this.toolbar = new HorizontalLayout();
-		this.toolbar.addClassName("toolbar");
+		Button closeButton = new Button(new Icon("lumo", "cross"),
+				(e) -> close());
+		closeButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
+		getHeader().add(closeButton);
 
-		this.toolbar.setAlignItems(Alignment.END);
+//		this.message = new Div();
+//		this.message.addClassName("message");
+		this.footer = getFooter();
+//		this.footer.addClassName("footer");
+
+//		this.footer.setAlignItems(Alignment.END);
 
 		this.content = new VerticalLayout();
-		this.content.setPadding(false);
-		this.content.setSpacing(true);
-		this.content.add(message);
-		this.content.add(this.toolbar);
-		this.content.setAlignSelf(Alignment.CENTER, this.message);
-		this.content.setAlignSelf(Alignment.END, this.toolbar);
+		this.content.addClassNames(LumoUtility.Padding.Top.NONE,
+				LumoUtility.Padding.Bottom.NONE);
+		this.content.setSpacing(false);
+//		this.content.add(message);
+//		this.content.add(this.footer);
+//		this.content.setAlignSelf(Alignment.CENTER, this.message);
+//		this.content.setAlignSelf(Alignment.END, this.footer);
 
-		this.message.setVisible(false);
-		this.toolbar.setVisible(false);
+//		this.message.setVisible(false);
+//		this.footer.setVisible(false);
+//		this.footer.setWidthFull();
 
 		add(content);
 	}
@@ -75,7 +92,7 @@ public class DefaultDialog extends Dialog implements HasStyle {
 	 * @return Optional message text
 	 */
 	public Optional<String> getMessage() {
-		String text = message.getText();
+		String text = getHeaderTitle();
 		if (text != null && !text.trim().equals("")) {
 			return Optional.of(text);
 		}
@@ -87,8 +104,7 @@ public class DefaultDialog extends Dialog implements HasStyle {
 	 * @param text the dialog message text, if <code>null</code> or blank the dialog message is removed
 	 */
 	public void setMessage(String text) {
-		message.setText((text != null && !text.trim().equals("")) ? text : "");
-		message.setVisible(text != null && !text.trim().equals(""));
+		setHeaderTitle(text);
 	}
 
 	/**
@@ -97,34 +113,44 @@ public class DefaultDialog extends Dialog implements HasStyle {
 	 */
 	public void addContentComponent(Component component) {
 		ObjectUtils.argumentNotNull(component, "Component must be not null");
-		this.content.addComponentAtIndex(this.content.indexOf(this.message) + 1, component);
+//		this.content.addComponentAtIndex(this.content.indexOf(this.message) + 1, component);
 		this.content.setAlignSelf(Alignment.CENTER, component);
 	}
 
+	public void addContentComponent(Component... components) {
+		this.content.add(components);
+	}
+
 	/**
-	 * Get the dialog content components, excluding the message and toolbar components.
+	 * Get the dialog content components, excluding the message and footer components.
 	 * @return the dialog content components
 	 */
 	public Stream<Component> getContentComponents() {
-		return this.content.getChildren().filter(c -> c != this.message).filter(c -> c != this.toolbar);
+		return this.content.getChildren();
 	}
 
 	/**
-	 * Add a component to the dialog toolbar.
+	 * Add a component to the dialog footer.
 	 * @param component The component to add (not null)
 	 */
-	public void addToolbarComponent(Component component) {
+	public void addFooterComponent(Component component) {
 		ObjectUtils.argumentNotNull(component, "Component must be not null");
-		this.toolbar.addComponentAsFirst(component);
-		this.toolbar.setVisible(true);
+		this.footer.add(component);
+//		this.footer.setVisible(true);
 	}
 
-	/**
-	 * Get the dialog content components, excluding the message and toolbar components.
-	 * @return the dialog content components
-	 */
-	public Stream<Component> getToolbarComponents() {
-		return this.toolbar.getChildren();
+	public void makeDialogResponsive() {
+		UI.getCurrent().getPage().retrieveExtendedClientDetails(details -> {
+			setWidth(Math.max(MAX_WIDTH, details.getScreenWidth() / 2) + PIXELS);
+			setHeight(Math.max(MAX_HEIGHT, details.getScreenHeight() / 2) + PIXELS);
+		});
+
+		UI.getCurrent().getPage().addBrowserWindowResizeListener(details -> {
+			setWidth(Math.max(MAX_WIDTH, details.getWidth() / 2) + PIXELS);
+			setHeight(Math.max(MAX_HEIGHT, details.getHeight() / 2) + PIXELS);
+		});
 	}
+
+
 
 }

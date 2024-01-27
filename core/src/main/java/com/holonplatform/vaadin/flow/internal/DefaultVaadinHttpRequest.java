@@ -15,16 +15,6 @@
  */
 package com.holonplatform.vaadin.flow.internal;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
 import com.holonplatform.core.internal.utils.ObjectUtils;
 import com.holonplatform.http.Cookie;
 import com.holonplatform.http.HttpMethod;
@@ -32,6 +22,10 @@ import com.holonplatform.http.HttpRequest;
 import com.holonplatform.http.internal.AbstractHttpRequest;
 import com.holonplatform.vaadin.flow.VaadinHttpRequest;
 import com.vaadin.flow.server.VaadinRequest;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.*;
 
 /**
  * {@link HttpRequest} using Vaadin {@link VaadinRequest}.
@@ -132,7 +126,7 @@ public class DefaultVaadinHttpRequest extends AbstractHttpRequest implements Vaa
 			for (jakarta.servlet.http.Cookie cookie : cookies) {
 				if (name.equals(cookie.getName())) {
 					return Optional.of(Cookie.builder().name(cookie.getName()).value(cookie.getValue())
-							.version(cookie.getVersion()).path(cookie.getPath()).domain(cookie.getDomain()).build());
+							.path(cookie.getPath()).domain(cookie.getDomain()).build());
 				}
 			}
 		}

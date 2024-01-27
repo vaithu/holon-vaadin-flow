@@ -15,10 +15,9 @@
  */
 package com.holonplatform.vaadin.flow.internal.components.builders;
 
-import java.util.function.Consumer;
-
 import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.core.internal.utils.ObjectUtils;
+import com.holonplatform.vaadin.flow.components.PropertyInputForm;
 import com.holonplatform.vaadin.flow.components.builders.ButtonBuilder;
 import com.holonplatform.vaadin.flow.components.builders.ButtonConfigurator;
 import com.holonplatform.vaadin.flow.components.builders.ButtonConfigurator.BaseButtonConfigurator;
@@ -26,6 +25,8 @@ import com.holonplatform.vaadin.flow.components.builders.DialogBuilder;
 import com.holonplatform.vaadin.flow.components.builders.DialogBuilder.ConfirmDialogBuilder;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dialog.Dialog;
+
+import java.util.function.Consumer;
 
 /**
  * Default {@link ConfirmDialogBuilder} implementation.
@@ -41,7 +42,16 @@ public class DefaultConfirmDialogBuilder extends AbstractClosableDialogConfigura
 		super();
 		this.okButton = ButtonBuilder.create().text(Localizable.of("OK", DialogBuilder.DEFAULT_OK_BUTTON_MESSAGE_CODE))
 				.withClickListener(e -> getComponent().close()).build();
-		getComponent().addToolbarComponent(this.okButton);
+		getComponent().addFooterComponent(this.okButton);
+	}
+
+	public DefaultConfirmDialogBuilder(PropertyInputForm inputForm) {
+		super();
+		this.okButton = ButtonBuilder.create().text(Localizable.of("OK", DialogBuilder.DEFAULT_OK_BUTTON_MESSAGE_CODE))
+				.withClickListener(e -> {
+					if (inputForm.isValid()) getComponent().close();
+				}).build();
+		getComponent().addFooterComponent(this.okButton);
 	}
 
 	/*

@@ -15,38 +15,27 @@
  */
 package com.holonplatform.vaadin.flow.internal.components;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
-
 import com.holonplatform.core.Registration;
 import com.holonplatform.core.internal.utils.ConversionUtils;
 import com.holonplatform.core.internal.utils.ObjectUtils;
 import com.holonplatform.vaadin.flow.components.HasLabel;
 import com.holonplatform.vaadin.flow.components.HasPlaceholder;
-import com.holonplatform.vaadin.flow.components.HasTitle;
-import com.holonplatform.vaadin.flow.components.Input;
-import com.holonplatform.vaadin.flow.components.MultiSelect;
+import com.holonplatform.vaadin.flow.components.*;
+import com.holonplatform.vaadin.flow.components.builders.KeyNotifierConfigurator;
 import com.holonplatform.vaadin.flow.components.events.InvalidChangeEventNotifier;
 import com.holonplatform.vaadin.flow.components.events.ReadonlyChangeListener;
 import com.holonplatform.vaadin.flow.components.support.InputAdaptersContainer;
 import com.holonplatform.vaadin.flow.data.ItemConverter;
 import com.holonplatform.vaadin.flow.internal.components.events.DefaultSelectionEvent;
 import com.holonplatform.vaadin.flow.internal.components.events.DefaultValueChangeEvent;
-import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.HasEnabled;
-import com.vaadin.flow.component.HasSize;
-import com.vaadin.flow.component.HasStyle;
-import com.vaadin.flow.component.HasValidation;
-import com.vaadin.flow.component.HasValue;
+import com.vaadin.flow.component.*;
 import com.vaadin.flow.data.value.HasValueChangeMode;
+
+import java.util.*;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 /**
  * Adapter to use a {@link HasValue} {@link Component} as a {@link MultiSelect}.
@@ -433,4 +422,33 @@ public class MultiSelectInputAdapter<T, ITEM, C extends Component> implements Mu
 		adapters.setAdapter(type, adapter);
 	}
 
+	@Override
+	public KeyNotifierConfigurator withKeyDownListener(ComponentEventListener listener) {
+		return input.withKeyDownListener(listener);
+	}
+
+	@Override
+	public KeyNotifierConfigurator withKeyPressListener(ComponentEventListener listener) {
+		return input.withKeyPressListener(listener);
+	}
+
+	@Override
+	public KeyNotifierConfigurator withKeyUpListener(ComponentEventListener listener) {
+		return input.withKeyUpListener(listener);
+	}
+
+	@Override
+	public KeyNotifierConfigurator withKeyDownListener(Key key, ComponentEventListener listener, KeyModifier... modifiers) {
+		return input.withKeyDownListener(key, listener, modifiers);
+	}
+
+	@Override
+	public KeyNotifierConfigurator withKeyPressListener(Key key, ComponentEventListener listener, KeyModifier... modifiers) {
+		return input.withKeyPressListener(key, listener, modifiers);
+	}
+
+	@Override
+	public KeyNotifierConfigurator withKeyUpListener(Key key, ComponentEventListener listener, KeyModifier... modifiers) {
+		return input.withKeyUpListener(key, listener, modifiers);
+	}
 }

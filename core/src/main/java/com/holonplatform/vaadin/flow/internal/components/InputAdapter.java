@@ -15,32 +15,20 @@
  */
 package com.holonplatform.vaadin.flow.internal.components;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
-import java.util.function.Consumer;
-import java.util.function.Function;
-
 import com.holonplatform.core.Registration;
 import com.holonplatform.core.internal.utils.ObjectUtils;
 import com.holonplatform.vaadin.flow.components.HasLabel;
 import com.holonplatform.vaadin.flow.components.HasPlaceholder;
 import com.holonplatform.vaadin.flow.components.HasTitle;
 import com.holonplatform.vaadin.flow.components.Input;
+import com.holonplatform.vaadin.flow.components.builders.KeyNotifierConfigurator;
 import com.holonplatform.vaadin.flow.components.events.InvalidChangeEventNotifier;
 import com.holonplatform.vaadin.flow.components.events.ReadonlyChangeEvent;
 import com.holonplatform.vaadin.flow.components.events.ReadonlyChangeListener;
 import com.holonplatform.vaadin.flow.components.support.InputAdaptersContainer;
 import com.holonplatform.vaadin.flow.internal.components.events.DefaultValueChangeEvent;
 import com.holonplatform.vaadin.flow.internal.components.support.RegistrationAdapter;
-import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.ComponentEvent;
-import com.vaadin.flow.component.Focusable;
-import com.vaadin.flow.component.HasEnabled;
-import com.vaadin.flow.component.HasSize;
-import com.vaadin.flow.component.HasStyle;
-import com.vaadin.flow.component.HasValidation;
-import com.vaadin.flow.component.HasValue;
+import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
@@ -48,6 +36,12 @@ import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.value.HasValueChangeMode;
+
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Optional;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 /**
  * Adapter to use a {@link HasValue} {@link Component} as an {@link Input}.
@@ -774,4 +768,39 @@ public class InputAdapter<T, V extends HasValue<?, T>, C extends Component> impl
 		return null;
 	}
 
+	@Override
+	public KeyNotifierConfigurator withKeyDownListener(ComponentEventListener listener) {
+		ObjectUtils.argumentNotNull(listener, "This is not yet implemented by Babu");
+		return null;
+	}
+
+	@Override
+	public KeyNotifierConfigurator withKeyPressListener(ComponentEventListener listener) {
+		ObjectUtils.argumentNotNull(listener, "This is not yet implemented by Babu");
+		return null;
+	}
+
+	@Override
+	public KeyNotifierConfigurator withKeyUpListener(ComponentEventListener listener) {
+		ObjectUtils.argumentNotNull(listener, "This is not yet implemented by Babu");
+		return null;
+	}
+
+	@Override
+	public KeyNotifierConfigurator withKeyDownListener(Key key, ComponentEventListener listener, KeyModifier... modifiers) {
+		ObjectUtils.argumentNotNull(listener, "This is not yet implemented by Babu");
+		return null;
+	}
+
+	@Override
+	public KeyNotifierConfigurator withKeyPressListener(Key key, ComponentEventListener listener, KeyModifier... modifiers) {
+		ObjectUtils.argumentNotNull(listener, "This is not yet implemented by Babu");
+		return null;
+	}
+
+	@Override
+	public KeyNotifierConfigurator withKeyUpListener(Key key, ComponentEventListener listener, KeyModifier... modifiers) {
+		ObjectUtils.argumentNotNull(listener, "This is not yet implemented by Babu");
+		return null;
+	}
 }

@@ -15,8 +15,6 @@
  */
 package com.holonplatform.vaadin.flow.components.builders;
 
-import java.util.EventListener;
-
 import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.core.internal.utils.ObjectUtils;
 import com.holonplatform.vaadin.flow.components.HasComponent;
@@ -29,6 +27,8 @@ import com.vaadin.flow.component.contextmenu.ContextMenuBase;
 import com.vaadin.flow.component.contextmenu.ContextMenuBase.OpenedChangeEvent;
 import com.vaadin.flow.component.contextmenu.MenuItemBase;
 import com.vaadin.flow.component.contextmenu.SubMenuBase;
+
+import java.util.EventListener;
 
 /**
  * {@link ContextMenu} component configurator.
@@ -194,7 +194,7 @@ public interface ContextMenuConfigurator<L extends EventListener, M extends Cont
 	 * @since 5.2.0
 	 */
 	public interface MenuItemBuilder<L extends EventListener, M extends ContextMenuBase<M, I, S>, I extends MenuItemBase<M, I, S>, S extends SubMenuBase<M, I, S>, B extends ContextMenuConfigurator<L, M, I, S, B>>
-			extends HasEnabledConfigurator<MenuItemBuilder<L, M, I, S, B>>,
+			extends HasEnabledConfigurator<MenuItemBuilder<L, M, I, S, B>>,HasStyleConfigurator<MenuItemBuilder<L, M, I, S, B>>,
 			HasTextConfigurator<MenuItemBuilder<L, M, I, S, B>> {
 
 		/**

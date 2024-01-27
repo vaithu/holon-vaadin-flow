@@ -1,12 +1,12 @@
 /*
  * Copyright 2016-2018 Axioma srl.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -31,7 +31,6 @@ import com.vaadin.flow.component.orderedlayout.ThemableLayout;
 
 /**
  * Default {@link ThemableFlexComponentConfigurator} implementation.
- *
  * @since 5.2.0
  */
 public abstract class AbstractThemableFlexComponentConfigurator<L extends Component & FlexComponent & ThemableLayout, C extends ThemableFlexComponentConfigurator<C>>
@@ -45,7 +44,7 @@ public abstract class AbstractThemableFlexComponentConfigurator<L extends Compon
 		flexComponentConfigurator = new DefaultFlexComponentConfigurator<>(component);
 		themableLayoutConfigurator = new DefaultThemableLayoutConfigurator(component);
 	}
-	
+
 	@Override
 	protected Optional<HasSize> hasSize() {
 		return Optional.of(getComponent());
@@ -93,9 +92,8 @@ public abstract class AbstractThemableFlexComponentConfigurator<L extends Compon
 
 	/*
 	 * (non-Javadoc)
-	 * @see
-	 * com.holonplatform.vaadin.flow.components.builders.ThemableLayoutConfigurator#boxSizing(com.vaadin.flow.component.
-	 * orderedlayout.BoxSizing)
+	 * @see com.holonplatform.vaadin.flow.components.builders.ThemableLayoutConfigurator#boxSizing(com.vaadin.flow.
+	 * component. orderedlayout.BoxSizing)
 	 */
 	@Override
 	public C boxSizing(BoxSizing boxSizing) {
@@ -105,9 +103,8 @@ public abstract class AbstractThemableFlexComponentConfigurator<L extends Compon
 
 	/*
 	 * (non-Javadoc)
-	 * @see
-	 * com.holonplatform.vaadin.flow.components.builders.FlexComponentConfigurator#alignItems(com.vaadin.flow.component.
-	 * orderedlayout.FlexComponent.Alignment)
+	 * @see com.holonplatform.vaadin.flow.components.builders.FlexComponentConfigurator#alignItems(com.vaadin.flow.
+	 * component. orderedlayout.FlexComponent.Alignment)
 	 */
 	@Override
 	public C alignItems(Alignment alignment) {
@@ -117,9 +114,8 @@ public abstract class AbstractThemableFlexComponentConfigurator<L extends Compon
 
 	/*
 	 * (non-Javadoc)
-	 * @see
-	 * com.holonplatform.vaadin.flow.components.builders.FlexComponentConfigurator#alignSelf(com.vaadin.flow.component.
-	 * orderedlayout.FlexComponent.Alignment, com.vaadin.flow.component.HasElement[])
+	 * @see com.holonplatform.vaadin.flow.components.builders.FlexComponentConfigurator#alignSelf(com.vaadin.flow.
+	 * component. orderedlayout.FlexComponent.Alignment, com.vaadin.flow.component.HasElement[])
 	 */
 	@Override
 	public C alignSelf(Alignment alignment, HasElement... elementContainers) {
@@ -141,8 +137,8 @@ public abstract class AbstractThemableFlexComponentConfigurator<L extends Compon
 	/*
 	 * (non-Javadoc)
 	 * @see
-	 * com.holonplatform.vaadin.flow.components.builders.FlexComponentConfigurator#justifyContentMode(com.vaadin.flow.
-	 * component.orderedlayout.FlexComponent.JustifyContentMode)
+	 * com.holonplatform.vaadin.flow.components.builders.FlexComponentConfigurator#justifyContentMode(com.vaadin.
+	 * flow. component.orderedlayout.FlexComponent.JustifyContentMode)
 	 */
 	@Override
 	public C justifyContentMode(JustifyContentMode justifyContentMode) {
@@ -204,7 +200,8 @@ public abstract class AbstractThemableFlexComponentConfigurator<L extends Compon
 
 	/*
 	 * (non-Javadoc)
-	 * @see com.holonplatform.vaadin.flow.components.builders.HasComponentsConfigurator#add(com.vaadin.flow.component.
+	 * @see
+	 * com.holonplatform.vaadin.flow.components.builders.HasComponentsConfigurator#add(com.vaadin.flow.component.
 	 * Component[])
 	 */
 	@Override

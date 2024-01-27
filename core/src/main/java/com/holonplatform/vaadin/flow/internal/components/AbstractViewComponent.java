@@ -15,24 +15,19 @@
  */
 package com.holonplatform.vaadin.flow.internal.components;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
-
 import com.holonplatform.core.Registration;
 import com.holonplatform.core.internal.utils.ObjectUtils;
 import com.holonplatform.vaadin.flow.components.HasLabel;
 import com.holonplatform.vaadin.flow.components.HasTitle;
 import com.holonplatform.vaadin.flow.components.ViewComponent;
 import com.holonplatform.vaadin.flow.internal.components.events.DefaultValueChangeEvent;
-import com.vaadin.flow.component.ClickNotifier;
-import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.Composite;
-import com.vaadin.flow.component.HasEnabled;
-import com.vaadin.flow.component.HasSize;
-import com.vaadin.flow.component.HasStyle;
+import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.html.NativeLabel;
+
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * Base {@link ViewComponent} implementation.
@@ -47,7 +42,7 @@ public abstract class AbstractViewComponent<C extends Component, T> extends Comp
 
 	private static final long serialVersionUID = -1079320883460226029L;
 
-	private final Label label;
+	private final NativeLabel label;
 
 	private C content;
 
@@ -62,7 +57,7 @@ public abstract class AbstractViewComponent<C extends Component, T> extends Comp
 	public AbstractViewComponent(C content) {
 		super();
 		this.content = content;
-		this.label = new Label();
+		this.label = new NativeLabel();
 		this.label.addClassName("caption");
 
 		getContent().addClassName("h-viewcomponent");
@@ -81,10 +76,10 @@ public abstract class AbstractViewComponent<C extends Component, T> extends Comp
 	protected abstract Optional<C> updateValue(T value);
 
 	/**
-	 * Get the component {@link Label} element.
+	 * Get the component {@link NativeLabel} element.
 	 * @return the label element
 	 */
-	protected Label getLabel() {
+	protected NativeLabel getLabel() {
 		return label;
 	}
 
