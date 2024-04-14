@@ -15,8 +15,6 @@
  */
 package com.holonplatform.vaadin.flow.components.builders;
 
-import java.util.function.Function;
-
 import com.holonplatform.core.datastore.DataTarget;
 import com.holonplatform.core.datastore.Datastore;
 import com.holonplatform.core.property.Property;
@@ -24,6 +22,8 @@ import com.holonplatform.core.property.PropertyBox;
 import com.holonplatform.core.property.PropertySet;
 import com.holonplatform.core.query.QueryFilter;
 import com.holonplatform.core.query.QuerySort;
+
+import java.util.function.Function;
 
 /**
  * {@link HasDataProviderConfigurator} with {@link Datastore} configuration support and known bean type.
@@ -33,7 +33,8 @@ import com.holonplatform.core.query.QuerySort;
  *
  * @since 5.2.0
  */
-public interface HasBeanDatastoreDataProviderConfigurator<T, D extends DatastoreDataProviderConfigurator<T, D>, C extends HasBeanDatastoreDataProviderConfigurator<T, D, C>>
+public interface HasBeanDatastoreDataProviderConfigurator<T, D extends DatastoreDataProviderConfigurator<T, D>,
+		C extends HasBeanDatastoreDataProviderConfigurator<T, D, C>>
 		extends HasDataProviderConfigurator<T, C> {
 
 	/**

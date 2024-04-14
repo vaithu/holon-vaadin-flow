@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>com.holon-platform.vaadin</groupId>
 		<artifactId>holon-vaadin-flow-root</artifactId>
-		<version>5.5.4-SNAPSHOT</version>
+		<version>5.5.5-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>holon-vaadin-flow</artifactId>
@@ -44,6 +44,8 @@
 			</exclusions>
 		</dependency>
 
+
+
 		<!-- Servlet API -->
 		<dependency>
 			<groupId>jakarta.servlet</groupId>
@@ -79,10 +81,20 @@
         <dependency>
             <groupId>com.vaadin</groupId>
             <artifactId>vaadin-flow-components-base</artifactId>
-            <version>24.3.3</version>
+            <version>${vaadin.version}</version>
         </dependency>
+		<dependency>
+			<groupId>org.assertj</groupId>
+			<artifactId>assertj-core</artifactId>
+			<version>3.25.1</version>
+			<scope>test</scope>
+		</dependency>
 
-    </dependencies>
+
+
+
+
+	</dependencies>
 
 	<build>
 		<plugins>

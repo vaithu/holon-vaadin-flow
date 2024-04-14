@@ -15,38 +15,13 @@
  */
 package com.holonplatform.vaadin.flow.test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
-
-import org.junit.jupiter.api.Test;
-
 import com.holonplatform.core.Validator;
 import com.holonplatform.core.datastore.DataTarget;
 import com.holonplatform.core.datastore.Datastore;
 import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.core.i18n.LocalizationContext;
 import com.holonplatform.core.internal.utils.ConversionUtils;
-import com.holonplatform.core.property.NumericProperty;
-import com.holonplatform.core.property.Property;
-import com.holonplatform.core.property.PropertyBox;
-import com.holonplatform.core.property.PropertySet;
-import com.holonplatform.core.property.StringProperty;
-import com.holonplatform.core.property.VirtualProperty;
+import com.holonplatform.core.property.*;
 import com.holonplatform.core.query.QueryConfigurationProvider;
 import com.holonplatform.core.query.QueryFilter;
 import com.holonplatform.datastore.jdbc.JdbcDatastore;
@@ -71,14 +46,19 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.Grid.Column;
 import com.vaadin.flow.component.grid.GridVariant;
-import com.vaadin.flow.data.provider.DataCommunicator;
-import com.vaadin.flow.data.provider.DataProvider;
-import com.vaadin.flow.data.provider.Query;
-import com.vaadin.flow.data.provider.QuerySortOrder;
-import com.vaadin.flow.data.provider.SortDirection;
-import com.vaadin.flow.data.renderer.Renderer;
+import com.vaadin.flow.data.provider.*;
+import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.data.renderer.LitRenderer;
+import com.vaadin.flow.data.renderer.Renderer;
 import com.vaadin.flow.function.ValueProvider;
+import org.junit.jupiter.api.Test;
+
+import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class TestPropertyListing {
 
@@ -543,7 +523,8 @@ public class TestPropertyListing {
 		assertEquals(Long.valueOf(2L), items.get(0).getValue(ID));
 		assertEquals(Long.valueOf(1L), items.get(1).getValue(ID));
 
-		listing = PropertyListing.builder(SET).dataSource(datastore, TARGET).withQueryFilter(ID.loe(2L))
+		listing = PropertyListing.builder(SET).dataSource(datastore, TARGET)
+				.withQueryFilter(ID.loe(2L))
 				.withQuerySort(NAME.desc()).build();
 		items = getDataProvider(listing).fetch(new Query<>()).collect(Collectors.toList());
 		assertEquals(2, items.size());
@@ -567,6 +548,15 @@ public class TestPropertyListing {
 		assertEquals(1, bs.size());
 		assertEquals(ID.getName(), bs.get(0).getSorted());
 		assertEquals(SortDirection.DESCENDING, bs.get(0).getDirection());
+
+		listing = PropertyListing.builder(SET).lazyDataSource(datastore, TARGET)
+				.itemCountEstimate(5)
+				.withQueryFilter(ID.loe(2L))
+				.withQuerySort(NAME.desc()).build();
+		items = getDataProvider(listing).fetch(new Query<>()).collect(Collectors.toList());
+		assertEquals(2, items.size());
+		assertEquals(Long.valueOf(2L), items.get(0).getValue(ID));
+		assertEquals(Long.valueOf(1L), items.get(1).getValue(ID));
 
 	}
 
@@ -868,6 +858,26 @@ public class TestPropertyListing {
 		assertTrue(properties.contains(NAME));
 		assertTrue(properties.contains(VIRTUAL));
 
+	}
+
+	@Test
+	public void testMobileColumns() {
+		PropertyListing listing = PropertyListing.builder(SET).build();
+
+		assertEquals(3,listing.getVisibleColumns().size());
+
+		listing.setMobileColumn(new ComponentRenderer<>(Button::new,(button, propertyBox) -> {}));
+		assertEquals(3,listing.getVisibleColumns().size());
+		listing.showMobileColumn(true);
+		assertEquals(3,listing.getHiddenColumns().size());
+//		listing.getHiddenColumns().forEach(property -> System.out.println(property));
+		assertTrue(listing.isMobileColumnVisible());
+		listing.showMobileColumn(false);
+		assertEquals(3,listing.getVisibleColumns().size());
+		assertFalse(listing.isMobileColumnVisible());
+
+		listing.setMobileColumn(propertyBox -> new Button("sdkfjhsdfj"));
+		listing.getAllColumns().forEach(propertyBoxColumn -> System.out.println(propertyBoxColumn.getKey()));
 	}
 
 	@SuppressWarnings("unchecked")

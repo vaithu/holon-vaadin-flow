@@ -9,7 +9,7 @@
 
 	<groupId>com.holon-platform.vaadin</groupId>
 	<artifactId>holon-vaadin-flow-root</artifactId>
-	<version>5.5.4-SNAPSHOT</version>
+	<version>5.5.5-SNAPSHOT</version>
 
 	<packaging>pom</packaging>
 
@@ -96,12 +96,13 @@
 			<artifactId>junit-jupiter-engine</artifactId>
 			<scope>test</scope>
 		</dependency>
+
 	</dependencies>
 
 	<build>
 		<plugins>
 			<!-- Aggregate javadocs -->
-			<plugin>
+			<!--<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
 				<executions>
@@ -119,7 +120,7 @@
 						</configuration>
 					</execution>
 				</executions>
-			</plugin>
+			</plugin>-->
 			<!--&lt;!&ndash; Assembly apidocs &ndash;&gt;
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>

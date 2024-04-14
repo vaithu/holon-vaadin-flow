@@ -32,6 +32,6 @@ public interface StringAreaInputConfigurator<C extends StringAreaInputConfigurat
 		HasSizeConfigurator<C>, HasStyleConfigurator<C>, HasAutofocusConfigurator<C>,
 		FocusableConfigurator<Component, C>, HasPrefixAndSuffixConfigurator<C>, CompositionNotifierConfigurator<C>,
 		HasPlaceholderConfigurator<C>, HasLabelConfigurator<C>, HasThemeVariantConfigurator<TextAreaVariant, C>,
-		DeferrableLocalizationConfigurator<C> {
+		DeferrableLocalizationConfigurator<C>, HasTooltipConfigurator<C> {
 
 }

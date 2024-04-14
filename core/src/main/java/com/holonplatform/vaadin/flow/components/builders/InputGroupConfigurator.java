@@ -15,9 +15,6 @@
  */
 package com.holonplatform.vaadin.flow.components.builders;
 
-import java.util.function.BiConsumer;
-import java.util.function.Supplier;
-
 import com.holonplatform.core.Validator;
 import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.core.property.Property;
@@ -31,6 +28,9 @@ import com.holonplatform.vaadin.flow.components.ValueHolder.ValueChangeListener;
 import com.holonplatform.vaadin.flow.components.events.GroupValueChangeEvent;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasText;
+
+import java.util.function.BiConsumer;
+import java.util.function.Supplier;
 
 /**
  * Input group configurator.
@@ -94,6 +94,7 @@ public interface InputGroupConfigurator<P, T, G extends BoundComponentGroup<P, I
 	 * @return this
 	 */
 	C withPostProcessor(BiConsumer<P, Input<?>> postProcessor);
+
 
 	/**
 	 * Adds a group value {@link Validator}.

@@ -15,20 +15,26 @@
  */
 package com.holonplatform.vaadin.flow.components;
 
-import java.io.Serializable;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
 import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.vaadin.flow.data.ItemListingDataProviderAdapter;
 import com.holonplatform.vaadin.flow.data.ItemSort;
 import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.grid.dataview.GridLazyDataView;
 import com.vaadin.flow.component.grid.editor.Editor;
+import com.vaadin.flow.data.provider.BackEndDataProvider;
+import com.vaadin.flow.data.provider.CallbackDataProvider;
 import com.vaadin.flow.data.provider.DataProvider;
 import com.vaadin.flow.data.provider.QuerySortOrder;
+import com.vaadin.flow.data.renderer.Renderer;
+import com.vaadin.flow.function.ValueProvider;
+
+import java.io.Serializable;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 /**
  * A component to display a set of items as tabular data, using the item
@@ -55,6 +61,8 @@ public interface ItemListing<T, P> extends ItemSet, Selectable<T>, HasComponent 
      */
     List<P> getHiddenColumns();
 
+
+
     /**
 	 * Show or hide the column which corresponds to given <code>property</code> id.
 	 * @param property The property which represents the column (not null)
@@ -73,6 +81,19 @@ public interface ItemListing<T, P> extends ItemSet, Selectable<T>, HasComponent 
 	 * @since 5.2.2
 	 */
 	Optional<String> getColumnHeader(P property);
+
+	void hideAllColumnsExcept(P propertyToShow);
+	void restoreAllColumns();
+
+	default void showAllColumns() {
+		restoreAllColumns();
+	}
+
+	List<Grid.Column<T>> getAllColumns();
+
+	void hide(P propertyToHide);
+
+	void indexColumn(P id);
 
 	/**
 	 * Gets whether the row details component for given <code>item</code> is
@@ -200,12 +221,33 @@ public interface ItemListing<T, P> extends ItemSet, Selectable<T>, HasComponent 
 	 */
 	void refreshEditingItem();
 
+	void setMobileColumn(Renderer<T> renderer);
+
+	void setMobileColumn(ValueProvider<T,Component> component);
+
+
+
+	void showMobileColumn(boolean mobile);
+
+	boolean isMobileColumnVisible();
+
+	void hideMobileColumn();
+
 	/**
 	 * Get the {@link DataProvider} used by this item listing as data source.
 	 * @return The {@link DataProvider} used as data source
 	 * @since 5.2.2
 	 */
 	DataProvider<T, ?> getDataProvider();
+
+	GridLazyDataView<T> setItems(CallbackDataProvider.FetchCallback<T, Void> fetchCallback);
+
+	/**
+	 * Get the {@link BackEndDataProvider} used by this item listing as data source.
+	 * @return The {@link BackEndDataProvider} used as data source
+	 * @since 5.5.4
+	 */
+	DataProvider<T, ?> getBackEndDataProvider();
 
 	/**
 	 * Get the current column sorts, if any.
@@ -388,6 +430,22 @@ public interface ItemListing<T, P> extends ItemSet, Selectable<T>, HasComponent 
 		 * @see LocalizationProvider
 		 */
 		void setText(Localizable text);
+
+		/**
+		 * Sets a custom part name for the cell.
+		 *
+		 * @param partName
+		 *            the part name to set
+		 */
+
+		void setPartName(String partName);
+
+		/**
+		 * Gets the custom part name of the cell.
+		 *
+		 * @return the part name
+		 */
+		String getPartName();
 
 		/**
 		 * Sets the text content of this cell.

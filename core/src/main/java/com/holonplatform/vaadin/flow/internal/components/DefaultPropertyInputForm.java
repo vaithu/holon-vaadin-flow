@@ -15,11 +15,6 @@
  */
 package com.holonplatform.vaadin.flow.internal.components;
 
-import java.util.Optional;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
-
 import com.holonplatform.core.Validator;
 import com.holonplatform.core.Validator.ValidationException;
 import com.holonplatform.core.i18n.Localizable;
@@ -28,20 +23,17 @@ import com.holonplatform.core.property.Property;
 import com.holonplatform.core.property.PropertyBox;
 import com.holonplatform.core.property.PropertyRenderer;
 import com.holonplatform.core.property.PropertyRendererRegistry;
-import com.holonplatform.vaadin.flow.components.Composable;
-import com.holonplatform.vaadin.flow.components.GroupValidationStatusHandler;
-import com.holonplatform.vaadin.flow.components.Input;
-import com.holonplatform.vaadin.flow.components.PropertyInputForm;
-import com.holonplatform.vaadin.flow.components.PropertyInputGroup;
-import com.holonplatform.vaadin.flow.components.ValidationStatusHandler;
+import com.holonplatform.vaadin.flow.components.*;
 import com.holonplatform.vaadin.flow.components.builders.PropertyInputFormBuilder;
 import com.holonplatform.vaadin.flow.components.events.GroupValueChangeEvent;
 import com.holonplatform.vaadin.flow.internal.components.builders.AbstractComponentConfigurator;
-import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.HasComponents;
-import com.vaadin.flow.component.HasEnabled;
-import com.vaadin.flow.component.HasSize;
-import com.vaadin.flow.component.HasStyle;
+import com.vaadin.flow.component.*;
+import com.vaadin.flow.component.shared.HasTooltip;
+
+import java.util.Optional;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 /**
  * Default {@link PropertyInputForm} implementation.
@@ -179,6 +171,11 @@ public class DefaultPropertyInputForm<C extends Component>
 
 		@Override
 		protected Optional<HasStyle> hasStyle() {
+			return Optional.empty();
+		}
+
+		@Override
+		protected Optional<HasTooltip> hasTooltip() {
 			return Optional.empty();
 		}
 

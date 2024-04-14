@@ -24,7 +24,6 @@ import com.holonplatform.vaadin.flow.components.builders.DialogBuilder;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dialog.Dialog;
-import com.vaadin.flow.theme.lumo.LumoUtility;
 
 import java.util.function.Consumer;
 
@@ -49,16 +48,19 @@ public class DefaultDeleteDialogBuilder extends AbstractDialogConfigurator<Dialo
 					deleteDialogCallback.onUserAnswer(true);
 				})
 				.withThemeVariants(ButtonVariant.LUMO_ERROR,ButtonVariant.LUMO_PRIMARY)
-				.styleNames(LumoUtility.AlignSelf.END)
+//				.styleNames(LumoUtility.AlignSelf.END)
 				.build();
 		this.denyButton = ButtonBuilder.create()
 				.text(Localizable.of("Cancel", DialogBuilder.DEFAULT_DENY_BUTTON_MESSAGE_CODE)).withClickListener(e -> {
 					getComponent().close();
 					deleteDialogCallback.onUserAnswer(false);
 				})
+				.autofocus()
 				.withThemeVariants(ButtonVariant.LUMO_TERTIARY)
-				.styleNames(LumoUtility.AlignSelf.START)
 				.build();
+
+		this.denyButton.getStyle().set("margin-right", "auto");
+
 		getComponent().addFooterComponent(this.denyButton);
 		getComponent().addFooterComponent(this.confirmButton);
 

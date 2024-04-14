@@ -15,6 +15,8 @@
  */
 package com.holonplatform.vaadin.flow.components.builders;
 
+import com.holonplatform.core.i18n.Localizable;
+import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
 import com.vaadin.flow.component.shared.HasTooltip;
 
 /**
@@ -26,33 +28,52 @@ import com.vaadin.flow.component.shared.HasTooltip;
  */
 public interface HasTooltipConfigurator<C extends HasTooltipConfigurator<C>> {
 
+
+
 	/**
-	 * Gets the tooltip handle of the component
+	 * Sets the tooltip text using a {@link Localizable} message.
+	 * <p>
+	 * The tooltip is set using the <vaadin-tooltip slot="tooltip"> attribute. Browsers typically use the title to show a tooltip
+	 * when hovering an element
+	 * <p>
+	 * @param tooltip Localizable tooltip message (may be null)
+	 * @return this
+	 * @see LocalizationProvider
+	 */
+	C tooltip(Localizable tooltip);
+
+	/**
+	 * Sets the tooltip text. This is an alias for {@link #tooltip(String)}.
+	 * <p>
+	 * The tooltip is set using the <vaadin-tooltip slot="tooltip"> attribute. Browsers typically use the title to show a tooltip
+	 * when hovering an element
+	 * <p>
+	 * @param tooltip The tooltip to set (may be null)
 	 * @return this
 	 */
-	C getTooltip();
-
-	/**
-	 * Sets a tooltip text for the component.
-	 * @param text The CSS style class name to be added to the component
-	 * @return this
-	 */
-	C setTooltipText(String text);
-
-	/**
-	 * Base {@link HasTooltipConfigurator}.
-	 */
-	public interface BaseHasTooltipConfigurator extends HasTooltipConfigurator<BaseHasTooltipConfigurator> {
-
+	default C tooltip(String tooltip) {
+		return tooltip((tooltip == null) ? null : Localizable.builder().message(tooltip).build());
 	}
 
 	/**
-	 * Create a new {@link BaseHasTooltipConfigurator}.
-	 * @param component Component to configure (not null)
-	 * @return A new {@link BaseHasTooltipConfigurator}
+	 * Sets the tooltip using a localizable <code>messageCode</code>.
+	 * <p>
+	 * The tooltip is set using the <vaadin-tooltip slot="tooltip"> attribute. Browsers typically use the title to show a tooltip
+	 * when hovering an element
+	 * <p>
+	 * @param defaultTooltip Default tooltip if no translation is available for given <code>messageCode</code>
+	 * @param messageCode Description translation message key
+	 * @param arguments Optional translation arguments
+	 * @return this
+	 * @see LocalizationProvider
 	 */
-	static BaseHasTooltipConfigurator create(HasTooltip component) {
-		return new DefaultHasTooltipConfigurator(component);
+	default C tooltip(String defaultTooltip, String messageCode, Object... arguments) {
+		return tooltip(Localizable.builder().message((defaultTooltip == null) ? "" : defaultTooltip).messageCode(messageCode)
+				.messageArguments(arguments).build());
 	}
+
+
+
+
 
 }

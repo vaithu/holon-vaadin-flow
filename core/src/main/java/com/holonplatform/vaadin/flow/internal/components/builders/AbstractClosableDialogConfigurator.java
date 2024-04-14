@@ -49,4 +49,5 @@ public abstract class AbstractClosableDialogConfigurator<C extends ClosableDialo
 		return getConfigurator();
 	}
 
+
 }

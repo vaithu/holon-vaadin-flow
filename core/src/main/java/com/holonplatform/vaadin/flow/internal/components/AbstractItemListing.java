@@ -36,6 +36,7 @@ import com.holonplatform.vaadin.flow.components.builders.ShortcutConfigurator;
 import com.holonplatform.vaadin.flow.components.events.ItemClickEvent;
 import com.holonplatform.vaadin.flow.components.events.*;
 import com.holonplatform.vaadin.flow.data.ItemListingDataProviderAdapter;
+import com.holonplatform.vaadin.flow.data.ItemListingLazyDataProviderAdapter;
 import com.holonplatform.vaadin.flow.data.ItemSort;
 import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
 import com.holonplatform.vaadin.flow.internal.VaadinLogger;
@@ -55,17 +56,18 @@ import com.vaadin.flow.component.grid.contextmenu.GridContextMenu;
 import com.vaadin.flow.component.grid.contextmenu.GridContextMenu.GridContextMenuItemClickEvent;
 import com.vaadin.flow.component.grid.contextmenu.GridMenuItem;
 import com.vaadin.flow.component.grid.contextmenu.GridSubMenu;
+import com.vaadin.flow.component.grid.dataview.GridLazyDataView;
 import com.vaadin.flow.component.grid.dnd.GridDropMode;
 import com.vaadin.flow.component.grid.editor.Editor;
+import com.vaadin.flow.component.shared.HasTooltip;
 import com.vaadin.flow.data.binder.*;
 import com.vaadin.flow.data.binder.Binder.BindingBuilder;
+import com.vaadin.flow.data.provider.*;
 import com.vaadin.flow.data.provider.DataChangeEvent.DataRefreshEvent;
-import com.vaadin.flow.data.provider.DataProvider;
-import com.vaadin.flow.data.provider.QuerySortOrder;
-import com.vaadin.flow.data.provider.SortDirection;
 import com.vaadin.flow.data.renderer.Renderer;
 import com.vaadin.flow.function.ValueProvider;
 
+import java.io.Serial;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiConsumer;
@@ -83,9 +85,10 @@ import java.util.stream.Stream;
  * 
  * @since 5.2.0
  */
-public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, EditorComponentGroup<P, T>,
+public abstract class AbstractItemListing<T, P> implements ItemListing<T,P>, EditorComponentGroup<P, T>,
 		GroupValidationStatusHandler<EditorComponentGroup<P, T>, P, Input<?>> {
 
+	@Serial
 	private static final long serialVersionUID = 6298536849762717384L;
 
 	/**
@@ -106,7 +109,7 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
 	/**
 	 * Optional visible columns
 	 */
-	private transient List<P> visibileColumns = Collections.emptyList();
+	private transient List<P> visibleColumns = Collections.emptyList();
 
 	/**
 	 * Grid
@@ -117,6 +120,11 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
 	 * Data provider
 	 */
 	private ItemListingDataProviderAdapter<T, ?> dataProvider;
+
+	/**
+	 * BackendData provider
+	 */
+	private ItemListingLazyDataProviderAdapter<T, ?> lazyDataProvider;
 
 	/**
 	 * A list of the item properties which correspond to a listing column, in the
@@ -237,6 +245,10 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
 	 * Whether the listing was built
 	 */
 	private boolean built = false;
+	private ItemListingLazyDataProviderAdapter<T, ?> backEndDataProvider;
+	private Column<T> mobileColumn;
+
+	private final String MOBILE_COLUMN = "mobileColumn";
 
 	/**
 	 * Constructor.
@@ -294,6 +306,42 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
 		return getGrid().getDataProvider();
 	}
 
+	/**
+	 * Set the {@link DataProvider} to use for the backing Grid.
+	 * @param backEndDataProvider The data provider to set
+	 */
+	protected void setItems(BackEndDataProvider<T, ?> backEndDataProvider) {
+		setDataProvider(backEndDataProvider);
+	}
+
+	/**
+	 * Set the {@link DataProvider} to use for the backing Grid.
+	 * @param backEndDataProvider The data provider to set
+	 */
+	protected void setDataProvider(BackEndDataProvider<T, ?> backEndDataProvider) {
+		ObjectUtils.argumentNotNull(backEndDataProvider, "DataProvider must be not null");
+		this.backEndDataProvider = ItemListingLazyDataProviderAdapter.adapt(backEndDataProvider);
+		getGrid().setDataProvider(this.backEndDataProvider);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see com.holonplatform.vaadin.flow.components.ItemListing#getDataProvider()
+	 */
+	@Override
+	public DataProvider<T, ?> getBackEndDataProvider() {
+		if (this.backEndDataProvider != null) {
+			return this.backEndDataProvider;
+		}
+		return getGrid().getDataProvider();
+	}
+
+	@Override
+	public GridLazyDataView<T> setItems(CallbackDataProvider.FetchCallback<T, Void> fetchCallback) {
+		return getGrid().setItems(fetchCallback);
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -314,7 +362,7 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
 	 */
 	protected Optional<ItemListingDataProviderAdapter<T, ?>> getItemListingDataProvider() {
 		if (this.dataProvider != null) {
-			return Optional.ofNullable(this.dataProvider);
+			return Optional.of(this.dataProvider);
 		}
 		DataProvider<T, ?> gridDataProvider = getGrid().getDataProvider();
 		if (gridDataProvider != null && gridDataProvider instanceof ItemListingDataProviderAdapter) {
@@ -501,9 +549,11 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
 	 * @param property The property (not null)
 	 * @return The column key for given property
 	 */
-	protected String getColumnKey(P property) {
+	public String getColumnKey(P property) {
 		return getColumnConfiguration(property).getColumnKey();
 	}
+
+
 
 	/**
 	 * Get the Grid column bound to given property, if available.
@@ -577,6 +627,8 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
 				.setVisible(visible);
 	}
 
+
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -588,6 +640,113 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
 	public Optional<String> getColumnHeader(P property) {
 		ObjectUtils.argumentNotNull(property, "Property must be not null");
 		return Optional.ofNullable(columnsHeaders.get(property));
+	}
+
+	@Override
+	public void hide(P propertyToHide) {
+		setColumnVisible(propertyToHide,false);
+	}
+
+	private void propertyNotFoundException(P property) {
+		new IllegalArgumentException("No column is bound to the property [" + property + "]");
+	}
+
+	@Override
+	public boolean isMobileColumnVisible() {
+		return mobileColumn.isVisible();
+	}
+
+	@Override
+	public void showMobileColumn(boolean mobile) {
+		ObjectUtils.argumentNotNull(mobileColumn, "Mobile column is null. You need to set it using " +
+				"setMobileColumn() method before you show it");
+		mobileColumn.setVisible(mobile);
+		if (mobile) {
+			hideAllVisibleColumns();
+		} else {
+			showAllHiddenColumns();
+		}
+	}
+
+	@Override
+	public void indexColumn(P id) {
+		ItemListingColumn<P, T, ?> column = addPropertyColumnAsFirst(id);
+		column.setHeaderText(Localizable.of("#ID"));
+		column.setFlexGrow(0);
+		column.setFrozen(true);
+
+		getGrid().addAttachListener(event -> {
+			getGrid().getColumnByKey(column.getColumnKey()).getElement().executeJs(
+					"this.renderer = function(root, column, rowData) {root.textContent = rowData.index + 1}"
+			);
+		});
+	}
+
+	@Override
+	public void hideMobileColumn() {
+		mobileColumn.setVisible(false);
+	}
+
+	@Override
+	public void setMobileColumn(Renderer<T> renderer) {
+		mobileColumn = getGrid().getColumnByKey(MOBILE_COLUMN);
+
+		if (mobileColumn != null) {
+			getGrid().removeColumnByKey(MOBILE_COLUMN);
+		}
+
+		mobileColumn = getGrid().addColumn(renderer);
+		mobileColumn.setKey(MOBILE_COLUMN);
+		hideMobileColumn();
+	}
+
+
+
+
+	@Override
+	public void setMobileColumn(ValueProvider<T, Component> component) {
+
+		mobileColumn = getGrid().getColumnByKey(MOBILE_COLUMN);
+
+		if (mobileColumn != null) {
+			getGrid().removeColumnByKey(MOBILE_COLUMN);
+		}
+
+		mobileColumn = getGrid().addComponentColumn(component);
+		mobileColumn.setKey(MOBILE_COLUMN);
+		hideMobileColumn();
+	}
+
+	private void showAllHiddenColumns() {
+		getHiddenColumns().forEach(p -> getColumn(p).ifPresent(column -> column.setVisible(true)));
+	}
+
+	private void hideAllVisibleColumns() {
+		getVisibleColumns().forEach(p -> getColumn(p).ifPresent(column -> column.setVisible(false)));
+	}
+
+	@Override
+	public void hideAllColumnsExcept(P columnToShow) {
+		getColumn(columnToShow)
+				.ifPresentOrElse(tColumn -> {
+					grid.getColumns().forEach(column -> {
+						if (!column.equals(tColumn)) {
+							column.setVisible(false);
+						}
+					});
+				},() -> {
+					propertyNotFoundException(columnToShow);
+				});
+	}
+
+	@Override
+	public void restoreAllColumns() {
+		grid.getColumns().forEach(tColumn -> tColumn.setVisible(true));
+	}
+
+	@Override
+	public List<Column<T>> getAllColumns() {
+		return grid.getColumns();
 	}
 
 	/**
@@ -752,7 +911,7 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
 				}
 			}
 		}
-		this.visibileColumns = (visibileColumns != null) ? (List<P>) visibileColumns : Collections.emptyList();
+		this.visibleColumns = (visibileColumns != null) ? (List<P>) visibileColumns : Collections.emptyList();
 	}
 
 	/**
@@ -760,7 +919,7 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
 	 * @return the visibile columns properties
 	 */
 	protected List<P> getVisibleColumnProperties() {
-		return visibileColumns.isEmpty() ? properties : visibileColumns;
+		return visibleColumns.isEmpty() ? properties : visibleColumns;
 	}
 
 	/**
@@ -844,10 +1003,12 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
 			columnsHeaders.put(property, h);
 		});
 		configuration.getHeaderComponent().ifPresent(c -> column.setHeader(c));
+		configuration.getHeaderPartName().ifPresent(c -> column.setHeaderPartName(c));
 		// footer
 		configuration.getFooterText().flatMap(t -> LocalizationProvider.localize(t))
 				.ifPresent(f -> column.setFooter(f));
 		configuration.getFooterComponent().ifPresent(c -> column.setFooter(c));
+		configuration.getFooterPartName().ifPresent(c -> column.setFooterPartName(c));
 		// visible
 		column.setVisible(configuration.isVisible());
 		// resizable
@@ -1263,6 +1424,8 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
 		ObjectUtils.argumentNotNull(item, "Item to deselect must be not null");
 		getGrid().deselect(item);
 	}
+
+
 
 	/*
 	 * (non-Javadoc)
@@ -2262,7 +2425,12 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
 			return Optional.of(getComponent());
 		}
 
-		/**
+        @Override
+        protected Optional<HasTooltip> hasTooltip() {
+			return Optional.empty();
+        }
+
+        /**
 		 * Get the listing instance.
 		 * @return the listing instance
 		 */
@@ -2289,7 +2457,7 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
 				}));
 			}
 
-			// forzen columns
+			// frozen columns
 			if (frozenColumnsCount > 0) {
 				int cnt = 0;
 				for (P property : instance.getVisibleColumnProperties()) {
@@ -2344,6 +2512,12 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
 		@Override
 		public C height(String height) {
 			sizeConfigurator.height(height);
+			return getConfigurator();
+		}
+
+		@Override
+		public C mobileColumn(Renderer<T> renderer) {
+			instance.setMobileColumn(renderer);
 			return getConfigurator();
 		}
 
@@ -2565,6 +2739,8 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
 			return getConfigurator();
 		}
 
+
+
 		/*
 		 * (non-Javadoc)
 		 * 
@@ -2615,6 +2791,31 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
 		@Override
 		public C resizable(P property, boolean resizable) {
 			instance.getColumnConfiguration(property).setResizable(resizable);
+			return getConfigurator();
+		}
+
+		/**
+		 * Set the hidden columns list, using the item properties as column reference.
+		 * The columns will be displayed in the order thay are provided.
+		 * <p>
+		 * Any property display order declaration configured using
+		 * {@link #displayAsFirst(Object)}, {@link #displayAsLast(Object)},
+		 * {@link #displayBefore(Object, Object)} and
+		 * {@link #displayAfter(Object, Object)} will be ignored.
+		 * </p>
+		 *
+		 * @param hiddenColumns The hidden column properties (not null)
+		 * @return this
+		 */
+		@Override
+		public C hiddenColumns(List<? extends P> hiddenColumns) {
+			hiddenColumns.forEach(p -> hidden(p));
+			return getConfigurator();
+		}
+
+		@Override
+		public C mobileColumn(ValueProvider<T,Component> valueProvider) {
+			instance.setMobileColumn(valueProvider);
 			return getConfigurator();
 		}
 
@@ -2691,6 +2892,8 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
 			instance.getColumnConfiguration(property).setAutoWidth(autoWidth);
 			return getConfigurator();
 		}
+
+
 
 		/*
 		 * (non-Javadoc)
@@ -2863,9 +3066,15 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
 			return getConfigurator();
 		}
 
+		@Override
+		public C headerPartName(P property,String headerPartName) {
+			instance.getColumnConfiguration(property).setHeaderPartName(headerPartName);
+			return getConfigurator();
+		}
+
 		/*
 		 * (non-Javadoc)
-		 * 
+		 *
 		 * @see
 		 * com.holonplatform.vaadin.flow.components.builders.ItemListingConfigurator#
 		 * footer(java.lang.Object, com.holonplatform.core.i18n.Localizable)
@@ -2873,6 +3082,12 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
 		@Override
 		public C footer(P property, Localizable footer) {
 			instance.getColumnConfiguration(property).setFooterText(footer);
+			return getConfigurator();
+		}
+
+		@Override
+		public C footerPartName(P property, String footerPartName) {
+			instance.getColumnConfiguration(property).setFooterPartName(footerPartName);
 			return getConfigurator();
 		}
 
@@ -2918,6 +3133,43 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
 		@Override
 		public C pageSize(int pageSize) {
 			instance.getGrid().setPageSize(pageSize);
+			return getConfigurator();
+		}
+
+		@Override
+		public C items(BackEndDataProvider<T, Void> dataProvider) {
+			instance.getGrid().setItems(dataProvider);
+			return getConfigurator();
+		}
+
+		@Override
+		public C items(CallbackDataProvider.FetchCallback<T, Void> fetchCallback) {
+			instance.getGrid().setItems(fetchCallback);
+			return getConfigurator();
+		}
+
+		@Override
+		public C items(CallbackDataProvider.FetchCallback<T, Void> fetchCallback,
+					   CallbackDataProvider.CountCallback<T, Void> countCallback) {
+			instance.getGrid().setItems(fetchCallback,countCallback);
+			return getConfigurator();
+		}
+
+		@Override
+		public C itemCountEstimate(int itemCountEstimate) {
+			instance.getGrid().getLazyDataView().setItemCountEstimate(itemCountEstimate);
+			return getConfigurator();
+		}
+
+		@Override
+		public C itemCountEstimateIncrease(int itemCountEstimateIncrease) {
+			instance.getGrid().getLazyDataView().setItemCountEstimate(itemCountEstimateIncrease);
+			return getConfigurator();
+		}
+
+		@Override
+		public C itemCountUnknown() {
+			instance.getGrid().getLazyDataView().setItemCountUnknown();
 			return getConfigurator();
 		}
 
@@ -3460,6 +3712,11 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
 		@Override
 		protected Optional<HasEnabled> hasEnabled() {
 			return Optional.of(getComponent());
+		}
+
+		@Override
+		protected Optional<HasTooltip> hasTooltip() {
+			return Optional.empty();
 		}
 
 		/*

@@ -15,14 +15,6 @@
  */
 package com.holonplatform.vaadin.flow.internal.components.support;
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
-import java.util.function.Function;
-import java.util.function.Supplier;
-
 import com.holonplatform.core.Validator;
 import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.core.internal.utils.ObjectUtils;
@@ -37,6 +29,10 @@ import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.grid.SortOrderProvider;
 import com.vaadin.flow.data.renderer.Renderer;
 import com.vaadin.flow.function.ValueProvider;
+
+import java.util.*;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 /**
  * Default {@link ItemListingColumn} implementation.
@@ -80,6 +76,10 @@ public class DefaultItemListingColumn<P, T, V> implements ItemListingColumn<P, T
 	private boolean required;
 	private Localizable requiredMessage;
 	private Supplier<V> defaultValueProvider;
+
+	private String headerPartName;
+	private String footerPartName;
+
 	private List<ValueChangeListener<V, GroupValueChangeEvent<V, P, Input<?>, EditorComponentGroup<P, T>>>> valueChangeListeners = new LinkedList<>();
 
 	/**
@@ -646,4 +646,23 @@ public class DefaultItemListingColumn<P, T, V> implements ItemListingColumn<P, T
 		this.valueChangeListeners.add(valueChangeListener);
 	}
 
+	@Override
+	public Optional<String> getFooterPartName() {
+		return Optional.ofNullable(footerPartName);
+	}
+
+	@Override
+	public void setFooterPartName(String footerPartName) {
+		this.footerPartName = footerPartName;
+	}
+
+	@Override
+	public Optional<String> getHeaderPartName() {
+		return Optional.ofNullable(headerPartName);
+	}
+
+	@Override
+	public void setHeaderPartName(String headerPartName) {
+		this.headerPartName = headerPartName;
+	}
 }

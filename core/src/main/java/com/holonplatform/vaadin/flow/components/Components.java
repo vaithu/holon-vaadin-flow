@@ -47,13 +47,16 @@ import com.holonplatform.vaadin.flow.components.builders.ThemableFlexComponentCo
 import com.holonplatform.vaadin.flow.components.builders.ThemableFlexComponentConfigurator.VerticalLayoutConfigurator;
 import com.holonplatform.vaadin.flow.components.events.ClickEvent;
 import com.holonplatform.vaadin.flow.components.events.ClickEventListener;
+import com.holonplatform.vaadin.flow.components.utils.UIUtils;
 import com.holonplatform.vaadin.flow.data.ItemConverter;
 import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
+import com.holonplatform.vaadin.flow.internal.components.DefaultXPanel;
 import com.vaadin.flow.component.ClickNotifier;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HtmlContainer;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.checkbox.CheckboxGroup;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.contextmenu.ContextMenu;
@@ -62,12 +65,15 @@ import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.listbox.ListBox;
 import com.vaadin.flow.component.listbox.MultiSelectListBox;
+import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.orderedlayout.FlexLayout;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.Scroller;
 import com.vaadin.flow.component.orderedlayout.Scroller.ScrollDirection;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
 import com.vaadin.flow.component.select.Select;
+import com.vaadin.flow.component.splitlayout.SplitLayout;
 import com.vaadin.flow.i18n.I18NProvider;
 import com.vaadin.flow.server.VaadinService;
 
@@ -168,19 +174,61 @@ public interface Components {
 		return FormLayoutConfigurator.configure(layout);
 	}
 
+	static FlexLayoutConfigurator.BaseFlexLayoutConfigurator configure(FlexLayout layout) {
+		return FlexLayoutConfigurator.configure(layout);
+	}
+
+	static DivConfigurator.BaseDivConfigurator configure(Div div) {
+		return DivConfigurator.configure(div);
+	}
+
+	static NotificationConfigurator.BaseNotificationConfigurator configure(Notification notification) {
+		return NotificationConfigurator.configure(notification);
+	}
+
+	static NotificationBuilder notification() {
+		return NotificationBuilder.create();
+	}
+
+	static TitleBuilder titlePanel() {
+		return TitleBuilder.create();
+	}
+
+	static TitleConfigurator.BaseTitleConfigurator titlePanel(HorizontalLayout layout) {
+		return TitleConfigurator.configure(layout);
+	}
+
+	static SplitLayoutConfigurator.BaseSplitLayoutConfigurator configure(SplitLayout splitLayout) {
+		return SplitLayoutConfigurator.configure(splitLayout);
+	}
+
+	static SplitLayoutBuilder splitLayout() {
+		return SplitLayoutBuilder.create();
+	}
+
+	static FlexBoxLayoutConfigurator.BaseFlexBoxLayoutConfigurator configure(FlexBoxLayout layout) {
+		return FlexBoxLayoutConfigurator.configure(layout);
+	}
+
+	static FlexBoxLayoutBuilder flexBoxLayout() {
+		return FlexBoxLayoutBuilder.create();
+	}
+
+
+
 	// Builders
 
 	/**
 	 * Obtain a {@link LabelBuilder} to create a label component using a {@link Div}
 	 * tag.
 	 * <p>
-	 * This is an alias for the {@link #div()} method.
+	 * This is an alias for the {@link #divLabel()} ()} method.
 	 * </p>
 	 * @return The {@link LabelBuilder} to configure and obtain the component
 	 *         instance
 	 */
 	static LabelBuilder<Div> label() {
-		return div();
+		return divLabel();
 	}
 
 	/**
@@ -475,7 +523,7 @@ public interface Components {
 	 * @return The {@link LabelBuilder} to configure and obtain the component
 	 *         instance
 	 */
-	static LabelBuilder<Div> div() {
+	static LabelBuilder<Div> divLabel() {
 		return LabelBuilder.div();
 	}
 
@@ -561,6 +609,49 @@ public interface Components {
 		return ButtonBuilder.create();
 	}
 
+	default CardBuilder card(String title, Component component) {
+		return CardBuilder.create(title).content(component);
+	}
+
+	static CardBuilder card(String title) {
+		return CardBuilder.create(title);
+	}
+
+	static CardBuilder card() {
+		return CardBuilder.create();
+	}
+
+	interface utils {
+		static ResponsiveStepBuilder responsiveSteps() {
+			return ResponsiveStepBuilder.create();
+		}
+	}
+
+	static CardGridBuilder cardGrid() {
+		return CardGridBuilder.create();
+	}
+
+	static RowBuilder row() {
+		return RowBuilder.create();
+	}
+
+	static ColumnBuilder column() {
+		return ColumnBuilder.create();
+	}
+
+	static DefaultXPanel panel() {
+		return new DefaultXPanel();
+	}
+
+
+
+	static LabelBuilder<H4> title() {
+		LabelBuilder<H4> h4LabelBuilder = LabelBuilder.h4();
+		h4LabelBuilder.styleNames(UIUtils.getTitleStyles());
+		return h4LabelBuilder;
+	}
+
+
 	static ButtonBuilder deleteButton() {
 		return ButtonBuilder.createDelBtn();
 	}
@@ -637,6 +728,27 @@ public interface Components {
 	 */
 	static HorizontalLayoutBuilder hl() {
 		return HorizontalLayoutBuilder.create();
+	}
+
+	static DivBuilder div() {
+		return DivBuilder.create();
+	}
+
+	/**
+	 * Gets a builder to create {@link HorizontalLayout} footer.
+	 * @return A new {@link HorizontalLayoutBuilder}
+	 */
+	static HorizontalLayoutBuilder footer(String... styles) {
+		HorizontalLayoutBuilder builder = HorizontalLayoutBuilder.create();
+		builder.styleNames(styles);
+		builder.spacing();
+		builder.fullWidth();
+
+		return builder;
+	}
+
+	static FlexLayoutBuilder flexLayout() {
+		return FlexLayoutBuilder.create();
 	}
 
 	/**
@@ -747,6 +859,19 @@ public interface Components {
 			return DialogBuilder.confirm(inputForm);
 		}
 
+		static ConfirmDialogBuilder save(boolean okToCancelDialog) {
+			return DialogBuilder.save(okToCancelDialog);
+		}
+
+		static void showSave(boolean okToCancelDialog,String text) {
+			save(okToCancelDialog)
+					.okButtonConfigurator(baseButtonConfigurator -> {
+						baseButtonConfigurator.withThemeVariants(ButtonVariant.LUMO_PRIMARY);
+						baseButtonConfigurator.text("Save", "save.code");
+					}).text(text)
+					.open();
+		}
+
 		/**
 		 * Show a confirm dialog with given localizable message text.
 		 * @param message The dialog message text
@@ -805,13 +930,14 @@ public interface Components {
 		 * <em>deny</em> button message localization code is
 		 * {@link DialogBuilder#DEFAULT_DENY_BUTTON_MESSAGE_CODE}.
 		 * </p>
+		 * @param okToCloseDialog This is to decide when to close the dialog window
 		 * @param questionDialogCallback The callback function use to react to the user
 		 *                               selection (not null)
 		 * @return A new {@link QuestionDialogBuilder}
 		 */
-		static QuestionDialogBuilder save(QuestionDialogCallback questionDialogCallback) {
-			return DialogBuilder.question(questionDialogCallback);
-		}
+		/*static DialogBuilder.SaveDialogBuilder save(boolean okToCloseDialog,QuestionDialogCallback questionDialogCallback) {
+			return DialogBuilder.save(questionDialogCallback);
+		}*/
 
 		/**
 		 * Get a builder to create a delete dialog, with a <em>confirm</em> button and
@@ -833,6 +959,10 @@ public interface Components {
 
 		static DialogBuilder.SaveAndNewDialogBuilder saveAndNew(QuestionDialogCallback questionDialogCallback) {
 			return DialogBuilder.saveAndNew(questionDialogCallback);
+		}
+
+		static DialogBuilder.SaveDialogBuilder save(DialogBuilder.SaveDialogCallback saveDialogCallback) {
+			return DialogBuilder.save(saveDialogCallback);
 		}
 
 		/**
@@ -2048,7 +2178,9 @@ public interface Components {
 	 * @see #getCurrentLocale()
 	 */
 	static String localize(String defaultMessage, String messageCode, Object... arguments) {
+
 		return LocalizationProvider.localize(defaultMessage, messageCode, arguments);
 	}
+
 
 }

@@ -31,6 +31,8 @@ import java.util.function.Consumer;
  */
 public interface DialogBuilder<B extends DialogBuilder<B>> extends DialogConfigurator<B> {
 
+
+
 	/**
 	 * Build the {@link Dialog} component.
 	 * @return The {@link Dialog} instance
@@ -73,6 +75,10 @@ public interface DialogBuilder<B extends DialogBuilder<B>> extends DialogConfigu
 		return new DefaultConfirmDialogBuilder(inputForm);
 	}
 
+	static ConfirmDialogBuilder save(boolean okToCancelDialog) {
+		return new DefaultConfirmDialogBuilder(okToCancelDialog);
+	}
+
 	/**
 	 * Get a builder to create a question dialog, with a <em>confirm</em> button and a <em>deny</em> button in the
 	 * dialog toolbar which will trigger the given <code>questionDialogCallback</code> to react to the user choice.
@@ -93,6 +99,10 @@ public interface DialogBuilder<B extends DialogBuilder<B>> extends DialogConfigu
 
 	static SaveAndNewDialogBuilder saveAndNew(QuestionDialogCallback questionDialogCallback) {
 		return new DefaultSaveAndNewDialogBuilder(questionDialogCallback);
+	}
+
+	static SaveDialogBuilder save(SaveDialogCallback saveDialogCallback) {
+		return new DefaultSaveDialogBuilder(saveDialogCallback);
 	}
 
 	// ------- messages
@@ -133,7 +143,7 @@ public interface DialogBuilder<B extends DialogBuilder<B>> extends DialogConfigu
 	}
 
 	/**
-	 * Question dialog user answer callback.
+	 * Delete dialog user answer callback.
 	 */
 	@FunctionalInterface
 	public interface DeleteDialogCallback {
@@ -144,6 +154,21 @@ public interface DialogBuilder<B extends DialogBuilder<B>> extends DialogConfigu
 		 *        if selected the <code>deny</code> option
 		 */
 		void onUserAnswer(boolean confirmSelected);
+
+	}
+
+	/**
+	 * Save dialog user answer callback.
+	 */
+	@FunctionalInterface
+	public interface SaveDialogCallback {
+
+		/**
+		 * Invoked when the user selected an answer in a save dialog.
+		 * @param confirmSelected <code>true</code> if the user selected the <em>confirm</em> option, <code>false</code>
+		 *        if selected the <code>deny</code> option
+		 */
+		void onUserAnswer(boolean confirmSelected, Consumer<Boolean> isOkToCloseDialogWindow);
 
 	}
 
@@ -177,6 +202,14 @@ public interface DialogBuilder<B extends DialogBuilder<B>> extends DialogConfigu
 		 * @return this
 		 */
 		ConfirmDialogBuilder okButtonConfigurator(Consumer<BaseButtonConfigurator> configurator);
+
+		/**
+		 * Provide a {@link Consumer} to configure the default user <em>denial</em> button.
+		 * @param configurator The button configurator (not null)
+		 * @return this
+		 */
+		ConfirmDialogBuilder denialButtonConfigurator(Consumer<BaseButtonConfigurator> configurator);
+
 
 	}
 
@@ -252,6 +285,26 @@ public interface DialogBuilder<B extends DialogBuilder<B>> extends DialogConfigu
 		 * @return this
 		 */
 		SaveAndNewDialogBuilder denialButtonConfigurator(Consumer<BaseButtonConfigurator> configurator);
+
+	}
+
+
+	public interface SaveDialogBuilder extends DialogBuilder<SaveDialogBuilder> {
+
+		/**
+		 * Provide a {@link Consumer} to configure the default user <em>save</em> button.
+		 * @param configurator The button configurator (not null)
+		 * @return this
+		 */
+//		SaveAndNewDialogBuilder saveButtonConfigurator(Consumer<BaseButtonConfigurator> configurator);
+		SaveDialogBuilder saveButtonConfigurator(Consumer<BaseButtonConfigurator> configurator);
+
+		/**
+		 * Provide a {@link Consumer} to configure the default user <em>denial</em> button.
+		 * @param configurator The button configurator (not null)
+		 * @return this
+		 */
+		SaveDialogBuilder denialButtonConfigurator(Consumer<BaseButtonConfigurator> configurator);
 
 	}
 

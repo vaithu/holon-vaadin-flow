@@ -26,6 +26,7 @@ import com.holonplatform.vaadin.flow.components.events.ReadonlyChangeListener;
 import com.holonplatform.vaadin.flow.components.support.InputAdaptersContainer;
 import com.holonplatform.vaadin.flow.internal.components.events.DefaultValueChangeEvent;
 import com.vaadin.flow.component.*;
+import com.vaadin.flow.component.shared.HasTooltip;
 import com.vaadin.flow.data.binder.ValueContext;
 import com.vaadin.flow.data.converter.Converter;
 import com.vaadin.flow.data.value.HasValueChangeMode;
@@ -190,6 +191,15 @@ public class InputConverterAdapter<T, V> implements Input<V> {
 	@Override
 	public Optional<HasTitle> hasTitle() {
 		return input.hasTitle();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see com.holonplatform.vaadin.flow.components.MayHaveTooltip#hasTooltip()
+	 */
+	@Override
+	public Optional<HasTooltip> hasTooltip() {
+		return input.hasTooltip();
 	}
 
 	/*

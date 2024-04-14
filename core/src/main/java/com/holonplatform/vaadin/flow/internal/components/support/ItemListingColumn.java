@@ -15,14 +15,6 @@
  */
 package com.holonplatform.vaadin.flow.internal.components.support;
 
-import java.io.Serializable;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
-import java.util.function.Function;
-import java.util.function.Supplier;
-
 import com.holonplatform.core.Validator;
 import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.core.internal.utils.ObjectUtils;
@@ -39,6 +31,14 @@ import com.vaadin.flow.component.grid.SortOrderProvider;
 import com.vaadin.flow.data.provider.QuerySortOrder;
 import com.vaadin.flow.data.renderer.Renderer;
 import com.vaadin.flow.function.ValueProvider;
+
+import java.io.Serializable;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 /**
  * {@link ItemListing} column configuration.
@@ -188,6 +188,20 @@ public interface ItemListingColumn<P, T, V> extends Serializable {
 	 * @return Optional column footer component
 	 */
 	Optional<Component> getFooterComponent();
+
+	/**
+	 * Gets the custom part name of the footer cell.
+	 *
+	 * @return the part name
+	 */
+	Optional<String> getFooterPartName();
+
+	/**
+	 * Sets a custom part name for the footer cell.
+	 *
+	 * @param footerPartName the part name to set
+	 */
+	void setFooterPartName(String footerPartName);
 
 	/**
 	 * Sets the column footer component.
@@ -396,6 +410,20 @@ public interface ItemListingColumn<P, T, V> extends Serializable {
 	 */
 	void addValueChangeListener(
 			ValueChangeListener<V, GroupValueChangeEvent<V, P, Input<?>, EditorComponentGroup<P, T>>> valueChangeListener);
+
+	/**
+	 * Gets the custom part name of the header cell.
+	 *
+	 * @return the part name
+	 */
+	Optional<String> getHeaderPartName();
+
+	/**
+	 * Sets a custom part name for the header cell.
+	 *
+	 * @param headerPartName the part name to set
+	 */
+	void setHeaderPartName(String headerPartName);
 
 	/**
 	 * Column sort mode

@@ -51,6 +51,7 @@ import com.vaadin.flow.component.listbox.ListBox;
 import com.vaadin.flow.component.listbox.MultiSelectListBox;
 import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
 import com.vaadin.flow.component.select.Select;
+import com.vaadin.flow.component.shared.HasTooltip;
 import com.vaadin.flow.data.converter.Converter;
 
 import java.time.LocalDate;
@@ -140,6 +141,17 @@ public interface Input<T> extends ValueHolder<T, ValueChangeEvent<T>>, ValueComp
 	 *         otherwise.
 	 */
 	default Optional<HasPlaceholder> hasPlaceholder() {
+		return Optional.empty();
+	}
+
+	/**
+	 * Checks whether this component supports a tooltip, which text can be
+	 * handled using the {@link HasTooltip} interface.
+	 * @return If this component supports a tooltip, return the
+	 *         {@link HasTooltip} reference. An empty Optional is returned
+	 *         otherwise.
+	 */
+	default Optional<HasTooltip> hasTooltip() {
 		return Optional.empty();
 	}
 

@@ -15,26 +15,18 @@
  */
 package com.holonplatform.vaadin.flow.internal.components;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Stream;
-
 import com.holonplatform.core.Registration;
 import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.core.internal.utils.ObjectUtils;
 import com.holonplatform.core.property.Property;
 import com.holonplatform.core.property.PropertyBox;
-import com.holonplatform.vaadin.flow.components.BoundComponentGroup;
-import com.holonplatform.vaadin.flow.components.Composable;
-import com.holonplatform.vaadin.flow.components.HasComponent;
-import com.holonplatform.vaadin.flow.components.ValueComponent;
-import com.holonplatform.vaadin.flow.components.ValueHolder;
+import com.holonplatform.vaadin.flow.components.*;
 import com.holonplatform.vaadin.flow.components.events.GroupValueChangeEvent;
 import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
 import com.vaadin.flow.component.Component;
+
+import java.util.*;
+import java.util.stream.Stream;
 
 /**
  * Base {@link Composable} property form component.

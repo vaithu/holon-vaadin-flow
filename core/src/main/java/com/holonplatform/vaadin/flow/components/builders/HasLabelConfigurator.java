@@ -15,13 +15,13 @@
  */
 package com.holonplatform.vaadin.flow.components.builders;
 
-import java.util.function.Consumer;
-
 import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.vaadin.flow.components.HasLabel;
 import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
 import com.holonplatform.vaadin.flow.internal.components.builders.DefaultHasLabelConfigurator;
 import com.vaadin.flow.component.HasElement;
+
+import java.util.function.Consumer;
 
 /**
  * Configurator for {@link HasLabel} type components.
@@ -35,7 +35,7 @@ public interface HasLabelConfigurator<C extends HasLabelConfigurator<C>> {
 	/**
 	 * Sets the label text using a {@link Localizable} message.
 	 * <p>
-	 * The text value is interpred as <em>plain text</em> and the HTML markup is not supported.
+	 * The text value is interpret as <em>plain text</em> and the HTML markup is not supported.
 	 * </p>
 	 * <p>
 	 * A <code>null</code> value is interpreted as an empty text.

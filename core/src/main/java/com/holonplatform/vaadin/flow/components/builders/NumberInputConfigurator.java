@@ -15,14 +15,14 @@
  */
 package com.holonplatform.vaadin.flow.components.builders;
 
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
-import java.util.Locale;
-
 import com.holonplatform.vaadin.flow.components.Input;
 import com.holonplatform.vaadin.flow.components.ValueHolder.ValueChangeEvent;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.textfield.TextFieldVariant;
+
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.util.Locale;
 
 /**
  * {@link Number} type {@link Input} components configurator.
@@ -37,7 +37,9 @@ public interface NumberInputConfigurator<T extends Number, C extends NumberInput
 		InputNotifierConfigurator<C>, KeyNotifierConfigurator<C>, HasValueChangeModeConfigurator<C>,
 		HasAutocompleteConfigurator<C>, HasSizeConfigurator<C>, HasStyleConfigurator<C>, HasAutofocusConfigurator<C>,
 		FocusableConfigurator<Component, C>, HasPrefixAndSuffixConfigurator<C>, CompositionNotifierConfigurator<C>,
-		HasPlaceholderConfigurator<C>, HasLabelConfigurator<C>, HasTitleConfigurator<C>, HasPatternConfigurator<C>,
+		HasPlaceholderConfigurator<C>, HasLabelConfigurator<C>, HasTitleConfigurator<C>,HasTooltipConfigurator<C>,
+		HasPatternConfigurator<C>,HasAriaLabelConfigurator<C>,
+
 		HasThemeVariantConfigurator<TextFieldVariant, C>, DeferrableLocalizationConfigurator<C> {
 
 	/**

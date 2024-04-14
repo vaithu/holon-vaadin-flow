@@ -493,6 +493,7 @@ public class InputAdapter<T, V extends HasValue<?, T>, C extends Component> impl
 				v -> h.accept(getField(), getInputComponent(), v)));
 	}
 
+
 	/*
 	 * (non-Javadoc)
 	 * @see com.holonplatform.vaadin.flow.components.MayHavePlaceholder#hasPlaceholder()

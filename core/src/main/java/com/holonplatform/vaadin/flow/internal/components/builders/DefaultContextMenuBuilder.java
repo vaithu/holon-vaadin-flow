@@ -22,6 +22,9 @@ import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.contextmenu.ContextMenu;
 import com.vaadin.flow.component.contextmenu.MenuItem;
 import com.vaadin.flow.component.contextmenu.SubMenu;
+import com.vaadin.flow.component.shared.HasTooltip;
+
+import java.util.Optional;
 
 /**
  * Default {@link ContextMenuBuilder} implementation.
@@ -38,7 +41,7 @@ public class DefaultContextMenuBuilder
 						.configure(new DefaultClickEvent<>(e.getSource(), e.isFromClient()), e));
 	}
 
-	/*
+    /*
 	 * (non-Javadoc)
 	 * @see com.holonplatform.vaadin.flow.internal.components.builders.AbstractComponentConfigurator#getConfigurator()
 	 */

@@ -15,10 +15,6 @@
  */
 package com.holonplatform.vaadin.flow.internal.components.builders;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.function.Consumer;
-
 import com.holonplatform.vaadin.flow.components.builders.FormLayoutConfigurator;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasEnabled;
@@ -27,6 +23,11 @@ import com.vaadin.flow.component.HasStyle;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.formlayout.FormLayout.FormItem;
 import com.vaadin.flow.component.formlayout.FormLayout.ResponsiveStep;
+import com.vaadin.flow.component.shared.HasTooltip;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.function.Consumer;
 
 /**
  * Base {@link FormLayoutConfigurator} implementation.
@@ -57,7 +58,12 @@ public abstract class AbstractFormLayoutConfigurator<C extends FormLayoutConfigu
 		return Optional.of(getComponent());
 	}
 
-	/*
+    @Override
+    protected Optional<HasTooltip> hasTooltip() {
+        return Optional.empty();
+    }
+
+    /*
 	 * (non-Javadoc)
 	 * @see com.holonplatform.vaadin.flow.components.builders.HasComponentsConfigurator#add(com.vaadin.flow.component.
 	 * Component[])

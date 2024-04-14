@@ -15,21 +15,6 @@
  */
 package com.holonplatform.vaadin.flow.internal.components;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 import com.holonplatform.core.Validator;
 import com.holonplatform.core.beans.BeanPropertySet;
 import com.holonplatform.core.datastore.DataTarget;
@@ -54,40 +39,33 @@ import com.holonplatform.vaadin.flow.components.ValueHolder.ValueChangeListener;
 import com.holonplatform.vaadin.flow.components.builders.BeanListingBuilder;
 import com.holonplatform.vaadin.flow.components.builders.BeanListingBuilder.DatastoreBeanListingBuilder;
 import com.holonplatform.vaadin.flow.components.builders.ShortcutConfigurator;
-import com.holonplatform.vaadin.flow.components.events.ClickEventListener;
-import com.holonplatform.vaadin.flow.components.events.ColumnReorderListener;
-import com.holonplatform.vaadin.flow.components.events.ColumnResizeListener;
-import com.holonplatform.vaadin.flow.components.events.GroupValueChangeEvent;
-import com.holonplatform.vaadin.flow.components.events.ItemClickEvent;
-import com.holonplatform.vaadin.flow.components.events.ItemEvent;
-import com.holonplatform.vaadin.flow.components.events.ItemEventListener;
-import com.holonplatform.vaadin.flow.components.events.ItemListingDnDListener;
-import com.holonplatform.vaadin.flow.components.events.ItemListingDragEndEvent;
-import com.holonplatform.vaadin.flow.components.events.ItemListingDragStartEvent;
-import com.holonplatform.vaadin.flow.components.events.ItemListingDropEvent;
+import com.holonplatform.vaadin.flow.components.events.*;
 import com.holonplatform.vaadin.flow.data.DatastoreDataProvider;
 import com.holonplatform.vaadin.flow.data.ItemSort;
 import com.holonplatform.vaadin.flow.internal.components.builders.DefaultShortcutConfigurator;
 import com.holonplatform.vaadin.flow.internal.components.support.ItemListingColumn;
 import com.holonplatform.vaadin.flow.internal.components.support.ItemListingColumn.SortMode;
-import com.vaadin.flow.component.AttachEvent;
+import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.BlurNotifier.BlurEvent;
-import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.ComponentEventListener;
-import com.vaadin.flow.component.DetachEvent;
 import com.vaadin.flow.component.FocusNotifier.FocusEvent;
-import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.grid.Grid.Column;
 import com.vaadin.flow.component.grid.GridMultiSelectionModel.SelectAllCheckboxVisibility;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.grid.dnd.GridDropMode;
 import com.vaadin.flow.data.binder.Setter;
+import com.vaadin.flow.data.provider.BackEndDataProvider;
+import com.vaadin.flow.data.provider.CallbackDataProvider;
 import com.vaadin.flow.data.provider.QuerySortOrder;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.data.renderer.Renderer;
 import com.vaadin.flow.dom.DomEventListener;
 import com.vaadin.flow.dom.Element;
 import com.vaadin.flow.function.ValueProvider;
+
+import java.util.*;
+import java.util.function.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Default {@link BeanListing} implementation.
@@ -405,6 +383,8 @@ public class DefaultBeanListing<T> extends AbstractItemListing<T, String> implem
 			return getConfigurator();
 		}
 
+
+
 		/*
 		 * (non-Javadoc)
 		 * @see com.holonplatform.vaadin.flow.components.builders.ItemListingConfigurator#
@@ -572,6 +552,7 @@ public class DefaultBeanListing<T> extends AbstractItemListing<T, String> implem
 			return this;
 		}
 
+
 		/*
 		 * (non-Javadoc)
 		 * @see com.holonplatform.vaadin.flow.components.builders.ItemListingConfigurator#
@@ -636,6 +617,7 @@ public class DefaultBeanListing<T> extends AbstractItemListing<T, String> implem
 			builder.sortable(property, sortable);
 			return this;
 		}
+
 
 		/*
 		 * (non-Javadoc)
@@ -857,6 +839,12 @@ public class DefaultBeanListing<T> extends AbstractItemListing<T, String> implem
 			return this;
 		}
 
+		@Override
+		public DatastoreBeanListingBuilder<T> headerPartName(String property, String headerPartName) {
+			builder.headerPartName(property, headerPartName);
+			return this;
+		}
+
 		/*
 		 * (non-Javadoc)
 		 * @see com.holonplatform.vaadin.flow.components.builders.ItemListingConfigurator# footer(java.lang.Object,
@@ -865,6 +853,12 @@ public class DefaultBeanListing<T> extends AbstractItemListing<T, String> implem
 		@Override
 		public DatastoreBeanListingBuilder<T> footer(String property, Localizable footer) {
 			builder.footer(property, footer);
+			return this;
+		}
+
+		@Override
+		public DatastoreBeanListingBuilder<T> footerPartName(String property, String footerPartName) {
+			builder.footerPartName(property, footerPartName);
 			return this;
 		}
 
@@ -1600,6 +1594,54 @@ public class DefaultBeanListing<T> extends AbstractItemListing<T, String> implem
 			return builder.build();
 		}
 
+		@Override
+		public DatastoreBeanListingBuilder<T> items(BackEndDataProvider<T, Void> dataProvider) {
+			builder.items(dataProvider);
+			return this;
+		}
+
+		@Override
+		public DatastoreBeanListingBuilder<T> mobileColumn(ValueProvider<T, Component> valueProvider) {
+			builder.mobileColumn(valueProvider);
+			return this;
+		}
+
+		@Override
+		public DatastoreBeanListingBuilder<T> mobileColumn(Renderer<T> renderer) {
+			builder.mobileColumn(renderer);
+			return this;
+		}
+
+		@Override
+		public DatastoreBeanListingBuilder<T> items(CallbackDataProvider.FetchCallback<T, Void> fetchCallback) {
+			builder.items(fetchCallback);
+			return this;
+		}
+
+		@Override
+		public DatastoreBeanListingBuilder<T> items(CallbackDataProvider.FetchCallback<T, Void> fetchCallback,
+													CallbackDataProvider.CountCallback<T, Void> countCallback) {
+			builder.items(fetchCallback, countCallback);
+			return this;
+		}
+
+		@Override
+		public DatastoreBeanListingBuilder<T> itemCountEstimate(int itemCountEstimate) {
+			builder.itemCountEstimate(itemCountEstimate);
+			return this;
+		}
+
+		@Override
+		public DatastoreBeanListingBuilder<T> itemCountEstimateIncrease(int itemCountEstimateIncrease) {
+			builder.itemCountEstimateIncrease(itemCountEstimateIncrease);
+			return this;
+		}
+
+		@Override
+		public DatastoreBeanListingBuilder<T> itemCountUnknown() {
+			builder.itemCountUnknown();
+			return this;
+		}
 	}
 
 	static class ValueProviderAdapter<T, V> implements ValueProvider<T, String> {

@@ -15,12 +15,6 @@
  */
 package com.holonplatform.vaadin.flow.internal.components.builders;
 
-import java.text.NumberFormat;
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
-import java.util.Optional;
-
 import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.core.internal.utils.ObjectUtils;
 import com.holonplatform.vaadin.flow.components.Input;
@@ -32,29 +26,21 @@ import com.holonplatform.vaadin.flow.components.builders.ShortcutConfigurator;
 import com.holonplatform.vaadin.flow.components.converters.StringToNumberConverter;
 import com.holonplatform.vaadin.flow.components.events.ReadonlyChangeListener;
 import com.holonplatform.vaadin.flow.components.support.InputAdaptersContainer;
-import com.vaadin.flow.component.BlurNotifier;
+import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.BlurNotifier.BlurEvent;
-import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.ComponentEventListener;
-import com.vaadin.flow.component.CompositionEndEvent;
-import com.vaadin.flow.component.CompositionStartEvent;
-import com.vaadin.flow.component.CompositionUpdateEvent;
-import com.vaadin.flow.component.FocusNotifier;
 import com.vaadin.flow.component.FocusNotifier.FocusEvent;
-import com.vaadin.flow.component.HasEnabled;
-import com.vaadin.flow.component.HasSize;
-import com.vaadin.flow.component.HasStyle;
-import com.vaadin.flow.component.InputEvent;
-import com.vaadin.flow.component.Key;
-import com.vaadin.flow.component.KeyDownEvent;
-import com.vaadin.flow.component.KeyModifier;
-import com.vaadin.flow.component.KeyPressEvent;
-import com.vaadin.flow.component.KeyUpEvent;
+import com.vaadin.flow.component.shared.HasTooltip;
 import com.vaadin.flow.component.textfield.Autocapitalize;
 import com.vaadin.flow.component.textfield.Autocomplete;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.component.textfield.TextFieldVariant;
 import com.vaadin.flow.data.value.ValueChangeMode;
+
+import java.text.NumberFormat;
+import java.util.Collections;
+import java.util.List;
+import java.util.Locale;
+import java.util.Optional;
 
 /**
  * Base {@link NumberInputConfigurator} implementation using a {@link TextField} as concrete component.
@@ -81,6 +67,7 @@ public abstract class AbstractNumberInputBuilder<T extends Number, C extends Num
 	protected final DefaultHasValueChangeModeConfigurator valueChangeModeConfigurator;
 	protected final DefaultHasLabelConfigurator<TextField> labelConfigurator;
 	protected final DefaultHasTitleConfigurator<TextField> titleConfigurator;
+	protected final DefaultHasTooltipConfigurator<TextField> tooltipConfigurator;
 	protected final DefaultHasPlaceholderConfigurator<TextField> placeholderConfigurator;
 
 	public AbstractNumberInputBuilder(Class<T> numberType) {
@@ -103,6 +90,7 @@ public abstract class AbstractNumberInputBuilder<T extends Number, C extends Num
 		getComponent().setAutocapitalize(Autocapitalize.NONE);
 		getComponent().setAutocorrect(false);
 		getComponent().setAutocomplete(Autocomplete.OFF);
+		getComponent().setClearButtonVisible(true);
 
 		autocompleteConfigurator = new DefaultHasAutocompleteConfigurator(getComponent());
 		prefixAndSuffixConfigurator = new DefaultHasPrefixAndSuffixConfigurator(getComponent());
@@ -116,6 +104,9 @@ public abstract class AbstractNumberInputBuilder<T extends Number, C extends Num
 		}, this);
 		titleConfigurator = new DefaultHasTitleConfigurator<>(getComponent(), title -> {
 			getComponent().setTitle(title);
+		}, this);
+		tooltipConfigurator = new DefaultHasTooltipConfigurator<>(getComponent(), tooltip -> {
+			getComponent().setTooltipText(tooltip);
 		}, this);
 		placeholderConfigurator = new DefaultHasPlaceholderConfigurator<>(getComponent(), placeholder -> {
 			getComponent().setPlaceholder(placeholder);
@@ -166,7 +157,12 @@ public abstract class AbstractNumberInputBuilder<T extends Number, C extends Num
 		return Optional.of(getComponent());
 	}
 
-	/**
+    @Override
+    protected Optional<HasTooltip> hasTooltip() {
+		return Optional.of(getComponent());
+    }
+
+    /**
 	 * Build the component as an {@link Input}.
 	 * @return The {@link Input} instance
 	 */
@@ -182,7 +178,8 @@ public abstract class AbstractNumberInputBuilder<T extends Number, C extends Num
 				.labelPropertyHandler((f, c) -> c.getLabel(), (f, c, v) -> c.setLabel(v))
 				.titlePropertyHandler((f, c) -> c.getTitle(), (f, c, v) -> c.setTitle(v))
 				.placeholderPropertyHandler((f, c) -> c.getPlaceholder(), (f, c, v) -> c.setPlaceholder(v))
-				.focusOperation(f -> f.focus()).hasEnabledSupplier(f -> f).build();
+				.focusOperation(f -> f.focus()).hasEnabledSupplier(f -> f)
+				.build();
 
 		// conversion
 		final Input<T> numberInput = Input.builder(input, getConverter())
@@ -577,6 +574,17 @@ public abstract class AbstractNumberInputBuilder<T extends Number, C extends Num
 
 	/*
 	 * (non-Javadoc)
+	 * @see com.holonplatform.vaadin.flow.components.builders.HasTooltipConfigurator#title(com.holonplatform.core.i18n.
+	 * Localizable)
+	 */
+	@Override
+	public C tooltip(Localizable tooltip) {
+		tooltipConfigurator.tooltip(tooltip);
+		return getConfigurator();
+	}
+
+	/*
+	 * (non-Javadoc)
 	 * @see
 	 * com.holonplatform.vaadin.flow.components.builders.HasThemeVariantConfigurator#withThemeVariants(java.lang.Enum[])
 	 */
@@ -615,4 +623,34 @@ public abstract class AbstractNumberInputBuilder<T extends Number, C extends Num
 		return getConfigurator();
 	}
 
+	/**
+	 * Set the aria-label of the component to the given text.
+	 *
+	 * This method should not be used if setAriaLabelledBy(String) is also used. If both attributes are present, 
+	 * aria-labelledby will take precedence over aria-label.
+	 * {@link #ariaLabel(String)}.
+	 *
+	 * @param ariaLabel the value to set
+	 * @return this
+	 */
+	@Override
+	public C ariaLabel(String ariaLabel) {
+		getComponent().setAriaLabel(ariaLabel);
+		return getConfigurator();
+	}
+
+	/**
+	 * Set the aria-labelledby of the component. The value must be a valid id attribute of another element that labels
+	 * the component. The label element must be in the same DOM scope of the component, otherwise screen readers
+	 * may fail to announce the label content properly.
+	 * {@link #ariaLabel(String)}.
+	 *
+	 * @param ariaLabelledBy the value to set
+	 * @return this
+	 */
+	@Override
+	public C ariaLabelledBy(String ariaLabelledBy) {
+		getComponent().setAriaLabelledBy(ariaLabelledBy);
+		return getConfigurator();
+	}
 }

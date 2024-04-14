@@ -15,12 +15,6 @@
  */
 package com.holonplatform.vaadin.flow.internal.components.builders;
 
-import java.util.Collections;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.function.Consumer;
-import java.util.function.Function;
-
 import com.holonplatform.core.TypedExpression;
 import com.holonplatform.core.Validator;
 import com.holonplatform.core.datastore.DataTarget;
@@ -33,12 +27,8 @@ import com.holonplatform.core.property.PropertyBox;
 import com.holonplatform.core.query.QueryConfigurationProvider;
 import com.holonplatform.core.query.QueryFilter;
 import com.holonplatform.core.query.QuerySort;
-import com.holonplatform.vaadin.flow.components.Input;
+import com.holonplatform.vaadin.flow.components.*;
 import com.holonplatform.vaadin.flow.components.Selectable.SelectionListener;
-import com.holonplatform.vaadin.flow.components.SingleSelect;
-import com.holonplatform.vaadin.flow.components.ValidatableInput;
-import com.holonplatform.vaadin.flow.components.ValidatableSingleSelect;
-import com.holonplatform.vaadin.flow.components.ValidationStatusHandler;
 import com.holonplatform.vaadin.flow.components.ValueHolder.ValueChangeEvent;
 import com.holonplatform.vaadin.flow.components.ValueHolder.ValueChangeListener;
 import com.holonplatform.vaadin.flow.components.builders.FilterableSingleSelectConfigurator.PropertyFilterableSingleSelectInputBuilder;
@@ -49,20 +39,20 @@ import com.holonplatform.vaadin.flow.data.AdditionalItemsProvider;
 import com.holonplatform.vaadin.flow.data.DatastoreDataProvider;
 import com.holonplatform.vaadin.flow.data.ItemConverter;
 import com.holonplatform.vaadin.flow.internal.data.PropertyItemConverter;
-import com.vaadin.flow.component.AttachEvent;
+import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.BlurNotifier.BlurEvent;
-import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.ComponentEventListener;
-import com.vaadin.flow.component.DetachEvent;
 import com.vaadin.flow.component.FocusNotifier.FocusEvent;
-import com.vaadin.flow.component.Key;
-import com.vaadin.flow.data.provider.DataProvider;
-import com.vaadin.flow.data.provider.ListDataProvider;
-import com.vaadin.flow.data.provider.QuerySortOrder;
+import com.vaadin.flow.data.provider.*;
 import com.vaadin.flow.data.renderer.Renderer;
 import com.vaadin.flow.dom.DomEventListener;
 import com.vaadin.flow.dom.Element;
 import com.vaadin.flow.function.SerializableFunction;
+
+import java.util.Collections;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 /**
  * Default {@link PropertyFilterableSingleSelectInputBuilder} implementation.
@@ -808,6 +798,42 @@ public class DefaultPropertyFilterableSingleSelectInputBuilder<T> extends Abstra
 	@Override
 	public ShortcutConfigurator<PropertyFilterableSingleSelectInputBuilder<T>> withFocusShortcut(Key key) {
 		return new DelegatedShortcutConfigurator<>(builder.withFocusShortcut(key), this);
+	}
+
+	@Override
+	public PropertyFilterableSingleSelectInputBuilder<T> items(BackEndDataProvider<T, PropertyBox> dataProvider) {
+		builder.items(dataProvider);
+		return this;
+	}
+
+	@Override
+	public PropertyFilterableSingleSelectInputBuilder<T> items(CallbackDataProvider.FetchCallback<T, PropertyBox> fetchCallback) {
+		builder.items(fetchCallback);
+		return this;
+	}
+
+	@Override
+	public PropertyFilterableSingleSelectInputBuilder<T> items(CallbackDataProvider.FetchCallback<T, PropertyBox> fetchCallback, CallbackDataProvider.CountCallback<T, PropertyBox> countCallback) {
+		builder.items(fetchCallback, countCallback);
+		return this;
+	}
+
+	@Override
+	public PropertyFilterableSingleSelectInputBuilder<T> itemCountEstimate(int itemCountEstimate) {
+		builder.itemCountEstimate(itemCountEstimate);
+		return this;
+	}
+
+	@Override
+	public PropertyFilterableSingleSelectInputBuilder<T> itemCountEstimateIncrease(int itemCountEstimateIncrease) {
+		builder.itemCountEstimateIncrease(itemCountEstimateIncrease);
+		return this;
+	}
+
+	@Override
+	public PropertyFilterableSingleSelectInputBuilder<T> itemCountUnknown() {
+		builder.itemCountUnknown();
+		return this;
 	}
 
 	// ------- extended builders
@@ -1573,6 +1599,41 @@ public class DefaultPropertyFilterableSingleSelectInputBuilder<T> extends Abstra
 			return validatableInputConfigurator.configure(ValidatableSingleSelect.from(builder.build()));
 		}
 
+		@Override
+		public ValidatablePropertyFilterableSingleSelectInputBuilder<T> items(BackEndDataProvider<T, PropertyBox> dataProvider) {
+			builder.items(dataProvider);
+			return this;
+		}
+
+		@Override
+		public ValidatablePropertyFilterableSingleSelectInputBuilder<T> items(CallbackDataProvider.FetchCallback<T, PropertyBox> fetchCallback) {
+			builder.items(fetchCallback);
+			return this;
+		}
+
+		@Override
+		public ValidatablePropertyFilterableSingleSelectInputBuilder<T> items(CallbackDataProvider.FetchCallback<T, PropertyBox> fetchCallback, CallbackDataProvider.CountCallback<T, PropertyBox> countCallback) {
+			builder.items(fetchCallback, countCallback);
+			return this;
+		}
+
+		@Override
+		public ValidatablePropertyFilterableSingleSelectInputBuilder<T> itemCountEstimate(int itemCountEstimate) {
+			builder.itemCountEstimate(itemCountEstimate);
+			return this;
+		}
+
+		@Override
+		public ValidatablePropertyFilterableSingleSelectInputBuilder<T> itemCountEstimateIncrease(int itemCountEstimateIncrease) {
+			builder.itemCountEstimateIncrease(itemCountEstimateIncrease);
+			return this;
+		}
+
+		@Override
+		public ValidatablePropertyFilterableSingleSelectInputBuilder<T> itemCountUnknown() {
+			builder.itemCountUnknown();
+			return this;
+		}
 	}
 
 	static class DefaultDatastorePropertyFilterableSingleSelectInputBuilder<T>
@@ -2237,6 +2298,41 @@ public class DefaultPropertyFilterableSingleSelectInputBuilder<T> extends Abstra
 			return builder.build();
 		}
 
+		@Override
+		public DatastorePropertyFilterableSingleSelectInputBuilder<T> items(BackEndDataProvider<T, PropertyBox> dataProvider) {
+			builder.items(dataProvider);
+			return this;
+		}
+
+		@Override
+		public DatastorePropertyFilterableSingleSelectInputBuilder<T> items(CallbackDataProvider.FetchCallback<T, PropertyBox> fetchCallback) {
+			builder.items(fetchCallback);
+			return this;
+		}
+
+		@Override
+		public DatastorePropertyFilterableSingleSelectInputBuilder<T> items(CallbackDataProvider.FetchCallback<T, PropertyBox> fetchCallback, CallbackDataProvider.CountCallback<T, PropertyBox> countCallback) {
+			builder.items(fetchCallback, countCallback);
+			return this;
+		}
+
+		@Override
+		public DatastorePropertyFilterableSingleSelectInputBuilder<T> itemCountEstimate(int itemCountEstimate) {
+			builder.itemCountEstimate(itemCountEstimate);
+			return this;
+		}
+
+		@Override
+		public DatastorePropertyFilterableSingleSelectInputBuilder<T> itemCountEstimateIncrease(int itemCountEstimateIncrease) {
+			builder.itemCountEstimateIncrease(itemCountEstimateIncrease);
+			return this;
+		}
+
+		@Override
+		public DatastorePropertyFilterableSingleSelectInputBuilder<T> itemCountUnknown() {
+			builder.itemCountUnknown();
+			return this;
+		}
 	}
 
 	static class DefaultValidatableDatastorePropertyFilterableSingleSelectInputBuilder<T>
@@ -2963,6 +3059,41 @@ public class DefaultPropertyFilterableSingleSelectInputBuilder<T> extends Abstra
 			return validatableInputConfigurator.configure(ValidatableSingleSelect.from(builder.build()));
 		}
 
+		@Override
+		public ValidatableDatastorePropertyFilterableSingleSelectInputBuilder<T> items(BackEndDataProvider<T, PropertyBox> dataProvider) {
+			builder.items(dataProvider);
+			return this;
+		}
+
+		@Override
+		public ValidatableDatastorePropertyFilterableSingleSelectInputBuilder<T> items(CallbackDataProvider.FetchCallback<T, PropertyBox> fetchCallback) {
+			builder.items(fetchCallback);
+			return this;
+		}
+
+		@Override
+		public ValidatableDatastorePropertyFilterableSingleSelectInputBuilder<T> items(CallbackDataProvider.FetchCallback<T, PropertyBox> fetchCallback, CallbackDataProvider.CountCallback<T, PropertyBox> countCallback) {
+			builder.items(fetchCallback, countCallback);
+			return this;
+		}
+
+		@Override
+		public ValidatableDatastorePropertyFilterableSingleSelectInputBuilder<T> itemCountEstimate(int itemCountEstimate) {
+			builder.itemCountEstimate(itemCountEstimate);
+			return this;
+		}
+
+		@Override
+		public ValidatableDatastorePropertyFilterableSingleSelectInputBuilder<T> itemCountEstimateIncrease(int itemCountEstimateIncrease) {
+			builder.itemCountEstimateIncrease(itemCountEstimateIncrease);
+			return this;
+		}
+
+		@Override
+		public ValidatableDatastorePropertyFilterableSingleSelectInputBuilder<T> itemCountUnknown() {
+			builder.itemCountUnknown();
+			return this;
+		}
 	}
 
 }

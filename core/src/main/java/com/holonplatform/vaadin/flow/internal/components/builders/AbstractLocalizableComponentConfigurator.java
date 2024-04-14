@@ -18,6 +18,9 @@ package com.holonplatform.vaadin.flow.internal.components.builders;
 import com.holonplatform.vaadin.flow.components.builders.ComponentConfigurator;
 import com.holonplatform.vaadin.flow.components.builders.DeferrableLocalizationConfigurator;
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.shared.HasTooltip;
+
+import java.util.Optional;
 
 /**
  * Base localizable {@link ComponentConfigurator}.
@@ -36,6 +39,11 @@ public abstract class AbstractLocalizableComponentConfigurator<C extends Compone
 	 */
 	public AbstractLocalizableComponentConfigurator(C component) {
 		super(component);
+	}
+
+	@Override
+	protected Optional<HasTooltip> hasTooltip() {
+		return Optional.empty();
 	}
 
 	/*

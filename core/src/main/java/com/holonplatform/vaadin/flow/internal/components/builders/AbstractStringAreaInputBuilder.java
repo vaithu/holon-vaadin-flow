@@ -15,10 +15,6 @@
  */
 package com.holonplatform.vaadin.flow.internal.components.builders;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-
 import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.vaadin.flow.components.Input;
 import com.holonplatform.vaadin.flow.components.ValidatableInput;
@@ -30,29 +26,19 @@ import com.holonplatform.vaadin.flow.components.events.ReadonlyChangeListener;
 import com.holonplatform.vaadin.flow.components.support.InputAdaptersContainer;
 import com.holonplatform.vaadin.flow.internal.components.support.StringInputIsEmptySupplier;
 import com.holonplatform.vaadin.flow.internal.components.support.StringInputValueSupplier;
-import com.vaadin.flow.component.BlurNotifier;
+import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.BlurNotifier.BlurEvent;
-import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.ComponentEventListener;
-import com.vaadin.flow.component.CompositionEndEvent;
-import com.vaadin.flow.component.CompositionStartEvent;
-import com.vaadin.flow.component.CompositionUpdateEvent;
-import com.vaadin.flow.component.FocusNotifier;
 import com.vaadin.flow.component.FocusNotifier.FocusEvent;
-import com.vaadin.flow.component.HasEnabled;
-import com.vaadin.flow.component.HasSize;
-import com.vaadin.flow.component.HasStyle;
-import com.vaadin.flow.component.InputEvent;
-import com.vaadin.flow.component.Key;
-import com.vaadin.flow.component.KeyDownEvent;
-import com.vaadin.flow.component.KeyModifier;
-import com.vaadin.flow.component.KeyPressEvent;
-import com.vaadin.flow.component.KeyUpEvent;
+import com.vaadin.flow.component.shared.HasTooltip;
 import com.vaadin.flow.component.textfield.Autocapitalize;
 import com.vaadin.flow.component.textfield.Autocomplete;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextAreaVariant;
 import com.vaadin.flow.data.value.ValueChangeMode;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * Base {@link StringAreaInputConfigurator} implementation using a {@link TextArea} as concrete component.
@@ -78,6 +64,7 @@ public abstract class AbstractStringAreaInputBuilder<C extends StringAreaInputCo
 	protected final DefaultKeyNotifierConfigurator keyNotifierConfigurator;
 	protected final DefaultHasValueChangeModeConfigurator valueChangeModeConfigurator;
 	protected final DefaultHasLabelConfigurator<TextArea> labelConfigurator;
+	protected final DefaultHasTooltipConfigurator<TextArea> tooltipConfigurator;
 	protected final DefaultHasPlaceholderConfigurator<TextArea> placeholderConfigurator;
 
 	public AbstractStringAreaInputBuilder() {
@@ -110,6 +97,11 @@ public abstract class AbstractStringAreaInputBuilder<C extends StringAreaInputCo
 		placeholderConfigurator = new DefaultHasPlaceholderConfigurator<>(getComponent(), placeholder -> {
 			getComponent().setPlaceholder(placeholder);
 		}, this);
+		tooltipConfigurator = new DefaultHasTooltipConfigurator<>(getComponent(), tooltip -> {
+			getComponent().setPlaceholder(tooltip);
+		}, this);
+
+		getComponent().setClearButtonVisible(true);
 	}
 
 	protected boolean isEmptyValuesAsNull() {
@@ -135,7 +127,12 @@ public abstract class AbstractStringAreaInputBuilder<C extends StringAreaInputCo
 		return Optional.of(getComponent());
 	}
 
-	/**
+    @Override
+    protected Optional<HasTooltip> hasTooltip() {
+		return Optional.of(getComponent());
+    }
+
+    /**
 	 * Build the component as an {@link Input}.
 	 * @return The {@link Input} instance
 	 */
@@ -503,6 +500,17 @@ public abstract class AbstractStringAreaInputBuilder<C extends StringAreaInputCo
 	@Override
 	public C placeholder(Localizable placeholder) {
 		placeholderConfigurator.placeholder(placeholder);
+		return getConfigurator();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see com.holonplatform.vaadin.flow.components.builders.HasTooltipConfigurator#title(com.holonplatform.core.i18n.
+	 * Localizable)
+	 */
+	@Override
+	public C tooltip(Localizable tooltip) {
+		tooltipConfigurator.tooltip(tooltip);
 		return getConfigurator();
 	}
 

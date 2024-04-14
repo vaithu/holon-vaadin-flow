@@ -16,10 +16,12 @@
 package com.holonplatform.vaadin.flow.components.builders;
 
 import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.textfield.HasPrefixAndSuffix;
+import com.vaadin.flow.component.shared.HasPrefix;
+import com.vaadin.flow.component.shared.HasSuffix;
+
 
 /**
- * Configurator for {@link HasPrefixAndSuffix} type components.
+ * Configurator for {@link HasPrefix,HasSuffix} type components.
  * 
  * @param <C> Concrete configurator type
  * 

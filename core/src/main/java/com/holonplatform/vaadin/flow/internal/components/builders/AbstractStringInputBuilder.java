@@ -15,10 +15,6 @@
  */
 package com.holonplatform.vaadin.flow.internal.components.builders;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-
 import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.vaadin.flow.components.Input;
 import com.holonplatform.vaadin.flow.components.ValidatableInput;
@@ -30,29 +26,19 @@ import com.holonplatform.vaadin.flow.components.events.ReadonlyChangeListener;
 import com.holonplatform.vaadin.flow.components.support.InputAdaptersContainer;
 import com.holonplatform.vaadin.flow.internal.components.support.StringInputIsEmptySupplier;
 import com.holonplatform.vaadin.flow.internal.components.support.StringInputValueSupplier;
-import com.vaadin.flow.component.BlurNotifier;
+import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.BlurNotifier.BlurEvent;
-import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.ComponentEventListener;
-import com.vaadin.flow.component.CompositionEndEvent;
-import com.vaadin.flow.component.CompositionStartEvent;
-import com.vaadin.flow.component.CompositionUpdateEvent;
-import com.vaadin.flow.component.FocusNotifier;
 import com.vaadin.flow.component.FocusNotifier.FocusEvent;
-import com.vaadin.flow.component.HasEnabled;
-import com.vaadin.flow.component.HasSize;
-import com.vaadin.flow.component.HasStyle;
-import com.vaadin.flow.component.InputEvent;
-import com.vaadin.flow.component.Key;
-import com.vaadin.flow.component.KeyDownEvent;
-import com.vaadin.flow.component.KeyModifier;
-import com.vaadin.flow.component.KeyPressEvent;
-import com.vaadin.flow.component.KeyUpEvent;
+import com.vaadin.flow.component.shared.HasTooltip;
 import com.vaadin.flow.component.textfield.Autocapitalize;
 import com.vaadin.flow.component.textfield.Autocomplete;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.component.textfield.TextFieldVariant;
 import com.vaadin.flow.data.value.ValueChangeMode;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * Base {@link StringInputConfigurator} implementation using a {@link TextField} as concrete component.
@@ -79,6 +65,8 @@ public abstract class AbstractStringInputBuilder<C extends StringInputConfigurat
 	protected final DefaultHasValueChangeModeConfigurator valueChangeModeConfigurator;
 	protected final DefaultHasLabelConfigurator<TextField> labelConfigurator;
 	protected final DefaultHasTitleConfigurator<TextField> titleConfigurator;
+	protected final DefaultHasTooltipConfigurator<TextField> tooltipConfigurator;
+
 	protected final DefaultHasPlaceholderConfigurator<TextField> placeholderConfigurator;
 
 	public AbstractStringInputBuilder() {
@@ -111,9 +99,14 @@ public abstract class AbstractStringInputBuilder<C extends StringInputConfigurat
 		titleConfigurator = new DefaultHasTitleConfigurator<>(getComponent(), title -> {
 			getComponent().setTitle(title);
 		}, this);
+		tooltipConfigurator = new DefaultHasTooltipConfigurator<>(getComponent(), title -> {
+			getComponent().setTitle(title);
+		}, this);
 		placeholderConfigurator = new DefaultHasPlaceholderConfigurator<>(getComponent(), placeholder -> {
 			getComponent().setPlaceholder(placeholder);
 		}, this);
+
+		getComponent().setClearButtonVisible(true);
 	}
 
 	protected boolean isEmptyValuesAsNull() {
@@ -139,7 +132,12 @@ public abstract class AbstractStringInputBuilder<C extends StringInputConfigurat
 		return Optional.of(getComponent());
 	}
 
-	/**
+    @Override
+    protected Optional<HasTooltip> hasTooltip() {
+		return Optional.of(getComponent());
+    }
+
+    /**
 	 * Build the component as an {@link Input}.
 	 * @return The {@link Input} instance
 	 */
@@ -549,6 +547,18 @@ public abstract class AbstractStringInputBuilder<C extends StringInputConfigurat
 	@Override
 	public C title(Localizable title) {
 		titleConfigurator.title(title);
+		return getConfigurator();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see com.holonplatform.vaadin.flow.components.builders.HasTooltipConfigurator#title(com.holonplatform.core.i18n.
+	 * Localizable)
+	 */
+
+	@Override
+	public C tooltip(Localizable tooltip) {
+		tooltipConfigurator.tooltip(tooltip);
 		return getConfigurator();
 	}
 

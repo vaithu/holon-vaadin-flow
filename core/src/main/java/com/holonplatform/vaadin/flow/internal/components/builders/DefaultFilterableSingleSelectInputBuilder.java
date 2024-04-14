@@ -15,17 +15,6 @@
  */
 package com.holonplatform.vaadin.flow.internal.components.builders;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.function.Consumer;
-import java.util.function.Function;
-
 import com.holonplatform.core.Validator;
 import com.holonplatform.core.datastore.DataTarget;
 import com.holonplatform.core.datastore.Datastore;
@@ -36,12 +25,8 @@ import com.holonplatform.core.property.PropertyBox;
 import com.holonplatform.core.query.QueryConfigurationProvider;
 import com.holonplatform.core.query.QueryFilter;
 import com.holonplatform.core.query.QuerySort;
-import com.holonplatform.vaadin.flow.components.Input;
+import com.holonplatform.vaadin.flow.components.*;
 import com.holonplatform.vaadin.flow.components.Selectable.SelectionListener;
-import com.holonplatform.vaadin.flow.components.SingleSelect;
-import com.holonplatform.vaadin.flow.components.ValidatableInput;
-import com.holonplatform.vaadin.flow.components.ValidatableSingleSelect;
-import com.holonplatform.vaadin.flow.components.ValidationStatusHandler;
 import com.holonplatform.vaadin.flow.components.ValueHolder.ValueChangeEvent;
 import com.holonplatform.vaadin.flow.components.ValueHolder.ValueChangeListener;
 import com.holonplatform.vaadin.flow.components.builders.FilterableSingleSelectConfigurator.FilterableSingleSelectInputBuilder;
@@ -57,28 +42,22 @@ import com.holonplatform.vaadin.flow.internal.components.support.DeferrableItemL
 import com.holonplatform.vaadin.flow.internal.components.support.ExceptionSwallowingSupplier;
 import com.holonplatform.vaadin.flow.internal.converters.ItemConverterConverter;
 import com.holonplatform.vaadin.flow.internal.utils.CollectionUtils;
-import com.vaadin.flow.component.AttachEvent;
-import com.vaadin.flow.component.BlurNotifier;
+import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.BlurNotifier.BlurEvent;
-import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.ComponentEventListener;
-import com.vaadin.flow.component.DetachEvent;
-import com.vaadin.flow.component.FocusNotifier;
 import com.vaadin.flow.component.FocusNotifier.FocusEvent;
-import com.vaadin.flow.component.HasEnabled;
-import com.vaadin.flow.component.HasSize;
-import com.vaadin.flow.component.HasStyle;
-import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.combobox.ComboBoxBase.CustomValueSetEvent;
-import com.vaadin.flow.data.provider.DataProvider;
-import com.vaadin.flow.data.provider.ListDataProvider;
-import com.vaadin.flow.data.provider.QuerySortOrder;
+import com.vaadin.flow.component.shared.HasTooltip;
+import com.vaadin.flow.data.provider.*;
 import com.vaadin.flow.data.renderer.Renderer;
 import com.vaadin.flow.data.renderer.TextRenderer;
 import com.vaadin.flow.dom.DomEventListener;
 import com.vaadin.flow.dom.Element;
 import com.vaadin.flow.function.SerializableFunction;
+
+import java.util.*;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 /**
  * Default {@link FilterableSingleSelectInputBuilder} implementation.
@@ -162,7 +141,12 @@ public class DefaultFilterableSingleSelectInputBuilder<T, ITEM> extends
 		return Optional.of(getComponent());
 	}
 
-	/*
+    @Override
+    protected Optional<HasTooltip> hasTooltip() {
+		return Optional.of(getComponent());
+    }
+
+    /*
 	 * (non-Javadoc)
 	 * 
 	 * @see com.holonplatform.vaadin.flow.internal.components.builders.
@@ -219,10 +203,55 @@ public class DefaultFilterableSingleSelectInputBuilder<T, ITEM> extends
 		return select;
 	}
 
+	private void alert() {
+		System.out.println("This needs to be verified Babu if not working correctly");
+	}
+
 	@Override
-	public FilterableSingleSelectInputBuilder<T, ITEM> allowedCharPattern(String pattern) {
-		getComponent().setAllowedCharPattern(pattern);
+	public FilterableSingleSelectInputBuilder<T, ITEM> items(BackEndDataProvider<T, ITEM> dataProvider) {
+		alert();
+		getComponent().setItems((BackEndDataProvider<ITEM, String>) dataProvider);
 		return getConfigurator();
+	}
+
+	@Override
+	public FilterableSingleSelectInputBuilder<T, ITEM> items(CallbackDataProvider.FetchCallback<T, ITEM> fetchCallback) {
+		alert();
+
+		getComponent().setItems((CallbackDataProvider.FetchCallback<ITEM, String>) fetchCallback);
+		return getConfigurator();
+
+
+
+
+	}
+
+	@Override
+	public FilterableSingleSelectInputBuilder<T, ITEM> items(CallbackDataProvider.FetchCallback<T, ITEM> fetchCallback, CallbackDataProvider.CountCallback<T, ITEM> countCallback) {
+		alert();
+		getComponent().setItems((CallbackDataProvider.FetchCallback<ITEM, String>) fetchCallback, (CallbackDataProvider.CountCallback<ITEM, String>) countCallback);
+		return getConfigurator();
+	}
+
+	@Override
+	public FilterableSingleSelectInputBuilder<T, ITEM> itemCountEstimate(int itemCountEstimate) {
+		alert();
+		getComponent().getLazyDataView().setItemCountEstimate(itemCountEstimate);
+		return this;
+	}
+
+	@Override
+	public FilterableSingleSelectInputBuilder<T, ITEM> itemCountEstimateIncrease(int itemCountEstimateIncrease) {
+		alert();
+		getComponent().getLazyDataView().setItemCountEstimateIncrease(itemCountEstimateIncrease);
+		return this;
+	}
+
+	@Override
+	public FilterableSingleSelectInputBuilder<T, ITEM> itemCountUnknown() {
+		alert();
+		getComponent().getLazyDataView().setItemCountUnknown();
+		return this;
 	}
 
 
@@ -583,11 +612,11 @@ public class DefaultFilterableSingleSelectInputBuilder<T, ITEM> extends
 	 * com.holonplatform.vaadin.flow.components.builders.HasPatternConfigurator#
 	 * allowedCharPattern(String)
 	 */
-	/*@Override
+	@Override
 	public FilterableSingleSelectInputBuilder<T, ITEM> allowedCharPattern(String pattern) {
 		getComponent().setAllowedCharPattern(pattern);
 		return getConfigurator();
-	}*/
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -1372,6 +1401,41 @@ public class DefaultFilterableSingleSelectInputBuilder<T, ITEM> extends
 			return validatableInputConfigurator.configure(ValidatableSingleSelect.from(builder.build()));
 		}
 
+		@Override
+		public ValidatableFilterableSingleSelectInputBuilder<T, ITEM> items(BackEndDataProvider<T, ITEM> dataProvider) {
+			builder.items(dataProvider);
+			return this;
+		}
+
+		@Override
+		public ValidatableFilterableSingleSelectInputBuilder<T, ITEM> items(CallbackDataProvider.FetchCallback<T, ITEM> fetchCallback) {
+			builder.items(fetchCallback);
+			return this;
+		}
+
+		@Override
+		public ValidatableFilterableSingleSelectInputBuilder<T, ITEM> items(CallbackDataProvider.FetchCallback<T, ITEM> fetchCallback, CallbackDataProvider.CountCallback<T, ITEM> countCallback) {
+			builder.items(fetchCallback, countCallback);
+			return this;
+		}
+
+		@Override
+		public ValidatableFilterableSingleSelectInputBuilder<T, ITEM> itemCountEstimate(int itemCountEstimate) {
+			builder.itemCountEstimate(itemCountEstimate);
+			return this;
+		}
+
+		@Override
+		public ValidatableFilterableSingleSelectInputBuilder<T, ITEM> itemCountEstimateIncrease(int itemCountEstimateIncrease) {
+			builder.itemCountEstimateIncrease(itemCountEstimateIncrease);
+			return this;
+		}
+
+		@Override
+		public ValidatableFilterableSingleSelectInputBuilder<T, ITEM> itemCountUnknown() {
+			builder.itemCountUnknown();
+			return this;
+		}
 	}
 
 	static class DefaultDatastoreFilterableSingleSelectInputBuilder<T, ITEM>
@@ -1998,6 +2062,43 @@ public class DefaultFilterableSingleSelectInputBuilder<T, ITEM> extends
 			return builder.build();
 		}
 
+		@Override
+		public DatastoreFilterableSingleSelectInputBuilder<T, ITEM> items(BackEndDataProvider<T, ITEM> dataProvider) {
+			builder.items(dataProvider);
+			return this;
+		}
+
+		@Override
+		public DatastoreFilterableSingleSelectInputBuilder<T, ITEM> items(CallbackDataProvider.FetchCallback<T, 
+				ITEM> fetchCallback) {
+			builder.items(fetchCallback);
+			return this;
+		}
+
+		@Override
+		public DatastoreFilterableSingleSelectInputBuilder<T, ITEM> items(CallbackDataProvider.FetchCallback<T, 
+				ITEM> fetchCallback, CallbackDataProvider.CountCallback<T, ITEM> countCallback) {
+			builder.items(fetchCallback, countCallback);
+			return this;
+		}
+
+		@Override
+		public DatastoreFilterableSingleSelectInputBuilder<T, ITEM> itemCountEstimate(int itemCountEstimate) {
+			builder.itemCountEstimate(itemCountEstimate);
+			return this;
+		}
+
+		@Override
+		public DatastoreFilterableSingleSelectInputBuilder<T, ITEM> itemCountEstimateIncrease(int itemCountEstimateIncrease) {
+			builder.itemCountEstimateIncrease(itemCountEstimateIncrease);
+			return this;
+		}
+
+		@Override
+		public DatastoreFilterableSingleSelectInputBuilder<T, ITEM> itemCountUnknown() {
+			builder.itemCountUnknown();
+			return this;
+		}
 	}
 
 	static class DefaultValidatableDatastoreFilterableSingleSelectInputBuilder<T, ITEM>
@@ -2085,7 +2186,7 @@ public class DefaultFilterableSingleSelectInputBuilder<T, ITEM> extends
 		public ValidatableDatastoreFilterableSingleSelectInputBuilder<T, ITEM> withCustomValueSetListener(
 				CustomValueSetListener<T> customValueSetListener) {
 			builder.withCustomValueSetListener(customValueSetListener);
-			return null;
+			return this;
 		}
 
 		/*
@@ -2688,6 +2789,41 @@ public class DefaultFilterableSingleSelectInputBuilder<T, ITEM> extends
 		}
 
 
+		@Override
+		public ValidatableDatastoreFilterableSingleSelectInputBuilder<T, ITEM> items(BackEndDataProvider<T, ITEM> dataProvider) {
+			builder.items(dataProvider);
+			return this;
+		}
+
+		@Override
+		public ValidatableDatastoreFilterableSingleSelectInputBuilder<T, ITEM> items(CallbackDataProvider.FetchCallback<T, ITEM> fetchCallback) {
+			builder.items(fetchCallback);
+			return this;
+		}
+
+		@Override
+		public ValidatableDatastoreFilterableSingleSelectInputBuilder<T, ITEM> items(CallbackDataProvider.FetchCallback<T, ITEM> fetchCallback, CallbackDataProvider.CountCallback<T, ITEM> countCallback) {
+			builder.items(fetchCallback, countCallback);
+			return this;
+		}
+
+		@Override
+		public ValidatableDatastoreFilterableSingleSelectInputBuilder<T, ITEM> itemCountEstimate(int itemCountEstimate) {
+			builder.itemCountEstimate(itemCountEstimate);
+			return this;
+		}
+
+		@Override
+		public ValidatableDatastoreFilterableSingleSelectInputBuilder<T, ITEM> itemCountEstimateIncrease(int itemCountEstimateIncrease) {
+			builder.itemCountEstimateIncrease(itemCountEstimateIncrease);
+			return this;
+		}
+
+		@Override
+		public ValidatableDatastoreFilterableSingleSelectInputBuilder<T, ITEM> itemCountUnknown() {
+			builder.itemCountUnknown();
+			return this;
+		}
 	}
 
 }

@@ -43,4 +43,15 @@ public interface HasPropertySetDatastoreDataProviderConfigurator<D extends Datas
 	 */
 	D dataSource(Datastore datastore, DataTarget<?> target);
 
+	/**
+	 * Set the data provider which acts as items data source, using given {@link Datastore} as backend data handler,
+	 * given {@link DataTarget} as query target and given <code>properties</code> as query projection.
+	 * @param datastore The {@link Datastore} to use (not null)
+	 * @param target The {@link DataTarget} to use as query target (not null)
+	 * @return An extended builder which allow further data provider configuration, for example to add fixed
+	 *         {@link QueryFilter} and {@link QuerySort}.
+	 * @see DatastoreDataProviderConfigurator
+	 */
+	D lazyDataSource(Datastore datastore, DataTarget<?> target);
+
 }

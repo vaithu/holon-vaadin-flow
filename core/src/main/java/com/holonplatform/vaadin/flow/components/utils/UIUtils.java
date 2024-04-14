@@ -1,6 +1,12 @@
 package com.holonplatform.vaadin.flow.components.utils;
 
 import com.github.javaparser.quality.NotNull;
+import com.holonplatform.core.property.PropertyBox;
+import com.holonplatform.core.property.PropertySet;
+import com.holonplatform.vaadin.flow.components.Components;
+import com.holonplatform.vaadin.flow.components.HasComponent;
+import com.holonplatform.vaadin.flow.components.PropertyInputForm;
+import com.holonplatform.vaadin.flow.components.builders.LabelBuilder;
 import com.holonplatform.vaadin.flow.components.css.WhiteSpace;
 import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.button.Button;
@@ -24,8 +30,10 @@ import com.vaadin.flow.component.menubar.MenuBarVariant;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
+import com.vaadin.flow.component.orderedlayout.FlexLayout;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.page.Page;
 import com.vaadin.flow.component.shared.Tooltip;
 import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.textfield.TextArea;
@@ -67,6 +75,7 @@ import java.util.*;
 import java.util.concurrent.Future;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static com.vaadin.flow.component.button.ButtonVariant.LUMO_TERTIARY_INLINE;
@@ -84,23 +93,162 @@ public class UIUtils {
     public static final String RIGHT_SMALL_PADDING = LumoUtility.Padding.Right.SMALL;
     public static final String CARD = "card";
     public static final String CONTAINER = "container";
+    public static final String BREAKPOINT_XS = "0px";
+    public static final String    BREAKPOINT_SM = "576px";
+    public static final String    BREAKPOINT_MD = "768px";
+    public static final String    BREAKPOINT_LG = "992px";
+    public static final String    BREAKPOINT_XL = "1200px";
+
     private static NumberFormat currencyFormat = NumberFormat.getCurrencyInstance();
 
+    /****************************************/
+//    https://github.com/fredpena/vaadin-i18n/blob/main/src/main/java/dev/fredpena/app/views/MainLayout.java
 
-    public static final Map<Integer, FormLayout.ResponsiveStep> FIXED_COLUMNS = Map.of(
-            1, new FormLayout.ResponsiveStep("0px", 1),
-            2, new FormLayout.ResponsiveStep("0px", 2),
-            3, new FormLayout.ResponsiveStep("0px", 3),
-            4, new FormLayout.ResponsiveStep("0px", 4),
-            5, new FormLayout.ResponsiveStep("0px", 5)
+    public static MenuItemComponent createIconItem(HasMenuItems menu, VaadinIcon iconName, String label, String ariaLabel) {
+        return createIconItem(menu, new Icon(iconName), label, ariaLabel, false);
+    }
+
+    private static MenuItemComponent createIconItem(HasMenuItems menu, String iconName, String label) {
+
+        return createIconItem(menu, createIcon(iconName), label, null, true);
+    }
+
+    public static MenuItemComponent createIconItem(HasMenuItems menu, Component component, String label, String ariaLabel, boolean isChild) {
+        if (isChild) {
+            component.getStyle().set("margin-right", "var(--lumo-space-m)");
+        }
+
+        MenuItem item = menu.addItem(component, e -> {
+        });
+
+        if (ariaLabel != null) {
+            item.setAriaLabel(ariaLabel);
+        }
+
+        Text text = new Text(label);
+        if (label != null) {
+            item.add(text);
+        }
+
+        return new MenuItemComponent(item, text);
+    }
+
+    public static Button addNewItemButton() {
+        return Components.button()
+                .icon(VaadinIcon.PLUS)
+                .iconAfterText(false)
+                .text("New", "new.code")
+                .withThemeVariants(ButtonVariant.LUMO_PRIMARY)
+                .withFocusShortcutKey(Key.KEY_N, KeyModifier.CONTROL)
+                .tooltip("Add New","add.new.code")
+                .build();
+    }
+
+    public static com.holonplatform.vaadin.flow.components.Input<String> createSearchField() {
+        return    Components.input.string()
+                .clearButtonVisible(true)
+                .blankValuesAsNull(true)
+                .emptyValuesAsNull(true)
+                .placeholder("Search", "search.code")
+                .prefixComponent(VaadinIcon.SEARCH.create())
+                .withFocusShortcutKey(Key.KEY_F, KeyModifier.CONTROL)
+                .build();
+    }
+
+    private static Component createIcon(String name) {
+        Image image = new Image("images/%s.png".formatted(name), "");
+        image.setMaxWidth("25px");
+        return image;
+    }
+
+    public static String[] getTitleStyles() {
+        return new String[]{LumoUtility.TextColor.PRIMARY, LumoUtility.Padding.SMALL,
+                LumoUtility.Border.BOTTOM,
+                LumoUtility.BorderColor.CONTRAST_30};
+    }
+
+    public static Component[] toComponents(HasComponent[] components) {
+        return Arrays.asList(components).stream().map(c -> c.getComponent()).collect(Collectors.toList())
+                .toArray(new Component[0]);
+    }
+
+    public static LabelBuilder<H4> createH4(String title) {
+        return LabelBuilder.h4()
+                .text(title)
+                .title(title)
+                .styleNames(UIUtils.getTitleStyles());
+    }
+
+    public static String[] borderStyles() {
+        return new String[] {LumoUtility.Border.BOTTOM, LumoUtility.BorderColor.CONTRAST_30};
+    }
+
+    private record MenuItemComponent(MenuItem menuItem, Text text) {
+
+    }
+
+    /****************************************/
+
+    public static final Map<Integer, FormLayout.ResponsiveStep> FIXED_COLUMNS_EXTRA_SMALL = Map.of(
+            1, new FormLayout.ResponsiveStep(BREAKPOINT_XS, 1),
+            2, new FormLayout.ResponsiveStep(BREAKPOINT_XS, 2),
+            3, new FormLayout.ResponsiveStep(BREAKPOINT_XS, 3),
+            4, new FormLayout.ResponsiveStep(BREAKPOINT_XS, 4),
+            5, new FormLayout.ResponsiveStep(BREAKPOINT_XS, 5)
+    );
+
+    public static final Map<Integer, FormLayout.ResponsiveStep> FIXED_COLUMNS_SMALL = Map.of(
+            1, new FormLayout.ResponsiveStep(BREAKPOINT_SM, 1),
+            2, new FormLayout.ResponsiveStep(BREAKPOINT_SM, 2),
+            3, new FormLayout.ResponsiveStep(BREAKPOINT_SM, 3),
+            4, new FormLayout.ResponsiveStep(BREAKPOINT_SM, 4),
+            5, new FormLayout.ResponsiveStep(BREAKPOINT_SM, 5)
+    );
+
+    public static final Map<Integer, FormLayout.ResponsiveStep> FIXED_COLUMNS_MEDIUM = Map.of(
+            1, new FormLayout.ResponsiveStep(BREAKPOINT_MD, 1),
+            2, new FormLayout.ResponsiveStep(BREAKPOINT_MD, 2),
+            3, new FormLayout.ResponsiveStep(BREAKPOINT_MD, 3),
+            4, new FormLayout.ResponsiveStep(BREAKPOINT_MD, 4),
+            5, new FormLayout.ResponsiveStep(BREAKPOINT_MD, 5)
+    );
+
+    public static final Map<Integer, FormLayout.ResponsiveStep> FIXED_COLUMNS_LARGE = Map.of(
+            1, new FormLayout.ResponsiveStep(BREAKPOINT_LG, 1),
+            2, new FormLayout.ResponsiveStep(BREAKPOINT_LG, 2),
+            3, new FormLayout.ResponsiveStep(BREAKPOINT_LG, 3),
+            4, new FormLayout.ResponsiveStep(BREAKPOINT_LG, 4),
+            5, new FormLayout.ResponsiveStep(BREAKPOINT_LG, 5)
+    );
+
+    public static final Map<Integer, FormLayout.ResponsiveStep> FIXED_COLUMNS_EXTRA_LARGE = Map.of(
+            1, new FormLayout.ResponsiveStep(BREAKPOINT_XL, 1),
+            2, new FormLayout.ResponsiveStep(BREAKPOINT_XL, 2),
+            3, new FormLayout.ResponsiveStep(BREAKPOINT_XL, 3),
+            4, new FormLayout.ResponsiveStep(BREAKPOINT_XL, 4),
+            5, new FormLayout.ResponsiveStep(BREAKPOINT_XL, 5)
     );
 
     public static final List<FormLayout.ResponsiveStep> FLEXIBLE_COLUMNS = List.of(
-            new FormLayout.ResponsiveStep("250px", 1),
-            new FormLayout.ResponsiveStep("500px", 2),
-            new FormLayout.ResponsiveStep("750px", 3),
-            new FormLayout.ResponsiveStep("1000px", 4)
+            new FormLayout.ResponsiveStep(BREAKPOINT_SM, 1),
+            new FormLayout.ResponsiveStep(BREAKPOINT_MD, 2),
+            new FormLayout.ResponsiveStep(BREAKPOINT_LG, 3),
+            new FormLayout.ResponsiveStep(BREAKPOINT_XL, 4)
     );
+
+    public static Anchor createAnchor(String href, String text) {
+        Anchor anchor = new Anchor(href, text);
+
+        anchor.getStyle()
+                .setTextDecoration("underline")
+                .set("margin-block-start", "1em")
+                .set("margin-block-end", "1em");
+
+        anchor.addClassNames(LumoUtility.LineHeight.SMALL, LumoUtility.Margin.Bottom.NONE, LumoUtility.Display.BLOCK);
+        anchor.addClassNames(LumoUtility.FontWeight.SEMIBOLD);
+
+        return anchor;
+    }
 
 
     /**
@@ -179,6 +327,30 @@ public class UIUtils {
                                                     VaadinIcon icon) {
         return createButton(text, icon, ButtonVariant.LUMO_SUCCESS,
                 ButtonVariant.LUMO_PRIMARY);
+    }
+
+
+    public static void clear(List<PropertyInputForm> inputForms) {
+        inputForms.forEach(propertyInputForm -> propertyInputForm.clear());
+    }
+
+    public static boolean isValid(List<PropertyInputForm> inputForms) {
+        return inputForms.stream()
+                .allMatch(propertyInputForm -> propertyInputForm.isValid());
+    }
+
+    public static PropertyBox copyValues(PropertySet<?> properties, List<PropertyInputForm> inputForms) {
+        PropertyBox propertyBox = PropertyBox.builder(properties)
+                .build();
+        for (PropertyInputForm inputForm : inputForms) {
+            propertyBox = propertyBox.cloneBox(inputForm.getValue());
+        }
+
+        return propertyBox;
+    }
+
+    public static void enable(List<PropertyInputForm> inputForms,boolean enabled) {
+        inputForms.forEach(propertyInputForm -> propertyInputForm.setEnabled(enabled));
     }
 
     public static Button createErrorButton(String text) {
@@ -637,7 +809,37 @@ public class UIUtils {
         return createIcon(LumoUtility.IconSize.SMALL, LumoUtility.TextColor.ERROR, VaadinIcon.TRASH);
     }
 
+    public static Div addDummyDiv(String size) {
+        Div dummyDiv = new Div();
+        dummyDiv.setHeight(size);
+
+        return dummyDiv;
+    }
+
+    public static Div addDummyDiv() {
+        return addDummyDiv("200px");
+    }
+
     public static final int MOBILE_BREAKPOINT = 480;
+
+    public static boolean isMobile(AttachEvent attachEvent) {
+        final List<Boolean> mobile = new ArrayList<>();
+        Page page = attachEvent.getUI().getPage();
+        page.retrieveExtendedClientDetails(details -> {
+            boolean b = details.getWindowInnerWidth() < 740;
+            if (b) {
+                mobile.add(b);
+            }
+        });
+        page.addBrowserWindowResizeListener(e -> {
+            boolean b = e.getWidth() < 740;
+            if (b) {
+                mobile.add(b);
+            }
+        });
+
+        return !mobile.isEmpty();
+    }
 
     public static boolean isMobile(int width) {
         return width < MOBILE_BREAKPOINT;
@@ -657,6 +859,23 @@ public class UIUtils {
 
     public static void errorNotification(Exception e) {
         notification(ExceptionUtils.getRootCauseMessage(e), NotificationVariant.LUMO_ERROR);
+    }
+
+    public static Component viewPropertyBox(PropertyBox propertyBox) {
+        FlexLayout layout = new FlexLayout();
+        layout.setFlexDirection(FlexLayout.FlexDirection.COLUMN);
+        layout.addClassNames(LumoUtility.Gap.SMALL);
+        propertyBox.forEach(property -> {
+            layout.add(
+                    Components.hl()
+                            .add(new Text(property.getName()))
+                            .add(new Emphasis(String.valueOf(propertyBox.getValue(property))))
+                            .build()
+
+            );
+        });
+
+        return layout;
     }
 
     public static void primaryNotification(String text) {
@@ -848,7 +1067,7 @@ public class UIUtils {
 
     }
 
-    private static class PriceConverter extends StringToBigDecimalConverter {
+    public static class PriceConverter extends StringToBigDecimalConverter {
 
         public PriceConverter() {
             super(BigDecimal.ZERO, "Cannot convert value to a number.");
@@ -866,7 +1085,7 @@ public class UIUtils {
         }
     }
 
-    private static class StockCountConverter extends StringToIntegerConverter {
+    public static class StockCountConverter extends StringToIntegerConverter {
 
         public StockCountConverter() {
             super(0, "Could not convert value to " + Integer.class.getName()
@@ -1414,6 +1633,72 @@ public class UIUtils {
         }
         return false;
     }
+
+    public static void updateMenuItemsAsCheckable(MenuItem parentItem,String menuItemText) {
+        parentItem.getSubMenu().getChildren().forEach(component -> {
+            if (component instanceof MenuItem) {
+                MenuItem menuItem = (MenuItem) component;
+
+                menuItem.setCheckable(true);
+                if (menuItem.getText().equals(menuItemText)) {
+
+                    menuItem.setChecked(true);
+                } else {
+                    menuItem.setChecked(false);
+                }
+            }
+        });
+    }
+
+    public static void setSortable(Grid<?> grid, boolean sortable) {
+        grid.getColumns()
+                .forEach(column -> column.setSortable(sortable));
+    }
+
+    public static void setToggleColumns(Grid<?> grid,MenuItem toggleColumnMenuItem) {
+        SubMenu menuItemToggleColumn = toggleColumnMenuItem.getSubMenu();
+        grid.getColumns().forEach(column -> {
+                       /*Checkbox checkbox = new Checkbox(column.getHeaderText());
+                       checkbox.setValue(column.isVisible());
+                       checkbox.addValueChangeListener(e -> column.setVisible(e.getValue()));
+            menuItemToggleColumn.addItem(checkbox);*/
+
+            MenuItem menuItem = menuItemToggleColumn.addItem(column.getHeaderText(), e -> {
+                column.setVisible(e.getSource().isChecked());
+            });
+            menuItem.setCheckable(true);
+            menuItem.setChecked(column.isVisible());
+            menuItem.setKeepOpen(true);
+        });
+    }
+
+    public static Icon createIcon(VaadinIcon vaadinIcon) {
+        Icon icon = vaadinIcon.create();
+       /* icon.getStyle().set("color", "var(--lumo-primary-text-color)")
+                .set("margin-inline-end", "var(--lumo-space-s")
+                .set("padding", "var(--lumo-space-xs");*/
+        icon.addClassName(LumoUtility.TextColor.PRIMARY);
+        icon.setSize("20px");
+        return icon;
+    }
+
+    public static HorizontalLayout createIconMenuItem(VaadinIcon vaadinIcon, String text) {
+
+        Icon icon = new Icon(vaadinIcon);
+        icon.addClassName(LumoUtility.TextColor.PRIMARY);
+        icon.setSize("15px");
+
+        return Components.hl()
+                .fullWidth()
+                .spacing()
+                .padding(false)
+                .alignItems(FlexComponent.Alignment.CENTER)
+                .add(icon)
+                .add(new Text(text))
+                .build();
+    }
+
+
 
 
 }

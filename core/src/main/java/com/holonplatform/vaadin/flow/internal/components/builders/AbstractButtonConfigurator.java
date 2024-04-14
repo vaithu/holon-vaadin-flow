@@ -15,8 +15,6 @@
  */
 package com.holonplatform.vaadin.flow.internal.components.builders;
 
-import java.util.Optional;
-
 import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.vaadin.flow.components.builders.ButtonConfigurator;
 import com.holonplatform.vaadin.flow.components.builders.ShortcutConfigurator;
@@ -24,17 +22,16 @@ import com.holonplatform.vaadin.flow.components.events.ClickEvent;
 import com.holonplatform.vaadin.flow.components.events.ClickEventListener;
 import com.holonplatform.vaadin.flow.internal.components.support.ComponentClickListenerAdapter;
 import com.vaadin.flow.component.BlurNotifier.BlurEvent;
-import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.ComponentEventListener;
+import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.FocusNotifier.FocusEvent;
-import com.vaadin.flow.component.HasEnabled;
-import com.vaadin.flow.component.HasSize;
-import com.vaadin.flow.component.HasStyle;
-import com.vaadin.flow.component.Key;
-import com.vaadin.flow.component.KeyModifier;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.icon.Icon;
+import com.vaadin.flow.component.shared.HasTooltip;
+import com.vaadin.flow.theme.lumo.LumoUtility;
+
+import java.util.Optional;
 
 /**
  * Base {@link ButtonConfigurator} implementation.
@@ -48,12 +45,16 @@ public abstract class AbstractButtonConfigurator<C extends ButtonConfigurator<C>
 
 	protected final DefaultHasTextConfigurator textConfigurator;
 	protected final DefaultHasTitleConfigurator<Button> titleConfigurator;
+	protected final DefaultHasTooltipConfigurator<Button> tooltipConfigurator;
 
 	public AbstractButtonConfigurator(Button component) {
 		super(component);
 		this.textConfigurator = new DefaultHasTextConfigurator(component, this);
 		this.titleConfigurator = new DefaultHasTitleConfigurator<>(component, title -> {
 			component.getElement().setAttribute("title", (title != null) ? title : "");
+		}, this);
+		this.tooltipConfigurator = new DefaultHasTooltipConfigurator<>(component, tooltip -> {
+			component.setTooltipText(tooltip);
 		}, this);
 	}
 
@@ -70,6 +71,81 @@ public abstract class AbstractButtonConfigurator<C extends ButtonConfigurator<C>
 	@Override
 	protected Optional<HasEnabled> hasEnabled() {
 		return Optional.of(getComponent());
+	}
+
+	@Override
+	protected Optional<HasTooltip> hasTooltip() {
+		return Optional.of(getComponent());
+	}
+
+	@Override
+	public C icon() {
+		getComponent().addThemeVariants(ButtonVariant.LUMO_ICON);
+		return getConfigurator();
+	}
+
+	@Override
+	public C image(Image image) {
+		return icon(image);
+	}
+
+	@Override
+	public C marginInlineEndAuto() {
+		getComponent().getStyle().set("margin-inline-end", "auto");
+		return getConfigurator();
+	}
+
+	@Override
+	public C marginInlineStartAuto() {
+		getComponent().getStyle().set("margin-inline-start", "auto");
+		return getConfigurator();
+	}
+
+	private void removeStyles(Button component) {
+		component.getClassNames().forEach(s -> component.removeClassName(s));
+	}
+
+	private C border(String border) {
+		/*removeStyles(getComponent());
+		getComponent().addClassName(border);*/
+
+		Button button = getComponent();
+		button.getStyle().setBorder("1px solid");
+		button.addClassName(border);
+
+		button.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
+		return getConfigurator();
+	}
+
+	@Override
+	public C borderContrast() {
+		return border(LumoUtility.BorderColor.CONTRAST);
+	}
+
+	@Override
+	public C borderPrimary() {
+		return border(LumoUtility.BorderColor.PRIMARY_50);
+	}
+
+	@Override
+	public C borderError() {
+		return border(LumoUtility.BorderColor.ERROR_50);
+	}
+
+	@Override
+	public C borderWarning() {
+		return border(LumoUtility.BorderColor.WARNING);
+	}
+
+	@Override
+	public C borderSuccess() {
+		return border(LumoUtility.BorderColor.SUCCESS_50);
+	}
+
+	@Override
+	public C borderRadius() {
+		getComponent().getStyle().setBorderRadius("--var(lumo-border-radius-m)");
+		return getConfigurator();
 	}
 
 	/*
@@ -134,6 +210,17 @@ public abstract class AbstractButtonConfigurator<C extends ButtonConfigurator<C>
 	@Override
 	public C title(Localizable title) {
 		titleConfigurator.title(title);
+		return getConfigurator();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see com.holonplatform.vaadin.flow.components.builders.HasTooltipConfigurator#title(com.holonplatform.core.i18n.
+	 * Localizable)
+	 */
+	@Override
+	public C tooltip(Localizable tooltip) {
+		tooltipConfigurator.tooltip(tooltip);
 		return getConfigurator();
 	}
 
@@ -260,4 +347,63 @@ public abstract class AbstractButtonConfigurator<C extends ButtonConfigurator<C>
 		return getConfigurator();
 	}
 
+	@Override
+	public C primary() {
+		getComponent().addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+		return getConfigurator();
+	}
+
+	@Override
+	public C secondary() {
+		//this is the default button so no variant is required
+		return getConfigurator();
+	}
+
+	@Override
+	public C tertiary() {
+		getComponent().addThemeVariants(ButtonVariant.LUMO_TERTIARY);
+		return getConfigurator();
+	}
+
+	@Override
+	public C error() {
+		getComponent().addThemeVariants(ButtonVariant.LUMO_ERROR);
+		return getConfigurator();
+	}
+
+	@Override
+	public C large() {
+		getComponent().addThemeVariants(ButtonVariant.LUMO_LARGE);
+		return getConfigurator();
+	}
+
+	@Override
+	public C small() {
+		getComponent().addThemeVariants(ButtonVariant.LUMO_SMALL);
+		return getConfigurator();
+	}
+
+	@Override
+	public C normal() {
+		//this is the default button so no variant is required
+		return getConfigurator();
+	}
+
+	@Override
+	public C tertiaryInline() {
+		getComponent().addThemeVariants(ButtonVariant.LUMO_TERTIARY_INLINE);
+		return getConfigurator();
+	}
+
+	@Override
+	public C success() {
+		getComponent().addThemeVariants(ButtonVariant.LUMO_SUCCESS);
+		return getConfigurator();
+	}
+
+	@Override
+	public C contrast() {
+		getComponent().addThemeVariants(ButtonVariant.LUMO_CONTRAST);
+		return getConfigurator();
+	}
 }

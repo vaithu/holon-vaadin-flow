@@ -29,6 +29,7 @@ import com.holonplatform.vaadin.flow.components.events.InvalidChangeEventNotifie
 import com.holonplatform.vaadin.flow.components.events.ReadonlyChangeListener;
 import com.holonplatform.vaadin.flow.internal.components.support.DefaultUserInputValidator;
 import com.vaadin.flow.component.*;
+import com.vaadin.flow.component.shared.HasTooltip;
 import com.vaadin.flow.data.value.HasValueChangeMode;
 
 import java.util.LinkedList;
@@ -183,6 +184,15 @@ public abstract class AbstractValidatableInputAdapter<T, I extends Input<T>> imp
 	@Override
 	public Optional<HasTitle> hasTitle() {
 		return input.hasTitle();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see com.holonplatform.vaadin.flow.components.MayHaveTooltip#hasTooltip()
+	 */
+	@Override
+	public Optional<HasTooltip> hasTooltip() {
+		return input.hasTooltip();
 	}
 
 	/*

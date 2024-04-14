@@ -150,7 +150,4 @@ public class DefaultDialog extends Dialog implements HasStyle {
 			setHeight(Math.max(MAX_HEIGHT, details.getHeight() / 2) + PIXELS);
 		});
 	}
-
-
-
 }

@@ -15,12 +15,6 @@
  */
 package com.holonplatform.vaadin.flow.internal.components.builders;
 
-import java.util.Collection;
-import java.util.Map;
-import java.util.Optional;
-import java.util.function.Consumer;
-import java.util.function.Function;
-
 import com.holonplatform.vaadin.flow.components.Input;
 import com.holonplatform.vaadin.flow.components.Input.PropertyHandler;
 import com.holonplatform.vaadin.flow.components.ValueHolder.ValueChangeEvent;
@@ -30,13 +24,15 @@ import com.holonplatform.vaadin.flow.components.builders.ValidatableInputBuilder
 import com.holonplatform.vaadin.flow.components.events.InvalidChangeEventNotifier;
 import com.holonplatform.vaadin.flow.components.events.ReadonlyChangeListener;
 import com.holonplatform.vaadin.flow.internal.components.InputAdapter;
-import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.HasEnabled;
-import com.vaadin.flow.component.HasSize;
-import com.vaadin.flow.component.HasStyle;
-import com.vaadin.flow.component.HasValidation;
-import com.vaadin.flow.component.HasValue;
+import com.vaadin.flow.component.*;
+import com.vaadin.flow.component.shared.HasTooltip;
 import com.vaadin.flow.data.value.HasValueChangeMode;
+
+import java.util.Collection;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 /**
  * Default {@link HasValueInputBuilder} implementation.
@@ -77,7 +73,12 @@ public class DefaultHasValueInputBuilder<T, H extends HasValue<?, T>, C extends 
 		return Optional.empty();
 	}
 
-	/**
+    @Override
+    protected Optional<HasTooltip> hasTooltip() {
+		return Optional.empty();
+    }
+
+    /**
 	 * Get the {@link InputAdapter} instance to build.
 	 * @return the instance
 	 */

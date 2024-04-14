@@ -15,49 +15,30 @@
  */
 package com.holonplatform.vaadin.flow.internal.components;
 
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Optional;
-import java.util.function.BiConsumer;
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 import com.holonplatform.core.Validator;
 import com.holonplatform.core.Validator.ValidationException;
 import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.core.internal.Logger;
 import com.holonplatform.core.internal.utils.ObjectUtils;
-import com.holonplatform.core.property.Property;
-import com.holonplatform.core.property.PropertyBox;
-import com.holonplatform.core.property.PropertyRenderer;
-import com.holonplatform.core.property.PropertyRendererRegistry;
+import com.holonplatform.core.property.*;
 import com.holonplatform.core.property.PropertyRendererRegistry.NoSuitableRendererAvailableException;
-import com.holonplatform.core.property.PropertySet;
-import com.holonplatform.core.property.VirtualProperty;
-import com.holonplatform.vaadin.flow.components.GroupValidationStatusHandler;
-import com.holonplatform.vaadin.flow.components.Input;
-import com.holonplatform.vaadin.flow.components.PropertyInputGroup;
-import com.holonplatform.vaadin.flow.components.ValidationStatusHandler;
+import com.holonplatform.vaadin.flow.components.*;
 import com.holonplatform.vaadin.flow.components.ValidationStatusHandler.Status;
 import com.holonplatform.vaadin.flow.components.ValidationStatusHandler.ValidationStatusEvent;
-import com.holonplatform.vaadin.flow.components.ViewComponent;
 import com.holonplatform.vaadin.flow.components.builders.PropertyInputGroupBuilder;
 import com.holonplatform.vaadin.flow.components.builders.PropertyInputGroupConfigurator;
 import com.holonplatform.vaadin.flow.components.events.GroupValueChangeEvent;
 import com.holonplatform.vaadin.flow.internal.VaadinLogger;
 import com.holonplatform.vaadin.flow.internal.components.events.DefaultGroupValidationStatusEvent;
 import com.holonplatform.vaadin.flow.internal.components.events.DefaultGroupValueChangeEvent;
-import com.holonplatform.vaadin.flow.internal.components.support.DefaultUserInputValidator;
-import com.holonplatform.vaadin.flow.internal.components.support.InputPropertyConfiguration;
-import com.holonplatform.vaadin.flow.internal.components.support.InputPropertyConfigurationRegistry;
-import com.holonplatform.vaadin.flow.internal.components.support.InputPropertyRegistry;
-import com.holonplatform.vaadin.flow.internal.components.support.InputValidationStatus;
-import com.holonplatform.vaadin.flow.internal.components.support.ValidationStatus;
+import com.holonplatform.vaadin.flow.internal.components.support.*;
+
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.function.BiConsumer;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Default {@link PropertyInputGroup} implementation.
@@ -1141,6 +1122,7 @@ public class DefaultPropertyInputGroup extends AbstractPropertySetGroup<Input<?>
 			instance.addPostProcessor(postProcessor);
 			return builder();
 		}
+
 
 		/*
 		 * (non-Javadoc)

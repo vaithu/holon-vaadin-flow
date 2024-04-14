@@ -15,11 +15,6 @@
  */
 package com.holonplatform.vaadin.flow.internal.components.builders;
 
-import java.util.Collection;
-import java.util.Map;
-import java.util.Optional;
-import java.util.function.Function;
-
 import com.holonplatform.core.internal.utils.ObjectUtils;
 import com.holonplatform.vaadin.flow.components.Input;
 import com.holonplatform.vaadin.flow.components.ValueHolder.ValueChangeEvent;
@@ -31,7 +26,13 @@ import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasEnabled;
 import com.vaadin.flow.component.HasSize;
 import com.vaadin.flow.component.HasStyle;
+import com.vaadin.flow.component.shared.HasTooltip;
 import com.vaadin.flow.data.converter.Converter;
+
+import java.util.Collection;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.Function;
 
 /**
  * Default {@link InputConverterBuilder} implementation.
@@ -73,7 +74,12 @@ public class DefaultInputConverterBuilder<T, V> extends
 		return Optional.empty();
 	}
 
-	@Override
+    @Override
+    protected Optional<HasTooltip> hasTooltip() {
+        return Optional.empty();
+    }
+
+    @Override
 	protected InputConverterBuilder<T, V> getConfigurator() {
 		return this;
 	}

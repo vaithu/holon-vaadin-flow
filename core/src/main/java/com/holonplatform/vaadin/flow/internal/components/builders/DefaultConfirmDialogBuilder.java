@@ -38,11 +38,28 @@ public class DefaultConfirmDialogBuilder extends AbstractClosableDialogConfigura
 
 	private final Button okButton;
 
+	private Button denyButton;
+
 	public DefaultConfirmDialogBuilder() {
 		super();
 		this.okButton = ButtonBuilder.create().text(Localizable.of("OK", DialogBuilder.DEFAULT_OK_BUTTON_MESSAGE_CODE))
 				.withClickListener(e -> getComponent().close()).build();
+
 		getComponent().addFooterComponent(this.okButton);
+
+
+	}
+
+	private void addCancelButton() {
+		this.denyButton = ButtonBuilder.create()
+				.text(Localizable.of("Cancel", DialogBuilder.DEFAULT_DENY_BUTTON_MESSAGE_CODE))
+				.withClickListener(e -> {
+					getComponent().close();
+				}).build();
+
+		this.denyButton.getStyle().set("margin-right", "auto");
+
+		getComponent().addFooterComponent(this.denyButton);
 	}
 
 	public DefaultConfirmDialogBuilder(PropertyInputForm inputForm) {
@@ -52,6 +69,18 @@ public class DefaultConfirmDialogBuilder extends AbstractClosableDialogConfigura
 					if (inputForm.isValid()) getComponent().close();
 				}).build();
 		getComponent().addFooterComponent(this.okButton);
+		addCancelButton();
+	}
+
+	public DefaultConfirmDialogBuilder(boolean okToCancelDialog) {
+		super();
+		this.okButton = ButtonBuilder.create().text(Localizable.of("OK", DialogBuilder.DEFAULT_OK_BUTTON_MESSAGE_CODE))
+				.withClickListener(e -> {
+					if (okToCancelDialog) getComponent().close();
+				}).build();
+		getComponent().addFooterComponent(this.okButton);
+
+		addCancelButton();
 	}
 
 	/*
@@ -73,6 +102,19 @@ public class DefaultConfirmDialogBuilder extends AbstractClosableDialogConfigura
 	public ConfirmDialogBuilder okButtonConfigurator(Consumer<BaseButtonConfigurator> configurator) {
 		ObjectUtils.argumentNotNull(configurator, "Configurator must be not null");
 		configurator.accept(ButtonConfigurator.configure(okButton));
+		return getConfigurator();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see com.holonplatform.vaadin.flow.components.builders.DialogBuilder.
+	 * QuestionDialogBuilder#denialButtonConfigurator( java.util.function.Consumer)
+	 */
+	@Override
+	public ConfirmDialogBuilder denialButtonConfigurator(Consumer<ButtonConfigurator.BaseButtonConfigurator> configurator) {
+		ObjectUtils.argumentNotNull(configurator, "Configurator must be not null");
+		configurator.accept(ButtonConfigurator.configure(denyButton));
 		return getConfigurator();
 	}
 

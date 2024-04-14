@@ -30,6 +30,7 @@ import com.holonplatform.jdbc.DatabasePlatform;
 import com.holonplatform.vaadin.flow.components.BeanListing;
 import com.holonplatform.vaadin.flow.components.Components;
 import com.holonplatform.vaadin.flow.components.Input;
+import com.holonplatform.vaadin.flow.components.ItemListing;
 import com.holonplatform.vaadin.flow.components.Selectable.SelectionMode;
 import com.holonplatform.vaadin.flow.components.builders.BeanListingBuilder;
 import com.holonplatform.vaadin.flow.components.builders.ItemListingConfigurator.ColumnAlignment;
@@ -446,6 +447,46 @@ public class TestBeanListing {
     }
 
     @Test
+    public void testFooterPartName() {
+
+        BeanListing<TestBean> listing = BeanListing.builder(TestBean.class).footer(footer -> {
+            footer.appendRow().getCell(ID).get().setPartName("red");
+        }).build();
+
+        assertTrue(listing.getFooter().isPresent());
+        assertEquals("red", listing.getFooter().get().getFirstRow()
+                .get().getCell(ID).get()
+                .getPartName());
+
+    }
+
+    @Test
+    public void testHeaderPartName() {
+
+        BeanListing<TestBean> listing = BeanListing.builder(TestBean.class).header(header -> {
+            header.appendRow().getCell(ID).get().setPartName("red");
+        }).build();
+
+        assertTrue(listing.getHeader().isPresent());
+        Optional<ItemListing.ItemListingRow<String>> found = Optional.empty();
+        for (ItemListing.ItemListingRow<String> itemListingRow : listing.getHeader().get()
+                .getRows()) {
+            if (itemListingRow.getCell(ID).isPresent()) {
+                found = Optional.of(itemListingRow);
+                break;
+            }
+        }
+        ItemListing.ItemListingRow<String> row = found.get();
+        assertNotNull(row);
+        assertNotNull(row.getCell(ID));
+        ItemListing.ItemListingCell cell = row.getCell(ID).get();
+        assertNotNull(cell);
+        cell.setPartName("red");
+        assertEquals("red",cell.getPartName());
+
+    }
+
+    @Test
     public void testItemsDataSource() {
 
         final TestBean ITEM1 = new TestBean(1L, "test1");
@@ -549,7 +590,12 @@ public class TestBeanListing {
         assertEquals(1L, items.get(1).getId());
 
         listing = BeanListing.builder(TestBean.class).dataSource(datastore, TARGET)
+//                .itemCountEstimate(200) //this is not working due to
+//                java.lang.IllegalStateException: GridLazyDataView only supports 'BackEndDataProvider' or it's subclasses
+//                , but was given a 'AbstractDataProvider'.
+//Use either 'getLazyDataView()', 'getListDataView()' or 'getGenericDataView()' according to the used data type.
                 .withDefaultQuerySort(beanPropertySet.property(NAME).desc()).build();
+
         items = getDataProvider(listing).fetch(new Query<>()).collect(Collectors.toList());
         assertEquals(2, items.size());
         assertEquals(2L, items.get(0).getId());

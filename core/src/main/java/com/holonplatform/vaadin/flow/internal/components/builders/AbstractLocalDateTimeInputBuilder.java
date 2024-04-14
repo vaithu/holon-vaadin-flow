@@ -15,15 +15,6 @@
  */
 package com.holonplatform.vaadin.flow.internal.components.builders;
 
-import java.time.Duration;
-import java.time.LocalDateTime;
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
 import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.core.internal.utils.ObjectUtils;
 import com.holonplatform.vaadin.flow.components.Input;
@@ -36,19 +27,18 @@ import com.holonplatform.vaadin.flow.components.builders.ShortcutConfigurator;
 import com.holonplatform.vaadin.flow.components.events.ReadonlyChangeListener;
 import com.holonplatform.vaadin.flow.components.support.InputAdaptersContainer;
 import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
-import com.vaadin.flow.component.BlurNotifier;
+import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.BlurNotifier.BlurEvent;
-import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.ComponentEventListener;
-import com.vaadin.flow.component.FocusNotifier;
 import com.vaadin.flow.component.FocusNotifier.FocusEvent;
-import com.vaadin.flow.component.HasEnabled;
-import com.vaadin.flow.component.HasSize;
-import com.vaadin.flow.component.HasStyle;
-import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.datepicker.DatePicker.DatePickerI18n;
 import com.vaadin.flow.component.datetimepicker.DateTimePicker;
+import com.vaadin.flow.component.shared.HasTooltip;
 import com.vaadin.flow.shared.Registration;
+
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Base {@link LocalDateTimeInputConfigurator} implementation using a
@@ -70,6 +60,7 @@ public abstract class AbstractLocalDateTimeInputBuilder<C extends LocalDateTimeI
 	private CalendarLocalization localization;
 
 	private LocalDateTime initialValue;
+	private final DefaultHasTooltipConfigurator<DateTimePicker> tooltipConfigurator;
 
 	public AbstractLocalDateTimeInputBuilder() {
 		this(new DateTimePicker(), null, null, null, Collections.emptyList(), Collections.emptyList(),
@@ -93,6 +84,11 @@ public abstract class AbstractLocalDateTimeInputBuilder<C extends LocalDateTimeI
 		placeholderConfigurator = new DefaultHasPlaceholderConfigurator<>(getComponent(), placeholder -> {
 			getComponent().setDatePlaceholder(placeholder);
 		}, this);
+		tooltipConfigurator = new DefaultHasTooltipConfigurator<>(getComponent(), tooltip -> {
+			getComponent().setTooltipText(tooltip);
+		}, this);
+
+
 	}
 
 	protected Registration getContextLocaleOnAttachRegistration() {
@@ -122,7 +118,12 @@ public abstract class AbstractLocalDateTimeInputBuilder<C extends LocalDateTimeI
 		return Optional.of(getComponent());
 	}
 
-	/**
+    @Override
+    protected Optional<HasTooltip> hasTooltip() {
+		return Optional.of(getComponent());
+    }
+
+    /**
 	 * Build the component as an {@link Input}.
 	 * @return The {@link Input} instance
 	 */
@@ -341,6 +342,17 @@ public abstract class AbstractLocalDateTimeInputBuilder<C extends LocalDateTimeI
 	@Override
 	public C label(Localizable label) {
 		labelConfigurator.label(label);
+		return getConfigurator();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see com.holonplatform.vaadin.flow.components.builders.HasTooltipConfigurator#title(com.holonplatform.core.i18n.
+	 * Localizable)
+	 */
+	@Override
+	public C tooltip(Localizable tooltip) {
+		tooltipConfigurator.tooltip(tooltip);
 		return getConfigurator();
 	}
 

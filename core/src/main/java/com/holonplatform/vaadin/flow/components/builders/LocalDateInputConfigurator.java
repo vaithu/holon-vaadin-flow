@@ -15,9 +15,9 @@
  */
 package com.holonplatform.vaadin.flow.components.builders;
 
-import java.time.LocalDate;
-
 import com.holonplatform.vaadin.flow.components.Input;
+
+import java.time.LocalDate;
 
 /**
  * {@link LocalDate} type {@link Input} components configurator.
@@ -27,6 +27,6 @@ import com.holonplatform.vaadin.flow.components.Input;
  * @since 5.2.2
  */
 public interface LocalDateInputConfigurator<C extends LocalDateInputConfigurator<C>>
-		extends BaseDateInputConfigurator<LocalDate, C> {
+		extends BaseDateInputConfigurator<LocalDate, C>, HasTooltipConfigurator<C>{
 
 }

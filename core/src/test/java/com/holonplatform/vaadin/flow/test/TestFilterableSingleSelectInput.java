@@ -818,7 +818,8 @@ public class TestFilterableSingleSelectInput {
         assertEquals(1, pitems.size());
         assertEquals(1, pitems.stream().filter(i -> "A".equals(i.getValue(CODE))).count());
 
-        input4 = Input.singleSelect(CODE).dataSource(datastore, TARGET1, CODE, DESCRIPTION).build();
+        input4 = Input.singleSelect(CODE).dataSource(datastore, TARGET1, CODE, DESCRIPTION)
+                .build();
         assertNotNull(input4);
 
         dp4 = (DataProvider<PropertyBox, String>) ((ComboBox<PropertyBox>) input4.getComponent()).getDataProvider();

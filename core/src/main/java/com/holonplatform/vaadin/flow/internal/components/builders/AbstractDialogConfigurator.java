@@ -28,7 +28,7 @@ import com.vaadin.flow.component.dialog.Dialog.DialogResizeEvent;
 import com.vaadin.flow.component.dialog.Dialog.OpenedChangeEvent;
 import com.vaadin.flow.component.dialog.DialogVariant;
 import com.vaadin.flow.component.html.Paragraph;
-import com.vaadin.flow.component.icon.Icon;
+import com.vaadin.flow.component.shared.HasTooltip;
 import com.vaadin.flow.theme.lumo.LumoUtility;
 
 import java.util.Optional;
@@ -66,6 +66,11 @@ public abstract class AbstractDialogConfigurator<C extends DialogConfigurator<C>
     @Override
     protected Optional<HasEnabled> hasEnabled() {
         return Optional.of(getComponent());
+    }
+
+    @Override
+    protected Optional<HasTooltip> hasTooltip() {
+        return Optional.empty();
     }
 
     /*
@@ -159,15 +164,14 @@ public abstract class AbstractDialogConfigurator<C extends DialogConfigurator<C>
     @Override
     public C withHeader(String title) {
         getComponent().setHeaderTitle(title);
-        Button closeButton = new Button(new Icon("lumo", "cross"),
-                (e) -> getComponent().close());
-        closeButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
         return getConfigurator();
     }
 
     @Override
     public C withFooter(boolean showCancelBtn, Component... components) {
-        createCancelBtn();
+        if (showCancelBtn) {
+            getComponent().addFooterComponent(createCancelBtn());
+        }
         return withFooter(components);
     }
 
@@ -213,9 +217,10 @@ public abstract class AbstractDialogConfigurator<C extends DialogConfigurator<C>
     public C withFooter(boolean showCancelBtn, Consumer<ButtonConfigurator.BaseButtonConfigurator> deleteConfigurator) {
         ObjectUtils.argumentNotNull(deleteConfigurator, "Configurator must be not null");
         if (showCancelBtn) {
-            createCancelBtn();
+            deleteConfigurator.accept(ButtonConfigurator.configure(createCancelBtn()));
+            return withFooter(deleteConfigurator);
         }
-        return withFooter(deleteConfigurator);
+        return getConfigurator();
     }
 
     private Button createDeleteBtn() {
@@ -227,19 +232,18 @@ public abstract class AbstractDialogConfigurator<C extends DialogConfigurator<C>
     }
 
     @Override
-    public C withFooter(Consumer<ButtonConfigurator.BaseButtonConfigurator> configurator) {
-        ObjectUtils.argumentNotNull(configurator, "Configurator must be not null");
-        createCancelBtn();
+    public C withFooter(Consumer<ButtonConfigurator.BaseButtonConfigurator> cancelConfigurator) {
+        ObjectUtils.argumentNotNull(cancelConfigurator, "Configurator must be not null");
         Button button = ButtonBuilder.create()
                 .withClickListener(event -> getComponent().close())
                 .build();
-        configurator.accept(ButtonConfigurator.configure(button));
+        cancelConfigurator.accept(ButtonConfigurator.configure(button));
         return withFooter(button);
     }
 
     @Override
-    public C withFooter(Consumer<ButtonConfigurator.BaseButtonConfigurator> configurator, Component... components) {
-        ObjectUtils.argumentNotNull(configurator, "Configurator must be not null");
+    public C withFooter(Consumer<ButtonConfigurator.BaseButtonConfigurator> cancelConfigurator, Component... components) {
+        ObjectUtils.argumentNotNull(cancelConfigurator, "Configurator must be not null");
         Button cancelButton = ButtonBuilder.create()
                 .text(Localizable.of("Cancel", DialogBuilder.DEFAULT_DENY_BUTTON_MESSAGE_CODE)).withClickListener(e -> {
                     getComponent().close();
@@ -248,7 +252,7 @@ public abstract class AbstractDialogConfigurator<C extends DialogConfigurator<C>
                 .styleNames(LumoUtility.AlignSelf.START)
                 .build();
 
-        configurator.accept(ButtonConfigurator.configure(cancelButton));
+        cancelConfigurator.accept(ButtonConfigurator.configure(cancelButton));
         addFooterRightComponent(cancelButton);
         return withFooter(components);
     }

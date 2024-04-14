@@ -15,13 +15,13 @@
  */
 package com.holonplatform.vaadin.flow.components.builders;
 
-import java.time.Duration;
-import java.time.LocalTime;
-import java.util.Locale;
-
 import com.holonplatform.vaadin.flow.components.Input;
 import com.holonplatform.vaadin.flow.components.ValueHolder.ValueChangeEvent;
 import com.vaadin.flow.component.Component;
+
+import java.time.Duration;
+import java.time.LocalTime;
+import java.util.Locale;
 
 /**
  * {@link LocalTime} type {@link Input} components configurator.
@@ -34,7 +34,7 @@ public interface LocalTimeInputConfigurator<C extends LocalTimeInputConfigurator
 		extends InputValueConfigurator<LocalTime, ValueChangeEvent<LocalTime>, C>, HasEnabledConfigurator<C>,
 		HasSizeConfigurator<C>, HasStyleConfigurator<C>, FocusableConfigurator<Component, C>,
 		HasPlaceholderConfigurator<C>, HasLabelConfigurator<C>, HasTitleConfigurator<C>,
-		DeferrableLocalizationConfigurator<C> {
+		DeferrableLocalizationConfigurator<C>, HasTooltipConfigurator<C> {
 
 	/**
 	 * Set the {@link Locale} to use to represent the {@link LocalTime} values.

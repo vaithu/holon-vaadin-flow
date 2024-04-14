@@ -29,6 +29,7 @@ import com.holonplatform.vaadin.flow.data.ItemConverter;
 import com.holonplatform.vaadin.flow.internal.components.events.DefaultSelectionEvent;
 import com.holonplatform.vaadin.flow.internal.components.events.DefaultValueChangeEvent;
 import com.vaadin.flow.component.*;
+import com.vaadin.flow.component.shared.HasTooltip;
 import com.vaadin.flow.data.value.HasValueChangeMode;
 
 import java.util.*;
@@ -345,6 +346,14 @@ public class MultiSelectInputAdapter<T, ITEM, C extends Component> implements Mu
 	@Override
 	public Optional<HasPlaceholder> hasPlaceholder() {
 		return input.hasPlaceholder();
+	}
+	/*
+	 * (non-Javadoc)
+	 * @see com.holonplatform.vaadin.flow.components.MayHaveTooltip#hasTooltip()
+	 */
+	@Override
+	public Optional<HasTooltip> hasTooltip() {
+		return input.hasTooltip();
 	}
 
 	/*

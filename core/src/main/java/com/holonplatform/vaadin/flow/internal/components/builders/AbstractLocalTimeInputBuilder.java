@@ -15,13 +15,6 @@
  */
 package com.holonplatform.vaadin.flow.internal.components.builders;
 
-import java.time.Duration;
-import java.time.LocalTime;
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
-import java.util.Optional;
-
 import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.vaadin.flow.components.Input;
 import com.holonplatform.vaadin.flow.components.ValidatableInput;
@@ -31,17 +24,18 @@ import com.holonplatform.vaadin.flow.components.builders.LocalTimeInputConfigura
 import com.holonplatform.vaadin.flow.components.builders.ShortcutConfigurator;
 import com.holonplatform.vaadin.flow.components.events.ReadonlyChangeListener;
 import com.holonplatform.vaadin.flow.components.support.InputAdaptersContainer;
-import com.vaadin.flow.component.BlurNotifier;
+import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.BlurNotifier.BlurEvent;
-import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.ComponentEventListener;
-import com.vaadin.flow.component.FocusNotifier;
 import com.vaadin.flow.component.FocusNotifier.FocusEvent;
-import com.vaadin.flow.component.HasEnabled;
-import com.vaadin.flow.component.HasSize;
-import com.vaadin.flow.component.HasStyle;
-import com.vaadin.flow.component.Key;
+import com.vaadin.flow.component.shared.HasTooltip;
 import com.vaadin.flow.component.timepicker.TimePicker;
+
+import java.time.Duration;
+import java.time.LocalTime;
+import java.util.Collections;
+import java.util.List;
+import java.util.Locale;
+import java.util.Optional;
 
 /**
  * Base {@link LocalTimeInputConfigurator} implementation using a {@link TimePicker} as concrete component.
@@ -56,6 +50,7 @@ public abstract class AbstractLocalTimeInputBuilder<C extends LocalTimeInputConf
 
 	protected final DefaultHasLabelConfigurator<TimePicker> labelConfigurator;
 	protected final DefaultHasTitleConfigurator<TimePicker> titleConfigurator;
+	protected final DefaultHasTooltipConfigurator<TimePicker> tooltipConfigurator;
 	protected final DefaultHasPlaceholderConfigurator<TimePicker> placeholderConfigurator;
 
 	public AbstractLocalTimeInputBuilder() {
@@ -71,12 +66,16 @@ public abstract class AbstractLocalTimeInputBuilder<C extends LocalTimeInputConf
 
 		// default step
 		getComponent().setStep(Duration.ofMinutes(15));
+		getComponent().setClearButtonVisible(true);
 
 		labelConfigurator = new DefaultHasLabelConfigurator<>(getComponent(), label -> {
 			getComponent().setLabel(label);
 		}, this);
 		titleConfigurator = new DefaultHasTitleConfigurator<>(getComponent(), title -> {
 			getComponent().getElement().setProperty("title", title == null ? "" : title);
+		}, this);
+		tooltipConfigurator = new DefaultHasTooltipConfigurator<>(getComponent(), tooltip -> {
+			getComponent().setTooltipText(tooltip);
 		}, this);
 		placeholderConfigurator = new DefaultHasPlaceholderConfigurator<>(getComponent(), placeholder -> {
 			getComponent().setPlaceholder(placeholder);
@@ -98,7 +97,12 @@ public abstract class AbstractLocalTimeInputBuilder<C extends LocalTimeInputConf
 		return Optional.of(getComponent());
 	}
 
-	/**
+    @Override
+    protected Optional<HasTooltip> hasTooltip() {
+		return Optional.of(getComponent());
+    }
+
+    /**
 	 * Build the component as an {@link Input}.
 	 * @return The {@link Input} instance
 	 */
@@ -271,6 +275,17 @@ public abstract class AbstractLocalTimeInputBuilder<C extends LocalTimeInputConf
 	@Override
 	public C title(Localizable title) {
 		titleConfigurator.title(title);
+		return getConfigurator();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see com.holonplatform.vaadin.flow.components.builders.HasTooltipConfigurator#title(com.holonplatform.core.i18n.
+	 * Localizable)
+	 */
+	@Override
+	public C tooltip(Localizable tooltip) {
+		tooltipConfigurator.tooltip(tooltip);
 		return getConfigurator();
 	}
 

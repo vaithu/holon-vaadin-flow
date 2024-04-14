@@ -23,6 +23,7 @@ import com.holonplatform.vaadin.flow.components.builders.ButtonConfigurator.Base
 import com.holonplatform.vaadin.flow.components.builders.DialogBuilder;
 import com.holonplatform.vaadin.flow.components.builders.DialogBuilder.QuestionDialogBuilder;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dialog.Dialog;
 
 import java.util.function.Consumer;
@@ -50,9 +51,14 @@ public class DefaultQuestionDialogBuilder extends AbstractDialogConfigurator<Que
 				.text(Localizable.of("No", DialogBuilder.DEFAULT_DENY_BUTTON_MESSAGE_CODE)).withClickListener(e -> {
 					getComponent().close();
 					questionDialogCallback.onUserAnswer(false);
-				}).build();
+				})
+				.withThemeVariants(ButtonVariant.LUMO_TERTIARY_INLINE)
+				.build();
+
 		getComponent().addFooterComponent(this.denyButton);
 		getComponent().addFooterComponent(this.confirmButton);
+
+		this.denyButton.getStyle().set("margin-right", "auto");
 
 		getComponent().setCloseOnEsc(false);
 		getComponent().setCloseOnOutsideClick(false);

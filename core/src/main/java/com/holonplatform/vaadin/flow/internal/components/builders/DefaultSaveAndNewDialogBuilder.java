@@ -5,7 +5,9 @@ import com.holonplatform.core.internal.utils.ObjectUtils;
 import com.holonplatform.vaadin.flow.components.builders.ButtonBuilder;
 import com.holonplatform.vaadin.flow.components.builders.ButtonConfigurator;
 import com.holonplatform.vaadin.flow.components.builders.DialogBuilder;
+import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dialog.Dialog;
 
 import java.util.function.Consumer;
@@ -24,13 +26,17 @@ public class DefaultSaveAndNewDialogBuilder extends AbstractDialogConfigurator<D
                     getComponent().open();
                     questionDialogCallback.onUserAnswer(true);
                 })
+                .withThemeVariants(ButtonVariant.LUMO_PRIMARY)
+                .withClickShortcutKey(Key.ENTER)
                 .build();
 
         this.denyButton = ButtonBuilder.create()
                 .text(Localizable.of("Cancel", DialogBuilder.DEFAULT_DENY_BUTTON_MESSAGE_CODE)).withClickListener(e -> {
                     getComponent().close();
                     questionDialogCallback.onUserAnswer(false);
-                }).build();
+                })
+                .withThemeVariants(ButtonVariant.LUMO_TERTIARY_INLINE)
+                .build();
 
         this.denyButton.getStyle().set("margin-right", "auto");
 
