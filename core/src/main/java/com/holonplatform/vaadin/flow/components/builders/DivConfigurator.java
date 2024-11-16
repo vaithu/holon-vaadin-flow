@@ -17,6 +17,7 @@ package com.holonplatform.vaadin.flow.components.builders;
 
 import com.holonplatform.vaadin.flow.components.HasComponent;
 import com.holonplatform.vaadin.flow.internal.components.builders.DefaultDivConfigurator;
+import com.holonplatform.vaadin.flow.internal.lumo.*;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.html.Div;
 
@@ -33,6 +34,45 @@ public interface DivConfigurator<C extends DivConfigurator<C>> extends HasCompon
     C add(String title, Component... components);
 
     C add(String title, HasComponent... components);
+
+    default C card() {
+        return styleName("card");
+    }
+
+    C responsive();
+
+    C cssGridLayout(int columns);
+    C cssGridLayout(String... styles);
+
+    C horizontalRule();
+    C horizontalRule(String... styles);
+    C horizontalRule(int size,String... styles);
+
+
+
+
+
+    C add(int columnSpan, Component... components);
+    C add(int columnSpan, HasComponent... components);
+
+    C add(ColumnSpan columnSpan, Component... components);
+
+    C add(RowSpan rowSpan, Component... components);
+
+    C add(ColumnSpan columnSpan, RowSpan rowSpan, Component... components);
+
+    default C row(GridRow rows) {
+        return styleName(rows.getValue());
+    }
+
+    default C column(GridColumn column) {
+        return styleName(column.getValue());
+    }
+
+    default C display(Display display) {
+        return styleName(display.getValue());
+    }
+
 
     /**
      * Get a new {@link DivConfigurator} for given component.

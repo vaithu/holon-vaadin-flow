@@ -1,8 +1,10 @@
 package com.holonplatform.vaadin.flow.components;
 
-import com.vaadin.flow.component.button.Button;
+import com.holonplatform.vaadin.flow.components.builders.ButtonBuilder;
 
-public interface HasCloseButton {
+import java.util.function.Consumer;
 
-    Button close();
+public interface HasCloseButton<C extends HasCloseButton<C>> extends ButtonBuilder {
+
+    C closeBtnConfigurator(Consumer<BaseButtonConfigurator> configurator);
 }

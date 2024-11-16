@@ -4,8 +4,8 @@ import com.holonplatform.vaadin.flow.components.FlexBoxLayout;
 import com.holonplatform.vaadin.flow.components.builders.FlexBoxLayoutConfigurator;
 import com.holonplatform.vaadin.flow.components.css.BorderRadius;
 import com.holonplatform.vaadin.flow.components.css.BoxSizing;
-import com.holonplatform.vaadin.flow.components.css.Display;
 import com.holonplatform.vaadin.flow.components.css.Size;
+import com.holonplatform.vaadin.flow.internal.lumo.Display;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasEnabled;
 import com.vaadin.flow.component.HasSize;
@@ -29,6 +29,25 @@ public abstract class AbstractFlexBoxLayoutConfigurator<C extends FlexBoxLayoutC
     @Override
     public C add(Component... components) {
         getComponent().add(components);
+        return getConfigurator();
+    }
+
+
+    @Override
+    public C addComponentAsFirst(Component component) {
+        getComponent().addComponentAsFirst(component);
+        return getConfigurator();
+    }
+
+    @Override
+    public C addComponentAtIndex(int index, Component component) {
+        getComponent().addComponentAtIndex(index, component);
+        return getConfigurator();
+    }
+
+    @Override
+    public C add(String text) {
+        getComponent().add(text);
         return getConfigurator();
     }
 

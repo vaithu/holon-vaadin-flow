@@ -30,6 +30,7 @@ import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.shared.HasTooltip;
 import com.vaadin.flow.theme.lumo.LumoUtility;
+import elemental.json.JsonValue;
 
 import java.util.Optional;
 
@@ -148,6 +149,11 @@ public abstract class AbstractButtonConfigurator<C extends ButtonConfigurator<C>
 		return getConfigurator();
 	}
 
+	@Override
+	public Button getSource() {
+		return getComponent();
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -184,7 +190,7 @@ public abstract class AbstractButtonConfigurator<C extends ButtonConfigurator<C>
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	public IconConfigurator<C> iconConfigurator(Icon icon) {
-		return new DefaultIronIconConfigurator(this, icon);
+		return new DefaultIconConfigurator(this, icon);
 	}
 
 	/*
@@ -224,6 +230,12 @@ public abstract class AbstractButtonConfigurator<C extends ButtonConfigurator<C>
 		return getConfigurator();
 	}
 
+	@Override
+	public C tooltipText(String text) {
+		tooltipConfigurator.tooltipText(text);
+		return getConfigurator();
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -247,6 +259,24 @@ public abstract class AbstractButtonConfigurator<C extends ButtonConfigurator<C>
 	@Override
 	public C withClickListener(ClickEventListener<Button, ClickEvent<Button>> clickEventListener) {
 		getComponent().addClickListener(new ComponentClickListenerAdapter<>(clickEventListener));
+		return getConfigurator();
+	}
+
+	@Override
+	public C withClickListener(ClickEventListener<Button, ClickEvent<Button>> clickEventListener, boolean avoidDoubleClick) {
+		getComponent().getElement()
+				.addEventListener(
+						"click",
+						e -> {
+							JsonValue detail = e.getEventData().get("event.detail");
+							if (avoidDoubleClick && detail.asNumber() > 1) {
+								// double click, ignore
+							} else {
+								getComponent().addClickListener(new ComponentClickListenerAdapter<>(clickEventListener));
+							}
+						}
+				)
+				.addEventData("event.detail");
 		return getConfigurator();
 	}
 

@@ -45,6 +45,10 @@ public interface FlexLayoutConfigurator<C extends FlexLayoutConfigurator<C>> ext
 
     C title(String title);
 
+    default C card() {
+        return styleName("card");
+    }
+
     C add(String title, Component... components);
     C add(String title, HasComponent... components);
     /**

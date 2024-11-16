@@ -482,7 +482,7 @@ public class TestBeanListing {
         ItemListing.ItemListingCell cell = row.getCell(ID).get();
         assertNotNull(cell);
         cell.setPartName("red");
-        assertEquals("red",cell.getPartName());
+        assertEquals("red", cell.getPartName());
 
     }
 
@@ -784,10 +784,21 @@ public class TestBeanListing {
 
         List<String> visible = listing.getVisibleColumns();
         assertEquals(2, visible.size());
+
+        listing = BeanListing.builder(TestBean.class,false)
+                .withComponentColumn(testBean -> new Button())
+                .add().build();
+
+        assertEquals(1,listing.getAllColumns().size());
+
+        listing = BeanListing.builder(TestBean.class).build();
+        assertEquals(2, listing.getVisibleColumns().size());
+
+        listing = BeanListing.builder(TestBean.class).visibleColumns(NAME, ID).build();
+
         assertEquals(NAME, visible.get(0));
         assertEquals(ID, visible.get(1));
 
-        listing = BeanListing.builder(TestBean.class).visibleColumns(NAME, ID).build();
         listing.setColumnVisible(ID, false);
 
         visible = listing.getVisibleColumns();
@@ -807,6 +818,13 @@ public class TestBeanListing {
         assertTrue(visible.contains(NAME));
         assertFalse(visible.contains(ID));
 
+        /*listing.addComponentColumn(testBean -> new Button());
+        List<Column<TestBean>> allColumns = listing.getAllColumns();
+        assertEquals(3, allColumns.size());
+
+        listing.addColumn(testBean -> testBean.getId()).setVisible(true);
+        visible = listing.getVisibleColumns();
+        assertEquals(1, visible.size());*/
     }
 
     @Test

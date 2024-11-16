@@ -131,7 +131,7 @@ public abstract class AbstractComposablePropertyForm<C extends Component, E exte
 
 	/*
 	 * (non-Javadoc)
-	 * @see com.holonplatform.vaadin.flow.components.ValueHolder#setValue(java.lang.Object)
+	 * @see com.holonplatform.vaadin.flow.components.ValueHolder#setFormValue(java.lang.Object)
 	 */
 	@Override
 	public void setValue(PropertyBox value) {
@@ -140,7 +140,7 @@ public abstract class AbstractComposablePropertyForm<C extends Component, E exte
 
 	/*
 	 * (non-Javadoc)
-	 * @see com.holonplatform.vaadin.flow.components.ValueHolder#getValue()
+	 * @see com.holonplatform.vaadin.flow.components.ValueHolder#getFormValue()
 	 */
 	@Override
 	public PropertyBox getValue() {

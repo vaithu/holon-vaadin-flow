@@ -46,4 +46,11 @@ public interface HasComponentsConfigurator<C extends HasComponentsConfigurator<C
 		return add(UIUtils.toComponents(components));
 	}
 
+	C addComponentAsFirst(Component component);
+
+	C addComponentAtIndex(int index,
+						  Component component);
+
+	C add(String text);
+
 }

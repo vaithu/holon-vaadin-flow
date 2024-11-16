@@ -22,6 +22,7 @@ import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.data.renderer.Renderer;
 import com.vaadin.flow.dom.DomEventListener;
 import com.vaadin.flow.dom.Element;
+import com.vaadin.flow.function.SerializableFunction;
 import com.vaadin.flow.function.ValueProvider;
 
 import java.util.Comparator;
@@ -38,6 +39,46 @@ public abstract class AbstractDatastorePropertyListingBuilder implements Propert
         this.builder = builder;
     }
 
+    @Override
+    public PropertyListingBuilder.DatastorePropertyListingBuilder freezeMultiSelectCheckBoxColumn(boolean freeze) {
+        builder.freezeMultiSelectCheckBoxColumn(freeze);
+        return this;
+    }
+
+    @Override
+    public PropertyListingBuilder.DatastorePropertyListingBuilder toggleableColumns() {
+        builder.toggleableColumns();
+        return this;
+    }
+
+    @Override
+    public PropertyListingBuilder.DatastorePropertyListingBuilder scrollUsingUpDownKeys() {
+        builder.scrollUsingUpDownKeys();
+        return this;
+    }
+
+    @Override
+    public PropertyListingBuilder.DatastorePropertyListingBuilder compact() {
+        builder.compact();
+        return this;
+    }
+
+    @Override
+    public PropertyListingBuilder.DatastorePropertyListingBuilder wrapCellContent() {
+        builder.wrapCellContent();
+        return this;
+    }
+
+    /**
+     * Set all items selected
+     *
+     * @return this
+     */
+    @Override
+    public PropertyListingBuilder.DatastorePropertyListingBuilder selectAll() {
+        builder.selectAll();
+        return this;
+    }
 
     /*
      * (non-Javadoc)
@@ -105,6 +146,8 @@ public abstract class AbstractDatastorePropertyListingBuilder implements Propert
         builder.hiddenColumns(hiddenColumns);
         return this;
     }
+
+
 
 
     /*
@@ -216,6 +259,16 @@ public abstract class AbstractDatastorePropertyListingBuilder implements Propert
         return this;
     }
 
+    /**
+     *  an initial set of columns for each of the bean's properties.
+     * @return
+     */
+   /* @Override
+    public PropertyListingBuilder.DatastorePropertyListingBuilder autoCreateColumns(boolean autoCreateColumns) {
+        builder.autoCreateColumns(autoCreateColumns);
+        return this;
+    }*/
+
     /*
      * (non-Javadoc)
      *
@@ -269,16 +322,21 @@ public abstract class AbstractDatastorePropertyListingBuilder implements Propert
     }
 
     @Override
-    public PropertyListingBuilder.DatastorePropertyListingBuilder mobileColumn(ValueProvider<PropertyBox,Component> valueProvider) {
-        builder.mobileColumn(valueProvider);
+    public PropertyListingBuilder.DatastorePropertyListingBuilder mobileColumn(Property<?> property, Renderer<PropertyBox> renderer) {
+        return renderer(property, renderer);
+    }
+/*
+    @Override
+    public PropertyListingBuilder.DatastorePropertyListingBuilder mobileHeader(String header) {
+        builder.mobileHeader(header);
         return this;
     }
 
     @Override
-    public PropertyListingBuilder.DatastorePropertyListingBuilder mobileColumn(Renderer<PropertyBox> renderer) {
-        builder.mobileColumn(renderer);
+    public PropertyListingBuilder.DatastorePropertyListingBuilder showMobileColumn(boolean show) {
+        builder.showMobileColumn(show);
         return this;
-    }
+    }*/
 
     /*
      * (non-Javadoc)
@@ -319,6 +377,25 @@ public abstract class AbstractDatastorePropertyListingBuilder implements Propert
         return this;
     }
 
+    /**
+     * Set whether the column which corresponds to given property is frozen at the end.
+     *
+     * @param property The property to configure (not null)
+     * @param frozen   Whether given property is frozen
+     * @return this
+     */
+    @Override
+    public PropertyListingBuilder.DatastorePropertyListingBuilder frozenAtEnd(Property<?> property, boolean frozen) {
+        builder.frozenAtEnd(property, frozen);
+        return this;
+    }
+
+    @Override
+    public PropertyListingBuilder.DatastorePropertyListingBuilder tooltipGenerator(Property<?> property, SerializableFunction<PropertyBox, String> tooltipGenerator) {
+        builder.tooltipGenerator(property, tooltipGenerator);
+        return this;
+    }
+
     /*
      * (non-Javadoc)
      *
@@ -329,6 +406,34 @@ public abstract class AbstractDatastorePropertyListingBuilder implements Propert
     @Override
     public PropertyListingBuilder.DatastorePropertyListingBuilder frozenColumns(int frozenColumnsCount) {
         builder.frozenColumns(frozenColumnsCount);
+        return this;
+    }
+
+    /* @Override
+    public PropertyListingBuilder.DatastorePropertyListingBuilder withIndexColumn() {
+        builder.withIndexColumn();
+        return this;
+    }
+
+    @Override
+    public PropertyListingBuilder.DatastorePropertyListingBuilder withIndexColumn(Property<?> property) {
+        builder.withIndexColumn(property);
+        return this;
+    }*/
+
+    /**
+     * Sets the flex grow ratio for the column which corresponds to given property.
+     * <p>
+     * When set to 0, column width is fixed.
+     * </p>
+     *
+     * @param flexGrow   the flex grow ratio to set
+     * @param properties The properties to configure (not null)
+     * @return this
+     */
+    @Override
+    public PropertyListingBuilder.DatastorePropertyListingBuilder flexGrow(int flexGrow, Property<?>... properties) {
+        builder.flexGrow(flexGrow, properties);
         return this;
     }
 
@@ -368,6 +473,12 @@ public abstract class AbstractDatastorePropertyListingBuilder implements Propert
     @Override
     public PropertyListingBuilder.DatastorePropertyListingBuilder styleNameGenerator(Function<PropertyBox, String> styleNameGenerator) {
         builder.styleNameGenerator(styleNameGenerator);
+        return this;
+    }
+
+    @Override
+    public PropertyListingBuilder.DatastorePropertyListingBuilder partNameGenerator(SerializableFunction<PropertyBox, String> partNameGenerator) {
+        builder.partNameGenerator(partNameGenerator);
         return this;
     }
 
@@ -435,6 +546,18 @@ public abstract class AbstractDatastorePropertyListingBuilder implements Propert
     @Override
     public PropertyListingBuilder.DatastorePropertyListingBuilder renderer(Property<?> property, Renderer<PropertyBox> renderer) {
         builder.renderer(property, renderer);
+        return this;
+    }
+
+    @Override
+    public PropertyListingBuilder.DatastorePropertyListingBuilder numberRenderer(Property<?> property) {
+        builder.numberRenderer(property);
+        return this;
+    }
+
+    @Override
+    public PropertyListingBuilder.DatastorePropertyListingBuilder statusColumn(Property<?> property, String available) {
+        builder.statusColumn(property, available);
         return this;
     }
 

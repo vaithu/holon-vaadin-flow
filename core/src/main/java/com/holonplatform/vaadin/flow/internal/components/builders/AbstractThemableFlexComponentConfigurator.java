@@ -212,6 +212,25 @@ public abstract class AbstractThemableFlexComponentConfigurator<L extends Compon
 		return getConfigurator();
 	}
 
+
+	@Override
+	public C addComponentAsFirst(Component component) {
+		flexComponentConfigurator.addComponentAsFirst(component);
+		return getConfigurator();
+	}
+
+	@Override
+	public C addComponentAtIndex(int index, Component component) {
+		flexComponentConfigurator.addComponentAtIndex(index, component);
+		return getConfigurator();
+	}
+
+	@Override
+	public C add(String text) {
+		flexComponentConfigurator.add(text);
+		return getConfigurator();
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * @see com.holonplatform.vaadin.flow.components.builders.HasEnabledConfigurator#enabled(boolean)

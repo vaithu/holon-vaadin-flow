@@ -1,6 +1,6 @@
 package com.holonplatform.vaadin.flow.components.builders;
 
-import com.holonplatform.vaadin.flow.internal.components.ColumnSize;
+import com.holonplatform.vaadin.flow.enums.ColumnSize;
 
 public interface BootstrapColumnSizeConfigurator<C> {
 

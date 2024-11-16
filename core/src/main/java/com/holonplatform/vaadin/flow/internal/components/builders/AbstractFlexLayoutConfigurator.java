@@ -38,7 +38,6 @@ public abstract class AbstractFlexLayoutConfigurator<C extends FlexLayoutConfigu
 
 	public AbstractFlexLayoutConfigurator(FlexLayout component) {
 		super(component);
-		getComponent().setFlexDirection(FlexLayout.FlexDirection.COLUMN);
 	}
 
 	@Override
@@ -70,6 +69,24 @@ public abstract class AbstractFlexLayoutConfigurator<C extends FlexLayoutConfigu
 	@Override
 	public C add(Component... components) {
 		getComponent().add(components);
+		return getConfigurator();
+	}
+
+	@Override
+	public C addComponentAsFirst(Component component) {
+		getComponent().addComponentAsFirst(component);
+		return getConfigurator();
+	}
+
+	@Override
+	public C addComponentAtIndex(int index, Component component) {
+		getComponent().addComponentAtIndex(index, component);
+		return getConfigurator();
+	}
+
+	@Override
+	public C add(String text) {
+		getComponent().add(text);
 		return getConfigurator();
 	}
 

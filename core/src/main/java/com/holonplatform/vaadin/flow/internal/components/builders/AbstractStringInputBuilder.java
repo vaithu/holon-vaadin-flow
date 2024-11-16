@@ -562,6 +562,12 @@ public abstract class AbstractStringInputBuilder<C extends StringInputConfigurat
 		return getConfigurator();
 	}
 
+	@Override
+	public C tooltipText(String text) {
+		tooltipConfigurator.tooltipText(text);
+		return getConfigurator();
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * @see

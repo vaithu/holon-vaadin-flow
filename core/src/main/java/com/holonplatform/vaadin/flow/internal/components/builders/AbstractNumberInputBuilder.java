@@ -26,6 +26,7 @@ import com.holonplatform.vaadin.flow.components.builders.ShortcutConfigurator;
 import com.holonplatform.vaadin.flow.components.converters.StringToNumberConverter;
 import com.holonplatform.vaadin.flow.components.events.ReadonlyChangeListener;
 import com.holonplatform.vaadin.flow.components.support.InputAdaptersContainer;
+import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
 import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.BlurNotifier.BlurEvent;
 import com.vaadin.flow.component.FocusNotifier.FocusEvent;
@@ -583,6 +584,12 @@ public abstract class AbstractNumberInputBuilder<T extends Number, C extends Num
 		return getConfigurator();
 	}
 
+	@Override
+	public C tooltipText(String text) {
+		tooltipConfigurator.tooltipText(text);
+		return getConfigurator();
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * @see
@@ -652,5 +659,41 @@ public abstract class AbstractNumberInputBuilder<T extends Number, C extends Num
 	public C ariaLabelledBy(String ariaLabelledBy) {
 		getComponent().setAriaLabelledBy(ariaLabelledBy);
 		return getConfigurator();
+	}
+
+	/**
+	 * Sets the AriaLabel using a {@link Localizable} message.
+	 * <p>
+	 * The ariaLabel is interpret as <em>plain text</em> and the HTML markup is not supported.
+	 * </p>
+	 * <p>
+	 * A <code>null</code> value is interpreted as an empty text.
+	 * </p>
+	 *
+	 * @param ariaLabel Localizable ariaLabel content message (may be null)
+	 * @return this
+	 * @see LocalizationProvider
+	 */
+	@Override
+	public C ariaLabel(Localizable ariaLabel) {
+		getComponent().setAriaLabel(Localizable.builder().message(ariaLabel).build().getMessage());
+		return getConfigurator();
+	}
+
+	/**
+	 * Sets the AriaLabel using a localizable <code>messageCode</code>.
+	 * <p>
+	 * The AriaLabel is interpret as <em>plain text</em> and the HTML markup is not supported.
+	 * </p>
+	 *
+	 * @param defaultAriaLabel Default ariaLabel if no translation is available for given <code>messageCode</code>
+	 * @param messageCode      AriaLabel translation message key
+	 * @param arguments        Optional translation arguments
+	 * @return this
+	 * @see LocalizationProvider
+	 */
+	@Override
+	public C ariaLabel(String defaultAriaLabel, String messageCode, Object... arguments) {
+		return NumberInputConfigurator.super.ariaLabel(defaultAriaLabel, messageCode, arguments);
 	}
 }

@@ -114,7 +114,7 @@ public class DefaultPropertyViewGroup extends AbstractPropertySetGroup<ViewCompo
 
 	/*
 	 * (non-Javadoc)
-	 * @see com.holonplatform.vaadin.flow.components.PropertyViewGroup#getValue()
+	 * @see com.holonplatform.vaadin.flow.components.PropertyViewGroup#getFormValue()
 	 */
 	@Override
 	public PropertyBox getValue() {
@@ -123,7 +123,7 @@ public class DefaultPropertyViewGroup extends AbstractPropertySetGroup<ViewCompo
 
 	/*
 	 * (non-Javadoc)
-	 * @see com.holonplatform.vaadin.components.PropertyViewGroup#setValue(com.holonplatform.core.property.PropertyBox)
+	 * @see com.holonplatform.vaadin.components.PropertyViewGroup#setFormValue(com.holonplatform.core.property.PropertyBox)
 	 */
 	@Override
 	public void setValue(PropertyBox value) {

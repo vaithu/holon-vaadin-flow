@@ -30,6 +30,7 @@ import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.grid.SortOrderProvider;
 import com.vaadin.flow.data.provider.QuerySortOrder;
 import com.vaadin.flow.data.renderer.Renderer;
+import com.vaadin.flow.function.SerializableFunction;
 import com.vaadin.flow.function.ValueProvider;
 
 import java.io.Serializable;
@@ -106,10 +107,29 @@ public interface ItemListingColumn<P, T, V> extends Serializable {
 	boolean isFrozen();
 
 	/**
+	 * Gets the column frozenAtEnd state.
+	 * @return whether this column is frozenAtEnd
+	 */
+	boolean isFrozenAtEnd();
+
+	/**
 	 * Sets the column frozen state.
 	 * @param frozen whether to freeze or unfreeze this column
 	 */
 	void setFrozen(boolean frozen);
+
+	void setFrozenAtEnd(boolean frozenAtEnd);
+
+	void setClassNameGenerator(SerializableFunction<T, String> classNameGenerator);
+
+	void setHeader(Component headerComponent);
+
+	void
+	setHeader(String labelText);
+
+	void setKey(String key);
+
+	void setTooltipGenerator(SerializableFunction<T, String> tooltipGenerator);
 
 	/**
 	 * Get the width of this column as a CSS-string.
@@ -256,6 +276,7 @@ public interface ItemListingColumn<P, T, V> extends Serializable {
 	 * @param styleNameGenerator the style class name generator to set
 	 */
 	void setStyleNameGenerator(Function<T, String> styleNameGenerator);
+
 
 	/**
 	 * Gest the column sort mode.
@@ -424,6 +445,10 @@ public interface ItemListingColumn<P, T, V> extends Serializable {
 	 * @param headerPartName the part name to set
 	 */
 	void setHeaderPartName(String headerPartName);
+
+	SerializableFunction<T, String> getPartNameGenerator();
+
+	void setPartNameGenerator(SerializableFunction<T, String> partNameGenerator);
 
 	/**
 	 * Column sort mode

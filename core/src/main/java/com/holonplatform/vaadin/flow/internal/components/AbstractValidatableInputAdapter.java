@@ -306,7 +306,7 @@ public abstract class AbstractValidatableInputAdapter<T, I extends Input<T>> imp
 
 	/*
 	 * (non-Javadoc)
-	 * @see com.holonplatform.vaadin.components.ValueHolder#setValue(java.lang.Object)
+	 * @see com.holonplatform.vaadin.components.ValueHolder#setFormValue(java.lang.Object)
 	 */
 	@Override
 	public void setValue(T value) {
@@ -315,7 +315,7 @@ public abstract class AbstractValidatableInputAdapter<T, I extends Input<T>> imp
 
 	/*
 	 * (non-Javadoc)
-	 * @see com.holonplatform.vaadin.components.ValueHolder#getValue()
+	 * @see com.holonplatform.vaadin.components.ValueHolder#getFormValue()
 	 */
 	@Override
 	public T getValue() {

@@ -8,11 +8,17 @@ import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.data.binder.ValidationException;
 
+import java.util.function.Consumer;
+
 public interface NotificationConfigurator<C extends NotificationConfigurator<C>> extends HasComponentsConfigurator<C>,
 ComponentConfigurator<C>,
         HasStyleConfigurator<C>, HasThemeVariantConfigurator<NotificationVariant, C> {
 
+    int duration = 5000;
+
     void close();
+
+    void open();
 
     C duration(int duration);
 
@@ -21,12 +27,6 @@ ComponentConfigurator<C>,
     C position(Notification.Position position);
 
     C text(String text);
-
-    void show();
-
-    default void open() {
-        show();
-    }
 
     C error(ValidationException validationException);
 
@@ -38,19 +38,31 @@ ComponentConfigurator<C>,
         return withThemeVariants(NotificationVariant.LUMO_ERROR);
     }
 
+    default C autoClose(int duration) {
+        return duration(duration);
+    }
+
+    default C autoClose() {
+        return autoClose(duration);
+    }
+
+    C autoClose(boolean autoClose) ;
+
     default C success() {
-        return withThemeVariants(NotificationVariant.LUMO_SUCCESS);
+        return withThemeVariants(NotificationVariant.LUMO_SUCCESS).duration(duration);
     }
 
     default C primary() {
-        return withThemeVariants(NotificationVariant.LUMO_PRIMARY);
+        return withThemeVariants(NotificationVariant.LUMO_PRIMARY).duration(duration);
     }
 
     default C contrast() {
-        return withThemeVariants(NotificationVariant.LUMO_CONTRAST);
+        return withThemeVariants(NotificationVariant.LUMO_CONTRAST).duration(duration);
     }
 
     C closeButton(boolean close);
+
+    C closeButton(Consumer<ButtonConfigurator> buttonConfigurator);
 
    default C topStretch() {
        return position(Notification.Position.TOP_STRETCH);

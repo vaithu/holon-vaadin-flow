@@ -6,7 +6,8 @@ public enum BreakPoint {
     BREAKPOINT_SM ( "576px"),
     BREAKPOINT_MD ( "768px"),
     BREAKPOINT_LG ( "992px"),
-    BREAKPOINT_XL ( "1200px");
+    BREAKPOINT_XL ( "1200px"),
+    BREAKPOINT_XXL ( "1400px");
 
     private String size;
 

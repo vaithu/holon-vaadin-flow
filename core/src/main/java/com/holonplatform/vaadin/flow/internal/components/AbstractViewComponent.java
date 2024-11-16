@@ -141,7 +141,7 @@ public abstract class AbstractViewComponent<C extends Component, T> extends Comp
 
 	/*
 	 * (non-Javadoc)
-	 * @see com.holonplatform.vaadin.flow.components.ValueHolder#setValue(java.lang.Object)
+	 * @see com.holonplatform.vaadin.flow.components.ValueHolder#setFormValue(java.lang.Object)
 	 */
 	@Override
 	public void setValue(T value) {
@@ -150,7 +150,7 @@ public abstract class AbstractViewComponent<C extends Component, T> extends Comp
 
 	/*
 	 * (non-Javadoc)
-	 * @see com.holonplatform.vaadin.flow.components.ValueHolder#getValue()
+	 * @see com.holonplatform.vaadin.flow.components.ValueHolder#getFormValue()
 	 */
 	@Override
 	public T getValue() {

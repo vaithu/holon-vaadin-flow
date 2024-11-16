@@ -356,6 +356,12 @@ public abstract class AbstractLocalDateTimeInputBuilder<C extends LocalDateTimeI
 		return getConfigurator();
 	}
 
+	@Override
+	public C tooltipText(String text) {
+		tooltipConfigurator.tooltipText(text);
+		return getConfigurator();
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 

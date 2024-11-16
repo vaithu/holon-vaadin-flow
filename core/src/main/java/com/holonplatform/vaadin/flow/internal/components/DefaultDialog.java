@@ -72,6 +72,7 @@ public class DefaultDialog extends Dialog implements HasStyle {
 //		this.footer.setAlignItems(Alignment.END);
 
 		this.content = new VerticalLayout();
+		this.content.setSizeUndefined();
 		this.content.addClassNames(LumoUtility.Padding.Top.NONE,
 				LumoUtility.Padding.Bottom.NONE);
 		this.content.setSpacing(false);

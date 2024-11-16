@@ -47,6 +47,22 @@ public abstract class AbstractSplitLayoutConfigurator<C extends SplitLayoutConfi
     }
 
     @Override
+    public void toggle(ToggleMode toggleMode) {
+
+        switch (toggleMode) {
+            case PRIMARY_VISIBLE_ONLY :
+                getComponent().getSecondaryComponent().setVisible(false);
+                break;
+            case SECONDARY_VISIBLE_ONlY :
+                getComponent().getPrimaryComponent().setVisible(false);
+                break;
+            case BOTH_VISIBLE :
+                getComponent().getPrimaryComponent().setVisible(true);
+                getComponent().getSecondaryComponent().setVisible(true);
+        }
+    }
+
+    @Override
     public void remove(Component... components) {
         getComponent().remove(components);
     }

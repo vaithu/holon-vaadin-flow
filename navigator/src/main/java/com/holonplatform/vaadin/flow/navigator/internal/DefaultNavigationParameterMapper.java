@@ -15,26 +15,6 @@
  */
 package com.holonplatform.vaadin.flow.navigator.internal;
 
-import java.security.AccessController;
-import java.security.PrivilegedAction;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.OffsetDateTime;
-import java.time.OffsetTime;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.ServiceLoader;
-import java.util.stream.Collectors;
-
 import com.holonplatform.core.internal.Logger;
 import com.holonplatform.core.internal.utils.ConversionUtils;
 import com.holonplatform.core.internal.utils.ObjectUtils;
@@ -43,6 +23,11 @@ import com.holonplatform.vaadin.flow.internal.VaadinLogger;
 import com.holonplatform.vaadin.flow.navigator.NavigationParameterMapper;
 import com.holonplatform.vaadin.flow.navigator.NavigationParameterTypeMapper;
 import com.holonplatform.vaadin.flow.navigator.exceptions.InvalidNavigationParameterException;
+
+import java.time.*;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Default {@link NavigationParameterMapper} implementation.
@@ -75,13 +60,7 @@ public enum DefaultNavigationParameterMapper implements NavigationParameterMappe
 		LOGGER.debug(() -> "Load NavigationParameterTypeMappers using ServiceLoader with service name: "
 				+ NavigationParameterTypeMapper.class.getName());
 		@SuppressWarnings("rawtypes")
-		Iterable<NavigationParameterTypeMapper> mappers = AccessController
-				.doPrivileged(new PrivilegedAction<Iterable<NavigationParameterTypeMapper>>() {
-					@Override
-					public Iterable<NavigationParameterTypeMapper> run() {
-						return ServiceLoader.load(NavigationParameterTypeMapper.class);
-					}
-				});
+		Iterable<NavigationParameterTypeMapper> mappers = ServiceLoader.load(NavigationParameterTypeMapper.class);
 		mappers.forEach(mapper -> {
 			final Class<?> type = mapper.getParameterType();
 			if (type == null) {

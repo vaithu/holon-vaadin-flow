@@ -1,7 +1,7 @@
 package com.holonplatform.vaadin.flow.internal.components.builders;
 
 import com.holonplatform.vaadin.flow.components.builders.ColumnBuilder;
-import com.holonplatform.vaadin.flow.internal.components.ColumnSize;
+import com.holonplatform.vaadin.flow.enums.ColumnSize;
 import com.holonplatform.vaadin.flow.internal.components.DefaultXPanel;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.html.Div;

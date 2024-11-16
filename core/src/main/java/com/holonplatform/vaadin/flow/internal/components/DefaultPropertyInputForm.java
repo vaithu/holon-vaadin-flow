@@ -76,7 +76,7 @@ public class DefaultPropertyInputForm<C extends Component>
 
 	/*
 	 * (non-Javadoc)
-	 * @see com.holonplatform.vaadin.flow.components.PropertyInputGroup#getValue(boolean)
+	 * @see com.holonplatform.vaadin.flow.components.PropertyInputGroup#getFormValue(boolean)
 	 */
 	@Override
 	public PropertyBox getValue(boolean validate) {
@@ -95,7 +95,7 @@ public class DefaultPropertyInputForm<C extends Component>
 	/*
 	 * (non-Javadoc)
 	 * @see
-	 * com.holonplatform.vaadin.flow.components.PropertyInputGroup#setValue(com.holonplatform.core.property.PropertyBox,
+	 * com.holonplatform.vaadin.flow.components.PropertyInputGroup#setFormValue(com.holonplatform.core.property.PropertyBox,
 	 * boolean)
 	 */
 	@Override

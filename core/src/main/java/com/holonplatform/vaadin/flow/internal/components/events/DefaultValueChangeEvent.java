@@ -80,7 +80,7 @@ public class DefaultValueChangeEvent<V> implements ValueChangeEvent<V> {
 
 	/*
 	 * (non-Javadoc)
-	 * @see com.holonplatform.vaadin.components.ValueHolder.ValueChangeEvent#getValue()
+	 * @see com.holonplatform.vaadin.components.ValueHolder.ValueChangeEvent#getFormValue()
 	 */
 	@Override
 	public V getValue() {

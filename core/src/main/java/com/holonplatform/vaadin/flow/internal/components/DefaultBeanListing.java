@@ -60,6 +60,7 @@ import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.data.renderer.Renderer;
 import com.vaadin.flow.dom.DomEventListener;
 import com.vaadin.flow.dom.Element;
+import com.vaadin.flow.function.SerializableFunction;
 import com.vaadin.flow.function.ValueProvider;
 
 import java.util.*;
@@ -103,6 +104,24 @@ public class DefaultBeanListing<T> extends AbstractItemListing<T, String> implem
 		// add properties as columns
 		for (PathProperty<?> property : propertySet) {
 			addPropertyColumn(property.relativeName());
+		}
+	}
+
+	/**
+	 * Constructor.
+	 * @param beanType Bean type (not null)
+	 * @param autoCreateColumns an initial set of columns for each of the bean's properties.
+	 */
+	public DefaultBeanListing(Class<T> beanType,boolean autoCreateColumns) {
+		super();
+		ObjectUtils.argumentNotNull(beanType, "Bean type must be not null");
+		this.beanType = beanType;
+		this.propertySet = BeanPropertySet.create(beanType);
+		if (autoCreateColumns) {
+			// add properties as columns
+			for (PathProperty<?> property : propertySet) {
+				addPropertyColumn(property.relativeName());
+			}
 		}
 	}
 
@@ -295,6 +314,10 @@ public class DefaultBeanListing<T> extends AbstractItemListing<T, String> implem
 
 		public DefaultBeanListingBuilder(Class<T> beanType) {
 			super(new DefaultBeanListing<>(beanType));
+		}
+
+		public DefaultBeanListingBuilder(Class<T> beanType,boolean autoCreateColumns) {
+			super(new DefaultBeanListing<>(beanType,autoCreateColumns));
 		}
 
 		/*
@@ -552,6 +575,56 @@ public class DefaultBeanListing<T> extends AbstractItemListing<T, String> implem
 			return this;
 		}
 
+		@Override
+		public DatastoreBeanListingBuilder<T> freezeMultiSelectCheckBoxColumn(boolean freeze) {
+			builder.freezeMultiSelectCheckBoxColumn(freeze);
+			return this;
+		}
+
+		@Override
+		public DatastoreBeanListingBuilder<T> scrollUsingUpDownKeys() {
+			builder.scrollUsingUpDownKeys();
+			return this;
+		}
+
+		@Override
+		public DatastoreBeanListingBuilder<T> toggleableColumns() {
+			builder.toggleableColumns();
+			return this;
+		}
+
+		@Override
+		public DatastoreBeanListingBuilder<T> compact() {
+			builder.compact();
+			return this;
+		}
+
+		@Override
+		public DatastoreBeanListingBuilder<T> wrapCellContent() {
+			builder.wrapCellContent();
+			return this;
+		}
+
+		/**
+		 * @param autoCreateColumns an initial set of columns for each of the bean's properties.
+		 * @return
+		 */
+		/*@Override
+		public DatastoreBeanListingBuilder<T> autoCreateColumns(boolean autoCreateColumns) {
+			builder.autoCreateColumns(autoCreateColumns);
+			return this;
+		}*/
+
+		/**
+		 * Set all items selected
+		 *
+		 * @return this
+		 */
+		@Override
+		public DatastoreBeanListingBuilder<T> selectAll() {
+			builder.selectAll();
+			return this;
+		}
 
 		/*
 		 * (non-Javadoc)
@@ -673,6 +746,25 @@ public class DefaultBeanListing<T> extends AbstractItemListing<T, String> implem
 			return this;
 		}
 
+		/**
+		 * Set whether the column which corresponds to given property is frozen at the end.
+		 *
+		 * @param property The property to configure (not null)
+		 * @param frozen   Whether given property is frozen
+		 * @return this
+		 */
+		@Override
+		public DatastoreBeanListingBuilder<T> frozenAtEnd(String property, boolean frozen) {
+			builder.frozenAtEnd(property, frozen);
+			return this;
+		}
+
+		@Override
+		public DatastoreBeanListingBuilder<T> tooltipGenerator(String property, SerializableFunction<T, String> tooltipGenerator) {
+			builder.tooltipGenerator(property, tooltipGenerator);
+			return this;
+		}
+
 		/*
 		 * (non-Javadoc)
 		 * @see com.holonplatform.vaadin.flow.components.builders.ItemListingConfigurator# frozenColumns(int)
@@ -680,6 +772,34 @@ public class DefaultBeanListing<T> extends AbstractItemListing<T, String> implem
 		@Override
 		public DatastoreBeanListingBuilder<T> frozenColumns(int frozenColumnsCount) {
 			builder.frozenColumns(frozenColumnsCount);
+			return this;
+		}
+
+		/*@Override
+		public DatastoreBeanListingBuilder<T> withIndexColumn(String property) {
+			builder.withIndexColumn(property);
+			return this;
+		}
+
+		@Override
+		public DatastoreBeanListingBuilder<T> withIndexColumn() {
+			builder.withIndexColumn();
+			return this;
+		}*/
+
+		/**
+		 * Sets the flex grow ratio for the column which corresponds to given property.
+		 * <p>
+		 * When set to 0, column width is fixed.
+		 * </p>
+		 *
+		 * @param flexGrow   the flex grow ratio to set
+		 * @param properties The properties to configure (not null)
+		 * @return this
+		 */
+		@Override
+		public DatastoreBeanListingBuilder<T> flexGrow(int flexGrow, String... properties) {
+			builder.flexGrow(flexGrow, properties);
 			return this;
 		}
 
@@ -713,6 +833,12 @@ public class DefaultBeanListing<T> extends AbstractItemListing<T, String> implem
 		@Override
 		public DatastoreBeanListingBuilder<T> styleNameGenerator(Function<T, String> styleNameGenerator) {
 			builder.styleNameGenerator(styleNameGenerator);
+			return this;
+		}
+
+		@Override
+		public DatastoreBeanListingBuilder<T> partNameGenerator(SerializableFunction<T, String> partNameGenerator) {
+			builder.partNameGenerator(partNameGenerator);
 			return this;
 		}
 
@@ -769,6 +895,18 @@ public class DefaultBeanListing<T> extends AbstractItemListing<T, String> implem
 		@Override
 		public DatastoreBeanListingBuilder<T> renderer(String property, Renderer<T> renderer) {
 			builder.renderer(property, renderer);
+			return this;
+		}
+
+		@Override
+		public DatastoreBeanListingBuilder<T> numberRenderer(String property) {
+			builder.numberRenderer(property);
+			return this;
+		}
+
+		@Override
+		public DatastoreBeanListingBuilder<T> statusColumn(String property, String available) {
+			builder.statusColumn(property, available);
 			return this;
 		}
 
@@ -1600,17 +1738,23 @@ public class DefaultBeanListing<T> extends AbstractItemListing<T, String> implem
 			return this;
 		}
 
-		@Override
+		/*@Override
 		public DatastoreBeanListingBuilder<T> mobileColumn(ValueProvider<T, Component> valueProvider) {
 			builder.mobileColumn(valueProvider);
 			return this;
-		}
+		}*/
 
 		@Override
-		public DatastoreBeanListingBuilder<T> mobileColumn(Renderer<T> renderer) {
-			builder.mobileColumn(renderer);
+		public DatastoreBeanListingBuilder<T> mobileColumn(String property, Renderer<T> renderer) {
+			builder.mobileColumn(property, renderer);
 			return this;
 		}
+
+		/*@Override
+		public DatastoreBeanListingBuilder<T> showMobileColumn(boolean show) {
+			builder.showMobileColumn(show);
+			return this;
+		}*/
 
 		@Override
 		public DatastoreBeanListingBuilder<T> items(CallbackDataProvider.FetchCallback<T, Void> fetchCallback) {

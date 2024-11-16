@@ -10,7 +10,7 @@ public interface GridSizeConfigurator<C> {
     C xxLarge(int column);
 
     default C mobile() {
-        small(1)
+        small(1);
         return medium(2);
     }
 }

@@ -60,6 +60,24 @@ public class DefaultFlexComponentConfigurator<C extends Component>
 		return this;
 	}
 
+	@Override
+	public DefaultFlexComponentConfigurator<C> addComponentAsFirst(Component component) {
+		this.component.addComponentAsFirst(component);
+		return this;
+	}
+
+	@Override
+	public DefaultFlexComponentConfigurator<C> addComponentAtIndex(int index, Component component) {
+		this.component.addComponentAtIndex(index, component);
+		return this;
+	}
+
+	@Override
+	public DefaultFlexComponentConfigurator<C> add(String text) {
+		component.add(text);
+		return this;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * @see com.holonplatform.vaadin.flow.components.builders.HasElementConfigurator#withThemeName(java.lang.String)

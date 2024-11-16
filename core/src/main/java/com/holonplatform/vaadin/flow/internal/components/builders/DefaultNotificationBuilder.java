@@ -17,6 +17,7 @@ public class DefaultNotificationBuilder
 
     public DefaultNotificationBuilder() {
         super(new Notification());
+        autoClose();
     }
 
     /**

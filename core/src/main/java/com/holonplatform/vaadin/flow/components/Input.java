@@ -54,6 +54,7 @@ import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.shared.HasTooltip;
 import com.vaadin.flow.data.converter.Converter;
 
+import java.io.Serial;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -970,6 +971,7 @@ public interface Input<T> extends ValueHolder<T, ValueChangeEvent<T>>, ValueComp
 	 */
 	public static class InputValueConversionException extends RuntimeException {
 
+		@Serial
 		private static final long serialVersionUID = 905052787299053218L;
 
 		public InputValueConversionException(String message) {

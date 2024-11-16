@@ -370,7 +370,7 @@ public class InputAdapter<T, V extends HasValue<?, T>, C extends Component> impl
 
 	/*
 	 * (non-Javadoc)
-	 * @see com.holonplatform.vaadin.components.Input#setValue(java.lang.Object)
+	 * @see com.holonplatform.vaadin.components.Input#setFormValue(java.lang.Object)
 	 */
 	@Override
 	public void setValue(T value) {
@@ -391,7 +391,7 @@ public class InputAdapter<T, V extends HasValue<?, T>, C extends Component> impl
 
 	/*
 	 * (non-Javadoc)
-	 * @see com.holonplatform.vaadin.components.Input#getValue()
+	 * @see com.holonplatform.vaadin.components.Input#getFormValue()
 	 */
 	@Override
 	public T getValue() {

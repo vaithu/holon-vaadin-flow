@@ -16,6 +16,7 @@
 package com.holonplatform.vaadin.flow.components.builders;
 
 import com.holonplatform.vaadin.flow.components.events.ClickEvent;
+import com.holonplatform.vaadin.flow.components.events.ClickEventListener;
 import com.holonplatform.vaadin.flow.internal.components.builders.DefaultButtonConfigurator;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -89,7 +90,9 @@ public interface ButtonConfigurator<C extends ButtonConfigurator<C>> extends Com
 	C borderSuccess();
 	C borderRadius();
 
+	Button getSource();
 
+	C withClickListener(ClickEventListener<Button, ClickEvent<Button>> clickEventListener, boolean avoidDoubleClick);
 
 
 	/**

@@ -8,17 +8,22 @@ import com.vaadin.flow.component.splitlayout.SplitLayout;
 import com.vaadin.flow.component.splitlayout.SplitLayoutVariant;
 
 public interface SplitLayoutConfigurator<C extends SplitLayoutConfigurator<C>>
-        extends ComponentConfigurator<C>, HasStyleConfigurator<C>, HasThemeVariantConfigurator<SplitLayoutVariant, C> {
+        extends ComponentConfigurator<C>, HasStyleConfigurator<C>,
+        HasThemeVariantConfigurator<SplitLayoutVariant, C>,HasSizeConfigurator<C> {
 
     C primaryComponent(Component... components);
-   default C primaryComponent(HasComponent... components) {
-       return primaryComponent(UIUtils.toComponents(components));
-   }
+
+    default C primaryComponent(HasComponent... components) {
+        return primaryComponent(UIUtils.toComponents(components));
+    }
 
     C secondaryComponent(Component... components);
+
     default C secondaryComponent(HasComponent... components) {
         return secondaryComponent(UIUtils.toComponents(components));
     }
+
+    void toggle(ToggleMode toggleMode);
 
     void remove(Component... components);
 
@@ -46,6 +51,11 @@ public interface SplitLayoutConfigurator<C extends SplitLayoutConfigurator<C>>
 
     }
 
+    public enum ToggleMode {
+        PRIMARY_VISIBLE_ONLY,
+        SECONDARY_VISIBLE_ONlY,
+        BOTH_VISIBLE
+    }
 
 
 }

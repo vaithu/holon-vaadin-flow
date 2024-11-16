@@ -3,7 +3,8 @@ package com.holonplatform.vaadin.flow.components.builders;
 import com.vaadin.flow.data.provider.BackEndDataProvider;
 import com.vaadin.flow.data.provider.CallbackDataProvider;
 
-public interface HasLazyDataViewConfigurator<T,F, C extends HasLazyDataViewConfigurator<T,F,C> >  {
+public interface HasLazyDataViewConfigurator<T,F, C extends HasLazyDataViewConfigurator<T,F,C> >
+ {
 
     C items(BackEndDataProvider<T, F> dataProvider);
 

@@ -1,8 +1,5 @@
 package com.holonplatform.vaadin.flow.internal.components.builders;
 
-import java.util.Collections;
-import java.util.Optional;
-
 import com.holonplatform.core.datastore.DataTarget;
 import com.holonplatform.core.datastore.Datastore;
 import com.holonplatform.core.internal.utils.ObjectUtils;
@@ -13,6 +10,9 @@ import com.holonplatform.core.query.Query;
 import com.holonplatform.core.query.QueryFilter;
 import com.holonplatform.vaadin.flow.data.DatastoreDataProvider;
 import com.holonplatform.vaadin.flow.internal.data.PropertyItemConverter;
+
+import java.util.Collections;
+import java.util.Optional;
 
 public class AbstractPropertySelectInputBuilder<T> {
 
@@ -62,5 +62,7 @@ public class AbstractPropertySelectInputBuilder<T> {
 			});
 		}
 	}
+
+
 
 }

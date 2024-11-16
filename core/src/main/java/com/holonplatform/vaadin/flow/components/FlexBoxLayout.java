@@ -1,6 +1,7 @@
 package com.holonplatform.vaadin.flow.components;
 
 import com.holonplatform.vaadin.flow.components.css.*;
+import com.holonplatform.vaadin.flow.internal.lumo.Display;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.orderedlayout.FlexLayout;
 import com.vaadin.flow.theme.lumo.Lumo;

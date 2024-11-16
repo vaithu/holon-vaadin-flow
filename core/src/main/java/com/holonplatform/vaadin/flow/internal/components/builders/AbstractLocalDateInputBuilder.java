@@ -283,6 +283,12 @@ public abstract class AbstractLocalDateInputBuilder<C extends LocalDateInputConf
 	}
 
 	@Override
+	public C tooltipText(String text) {
+		tooltipConfigurator.tooltipText(text);
+		return getConfigurator();
+	}
+
+	@Override
 	public C clearButtonVisible(boolean clearButtonVisible) {
 		getComponent().setClearButtonVisible(clearButtonVisible);
 		return getConfigurator();

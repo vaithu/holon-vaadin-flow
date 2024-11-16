@@ -1,12 +1,18 @@
 package com.holonplatform.vaadin.flow.components;
 
 import com.holonplatform.vaadin.flow.components.builders.ButtonConfigurator;
+import com.holonplatform.vaadin.flow.components.builders.HasOptionsMenuBarConfigurator;
 
 import java.util.function.Consumer;
 
-public interface HasSearchBar {
+public interface HasSearchBar<C extends HasSearchBar<C>> extends HasOptionsMenuBarConfigurator<C> {
 
-    void search(Consumer<String> consumer);
+    C search(ValueHolder.ValueChangeListener < String, ValueHolder.ValueChangeEvent < String >> listener);
 
-    void newBtnConfigurator(Consumer<ButtonConfigurator> configurator);
+    C newButton(Consumer<ButtonConfigurator.BaseButtonConfigurator> configurator);
+
+
+
+
+
 }

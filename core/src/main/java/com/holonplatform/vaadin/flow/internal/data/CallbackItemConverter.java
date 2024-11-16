@@ -44,7 +44,7 @@ public class CallbackItemConverter<T, ITEM> implements ItemConverter<T, ITEM> {
 
 	/*
 	 * (non-Javadoc)
-	 * @see com.holonplatform.vaadin.flow.data.ItemConverter#getValue(java.lang.Object)
+	 * @see com.holonplatform.vaadin.flow.data.ItemConverter#getFormValue(java.lang.Object)
 	 */
 	@Override
 	public T getValue(ITEM item) {

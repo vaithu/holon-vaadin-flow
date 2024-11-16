@@ -193,7 +193,8 @@ public interface ContextMenuConfigurator<L extends EventListener, M extends Cont
 	 *
 	 * @since 5.2.0
 	 */
-	public interface MenuItemBuilder<L extends EventListener, M extends ContextMenuBase<M, I, S>, I extends MenuItemBase<M, I, S>, S extends SubMenuBase<M, I, S>, B extends ContextMenuConfigurator<L, M, I, S, B>>
+	public interface MenuItemBuilder<L extends EventListener, M extends ContextMenuBase<M, I, S>,
+			I extends MenuItemBase<M, I, S>, S extends SubMenuBase<M, I, S>, B extends ContextMenuConfigurator<L, M, I, S, B>>
 			extends HasEnabledConfigurator<MenuItemBuilder<L, M, I, S, B>>,HasStyleConfigurator<MenuItemBuilder<L, M, I, S, B>>,
 			HasTextConfigurator<MenuItemBuilder<L, M, I, S, B>> {
 
@@ -204,7 +205,7 @@ public interface ContextMenuConfigurator<L extends EventListener, M extends Cont
 		 */
 		MenuItemBuilder<L, M, I, S, B> id(String id);
 
-		/**
+		/**Has
 		 * Set whether the menu item is checkable.
 		 * <p>
 		 * A checkable item toggles a checkmark icon when clicked.
@@ -241,6 +242,14 @@ public interface ContextMenuConfigurator<L extends EventListener, M extends Cont
 		 * @since 5.2.3
 		 */
 		MenuItemBuilder<L, M, I, S, B> checked(boolean checked);
+
+		/**
+		 * Sets the keep open state of this menu item. An item that marked as keep open prevents menu from closing when clicked.
+		 * @param keepOpen whether clicking this item keeps the menu open
+		 * @return this
+		 * @since 5.5.6
+		 */
+		MenuItemBuilder<L, M, I, S, B> keepOpen(boolean keepOpen);
 
 		/**
 		 * Register a menu item click event listener.

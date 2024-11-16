@@ -499,8 +499,8 @@ public class TestFilterableSingleSelectInput {
         assertNull(input.getValue());
         assertFalse(input.getValueIfPresent().isPresent());
 
-        /*input.setValue("test");
-        assertEquals("test", input.getValue());
+        /*input.setFormValue("test");
+        assertEquals("test", input.getFormValue());
         assertTrue(input.getValueIfPresent().isPresent());
         assertEquals("test", input.getValueIfPresent().orElse(null));*/
 

@@ -115,6 +115,19 @@ public class DefaultContextMenuItemBuilder<M extends ContextMenuBase<M, I, S>, I
 		return this;
 	}
 
+	/**
+	 * Sets the keep open state of this menu item. An item that marked as keep open prevents menu from closing when clicked.
+	 *
+	 * @param keepOpen whether clicking this item keeps the menu open
+	 * @return this
+	 * @since 5.5.6
+	 */
+	@Override
+	public MenuItemBuilder<ClickEventListener<MenuItem, ClickEvent<MenuItem>>, M, I, S, B> keepOpen(boolean keepOpen) {
+		menuItem.setKeepOpen(keepOpen);
+		return this;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * @see com.holonplatform.vaadin.flow.components.builders.HasTextConfigurator#text(com.holonplatform.core.i18n.

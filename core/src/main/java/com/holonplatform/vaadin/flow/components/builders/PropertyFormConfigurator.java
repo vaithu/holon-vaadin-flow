@@ -32,7 +32,8 @@ import com.vaadin.flow.component.HasElement;
  *
  * @since 5.2.0
  */
-public interface PropertyFormConfigurator<L extends HasElement, E extends HasComponent, G extends ComponentGroup<E>, C extends PropertyFormConfigurator<L, E, G, C>>
+public interface PropertyFormConfigurator<L extends HasElement, E extends HasComponent, G extends ComponentGroup<E>
+		, C extends PropertyFormConfigurator<L, E, G, C>>
 		extends ComposableConfigurator<L, E, G, C>, ComponentConfigurator<C> {
 
 	/**

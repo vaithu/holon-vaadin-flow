@@ -144,7 +144,7 @@ public class MultiSelectInputAdapter<T, ITEM, C extends Component> implements Mu
 	public void select(Iterable<T> items) {
 		final Set<T> toSelect = ConversionUtils.iterableAsSet(items);
 		final Set<T> values = new HashSet<>(getValue());
-		toSelect.forEach(v -> values.add(v));
+        values.addAll(toSelect);
 		setValue(values);
 	}
 
@@ -249,7 +249,7 @@ public class MultiSelectInputAdapter<T, ITEM, C extends Component> implements Mu
 
 	/*
 	 * (non-Javadoc)
-	 * @see com.holonplatform.vaadin.flow.components.ValueHolder#setValue(java.lang.Object)
+	 * @see com.holonplatform.vaadin.flow.components.ValueHolder#setFormValue(java.lang.Object)
 	 */
 	@Override
 	public void setValue(Set<T> value) {
@@ -258,7 +258,7 @@ public class MultiSelectInputAdapter<T, ITEM, C extends Component> implements Mu
 
 	/*
 	 * (non-Javadoc)
-	 * @see com.holonplatform.vaadin.flow.components.ValueHolder#getValue()
+	 * @see com.holonplatform.vaadin.flow.components.ValueHolder#getFormValue()
 	 */
 	@Override
 	public Set<T> getValue() {

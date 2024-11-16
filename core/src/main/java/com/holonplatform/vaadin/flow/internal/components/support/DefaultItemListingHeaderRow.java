@@ -15,18 +15,18 @@
  */
 package com.holonplatform.vaadin.flow.internal.components.support;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
 import com.holonplatform.core.internal.utils.ObjectUtils;
 import com.holonplatform.vaadin.flow.components.ItemListing.ItemListingCell;
 import com.holonplatform.vaadin.flow.components.ItemListing.ItemListingRow;
 import com.holonplatform.vaadin.flow.components.builders.ItemListingConfigurator.EditableItemListingRow;
 import com.vaadin.flow.component.grid.Grid.Column;
 import com.vaadin.flow.component.grid.HeaderRow;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * Default header {@link ItemListingRow} implementation.
@@ -67,7 +67,7 @@ public class DefaultItemListingHeaderRow<P> implements EditableItemListingRow<P>
 		final Column<?> column = propertyColumnProvider.apply(property);
 		if (column != null) {
 			try {
-				return Optional.ofNullable(new DefaultItemListingHeaderCell(row.getCell(column)));
+				return Optional.of(new DefaultItemListingHeaderCell(row.getCell(column)));
 			} catch (@SuppressWarnings("unused") IllegalArgumentException e) {
 				return Optional.empty();
 			}
@@ -86,7 +86,7 @@ public class DefaultItemListingHeaderRow<P> implements EditableItemListingRow<P>
 		ObjectUtils.argumentNotNull(properties, "Properties must be not null");
 		final List<Column<?>> columns = properties.stream().map(property -> propertyColumnProvider.apply(property))
 				.filter(column -> column != null).collect(Collectors.toList());
-		return new DefaultItemListingHeaderCell(row.join(columns.toArray(new Column<?>[columns.size()])));
+		return new DefaultItemListingHeaderCell(row.join(columns.toArray(new Column<?>[0])));
 	}
 
 }

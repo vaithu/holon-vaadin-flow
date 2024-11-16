@@ -3,10 +3,15 @@ package com.holonplatform.vaadin.flow.components.utils;
 import com.github.javaparser.quality.NotNull;
 import com.holonplatform.core.property.PropertyBox;
 import com.holonplatform.core.property.PropertySet;
+import com.holonplatform.vaadin.flow.HasOptionsBar;
 import com.holonplatform.vaadin.flow.components.Components;
 import com.holonplatform.vaadin.flow.components.HasComponent;
 import com.holonplatform.vaadin.flow.components.PropertyInputForm;
+import com.holonplatform.vaadin.flow.components.Selectable;
+import com.holonplatform.vaadin.flow.components.builders.BooleanInputBuilder;
+import com.holonplatform.vaadin.flow.components.builders.BulkActionBuilder;
 import com.holonplatform.vaadin.flow.components.builders.LabelBuilder;
+import com.holonplatform.vaadin.flow.components.builders.SearchBarBuilder;
 import com.holonplatform.vaadin.flow.components.css.WhiteSpace;
 import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.button.Button;
@@ -20,6 +25,7 @@ import com.vaadin.flow.component.contextmenu.SubMenu;
 import com.vaadin.flow.component.details.Details;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.grid.GridMultiSelectionModel;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.grid.dataview.GridLazyDataView;
 import com.vaadin.flow.component.html.*;
@@ -48,6 +54,10 @@ import com.vaadin.flow.data.provider.DataProviderListener;
 import com.vaadin.flow.data.provider.Query;
 import com.vaadin.flow.data.renderer.LitRenderer;
 import com.vaadin.flow.data.renderer.NumberRenderer;
+import com.vaadin.flow.data.renderer.Renderer;
+import com.vaadin.flow.data.selection.MultiSelectionEvent;
+import com.vaadin.flow.data.value.ValueChangeMode;
+import com.vaadin.flow.function.ValueProvider;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeLeaveEvent;
 import com.vaadin.flow.router.RouteConfiguration;
@@ -74,10 +84,12 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.concurrent.Future;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static com.holonplatform.vaadin.flow.internal.components.support.BreakPoint.*;
 import static com.vaadin.flow.component.button.ButtonVariant.LUMO_TERTIARY_INLINE;
 
 public class UIUtils {
@@ -93,19 +105,53 @@ public class UIUtils {
     public static final String RIGHT_SMALL_PADDING = LumoUtility.Padding.Right.SMALL;
     public static final String CARD = "card";
     public static final String CONTAINER = "container";
-    public static final String BREAKPOINT_XS = "0px";
-    public static final String    BREAKPOINT_SM = "576px";
-    public static final String    BREAKPOINT_MD = "768px";
-    public static final String    BREAKPOINT_LG = "992px";
-    public static final String    BREAKPOINT_XL = "1200px";
+
+    public static final String DISCARD_MESSAGE = "There are unsaved modifications to the %s. Discard changes?";
+    public static final String DELETE_MESSAGE = "Are you sure you want to delete the selected %s? This action cannot be undone.";
+
+    public static final String CUSTOM_COMBOBOX_ITEMS = """
+            <div style="display: flex;">
+            <vaadin-avatar style="height: var(--lumo-size-m); margin-right: var(--lumo-space-s);"
+            name= ${item.primaryName}>
+            </vaadin-avatar>
+            <div>
+            ${item.primaryName}
+            <div style="font-size: var(--lumo-font-size-s); color: var(--lumo-secondary-text-color);">
+            ${item.secondaryName}
+            </div>
+            </div>
+            """;
 
     private static NumberFormat currencyFormat = NumberFormat.getCurrencyInstance();
 
     /****************************************/
 //    https://github.com/fredpena/vaadin-i18n/blob/main/src/main/java/dev/fredpena/app/views/MainLayout.java
-
-    public static MenuItemComponent createIconItem(HasMenuItems menu, VaadinIcon iconName, String label, String ariaLabel) {
+    public static MenuItemComponent createIconItem(MenuBar menu, VaadinIcon iconName, String label, String ariaLabel) {
         return createIconItem(menu, new Icon(iconName), label, ariaLabel, false);
+    }
+
+    public static MenuItemComponent createIconItem(MenuBar menu, LumoIcon iconName, String label, String ariaLabel) {
+        return createIconItem(menu, iconName.create(), label, ariaLabel, false);
+    }
+
+
+    public static H2 bigTitle(String text) {
+        final var day = new H2(text);
+        day.addClassNames(
+                LumoUtility.Background.BASE,
+                LumoUtility.Border.BOTTOM,
+                LumoUtility.BorderColor.CONTRAST_10,
+                LumoUtility.FontSize.XXLARGE,
+//                Layout.TOP_0,
+                LumoUtility.Margin.Bottom.NONE,
+                LumoUtility.Margin.Horizontal.AUTO,
+                LumoUtility.Margin.Top.MEDIUM,
+                LumoUtility.MaxWidth.SCREEN_SMALL,
+                LumoUtility.Padding.SMALL,
+                LumoUtility.Position.STICKY
+//                Layout.Z_10
+        );
+        return day;
     }
 
     private static MenuItemComponent createIconItem(HasMenuItems menu, String iconName, String label) {
@@ -140,12 +186,12 @@ public class UIUtils {
                 .text("New", "new.code")
                 .withThemeVariants(ButtonVariant.LUMO_PRIMARY)
                 .withFocusShortcutKey(Key.KEY_N, KeyModifier.CONTROL)
-                .tooltip("Add New","add.new.code")
+                .tooltip("Add New", "add.new.code")
                 .build();
     }
 
     public static com.holonplatform.vaadin.flow.components.Input<String> createSearchField() {
-        return    Components.input.string()
+        return Components.input.string()
                 .clearButtonVisible(true)
                 .blankValuesAsNull(true)
                 .emptyValuesAsNull(true)
@@ -172,68 +218,177 @@ public class UIUtils {
                 .toArray(new Component[0]);
     }
 
+    public static Component createTextFieldFilterHeader(String labelText,
+                                                        Consumer<String> filterChangeConsumer) {
+        NativeLabel label = new NativeLabel(labelText);
+        label.getStyle().set("padding-top", "var(--lumo-space-m)")
+                .set("font-size", "var(--lumo-font-size-xs)");
+
+        TextField textField = textFieldFilter(filterChangeConsumer);
+        VerticalLayout layout = new VerticalLayout(label, textField);
+        layout.getThemeList().clear();
+        layout.getThemeList().add("spacing-xs");
+
+        return layout;
+    }
+
+    private static TextField textFieldFilter(Consumer<String> filterChangeConsumer) {
+        TextField textField = new TextField();
+        textField.setValueChangeMode(ValueChangeMode.EAGER);
+        textField.setClearButtonVisible(true);
+        textField.addThemeVariants(TextFieldVariant.LUMO_SMALL);
+        textField.setWidthFull();
+        textField.getStyle().set("max-width", "100%");
+        textField.addValueChangeListener(
+                e -> filterChangeConsumer.accept(e.getValue()));
+
+        return textField;
+    }
+
     public static LabelBuilder<H4> createH4(String title) {
         return LabelBuilder.h4()
                 .text(title)
+//                .fullWidth()
                 .title(title)
-                .styleNames(UIUtils.getTitleStyles());
+                .styleNames(titleStyles());
+    }
+
+    public static String[] titleStyles() {
+        return new String[]{LumoUtility.TextColor.PRIMARY, LumoUtility.Padding.SMALL};
     }
 
     public static String[] borderStyles() {
-        return new String[] {LumoUtility.Border.BOTTOM, LumoUtility.BorderColor.CONTRAST_30};
+        return new String[]{LumoUtility.Border.BOTTOM, LumoUtility.BorderColor.CONTRAST_30};
+    }
+
+    public static Span createDaySpan() {
+        final var daySpan = new Span();
+        daySpan.addClassNames(LumoUtility.Display.FLEX, LumoUtility.JustifyContent.CENTER, LumoUtility.Padding.MEDIUM, LumoUtility.Background.BASE);
+        daySpan.addClassNames(LumoUtility.TextColor.SECONDARY, LumoUtility.FontSize.SMALL, LumoUtility.Border.BOTTOM, LumoUtility.BorderColor.CONTRAST_10); //, "sticky-date"
+        return daySpan;
+    }
+
+    public static Button createChangeLanguageButton(AttachEvent attachEvent) {
+        var changeLanguage = new Button();
+        changeLanguage.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
+        updateChangeLanguageButtonIcon(attachEvent.getUI(), changeLanguage);
+        Locale locale = attachEvent.getUI().getLocale();
+        changeLanguage.addClickListener(e -> {
+            VaadinService.getCurrentResponse().addCookie(new Cookie("locale", locale.toLanguageTag()));
+            updateChangeLanguageButtonIcon(attachEvent.getUI(), changeLanguage);
+            attachEvent.getUI().getPage().reload();
+        });
+        return changeLanguage;
+    }
+
+    public static void updateChangeLanguageButtonIcon(UI ui, Button changeLanguage) {
+        Image image;
+        if (ui.getLocale() != null) { //fiLocale.equals(ui.getLocale())
+            // TODO: Translation
+            image = new Image("icons/finnish.png", "Finnish");
+            changeLanguage.setAriaLabel("Switch to English");
+        } else {
+            // TODO: Translation
+            image = new Image("icons/english.png", "English");
+            changeLanguage.setAriaLabel("Switch to Finnish");
+        }
+        image.setHeightFull();
+
+        // Wrapper; circle
+        Span icon = new Span(image);
+        icon.addClassNames(
+                LumoUtility.AlignItems.CENTER,
+                LumoUtility.BorderRadius.LARGE,
+                LumoUtility.Display.FLEX,
+                LumoUtility.IconSize.MEDIUM,
+                LumoUtility.JustifyContent.CENTER,
+                LumoUtility.Overflow.HIDDEN
+        );
+        changeLanguage.setIcon(icon);
+    }
+
+    public static void addChildIfNotExists(VerticalLayout parent, Component child) {
+        if (parent.getChildren().noneMatch(Predicate.isEqual(child))) {
+            parent.add(child);
+        }
+    }
+
+    public static void addChildIfNotExists(HorizontalLayout parent, Component child) {
+        if (parent.getChildren().noneMatch(Predicate.isEqual(child))) {
+            parent.add(child);
+        }
+    }
+
+    public static void addChildIfNotExists(Div parent, Component child) {
+        // Check if the child already exists in the parent
+        if (parent.getChildren().noneMatch(Predicate.isEqual(child))) {
+            parent.add(child);// Add the child if it doesn't exist
+        }
+    }
+
+    public static void addChildIfNotExists(FlexLayout parent, Component child) {
+        if (parent.getChildren().noneMatch(Predicate.isEqual(child))) {
+            parent.add(child);
+        }
+    }
+
+    public static String formatSize(int size) {
+        return String.format("%dpx", size);
     }
 
     private record MenuItemComponent(MenuItem menuItem, Text text) {
 
     }
 
+
+
     /****************************************/
 
     public static final Map<Integer, FormLayout.ResponsiveStep> FIXED_COLUMNS_EXTRA_SMALL = Map.of(
-            1, new FormLayout.ResponsiveStep(BREAKPOINT_XS, 1),
-            2, new FormLayout.ResponsiveStep(BREAKPOINT_XS, 2),
-            3, new FormLayout.ResponsiveStep(BREAKPOINT_XS, 3),
-            4, new FormLayout.ResponsiveStep(BREAKPOINT_XS, 4),
-            5, new FormLayout.ResponsiveStep(BREAKPOINT_XS, 5)
+            1, new FormLayout.ResponsiveStep(BREAKPOINT_XS.getSize(), 1),
+            2, new FormLayout.ResponsiveStep(BREAKPOINT_XS.getSize(), 2),
+            3, new FormLayout.ResponsiveStep(BREAKPOINT_XS.getSize(), 3),
+            4, new FormLayout.ResponsiveStep(BREAKPOINT_XS.getSize(), 4),
+            5, new FormLayout.ResponsiveStep(BREAKPOINT_XS.getSize(), 5)
     );
 
     public static final Map<Integer, FormLayout.ResponsiveStep> FIXED_COLUMNS_SMALL = Map.of(
-            1, new FormLayout.ResponsiveStep(BREAKPOINT_SM, 1),
-            2, new FormLayout.ResponsiveStep(BREAKPOINT_SM, 2),
-            3, new FormLayout.ResponsiveStep(BREAKPOINT_SM, 3),
-            4, new FormLayout.ResponsiveStep(BREAKPOINT_SM, 4),
-            5, new FormLayout.ResponsiveStep(BREAKPOINT_SM, 5)
+            1, new FormLayout.ResponsiveStep(BREAKPOINT_SM.getSize(), 1),
+            2, new FormLayout.ResponsiveStep(BREAKPOINT_SM.getSize(), 2),
+            3, new FormLayout.ResponsiveStep(BREAKPOINT_SM.getSize(), 3),
+            4, new FormLayout.ResponsiveStep(BREAKPOINT_SM.getSize(), 4),
+            5, new FormLayout.ResponsiveStep(BREAKPOINT_SM.getSize(), 5)
     );
 
     public static final Map<Integer, FormLayout.ResponsiveStep> FIXED_COLUMNS_MEDIUM = Map.of(
-            1, new FormLayout.ResponsiveStep(BREAKPOINT_MD, 1),
-            2, new FormLayout.ResponsiveStep(BREAKPOINT_MD, 2),
-            3, new FormLayout.ResponsiveStep(BREAKPOINT_MD, 3),
-            4, new FormLayout.ResponsiveStep(BREAKPOINT_MD, 4),
-            5, new FormLayout.ResponsiveStep(BREAKPOINT_MD, 5)
+            1, new FormLayout.ResponsiveStep(BREAKPOINT_MD.getSize(), 1),
+            2, new FormLayout.ResponsiveStep(BREAKPOINT_MD.getSize(), 2),
+            3, new FormLayout.ResponsiveStep(BREAKPOINT_MD.getSize(), 3),
+            4, new FormLayout.ResponsiveStep(BREAKPOINT_MD.getSize(), 4),
+            5, new FormLayout.ResponsiveStep(BREAKPOINT_MD.getSize(), 5)
     );
 
     public static final Map<Integer, FormLayout.ResponsiveStep> FIXED_COLUMNS_LARGE = Map.of(
-            1, new FormLayout.ResponsiveStep(BREAKPOINT_LG, 1),
-            2, new FormLayout.ResponsiveStep(BREAKPOINT_LG, 2),
-            3, new FormLayout.ResponsiveStep(BREAKPOINT_LG, 3),
-            4, new FormLayout.ResponsiveStep(BREAKPOINT_LG, 4),
-            5, new FormLayout.ResponsiveStep(BREAKPOINT_LG, 5)
+            1, new FormLayout.ResponsiveStep(BREAKPOINT_LG.getSize(), 1),
+            2, new FormLayout.ResponsiveStep(BREAKPOINT_LG.getSize(), 2),
+            3, new FormLayout.ResponsiveStep(BREAKPOINT_LG.getSize(), 3),
+            4, new FormLayout.ResponsiveStep(BREAKPOINT_LG.getSize(), 4),
+            5, new FormLayout.ResponsiveStep(BREAKPOINT_LG.getSize(), 5)
     );
 
     public static final Map<Integer, FormLayout.ResponsiveStep> FIXED_COLUMNS_EXTRA_LARGE = Map.of(
-            1, new FormLayout.ResponsiveStep(BREAKPOINT_XL, 1),
-            2, new FormLayout.ResponsiveStep(BREAKPOINT_XL, 2),
-            3, new FormLayout.ResponsiveStep(BREAKPOINT_XL, 3),
-            4, new FormLayout.ResponsiveStep(BREAKPOINT_XL, 4),
-            5, new FormLayout.ResponsiveStep(BREAKPOINT_XL, 5)
+            1, new FormLayout.ResponsiveStep(BREAKPOINT_XL.getSize(), 1),
+            2, new FormLayout.ResponsiveStep(BREAKPOINT_XL.getSize(), 2),
+            3, new FormLayout.ResponsiveStep(BREAKPOINT_XL.getSize(), 3),
+            4, new FormLayout.ResponsiveStep(BREAKPOINT_XL.getSize(), 4),
+            5, new FormLayout.ResponsiveStep(BREAKPOINT_XL.getSize(), 5)
     );
 
     public static final List<FormLayout.ResponsiveStep> FLEXIBLE_COLUMNS = List.of(
-            new FormLayout.ResponsiveStep(BREAKPOINT_SM, 1),
-            new FormLayout.ResponsiveStep(BREAKPOINT_MD, 2),
-            new FormLayout.ResponsiveStep(BREAKPOINT_LG, 3),
-            new FormLayout.ResponsiveStep(BREAKPOINT_XL, 4)
+            new FormLayout.ResponsiveStep(BREAKPOINT_SM.getSize(), 1),
+            new FormLayout.ResponsiveStep(BREAKPOINT_MD.getSize(), 2),
+            new FormLayout.ResponsiveStep(BREAKPOINT_LG.getSize(), 3),
+            new FormLayout.ResponsiveStep(BREAKPOINT_XL.getSize(), 4)
     );
 
     public static Anchor createAnchor(String href, String text) {
@@ -349,7 +504,7 @@ public class UIUtils {
         return propertyBox;
     }
 
-    public static void enable(List<PropertyInputForm> inputForms,boolean enabled) {
+    public static void enable(List<PropertyInputForm> inputForms, boolean enabled) {
         inputForms.forEach(propertyInputForm -> propertyInputForm.setEnabled(enabled));
     }
 
@@ -638,6 +793,17 @@ public class UIUtils {
         }
     }
 
+    public static Anchor createLogoutLink(String contextPath) {
+        final Anchor a = populateLink(new Anchor(), VaadinIcon.ARROW_RIGHT, "Logout");
+        return a;
+    }
+
+    public static <T extends HasComponents> T populateLink(T a, VaadinIcon icon, String title) {
+        a.add(icon.create());
+        a.add(title);
+        return a;
+    }
+
     public static Div createWrapper() {
         final var wrapper = new Div();
         wrapper.addClassNames(LumoUtility.Margin.Horizontal.AUTO);
@@ -654,6 +820,38 @@ public class UIUtils {
         return div;
     }
 
+    /*private static FlexLayout createCard(Component... components) {
+        FlexLayout layout = new FlexLayout();
+        layout.setFlexDirection(FlexLayout.FlexDirection.COLUMN);
+        layout.addClassName("card");
+        layout.addClassName(LumoUtility.Gap.MEDIUM);
+        layout.add(components);
+        return layout;
+    }*/
+    public static FlexLayout createCard(String heading, Component... components) {
+        FlexLayout layout = new FlexLayout();
+        layout.setFlexDirection(FlexLayout.FlexDirection.COLUMN);
+        layout.addClassName("card");
+        layout.addClassName(LumoUtility.Gap.MEDIUM);
+        if (!heading.isEmpty()) {
+            layout.add(new H3(heading));
+        }
+        layout.add(components);
+        return layout;
+    }
+
+    public static FlexLayout createCard(String heading, String classnames, Component... components) {
+        FlexLayout layout = new FlexLayout();
+        layout.setFlexDirection(FlexLayout.FlexDirection.COLUMN);
+        layout.addClassName("card");
+        layout.addClassName(classnames);
+        if (!heading.isEmpty()) {
+            layout.add(new H3(heading));
+        }
+        layout.add(components);
+        return layout;
+    }
+
     public static MenuItem createCheckableItem(HasMenuItems menu, String item, boolean checked,
                                                ComponentEventListener<ClickEvent<MenuItem>> clickListener) {
         MenuItem menuItem = menu.addItem(item, clickListener);
@@ -662,6 +860,12 @@ public class UIUtils {
 
         return menuItem;
     }
+
+    public static <T> Renderer<T> createCheckboxRenderer(ValueProvider<T, Boolean> valueProvider) {
+        return LitRenderer.<T>of("<vaadin-checkbox ?checked=${item.active} onclick='return false;' onkeydown='return false;'></vaadin-checkbox>")
+                .withProperty("active", valueProvider);
+    }
+
 
     public static MenuItem createIconItem(HasMenuItems menu, LumoIcon iconName, String label, String ariaLabel,
                                           ComponentEventListener<ClickEvent<MenuItem>> clickListener) {
@@ -802,7 +1006,6 @@ public class UIUtils {
             component.getElement().setAttribute("aria-label", value);
         }
     }
-
 
 
     public static Icon createTrashIcon() {
@@ -1235,8 +1438,6 @@ public class UIUtils {
     }
 
 
-
-
     public static final class UpdateButton extends Button {
 
         public UpdateButton() {
@@ -1281,7 +1482,6 @@ public class UIUtils {
             action(buttonClickEvent);
 
 
-
         }
 
         public void action(ComponentEventListener<ClickEvent<Button>> buttonClickEvent) {
@@ -1292,27 +1492,35 @@ public class UIUtils {
     public static Icon badgeIcon(VaadinIcon vaadinIcon, String ariaLabel) {
         return createIconBadge(vaadinIcon, ariaLabel, "badge");
     }
+
     public static Icon badgeIconSuceess(VaadinIcon vaadinIcon, String ariaLabel) {
         return createIconBadge(vaadinIcon, ariaLabel, "badge success");
     }
+
     public static Icon badgeIconError(VaadinIcon vaadinIcon, String ariaLabel) {
         return createIconBadge(vaadinIcon, ariaLabel, "badge error");
     }
+
     public static Icon badgeIconContrast(VaadinIcon vaadinIcon, String ariaLabel) {
         return createIconBadge(vaadinIcon, ariaLabel, "badge contrast");
     }
+
     public static Icon badgeIconPrimary(VaadinIcon vaadinIcon, String ariaLabel) {
         return createIconBadge(vaadinIcon, ariaLabel, "badge primary");
     }
+
     public static Icon badgeIconPrimarySuccess(VaadinIcon vaadinIcon, String ariaLabel) {
         return createIconBadge(vaadinIcon, ariaLabel, "badge success primary");
     }
+
     public static Icon badgeIconPrimaryError(VaadinIcon vaadinIcon, String ariaLabel) {
         return createIconBadge(vaadinIcon, ariaLabel, "badge error primary");
     }
+
     public static Icon badgeIconPrimaryContrast(VaadinIcon vaadinIcon, String ariaLabel) {
         return createIconBadge(vaadinIcon, ariaLabel, "badge contrast primary");
     }
+
     public static Icon badgeIconSmall(VaadinIcon vaadinIcon, String ariaLabel) {
         return createIconBadge(vaadinIcon, ariaLabel, "badge small");
     }
@@ -1320,50 +1528,62 @@ public class UIUtils {
     public static Icon badgeIconSmallSuccess(VaadinIcon vaadinIcon, String ariaLabel) {
         return createIconBadge(vaadinIcon, ariaLabel, "badge success small");
     }
+
     public static Icon badgeIconSmallError(VaadinIcon vaadinIcon, String ariaLabel) {
         return createIconBadge(vaadinIcon, ariaLabel, "badge error smalle");
     }
+
     public static Icon badgeIconSmallContrast(VaadinIcon vaadinIcon, String ariaLabel) {
         return createIconBadge(vaadinIcon, ariaLabel, "badge contrast small");
     }
+
     public static Icon badgeIconPrimarySmall(VaadinIcon vaadinIcon, String ariaLabel) {
         return createIconBadge(vaadinIcon, ariaLabel, "badge small primary");
     }
+
     public static Icon badgeIconPrimarySmallSuccess(VaadinIcon vaadinIcon, String ariaLabel) {
         return createIconBadge(vaadinIcon, ariaLabel, "badge success small primary");
     }
+
     public static Icon badgeIconPrimarySmallError(VaadinIcon vaadinIcon, String ariaLabel) {
         return createIconBadge(vaadinIcon, ariaLabel, "badge error small primary");
     }
+
     public static Icon badgeIconPrimarySmallContrast(VaadinIcon vaadinIcon, String ariaLabel) {
         return createIconBadge(vaadinIcon, ariaLabel, "badge contrast small primary");
     }
+
     public static Icon badgeIconPill(VaadinIcon vaadinIcon, String ariaLabel) {
         return createIconBadge(vaadinIcon, ariaLabel, "badge pill");
     }
+
     public static Icon badgeIconPillSuccess(VaadinIcon vaadinIcon, String ariaLabel) {
         return createIconBadge(vaadinIcon, ariaLabel, "badge success pill");
     }
+
     public static Icon badgeIconPillError(VaadinIcon vaadinIcon, String ariaLabel) {
         return createIconBadge(vaadinIcon, ariaLabel, "badge error pill");
     }
+
     public static Icon badgeIconPillContrast(VaadinIcon vaadinIcon, String ariaLabel) {
         return createIconBadge(vaadinIcon, ariaLabel, "badge contrast pill");
     }
+
     public static Icon badgeIconPillPrimary(VaadinIcon vaadinIcon, String ariaLabel) {
         return createIconBadge(vaadinIcon, ariaLabel, "badge primary pill");
     }
+
     public static Icon badgeIconPillPrimarySuccess(VaadinIcon vaadinIcon, String ariaLabel) {
         return createIconBadge(vaadinIcon, ariaLabel, "badge success primary pill");
     }
+
     public static Icon badgeIconPillPrimaryError(VaadinIcon vaadinIcon, String ariaLabel) {
         return createIconBadge(vaadinIcon, ariaLabel, "badge error primary pill");
     }
+
     public static Icon badgeIconPillPrimaryContrast(VaadinIcon vaadinIcon, String ariaLabel) {
         return createIconBadge(vaadinIcon, ariaLabel, "badge contrast primary pill");
     }
-
-
 
 
     private static Icon createIconBadge(VaadinIcon vaadinIcon, String ariaLabel, String theme) {
@@ -1375,6 +1595,10 @@ public class UIUtils {
         icon.getElement().setAttribute("title", ariaLabel);
         icon.getElement().getThemeList().add(theme);
         return icon;
+    }
+
+    public static Component createTextFieldFilterHeader(Consumer<String> filterChangeConsumer) {
+        return textFieldFilter(filterChangeConsumer);
     }
 
     public static LitRenderer<String> customerNameRenederer(Supplier<String> name) {
@@ -1563,7 +1787,7 @@ public class UIUtils {
 
     public static UnorderedList unorderedPriceList() {
         UnorderedList unorderedList = new UnorderedList();
-        unorderedList. addClassNames(
+        unorderedList.addClassNames(
 //                FontFamily.MONO,
                 LumoUtility.ListStyleType.NONE,
                 LumoUtility.Margin.Horizontal.AUTO,
@@ -1598,7 +1822,7 @@ public class UIUtils {
         });
     }
 
-    private static void initLanguage(UI ui) {
+    public static void initLanguage(UI ui) {
         Optional<Cookie> localeCookie = Optional.empty();
         Cookie[] cookies = VaadinService.getCurrentRequest().getCookies();
         if (cookies != null) {
@@ -1611,6 +1835,20 @@ public class UIUtils {
             // Try to use Vaadin's browser locale detection
             ui.setLocale(VaadinService.getCurrentRequest().getLocale());
         }
+    }
+
+    public static Icon createStatusIcon(String status) {
+        boolean isAvailable = "Available".equals(status);
+        Icon icon;
+        if (isAvailable) {
+            icon = VaadinIcon.CHECK.create();
+            icon.getElement().getThemeList().add("badge success");
+        } else {
+            icon = VaadinIcon.CLOSE_SMALL.create();
+            icon.getElement().getThemeList().add("badge error");
+        }
+        icon.getStyle().set("padding", "var(--lumo-space-xs");
+        return icon;
     }
 
     /**
@@ -1634,7 +1872,7 @@ public class UIUtils {
         return false;
     }
 
-    public static void updateMenuItemsAsCheckable(MenuItem parentItem,String menuItemText) {
+    public static void updateMenuItemsAsCheckable(MenuItem parentItem, String menuItemText) {
         parentItem.getSubMenu().getChildren().forEach(component -> {
             if (component instanceof MenuItem) {
                 MenuItem menuItem = (MenuItem) component;
@@ -1655,12 +1893,12 @@ public class UIUtils {
                 .forEach(column -> column.setSortable(sortable));
     }
 
-    public static void setToggleColumns(Grid<?> grid,MenuItem toggleColumnMenuItem) {
+    public static void setToggleColumns(Grid<?> grid, MenuItem toggleColumnMenuItem) {
         SubMenu menuItemToggleColumn = toggleColumnMenuItem.getSubMenu();
         grid.getColumns().forEach(column -> {
                        /*Checkbox checkbox = new Checkbox(column.getHeaderText());
-                       checkbox.setValue(column.isVisible());
-                       checkbox.addValueChangeListener(e -> column.setVisible(e.getValue()));
+                       checkbox.setFormValue(column.isVisible());
+                       checkbox.addValueChangeListener(e -> column.setVisible(e.getFormValue()));
             menuItemToggleColumn.addItem(checkbox);*/
 
             MenuItem menuItem = menuItemToggleColumn.addItem(column.getHeaderText(), e -> {
@@ -1698,7 +1936,95 @@ public class UIUtils {
                 .build();
     }
 
+    public static void notifyOptimisticLockingFailureException() {
+        Notification n = Notification.show(
+                "Error updating the data. Somebody else has updated the record while you were making changes.");
+        n.setPosition(Notification.Position.MIDDLE);
+        n.addThemeVariants(NotificationVariant.LUMO_ERROR);
+    }
 
+    public static void notifyValidationException() {
+        Notification.show("Failed to update the data. Check again that all values are valid");
+    }
+
+    public static MenuItem createIconItem(MenuBar menu, VaadinIcon iconName,
+                                    String ariaLabel) {
+        Icon icon = new Icon(iconName);
+        MenuItem item = menu.addItem(icon);
+        item.setAriaLabel(ariaLabel);
+
+        return item;
+    }
+
+    public static BulkActionBuilder createBulkActionBuilder(GridMultiSelectionModel<?> gridMultiSelectionModel) {
+        return BulkActionBuilder.create()
+                .selectAll(BooleanInputBuilder.create()
+                        .withValueChangeListener(event -> {
+                            if (event.getValue()) {
+                                gridMultiSelectionModel.selectAll();
+                            } else {
+                                gridMultiSelectionModel.deselectAll();
+                            }
+                        }))
+                .hidden();
+    }
+
+    private static void showHideSearchBarAndBulkActionBar(int selectedItems,LabelBuilder<Span> labelBuilder, BulkActionBuilder bulkActionBuilder, SearchBarBuilder searchBarBuilder) {
+        if (selectedItems > 0) {
+            bulkActionBuilder.selected(labelBuilder.text(String.format("%d selected", selectedItems)));
+            searchBarBuilder.visible(false);
+            bulkActionBuilder.visible(true);
+
+        } else {
+            searchBarBuilder.visible(true);
+            bulkActionBuilder.visible(false);
+        }
+    }
+
+    public static void showHideSearchBarAndBulkActionBar(Selectable.SelectionEvent<?> selectionEvent, LabelBuilder<Span> labelBuilder, BulkActionBuilder bulkActionBuilder, SearchBarBuilder searchBarBuilder) {
+        showHideSearchBarAndBulkActionBar(selectionEvent.getAllSelectedItems().size(),labelBuilder,bulkActionBuilder,searchBarBuilder);
+    }
+
+    public static void showHideSearchBarAndBulkActionBar(MultiSelectionEvent<Grid<?>, ?> multiSelectionEvent, LabelBuilder<Span> labelBuilder, BulkActionBuilder bulkActionBuilder, SearchBarBuilder searchBarBuilder) {
+        int selectedItems = multiSelectionEvent.getAllSelectedItems().size();
+
+        showHideSearchBarAndBulkActionBar(selectedItems,labelBuilder,bulkActionBuilder,searchBarBuilder);
+
+    }
+
+   public static class OptionsBar implements HasOptionsBar {
+
+
+        @Override
+        public MenuItem createSrtBy(MenuBar menuBar) {
+            MenuItem menuItem = menuBar.addItem("Sort By");
+            return menuItem;
+        }
+
+        @Override
+        public MenuItem importEntity(MenuBar menuBar) {
+            MenuItem menuItem = createIconItem(menuBar, LumoIcon.DOWNLOAD, "Import", "Import").menuItem();
+            return menuItem;
+        }
+
+        @Override
+        public MenuItem exportEntity(MenuBar menuBar) {
+            MenuItem menuItem = createIconItem(menuBar, LumoIcon.UPLOAD, "Export", "Export").menuItem();
+            return menuItem;
+        }
+
+        @Override
+        public MenuItem refreshList(MenuBar menuBar) {
+            MenuItem menuItem = createIconItem(menuBar, VaadinIcon.REFRESH, "Refresh", "Refresh").menuItem();
+            return menuItem;
+        }
+
+        @Override
+        public MenuItem advancedSearch(MenuBar menuBar) {
+            MenuItem menuItem = createIconItem(menuBar, LumoIcon.SEARCH, "Search", "Advanced Search").menuItem();
+            return menuItem;
+        }
+    }
 
 
 }

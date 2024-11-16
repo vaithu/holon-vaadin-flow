@@ -38,6 +38,7 @@ public interface ClickNotifierConfigurator<S, E extends ClickEvent<S>, C extends
 	 */
 	C withClickListener(ClickEventListener<S, E> clickEventListener);
 
+
 	/**
 	 * Register a click event listener.
 	 * <p>

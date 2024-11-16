@@ -15,9 +15,6 @@
  */
 package com.holonplatform.vaadin.flow.components.builders;
 
-import java.util.Arrays;
-import java.util.stream.Collectors;
-
 import com.holonplatform.core.internal.utils.ObjectUtils;
 import com.holonplatform.vaadin.flow.components.HasComponent;
 import com.vaadin.flow.component.Component;
@@ -25,6 +22,10 @@ import com.vaadin.flow.component.HasElement;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment;
 import com.vaadin.flow.component.orderedlayout.FlexComponent.JustifyContentMode;
+import com.vaadin.flow.theme.lumo.LumoUtility;
+
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 /**
  * Configurator for {@link FlexComponent} type components.
@@ -199,6 +200,19 @@ public interface FlexComponentConfigurator<C extends FlexComponentConfigurator<C
 	default C addAndAlign(HasComponent component, Alignment alignment) {
 		ObjectUtils.argumentNotNull(component, "HasComponent must be not null");
 		return addAndAlign(component.getComponent(), alignment);
+	}
+
+
+	default C card() {
+		return styleName("card");
+	}
+
+	default C redBorder() {
+		return borderColor(LumoUtility.BorderColor.ERROR);
+	}
+
+	default C borderColor(String color) {
+		return styleNames(LumoUtility.Border.ALL,color);
 	}
 
 }

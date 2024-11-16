@@ -71,8 +71,8 @@ public abstract class AbstractDateInputBuilder<C extends DateInputConfigurator<C
 		this.localDateInputBuilder = localDateInputBuilder;
 		this.timeZone = timeZone;
 		this.adapters = adapters;
-		valueChangeListeners.forEach(l -> this.valueChangeListeners.add(l));
-		readonlyChangeListeners.forEach(l -> this.readonlyChangeListeners.add(l));
+        this.valueChangeListeners.addAll(valueChangeListeners);
+        this.readonlyChangeListeners.addAll(readonlyChangeListeners);
 	}
 
 	/**

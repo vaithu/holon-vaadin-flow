@@ -220,10 +220,6 @@ public class DefaultFilterableSingleSelectInputBuilder<T, ITEM> extends
 
 		getComponent().setItems((CallbackDataProvider.FetchCallback<ITEM, String>) fetchCallback);
 		return getConfigurator();
-
-
-
-
 	}
 
 	@Override

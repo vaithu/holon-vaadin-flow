@@ -72,6 +72,8 @@ public interface HasTooltipConfigurator<C extends HasTooltipConfigurator<C>> {
 				.messageArguments(arguments).build());
 	}
 
+	C tooltipText(String text);
+
 
 
 

@@ -184,7 +184,7 @@ public class DefaultPropertyInputGroup extends AbstractPropertySetGroup<Input<?>
 
 	/*
 	 * (non-Javadoc)
-	 * @see com.holonplatform.vaadin.flow.internal.components.AbstractPropertySetGroup#getValue()
+	 * @see com.holonplatform.vaadin.flow.internal.components.AbstractPropertySetGroup#getFormValue()
 	 */
 	@Override
 	public PropertyBox getValue() {
@@ -193,7 +193,7 @@ public class DefaultPropertyInputGroup extends AbstractPropertySetGroup<Input<?>
 
 	/*
 	 * (non-Javadoc)
-	 * @see com.holonplatform.vaadin.components.PropertyInputGroup#getValue(boolean)
+	 * @see com.holonplatform.vaadin.components.PropertyInputGroup#getFormValue(boolean)
 	 */
 	@Override
 	public PropertyBox getValue(boolean validate) {
@@ -257,7 +257,7 @@ public class DefaultPropertyInputGroup extends AbstractPropertySetGroup<Input<?>
 	/*
 	 * (non-Javadoc)
 	 * @see
-	 * com.holonplatform.vaadin.flow.components.PropertyInputGroup#setValue(com.holonplatform.core.property.PropertyBox)
+	 * com.holonplatform.vaadin.flow.components.PropertyInputGroup#setFormValue(com.holonplatform.core.property.PropertyBox)
 	 */
 	@Override
 	public void setValue(PropertyBox propertyBox) {
@@ -266,7 +266,7 @@ public class DefaultPropertyInputGroup extends AbstractPropertySetGroup<Input<?>
 
 	/*
 	 * (non-Javadoc)
-	 * @see com.holonplatform.vaadin.components.PropertyInputGroup#setValue(com.holonplatform.core.property.PropertyBox,
+	 * @see com.holonplatform.vaadin.components.PropertyInputGroup#setFormValue(com.holonplatform.core.property.PropertyBox,
 	 * boolean)
 	 */
 	@Override

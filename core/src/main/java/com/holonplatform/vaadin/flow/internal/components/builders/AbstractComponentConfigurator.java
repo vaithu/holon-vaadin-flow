@@ -56,6 +56,7 @@ public abstract class AbstractComponentConfigurator<C extends Component, B exten
 		ObjectUtils.argumentNotNull(component, "Component must be not null");
 		this.component = component;
 		this.componentConfigurator = ComponentConfigurator.create(component);
+//		this.tooltipConfigurator = new DefaultHasTooltipConfigurator<>(component,s -> this.componentConfigurator.)
 	}
 
 	/**
@@ -126,6 +127,15 @@ public abstract class AbstractComponentConfigurator<C extends Component, B exten
 		}
 		return Optional.ofNullable(this.enabledConfigurator);
 	}
+
+	/*protected Optional<HasTooltipConfigurator<?>> getTooltipConfigurator() {
+		if (this.tooltipConfigurator == null) {
+			hasTooltip().ifPresent(h -> {
+				this.tooltipConfigurator = new DefaultHasTooltipConfigurator<>(h);
+			});
+		}
+		return Optional.ofNullable(this.tooltipConfigurator);
+	}*/
 
 	/**
 	 * Get the component instance.
@@ -227,6 +237,7 @@ public abstract class AbstractComponentConfigurator<C extends Component, B exten
 	@Override
 	public B withThemeName(String themName) {
 		getComponentConfigurator().withThemeName(themName);
+
 		return getConfigurator();
 	}
 

@@ -1,5 +1,6 @@
 package com.holonplatform.vaadin.flow.internal.components.builders;
 
+import com.holonplatform.vaadin.flow.components.builders.ButtonConfigurator;
 import com.holonplatform.vaadin.flow.components.builders.NotificationConfigurator;
 import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.button.Button;
@@ -9,20 +10,18 @@ import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
-import com.vaadin.flow.component.orderedlayout.FlexComponent;
-import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.shared.HasTooltip;
 import com.vaadin.flow.data.binder.ValidationException;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
 import java.util.Optional;
+import java.util.function.Consumer;
 
 public abstract class AbstractNotificationConfigurator<C extends NotificationConfigurator<C>>
         extends AbstractComponentConfigurator<Notification, C> implements NotificationConfigurator<C> {
 
-    private boolean closeBtnEnabled = false;
-    private String text;
-    private HorizontalLayout layout = new HorizontalLayout();
+
+//    private HorizontalLayout layout = new HorizontalLayout();
 
     /**
      * Constructor.
@@ -45,6 +44,23 @@ public abstract class AbstractNotificationConfigurator<C extends NotificationCon
         return getConfigurator();
     }
 
+    @Override
+    public C addComponentAsFirst(Component component) {
+        getComponent().addComponentAsFirst(component);
+        return getConfigurator();
+    }
+
+    @Override
+    public C addComponentAtIndex(int index, Component component) {
+        getComponent().addComponentAtIndex(index, component);
+        return getConfigurator();
+    }
+
+    @Override
+    public C add(String text) {
+        return text(text);
+    }
+
     /**
      * Add given theme variants to the component.
      *
@@ -60,6 +76,11 @@ public abstract class AbstractNotificationConfigurator<C extends NotificationCon
     @Override
     public void close() {
         getComponent().close();
+    }
+
+    @Override
+    public void open() {
+        getComponent().open();
     }
 
     @Override
@@ -82,10 +103,7 @@ public abstract class AbstractNotificationConfigurator<C extends NotificationCon
 
     @Override
     public C text(String text) {
-        this.text = text;
-        if (!closeBtnEnabled) {
-            getComponent().setText(text);
-        }
+        getComponent().add(new Text(text));
         return getConfigurator();
     }
 
@@ -94,7 +112,8 @@ public abstract class AbstractNotificationConfigurator<C extends NotificationCon
         validationException.getFieldValidationErrors().forEach(err -> err.getMessage().ifPresent(msg2 -> {
             String label = ((HasLabel) err.getBinding().getField()).getLabel();
 
-           this.text = label != null ? label + " -> " + msg2 : msg2;
+           String text = label != null ? label + " -> " + msg2 : msg2;
+            text(text);
             error();
 
         }));
@@ -102,22 +121,13 @@ public abstract class AbstractNotificationConfigurator<C extends NotificationCon
     }
 
     @Override
-    public void show() {
-
-        if (this.text != null) {
-            layout.add(new Text(this.text));
+    public C autoClose(boolean autoClose) {
+        if (autoClose) {
+            autoClose(duration);
+        } else {
+            autoClose(0);
         }
-
-        if (!this.closeBtnEnabled) {
-            layout.add(createCloseBtn());
-        }
-
-        if (layout.getComponentCount() > 0) {
-            layout.setAlignItems(FlexComponent.Alignment.CENTER);
-            getComponent().add(layout);
-        }
-
-        getComponent().open();
+        return getConfigurator();
     }
 
     /**
@@ -162,32 +172,42 @@ public abstract class AbstractNotificationConfigurator<C extends NotificationCon
 
     @Override
     public C closeButton(boolean closeBtnEnabled) {
-        this.closeBtnEnabled = closeBtnEnabled;
+        if (closeBtnEnabled) {
+            getComponent().add(createCloseBtn());
+        }
+        return getConfigurator();
+    }
+
+    @Override
+    public C closeButton(Consumer<ButtonConfigurator> buttonConfigurator) {
+        Button closeButton = new Button();
+        buttonConfigurator.accept(ButtonConfigurator.configure(closeButton));
+        add(closeButton);
         return getConfigurator();
     }
 
     @Override
     public C error(Exception e) {
-        this.text = ExceptionUtils.getRootCauseMessage(e);
+        text(ExceptionUtils.getRootCauseMessage(e));
         error();
         return getConfigurator();
     }
 
     @Override
     public C div(Div div) {
-        layout.add(div);
+        getComponent().add(div);
         return getConfigurator();
     }
 
     @Override
     public C icon(VaadinIcon icon) {
-        layout.addComponentAsFirst(icon.create());
+        getComponent().addComponentAsFirst(icon.create());
         return getConfigurator();
     }
 
     @Override
     public C icon(Icon icon) {
-        layout.addComponentAsFirst(icon);
+        getComponent().addComponentAsFirst(icon);
         return getConfigurator();
     }
 

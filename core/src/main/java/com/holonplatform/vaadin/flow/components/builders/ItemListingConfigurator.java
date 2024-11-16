@@ -35,6 +35,7 @@ import com.vaadin.flow.data.renderer.ClickableRenderer.ItemClickListener;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.data.renderer.Renderer;
 import com.vaadin.flow.data.renderer.TextRenderer;
+import com.vaadin.flow.function.SerializableFunction;
 import com.vaadin.flow.function.ValueProvider;
 
 import java.util.Arrays;
@@ -132,6 +133,9 @@ public interface ItemListingConfigurator<T, P, L extends ItemListing<T, P>, C ex
      * method to add the column to the listing
      */
     ItemListingColumnBuilder<T, P, L, C> withComponentColumn(ValueProvider<T, Component> valueProvider);
+    default ItemListingColumnBuilder<T, P, L, C> mobileColumn(ValueProvider<T, Component> valueProvider) {
+        return withComponentColumn(valueProvider);
+    }
 
     /**
      * Set the visible columns list, using the item properties as column reference.
@@ -200,7 +204,12 @@ public interface ItemListingConfigurator<T, P, L extends ItemListing<T, P>, C ex
      */
     C visibleColumns(List<? extends P> visibleColumns);
 
-
+    /**
+     *
+     * @param autoCreateColumns an initial set of columns for each of the bean's properties.
+     * @return
+     */
+//    C autoCreateColumns(boolean autoCreateColumns);
 
     /**
      * Set whether all the item listing columns are user-sortable.
@@ -236,8 +245,21 @@ public interface ItemListingConfigurator<T, P, L extends ItemListing<T, P>, C ex
      */
     C resizable(P property, boolean resizable);
 
-    C mobileColumn(ValueProvider<T, Component> valueProvider);
-    C mobileColumn(Renderer<T> renderer);
+    C mobileColumn(P property,Renderer<T> renderer);
+
+//    C mobileHeader(String header);
+
+//    C showMobileColumn(boolean show);
+
+    C freezeMultiSelectCheckBoxColumn(boolean freeze);
+
+    C scrollUsingUpDownKeys();
+
+    C toggleableColumns();
+
+    C compact();
+
+    C wrapCellContent();
 
     /**
      * Set whether the column which corresponds to given property is visible.
@@ -281,6 +303,16 @@ public interface ItemListingConfigurator<T, P, L extends ItemListing<T, P>, C ex
      */
     C frozen(P property, boolean frozen);
 
+    /**
+     * Set whether the column which corresponds to given property is frozen at the end.
+     *
+     * @param property The property to configure (not null)
+     * @param frozen   Whether given property is frozen
+     * @return this
+     */
+    C frozenAtEnd(P property, boolean frozen);
+
+    C tooltipGenerator(P property,SerializableFunction<T, String> tooltipGenerator);
     /**
      * Sets the number of frozen columns in this listing.
      *
@@ -356,6 +388,18 @@ public interface ItemListingConfigurator<T, P, L extends ItemListing<T, P>, C ex
     C flexGrow(P property, int flexGrow);
 
     /**
+     * Sets the flex grow ratio for the column which corresponds to given property.
+     * <p>
+     * When set to 0, column width is fixed.
+     * </p>
+     *
+     * @param properties The properties to configure (not null)
+     * @param flexGrow the flex grow ratio to set
+     * @return this
+     */
+    C flexGrow(int flexGrow, P... properties) ;
+
+    /**
      * Sets the function that is used for generating CSS style class names for rows
      * in this listing.
      * <p>
@@ -378,6 +422,8 @@ public interface ItemListingConfigurator<T, P, L extends ItemListing<T, P>, C ex
      * @since 5.2.3
      */
     C styleNameGenerator(Function<T, String> styleNameGenerator);
+
+    C partNameGenerator(SerializableFunction<T, String> partNameGenerator);
 
     /**
      * Set the CSS style class name generator to use for the column which
@@ -447,6 +493,12 @@ public interface ItemListingConfigurator<T, P, L extends ItemListing<T, P>, C ex
      * @return this
      */
     C renderer(P property, Renderer<T> renderer);
+
+    C numberRenderer(P property);
+
+    C statusColumn(P property,String available);
+
+
 
     /**
      * Render the column which corresponds to given property as a {@link Component},
@@ -728,6 +780,13 @@ public interface ItemListingConfigurator<T, P, L extends ItemListing<T, P>, C ex
      * @return this
      */
     C selectAllCheckboxVisibility(SelectAllCheckboxVisibility selectAllCheckBoxVisibility);
+
+    /**
+     * Set all items selected
+     * @return this
+     */
+
+    C selectAll();
 
     /**
      * Set the listing selection mode as {@link SelectionMode#SINGLE}.
@@ -1202,6 +1261,8 @@ public interface ItemListingConfigurator<T, P, L extends ItemListing<T, P>, C ex
          * @return this
          */
         C alignment(ColumnAlignment alignment);
+
+
 
     }
 

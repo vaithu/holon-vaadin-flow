@@ -68,7 +68,7 @@ public class InputConverterAdapter<T, V> implements Input<V> {
 
 	/*
 	 * (non-Javadoc)
-	 * @see com.holonplatform.vaadin.components.ValueHolder#setValue(java.lang.Object)
+	 * @see com.holonplatform.vaadin.components.ValueHolder#setFormValue(java.lang.Object)
 	 */
 	@Override
 	public void setValue(V value) {
@@ -77,7 +77,7 @@ public class InputConverterAdapter<T, V> implements Input<V> {
 
 	/*
 	 * (non-Javadoc)
-	 * @see com.holonplatform.vaadin.components.ValueHolder#getValue()
+	 * @see com.holonplatform.vaadin.components.ValueHolder#getFormValue()
 	 */
 	@Override
 	public V getValue() {

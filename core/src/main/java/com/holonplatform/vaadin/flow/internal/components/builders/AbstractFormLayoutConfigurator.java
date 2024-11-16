@@ -74,6 +74,25 @@ public abstract class AbstractFormLayoutConfigurator<C extends FormLayoutConfigu
 		return getConfigurator();
 	}
 
+
+	@Override
+	public C addComponentAsFirst(Component component) {
+		getComponent().addComponentAsFirst(component);
+		return getConfigurator();
+	}
+
+	@Override
+	public C addComponentAtIndex(int index, Component component) {
+		getComponent().addComponentAtIndex(index, component);
+		return getConfigurator();
+	}
+
+	@Override
+	public C add(String text) {
+		getComponent().add(text);
+		return getConfigurator();
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * @see com.holonplatform.vaadin.flow.components.builders.FormLayoutConfigurator#responsiveSteps(java.util.List)
@@ -114,4 +133,15 @@ public abstract class AbstractFormLayoutConfigurator<C extends FormLayoutConfigu
 		return getConfigurator();
 	}
 
+	@Override
+	public C add(Component component, int colspan) {
+		getComponent().add(component, colspan);
+		return getConfigurator();
+	}
+
+	@Override
+	public C colspan(Component component, int colspan) {
+		getComponent().setColspan(component, colspan);
+		return getConfigurator();
+	}
 }

@@ -3,9 +3,9 @@ package com.holonplatform.vaadin.flow.components.builders;
 import com.holonplatform.vaadin.flow.components.FlexBoxLayout;
 import com.holonplatform.vaadin.flow.components.css.BorderRadius;
 import com.holonplatform.vaadin.flow.components.css.BoxSizing;
-import com.holonplatform.vaadin.flow.components.css.Display;
 import com.holonplatform.vaadin.flow.components.css.Size;
 import com.holonplatform.vaadin.flow.internal.components.builders.DefaultFlexBoxLayoutConfigurator;
+import com.holonplatform.vaadin.flow.internal.lumo.Display;
 import com.vaadin.flow.component.Component;
 
 public interface FlexBoxLayoutConfigurator<C extends FlexBoxLayoutConfigurator<C>> extends HasComponentsConfigurator<C>,

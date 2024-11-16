@@ -15,12 +15,12 @@
  */
 package com.holonplatform.vaadin.flow.components.builders;
 
-import java.util.function.Function;
-
 import com.holonplatform.vaadin.flow.components.Input;
 import com.holonplatform.vaadin.flow.components.ValueHolder.ValueChangeEvent;
 import com.holonplatform.vaadin.flow.components.ValueHolder.ValueChangeListener;
 import com.holonplatform.vaadin.flow.components.events.ReadonlyChangeListener;
+
+import java.util.function.Function;
 
 /**
  * Interface to configure an {@link Input}.
@@ -90,6 +90,7 @@ public interface InputConfigurator<T, E extends ValueChangeEvent<T>, C extends I
 	 * @return this
 	 */
 	C required(boolean required);
+
 
 	/**
 	 * Set the input as <em>required</em>, i.e. the user must fill in a value.

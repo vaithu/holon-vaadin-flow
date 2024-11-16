@@ -31,6 +31,17 @@ public interface BeanListing<T> extends ItemListing<T, String> {
 	 * Get a {@link BeanListingBuilder} to create and setup a {@link BeanListing} using given <code>beanType</code>.
 	 * @param <T> Bean type
 	 * @param beanType The bean class to use (not null)
+	 * @param autoCreateColumns an initial set of columns for each of the bean's properties
+	 * @return A new {@link BeanListingBuilder}
+	 */
+	static <T> BeanListingBuilder<T> builder(Class<T> beanType,boolean autoCreateColumns) {
+		return new DefaultBeanListing.DefaultBeanListingBuilder<>(beanType,autoCreateColumns);
+	}
+
+	/**
+	 * Get a {@link BeanListingBuilder} to create and setup a {@link BeanListing} using given <code>beanType</code>.
+	 * @param <T> Bean type
+	 * @param beanType The bean class to use (not null)
 	 * @return A new {@link BeanListingBuilder}
 	 */
 	static <T> BeanListingBuilder<T> builder(Class<T> beanType) {

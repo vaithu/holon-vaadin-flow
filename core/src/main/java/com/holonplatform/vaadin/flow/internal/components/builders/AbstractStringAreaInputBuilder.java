@@ -514,6 +514,12 @@ public abstract class AbstractStringAreaInputBuilder<C extends StringAreaInputCo
 		return getConfigurator();
 	}
 
+	@Override
+	public C tooltipText(String text) {
+		tooltipConfigurator.tooltipText(text);
+		return getConfigurator();
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * @see com.holonplatform.vaadin.flow.components.builders.HasLabelConfigurator#label(com.holonplatform.core.i18n.

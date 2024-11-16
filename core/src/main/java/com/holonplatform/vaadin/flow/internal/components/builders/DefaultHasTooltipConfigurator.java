@@ -4,19 +4,18 @@ import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.core.internal.Logger;
 import com.holonplatform.core.internal.utils.ObjectUtils;
 import com.holonplatform.vaadin.flow.components.builders.HasDeferrableLocalization;
-import com.holonplatform.vaadin.flow.components.builders.HasTitleConfigurator;
 import com.holonplatform.vaadin.flow.components.builders.HasTooltipConfigurator;
 import com.holonplatform.vaadin.flow.internal.VaadinLogger;
-import com.vaadin.flow.component.HasElement;
+import com.vaadin.flow.component.shared.HasTooltip;
 
 import java.util.function.Consumer;
 
 /**
- * Default {@link HasTitleConfigurator} implementation.
+ * Default {@link HasTooltipConfigurator} implementation.
  *
  * @since 5.2.0
  */
-public class DefaultHasTooltipConfigurator<C extends HasElement> extends AbstractLocalizationSupportConfigurator<C>
+public class DefaultHasTooltipConfigurator<C extends HasTooltip> extends AbstractLocalizationSupportConfigurator<C>
         implements HasTooltipConfigurator<DefaultHasTooltipConfigurator<C>> {
 
     private static final Logger LOGGER = VaadinLogger.create();
@@ -58,4 +57,9 @@ public class DefaultHasTooltipConfigurator<C extends HasElement> extends Abstrac
         return this;
     }
 
+    @Override
+    public DefaultHasTooltipConfigurator<C> tooltipText(String text) {
+        this.component.setTooltipText(text);
+        return this;
+    }
 }

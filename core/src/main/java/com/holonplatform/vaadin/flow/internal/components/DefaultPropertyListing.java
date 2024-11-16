@@ -334,6 +334,8 @@ public class DefaultPropertyListing extends AbstractItemListing<PropertyBox, Pro
 			super(new DefaultPropertyListing(properties));
 		}
 
+
+
 		/*
 		 * (non-Javadoc)
 		 * 
