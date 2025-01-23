@@ -20,9 +20,12 @@ import com.holonplatform.vaadin.flow.components.HasComponent;
 import com.holonplatform.vaadin.flow.components.builders.DivConfigurator;
 import com.holonplatform.vaadin.flow.components.builders.DividerBuilder;
 import com.holonplatform.vaadin.flow.components.builders.LabelBuilder;
+import com.holonplatform.vaadin.flow.components.builders.LayoutBuilder;
 import com.holonplatform.vaadin.flow.components.utils.UIUtils;
 import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
 import com.holonplatform.vaadin.flow.internal.lumo.ColumnSpan;
+import com.holonplatform.vaadin.flow.internal.lumo.FlexDirection;
+import com.holonplatform.vaadin.flow.internal.lumo.Gap;
 import com.holonplatform.vaadin.flow.internal.lumo.RowSpan;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasEnabled;
@@ -32,10 +35,11 @@ import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H4;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.shared.HasTooltip;
+import com.vaadin.flow.theme.lumo.LumoUtility;
 
 import java.util.Optional;
+import java.util.function.Consumer;
 
-import static com.vaadin.flow.theme.lumo.LumoUtility.*;
 
 /**
  * Base {@link com.holonplatform.vaadin.flow.components.builders.DivConfigurator} implementation.
@@ -47,10 +51,15 @@ import static com.vaadin.flow.theme.lumo.LumoUtility.*;
 public abstract class AbstractDivConfigurator<C extends DivConfigurator<C>>
 		extends AbstractComponentConfigurator<Div, C> implements DivConfigurator<C> {
 
-	private final DividerBuilder dividerBuilder;
+	private DividerBuilder dividerBuilder;
+	private final String backgroundColor = LumoUtility.Background.CONTRAST_10;
+	private boolean isGrid;
 
 	public AbstractDivConfigurator(Div component) {
 		super(component);
+	}
+
+	private void initializeDivider() {
 		dividerBuilder = new DefaultDividerBuilder(new Span());
 	}
 
@@ -76,27 +85,28 @@ public abstract class AbstractDivConfigurator<C extends DivConfigurator<C>>
 
 	@Override
 	public C responsive() {
-		getComponent().addClassNames(AlignItems.Breakpoint.Medium.BASELINE,
-				Display.FLEX, FlexDirection.COLUMN,
-				FlexDirection.Breakpoint.Medium.ROW, Gap.Column.MEDIUM);
+		getComponent().addClassNames(
+				LumoUtility.AlignItems.Breakpoint.Medium.BASELINE,
+				LumoUtility.Display.FLEX, LumoUtility.FlexDirection.COLUMN,
+			LumoUtility.FlexDirection.Breakpoint.Medium.ROW, LumoUtility.Gap.Column.MEDIUM);
 		return getConfigurator();
 	}
 
 	@Override
-	public C cssGridLayout(String... styles) {
+	public C gridLayout(String... styles) {
 		getComponent().addClassNames(styles);
 		return getConfigurator();
 	}
 
 	@Override
-	public C cssGridLayout(int columns) {
+	public C gridLayout(int columns) {
 		getComponent().addClassNames(
 				// < 1024 pixels
-				Display.FLEX, FlexDirection.COLUMN,
+				LumoUtility.Display.FLEX, LumoUtility.FlexDirection.COLUMN,
 				// > 1024 pixels
-				Display.Breakpoint.Medium.GRID, "grid-cols-" + columns,
+				LumoUtility.Display.Breakpoint.Medium.GRID, "grid-cols-" + columns,
 				// Horizontal spacing between components
-				Gap.Column.MEDIUM
+				LumoUtility.Gap.Column.MEDIUM
 
 		);
 		return getConfigurator();
@@ -132,6 +142,7 @@ public abstract class AbstractDivConfigurator<C extends DivConfigurator<C>>
 		return getConfigurator();
 	}
 
+	@Override
 	public C title(LabelBuilder<H4> title) {
 		getComponent().add(
 				title
@@ -141,8 +152,18 @@ public abstract class AbstractDivConfigurator<C extends DivConfigurator<C>>
 	}
 
 	@Override
-	public C add(int columnSpan, Component... components) {
+	public C title(Component prefix, String title) {
+		getComponent().add(
+				LayoutBuilder.create().add(prefix).add(title).flexDirection(FlexDirection.ROW)
+						.gap(Gap.SMALL)
+						.build()
+		);
+		return getConfigurator();
+	}
 
+	@Override
+	public C add(int columnSpan, Component... components) {
+makeItGrid();
 		for (Component component : components) {
 			component.addClassName("col-span-" + columnSpan);
 		}
@@ -152,9 +173,10 @@ public abstract class AbstractDivConfigurator<C extends DivConfigurator<C>>
 
 	@Override
 	public C add(ColumnSpan columnSpan, Component... components) {
+		makeItGrid();
 		for (Component component : components) {
 
-			component.addClassName(columnSpan.getValue());
+			component.addClassName(columnSpan.getClassName());
 
 		}
 		add(components);
@@ -163,6 +185,7 @@ public abstract class AbstractDivConfigurator<C extends DivConfigurator<C>>
 
 	@Override
 	public C add(RowSpan rowSpan, Component... components) {
+		makeItGrid();
 		for (Component component : components) {
 			component.addClassName(rowSpan.getValue());
 		}
@@ -174,9 +197,9 @@ public abstract class AbstractDivConfigurator<C extends DivConfigurator<C>>
 
 	@Override
 	public C add(ColumnSpan columnSpan, RowSpan rowSpan, Component... components) {
-
+makeItGrid();
 		for (Component component : components) {
-			component.addClassNames(columnSpan.getValue(), rowSpan.getValue());
+			component.addClassNames(columnSpan.getClassName(), rowSpan.getValue());
 		}
 		add(components);
 		return getConfigurator();
@@ -184,12 +207,20 @@ public abstract class AbstractDivConfigurator<C extends DivConfigurator<C>>
 
 	@Override
 	public C add(int columnSpan, HasComponent... components) {
+		makeItGrid();
 		for (HasComponent component : components) {
 			component.hasStyle().ifPresent(hasStyle -> hasStyle.addClassName("col-span-" + columnSpan));
 			getComponent().add(component.getComponent());
 
 		}
 		return getConfigurator();
+	}
+
+	private void makeItGrid() {
+		if (!isGrid) {
+			getComponent().addClassName(LumoUtility.Display.GRID);
+			isGrid = true;
+		}
 	}
 
 	/**
@@ -202,7 +233,7 @@ public abstract class AbstractDivConfigurator<C extends DivConfigurator<C>>
 	 * A <code>null</code> value will remove the title.
 	 * </p>
 	 *
-	 * @param title Localizable title message (may be null)
+	 * @param title Localizable title message (maybe null)
 	 * @return this
 	 * @see LocalizationProvider
 	 */
@@ -228,22 +259,43 @@ public abstract class AbstractDivConfigurator<C extends DivConfigurator<C>>
 
 	@Override
 	public C horizontalRule() {
-		getComponent().add(dividerBuilder.horizontalSeparator().build());
+		initializeDivider();
+		getComponent().add(dividerBuilder.horizontalSeparator()
+						.styleNames(backgroundColor)
+				.build());
 		return getConfigurator();
+	}
+
+	private void removeDividerBackgroundClassName() {
+		initializeDivider();
+		final Span divider = dividerBuilder.horizontalSeparator().build();
+		if (divider.getClassNames().contains(backgroundColor)){
+			divider.removeClassName(backgroundColor);
+		}
 	}
 
 	@Override
 	public C horizontalRule(String... styles) {
+		initializeDivider();
+		removeDividerBackgroundClassName();
 		getComponent().add(dividerBuilder.horizontalSeparator().styleNames(styles).build());
 		return getConfigurator();
 	}
 
 	@Override
 	public C horizontalRule(int size, String... styles) {
+		initializeDivider();
+		removeDividerBackgroundClassName();
 		getComponent().add(dividerBuilder.horizontalSeparator()
 						.size(size)
 						.styleNames(styles)
 				.build());
+		return getConfigurator();
+	}
+
+	@Override
+	public C withPostProcessor(Consumer<DivConfigurator<C>> postProcessor) {
+		postProcessor.accept(this);
 		return getConfigurator();
 	}
 }

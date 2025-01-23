@@ -64,7 +64,7 @@ public class DefaultDeleteDialogBuilder extends AbstractDialogConfigurator<Dialo
 		getComponent().addFooterComponent(this.denyButton);
 		getComponent().addFooterComponent(this.confirmButton);
 
-		getComponent().setCloseOnEsc(false);
+		getComponent().setCloseOnEsc(true);
 		getComponent().setCloseOnOutsideClick(false);
 
 		// since 5.5.0: set modal by default

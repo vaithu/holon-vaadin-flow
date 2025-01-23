@@ -24,6 +24,8 @@ import com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment;
 import com.vaadin.flow.component.orderedlayout.FlexComponent.JustifyContentMode;
 import com.vaadin.flow.dom.DomEventListener;
 
+import java.util.function.Consumer;
+
 /**
  * Default {@link FlexComponentConfigurator} implementation.
  * @param <C> Actual component type
@@ -260,4 +262,9 @@ public class DefaultFlexComponentConfigurator<C extends Component>
 		return this;
 	}
 
+	@Override
+	public DefaultFlexComponentConfigurator<C> withPostProcessor(Consumer<FlexComponentConfigurator<DefaultFlexComponentConfigurator<C>>> postProcessor) {
+		postProcessor.accept(this);
+		return this;
+	}
 }

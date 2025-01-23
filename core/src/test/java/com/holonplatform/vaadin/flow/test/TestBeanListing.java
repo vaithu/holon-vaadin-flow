@@ -21,6 +21,7 @@ import com.holonplatform.core.datastore.DataTarget;
 import com.holonplatform.core.datastore.Datastore;
 import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.core.i18n.LocalizationContext;
+import com.holonplatform.core.query.BeanProjection;
 import com.holonplatform.core.query.QueryConfigurationProvider;
 import com.holonplatform.core.query.QueryFilter;
 import com.holonplatform.core.query.QueryProjection;
@@ -46,6 +47,7 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.Grid.Column;
 import com.vaadin.flow.component.grid.GridVariant;
+import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.data.provider.*;
 import com.vaadin.flow.data.renderer.LitRenderer;
 import com.vaadin.flow.data.renderer.Renderer;
@@ -828,16 +830,77 @@ public class TestBeanListing {
     }
 
     @Test
+    public void testToggleColumns() {
+        BeanListing<TestBean> listing = BeanListing.builder(TestBean.class)
+                .toggleableColumns()
+                .build();
+        assertEquals(2, listing.getVisibleColumns().size());
+        assertEquals(3,listing.getAllColumns().size());
+    }
+
+    @Test
+    public void testAddComponentColumn() {
+        BeanListing<TestBean> listing = BeanListing.builder(TestBean.class,false)
+                .build();
+
+        listing.addComponentColumn(testBean -> new Button("sdjfhksjdhf"));
+        assertEquals(1,listing.getVisibleColumns().size());
+    }
+
+    @Test
     public void testComponentColumns() {
 
-        BeanListing<TestBean> listing = BeanListing.builder(TestBean.class).withComponentColumn(item -> new Button("x"))
+      final   BeanListing<TestBean> listing = BeanListing.builder(TestBean.class).withComponentColumn(item -> new Button("x"))
                 .displayBefore(ID).add().build();
 
         List<String> visible = listing.getVisibleColumns();
         assertEquals(3, visible.size());
-        assertTrue(visible.get(0) != null);
+        assertNotNull(visible.get(0));
         assertEquals(ID, visible.get(1));
         assertEquals(NAME, visible.get(2));
+
+
+
+        final BeanListingBuilder<TestBean> beanListingBuilder = BeanListing.builder(TestBean.class);
+
+        beanListingBuilder.includeVirtualColumns(true)
+                .visibleColumns(ID,NAME)
+                .editable()
+//                .editorBuffered(true)
+                .editor(ID,Input.number(Long.class).build())
+                .editor(NAME,Input.string().build())
+//                .componentRenderer(ID,testBean -> new Button("skdksdf"))
+                .withComponentColumn(item -> new Button("x"))
+                .editorComponent(new Div(
+                        Components.button("Save", e -> listing.saveEditingItem()),
+                        Components.button("Cancel", e -> listing.cancelEditing())))
+                .displayAsFirst()
+                .header("Actions").add();
+
+        final  BeanListing<TestBean>  beanListing = beanListingBuilder.build();
+//        System.out.println("Before BeanListing");
+
+
+        assertEquals(3,beanListing.getVisibleColumns().size());
+
+        final DataTarget<?> TARGET = DataTarget.named("test2");
+
+        final Datastore datastore = JdbcDatastore.builder()
+                .dataSource(
+                        BasicDataSource.builder().url("jdbc:h2:mem:test;INIT=RUNSCRIPT FROM 'classpath:test_init.sql'")
+                                .username("sa").driverClassName(DatabasePlatform.H2.getDriverClassName()).build())
+                .traceEnabled(true).build();
+
+        beanListing.setItems(query -> datastore.query(TARGET)
+                .restrict(query.getLimit(), query.getOffset()).stream(BeanProjection.of(TestBean.class)));
+
+        datastore.query(TARGET).stream(BeanProjection.of(TestBean.class)).findFirst()
+                .ifPresentOrElse(testBean -> beanListing.editItem(testBean), () -> new RuntimeException("No items found"));
+
+//        beanListing.setItems(query -> datastore.query(TARGET).restrict(query.getLimit(), query.getOffset()).stream(ID,NAME))
+
+
+
 
     }
 

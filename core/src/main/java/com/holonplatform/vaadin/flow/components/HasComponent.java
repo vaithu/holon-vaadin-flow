@@ -88,7 +88,7 @@ public interface HasComponent extends HasElement {
 	 *         otherwise.
 	 */
 	default Optional<HasStyle> hasStyle() {
-		return (getComponent() instanceof HasStyle) ? Optional.of((HasStyle) getComponent()) : Optional.empty();
+		return (getComponent() != null) ? Optional.of((HasStyle) getComponent()) : Optional.empty();
 	}
 
 	/**

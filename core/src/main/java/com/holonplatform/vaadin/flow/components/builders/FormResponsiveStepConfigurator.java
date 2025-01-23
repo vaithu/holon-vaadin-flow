@@ -10,6 +10,13 @@ public interface FormResponsiveStepConfigurator<C extends FormResponsiveStepConf
     C breakpoint(BreakPoint breakPoint, int columns,FormLayout.ResponsiveStep.LabelsPosition labelsPosition);
     C breakpoint(String minWidth, int columns,FormLayout.ResponsiveStep.LabelsPosition labelsPosition);
 
+    default C breakpoint(BreakPoint breakPoint, int columns) {
+        return breakpoint(breakPoint, columns, FormLayout.ResponsiveStep.LabelsPosition.TOP);
+    }
+
+    default C breakpoint(String minWidth, int columns) {
+        return breakpoint(minWidth, columns, FormLayout.ResponsiveStep.LabelsPosition.TOP);
+    }
 
     default C small(int columns,FormLayout.ResponsiveStep.LabelsPosition labelsPosition) {
         return breakpoint(BreakPoint.BREAKPOINT_XS, columns,labelsPosition);
@@ -31,9 +38,9 @@ public interface FormResponsiveStepConfigurator<C extends FormResponsiveStepConf
         return xLarge(columns, FormLayout.ResponsiveStep.LabelsPosition.TOP);
     }
 
-    /*default C extraSmall(int columns) {
+    default C extraSmall(int columns) {
         return breakpoint(BreakPoint.BREAKPOINT_XS, columns);
-    }*/
+    }
 
     default C medium(int columns,FormLayout.ResponsiveStep.LabelsPosition labelsPosition) {
         return breakpoint(BreakPoint.BREAKPOINT_MD, columns,labelsPosition);

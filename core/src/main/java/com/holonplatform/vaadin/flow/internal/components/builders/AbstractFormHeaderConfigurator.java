@@ -36,7 +36,7 @@ public abstract class AbstractFormHeaderConfigurator<C extends FormHeaderConfigu
      */
     public AbstractFormHeaderConfigurator(HorizontalLayout component) {
         super(component);
-        rightSide.addClassNames(LumoUtility.FlexDirection.ROW, LumoUtility.Overflow.HIDDEN, LumoUtility.Gap.MEDIUM);
+        rightSide.addClassNames(LumoUtility.FlexDirection.ROW, LumoUtility.Overflow.HIDDEN, LumoUtility.Gap.LARGE, LumoUtility.AlignItems.BASELINE);
 
         Components.configure(getComponent())
                 .spacing()
@@ -116,7 +116,7 @@ public abstract class AbstractFormHeaderConfigurator<C extends FormHeaderConfigu
 
     @Override
     public C horizontalRule() {
-        getComponent().addClassNames(LumoUtility.Border.BOTTOM, LumoUtility.BorderColor.CONTRAST_30);
+        getComponent().addClassNames(LumoUtility.Border.BOTTOM, LumoUtility.BorderColor.CONTRAST_10);
         return getConfigurator();
     }
 

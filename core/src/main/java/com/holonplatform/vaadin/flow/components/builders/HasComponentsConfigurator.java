@@ -15,6 +15,7 @@
  */
 package com.holonplatform.vaadin.flow.components.builders;
 
+import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.vaadin.flow.components.HasComponent;
 import com.holonplatform.vaadin.flow.components.utils.UIUtils;
 import com.vaadin.flow.component.Component;
@@ -52,5 +53,9 @@ public interface HasComponentsConfigurator<C extends HasComponentsConfigurator<C
 						  Component component);
 
 	C add(String text);
+
+	default C add(Localizable localizable) {
+		return add(localizable.getMessage());
+	}
 
 }

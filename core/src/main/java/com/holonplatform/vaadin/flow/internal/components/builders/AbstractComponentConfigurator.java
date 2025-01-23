@@ -45,7 +45,6 @@ public abstract class AbstractComponentConfigurator<C extends Component, B exten
 	private HasSizeConfigurator<?> sizeConfigurator;
 	private HasStyleConfigurator<?> styleConfigurator;
 	private HasEnabledConfigurator<?> enabledConfigurator;
-	private HasTooltipConfigurator<?> tooltipConfigurator;
 
 	/**
 	 * Constructor.
@@ -131,7 +130,7 @@ public abstract class AbstractComponentConfigurator<C extends Component, B exten
 	/*protected Optional<HasTooltipConfigurator<?>> getTooltipConfigurator() {
 		if (this.tooltipConfigurator == null) {
 			hasTooltip().ifPresent(h -> {
-				this.tooltipConfigurator = new DefaultHasTooltipConfigurator<>(h);
+				this.tooltipConfigurator = new DefaultHasTooltipConfigurator<>();
 			});
 		}
 		return Optional.ofNullable(this.tooltipConfigurator);

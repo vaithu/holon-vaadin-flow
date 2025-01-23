@@ -32,6 +32,9 @@ public final class CSSConstants {
         public static final String OFFSET_2 = SECTION + "__offset-2";
         public static final String X2 = CSS_GRID + "__x2";
         public static final String X4 = CSS_GRID + "__x4";
+        public static final String GRID_CUSTOM_STYLE = "custom-styling";
+        public static final String RECENTLY_EDITED_ROW  = "recently-edited-row";
+        public static final String HIGHLIGHT_ROW  = "highlight-row";
 
 
     }

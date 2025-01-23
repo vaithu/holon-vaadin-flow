@@ -2,6 +2,7 @@ package com.holonplatform.vaadin.flow.components.builders;
 
 import com.holonplatform.vaadin.flow.components.Badge;
 import com.vaadin.flow.component.contextmenu.ContextMenu;
+import com.vaadin.flow.component.menubar.MenuBar;
 
 import java.time.LocalDate;
 import java.util.function.Consumer;
@@ -10,8 +11,11 @@ public interface MobileGridTemplateConfigurator<C extends MobileGridTemplateConf
 
     C image(String imagePath, String altText);
 
-    C action(ContextMenu contextMenu,
-            Consumer<ButtonConfigurator.BaseButtonConfigurator> configurator);
+    C contextAction(ContextMenu contextMenu,
+                    Consumer<ButtonConfigurator.BaseButtonConfigurator> configurator);
+
+    C contextAction(MenuBar menuBar);
+
     C badge(String text);
 
     C badge(Badge badge);

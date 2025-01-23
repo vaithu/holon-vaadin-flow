@@ -8,6 +8,10 @@ public class DefaultZohoBuilder extends AbstractZohoConfigurator<ZohoBuilder> im
         super(layout);
     }
 
+    public DefaultZohoBuilder(HorizontalLayout layout, boolean mobile) {
+        super(layout, mobile);
+    }
+
     /**
      * Get the actual configurator.
      *

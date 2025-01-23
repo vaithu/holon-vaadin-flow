@@ -21,8 +21,10 @@ import com.holonplatform.vaadin.flow.data.ItemSort;
 import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
 import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
+import com.vaadin.flow.component.grid.ItemClickEvent;
 import com.vaadin.flow.component.grid.dataview.GridLazyDataView;
 import com.vaadin.flow.component.grid.editor.Editor;
 import com.vaadin.flow.data.provider.BackEndDataProvider;
@@ -110,15 +112,19 @@ public interface ItemListing<T, P> extends ItemSet, Selectable<T>, HasComponent 
 
     void addIndexColumn(P p);
 
+    <V extends Component> Grid.Column<T> addComponentColumn(ValueProvider<T, V> componentProvider);
+
+    void addItemClickListener(ComponentEventListener<ItemClickEvent<T>> listener);
+
+    void addSelectionListener(com.vaadin.flow.data.selection.SelectionListener<Grid<T>, T> listener);
+
     void addHoverEffect(AttachEvent attachEvent, SerializableFunction<T, String> partNameGenerator);
 
     void removeColumnByKey(String columnKey);
 
     void removeColumn(P property);
 
-    void removeColumns(P... properties);
-
-    void setColumnOrder(Grid.Column<T>... columns);
+    void removeColumns(List<P> properties);
 
     void setColumnOrder(List<Grid.Column<T>> columns);
     /**
@@ -265,6 +271,15 @@ public interface ItemListing<T, P> extends ItemSet, Selectable<T>, HasComponent 
      */
     void refreshEditingItem();
 
+   Editor<T> getEditor();
+    /*
+        void addEditorOpenListener(EditorOpenListener<T, P> listener);
+
+        void addEditorCloseListener(EditorCloseListener<T, P> listener);
+
+        void addEditorSaveListener(EditorSaveListener<T, P> listener);
+
+        void addEditorCancelListener(EditorCancelListener<T, P> listener);*/
     void setMobileColumn(Renderer<T> renderer);
 
     void setMobileColumn(ValueProvider<T, Component> component);
@@ -301,6 +316,11 @@ public interface ItemListing<T, P> extends ItemSet, Selectable<T>, HasComponent 
     void compact();
 
     void wrapCellContent();
+
+    void setEmptyStateText(String emptyStateText);
+    void setEmptyStateComponent(Component component);
+
+    void setPartNameGenerator(SerializableFunction<T, String> partNameGenerator);
 
 /*	GridLazyDataView<T> getLazyDataView();
 

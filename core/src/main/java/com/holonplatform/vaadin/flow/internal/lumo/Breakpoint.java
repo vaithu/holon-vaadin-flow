@@ -1,4 +1,4 @@
-package com.holonplatform.vaadin.flow.vaadinplus.utilities;
+package com.holonplatform.vaadin.flow.internal.lumo;
 
 public enum Breakpoint {
     SMALL("sm"),

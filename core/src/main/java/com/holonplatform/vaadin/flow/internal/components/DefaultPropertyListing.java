@@ -44,7 +44,6 @@ import com.vaadin.flow.function.ValueProvider;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -321,6 +320,14 @@ public class DefaultPropertyListing extends AbstractItemListing<PropertyBox, Pro
 		});
 	}
 
+	@Override
+	public <V extends Component> Column<PropertyBox> addComponentColumn(ValueProvider<PropertyBox, V> componentProvider) {
+		VirtualProperty<Component> virtualProperty = VirtualProperty.create(Component.class);
+		final ItemListingColumn<Property<?>, PropertyBox, ?> columnConfiguration = addPropertyColumn(virtualProperty);
+		columnConfiguration.setRenderer(new ComponentRenderer<>(componentProvider));
+		return getGrid().addComponentColumn(componentProvider).setKey(columnConfiguration.getColumnKey());
+	}
+
 	// ------- Builder
 
 	/**
@@ -334,7 +341,10 @@ public class DefaultPropertyListing extends AbstractItemListing<PropertyBox, Pro
 			super(new DefaultPropertyListing(properties));
 		}
 
-
+		@Override
+		public PropertyListingBuilder includeVirtualColumns(boolean yes) {
+			throw new RuntimeException("Not Implemented for PropertyListing");
+		}
 
 		/*
 		 * (non-Javadoc)
@@ -401,11 +411,7 @@ public class DefaultPropertyListing extends AbstractItemListing<PropertyBox, Pro
 			return withComponentColumn(VirtualProperty.create(Component.class, item -> valueProvider.apply(item)));
 		}
 
-		@Override
-		public PropertyListingBuilder hiddenColumns(List<? extends Property<?>> hiddenColumns) {
-			hiddenColumns.forEach(property -> hidden(property));
-			return getConfigurator();
-		}
+
 
 		/*
 		 * (non-Javadoc)

@@ -1,7 +1,11 @@
 package com.holonplatform.vaadin.flow.internal.components.builders;
 
+import com.holonplatform.core.Initializer;
+import com.holonplatform.vaadin.flow.LazyComponent;
 import com.holonplatform.vaadin.flow.components.builders.TabSheetConfigurator;
 import com.vaadin.flow.component.*;
+import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.shared.HasTooltip;
 import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.TabSheet;
@@ -69,6 +73,45 @@ public abstract class AbstractTabSheetConfigurator<C extends TabSheetConfigurato
         return getConfigurator();
     }
 
+    @Override
+    public C withTab(Icon icon, String tabText, Component component) {
+        getComponent().add(new Tab(icon, new Span(tabText)), component);
+        return getConfigurator();
+    }
+
+    @Override
+    public C withTab(Icon icon, String tabText, Initializer<Component> initializer) {
+        return withTab(icon, tabText, initializer.get());
+    }
+
+    @Override
+    public C withTab(Tab tab, Initializer<Component> initializer) {
+        return withTab(tab, initializer.get());
+    }
+
+    @Override
+    public C withTab(String tabText, Initializer<Component> initializer) {
+        return withTab(tabText, initializer.get());
+    }
+
+    @Override
+    public C withTab(Icon icon, String tabText, LazyComponent component) {
+        getComponent().add(new Tab(icon, new Span(tabText)), component);
+        return getConfigurator();
+    }
+
+    @Override
+    public C withTab(Tab tab, LazyComponent component) {
+        getComponent().add(tab, component);
+        return getConfigurator();
+    }
+
+    @Override
+    public C withTab(String tabText, LazyComponent component) {
+        getComponent().add(tabText, component);
+        return getConfigurator();
+    }
+
     /**
      * Add given theme variants to the component.
      *
@@ -87,7 +130,7 @@ public abstract class AbstractTabSheetConfigurator<C extends TabSheetConfigurato
      */
     @Override
     protected Optional<HasSize> hasSize() {
-        return Optional.empty();
+        return Optional.of(getComponent());
     }
 
     /**

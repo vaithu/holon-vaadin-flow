@@ -103,7 +103,7 @@ public abstract class AbstractNotificationConfigurator<C extends NotificationCon
 
     @Override
     public C text(String text) {
-        getComponent().add(new Text(text));
+        getComponent().addComponentAsFirst(new Text(text));
         return getConfigurator();
     }
 
@@ -126,6 +126,7 @@ public abstract class AbstractNotificationConfigurator<C extends NotificationCon
             autoClose(duration);
         } else {
             autoClose(0);
+            return closeButton(true);
         }
         return getConfigurator();
     }

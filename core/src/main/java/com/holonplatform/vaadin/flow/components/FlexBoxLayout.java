@@ -56,7 +56,7 @@ public class FlexBoxLayout extends FlexLayout {
     }
 
     public void setDisplay(Display display) {
-        getStyle().set(DISPLAY, display.getValue());
+        getStyle().set(DISPLAY, display.getClassName());
     }
 
     public void removeDisplay() {

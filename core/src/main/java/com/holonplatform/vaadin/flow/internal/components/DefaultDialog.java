@@ -116,6 +116,7 @@ public class DefaultDialog extends Dialog implements HasStyle {
 		ObjectUtils.argumentNotNull(component, "Component must be not null");
 //		this.content.addComponentAtIndex(this.content.indexOf(this.message) + 1, component);
 		this.content.setAlignSelf(Alignment.CENTER, component);
+		this.content.add(component);
 	}
 
 	public void addContentComponent(Component... components) {

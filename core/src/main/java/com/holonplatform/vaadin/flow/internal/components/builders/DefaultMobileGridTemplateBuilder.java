@@ -15,6 +15,7 @@ import com.vaadin.flow.component.contextmenu.ContextMenu;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.menubar.MenuBar;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.FlexLayout;
 import com.vaadin.flow.theme.lumo.LumoUtility;
@@ -42,8 +43,8 @@ public class DefaultMobileGridTemplateBuilder extends DefaultDivBuilder implemen
                 , LumoUtility.Display.FLEX
                 , LumoUtility.Flex.GROW);
 
-        getComponent().addClassNames(LumoUtility.Padding.Top.SMALL, LumoUtility.Display.FLEX,
-                LumoUtility.Padding.Bottom.SMALL, LumoUtility.LineHeight.MEDIUM);
+        getComponent().addClassNames( LumoUtility.Display.FLEX,//LumoUtility.Padding.Top.SMALL,LumoUtility.Padding.Bottom.SMALL,
+                 LumoUtility.LineHeight.MEDIUM);
 
         getComponent().add(columnDiv);
 
@@ -68,7 +69,7 @@ public class DefaultMobileGridTemplateBuilder extends DefaultDivBuilder implemen
     }
 
     @Override
-    public DefaultMobileGridTemplateBuilder action(ContextMenu contextMenu, Consumer<ButtonConfigurator.BaseButtonConfigurator> configurator) {
+    public DefaultMobileGridTemplateBuilder contextAction(ContextMenu contextMenu, Consumer<ButtonConfigurator.BaseButtonConfigurator> configurator) {
         ObjectUtils.argumentNotNull(configurator, "Configurator must be not null");
         actionButton = Components.button()
                 .tertiaryInline()
@@ -80,6 +81,13 @@ public class DefaultMobileGridTemplateBuilder extends DefaultDivBuilder implemen
         contextMenu.setTarget(actionButton);
         configurator.accept(ButtonConfigurator.configure(actionButton));
         primary.add(actionButton);
+        return this;
+    }
+
+    @Override
+    public DefaultMobileGridTemplateBuilder contextAction(MenuBar menuBar) {
+        ObjectUtils.argumentNotNull(menuBar, "MenuBar must be not null");
+        primary.add(menuBar);
         return this;
     }
 
@@ -112,7 +120,7 @@ public class DefaultMobileGridTemplateBuilder extends DefaultDivBuilder implemen
         Div text = Components.label()
                 .text(txt)
                 .build();
-        text.addClassNames(LumoUtility.FontSize.SMALL, LumoUtility.TextColor.TERTIARY, LumoUtility.Overflow.HIDDEN,
+        text.addClassNames(LumoUtility.FontSize.SMALL, LumoUtility.TextColor.SECONDARY, LumoUtility.Overflow.HIDDEN,
                 LumoUtility.TextOverflow.ELLIPSIS, LumoUtility.Margin.Bottom.SMALL);
         secondary.add(text);
         columnDiv.add(secondary);
@@ -136,7 +144,7 @@ public class DefaultMobileGridTemplateBuilder extends DefaultDivBuilder implemen
                 text.addClassNames(LumoUtility.TextColor.ERROR);
             }
         } else if (styles.length == 0){
-            text.addClassNames(LumoUtility.TextColor.PRIMARY);
+            text.addClassNames(LumoUtility.TextColor.TERTIARY);
         }
 
         tertiary.add(text);

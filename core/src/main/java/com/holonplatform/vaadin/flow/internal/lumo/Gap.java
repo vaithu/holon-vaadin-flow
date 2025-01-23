@@ -1,19 +1,30 @@
 package com.holonplatform.vaadin.flow.internal.lumo;
 
+import com.vaadin.flow.theme.lumo.LumoUtility;
+
 public enum Gap {
-    XSMALL("gap-xs"),
-    SMALL("gap-s"),
-    MEDIUM("gap-m"),
-    LARGE("gap-l"),
-    XLARGE("gap-xl");
+        PIXEL("gap-px"),
+        XSMALL(LumoUtility.Gap.XSMALL),
+        SMALL(LumoUtility.Gap.SMALL),
+        MEDIUM(LumoUtility.Gap.MEDIUM),
+        LARGE(LumoUtility.Gap.LARGE),
+        XLARGE(LumoUtility.Gap.XLARGE);
 
-    private final String value;
+        private final String className;
 
-    Gap(String value) {
-        this.value = value;
+        private Gap(String className) {
+            this.className = className;
+        }
+
+        public String getClassName() {
+            return this.className;
+        }
+
+        public ColumnGap getColumnGap() {
+            return ColumnGap.valueOf(this.name());
+        }
+
+        public RowGap getRowGap() {
+            return RowGap.valueOf(this.name());
+        }
     }
-
-    public String getValue() {
-        return value;
-    }
-}

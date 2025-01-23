@@ -15,19 +15,10 @@
  */
 package com.holonplatform.vaadin.flow.examples;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-
 import com.holonplatform.core.Validator;
 import com.holonplatform.core.datastore.DataTarget;
 import com.holonplatform.core.datastore.Datastore;
-import com.holonplatform.core.property.NumericProperty;
-import com.holonplatform.core.property.PropertyBox;
-import com.holonplatform.core.property.PropertyRendererRegistry;
-import com.holonplatform.core.property.PropertySet;
-import com.holonplatform.core.property.PropertyValuePresenterRegistry;
-import com.holonplatform.core.property.StringProperty;
+import com.holonplatform.core.property.*;
 import com.holonplatform.vaadin.flow.components.BeanListing;
 import com.holonplatform.vaadin.flow.components.Components;
 import com.holonplatform.vaadin.flow.components.Input;
@@ -37,6 +28,7 @@ import com.holonplatform.vaadin.flow.components.Selectable.SelectionMode;
 import com.holonplatform.vaadin.flow.components.builders.ItemListingConfigurator.ColumnAlignment;
 import com.holonplatform.vaadin.flow.data.DatastoreDataProvider;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -44,6 +36,11 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.converter.StringToLongConverter;
 import com.vaadin.flow.data.provider.DataProvider;
 import com.vaadin.flow.data.renderer.TextRenderer;
+import com.vaadin.flow.data.selection.SelectionListener;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 @SuppressWarnings("unused")
 public class ExampleListing {
@@ -398,7 +395,7 @@ public class ExampleListing {
 				}).build();
 
 		listing.setSelectionMode(SelectionMode.MULTI); // <7>
-		listing.addSelectionListener(event -> { // <8>
+		listing.addSelectionListener((SelectionListener<Grid<PropertyBox>, PropertyBox>) event -> { // <8>
 		});
 
 		listing.select(myItem); // <9>

@@ -43,7 +43,9 @@ public class DefaultSaveAndNewDialogBuilder extends AbstractDialogConfigurator<D
         getComponent().addFooterComponent(this.denyButton);
         getComponent().addFooterComponent(this.saveAndNewButton);
 
-        getComponent().setCloseOnEsc(false);
+        getComponent().setCloseOnEsc(true);
+        getComponent().setResizable(true);
+        getComponent().setDraggable(true);
         getComponent().setCloseOnOutsideClick(false);
 
         // since 5.5.0: set modal by default

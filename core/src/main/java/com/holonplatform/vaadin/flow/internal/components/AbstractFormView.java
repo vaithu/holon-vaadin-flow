@@ -1,5 +1,6 @@
 package com.holonplatform.vaadin.flow.internal.components;
 
+import com.holonplatform.core.internal.utils.ObjectUtils;
 import com.holonplatform.vaadin.flow.HasFormView;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
@@ -7,79 +8,67 @@ import com.vaadin.flow.data.binder.ValidationException;
 
 import java.util.Optional;
 
-public abstract class AbstractFormView<T> implements HasFormView<T> {
+public abstract class AbstractFormView<T> implements HasFormView<T>  {
 
     private  BeanValidationBinder<T> binder;
-    private T bean;
-
-    public AbstractFormView(BeanValidationBinder<T> binder, T bean) {
-        this.binder = binder;
-        this.bean = bean;
-    }
+    private T beanInstance;
 
     public AbstractFormView(BeanValidationBinder<T> binder) {
-        this.binder = binder;
+        setBinder(binder);
     }
 
-    public AbstractFormView() {
-
+    public AbstractFormView(T beanInstance, BeanValidationBinder<T> binder) {
+        this.beanInstance = beanInstance;
+        this.binder = binder;
     }
 
     @Override
-    public void populateForm(T bean) {
-        setFormValue(bean);
+    public void populateForm(T beanInstance) {
+        setFormValueFromBean(beanInstance);
     }
 
     @Override
     public void populateForm() {
-        if (this.bean != null) {
-            populateForm(this.bean);
-        } else {
-            throw new IllegalArgumentException("There is no bean already set");
-        }
+        ObjectUtils.argumentNotNull(getBean(), "Bean  is not already set so it is null here");
+        populateForm(getBean());
     }
 
     @Override
-    public void populateBean(T bean) throws ValidationException {
-        getFormValue(bean).orElseThrow();
+    public void populateBean(T beanInstance) throws ValidationException {
+        getFormValueToBean(beanInstance).orElseThrow();
     }
 
     @Override
     public void populateBean() throws ValidationException {
-        if (this.bean != null) {
-            populateBean(this.bean);
-        } else {
-            throw new IllegalArgumentException("There is no bean already set");
-        }
+        ObjectUtils.argumentNotNull(getBean(), "Bean  is not already set so it is null here");
+        populateBean(getBean());
     }
 
     @Override
-    public void setFormValue(T value)  {
+    public void setFormValueFromBean(T value)  {
         copyValuesFromBeanToBinder(value);
     }
 
     @Override
-    public void setFormValue()  {
+    public void setFormValueFromBean()  {
         copyValuesFromBeanToBinder();
     }
 
     @Override
-    public Optional<T> getFormValue() throws ValidationException {
+    public Optional<T> getFormValueToBean() throws ValidationException {
         copyValuesFromBinderToBean();
-        return Optional.ofNullable(this.bean);
+        return Optional.ofNullable(getBean());
     }
 
     @Override
-    public Optional<T> getFormValue(T value) throws ValidationException {
-        if (isOK()) {
-            copyValuesFromBinderToBean(value);
-        }
-        return getFormValue();
+    public Optional<T> getFormValueToBean(T value) throws ValidationException {
+        copyValuesFromBinderToBean(value);
+        return Optional.ofNullable(getBean());
     }
 
     @Override
     public void clearForm() {
-        this.bean = null;
+        setBean(null);
         binder.readBean(null);
     }
 
@@ -90,9 +79,13 @@ public abstract class AbstractFormView<T> implements HasFormView<T> {
 
     @Override
     public boolean isValid() {
-        return binder.isValid();
+        return !binder.validate().hasErrors();
     }
 
+    @Override
+    public void validate() {
+        binder.validate();
+    }
 
     @Override
     public boolean hasChanges() {
@@ -106,29 +99,29 @@ public abstract class AbstractFormView<T> implements HasFormView<T> {
 
     @Override
     public BeanValidationBinder<T> getBinder() {
-        return binder;
+        ObjectUtils.argumentNotNull(binder, "Binder  is not already set so it is null here");
+        return
+                binder;
     }
 
     private void copyValuesFromBeanToBinder() {
-        if (this.bean != null) {
-            copyValuesFromBeanToBinder(this.bean);
-        } else {
-            throw new IllegalArgumentException("There is no value/bean already set");
-        }
+        ObjectUtils.argumentNotNull(getBean(), "Bean  is not already set so it is null here");
+        copyValuesFromBeanToBinder(getBean());
     }
 
-    private void copyValuesFromBeanToBinder(T bean)  {
-        binder.readBean(bean);
+    private void copyValuesFromBeanToBinder(T beanInstance)  {
+        setBean(beanInstance);
+        binder.readBean(getBean());
     }
 
-    private void copyValuesFromBinderToBean(T bean) throws ValidationException{
-        binder.writeBean(bean);
+    private void copyValuesFromBinderToBean(T beanInstance) throws ValidationException {
+        setBean(beanInstance);
+        binder.writeBean(getBean());
     }
 
     private void copyValuesFromBinderToBean() throws ValidationException {
-        if (this.bean != null) {
-            copyValuesFromBinderToBean(this.bean);
-        }
+        ObjectUtils.argumentNotNull(getBean(), "Bean  is not already set so it is null here");
+        copyValuesFromBinderToBean(getBean());
     }
 
     @Override
@@ -137,22 +130,12 @@ public abstract class AbstractFormView<T> implements HasFormView<T> {
     }
 
     @Override
-    public void setBean(T bean) {
-        this.bean = bean;
+    public void setBean(T beanInstance) {
+        this.beanInstance = beanInstance;
     }
 
-    @Override
-    public T getBean() {
-        return this.bean;
-    }
-
-    private <T> T createEntity(Class<T> entityClass) {
-        try {
-            return entityClass.getDeclaredConstructor().newInstance();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null; // Handle exceptions appropriately
-        }
+    private T getBean() {
+        return this.beanInstance;
     }
 
     public void byPassValidation() {
@@ -169,7 +152,6 @@ public abstract class AbstractFormView<T> implements HasFormView<T> {
             resetButton.setEnabled(hasChanges);
         });
     }
-
 
     
 }

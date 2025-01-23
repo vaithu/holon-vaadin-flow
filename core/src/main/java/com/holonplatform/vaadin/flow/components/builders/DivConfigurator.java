@@ -20,6 +20,9 @@ import com.holonplatform.vaadin.flow.internal.components.builders.DefaultDivConf
 import com.holonplatform.vaadin.flow.internal.lumo.*;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.html.H4;
+
+import java.util.function.Consumer;
 
 /**
  * Configurator for {@link com.vaadin.flow.component.html.Div} type components.
@@ -41,16 +44,27 @@ public interface DivConfigurator<C extends DivConfigurator<C>> extends HasCompon
 
     C responsive();
 
-    C cssGridLayout(int columns);
-    C cssGridLayout(String... styles);
+    C gridLayout(int columns);
+    C gridLayout(String... styles);
 
     C horizontalRule();
     C horizontalRule(String... styles);
     C horizontalRule(int size,String... styles);
 
+    default C horizontalRule(Background background) {
+        return horizontalRule(background.getClassName());
+    }
 
+    C title(LabelBuilder<H4> title);
 
+    default C title(LabelBuilder<H4> title, boolean horizontalRule) {
+        if (horizontalRule) {
+            return title(title).horizontalRule();
+        }
+        return title(title);
+    }
 
+    C title(Component prefix, String title);
 
     C add(int columnSpan, Component... components);
     C add(int columnSpan, HasComponent... components);
@@ -70,10 +84,10 @@ public interface DivConfigurator<C extends DivConfigurator<C>> extends HasCompon
     }
 
     default C display(Display display) {
-        return styleName(display.getValue());
+        return styleName(display.getClassName());
     }
 
-
+    C withPostProcessor(Consumer<DivConfigurator<C>> postProcessor);
     /**
      * Get a new {@link DivConfigurator} for given component.
      *

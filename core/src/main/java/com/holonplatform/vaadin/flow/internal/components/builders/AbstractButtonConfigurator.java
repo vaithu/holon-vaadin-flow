@@ -54,9 +54,7 @@ public abstract class AbstractButtonConfigurator<C extends ButtonConfigurator<C>
 		this.titleConfigurator = new DefaultHasTitleConfigurator<>(component, title -> {
 			component.getElement().setAttribute("title", (title != null) ? title : "");
 		}, this);
-		this.tooltipConfigurator = new DefaultHasTooltipConfigurator<>(component, tooltip -> {
-			component.setTooltipText(tooltip);
-		}, this);
+		this.tooltipConfigurator = new DefaultHasTooltipConfigurator<>(component, component::setTooltipText, this);
 	}
 
 	@Override

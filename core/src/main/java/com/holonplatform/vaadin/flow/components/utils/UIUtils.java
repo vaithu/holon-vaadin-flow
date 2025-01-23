@@ -4,15 +4,17 @@ import com.github.javaparser.quality.NotNull;
 import com.holonplatform.core.property.PropertyBox;
 import com.holonplatform.core.property.PropertySet;
 import com.holonplatform.vaadin.flow.HasOptionsBar;
-import com.holonplatform.vaadin.flow.components.Components;
-import com.holonplatform.vaadin.flow.components.HasComponent;
-import com.holonplatform.vaadin.flow.components.PropertyInputForm;
-import com.holonplatform.vaadin.flow.components.Selectable;
+import com.holonplatform.vaadin.flow.components.*;
 import com.holonplatform.vaadin.flow.components.builders.BooleanInputBuilder;
 import com.holonplatform.vaadin.flow.components.builders.BulkActionBuilder;
 import com.holonplatform.vaadin.flow.components.builders.LabelBuilder;
 import com.holonplatform.vaadin.flow.components.builders.SearchBarBuilder;
 import com.holonplatform.vaadin.flow.components.css.WhiteSpace;
+import com.holonplatform.vaadin.flow.enums.ScreenSize;
+import com.holonplatform.vaadin.flow.internal.components.support.BreakPoint;
+import com.holonplatform.vaadin.flow.vaadinplus.KeyValuePair;
+import com.holonplatform.vaadin.flow.vaadinplus.KeyValuePairs;
+import com.holonplatform.vaadin.flow.vaadinplus.Layout;
 import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -28,6 +30,7 @@ import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridMultiSelectionModel;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.grid.dataview.GridLazyDataView;
+import com.vaadin.flow.component.html.ListItem;
 import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
@@ -69,10 +72,14 @@ import com.vaadin.flow.server.VaadinSession;
 import com.vaadin.flow.shared.communication.PushMode;
 import com.vaadin.flow.theme.lumo.LumoIcon;
 import com.vaadin.flow.theme.lumo.LumoUtility;
+import elemental.json.JsonObject;
 import elemental.json.JsonValue;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
@@ -121,6 +128,7 @@ public class UIUtils {
             </div>
             </div>
             """;
+    private static final Logger log = LoggerFactory.getLogger(UIUtils.class);
 
     private static NumberFormat currencyFormat = NumberFormat.getCurrencyInstance();
 
@@ -210,7 +218,7 @@ public class UIUtils {
     public static String[] getTitleStyles() {
         return new String[]{LumoUtility.TextColor.PRIMARY, LumoUtility.Padding.SMALL,
                 LumoUtility.Border.BOTTOM,
-                LumoUtility.BorderColor.CONTRAST_30};
+                LumoUtility.BorderColor.CONTRAST_10};
     }
 
     public static Component[] toComponents(HasComponent[] components) {
@@ -258,7 +266,7 @@ public class UIUtils {
     }
 
     public static String[] borderStyles() {
-        return new String[]{LumoUtility.Border.BOTTOM, LumoUtility.BorderColor.CONTRAST_30};
+        return new String[]{LumoUtility.Border.BOTTOM, LumoUtility.BorderColor.CONTRAST_10};
     }
 
     public static Span createDaySpan() {
@@ -326,6 +334,10 @@ public class UIUtils {
         }
     }
 
+    public static void setPageUrlWithoutReloading(UI ui, String deepLinkingUrl) {
+        ui.getUI().ifPresent(ui1 -> ui1.getPage().getHistory().replaceState(null, deepLinkingUrl));
+    }
+
     public static void addChildIfNotExists(FlexLayout parent, Component child) {
         if (parent.getChildren().noneMatch(Predicate.isEqual(child))) {
             parent.add(child);
@@ -336,10 +348,52 @@ public class UIUtils {
         return String.format("%dpx", size);
     }
 
-    private record MenuItemComponent(MenuItem menuItem, Text text) {
+    public static boolean isPropertyBoxEmpty(PropertyBox propertyBox) {
+        return propertyBox
+                .propertyValues().noneMatch(PropertyBox.PropertyValue::hasValue);
+    }
+
+    public static void clearContainer(VerticalLayout container) {
+        container.removeAll();
+    }
+
+    public static void clearContainer(Layout container) {
+        container.removeAll();
+    }
+
+    public static void clearContainer(Div container) {
+        container.removeAll();
+    }
+
+    public static void handleNoValuesFound(VerticalLayout container) {
+        Components.configure(container)
+                .fullSize()
+                .add(UIUtils.createImage("no-values-found.png", "No values found"));
 
     }
 
+    public static void handleNoValuesFound(Layout container) {
+        Components.configure(container)
+                .fullSize()
+                .add(UIUtils.createImage("no-values-found.png", "No values found"));
+
+    }
+
+    public static void handleNoRecordsFound(VerticalLayout container) {
+        Components.configure(container)
+                .fullSize()
+                .add(UIUtils.createNoRecordsFoundImage());
+    }
+
+    public static void handleNoRecordsFound(Layout container) {
+        Components.configure(container)
+                .fullSize()
+                .add(UIUtils.createNoRecordsFoundImage());
+    }
+
+    private record MenuItemComponent(MenuItem menuItem, Text text) {
+
+    }
 
 
     /****************************************/
@@ -760,7 +814,7 @@ public class UIUtils {
 
     public static void setColSpan(int span, Component... components) {
         for (Component component : components) {
-            component.getElement().setAttribute("colspan",
+            component.getElement().setAttribute("colSpan",
                     Integer.toString(span));
         }
     }
@@ -1106,7 +1160,7 @@ public class UIUtils {
 
 
     public static Icon createEditIcon() {
-        return createIcon(LumoUtility.IconSize.SMALL, LumoUtility.TextColor.TERTIARY, VaadinIcon.TRASH);
+        return createIcon(LumoUtility.IconSize.SMALL, LumoUtility.TextColor.PRIMARY, VaadinIcon.EDIT);
     }
 
     public static Button createButton(String text, LumoIcon lumoIcon, ButtonVariant... variants) {
@@ -1222,7 +1276,7 @@ public class UIUtils {
     public static MenuBar createMenuToggle(Map<Grid.Column<?>, String> toggleableColumns) {
         MenuBar menuBar = new MenuBar();
         menuBar.addThemeVariants(MenuBarVariant.LUMO_TERTIARY_INLINE);
-        MenuItem menuItem = menuBar.addItem(VaadinIcon.ELLIPSIS_DOTS_V.create());
+        MenuItem menuItem = menuBar.addItem(VaadinIcon.GRID_H.create());
         SubMenu subMenu = menuItem.getSubMenu();
 
         toggleableColumns.forEach(
@@ -1948,7 +2002,7 @@ public class UIUtils {
     }
 
     public static MenuItem createIconItem(MenuBar menu, VaadinIcon iconName,
-                                    String ariaLabel) {
+                                          String ariaLabel) {
         Icon icon = new Icon(iconName);
         MenuItem item = menu.addItem(icon);
         item.setAriaLabel(ariaLabel);
@@ -1969,7 +2023,7 @@ public class UIUtils {
                 .hidden();
     }
 
-    private static void showHideSearchBarAndBulkActionBar(int selectedItems,LabelBuilder<Span> labelBuilder, BulkActionBuilder bulkActionBuilder, SearchBarBuilder searchBarBuilder) {
+    private static void showHideSearchBarAndBulkActionBar(int selectedItems, LabelBuilder<Span> labelBuilder, BulkActionBuilder bulkActionBuilder, SearchBarBuilder searchBarBuilder) {
         if (selectedItems > 0) {
             bulkActionBuilder.selected(labelBuilder.text(String.format("%d selected", selectedItems)));
             searchBarBuilder.visible(false);
@@ -1982,17 +2036,17 @@ public class UIUtils {
     }
 
     public static void showHideSearchBarAndBulkActionBar(Selectable.SelectionEvent<?> selectionEvent, LabelBuilder<Span> labelBuilder, BulkActionBuilder bulkActionBuilder, SearchBarBuilder searchBarBuilder) {
-        showHideSearchBarAndBulkActionBar(selectionEvent.getAllSelectedItems().size(),labelBuilder,bulkActionBuilder,searchBarBuilder);
+        showHideSearchBarAndBulkActionBar(selectionEvent.getAllSelectedItems().size(), labelBuilder, bulkActionBuilder, searchBarBuilder);
     }
 
     public static void showHideSearchBarAndBulkActionBar(MultiSelectionEvent<Grid<?>, ?> multiSelectionEvent, LabelBuilder<Span> labelBuilder, BulkActionBuilder bulkActionBuilder, SearchBarBuilder searchBarBuilder) {
         int selectedItems = multiSelectionEvent.getAllSelectedItems().size();
 
-        showHideSearchBarAndBulkActionBar(selectedItems,labelBuilder,bulkActionBuilder,searchBarBuilder);
+        showHideSearchBarAndBulkActionBar(selectedItems, labelBuilder, bulkActionBuilder, searchBarBuilder);
 
     }
 
-   public static class OptionsBar implements HasOptionsBar {
+    public static class OptionsBar implements HasOptionsBar {
 
 
         @Override
@@ -2026,5 +2080,137 @@ public class UIUtils {
         }
     }
 
+    // Helper method to parse minWidth string to integer for sorting
+    public static int parseMinWidth(FormLayout.ResponsiveStep step) {
+        String minWidth = StringUtils.substringAfter(step.toJson().toString(), ":");
+        minWidth = StringUtils.substringBetween(minWidth, "\"", "\"");
+        if (minWidth.endsWith("px")) {
+            return Integer.parseInt(minWidth.replace("px", ""));
+        }
+        return 0; // Default to 0 if not a pixel value
+    }
+
+    public static int parseMinColumn(FormLayout.ResponsiveStep step) {
+        String columns = StringUtils.substringAfter(step.toJson().toString(), "\"columns\":");
+        columns = StringUtils.substringBefore(columns, ",");
+        /*if (columns.endsWith("px")) {
+            return Integer.parseInt(columns.replace("px", ""));
+        }*/
+        return Integer.parseInt(columns); // Default to 0 if not a pixel value
+    }
+
+    public static List<FormLayout.ResponsiveStep> updateColumnValues(List<FormLayout.ResponsiveStep> steps, int sumOfAllColumnsSize) {
+        List<FormLayout.ResponsiveStep> updatedList = new ArrayList<>();
+
+        for (FormLayout.ResponsiveStep step : steps) {
+            final JsonObject jsonObject = step.toJson();
+            if (jsonObject.hasKey("columns")) {
+                double columns = jsonObject.getNumber("columns");
+                if (columns < sumOfAllColumnsSize) {
+                    jsonObject.put("columns", sumOfAllColumnsSize);
+                }
+            }
+            updatedList.add(step.readJson(jsonObject));
+        }
+
+        return updatedList;
+    }
+
+    public static Image createNoRecordsFoundImage() {
+        return createImage("no-records-found.png", "No Records Found");
+    }
+
+    public static Span createNoRecordsFoundSpan() {
+        return Components.badge
+                .badgeError()
+                .text("No Records Found")
+                .build();
+    }
+
+    public static Image createImage(String imageName, String altText) {
+        return new Image(String.format("images/%s", imageName), altText);
+    }
+
+    public static KeyValuePairs createKeyValuePairs(PropertyBox propertyBox) {
+        KeyValuePairs keyValuePairs = new KeyValuePairs();
+
+        propertyBox.forEach(property -> keyValuePairs.add(new KeyValuePair(property.getMessage() != null ? property.getMessage() : property.getName(), String.valueOf(propertyBox.getValue(property)))));
+        return keyValuePairs;
+    }
+
+    public static BreakPoint getBreakPoint(int width) {
+        if (width < 576) {
+            return BreakPoint.BREAKPOINT_XS;
+        } else if (width < 768) {
+            return BreakPoint.BREAKPOINT_SM;
+        } else if (width < 992) {
+            return BreakPoint.BREAKPOINT_MD;
+        } else if (width < 1200) {
+            return BreakPoint.BREAKPOINT_LG;
+        } else if (width < 1400) {
+            return BreakPoint.BREAKPOINT_XL;
+        } else {
+            return BreakPoint.BREAKPOINT_XXL;
+        }
+    }
+
+    public static ScreenSize getScreenSize(int width) {
+
+        return switch (getBreakPoint(width)) {
+            case BREAKPOINT_XS, BREAKPOINT_SM -> ScreenSize.MOBILE;
+            case BREAKPOINT_MD -> ScreenSize.TABLET;
+            default -> ScreenSize.DESKTOP;
+        };
+    }
+
+    public static ScreenSize getScreenSize(int width, int height) {
+
+        if (width <= 600) {
+            return (width > height) ? ScreenSize.MOBILE_LANDSCAPE : ScreenSize.MOBILE_PORTRAIT;
+        } else if (width <= 1024) {
+            return ScreenSize.TABLET;
+        } else {
+            return ScreenSize.DESKTOP;
+        }
+    }
+
+
+    public static boolean isGrid(Component component) {
+        return component instanceof BeanListing<?> || component instanceof Grid<?>;
+    }
+
+    public static void removeGrid(Div div) {
+        // Check if the div contains a grid and remove it if present
+        div.getChildren()
+                .filter(UIUtils::isGrid)
+                .forEach(div::remove);
+    }
+
+    public static boolean containsGrid(Div div) {
+
+        return div.getChildren().anyMatch(UIUtils::isGrid);
+    }
+
+    public static Optional<ScreenSize> findScreenSize(UI ui, int width) {
+        final ScreenSize[] screenSize = new ScreenSize[1];
+        ui.getPage().addBrowserWindowResizeListener(browserWindowResizeEvent -> {
+
+            if (UIUtils.getScreenSize(browserWindowResizeEvent.getWidth()) == ScreenSize.MOBILE) {
+                screenSize[0] = ScreenSize.MOBILE;
+            } else if (UIUtils.getScreenSize(browserWindowResizeEvent.getWidth()) == ScreenSize.DESKTOP) {
+                screenSize[0] = ScreenSize.DESKTOP;
+            }
+
+        });
+
+        if (width != 0 && UIUtils.getScreenSize(width) == ScreenSize.MOBILE) {
+            screenSize[0] = ScreenSize.MOBILE;
+        } else if (UIUtils.getScreenSize(width) == ScreenSize.DESKTOP) {
+            screenSize[0] = ScreenSize.DESKTOP;
+        }
+
+        return Optional.ofNullable(screenSize[0]);
+
+    }
 
 }

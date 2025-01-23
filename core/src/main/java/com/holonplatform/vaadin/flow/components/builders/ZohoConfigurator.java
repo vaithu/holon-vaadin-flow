@@ -3,8 +3,12 @@ package com.holonplatform.vaadin.flow.components.builders;
 import com.holonplatform.vaadin.flow.components.BeanListing;
 import com.holonplatform.vaadin.flow.components.FormHeaderConfigurator;
 import com.holonplatform.vaadin.flow.components.PropertyListing;
+import com.holonplatform.vaadin.flow.internal.lumo.Background;
+import com.holonplatform.vaadin.flow.vaadinplus.components.GridHeader;
+import com.holonplatform.vaadin.flow.vaadinplus.components.Header;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 
 public interface ZohoConfigurator<C extends ZohoConfigurator<C>> extends ComponentConfigurator<C>
         , HasStyleConfigurator<C>, HasSizeConfigurator<C> {
@@ -21,6 +25,13 @@ public interface ZohoConfigurator<C extends ZohoConfigurator<C>> extends Compone
 
     C grid(Grid<?> grid);
     C grid(Component grid);
+    C grid(BeanListing<?> listing);
+    C grid(PropertyListing listing);
+
+    C gridHeader(GridHeader<?> gridHeader);
+
+    C masterHeader(Header header);
+    C detailsHeader(Header header);
 
     C listing(PropertyListing listing);
     C listing(BeanListing<?> listing);
@@ -30,12 +41,17 @@ public interface ZohoConfigurator<C extends ZohoConfigurator<C>> extends Compone
         return separator(true);
     }
 
+    C separator(Background background);
+
     default C withoutSeparator() {
         return separator(false);
     }
 
     C detailHeader(FormHeaderBuilder formHeader);
     C detailHeader(Component component);
+
+    VerticalLayout getMasterLayout();
+    VerticalLayout getDetailLayout();
 
     BulkActionBarBuilder<C> bulkActionBar();
 

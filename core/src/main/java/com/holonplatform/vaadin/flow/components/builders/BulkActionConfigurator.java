@@ -8,7 +8,7 @@ import com.vaadin.flow.component.menubar.MenuBar;
 import java.util.function.Consumer;
 
 public interface BulkActionConfigurator<C extends BulkActionConfigurator<C>> extends HasOptionsMenuBarConfigurator<C>,
-        HasCloseButtonConfigurator<C>,HasStyleConfigurator<C>,ComponentConfigurator<C> {
+        HasCloseButtonConfigurator<C>,HasStyleConfigurator<C>,ComponentConfigurator<C>, HasComponentsConfigurator<C> {
 
     C bulkAction(MenuBar menuBar);
 
@@ -25,5 +25,5 @@ public interface BulkActionConfigurator<C extends BulkActionConfigurator<C>> ext
 
     C withPostProcessor(Consumer<BulkActionConfigurator<C>> postProcessor);
 
-
+//    <T> C showAndHideColumns(boolean visible, Class<? extends T> beanClass);
 }

@@ -11,7 +11,6 @@ public class DefaultDividerBuilder
 
     private int size;
 
-
     public DefaultDividerBuilder(Span component) {
         super(component);
         getComponent().addClassNames(
@@ -45,4 +44,6 @@ public class DefaultDividerBuilder
         this.size = size;
         return this;
     }
+
+
 }

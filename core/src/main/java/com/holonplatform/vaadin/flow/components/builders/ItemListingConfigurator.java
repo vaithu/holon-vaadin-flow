@@ -133,6 +133,18 @@ public interface ItemListingConfigurator<T, P, L extends ItemListing<T, P>, C ex
      * method to add the column to the listing
      */
     ItemListingColumnBuilder<T, P, L, C> withComponentColumn(ValueProvider<T, Component> valueProvider);
+
+    /**
+     * Add a column which contents will be rendered as a {@link Component} using
+     * given <code>valueProvider</code>. This is to show in a mobile view
+     *
+     * @param valueProvider The value provider to use to provide the column
+     *                      {@link Component} using the current row item instance
+     *                      (not null)
+     * @return An {@link ItemListingColumnBuilder} which allow further column
+     * configuration and provides the {@link ItemListingColumnBuilder#add()}
+     * method to add the column to the listing
+     */
     default ItemListingColumnBuilder<T, P, L, C> mobileColumn(ValueProvider<T, Component> valueProvider) {
         return withComponentColumn(valueProvider);
     }
@@ -203,6 +215,8 @@ public interface ItemListingConfigurator<T, P, L extends ItemListing<T, P>, C ex
      * @return this
      */
     C visibleColumns(List<? extends P> visibleColumns);
+
+    C includeVirtualColumns(boolean yes);
 
     /**
      *
@@ -423,6 +437,13 @@ public interface ItemListingConfigurator<T, P, L extends ItemListing<T, P>, C ex
      */
     C styleNameGenerator(Function<T, String> styleNameGenerator);
 
+    /***
+     * Sets the function that is used for generating CSS part names for all the cells in the rows in this grid. Returning null from the generator results in no custom part name being set. Multiple part names can be returned from the generator as space-separated.
+     *
+     * If Grid.Column.setPartNameGenerator(SerializableFunction) is used together with this method, resulting part names from both methods will be effective.
+     * @param partNameGenerator the part name generator to set, not null
+     * @return this
+     */
     C partNameGenerator(SerializableFunction<T, String> partNameGenerator);
 
     /**

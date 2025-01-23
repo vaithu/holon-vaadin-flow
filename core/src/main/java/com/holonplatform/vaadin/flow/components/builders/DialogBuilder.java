@@ -75,9 +75,9 @@ public interface DialogBuilder<B extends DialogBuilder<B>> extends DialogConfigu
 		return new DefaultConfirmDialogBuilder(inputForm);
 	}
 
-	static ConfirmDialogBuilder save(boolean okToCancelDialog) {
+	/*static ConfirmDialogBuilder save(boolean okToCancelDialog) {
 		return new DefaultConfirmDialogBuilder(okToCancelDialog);
-	}
+	}*/
 
 	/**
 	 * Get a builder to create a question dialog, with a <em>confirm</em> button and a <em>deny</em> button in the

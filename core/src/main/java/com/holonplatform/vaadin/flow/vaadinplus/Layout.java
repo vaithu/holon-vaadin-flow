@@ -1,6 +1,7 @@
 package com.holonplatform.vaadin.flow.vaadinplus;
 
-import com.holonplatform.vaadin.flow.vaadinplus.utilities.Breakpoint;
+import com.holonplatform.vaadin.flow.internal.lumo.*;
+import com.holonplatform.vaadin.flow.internal.lumo.Breakpoint;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.theme.lumo.LumoUtility;
@@ -13,29 +14,32 @@ public class Layout extends Div {
     private AlignSelf alignSelf;
     private BoxSizing boxSizing;
     private Display display;
-    private HashMap<Breakpoint, Display> responsiveDisplay;
+    private final HashMap<Breakpoint, Display> responsiveDisplay;
     private FlexDirection flexDirection;
     private FlexWrap flexWrap;
-    private HashMap<Breakpoint, FlexDirection> responsiveFlexDirection;
+    private final HashMap<Breakpoint, FlexDirection> responsiveFlexDirection;
     private ColumnGap colGap;
     private RowGap rowGap;
     private GridColumns gridColumns;
-    private HashMap<Breakpoint, GridColumns> responsiveColumns;
-    private HashMap<Component, ColumnSpan> columnSpans;
+    private final HashMap<Breakpoint, GridColumns> responsiveColumns;
+    private final HashMap<Component, ColumnSpan> columnSpans;
     private JustifyContent justifyContent;
     private LineClamp lineClamp;
     private Overflow overflow;
     private Position position;
 
-    public Layout(Component... components) {
-        super(components);
-
+    public Layout() {
         setDisplay(Display.FLEX);
 
         this.responsiveDisplay = new HashMap<>();
         this.responsiveFlexDirection = new HashMap<>();
         this.responsiveColumns = new HashMap<>();
         this.columnSpans = new HashMap<>();
+    }
+
+    public Layout(Component... components) {
+        this();
+        add(components);
     }
 
     public void setAlignItems(AlignItems alignItems) {
@@ -245,290 +249,5 @@ public class Layout extends Div {
         this.position = position;
     }
 
-    public enum AlignItems {
-        BASELINE(LumoUtility.AlignItems.BASELINE),
-        CENTER(LumoUtility.AlignItems.CENTER),
-        END(LumoUtility.AlignItems.END),
-        START(LumoUtility.AlignItems.START),
-        STRETCH(LumoUtility.AlignItems.STRETCH);
-
-        private final String className;
-
-        private AlignItems(String className) {
-            this.className = className;
-        }
-
-        public String getClassName() {
-            return this.className;
-        }
-    }
-
-    public enum AlignSelf {
-        AUTO(LumoUtility.AlignSelf.AUTO),
-        BASELINE(LumoUtility.AlignSelf.BASELINE),
-        CENTER(LumoUtility.AlignSelf.CENTER),
-        END(LumoUtility.AlignSelf.END),
-        START(LumoUtility.AlignSelf.START),
-        STRETCH(LumoUtility.AlignSelf.STRETCH);
-
-        private final String className;
-
-        private AlignSelf(String className) {
-            this.className = className;
-        }
-
-        public String getClassName() {
-            return this.className;
-        }
-    }
-
-    public enum BoxSizing {
-        BORDER(LumoUtility.BoxSizing.BORDER),
-        CONTENT(LumoUtility.BoxSizing.CONTENT);
-
-        private final String className;
-
-        private BoxSizing(String className) {
-            this.className = className;
-        }
-
-        public String getClassName() {
-            return this.className;
-        }
-    }
-
-    public enum ColumnGap {
-        PIXEL("gap-x-px"),
-        XSMALL(LumoUtility.Gap.Column.XSMALL),
-        SMALL(LumoUtility.Gap.Column.SMALL),
-        MEDIUM(LumoUtility.Gap.Column.MEDIUM),
-        LARGE(LumoUtility.Gap.Column.LARGE),
-        XLARGE(LumoUtility.Gap.Column.XLARGE);
-
-        private final String className;
-
-        private ColumnGap(String className) {
-            this.className = className;
-        }
-
-        public String getClassName() {
-            return this.className;
-        }
-    }
-
-    public enum ColumnSpan {
-        COLUMN_SPAN_1(LumoUtility.Grid.Column.COLUMN_SPAN_1),
-        COLUMN_SPAN_2(LumoUtility.Grid.Column.COLUMN_SPAN_2),
-        COLUMN_SPAN_3(LumoUtility.Grid.Column.COLUMN_SPAN_3),
-        COLUMN_SPAN_4(LumoUtility.Grid.Column.COLUMN_SPAN_4),
-        COLUMN_SPAN_5(LumoUtility.Grid.Column.COLUMN_SPAN_5),
-        COLUMN_SPAN_6(LumoUtility.Grid.Column.COLUMN_SPAN_6),
-        COLUMN_SPAN_7(LumoUtility.Grid.Column.COLUMN_SPAN_7),
-        COLUMN_SPAN_8(LumoUtility.Grid.Column.COLUMN_SPAN_8),
-        COLUMN_SPAN_9(LumoUtility.Grid.Column.COLUMN_SPAN_9),
-        COLUMN_SPAN_10(LumoUtility.Grid.Column.COLUMN_SPAN_10),
-        COLUMN_SPAN_11(LumoUtility.Grid.Column.COLUMN_SPAN_11),
-        COLUMN_SPAN_12(LumoUtility.Grid.Column.COLUMN_SPAN_12),
-        COLUMN_SPAN_FULL("col-span-full");
-
-        private final String className;
-
-        private ColumnSpan(String className) {
-            this.className = className;
-        }
-
-        public String getClassName() {
-            return this.className;
-        }
-    }
-
-    public enum Display {
-        FLEX(LumoUtility.Display.FLEX),
-        GRID(LumoUtility.Display.GRID);
-
-        private final String className;
-
-        private Display(String className) {
-            this.className = className;
-        }
-
-        public String getClassName() {
-            return this.className;
-        }
-    }
-
-    public enum FlexDirection {
-        COLUMN(LumoUtility.FlexDirection.COLUMN),
-        COLUMN_REVERSE(LumoUtility.FlexDirection.COLUMN_REVERSE),
-        ROW(LumoUtility.FlexDirection.ROW),
-        ROW_REVERSE(LumoUtility.FlexDirection.ROW_REVERSE);
-
-        private final String className;
-
-        private FlexDirection(String className) {
-            this.className = className;
-        }
-
-        public String getClassName() {
-            return this.className;
-        }
-    }
-
-    public enum FlexWrap {
-        NOWRAP(LumoUtility.FlexWrap.NOWRAP),
-        WRAP(LumoUtility.FlexWrap.WRAP),
-        WRAP_REVERSE(LumoUtility.FlexWrap.WRAP_REVERSE);
-
-        private final String className;
-
-        private FlexWrap(String className) {
-            this.className = className;
-        }
-
-        public String getClassName() {
-            return this.className;
-        }
-    }
-
-    public enum Gap {
-        PIXEL("gap-px"),
-        XSMALL(LumoUtility.Gap.XSMALL),
-        SMALL(LumoUtility.Gap.SMALL),
-        MEDIUM(LumoUtility.Gap.MEDIUM),
-        LARGE(LumoUtility.Gap.LARGE),
-        XLARGE(LumoUtility.Gap.XLARGE);
-
-        private final String className;
-
-        private Gap(String className) {
-            this.className = className;
-        }
-
-        public String getClassName() {
-            return this.className;
-        }
-
-        public ColumnGap getColumnGap() {
-            return ColumnGap.valueOf(this.name());
-        }
-
-        public RowGap getRowGap() {
-            return RowGap.valueOf(this.name());
-        }
-    }
-
-    public enum GridColumns {
-        COLUMNS_1(LumoUtility.Grid.Column.COLUMNS_1),
-        COLUMNS_2(LumoUtility.Grid.Column.COLUMNS_2),
-        COLUMNS_3(LumoUtility.Grid.Column.COLUMNS_3),
-        COLUMNS_4(LumoUtility.Grid.Column.COLUMNS_4),
-        COLUMNS_5(LumoUtility.Grid.Column.COLUMNS_5),
-        COLUMNS_6(LumoUtility.Grid.Column.COLUMNS_6),
-        COLUMNS_7(LumoUtility.Grid.Column.COLUMNS_7),
-        COLUMNS_8(LumoUtility.Grid.Column.COLUMNS_8),
-        COLUMNS_9(LumoUtility.Grid.Column.COLUMNS_9),
-        COLUMNS_10(LumoUtility.Grid.Column.COLUMNS_10),
-        COLUMNS_11(LumoUtility.Grid.Column.COLUMNS_11),
-        COLUMNS_12(LumoUtility.Grid.Column.COLUMNS_12);
-
-        private final String className;
-
-        private GridColumns(String className) {
-            this.className = className;
-        }
-
-        public String getClassName() {
-            return this.className;
-        }
-    }
-
-
-    public enum LineClamp {
-        LINE_CLAMP_1("line-clamp-1"),
-        LINE_CLAMP_2("line-clamp-2"),
-        LINE_CLAMP_3("line-clamp-3"),
-        LINE_CLAMP_4("line-clamp-4");
-
-        private final String className;
-
-        private LineClamp(String className) {
-            this.className = className;
-        }
-
-        public String getClassName() {
-            return this.className;
-        }
-    }
-
-    public enum RowGap {
-        PIXEL("gap-y-px"),
-        XSMALL(LumoUtility.Gap.Row.XSMALL),
-        SMALL(LumoUtility.Gap.Row.SMALL),
-        MEDIUM(LumoUtility.Gap.Row.MEDIUM),
-        LARGE(LumoUtility.Gap.Row.LARGE),
-        XLARGE(LumoUtility.Gap.Row.XLARGE);
-
-        private final String className;
-
-        private RowGap(String className) {
-            this.className = className;
-        }
-
-        public String getClassName() {
-            return this.className;
-        }
-    }
-
-    public enum JustifyContent {
-        AROUND(LumoUtility.JustifyContent.AROUND),
-        BETWEEN(LumoUtility.JustifyContent.BETWEEN),
-        CENTER(LumoUtility.JustifyContent.CENTER),
-        END(LumoUtility.JustifyContent.END),
-        EVENLY(LumoUtility.JustifyContent.EVENLY),
-        START(LumoUtility.JustifyContent.START);
-
-        private final String className;
-
-        private JustifyContent(String className) {
-            this.className = className;
-        }
-
-        public String getClassName() {
-            return this.className;
-        }
-    }
-
-    public enum Overflow {
-        AUTO(LumoUtility.Overflow.AUTO),
-        HIDDEN(LumoUtility.Overflow.HIDDEN);
-
-        private final String className;
-
-        private Overflow(String className) {
-            this.className = className;
-        }
-
-        public String getClassName() {
-            return this.className;
-        }
-    }
-
-    public enum Position {
-        ABSOLUTE(LumoUtility.Position.ABSOLUTE),
-        FIXED(LumoUtility.Position.FIXED),
-        RELATIVE(LumoUtility.Position.RELATIVE),
-        STATIC(LumoUtility.Position.STATIC),
-        STICKY(LumoUtility.Position.STICKY);
-
-        private final String className;
-
-        private Position(String className) {
-            this.className = className;
-        }
-
-        public String getClassName() {
-            return this.className;
-        }
-    }
 
 }

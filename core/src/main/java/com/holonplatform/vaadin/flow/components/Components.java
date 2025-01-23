@@ -53,14 +53,17 @@ import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
 import com.holonplatform.vaadin.flow.internal.components.DefaultFormFooter;
 import com.holonplatform.vaadin.flow.internal.components.DefaultTimeline;
 import com.holonplatform.vaadin.flow.internal.components.DefaultXPanel;
-import com.holonplatform.vaadin.flow.internal.components.builders.*;
+import com.holonplatform.vaadin.flow.internal.components.builders.DefaultAccordionHeaderBuilder;
+import com.holonplatform.vaadin.flow.internal.components.builders.DefaultCloseButtonBuilder;
+import com.holonplatform.vaadin.flow.internal.components.builders.DefaultMobileGridTemplateBuilder;
+import com.holonplatform.vaadin.flow.internal.components.builders.DefaultOptionsButtonBuilder;
+import com.holonplatform.vaadin.flow.vaadinplus.Layout;
 import com.vaadin.flow.component.ClickNotifier;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HtmlContainer;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.accordion.Accordion;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.checkbox.CheckboxGroup;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.contextmenu.ContextMenu;
@@ -197,6 +200,10 @@ public interface Components {
         return DivConfigurator.configure(div);
     }
 
+    static LayoutConfigurator.BaseLayoutConfigurator configure(Layout layout) {
+        return LayoutConfigurator.configure(layout);
+    }
+
     static CardGridConfigurator.BaseCardGridConfigurator cardGrid(Div div) {
         return CardGridConfigurator.configure(div);
     }
@@ -221,12 +228,18 @@ public interface Components {
 		return CardGridBuilder.create().withCard(new Div());
 	}*/
 
-    static TabsBuilder tabs(Div div) {
-        return TabsBuilder.create().container(div);
+    static TabsBuilder tabs() {
+        return TabsBuilder.create();
     }
 
-    static TabsBuilder tabs(VerticalLayout verticalLayout) {
-        return TabsBuilder.create().container(verticalLayout);
+    static AutoTabsBuilder autoTabs() {
+        return AutoTabsBuilder.create();
+    }
+    static AutoTabsBuilder autoTabs(Div div) {
+        return AutoTabsBuilder.create().container(div);
+    }
+    static AutoTabsBuilder autoTabs(VerticalLayout layout) {
+        return AutoTabsBuilder.create().container(layout);
     }
 
     static TabsConfigurator.BaseTabsConfigurator configure(Tabs tabs) {
@@ -435,6 +448,19 @@ public interface Components {
         return ButtonBuilder.create();
     }
 
+    static LayoutBuilder layout(Component... components) {
+        return LayoutBuilder.create(components);
+    }
+
+    static LayoutBuilder layout() {
+        return LayoutBuilder.create();
+    }
+
+    static HeaderBuilder header(String title) {
+        return HeaderBuilder.create(title);
+    }
+
+    static
 
     interface utils {
         static FormResponsiveStepBuilder responsiveSteps() {
@@ -453,6 +479,9 @@ public interface Components {
 
     static ZohoBuilder zoho() {
         return ZohoBuilder.create();
+    }
+    static ZohoBuilder zoho(boolean mobile) {
+        return ZohoBuilder.create(mobile);
     }
 
     static RowBuilder row() {
@@ -589,21 +618,6 @@ public interface Components {
 
     static DefaultFormFooter formFooter() {
         return new DefaultFormFooter();
-    }
-
-
-    /**
-     * Gets a builder to create {@link HorizontalLayout} footer.
-     *
-     * @return A new {@link HorizontalLayoutBuilder}
-     */
-    static HorizontalLayoutBuilder footer(String... styles) {
-        HorizontalLayoutBuilder builder = HorizontalLayoutBuilder.create();
-        builder.styleNames(styles);
-        builder.spacing();
-        builder.fullWidth();
-
-        return builder;
     }
 
     static FlexLayoutBuilder flexLayout() {
@@ -764,7 +778,7 @@ public interface Components {
             return DialogBuilder.confirm(inputForm);
         }
 
-        static ConfirmDialogBuilder save(boolean okToCancelDialog) {
+        /*static ConfirmDialogBuilder save(boolean okToCancelDialog) {
             return DialogBuilder.save(okToCancelDialog);
         }
 
@@ -775,7 +789,7 @@ public interface Components {
                         baseButtonConfigurator.text("Save", "save.code");
                     }).text(text)
                     .open();
-        }
+        }*/
 
         /**
          * Show a confirm dialog with given localizable message text.

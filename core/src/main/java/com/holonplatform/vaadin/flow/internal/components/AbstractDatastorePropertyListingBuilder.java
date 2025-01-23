@@ -885,6 +885,12 @@ public abstract class AbstractDatastorePropertyListingBuilder implements Propert
         return this;
     }
 
+    @Override
+    public PropertyListingBuilder.DatastorePropertyListingBuilder includeVirtualColumns(boolean yes) {
+        builder.includeVirtualColumns(yes);
+        return this;
+    }
+
     /*
      * (non-Javadoc)
      *

@@ -127,8 +127,6 @@ public interface MenuItemConfigurator<C extends MenuItemConfigurator<C>> extends
         return withSubMenu(component).withClickListener(clickListener);
     }
 
-
-
     C separator();
 
     MenuItem getMenuItem();

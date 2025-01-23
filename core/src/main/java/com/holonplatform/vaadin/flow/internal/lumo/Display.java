@@ -1,22 +1,18 @@
 package com.holonplatform.vaadin.flow.internal.lumo;
 
+import com.vaadin.flow.theme.lumo.LumoUtility;
+
 public enum Display {
-    BLOCK("block"),
-    FLEX("flex"),
-    GRID("grid"),
-    HIDDEN("hidden"),
-    INLINE("inline"),
-    INLINE_BLOCK("inline-block"),
-    INLINE_FLEX("inline-flex"),
-    INLINE_GRID("inline-grid");
+        FLEX(LumoUtility.Display.FLEX),
+        GRID(LumoUtility.Display.GRID);
 
-    private final String value;
+        private final String className;
 
-    Display(String value) {
-        this.value = value;
+        private Display(String className) {
+            this.className = className;
+        }
+
+        public String getClassName() {
+            return this.className;
+        }
     }
-
-    public String getValue() {
-        return value;
-    }
-}

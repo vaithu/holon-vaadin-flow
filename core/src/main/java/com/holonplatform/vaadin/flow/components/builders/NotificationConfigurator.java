@@ -1,5 +1,6 @@
 package com.holonplatform.vaadin.flow.components.builders;
 
+import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.vaadin.flow.internal.components.builders.DefaultNotitificationConfigurator;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.icon.Icon;
@@ -27,6 +28,10 @@ ComponentConfigurator<C>,
     C position(Notification.Position position);
 
     C text(String text);
+
+    default C text(Localizable localizable) {
+        return text(localizable.getMessage());
+    }
 
     C error(ValidationException validationException);
 

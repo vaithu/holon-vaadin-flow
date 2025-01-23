@@ -55,13 +55,13 @@ public abstract class AbstractSearchBarConfigurator<C extends SearchBarConfigura
                 .text("New")
                 .tooltip("New")
                 .withThemeVariants(ButtonVariant.LUMO_SMALL)
+
                 .withClickShortcutKey(Key.KEY_N,KeyModifier.ALT)
                 .build();
 
         Components.configure(component)
                 .addAndExpand(searchField, 1)
                 .alignItems(FlexComponent.Alignment.BASELINE)
-
                 ;
     }
 
@@ -81,8 +81,38 @@ public abstract class AbstractSearchBarConfigurator<C extends SearchBarConfigura
 
     @Override
     public C optionsMenuBar(MenuBar menuBar) {
-        menuBar.addThemeVariants(MenuBarVariant.LUMO_END_ALIGNED,MenuBarVariant.LUMO_TERTIARY_INLINE);
+        menuBar.addThemeVariants(MenuBarVariant.LUMO_ICON, MenuBarVariant.LUMO_TERTIARY);
         getComponent().add(menuBar);
+        return getConfigurator();
+    }
+
+    @Override
+    public C withPostProcessor(Consumer<SearchBarConfigurator<C>> postProcessor) {
+        postProcessor.accept(this);
+        return getConfigurator();
+    }
+
+    @Override
+    public C add(Component... components) {
+        getComponent().add(components);
+        return getConfigurator();
+    }
+
+    @Override
+    public C addComponentAsFirst(Component component) {
+        getComponent().addComponentAsFirst(component);
+        return getConfigurator();
+    }
+
+    @Override
+    public C addComponentAtIndex(int index, Component component) {
+        getComponent().addComponentAtIndex(index, component);
+        return getConfigurator();
+    }
+
+    @Override
+    public C add(String text) {
+        getComponent().add(text);
         return getConfigurator();
     }
 

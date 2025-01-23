@@ -19,8 +19,8 @@ public abstract class AbstractMenuItemConfigurator<C extends MenuItemConfigurato
         implements MenuItemConfigurator<C> {
 
     private static final Logger log = LoggerFactory.getLogger(AbstractMenuItemConfigurator.class);
-    private Optional<MenuItem> menuItem = Optional.empty();
-    private Optional<SubMenu> subMenuItem = Optional.empty();
+    private MenuItem menuItem ;
+    private SubMenu subMenuItem ;
     private MenuItem parentMenuItem;
 
     /**
@@ -34,45 +34,43 @@ public abstract class AbstractMenuItemConfigurator<C extends MenuItemConfigurato
 
     public AbstractMenuItemConfigurator(MenuBar menuBar, MenuItem menuItem) {
         super(menuBar);
-        this.menuItem = Optional.ofNullable(parentMenuItem = menuItem);
+        this.menuItem = parentMenuItem = menuItem;
     }
 
     @Override
     public C themeNames(String... themeNames) {
 
-        menuItem.ifPresent(menuItem1 -> menuItem1.addThemeNames(themeNames));
+        menuItem.addThemeNames(themeNames);
         return getConfigurator();
     }
 
     @Override
     public C keepOpen(boolean keepOpen) {
-        menuItem.ifPresent(menuItem1 -> menuItem1.setKeepOpen(keepOpen));
+        menuItem.setKeepOpen(keepOpen);
         return getConfigurator();
     }
 
     @Override
     public C toolTip(String toolTip) {
-        menuItem.ifPresent(menuItem1 -> {
-            Tooltip.forComponent(menuItem1).setText(toolTip);
-        });
+        Tooltip.forComponent(menuItem).setText(toolTip);
         return getConfigurator();
     }
 
     @Override
     public C checkable(boolean checkable) {
-        menuItem.ifPresent(menuItem1 -> menuItem1.setCheckable(checkable));
+        menuItem.setCheckable(checkable);
         return getConfigurator();
     }
 
     @Override
     public C checked(boolean checked) {
-        menuItem.ifPresent(menuItem1 -> menuItem1.setChecked(checked));
+        menuItem.setChecked(checked);
         return getConfigurator();
     }
 
     @Override
     public C icon(Icon icon) {
-        menuItem = Optional.ofNullable(parentMenuItem = getComponent().addItem(icon));
+        menuItem = parentMenuItem = getComponent().addItem(icon);
         return getConfigurator();
     }
 
@@ -85,14 +83,14 @@ public abstract class AbstractMenuItemConfigurator<C extends MenuItemConfigurato
     @Override
     public C withMenuItem(String text) {
         log.info("Creating new menu item");
-        menuItem = Optional.ofNullable(parentMenuItem = getComponent().addItem(text));
-        printMenuText(menuItem.get());
+        menuItem = parentMenuItem = getComponent().addItem(text);
+//        printMenuText(menuItem.get());
         return getConfigurator();
     }
 
     @Override
     public C menuItemStyleNames(String... styleNames) {
-        menuItem.ifPresent(menuItem1 -> menuItem1.addClassNames(styleNames));
+        menuItem.addClassNames(styleNames);
         return getConfigurator();
     }
 
@@ -103,7 +101,7 @@ public abstract class AbstractMenuItemConfigurator<C extends MenuItemConfigurato
 
     @Override
     public C separator() {
-        subMenuItem.orElseThrow().addSeparator();
+        subMenuItem.addSeparator();
         return getConfigurator();
     }
 
@@ -121,49 +119,46 @@ public abstract class AbstractMenuItemConfigurator<C extends MenuItemConfigurato
 
     @Override
     public C withMenuItem(Component component) {
-        menuItem = Optional.ofNullable(parentMenuItem = getComponent().addItem(component));
+        menuItem = parentMenuItem = getComponent().addItem(component);
         return getConfigurator();
     }
 
     @Override
     public C withSubMenu(String text) {
-        subMenuItem = Optional.ofNullable(parentMenuItem.getSubMenu());
-        subMenuItem.ifPresent(subMenu -> {
-            menuItem = Optional.ofNullable(subMenu.addItem(text));
-            subMenuItem = Optional.ofNullable(menuItem.orElseThrow().getSubMenu());
-        });
-        printMenuText(menuItem.get());
+        subMenuItem = parentMenuItem.getSubMenu();
+        menuItem = subMenuItem.addItem(text);
+        subMenuItem = menuItem.getSubMenu();
+//        printMenuText(menuItem.get());
         return getConfigurator();
     }
 
     @Override
     public C withSubMenu(Component component) {
-        subMenuItem = Optional.ofNullable(parentMenuItem.getSubMenu());
-        subMenuItem.ifPresent(subMenu -> {
-            menuItem = Optional.ofNullable(subMenu.addItem(component));
-            subMenuItem = Optional.ofNullable(menuItem.orElseThrow().getSubMenu());
-        });
+        subMenuItem = parentMenuItem.getSubMenu();
+        menuItem = subMenuItem.addItem(component);
+        subMenuItem = menuItem.getSubMenu();
+
         return getConfigurator();
     }
 
     @Override
     public C withSubMenuItem(String text) {
-        final SubMenu subMenu = subMenuItem.orElseThrow();
-        menuItem = Optional.ofNullable(subMenu.addItem(text));
-        printMenuText(menuItem.get());
+        final SubMenu subMenu = subMenuItem;
+        menuItem = subMenu.addItem(text);
+//        printMenuText(menuItem.get());
         return getConfigurator();
     }
 
     @Override
     public C withSubMenuItem(Component component) {
-        final SubMenu subMenu = subMenuItem.orElseThrow();
-        menuItem = Optional.ofNullable(subMenu.addItem(component));
+        final SubMenu subMenu = subMenuItem;
+        menuItem = subMenu.addItem(component);
         return getConfigurator();
     }
 
     @Override
     public C withClickListener(ComponentEventListener<ClickEvent<MenuItem>> clickListener) {
-        menuItem.ifPresent(menuItem1 -> menuItem1.addClickListener(clickListener));
+        menuItem.addClickListener(clickListener);
         return getConfigurator();
     }
 
@@ -176,7 +171,7 @@ public abstract class AbstractMenuItemConfigurator<C extends MenuItemConfigurato
 
     @Override
     public C addComponentAsFirst(Component component) {
-        menuItem.ifPresent(menuItem1 -> menuItem1.addComponentAsFirst(component));
+        menuItem.addComponentAsFirst(component);
         return getConfigurator();
     }
 
@@ -189,7 +184,7 @@ public abstract class AbstractMenuItemConfigurator<C extends MenuItemConfigurato
 
     @Override
     public C add(String text) {
-        menuItem.ifPresent(menuItem1 -> menuItem1.add(text));
+        menuItem.add(text);
         return getConfigurator();
     }
 
@@ -199,17 +194,14 @@ public abstract class AbstractMenuItemConfigurator<C extends MenuItemConfigurato
         return getConfigurator();
     }
 
-
-
-
     @Override
     public MenuItem getMenuItem() {
-        return menuItem.orElseThrow();
+        return menuItem;
     }
 
     @Override
     public SubMenu getSubMenu() {
-        return subMenuItem.orElseThrow();
+        return subMenuItem;
     }
 
     @Override

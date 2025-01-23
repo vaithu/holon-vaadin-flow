@@ -10,6 +10,8 @@ public interface HasFormAction {
 
     void delete();
 
+    void discard();
+
 
 
 }

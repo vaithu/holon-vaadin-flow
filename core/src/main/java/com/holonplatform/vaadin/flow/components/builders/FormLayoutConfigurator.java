@@ -141,11 +141,12 @@ public interface FormLayoutConfigurator<C extends FormLayoutConfigurator<C>> ext
 		return withFormItem(field.getComponent(), label);
 	}
 
-	C add(Component component,
-		int colspan);
+	C add(
+		int colSpan,Component... components);
 
-	C colspan(Component component,
-			  int colspan);
+	C colSpan(int colSpan, Component... components);
+
+	C autoUpdateResponsiveStepColumnSizeEnabled(boolean autoUpdate);
 
 	/**
 	 * Get a new {@link FormLayoutConfigurator} for given component.

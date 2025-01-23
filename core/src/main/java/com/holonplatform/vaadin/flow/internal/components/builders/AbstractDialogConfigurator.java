@@ -168,6 +168,12 @@ public abstract class AbstractDialogConfigurator<C extends DialogConfigurator<C>
     }
 
     @Override
+    public C withHeader(Localizable localizable) {
+        getComponent().setHeaderTitle(localizable.getMessage());
+        return getConfigurator();
+    }
+
+    @Override
     public C withFooter(boolean showCancelBtn, Component... components) {
         if (showCancelBtn) {
             getComponent().addFooterComponent(createCancelBtn());

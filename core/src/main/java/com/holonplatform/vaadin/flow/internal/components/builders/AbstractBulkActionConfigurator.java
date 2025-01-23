@@ -21,13 +21,13 @@ public abstract class AbstractBulkActionConfigurator<C extends BulkActionConfigu
         extends AbstractComponentConfigurator<HorizontalLayout, C>
         implements BulkActionConfigurator<C> {
 
-//    private final Div contentDiv;
-    private  DefaultCloseButtonBuilder closeButtonBuilder;
-
+    //    private final Div contentDiv;
+    private DefaultCloseButtonBuilder closeButtonBuilder;
+    private DefaultShowAndHideColumns<?> defaultShowAndHideColumns;
     /**
      * Constructor.
      *
-     * @param component The component instance (not null)
+     * @param component The component instance (not getConfigurator())
      */
     public AbstractBulkActionConfigurator(HorizontalLayout component) {
         super(component);
@@ -160,4 +160,29 @@ public abstract class AbstractBulkActionConfigurator<C extends BulkActionConfigu
     protected Optional<HasTooltip> hasTooltip() {
         return Optional.empty();
     }
+
+    @Override
+    public C add(Component... components) {
+        getComponent().add(components);
+        return getConfigurator();
+    }
+
+    @Override
+    public C addComponentAsFirst(Component component) {
+        getComponent().addComponentAsFirst(component);
+        return getConfigurator();
+    }
+
+    @Override
+    public C addComponentAtIndex(int index, Component component) {
+        getComponent().addComponentAtIndex(getComponent().getComponentCount(),component);
+        return getConfigurator();
+    }
+
+    @Override
+    public C add(String text) {
+        getComponent().add(text);
+        return getConfigurator();
+    }
+    
 }

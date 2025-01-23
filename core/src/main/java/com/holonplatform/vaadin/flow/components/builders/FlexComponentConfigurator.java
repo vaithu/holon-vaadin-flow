@@ -25,6 +25,7 @@ import com.vaadin.flow.component.orderedlayout.FlexComponent.JustifyContentMode;
 import com.vaadin.flow.theme.lumo.LumoUtility;
 
 import java.util.Arrays;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 /**
@@ -214,5 +215,7 @@ public interface FlexComponentConfigurator<C extends FlexComponentConfigurator<C
 	default C borderColor(String color) {
 		return styleNames(LumoUtility.Border.ALL,color);
 	}
+
+	C withPostProcessor(Consumer<FlexComponentConfigurator<C>> postProcessor);
 
 }

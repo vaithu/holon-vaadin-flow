@@ -21,13 +21,19 @@ import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
 /**
  * Configurator for components and other user interface objects that may have an aria-label and an aria-labelledby
  * DOM attributes to set the accessible name of the component.
+ * A generic interface for components and other user interface objects that may have an aria-label and an aria-labelledby DOM attributes to set the accessible name of the component.
+ *
+ * The default implementation set the aria-label and aria-labelledby of the component to the given HasElement.getElement(). Override all methods in this interface if the aria-label and aria-labelledby should be added to some other element.
+ *
+ * The purpose of aria-label is to provide the user with a recognizable name of the component. If the label text is visible on screen, aria-labelledby should be used and aria-label should not be used. There may be instances where the name of an element cannot be determined programmatically from the content of the element, and there are cases where providing a visible label is not the desired user experience. In the cases where a visible label or visible tooltip is undesirable, aria-label may be used to set the accessible name of the component.
+ *
+ * Don't include both. If both are present on the same element, aria-labelledby will take precedence over aria-label.
  * 
  * @param <C> Concrete configurator type
  * 
  * @since 5.5.4
  */
 public interface HasAriaLabelConfigurator<C extends HasAriaLabelConfigurator<C>> {
-
 
 	/**
 	 * Set the aria-label of the component to the given text.
@@ -61,8 +67,6 @@ public interface HasAriaLabelConfigurator<C extends HasAriaLabelConfigurator<C>>
 	 * @see LocalizationProvider
 	 */
 	C ariaLabel(Localizable ariaLabel);
-
-
 
 	/**
 	 * Sets the AriaLabel using a localizable <code>messageCode</code>.

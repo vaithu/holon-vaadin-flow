@@ -9,7 +9,7 @@ public enum BreakPoint {
     BREAKPOINT_XL ( "1200px"),
     BREAKPOINT_XXL ( "1400px");
 
-    private String size;
+    private final String size;
 
     BreakPoint(String size) {
         this.size = size;

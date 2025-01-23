@@ -1,7 +1,9 @@
 package com.holonplatform.vaadin.flow.vaadinplus;
 
-import com.holonplatform.vaadin.flow.vaadinplus.utilities.Breakpoint;
-import com.holonplatform.vaadin.flow.vaadinplus.utilities.Color;
+import com.holonplatform.vaadin.flow.internal.lumo.Background;
+import com.holonplatform.vaadin.flow.internal.lumo.Breakpoint;
+import com.holonplatform.vaadin.flow.internal.lumo.ColumnSpan;
+import com.holonplatform.vaadin.flow.internal.lumo.GridColumns;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasTheme;
 import com.vaadin.flow.component.Unit;
@@ -14,14 +16,14 @@ import java.util.HashMap;
 public class KeyValuePairs extends DescriptionList implements HasTheme {
 
     public static final String STRIPES = "stripes";
-    private Layout.GridColumns columns;
-    private HashMap<Component, Layout.ColumnSpan> columnSpans;
+    private GridColumns columns;
+    private HashMap<Component, ColumnSpan> columnSpans;
     private KeyValuePair[] pairs;
-    private Color.Background background;
+    private Background background;
 
     public KeyValuePairs(KeyValuePair... pairs) {
         addClassNames("key-value-pairs", Display.GRID, Margin.Vertical.NONE);
-        setBackground(Color.Background.BASE);
+        setBackground(Background.BASE);
 
         this.columnSpans = new HashMap<>();
         this.pairs = pairs;
@@ -31,7 +33,7 @@ public class KeyValuePairs extends DescriptionList implements HasTheme {
     /**
      * Sets the background color.
      */
-    public void setBackground(Color.Background background) {
+    public void setBackground(Background background) {
         removeBackgroundColor();
         addClassNames(background.getClassName());
         this.background = background;
@@ -69,7 +71,7 @@ public class KeyValuePairs extends DescriptionList implements HasTheme {
     /**
      * Sets the number of columns.
      */
-    public void setColumns(Layout.GridColumns columns) {
+    public void setColumns(GridColumns columns) {
         if (this.columns != null) {
             removeClassNames(this.columns.getClassName());
         }
@@ -80,7 +82,7 @@ public class KeyValuePairs extends DescriptionList implements HasTheme {
     /**
      * Sets the column span for the given components.
      */
-    public void setColumnSpan(Layout.ColumnSpan columnSpan, Component... components) {
+    public void setColumnSpan(ColumnSpan columnSpan, Component... components) {
         for (Component component : components) {
             if (this.columnSpans.get(component) != null) {
                 component.removeClassName(this.columnSpans.get(component).getClassName());

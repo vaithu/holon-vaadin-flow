@@ -3,7 +3,7 @@ package com.holonplatform.vaadin.flow.internal.components.builders;
 import com.holonplatform.vaadin.flow.components.builders.ZohoConfigurator;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 
-public class DeafultBulkActionBarBuilder<B extends ZohoConfigurator<B>>
+public class DefaultBulkActionBarBuilder<B extends ZohoConfigurator<B>>
         extends AbstractBulkActionConfigurator<ZohoConfigurator.BulkActionBarBuilder<B>>
         implements ZohoConfigurator.BulkActionBarBuilder<B> {
 
@@ -14,7 +14,7 @@ public class DeafultBulkActionBarBuilder<B extends ZohoConfigurator<B>>
      *
      * @param content The content instance (not null)
      */
-    public DeafultBulkActionBarBuilder( B parentBuilder,HorizontalLayout content) {
+    public DefaultBulkActionBarBuilder(B parentBuilder, HorizontalLayout content) {
         super(content);
         this.parentBuilder = parentBuilder;
     }

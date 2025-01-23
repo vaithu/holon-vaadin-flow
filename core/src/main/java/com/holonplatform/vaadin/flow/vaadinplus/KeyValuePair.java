@@ -1,7 +1,7 @@
 package com.holonplatform.vaadin.flow.vaadinplus;
 
-import com.holonplatform.vaadin.flow.vaadinplus.utilities.Breakpoint;
-import com.holonplatform.vaadin.flow.vaadinplus.utilities.FlexRowBreakpoint;
+import com.holonplatform.vaadin.flow.internal.lumo.Breakpoint;
+import com.holonplatform.vaadin.flow.internal.lumo.FlexRowBreakpoint;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.Unit;
@@ -13,8 +13,7 @@ public class KeyValuePair extends Layout {
     private FlexRowBreakpoint breakpoint;
     private KeyPosition keyPosition;
 
-    private DescriptionList.Term key;
-    private DescriptionList.Description value;
+    private final DescriptionList.Term key;
 
     public KeyValuePair(String key, String value) {
         this(new Text(key), new Text(value));
@@ -28,18 +27,18 @@ public class KeyValuePair extends Layout {
         this.key = new DescriptionList.Term(key);
         this.key.addClassNames(FontSize.SMALL, FontWeight.MEDIUM, TextColor.SECONDARY);
 
-        this.value = new DescriptionList.Description(value);
-        this.value.addClassNames(Margin.Start.NONE);
+        DescriptionList.Description value1 = new DescriptionList.Description(value);
+        value1.addClassNames(Margin.Start.NONE);
 
-        add(this.key, this.value);
+        add(this.key, value1);
 
         addClassNames(Padding.Horizontal.MEDIUM, Padding.Vertical.SMALL);
-        setAlignItems(AlignItems.BASELINE);
+        setAlignItems(com.holonplatform.vaadin.flow.internal.lumo.AlignItems.BASELINE);
         setBreakpoint(Breakpoint.MEDIUM);
-        setColumnGap(Gap.MEDIUM);
+        setColumnGap(com.holonplatform.vaadin.flow.internal.lumo.Gap.MEDIUM);
         setKeyPosition(KeyPosition.SIDE);
         setKeyWidth(25, Unit.PERCENTAGE);
-        setPosition(Position.RELATIVE);
+        setPosition(com.holonplatform.vaadin.flow.internal.lumo.Position.RELATIVE);
     }
 
     /**
@@ -83,13 +82,13 @@ public class KeyValuePair extends Layout {
                 // If there's a breakpoint, we set the flex direction to column
                 // because our responsive styles are mobile-first.
                 if (this.breakpoint != null) {
-                    setFlexDirection(FlexDirection.COLUMN);
+                    setFlexDirection(com.holonplatform.vaadin.flow.internal.lumo.FlexDirection.COLUMN);
                     addClassNames(this.breakpoint.getClassName());
                 } else {
-                    setFlexDirection(FlexDirection.ROW);
+                    setFlexDirection(com.holonplatform.vaadin.flow.internal.lumo.FlexDirection.ROW);
                 }
             } else {
-                setFlexDirection(FlexDirection.COLUMN);
+                setFlexDirection(com.holonplatform.vaadin.flow.internal.lumo.FlexDirection.COLUMN);
                 if (this.breakpoint != null) {
                     removeClassNames(this.breakpoint.getClassName());
                 }

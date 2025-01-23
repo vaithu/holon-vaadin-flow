@@ -4,30 +4,37 @@ import com.holonplatform.vaadin.flow.components.Components;
 import com.holonplatform.vaadin.flow.components.FormFooter;
 import com.holonplatform.vaadin.flow.components.builders.ButtonConfigurator;
 import com.holonplatform.vaadin.flow.internal.components.builders.AbstractComponentConfigurator;
+import com.holonplatform.vaadin.flow.vaadinplus.Layout;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasEnabled;
 import com.vaadin.flow.component.HasSize;
 import com.vaadin.flow.component.HasStyle;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.shared.HasTooltip;
+import com.vaadin.flow.theme.lumo.LumoUtility;
 
 import java.util.Optional;
 import java.util.function.Consumer;
 
-public class DefaultFormFooter extends AbstractComponentConfigurator<HorizontalLayout,DefaultFormFooter> implements FormFooter<DefaultFormFooter> {
+public class DefaultFormFooter extends AbstractComponentConfigurator<Layout,DefaultFormFooter> implements FormFooter<DefaultFormFooter> {
 
-    private Button saveBtn;
-    private Button discardBtn;
-    private Button updateBtn;
+    private final Button saveBtn;
+    private final Button saveAndNewBtn;
+    private final Button discardBtn;
+    private final Button updateBtn;
 
     public DefaultFormFooter() {
-        this(new HorizontalLayout());
+        this(new Layout());
     }
 
-    public DefaultFormFooter(HorizontalLayout component) {
+    public DefaultFormFooter(Layout component) {
         super(component);
         getComponent().setId("FormFooter");
+        getComponent().addClassNames(LumoUtility.Display.FLEX, LumoUtility.FlexDirection.COLUMN,
+                LumoUtility.FlexDirection.Breakpoint.Medium.ROW, LumoUtility.JustifyContent.BETWEEN,
+                LumoUtility.Padding.MEDIUM,
+                LumoUtility.Background.CONTRAST_5,
+                LumoUtility.AlignItems.STRETCH);
 
         saveBtn = Components.button()
                 .text("Save")
@@ -36,9 +43,16 @@ public class DefaultFormFooter extends AbstractComponentConfigurator<HorizontalL
                 .visible(true)
                 .build();
 
+        saveAndNewBtn = Components.button()
+                .text("Save&New")
+                .primary()
+//                .onClick(event -> saveBtnAction())
+                .visible(true)
+                .build();
+
         discardBtn = Components.button()
                 .text("Cancel")
-                .borderPrimary()
+//                .borderPrimary()
 //                .onClick(event -> discardBtnAction())
                 .visible(true)
                 .build();
@@ -50,10 +64,6 @@ public class DefaultFormFooter extends AbstractComponentConfigurator<HorizontalL
                 .visible(false)
                 .build();
 
-        getComponent().setSpacing(true);
-
-
-        getComponent().add(saveBtn, updateBtn, discardBtn);
     }
 
     @Override
@@ -64,7 +74,7 @@ public class DefaultFormFooter extends AbstractComponentConfigurator<HorizontalL
     }
 
     @Override
-    public HorizontalLayout build() {
+    public Layout build() {
         return getComponent();
     }
 
@@ -73,12 +83,23 @@ public class DefaultFormFooter extends AbstractComponentConfigurator<HorizontalL
         updateBtn.setVisible(false);
         saveBtn.setVisible(true);
         configurator.accept(ButtonConfigurator.configure(saveBtn));
+        getComponent().addComponentAsFirst(saveBtn);
+        return this;
+    }
+
+    @Override
+    public DefaultFormFooter saveAndNewBtnConfigurator(Consumer<ButtonConfigurator.BaseButtonConfigurator> configurator) {
+        updateBtn.setVisible(false);
+        saveBtn.setVisible(true);
+        configurator.accept(ButtonConfigurator.configure(saveAndNewBtn));
+        getComponent().addComponentAsFirst(saveAndNewBtn);
         return this;
     }
 
     @Override
     public DefaultFormFooter discardBtnConfigurator(Consumer<ButtonConfigurator.BaseButtonConfigurator> configurator) {
         configurator.accept(ButtonConfigurator.configure(discardBtn));
+        getComponent().addComponentAtIndex(getComponent().getComponentCount(),discardBtn);
         return this;
     }
 
@@ -87,6 +108,7 @@ public class DefaultFormFooter extends AbstractComponentConfigurator<HorizontalL
         saveBtn.setVisible(false);
         updateBtn.setVisible(true);
         configurator.accept(ButtonConfigurator.configure(updateBtn));
+        getComponent().addComponentAsFirst(updateBtn);
         return this;
     }
 

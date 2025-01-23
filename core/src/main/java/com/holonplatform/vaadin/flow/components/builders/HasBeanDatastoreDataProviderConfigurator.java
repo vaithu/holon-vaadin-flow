@@ -87,4 +87,6 @@ public interface HasBeanDatastoreDataProviderConfigurator<T, D extends Datastore
 	 */
 	D dataSource(Datastore datastore, DataTarget<?> target);
 
+//	D lazyDatasource(Datastore datastore, DataTarget<?> target);
+
 }

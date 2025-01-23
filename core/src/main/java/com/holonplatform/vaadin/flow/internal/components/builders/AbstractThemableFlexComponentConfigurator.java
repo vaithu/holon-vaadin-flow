@@ -15,6 +15,7 @@
  */
 package com.holonplatform.vaadin.flow.internal.components.builders;
 
+import com.holonplatform.vaadin.flow.components.builders.FlexComponentConfigurator;
 import com.holonplatform.vaadin.flow.components.builders.ThemableFlexComponentConfigurator;
 import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.orderedlayout.BoxSizing;
@@ -25,6 +26,7 @@ import com.vaadin.flow.component.orderedlayout.ThemableLayout;
 import com.vaadin.flow.component.shared.HasTooltip;
 
 import java.util.Optional;
+import java.util.function.Consumer;
 
 /**
  * Default {@link ThemableFlexComponentConfigurator} implementation.
@@ -241,4 +243,9 @@ public abstract class AbstractThemableFlexComponentConfigurator<L extends Compon
 		return getConfigurator();
 	}
 
+	@Override
+	public C withPostProcessor(Consumer<FlexComponentConfigurator<C>> postProcessor) {
+		postProcessor.accept(this);
+		return getConfigurator();
+	}
 }

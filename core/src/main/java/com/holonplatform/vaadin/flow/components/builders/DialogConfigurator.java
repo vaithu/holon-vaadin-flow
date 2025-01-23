@@ -149,6 +149,8 @@ public interface DialogConfigurator<C extends DialogConfigurator<C>> extends Com
 
     C withHeader(String title);
 
+    C withHeader(Localizable localizable);
+
     C withContent(String message);
 
     C withContent(String message, String messageCode);

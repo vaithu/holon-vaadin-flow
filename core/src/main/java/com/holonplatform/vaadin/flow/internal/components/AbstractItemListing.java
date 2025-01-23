@@ -71,13 +71,15 @@ import com.vaadin.flow.data.renderer.NumberRenderer;
 import com.vaadin.flow.data.renderer.Renderer;
 import com.vaadin.flow.function.SerializableFunction;
 import com.vaadin.flow.function.ValueProvider;
-import org.slf4j.LoggerFactory;
 
 import java.io.Serial;
 import java.text.NumberFormat;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.*;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -99,8 +101,6 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
      */
     protected static final Logger LOGGER = VaadinLogger.create();
     private static final String MOBILE_COLUMN_KEY = "Mobile_Column";
-    private static final org.slf4j.Logger log = LoggerFactory.getLogger(AbstractItemListing.class);
-
     /**
      * Selection mode
      */
@@ -109,7 +109,7 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
     /**
      * Optional hidden columns
      */
-    private transient List<P> hiddenColumns = Collections.emptyList();
+    private final transient List<P> hiddenColumns = Collections.emptyList();
 
     /**
      * Optional visible columns
@@ -403,7 +403,7 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
             return Optional.of(this.dataProvider);
         }
         DataProvider<T, ?> gridDataProvider = getGrid().getDataProvider();
-        if (gridDataProvider != null && gridDataProvider instanceof ItemListingDataProviderAdapter) {
+        if (gridDataProvider instanceof ItemListingDataProviderAdapter) {
             return Optional.of((ItemListingDataProviderAdapter<T, ?>) gridDataProvider);
         }
         return Optional.empty();
@@ -548,8 +548,16 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
      * @return The property column configuration (never null)
      */
     public ItemListingColumn<P, T, ?> getColumnConfiguration(P property) {
-        return propertyColumns.computeIfAbsent(property, p -> new DefaultItemListingColumn<>(property,
-                ensureUniqueColumnKey(generateColumnKey(p)), isReadOnlyByDefault(p)));
+        /*propertyColumns.forEach((p, ptItemListingColumn) -> {
+            log.info("propertyColumns size {} Column Key : {}, Readonly: {}", propertyColumns.size(),
+                    ptItemListingColumn.getColumnKey(), ptItemListingColumn.isReadOnly());
+        });*/
+        return propertyColumns.computeIfAbsent(property, p ->
+
+        {
+            return new DefaultItemListingColumn<>(property,
+                    ensureUniqueColumnKey(generateColumnKey(p)), isReadOnlyByDefault(p));
+        });
     }
 
     /**
@@ -698,7 +706,7 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
     }
 
     private void propertyNotFoundException(P property) {
-        new IllegalArgumentException("No column is bound to the property [" + property + "]");
+        throw new IllegalArgumentException("No column is bound to the property [" + property + "]");
     }
 
     @Override
@@ -751,20 +759,24 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
         final Grid.Column<?> rowIndex = getGrid().addColumn(item -> "").setKey("rowIndex").setHeader("#ID");
         rowIndex.setWidth("50px");
         rowIndex.setFrozen(true);
-        Column<T> column = getGrid().getColumnByKey(rowIndex.getKey());
+        final Column<T> column = getGrid().getColumnByKey(rowIndex.getKey());
         executeIndexColumnJs(column);
         displayIndexColumnAsFirst(column);
     }
 
+    @Override
+    public void addItemClickListener(ComponentEventListener<com.vaadin.flow.component.grid.ItemClickEvent<T>> listener) {
+        getGrid().addItemClickListener(listener);
+    }
+
+    @Override
+    public void addSelectionListener(com.vaadin.flow.data.selection.SelectionListener<Grid<T>, T> listener) {
+        getGrid().addSelectionListener(listener);
+    }
 
     @Override
     public void removeColumn(P property) {
         getColumn(property).ifPresent(tColumn -> getGrid().removeColumn(tColumn));
-    }
-
-    @Override
-    public void setColumnOrder(Column<T>... columns) {
-        getGrid().setColumnOrder(columns);
     }
 
     @Override
@@ -778,7 +790,7 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
     }
 
     @Override
-    public void removeColumns(P... properties) {
+    public void removeColumns(List<P> properties) {
         for (P property : properties) {
             removeColumn(property);
         }
@@ -854,8 +866,22 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
         getGrid().removeThemeVariants(variants);
     }
 
+    @Override
+    public void setEmptyStateComponent(Component component) {
+        getGrid().setEmptyStateComponent(component);
+    }
 
-    /*
+    @Override
+    public void setEmptyStateText(String emptyStateText) {
+        getGrid().setEmptyStateText(emptyStateText);
+    }
+
+    @Override
+    public void setPartNameGenerator(SerializableFunction<T, String> partNameGenerator) {
+        getGrid().setPartNameGenerator(partNameGenerator);
+    }
+
+/*
 
     class MobileColumn {
         private P MOBILE_COLUMN_PROPERTY;
@@ -1005,7 +1031,17 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
 
     @Override
     public void setToggleableColumns() {
-        throw new IllegalArgumentException("Not yet implemented Babu");
+        final Map<Column<?>, String> toggleableColumns = new HashMap<>();
+        getAllColumns().forEach(tColumn -> {
+            toggleableColumns.put(tColumn, tColumn.getHeaderText());
+        });
+        if (!toggleableColumns.isEmpty()) {
+            Column<T> settingColumn = getGrid().addColumn(box -> "").setWidth("auto").setFlexGrow(0);
+            getGrid().getHeaderRows().get(0).getCell(settingColumn)
+                    .setComponent(UIUtils.createMenuToggle(toggleableColumns));
+        } else {
+            throw new IllegalArgumentException("No columns added to toggleableColumns map");
+        }
     }
 
     @Override
@@ -1996,7 +2032,8 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
      *
      * @return The listing editor
      */
-    protected Editor<T> getEditor() {
+    @Override
+    public Editor<T> getEditor() {
         return getGrid().getEditor();
     }
 
@@ -2201,6 +2238,9 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
         // property editors
         for (P property : properties) {
             final ItemListingColumn<P, T, ?> configuration = getColumnConfiguration(property);
+            // This is preventing showing editorComponents so look into this later
+            // Removing this if condition shows up the editor components but not sure
+            // that will affect others or not - Babu
             if (!configuration.isReadOnly()) {
                 // editor component
                 if (configuration.getEditorComponent().isPresent()) {
@@ -2367,27 +2407,6 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
      */
     private GroupValidationStatusEvent<EditorComponentGroup<P, T>, P, Input<?>> asGroupValidationStatus(
             BinderValidationStatus<T> binderStatus) {
-        // inputs
-        final List<GroupElementValidationStatusEvent<EditorComponentGroup<P, T>, P, Input<?>>> inputsValidationStatus = binderStatus
-                .getFieldValidationStatuses().stream().map(vs -> {
-                    final P property = editorBindings.get(vs.getBinding());
-                    final Input<?> input = editors.get(property);
-                    switch (vs.getStatus()) {
-                        case ERROR:
-                            return GroupElementValidationStatusEvent.<EditorComponentGroup<P, T>, P, Input<?>>invalid(
-                                    getEditorComponentGroup(), property, input,
-                                    vs.getValidationResults().stream().filter(ValidationResult::isError)
-                                            .map(r -> r.getErrorMessage()).filter(m -> m != null && !m.trim().equals(""))
-                                            .map(m -> Localizable.of(m)).collect(Collectors.toList()));
-                        case OK:
-                            return GroupElementValidationStatusEvent.<EditorComponentGroup<P, T>, P, Input<?>>valid(
-                                    getEditorComponentGroup(), property, input);
-                        case UNRESOLVED:
-                        default:
-                            return GroupElementValidationStatusEvent.<EditorComponentGroup<P, T>, P, Input<?>>unresolved(
-                                    getEditorComponentGroup(), property, input);
-                    }
-                }).collect(Collectors.toList());
 
         // group
         final Status groupStatus;
@@ -2407,6 +2426,34 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
                 groupStatus = Status.VALID;
             }
         }
+
+        // inputs
+        final List<GroupElementValidationStatusEvent<EditorComponentGroup<P, T>, P, Input<?>>> inputsValidationStatus = binderStatus
+                .getFieldValidationStatuses().stream()
+                //I added this filter condition to show the component column when editing is enabled
+                // but not showing up the component. It is because the property is not found in the
+                // editorBindings which I don't know why - Babu
+                .filter(vs -> editorBindings.containsKey(vs.getBinding()))
+                .map(vs -> {
+                    final P property = editorBindings.get(vs.getBinding());
+                    final Input<?> input = editors.get(property);
+                    switch (vs.getStatus()) {
+                        case ERROR:
+                            return GroupElementValidationStatusEvent.<EditorComponentGroup<P, T>, P, Input<?>>invalid(
+                                    getEditorComponentGroup(), property, input,
+                                    vs.getValidationResults().stream().filter(ValidationResult::isError)
+                                            .map(r -> r.getErrorMessage()).filter(m -> m != null && !m.trim().equals(""))
+                                            .map(m -> Localizable.of(m)).collect(Collectors.toList()));
+                        case OK:
+                            return GroupElementValidationStatusEvent.<EditorComponentGroup<P, T>, P, Input<?>>valid(
+                                    getEditorComponentGroup(), property, input);
+                        case UNRESOLVED:
+                        default:
+                            return GroupElementValidationStatusEvent.<EditorComponentGroup<P, T>, P, Input<?>>unresolved(
+                                    getEditorComponentGroup(), property, input);
+                    }
+                }).collect(Collectors.toList());
+
         return new DefaultGroupValidationStatusEvent<>(this, groupStatus, errors, inputsValidationStatus);
     }
 
@@ -2791,7 +2838,8 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
         private Consumer<EditableItemListingSection<P>> footerConfigurator;
 
         private boolean frozen;
-        private final Map<Column<?>, String> toggleableColumns = new HashMap<>();
+        private boolean toggleableColumns;
+        private boolean removeAllColumns;
 
         public AbstractItemListingConfigurator(I instance) {
             super(instance.getGrid());
@@ -2869,7 +2917,6 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
                     instance.getColumnConfiguration(property).setFrozen(cnt <= frozenColumnsCount);
                 }
             }
-
             // editable
             if (editable) {
                 instance.getEditor().setBuffered(editorBuffered);
@@ -2888,6 +2935,10 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
 
             if (frozen) {
                 instance.getItemListingDataProvider().ifPresent(p -> p.setFrozen(frozen));
+            }
+
+            if (toggleableColumns) {
+                instance.setToggleableColumns();
             }
 
             return instance;
@@ -2956,17 +3007,7 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
 
         @Override
         public C toggleableColumns() {
-            final Map<Column<?>, String> toggleableColumns = new HashMap<>();
-            instance.getAllColumns().forEach(tColumn -> {
-                toggleableColumns.put(tColumn, tColumn.getHeaderText());
-            });
-            if (!toggleableColumns.isEmpty()) {
-                Column<T> settingColumn = instance.getGrid().addColumn(box -> "").setWidth("auto").setFlexGrow(0);
-                instance.getGrid().getHeaderRows().get(0).getCell(settingColumn)
-                        .setComponent(UIUtils.createMenuToggle(toggleableColumns));
-            } else {
-                throw new IllegalArgumentException("No columns added to toggleableColumns map");
-            }
+            this.toggleableColumns = true;
             return getConfigurator();
         }
 
@@ -3201,7 +3242,8 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
         }
 
         /**
-         *  an initial set of columns for each of the bean's properties.
+         * an initial set of columns for each of the bean's properties.
+         *
          * @return
          */
        /* @Override
@@ -3282,7 +3324,7 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
             return getConfigurator();
         }
 
-       /* @Override
+        /* @Override
         public C mobileColumn(ValueProvider<T, Component> valueProvider) {
             instance.setMobileColumn(valueProvider);
             return getConfigurator();
@@ -4229,7 +4271,6 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
         }
 
     }
-
 
     static class DefaultItemListingContextMenuBuilder<T, P, L extends ItemListing<T, P>, C extends ItemListingConfigurator<T, P, L, C>>
             extends AbstractComponentConfigurator<GridContextMenu<T>, ItemListingContextMenuBuilder<T, P, L, C>>
