@@ -15,27 +15,18 @@
  */
 package com.holonplatform.vaadin.flow.test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-
 import com.holonplatform.core.Validator;
 import com.holonplatform.core.Validator.ValidationException;
-import com.holonplatform.vaadin.flow.components.Components;
-import com.holonplatform.vaadin.flow.components.Input;
-import com.holonplatform.vaadin.flow.components.Validatable;
-import com.holonplatform.vaadin.flow.components.ValidatableInput;
-import com.holonplatform.vaadin.flow.components.ValidationStatusHandler;
+import com.holonplatform.vaadin.flow.components.*;
 import com.holonplatform.vaadin.flow.components.ValidationStatusHandler.Status;
 import com.holonplatform.vaadin.flow.components.ValidationStatusHandler.ValidationStatusEvent;
 import com.vaadin.flow.component.HasValidation;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.textfield.TextField;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class TestValidatableInput {
 
@@ -89,9 +80,8 @@ public class TestValidatableInput {
 		Assertions.assertThrows(ValidationException.class, () -> input3.validate());
 
 		final ValidatableInput<String> input4 = ValidatableInput.builder(Input.string().build())
-				.withValidator(Validatable
-						.adapt(com.vaadin.flow.data.binder.Validator.from(v -> v == null || v.length() <= 1, "Max 1")))
 				.build();
+		input4.addValidator(Validator.create(v -> v == null || v.length() <= 1, "Max 1"));
 		assertTrue(input4.isValid());
 		Assertions.assertDoesNotThrow(() -> input4.validate());
 

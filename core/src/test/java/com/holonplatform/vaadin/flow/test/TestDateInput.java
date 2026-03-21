@@ -430,7 +430,7 @@ public class TestDateInput {
 		assertFalse(input.getValueIfPresent().isPresent());
 
 		input.setValue(date);
-//		assertEquals(date, input.getValue());
+//		assertEquals(date, input.getFormValue());
 //		assertTrue(input.getValueIfPresent().isPresent());
 //		assertEquals(date, input.getValueIfPresent().orElse(null));
 

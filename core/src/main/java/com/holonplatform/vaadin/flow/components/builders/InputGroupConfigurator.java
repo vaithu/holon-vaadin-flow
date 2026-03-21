@@ -15,9 +15,6 @@
  */
 package com.holonplatform.vaadin.flow.components.builders;
 
-import java.util.function.BiConsumer;
-import java.util.function.Supplier;
-
 import com.holonplatform.core.Validator;
 import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.core.property.Property;
@@ -31,6 +28,9 @@ import com.holonplatform.vaadin.flow.components.ValueHolder.ValueChangeListener;
 import com.holonplatform.vaadin.flow.components.events.GroupValueChangeEvent;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasText;
+
+import java.util.function.BiConsumer;
+import java.util.function.Supplier;
 
 /**
  * Input group configurator.
@@ -94,6 +94,7 @@ public interface InputGroupConfigurator<P, T, G extends BoundComponentGroup<P, I
 	 * @return this
 	 */
 	C withPostProcessor(BiConsumer<P, Input<?>> postProcessor);
+
 
 	/**
 	 * Adds a group value {@link Validator}.
@@ -192,6 +193,47 @@ public interface InputGroupConfigurator<P, T, G extends BoundComponentGroup<P, I
 		 * @return this
 		 */
 		<V> C withValidator(Property<V> property, Validator<? super V> validator);
+
+	}
+
+	/**
+	 * An {@link InputGroupConfigurator} bound to a {@link Property} set. This is not yet tested - Srinivas
+	 *
+	 * @param <G> Group type
+	 * @param <C> Concrete configurator type
+	 *
+	 * @since 5.5.7
+	 */
+	public interface BeanSetInputGroupConfigurator<T,G extends BoundComponentGroup<String, Input<?>>, C extends BeanSetInputGroupConfigurator<T,G, C>>
+			extends InputGroupConfigurator<String, T, G, C> {
+
+		/**
+		 * Set the default value provider for given <code>property</code>.
+		 * @param <V> Property type
+		 * @param property Property (not null)
+		 * @param defaultValueProvider The property default value supplier (not null)
+		 * @return this
+		 */
+		<V> C defaultValue(String property, Supplier<V> defaultValueProvider);
+
+		/**
+		 * Add a {@link ValueChangeListener} to the {@link Input} bound to given <code>property</code>.
+		 * @param <V> Property type
+		 * @param property The property (not null)
+		 * @param listener The ValueChangeListener to add (not null)
+		 * @return this
+		 */
+		<V> C withValueChangeListener(String property,
+									  ValueChangeListener<V, GroupValueChangeEvent<V, String, Input<?>, G>> listener);
+
+		/**
+		 * Adds a {@link Validator} to the {@link Input} bound to given <code>property</code>.
+		 * @param <V> Property type
+		 * @param property The property (not null)
+		 * @param validator The validator to add (not null)
+		 * @return this
+		 */
+		<V> C withValidator(String property, Validator<? super V> validator);
 
 	}
 

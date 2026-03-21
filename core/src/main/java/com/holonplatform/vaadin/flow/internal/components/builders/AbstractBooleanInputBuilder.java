@@ -15,10 +15,6 @@
  */
 package com.holonplatform.vaadin.flow.internal.components.builders;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-
 import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.vaadin.flow.components.Input;
 import com.holonplatform.vaadin.flow.components.ValidatableInput;
@@ -31,18 +27,15 @@ import com.holonplatform.vaadin.flow.components.events.ClickEventListener;
 import com.holonplatform.vaadin.flow.components.events.ReadonlyChangeListener;
 import com.holonplatform.vaadin.flow.components.support.InputAdaptersContainer;
 import com.holonplatform.vaadin.flow.internal.components.support.ComponentClickListenerAdapter;
-import com.vaadin.flow.component.BlurNotifier;
+import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.BlurNotifier.BlurEvent;
-import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.ComponentEventListener;
-import com.vaadin.flow.component.FocusNotifier;
 import com.vaadin.flow.component.FocusNotifier.FocusEvent;
-import com.vaadin.flow.component.HasEnabled;
-import com.vaadin.flow.component.HasSize;
-import com.vaadin.flow.component.HasStyle;
-import com.vaadin.flow.component.Key;
-import com.vaadin.flow.component.KeyModifier;
 import com.vaadin.flow.component.checkbox.Checkbox;
+import com.vaadin.flow.component.shared.HasTooltip;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * Base {@link BooleanInputConfigurator} implementation using a {@link Checkbox} as concrete component.
@@ -84,6 +77,11 @@ public abstract class AbstractBooleanInputBuilder<C extends BooleanInputConfigur
 
 	@Override
 	protected Optional<HasEnabled> hasEnabled() {
+		return Optional.of(getComponent());
+	}
+
+	@Override
+	protected Optional<HasTooltip> hasTooltip() {
 		return Optional.of(getComponent());
 	}
 

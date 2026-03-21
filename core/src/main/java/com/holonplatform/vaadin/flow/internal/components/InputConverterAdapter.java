@@ -15,30 +15,25 @@
  */
 package com.holonplatform.vaadin.flow.internal.components;
 
-import java.util.Optional;
-import java.util.function.Function;
-
-import org.apache.commons.lang3.exception.ExceptionUtils;
-
 import com.holonplatform.core.Registration;
 import com.holonplatform.core.internal.utils.ObjectUtils;
 import com.holonplatform.vaadin.flow.components.HasLabel;
 import com.holonplatform.vaadin.flow.components.HasPlaceholder;
-import com.holonplatform.vaadin.flow.components.HasTitle;
-import com.holonplatform.vaadin.flow.components.Input;
-import com.holonplatform.vaadin.flow.components.ValueHolder;
+import com.holonplatform.vaadin.flow.components.*;
+import com.holonplatform.vaadin.flow.components.builders.KeyNotifierConfigurator;
 import com.holonplatform.vaadin.flow.components.events.InvalidChangeEventNotifier;
 import com.holonplatform.vaadin.flow.components.events.ReadonlyChangeListener;
 import com.holonplatform.vaadin.flow.components.support.InputAdaptersContainer;
 import com.holonplatform.vaadin.flow.internal.components.events.DefaultValueChangeEvent;
-import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.HasEnabled;
-import com.vaadin.flow.component.HasSize;
-import com.vaadin.flow.component.HasStyle;
-import com.vaadin.flow.component.HasValidation;
+import com.vaadin.flow.component.*;
+import com.vaadin.flow.component.shared.HasTooltip;
 import com.vaadin.flow.data.binder.ValueContext;
 import com.vaadin.flow.data.converter.Converter;
 import com.vaadin.flow.data.value.HasValueChangeMode;
+import org.apache.commons.lang3.exception.ExceptionUtils;
+
+import java.util.Optional;
+import java.util.function.Function;
 
 /**
  * Adapter class to build a {@link Input} of a different value type from another {@link Input}, using a suitable
@@ -73,7 +68,7 @@ public class InputConverterAdapter<T, V> implements Input<V> {
 
 	/*
 	 * (non-Javadoc)
-	 * @see com.holonplatform.vaadin.components.ValueHolder#setValue(java.lang.Object)
+	 * @see com.holonplatform.vaadin.components.ValueHolder#setFormValue(java.lang.Object)
 	 */
 	@Override
 	public void setValue(V value) {
@@ -82,7 +77,7 @@ public class InputConverterAdapter<T, V> implements Input<V> {
 
 	/*
 	 * (non-Javadoc)
-	 * @see com.holonplatform.vaadin.components.ValueHolder#getValue()
+	 * @see com.holonplatform.vaadin.components.ValueHolder#getFormValue()
 	 */
 	@Override
 	public V getValue() {
@@ -196,6 +191,15 @@ public class InputConverterAdapter<T, V> implements Input<V> {
 	@Override
 	public Optional<HasTitle> hasTitle() {
 		return input.hasTitle();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see com.holonplatform.vaadin.flow.components.MayHaveTooltip#hasTooltip()
+	 */
+	@Override
+	public Optional<HasTooltip> hasTooltip() {
+		return input.hasTooltip();
 	}
 
 	/*
@@ -345,6 +349,36 @@ public class InputConverterAdapter<T, V> implements Input<V> {
 		} else {
 			return new ValueContext();
 		}
+	}
+
+	@Override
+	public KeyNotifierConfigurator withKeyDownListener(ComponentEventListener listener) {
+		return input.withKeyDownListener(listener);
+	}
+
+	@Override
+	public KeyNotifierConfigurator withKeyPressListener(ComponentEventListener listener) {
+		return input.withKeyPressListener(listener);
+	}
+
+	@Override
+	public KeyNotifierConfigurator withKeyUpListener(ComponentEventListener listener) {
+		return input.withKeyUpListener(listener);
+	}
+
+	@Override
+	public KeyNotifierConfigurator withKeyDownListener(Key key, ComponentEventListener listener, KeyModifier... modifiers) {
+		return input.withKeyDownListener(key, listener, modifiers);
+	}
+
+	@Override
+	public KeyNotifierConfigurator withKeyPressListener(Key key, ComponentEventListener listener, KeyModifier... modifiers) {
+		return input.withKeyPressListener(key, listener, modifiers);
+	}
+
+	@Override
+	public KeyNotifierConfigurator withKeyUpListener(Key key, ComponentEventListener listener, KeyModifier... modifiers) {
+		return input.withKeyUpListener(key, listener, modifiers);
 	}
 
 }

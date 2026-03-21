@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>com.holon-platform.vaadin</groupId>
 		<artifactId>holon-vaadin-flow-root</artifactId>
-		<version>5.5.4-SNAPSHOT</version>
+		<version>5.5.7-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>holon-vaadin-flow-spring-boot</artifactId>
@@ -76,6 +76,10 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-web</artifactId>
 		</dependency>
 
 	</dependencies>

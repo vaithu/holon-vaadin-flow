@@ -15,12 +15,6 @@
  */
 package com.holonplatform.vaadin.flow.navigator.internal.listeners;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Optional;
-import java.util.Set;
-
 import com.holonplatform.auth.AuthContext;
 import com.holonplatform.auth.Authentication;
 import com.holonplatform.auth.annotations.Authenticate;
@@ -38,6 +32,12 @@ import com.vaadin.flow.router.BeforeEnterListener;
 import com.vaadin.flow.router.ListenerPriority;
 import com.vaadin.flow.server.VaadinRequest;
 import com.vaadin.flow.server.VaadinService;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Optional;
+import java.util.Set;
 
 /**
  * A {@link BeforeEnterListener} to check navigation target authentication and authorization.
@@ -131,7 +131,7 @@ public class DefaultNavigationTargetBeforeEnterListener extends AbstractNavigati
 			}
 			// check authorization
 			final Set<String> roles = configuration.getAuthorization();
-			if (!roles.isEmpty() && !authContext.isPermittedAny(roles.toArray(new String[roles.size()]))) {
+			if (!roles.isEmpty() && !authContext.isPermittedAny(roles.toArray(new String[0]))) {
 				// redirect to error
 				event.rerouteToError(ForbiddenNavigationException.class,
 						LocalizationProvider.localize(ForbiddenNavigationException.DEFAULT_MESSAGE,

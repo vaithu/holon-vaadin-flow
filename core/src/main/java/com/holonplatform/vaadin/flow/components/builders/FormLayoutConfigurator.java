@@ -15,10 +15,6 @@
  */
 package com.holonplatform.vaadin.flow.components.builders;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.function.Consumer;
-
 import com.holonplatform.core.internal.utils.ObjectUtils;
 import com.holonplatform.vaadin.flow.components.HasComponent;
 import com.holonplatform.vaadin.flow.internal.components.builders.DefaultFormLayoutConfigurator;
@@ -26,6 +22,10 @@ import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.formlayout.FormLayout.FormItem;
 import com.vaadin.flow.component.formlayout.FormLayout.ResponsiveStep;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.function.Consumer;
 
 /**
  * Configurator for {@link FormLayout} type components.
@@ -140,6 +140,13 @@ public interface FormLayoutConfigurator<C extends FormLayoutConfigurator<C>> ext
 		ObjectUtils.argumentNotNull(field, "Field must be not null");
 		return withFormItem(field.getComponent(), label);
 	}
+
+	C add(
+		int colSpan,Component... components);
+
+	C colSpan(int colSpan, Component... components);
+
+	C autoUpdateResponsiveStepColumnSizeEnabled(boolean autoUpdate);
 
 	/**
 	 * Get a new {@link FormLayoutConfigurator} for given component.

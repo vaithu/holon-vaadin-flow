@@ -15,21 +15,16 @@
  */
 package com.holonplatform.vaadin.flow.internal.components.builders;
 
-import java.util.Optional;
-
 import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.vaadin.flow.components.builders.LabelConfigurator;
 import com.holonplatform.vaadin.flow.components.builders.ShortcutConfigurator;
 import com.holonplatform.vaadin.flow.components.events.ClickEvent;
 import com.holonplatform.vaadin.flow.components.events.ClickEventListener;
 import com.holonplatform.vaadin.flow.internal.components.support.ComponentClickListenerAdapter;
-import com.vaadin.flow.component.ClickNotifier;
-import com.vaadin.flow.component.HasEnabled;
-import com.vaadin.flow.component.HasSize;
-import com.vaadin.flow.component.HasStyle;
-import com.vaadin.flow.component.HtmlContainer;
-import com.vaadin.flow.component.Key;
-import com.vaadin.flow.component.KeyModifier;
+import com.vaadin.flow.component.*;
+import com.vaadin.flow.component.shared.HasTooltip;
+
+import java.util.Optional;
 
 /**
  * Base {@link LabelConfigurator} implementation.
@@ -71,7 +66,12 @@ public abstract class AbstractLabelConfigurator<L extends HtmlContainer & ClickN
 		return Optional.of(getComponent());
 	}
 
-	/*
+    @Override
+    protected Optional<HasTooltip> hasTooltip() {
+		return Optional.empty();
+    }
+
+    /*
 	 * (non-Javadoc)
 	 * @see com.holonplatform.vaadin.flow.components.builders.HasTitleConfigurator#title(com.holonplatform.core.i18n.
 	 * Localizable)

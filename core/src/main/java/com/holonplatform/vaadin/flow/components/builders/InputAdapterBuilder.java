@@ -15,6 +15,19 @@
  */
 package com.holonplatform.vaadin.flow.components.builders;
 
+import com.holonplatform.core.operation.TriConsumer;
+import com.holonplatform.vaadin.flow.components.HasLabel;
+import com.holonplatform.vaadin.flow.components.HasPlaceholder;
+import com.holonplatform.vaadin.flow.components.*;
+import com.holonplatform.vaadin.flow.components.Input.PropertyHandler;
+import com.holonplatform.vaadin.flow.components.ValueHolder.ValueChangeEvent;
+import com.holonplatform.vaadin.flow.components.ValueHolder.ValueChangeListener;
+import com.holonplatform.vaadin.flow.components.events.InvalidChangeEventNotifier;
+import com.holonplatform.vaadin.flow.components.events.ReadonlyChangeListener;
+import com.holonplatform.vaadin.flow.components.support.InputAdaptersContainer;
+import com.vaadin.flow.component.*;
+import com.vaadin.flow.data.value.HasValueChangeMode;
+
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
@@ -22,26 +35,6 @@ import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
-
-import com.holonplatform.core.operation.TriConsumer;
-import com.holonplatform.vaadin.flow.components.HasLabel;
-import com.holonplatform.vaadin.flow.components.HasPlaceholder;
-import com.holonplatform.vaadin.flow.components.HasTitle;
-import com.holonplatform.vaadin.flow.components.Input;
-import com.holonplatform.vaadin.flow.components.Input.PropertyHandler;
-import com.holonplatform.vaadin.flow.components.ValidatableInput;
-import com.holonplatform.vaadin.flow.components.ValueHolder.ValueChangeEvent;
-import com.holonplatform.vaadin.flow.components.ValueHolder.ValueChangeListener;
-import com.holonplatform.vaadin.flow.components.events.InvalidChangeEventNotifier;
-import com.holonplatform.vaadin.flow.components.events.ReadonlyChangeListener;
-import com.holonplatform.vaadin.flow.components.support.InputAdaptersContainer;
-import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.HasEnabled;
-import com.vaadin.flow.component.HasSize;
-import com.vaadin.flow.component.HasStyle;
-import com.vaadin.flow.component.HasValidation;
-import com.vaadin.flow.component.HasValue;
-import com.vaadin.flow.data.value.HasValueChangeMode;
 
 /**
  * Base builder to create {@link Input} components from a {@link HasValue} component.

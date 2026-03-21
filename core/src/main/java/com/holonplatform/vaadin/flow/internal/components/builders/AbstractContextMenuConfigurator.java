@@ -15,26 +15,23 @@
  */
 package com.holonplatform.vaadin.flow.internal.components.builders;
 
-import java.util.Optional;
-import java.util.function.BiFunction;
-import java.util.function.Function;
-
 import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.core.internal.utils.ObjectUtils;
 import com.holonplatform.vaadin.flow.components.builders.ContextMenuConfigurator;
 import com.holonplatform.vaadin.flow.components.events.ClickEvent;
 import com.holonplatform.vaadin.flow.components.events.ClickEventListener;
 import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
-import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.ComponentEventListener;
-import com.vaadin.flow.component.HasEnabled;
-import com.vaadin.flow.component.HasSize;
-import com.vaadin.flow.component.HasStyle;
+import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.contextmenu.ContextMenuBase;
 import com.vaadin.flow.component.contextmenu.ContextMenuBase.OpenedChangeEvent;
 import com.vaadin.flow.component.contextmenu.MenuItem;
 import com.vaadin.flow.component.contextmenu.MenuItemBase;
 import com.vaadin.flow.component.contextmenu.SubMenuBase;
+import com.vaadin.flow.component.shared.HasTooltip;
+
+import java.util.Optional;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 
 /**
  * Abstract {@link ContextMenuConfigurator}.
@@ -80,7 +77,12 @@ public abstract class AbstractContextMenuConfigurator<M extends ContextMenuBase<
 		return Optional.of(getComponent());
 	}
 
-	/**
+    @Override
+    protected Optional<HasTooltip> hasTooltip() {
+        return Optional.empty();
+    }
+
+    /**
 	 * Get the context menu instance.
 	 * @return the context menu instance
 	 */

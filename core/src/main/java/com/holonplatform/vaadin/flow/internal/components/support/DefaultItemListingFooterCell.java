@@ -47,6 +47,16 @@ public class DefaultItemListingFooterCell implements ItemListingCell {
 		cell.setText((text == null) ? null : LocalizationProvider.localize(text).orElse(""));
 	}
 
+	@Override
+	public void setPartName(String partName) {
+		cell.setPartName(partName);
+	}
+
+	@Override
+	public String getPartName() {
+		return cell.getPartName();
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * @see com.holonplatform.vaadin.flow.components.ItemListing.ItemListingCell#setComponent(com.vaadin.flow.component.

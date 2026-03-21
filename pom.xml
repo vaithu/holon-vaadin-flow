@@ -9,7 +9,7 @@
 
 	<groupId>com.holon-platform.vaadin</groupId>
 	<artifactId>holon-vaadin-flow-root</artifactId>
-	<version>5.5.4-SNAPSHOT</version>
+	<version>5.5.7-SNAPSHOT</version>
 
 	<packaging>pom</packaging>
 
@@ -59,9 +59,9 @@
 		<holon.core.version>5.5.1-SNAPSHOT</holon.core.version>
 
 		<!-- Vaadin -->
-		<vaadin.version>24.2.1</vaadin.version>
-		<vaadin.spring.version>24.2.1</vaadin.spring.version>
-		<vaadin.flow.version>24.2.1</vaadin.flow.version>
+		<vaadin.version>24.5.3</vaadin.version>
+		<vaadin.spring.version>24.5.3</vaadin.spring.version>
+		<vaadin.flow.version>24.5.3</vaadin.flow.version>
 
 		<!-- Servlet API -->
 		<servlet.version>6.0.0</servlet.version>
@@ -69,7 +69,7 @@
 		<!-- Test JDBC Datastore -->
 		<holon.jdbc.datastore.version>5.5.1-SNAPSHOT</holon.jdbc.datastore.version>
 		<!-- Mockito (test) -->
-		<mockito.version>5.7.0</mockito.version>
+		<mockito.version>5.11.0</mockito.version>
 
 	</properties>
 
@@ -96,12 +96,20 @@
 			<artifactId>junit-jupiter-engine</artifactId>
 			<scope>test</scope>
 		</dependency>
+<!--
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-parent</artifactId>
+			<version>3.3.5</version>
+			<type>pom</type>
+		</dependency>-->
+
 	</dependencies>
 
 	<build>
 		<plugins>
 			<!-- Aggregate javadocs -->
-			<plugin>
+			<!--<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
 				<executions>
@@ -119,7 +127,7 @@
 						</configuration>
 					</execution>
 				</executions>
-			</plugin>
+			</plugin>-->
 			<!--&lt;!&ndash; Assembly apidocs &ndash;&gt;
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>

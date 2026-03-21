@@ -15,17 +15,6 @@
  */
 package com.holonplatform.vaadin.flow.internal.components.builders;
 
-import java.time.Duration;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.Collections;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Locale;
-import java.util.function.Consumer;
-import java.util.function.Function;
-
 import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.core.internal.utils.ObjectUtils;
 import com.holonplatform.vaadin.flow.components.Input;
@@ -37,17 +26,20 @@ import com.holonplatform.vaadin.flow.components.builders.ShortcutConfigurator;
 import com.holonplatform.vaadin.flow.components.events.ReadonlyChangeListener;
 import com.holonplatform.vaadin.flow.components.support.InputAdaptersContainer;
 import com.holonplatform.vaadin.flow.internal.components.builders.AbstractLocalDateTimeInputBuilder.DefaultCalendarLocalizationBuilder;
-import com.vaadin.flow.component.AttachEvent;
+import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.BlurNotifier.BlurEvent;
-import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.ComponentEventListener;
-import com.vaadin.flow.component.DetachEvent;
 import com.vaadin.flow.component.FocusNotifier.FocusEvent;
-import com.vaadin.flow.component.Key;
 import com.vaadin.flow.data.binder.ValueContext;
 import com.vaadin.flow.data.converter.LocalDateTimeToDateConverter;
 import com.vaadin.flow.dom.DomEventListener;
 import com.vaadin.flow.dom.Element;
+
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.*;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 /**
  * Base {@link DateTimeInputConfigurator}.
@@ -80,8 +72,8 @@ public abstract class AbstractDateTimeInputBuilder<C extends DateTimeInputConfig
 		this.localDateTimeInputBuilder = localDateTimeInputBuilder;
 		this.timeZone = timeZone;
 		this.adapters = adapters;
-		valueChangeListeners.forEach(l -> this.valueChangeListeners.add(l));
-		readonlyChangeListeners.forEach(l -> this.readonlyChangeListeners.add(l));
+        this.valueChangeListeners.addAll(valueChangeListeners);
+        this.readonlyChangeListeners.addAll(readonlyChangeListeners);
 	}
 
 	/**

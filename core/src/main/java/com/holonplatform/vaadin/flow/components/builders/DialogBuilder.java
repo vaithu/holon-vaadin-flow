@@ -15,13 +15,12 @@
  */
 package com.holonplatform.vaadin.flow.components.builders;
 
-import java.util.function.Consumer;
-
+import com.holonplatform.vaadin.flow.components.PropertyInputForm;
 import com.holonplatform.vaadin.flow.components.builders.ButtonConfigurator.BaseButtonConfigurator;
-import com.holonplatform.vaadin.flow.internal.components.builders.DefaultConfirmDialogBuilder;
-import com.holonplatform.vaadin.flow.internal.components.builders.DefaultMessageDialogBuilder;
-import com.holonplatform.vaadin.flow.internal.components.builders.DefaultQuestionDialogBuilder;
+import com.holonplatform.vaadin.flow.internal.components.builders.*;
 import com.vaadin.flow.component.dialog.Dialog;
+
+import java.util.function.Consumer;
 
 /**
  * {@link Dialog} component builder.
@@ -31,6 +30,8 @@ import com.vaadin.flow.component.dialog.Dialog;
  * @since 5.2.0
  */
 public interface DialogBuilder<B extends DialogBuilder<B>> extends DialogConfigurator<B> {
+
+
 
 	/**
 	 * Build the {@link Dialog} component.
@@ -70,6 +71,14 @@ public interface DialogBuilder<B extends DialogBuilder<B>> extends DialogConfigu
 		return new DefaultConfirmDialogBuilder();
 	}
 
+	static ConfirmDialogBuilder confirm(PropertyInputForm inputForm) {
+		return new DefaultConfirmDialogBuilder(inputForm);
+	}
+
+	/*static ConfirmDialogBuilder save(boolean okToCancelDialog) {
+		return new DefaultConfirmDialogBuilder(okToCancelDialog);
+	}*/
+
 	/**
 	 * Get a builder to create a question dialog, with a <em>confirm</em> button and a <em>deny</em> button in the
 	 * dialog toolbar which will trigger the given <code>questionDialogCallback</code> to react to the user choice.
@@ -84,12 +93,27 @@ public interface DialogBuilder<B extends DialogBuilder<B>> extends DialogConfigu
 		return new DefaultQuestionDialogBuilder(questionDialogCallback);
 	}
 
+	static DeleteDialogBuilder delete(DeleteDialogCallback deleteDialogCallback) {
+		return new DefaultDeleteDialogBuilder(deleteDialogCallback);
+	}
+
+	static SaveAndNewDialogBuilder saveAndNew(QuestionDialogCallback questionDialogCallback) {
+		return new DefaultSaveAndNewDialogBuilder(questionDialogCallback);
+	}
+
+	static SaveDialogBuilder save(SaveDialogCallback saveDialogCallback) {
+		return new DefaultSaveDialogBuilder(saveDialogCallback);
+	}
+
 	// ------- messages
 
 	/**
 	 * Default <em>ok</em> confirm dialog button message code.
 	 */
 	public static final String DEFAULT_OK_BUTTON_MESSAGE_CODE = "com.holonplatform.vaadin.flow.components.dialog.button.ok";
+	public static final String DEFAULT_SAVE_BUTTON_MESSAGE_CODE = "com.holonplatform.vaadin.flow.components.dialog.button.save";
+	public static final String DEFAULT_DELETE_BUTTON_MESSAGE_CODE = "com.holonplatform.vaadin.flow.components.dialog.button.delete";
+	public static final String DEFAULT_SAVE_NEW_BUTTON_MESSAGE_CODE = "com.holonplatform.vaadin.flow.components.dialog.button.save.new";
 
 	/**
 	 * Default <em>confirm</em> question dialog button message code.
@@ -117,6 +141,37 @@ public interface DialogBuilder<B extends DialogBuilder<B>> extends DialogConfigu
 		void onUserAnswer(boolean confirmSelected);
 
 	}
+
+	/**
+	 * Delete dialog user answer callback.
+	 */
+	@FunctionalInterface
+	public interface DeleteDialogCallback {
+
+		/**
+		 * Invoked when the user selected an answer in a delete dialog.
+		 * @param confirmSelected <code>true</code> if the user selected the <em>confirm</em> option, <code>false</code>
+		 *        if selected the <code>deny</code> option
+		 */
+		void onUserAnswer(boolean confirmSelected);
+
+	}
+
+	/**
+	 * Save dialog user answer callback.
+	 */
+	@FunctionalInterface
+	public interface SaveDialogCallback {
+
+		/**
+		 * Invoked when the user selected an answer in a save dialog.
+		 * @param confirmSelected <code>true</code> if the user selected the <em>confirm</em> option, <code>false</code>
+		 *        if selected the <code>deny</code> option
+		 */
+		void onUserAnswer(boolean confirmSelected, Consumer<Boolean> isOkToCloseDialogWindow);
+
+	}
+
 
 	// ------- Specific builders
 
@@ -148,6 +203,14 @@ public interface DialogBuilder<B extends DialogBuilder<B>> extends DialogConfigu
 		 */
 		ConfirmDialogBuilder okButtonConfigurator(Consumer<BaseButtonConfigurator> configurator);
 
+		/**
+		 * Provide a {@link Consumer} to configure the default user <em>denial</em> button.
+		 * @param configurator The button configurator (not null)
+		 * @return this
+		 */
+		ConfirmDialogBuilder denialButtonConfigurator(Consumer<BaseButtonConfigurator> configurator);
+
+
 	}
 
 	/**
@@ -175,6 +238,73 @@ public interface DialogBuilder<B extends DialogBuilder<B>> extends DialogConfigu
 		 * @return this
 		 */
 		QuestionDialogBuilder denialButtonConfigurator(Consumer<BaseButtonConfigurator> configurator);
+
+	}
+
+	/**
+	 * Delete {@link Dialog} builder.
+	 * <p>
+	 * A delete dialog provides two buttons by default, shown in the dialog toolbar: one for user confirmation and one
+	 * for user denial to the delete contained in the dialog message. A callback can be used to react to the user
+	 * choice.
+	 * </p>
+	 *
+	 * @since 5.5.4
+	 */
+	public interface DeleteDialogBuilder extends DialogBuilder<DeleteDialogBuilder> {
+
+		/**
+		 * Provide a {@link Consumer} to configure the default user <em>confirmation</em> button.
+		 * @param configurator The button configurator (not null)
+		 * @return this
+		 */
+		DeleteDialogBuilder confirmButtonConfigurator(Consumer<BaseButtonConfigurator> configurator);
+
+		/**
+		 * Provide a {@link Consumer} to configure the default user <em>denial</em> button.
+		 * @param configurator The button configurator (not null)
+		 * @return this
+		 */
+		DeleteDialogBuilder denialButtonConfigurator(Consumer<BaseButtonConfigurator> configurator);
+
+	}
+
+	public interface SaveAndNewDialogBuilder extends DialogBuilder<SaveAndNewDialogBuilder> {
+
+		/**
+		 * Provide a {@link Consumer} to configure the default user <em>save</em> button.
+		 * @param configurator The button configurator (not null)
+		 * @return this
+		 */
+//		SaveAndNewDialogBuilder saveButtonConfigurator(Consumer<BaseButtonConfigurator> configurator);
+		SaveAndNewDialogBuilder saveAndNewButtonConfigurator(Consumer<BaseButtonConfigurator> configurator);
+
+		/**
+		 * Provide a {@link Consumer} to configure the default user <em>denial</em> button.
+		 * @param configurator The button configurator (not null)
+		 * @return this
+		 */
+		SaveAndNewDialogBuilder denialButtonConfigurator(Consumer<BaseButtonConfigurator> configurator);
+
+	}
+
+
+	public interface SaveDialogBuilder extends DialogBuilder<SaveDialogBuilder> {
+
+		/**
+		 * Provide a {@link Consumer} to configure the default user <em>save</em> button.
+		 * @param configurator The button configurator (not null)
+		 * @return this
+		 */
+//		SaveAndNewDialogBuilder saveButtonConfigurator(Consumer<BaseButtonConfigurator> configurator);
+		SaveDialogBuilder saveButtonConfigurator(Consumer<BaseButtonConfigurator> configurator);
+
+		/**
+		 * Provide a {@link Consumer} to configure the default user <em>denial</em> button.
+		 * @param configurator The button configurator (not null)
+		 * @return this
+		 */
+		SaveDialogBuilder denialButtonConfigurator(Consumer<BaseButtonConfigurator> configurator);
 
 	}
 

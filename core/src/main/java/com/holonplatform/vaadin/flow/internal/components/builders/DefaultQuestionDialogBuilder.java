@@ -15,8 +15,6 @@
  */
 package com.holonplatform.vaadin.flow.internal.components.builders;
 
-import java.util.function.Consumer;
-
 import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.core.internal.utils.ObjectUtils;
 import com.holonplatform.vaadin.flow.components.builders.ButtonBuilder;
@@ -25,7 +23,10 @@ import com.holonplatform.vaadin.flow.components.builders.ButtonConfigurator.Base
 import com.holonplatform.vaadin.flow.components.builders.DialogBuilder;
 import com.holonplatform.vaadin.flow.components.builders.DialogBuilder.QuestionDialogBuilder;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dialog.Dialog;
+
+import java.util.function.Consumer;
 
 /**
  * Default {@link QuestionDialogBuilder} implementation.
@@ -50,12 +51,19 @@ public class DefaultQuestionDialogBuilder extends AbstractDialogConfigurator<Que
 				.text(Localizable.of("No", DialogBuilder.DEFAULT_DENY_BUTTON_MESSAGE_CODE)).withClickListener(e -> {
 					getComponent().close();
 					questionDialogCallback.onUserAnswer(false);
-				}).build();
-		getComponent().addToolbarComponent(this.denyButton);
-		getComponent().addToolbarComponent(this.confirmButton);
+				})
+				.withThemeVariants(ButtonVariant.LUMO_TERTIARY_INLINE)
+				.build();
+
+		getComponent().addFooterComponent(this.denyButton);
+		getComponent().addFooterComponent(this.confirmButton);
+
+		this.denyButton.getStyle().set("margin-right", "auto");
 
 		getComponent().setCloseOnEsc(false);
 		getComponent().setCloseOnOutsideClick(false);
+
+		getComponent().setDraggable(true);
 
 		// since 5.5.0: set modal by default
 		getComponent().setModal(true);
@@ -84,6 +92,8 @@ public class DefaultQuestionDialogBuilder extends AbstractDialogConfigurator<Que
 	public QuestionDialogBuilder denialButtonConfigurator(Consumer<BaseButtonConfigurator> configurator) {
 		ObjectUtils.argumentNotNull(configurator, "Configurator must be not null");
 		configurator.accept(ButtonConfigurator.configure(denyButton));
+
+
 		return getConfigurator();
 	}
 

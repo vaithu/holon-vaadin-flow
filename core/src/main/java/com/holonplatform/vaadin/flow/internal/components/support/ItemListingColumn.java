@@ -15,14 +15,6 @@
  */
 package com.holonplatform.vaadin.flow.internal.components.support;
 
-import java.io.Serializable;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
-import java.util.function.Function;
-import java.util.function.Supplier;
-
 import com.holonplatform.core.Validator;
 import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.core.internal.utils.ObjectUtils;
@@ -38,7 +30,16 @@ import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.grid.SortOrderProvider;
 import com.vaadin.flow.data.provider.QuerySortOrder;
 import com.vaadin.flow.data.renderer.Renderer;
+import com.vaadin.flow.function.SerializableFunction;
 import com.vaadin.flow.function.ValueProvider;
+
+import java.io.Serializable;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 /**
  * {@link ItemListing} column configuration.
@@ -106,10 +107,29 @@ public interface ItemListingColumn<P, T, V> extends Serializable {
 	boolean isFrozen();
 
 	/**
+	 * Gets the column frozenAtEnd state.
+	 * @return whether this column is frozenAtEnd
+	 */
+	boolean isFrozenAtEnd();
+
+	/**
 	 * Sets the column frozen state.
 	 * @param frozen whether to freeze or unfreeze this column
 	 */
 	void setFrozen(boolean frozen);
+
+	void setFrozenAtEnd(boolean frozenAtEnd);
+
+	void setClassNameGenerator(SerializableFunction<T, String> classNameGenerator);
+
+	void setHeader(Component headerComponent);
+
+	void
+	setHeader(String labelText);
+
+	void setKey(String key);
+
+	void setTooltipGenerator(SerializableFunction<T, String> tooltipGenerator);
 
 	/**
 	 * Get the width of this column as a CSS-string.
@@ -190,6 +210,20 @@ public interface ItemListingColumn<P, T, V> extends Serializable {
 	Optional<Component> getFooterComponent();
 
 	/**
+	 * Gets the custom part name of the footer cell.
+	 *
+	 * @return the part name
+	 */
+	Optional<String> getFooterPartName();
+
+	/**
+	 * Sets a custom part name for the footer cell.
+	 *
+	 * @param footerPartName the part name to set
+	 */
+	void setFooterPartName(String footerPartName);
+
+	/**
 	 * Sets the column footer component.
 	 * @param component the column footer component
 	 */
@@ -242,6 +276,7 @@ public interface ItemListingColumn<P, T, V> extends Serializable {
 	 * @param styleNameGenerator the style class name generator to set
 	 */
 	void setStyleNameGenerator(Function<T, String> styleNameGenerator);
+
 
 	/**
 	 * Gest the column sort mode.
@@ -396,6 +431,24 @@ public interface ItemListingColumn<P, T, V> extends Serializable {
 	 */
 	void addValueChangeListener(
 			ValueChangeListener<V, GroupValueChangeEvent<V, P, Input<?>, EditorComponentGroup<P, T>>> valueChangeListener);
+
+	/**
+	 * Gets the custom part name of the header cell.
+	 *
+	 * @return the part name
+	 */
+	Optional<String> getHeaderPartName();
+
+	/**
+	 * Sets a custom part name for the header cell.
+	 *
+	 * @param headerPartName the part name to set
+	 */
+	void setHeaderPartName(String headerPartName);
+
+	SerializableFunction<T, String> getPartNameGenerator();
+
+	void setPartNameGenerator(SerializableFunction<T, String> partNameGenerator);
 
 	/**
 	 * Column sort mode

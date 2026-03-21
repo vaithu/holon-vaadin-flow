@@ -15,34 +15,6 @@
  */
 package com.holonplatform.vaadin.flow.navigator.internal.config;
 
-import java.beans.IntrospectionException;
-import java.beans.Introspector;
-import java.beans.PropertyDescriptor;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.lang.reflect.Parameter;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.WeakHashMap;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import com.vaadin.flow.router.RouteConfiguration;
-import com.vaadin.flow.server.VaadinService;
-import jakarta.annotation.security.PermitAll;
-import jakarta.annotation.security.RolesAllowed;
-
 import com.holonplatform.auth.annotations.Authenticate;
 import com.holonplatform.core.i18n.Caption;
 import com.holonplatform.core.i18n.Localizable;
@@ -60,6 +32,18 @@ import com.vaadin.flow.router.AfterNavigationEvent;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouterLayout;
 import com.vaadin.flow.router.internal.RouteUtil;
+import com.vaadin.flow.server.VaadinService;
+import jakarta.annotation.security.PermitAll;
+import jakarta.annotation.security.RolesAllowed;
+
+import java.beans.IntrospectionException;
+import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.*;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Default {@link NavigationTargetConfiguration} implementation.
@@ -220,7 +204,7 @@ public class DefaultNavigationTargetConfiguration implements NavigationTargetCon
 	private static Optional<Set<String>> getAuthorizationRoles(Class<?> navigationTarget) {
 		if (isSecurityAnnotationsPresent(navigationTarget.getClassLoader())) {
 			if (navigationTarget.isAnnotationPresent(PermitAll.class)) {
-				return Optional.ofNullable(Collections.emptySet());
+				return Optional.of(Collections.emptySet());
 			}
 			if (navigationTarget.isAnnotationPresent(RolesAllowed.class)) {
 				return Optional.of(Arrays.asList(navigationTarget.getAnnotation(RolesAllowed.class).value()).stream()

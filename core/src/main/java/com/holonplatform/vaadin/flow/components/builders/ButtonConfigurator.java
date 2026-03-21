@@ -16,9 +16,11 @@
 package com.holonplatform.vaadin.flow.components.builders;
 
 import com.holonplatform.vaadin.flow.components.events.ClickEvent;
+import com.holonplatform.vaadin.flow.components.events.ClickEventListener;
 import com.holonplatform.vaadin.flow.internal.components.builders.DefaultButtonConfigurator;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.html.Image;
 
 /**
  * {@link Button} component configurator.
@@ -28,7 +30,7 @@ import com.vaadin.flow.component.button.ButtonVariant;
  * @since 5.2.0
  */
 public interface ButtonConfigurator<C extends ButtonConfigurator<C>> extends ComponentConfigurator<C>,
-		HasSizeConfigurator<C>, HasStyleConfigurator<C>, HasIconConfigurator<C>, HasTextConfigurator<C>,
+		HasSizeConfigurator<C>, HasStyleConfigurator<C>, HasIconConfigurator<C>, HasTextConfigurator<C>,HasTooltipConfigurator<C>,
 		HasEnabledConfigurator<C>, HasTitleConfigurator<C>, ClickNotifierConfigurator<Button, ClickEvent<Button>, C>,
 		FocusableConfigurator<Button, C>, HasAutofocusConfigurator<C>, HasThemeVariantConfigurator<ButtonVariant, C>,
 		DeferrableLocalizationConfigurator<C> {
@@ -53,6 +55,45 @@ public interface ButtonConfigurator<C extends ButtonConfigurator<C>> extends Com
 	 * @return this
 	 */
 	C disableOnClick();
+
+	C primary();
+
+	C secondary();
+
+	C tertiary();
+
+	C error();
+
+	C large();
+
+	C small();
+
+	C normal();
+
+	C tertiaryInline();
+
+	C success();
+
+	C contrast();
+
+	C icon();
+
+	C image(Image image);
+
+	C marginInlineEndAuto();
+	C marginInlineStartAuto();
+
+	C borderContrast();
+	C borderPrimary();
+	C borderError();
+	C borderWarning();
+	C borderSuccess();
+	C borderRadius();
+
+	Button getSource();
+
+	C withClickListener(ClickEventListener<Button, ClickEvent<Button>> clickEventListener, boolean avoidDoubleClick);
+
 
 	/**
 	 * Base button configurator.

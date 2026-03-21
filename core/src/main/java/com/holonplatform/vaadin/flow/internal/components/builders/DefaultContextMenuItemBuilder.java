@@ -15,8 +15,6 @@
  */
 package com.holonplatform.vaadin.flow.internal.components.builders;
 
-import java.util.function.Function;
-
 import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.core.internal.utils.ObjectUtils;
 import com.holonplatform.vaadin.flow.components.builders.ContextMenuConfigurator;
@@ -28,6 +26,8 @@ import com.vaadin.flow.component.contextmenu.ContextMenuBase;
 import com.vaadin.flow.component.contextmenu.MenuItem;
 import com.vaadin.flow.component.contextmenu.MenuItemBase;
 import com.vaadin.flow.component.contextmenu.SubMenuBase;
+
+import java.util.function.Function;
 
 /**
  * Default {@link MenuItemBuilder}.
@@ -88,6 +88,20 @@ public class DefaultContextMenuItemBuilder<M extends ContextMenuBase<M, I, S>, I
 		return this;
 	}
 
+	@Override
+	public MenuItemBuilder<ClickEventListener<MenuItem, ClickEvent<MenuItem>>, M, I, S, B> styleName(
+			String styleName) {
+		menuItem.addClassName(styleName);
+		return this;
+	}
+
+	@Override
+	public MenuItemBuilder<ClickEventListener<MenuItem, ClickEvent<MenuItem>>, M, I, S, B> styleNames(
+			String... styleNames) {
+		menuItem.addClassNames(styleNames);
+		return this;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * @see com.holonplatform.vaadin.flow.components.builders.ContextMenuConfigurator.MenuItemBuilder#checked(boolean)
@@ -98,6 +112,19 @@ public class DefaultContextMenuItemBuilder<M extends ContextMenuBase<M, I, S>, I
 			menuItem.setCheckable(true);
 		}
 		menuItem.setChecked(checked);
+		return this;
+	}
+
+	/**
+	 * Sets the keep open state of this menu item. An item that marked as keep open prevents menu from closing when clicked.
+	 *
+	 * @param keepOpen whether clicking this item keeps the menu open
+	 * @return this
+	 * @since 5.5.6
+	 */
+	@Override
+	public MenuItemBuilder<ClickEventListener<MenuItem, ClickEvent<MenuItem>>, M, I, S, B> keepOpen(boolean keepOpen) {
+		menuItem.setKeepOpen(keepOpen);
 		return this;
 	}
 

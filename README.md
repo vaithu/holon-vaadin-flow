@@ -108,7 +108,7 @@ navigator.navigateTo("some/path");
 navigator.navigateBack();
 
 navigator.navigation(View.class)
-  .withQueryParameter("myparam", new Integer(1))
+  .withQueryParameter("myparam", Integer.valueOf(1))
   .withQueryParameter("multi", "a", "b", "c")
   .navigate();
 ```

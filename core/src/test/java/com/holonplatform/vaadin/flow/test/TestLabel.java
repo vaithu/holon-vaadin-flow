@@ -15,18 +15,9 @@
  */
 package com.holonplatform.vaadin.flow.test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.concurrent.atomic.AtomicBoolean;
-
-import org.junit.jupiter.api.Test;
-
 import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.vaadin.flow.components.Components;
+import com.holonplatform.vaadin.flow.components.builders.DivConfigurator;
 import com.holonplatform.vaadin.flow.components.builders.LabelBuilder;
 import com.holonplatform.vaadin.flow.components.builders.LabelConfigurator;
 import com.holonplatform.vaadin.flow.components.builders.LabelConfigurator.BaseLabelConfigurator;
@@ -34,15 +25,12 @@ import com.holonplatform.vaadin.flow.components.support.Unit;
 import com.holonplatform.vaadin.flow.test.util.LocalizationTestUtils;
 import com.vaadin.flow.component.ComponentUtil;
 import com.vaadin.flow.component.HtmlComponent;
-import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.component.html.H1;
-import com.vaadin.flow.component.html.H2;
-import com.vaadin.flow.component.html.H3;
-import com.vaadin.flow.component.html.H4;
-import com.vaadin.flow.component.html.H5;
-import com.vaadin.flow.component.html.H6;
-import com.vaadin.flow.component.html.Paragraph;
-import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.html.*;
+import org.junit.jupiter.api.Test;
+
+import java.util.concurrent.atomic.AtomicBoolean;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class TestLabel {
 
@@ -58,10 +46,10 @@ public class TestLabel {
 		assertTrue(div.getId().isPresent());
 		assertEquals("testid", div.getId().get());
 
-		cfg = Components.configure(div);
-		assertNotNull(cfg);
+		DivConfigurator divConfigurator = Components.configure(div);
+		assertNotNull(divConfigurator);
 
-		cfg.id("testid");
+		divConfigurator.id("testid");
 		assertTrue(div.getId().isPresent());
 		assertEquals("testid", div.getId().get());
 	}
@@ -128,7 +116,7 @@ public class TestLabel {
 		label = builder.build();
 		assertNotNull(label);
 
-		builder = Components.div();
+		builder = Components.divLabel();
 		assertNotNull(builder);
 		label = builder.build();
 		assertNotNull(label);

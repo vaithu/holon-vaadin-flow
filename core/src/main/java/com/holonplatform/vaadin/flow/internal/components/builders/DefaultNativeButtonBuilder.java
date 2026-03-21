@@ -15,22 +15,18 @@
  */
 package com.holonplatform.vaadin.flow.internal.components.builders;
 
-import java.util.Optional;
-
 import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.vaadin.flow.components.builders.NativeButtonBuilder;
 import com.holonplatform.vaadin.flow.components.builders.ShortcutConfigurator;
 import com.holonplatform.vaadin.flow.components.events.ClickEventListener;
 import com.holonplatform.vaadin.flow.internal.components.support.ComponentClickListenerAdapter;
 import com.vaadin.flow.component.BlurNotifier.BlurEvent;
-import com.vaadin.flow.component.ComponentEventListener;
+import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.FocusNotifier.FocusEvent;
-import com.vaadin.flow.component.HasEnabled;
-import com.vaadin.flow.component.HasSize;
-import com.vaadin.flow.component.HasStyle;
-import com.vaadin.flow.component.Key;
-import com.vaadin.flow.component.KeyModifier;
 import com.vaadin.flow.component.html.NativeButton;
+import com.vaadin.flow.component.shared.HasTooltip;
+
+import java.util.Optional;
 
 /**
  * Default {@link NativeButtonBuilder} implementation.
@@ -66,7 +62,12 @@ public class DefaultNativeButtonBuilder extends
 		return Optional.of(getComponent());
 	}
 
-	/*
+    @Override
+    protected Optional<HasTooltip> hasTooltip() {
+		return Optional.empty();
+    }
+
+    /*
 	 * (non-Javadoc)
 	 * @see com.holonplatform.vaadin.flow.internal.components.builders.AbstractComponentConfigurator#getConfigurator()
 	 */

@@ -21,6 +21,7 @@ import com.holonplatform.core.datastore.DataTarget;
 import com.holonplatform.core.datastore.Datastore;
 import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.core.i18n.LocalizationContext;
+import com.holonplatform.core.query.BeanProjection;
 import com.holonplatform.core.query.QueryConfigurationProvider;
 import com.holonplatform.core.query.QueryFilter;
 import com.holonplatform.core.query.QueryProjection;
@@ -30,6 +31,7 @@ import com.holonplatform.jdbc.DatabasePlatform;
 import com.holonplatform.vaadin.flow.components.BeanListing;
 import com.holonplatform.vaadin.flow.components.Components;
 import com.holonplatform.vaadin.flow.components.Input;
+import com.holonplatform.vaadin.flow.components.ItemListing;
 import com.holonplatform.vaadin.flow.components.Selectable.SelectionMode;
 import com.holonplatform.vaadin.flow.components.builders.BeanListingBuilder;
 import com.holonplatform.vaadin.flow.components.builders.ItemListingConfigurator.ColumnAlignment;
@@ -45,6 +47,7 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.Grid.Column;
 import com.vaadin.flow.component.grid.GridVariant;
+import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.data.provider.*;
 import com.vaadin.flow.data.renderer.LitRenderer;
 import com.vaadin.flow.data.renderer.Renderer;
@@ -446,6 +449,46 @@ public class TestBeanListing {
     }
 
     @Test
+    public void testFooterPartName() {
+
+        BeanListing<TestBean> listing = BeanListing.builder(TestBean.class).footer(footer -> {
+            footer.appendRow().getCell(ID).get().setPartName("red");
+        }).build();
+
+        assertTrue(listing.getFooter().isPresent());
+        assertEquals("red", listing.getFooter().get().getFirstRow()
+                .get().getCell(ID).get()
+                .getPartName());
+
+    }
+
+    @Test
+    public void testHeaderPartName() {
+
+        BeanListing<TestBean> listing = BeanListing.builder(TestBean.class).header(header -> {
+            header.appendRow().getCell(ID).get().setPartName("red");
+        }).build();
+
+        assertTrue(listing.getHeader().isPresent());
+        Optional<ItemListing.ItemListingRow<String>> found = Optional.empty();
+        for (ItemListing.ItemListingRow<String> itemListingRow : listing.getHeader().get()
+                .getRows()) {
+            if (itemListingRow.getCell(ID).isPresent()) {
+                found = Optional.of(itemListingRow);
+                break;
+            }
+        }
+        ItemListing.ItemListingRow<String> row = found.get();
+        assertNotNull(row);
+        assertNotNull(row.getCell(ID));
+        ItemListing.ItemListingCell cell = row.getCell(ID).get();
+        assertNotNull(cell);
+        cell.setPartName("red");
+        assertEquals("red", cell.getPartName());
+
+    }
+
+    @Test
     public void testItemsDataSource() {
 
         final TestBean ITEM1 = new TestBean(1L, "test1");
@@ -549,7 +592,12 @@ public class TestBeanListing {
         assertEquals(1L, items.get(1).getId());
 
         listing = BeanListing.builder(TestBean.class).dataSource(datastore, TARGET)
+//                .itemCountEstimate(200) //this is not working due to
+//                java.lang.IllegalStateException: GridLazyDataView only supports 'BackEndDataProvider' or it's subclasses
+//                , but was given a 'AbstractDataProvider'.
+//Use either 'getLazyDataView()', 'getListDataView()' or 'getGenericDataView()' according to the used data type.
                 .withDefaultQuerySort(beanPropertySet.property(NAME).desc()).build();
+
         items = getDataProvider(listing).fetch(new Query<>()).collect(Collectors.toList());
         assertEquals(2, items.size());
         assertEquals(2L, items.get(0).getId());
@@ -738,10 +786,21 @@ public class TestBeanListing {
 
         List<String> visible = listing.getVisibleColumns();
         assertEquals(2, visible.size());
+
+        listing = BeanListing.builder(TestBean.class,false)
+                .withComponentColumn(testBean -> new Button())
+                .add().build();
+
+        assertEquals(1,listing.getAllColumns().size());
+
+        listing = BeanListing.builder(TestBean.class).build();
+        assertEquals(2, listing.getVisibleColumns().size());
+
+        listing = BeanListing.builder(TestBean.class).visibleColumns(NAME, ID).build();
+
         assertEquals(NAME, visible.get(0));
         assertEquals(ID, visible.get(1));
 
-        listing = BeanListing.builder(TestBean.class).visibleColumns(NAME, ID).build();
         listing.setColumnVisible(ID, false);
 
         visible = listing.getVisibleColumns();
@@ -761,19 +820,87 @@ public class TestBeanListing {
         assertTrue(visible.contains(NAME));
         assertFalse(visible.contains(ID));
 
+        /*listing.addComponentColumn(testBean -> new Button());
+        List<Column<TestBean>> allColumns = listing.getAllColumns();
+        assertEquals(3, allColumns.size());
+
+        listing.addColumn(testBean -> testBean.getId()).setVisible(true);
+        visible = listing.getVisibleColumns();
+        assertEquals(1, visible.size());*/
+    }
+
+    @Test
+    public void testToggleColumns() {
+        BeanListing<TestBean> listing = BeanListing.builder(TestBean.class)
+                .toggleableColumns()
+                .build();
+        assertEquals(2, listing.getVisibleColumns().size());
+        assertEquals(3,listing.getAllColumns().size());
+    }
+
+    @Test
+    public void testAddComponentColumn() {
+        BeanListing<TestBean> listing = BeanListing.builder(TestBean.class,false)
+                .build();
+
+        listing.addComponentColumn(testBean -> new Button("sdjfhksjdhf"));
+        assertEquals(1,listing.getVisibleColumns().size());
     }
 
     @Test
     public void testComponentColumns() {
 
-        BeanListing<TestBean> listing = BeanListing.builder(TestBean.class).withComponentColumn(item -> new Button("x"))
+      final   BeanListing<TestBean> listing = BeanListing.builder(TestBean.class).withComponentColumn(item -> new Button("x"))
                 .displayBefore(ID).add().build();
 
         List<String> visible = listing.getVisibleColumns();
         assertEquals(3, visible.size());
-        assertTrue(visible.get(0) != null);
+        assertNotNull(visible.get(0));
         assertEquals(ID, visible.get(1));
         assertEquals(NAME, visible.get(2));
+
+
+
+        final BeanListingBuilder<TestBean> beanListingBuilder = BeanListing.builder(TestBean.class);
+
+        beanListingBuilder.includeVirtualColumns(true)
+                .visibleColumns(ID,NAME)
+                .editable()
+//                .editorBuffered(true)
+                .editor(ID,Input.number(Long.class).build())
+                .editor(NAME,Input.string().build())
+//                .componentRenderer(ID,testBean -> new Button("skdksdf"))
+                .withComponentColumn(item -> new Button("x"))
+                .editorComponent(new Div(
+                        Components.button("Save", e -> listing.saveEditingItem()),
+                        Components.button("Cancel", e -> listing.cancelEditing())))
+                .displayAsFirst()
+                .header("Actions").add();
+
+        final  BeanListing<TestBean>  beanListing = beanListingBuilder.build();
+//        System.out.println("Before BeanListing");
+
+
+        assertEquals(3,beanListing.getVisibleColumns().size());
+
+        final DataTarget<?> TARGET = DataTarget.named("test2");
+
+        final Datastore datastore = JdbcDatastore.builder()
+                .dataSource(
+                        BasicDataSource.builder().url("jdbc:h2:mem:test;INIT=RUNSCRIPT FROM 'classpath:test_init.sql'")
+                                .username("sa").driverClassName(DatabasePlatform.H2.getDriverClassName()).build())
+                .traceEnabled(true).build();
+
+        beanListing.setItems(query -> datastore.query(TARGET)
+                .restrict(query.getLimit(), query.getOffset()).stream(BeanProjection.of(TestBean.class)));
+
+        datastore.query(TARGET).stream(BeanProjection.of(TestBean.class)).findFirst()
+                .ifPresentOrElse(testBean -> beanListing.editItem(testBean), () -> new RuntimeException("No items found"));
+
+//        beanListing.setItems(query -> datastore.query(TARGET).restrict(query.getLimit(), query.getOffset()).stream(ID,NAME))
+
+
+
 
     }
 

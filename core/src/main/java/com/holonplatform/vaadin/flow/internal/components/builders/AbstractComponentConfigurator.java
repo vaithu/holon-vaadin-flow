@@ -15,25 +15,17 @@
  */
 package com.holonplatform.vaadin.flow.internal.components.builders;
 
-import java.util.Optional;
-import java.util.function.Consumer;
-
 import com.holonplatform.core.internal.Logger;
 import com.holonplatform.core.internal.utils.ObjectUtils;
-import com.holonplatform.vaadin.flow.components.builders.ComponentConfigurator;
-import com.holonplatform.vaadin.flow.components.builders.HasEnabledConfigurator;
-import com.holonplatform.vaadin.flow.components.builders.HasSizeConfigurator;
-import com.holonplatform.vaadin.flow.components.builders.HasStyleConfigurator;
+import com.holonplatform.vaadin.flow.components.builders.*;
 import com.holonplatform.vaadin.flow.internal.VaadinLogger;
-import com.vaadin.flow.component.AttachEvent;
-import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.ComponentEventListener;
-import com.vaadin.flow.component.DetachEvent;
-import com.vaadin.flow.component.HasEnabled;
-import com.vaadin.flow.component.HasSize;
-import com.vaadin.flow.component.HasStyle;
+import com.vaadin.flow.component.*;
+import com.vaadin.flow.component.shared.HasTooltip;
 import com.vaadin.flow.dom.DomEventListener;
 import com.vaadin.flow.dom.Element;
+
+import java.util.Optional;
+import java.util.function.Consumer;
 
 /**
  * Base {@link ComponentConfigurator}.
@@ -63,6 +55,7 @@ public abstract class AbstractComponentConfigurator<C extends Component, B exten
 		ObjectUtils.argumentNotNull(component, "Component must be not null");
 		this.component = component;
 		this.componentConfigurator = ComponentConfigurator.create(component);
+//		this.tooltipConfigurator = new DefaultHasTooltipConfigurator<>(component,s -> this.componentConfigurator.)
 	}
 
 	/**
@@ -82,6 +75,12 @@ public abstract class AbstractComponentConfigurator<C extends Component, B exten
 	 * @return Optional component as {@link HasEnabled}, if supported
 	 */
 	protected abstract Optional<HasEnabled> hasEnabled();
+
+	/**
+	 * If the component supports {@link HasTooltip}, return the component as {@link HasTooltip}.
+	 * @return Optional component as {@link HasTooltip}, if supported
+	 */
+	protected abstract Optional<HasTooltip> hasTooltip();
 
 	/**
 	 * Get the actual configurator.
@@ -127,6 +126,15 @@ public abstract class AbstractComponentConfigurator<C extends Component, B exten
 		}
 		return Optional.ofNullable(this.enabledConfigurator);
 	}
+
+	/*protected Optional<HasTooltipConfigurator<?>> getTooltipConfigurator() {
+		if (this.tooltipConfigurator == null) {
+			hasTooltip().ifPresent(h -> {
+				this.tooltipConfigurator = new DefaultHasTooltipConfigurator<>();
+			});
+		}
+		return Optional.ofNullable(this.tooltipConfigurator);
+	}*/
 
 	/**
 	 * Get the component instance.
@@ -228,6 +236,7 @@ public abstract class AbstractComponentConfigurator<C extends Component, B exten
 	@Override
 	public B withThemeName(String themName) {
 		getComponentConfigurator().withThemeName(themName);
+
 		return getConfigurator();
 	}
 

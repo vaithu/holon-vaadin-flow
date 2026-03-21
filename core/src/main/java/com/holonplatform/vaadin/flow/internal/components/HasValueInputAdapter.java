@@ -74,7 +74,7 @@ public class HasValueInputAdapter<T> implements HasValue<ComponentValueChangeEve
 
 	/*
 	 * (non-Javadoc)
-	 * @see com.vaadin.flow.component.HasValue#setValue(java.lang.Object)
+	 * @see com.vaadin.flow.component.HasValue#setFormValue(java.lang.Object)
 	 */
 	@Override
 	public void setValue(T value) {
@@ -83,7 +83,7 @@ public class HasValueInputAdapter<T> implements HasValue<ComponentValueChangeEve
 
 	/*
 	 * (non-Javadoc)
-	 * @see com.vaadin.flow.component.HasValue#getValue()
+	 * @see com.vaadin.flow.component.HasValue#getFormValue()
 	 */
 	@Override
 	public T getValue() {

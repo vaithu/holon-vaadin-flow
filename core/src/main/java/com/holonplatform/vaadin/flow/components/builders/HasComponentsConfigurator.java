@@ -15,10 +15,9 @@
  */
 package com.holonplatform.vaadin.flow.components.builders;
 
-import java.util.Arrays;
-import java.util.stream.Collectors;
-
+import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.vaadin.flow.components.HasComponent;
+import com.holonplatform.vaadin.flow.components.utils.UIUtils;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasComponents;
 
@@ -45,8 +44,18 @@ public interface HasComponentsConfigurator<C extends HasComponentsConfigurator<C
 	 * @return this
 	 */
 	default C add(HasComponent... components) {
-		return add(Arrays.asList(components).stream().map(c -> c.getComponent()).collect(Collectors.toList())
-				.toArray(new Component[0]));
+		return add(UIUtils.toComponents(components));
+	}
+
+	C addComponentAsFirst(Component component);
+
+	C addComponentAtIndex(int index,
+						  Component component);
+
+	C add(String text);
+
+	default C add(Localizable localizable) {
+		return add(localizable.getMessage());
 	}
 
 }

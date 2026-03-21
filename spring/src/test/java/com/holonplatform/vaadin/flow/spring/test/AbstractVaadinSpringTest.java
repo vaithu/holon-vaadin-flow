@@ -15,30 +15,20 @@
  */
 package com.holonplatform.vaadin.flow.spring.test;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import com.vaadin.flow.component.UI;
+import com.vaadin.flow.internal.CurrentInstance;
+import com.vaadin.flow.server.*;
+import jakarta.servlet.http.HttpServletRequest;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 
 import java.util.Collections;
 import java.util.Locale;
 import java.util.Properties;
 
-import jakarta.servlet.http.HttpServletRequest;
-
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-
-import com.vaadin.flow.component.UI;
-import com.vaadin.flow.internal.CurrentInstance;
-import com.vaadin.flow.server.DefaultDeploymentConfiguration;
-import com.vaadin.flow.server.InitParameters;
-import com.vaadin.flow.server.VaadinRequest;
-import com.vaadin.flow.server.VaadinServletRequest;
-import com.vaadin.flow.server.VaadinServletService;
-import com.vaadin.flow.server.VaadinSession;
-import com.vaadin.flow.server.VaadinSessionState;
-import com.vaadin.flow.server.WrappedSession;
-import com.vaadin.flow.spring.SpringVaadinSession;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public abstract class AbstractVaadinSpringTest {
 
@@ -90,7 +80,7 @@ public abstract class AbstractVaadinSpringTest {
 						VaadinServletService.class, getDeploymentProperties()));*/
 		when(vaadinService.getMainDivId(any(VaadinSession.class), any(VaadinRequest.class)))
 				.thenReturn("test-main-div-id");
-		SpringVaadinSession session = mock(SpringVaadinSession.class);
+		VaadinSession session = mock(VaadinSession.class);
 		when(session.getState()).thenReturn(VaadinSessionState.OPEN);
 		when(session.getSession()).thenReturn(wrappedSession);
 		when(session.getService()).thenReturn(vaadinService);

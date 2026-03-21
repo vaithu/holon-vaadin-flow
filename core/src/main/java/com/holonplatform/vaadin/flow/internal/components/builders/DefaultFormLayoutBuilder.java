@@ -1,12 +1,12 @@
 /*
  * Copyright 2016-2018 Axioma srl.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -16,6 +16,7 @@
 package com.holonplatform.vaadin.flow.internal.components.builders;
 
 import com.holonplatform.vaadin.flow.components.builders.FormLayoutBuilder;
+import com.holonplatform.vaadin.flow.components.utils.UIUtils;
 import com.vaadin.flow.component.formlayout.FormLayout;
 
 /**
@@ -24,28 +25,39 @@ import com.vaadin.flow.component.formlayout.FormLayout;
  * @since 5.2.0
  */
 public class DefaultFormLayoutBuilder extends AbstractFormLayoutConfigurator<FormLayoutBuilder>
-		implements FormLayoutBuilder {
+        implements FormLayoutBuilder {
 
-	public DefaultFormLayoutBuilder() {
-		super(new FormLayout());
-	}
+    public DefaultFormLayoutBuilder() {
+        super(new FormLayout());
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.holonplatform.vaadin.flow.components.builders.ComponentBuilder#build()
-	 */
-	@Override
-	public FormLayout build() {
-		return getComponent();
-	}
+    /*
+     * (non-Javadoc)
+     * @see com.holonplatform.vaadin.flow.components.builders.ComponentBuilder#build()
+     */
+    @Override
+    public FormLayout build() {
+        if (isAutoUpdateResponsiveStepColumnSizeEnabled()) {
+            System.out.println(getColumnSizeList());
+            final int sum = getColumnSizeList().stream().mapToInt(Integer::intValue).sum();
+            System.out.println("Sum :" + sum);
+            getComponent().setResponsiveSteps(UIUtils.updateColumnValues(
+                    getComponent().getResponsiveSteps(), sum
+            ));
+        }
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.holonplatform.vaadin.flow.internal.components.builders.AbstractComponentConfigurator#getConfigurator()
-	 */
-	@Override
-	protected FormLayoutBuilder getConfigurator() {
-		return this;
-	}
+
+        return getComponent();
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see com.holonplatform.vaadin.flow.internal.components.builders.AbstractComponentConfigurator#getConfigurator()
+     */
+    @Override
+    protected FormLayoutBuilder getConfigurator() {
+        return this;
+    }
+
 
 }

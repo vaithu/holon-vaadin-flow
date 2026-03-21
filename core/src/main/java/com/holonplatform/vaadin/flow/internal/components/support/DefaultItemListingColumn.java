@@ -15,14 +15,6 @@
  */
 package com.holonplatform.vaadin.flow.internal.components.support;
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
-import java.util.function.Function;
-import java.util.function.Supplier;
-
 import com.holonplatform.core.Validator;
 import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.core.internal.utils.ObjectUtils;
@@ -36,7 +28,14 @@ import com.holonplatform.vaadin.flow.components.events.GroupValueChangeEvent;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.grid.SortOrderProvider;
 import com.vaadin.flow.data.renderer.Renderer;
+import com.vaadin.flow.function.SerializableFunction;
 import com.vaadin.flow.function.ValueProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.*;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 /**
  * Default {@link ItemListingColumn} implementation.
@@ -50,9 +49,11 @@ import com.vaadin.flow.function.ValueProvider;
 public class DefaultItemListingColumn<P, T, V> implements ItemListingColumn<P, T, V> {
 
 	private static final long serialVersionUID = 8922982578042556430L;
+	private static final Logger log = LoggerFactory.getLogger(DefaultItemListingColumn.class);
 
 	private final P property;
-	private final String columnKey;
+//	private final String columnKey;
+	private String columnKey;
 
 	private boolean readOnly = false;
 	private boolean visible = true;
@@ -80,7 +81,14 @@ public class DefaultItemListingColumn<P, T, V> implements ItemListingColumn<P, T
 	private boolean required;
 	private Localizable requiredMessage;
 	private Supplier<V> defaultValueProvider;
+
+	private String headerPartName;
+	private String footerPartName;
+	private SerializableFunction<T, String> tooltipGenerator;
+	private SerializableFunction<T, String> partNameGenerator;
+
 	private List<ValueChangeListener<V, GroupValueChangeEvent<V, P, Input<?>, EditorComponentGroup<P, T>>>> valueChangeListeners = new LinkedList<>();
+	private boolean frozenAtEnd;
 
 	/**
 	 * Constructor.
@@ -178,6 +186,16 @@ public class DefaultItemListingColumn<P, T, V> implements ItemListingColumn<P, T
 		return frozen;
 	}
 
+	/**
+	 * Gets the column frozenAtEnd state.
+	 *
+	 * @return whether this column is frozenAtEnd
+	 */
+	@Override
+	public boolean isFrozenAtEnd() {
+		return frozenAtEnd;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * @see com.holonplatform.vaadin.flow.internal.components.support.ItemListingColumn#setFrozen(boolean)
@@ -185,6 +203,11 @@ public class DefaultItemListingColumn<P, T, V> implements ItemListingColumn<P, T
 	@Override
 	public void setFrozen(boolean frozen) {
 		this.frozen = frozen;
+	}
+
+	@Override
+	public void setFrozenAtEnd(boolean frozenAtEnd) {
+		this.frozenAtEnd = frozenAtEnd;
 	}
 
 	/*
@@ -646,4 +669,56 @@ public class DefaultItemListingColumn<P, T, V> implements ItemListingColumn<P, T
 		this.valueChangeListeners.add(valueChangeListener);
 	}
 
+	@Override
+	public Optional<String> getFooterPartName() {
+		return Optional.ofNullable(footerPartName);
+	}
+
+	@Override
+	public void setFooterPartName(String footerPartName) {
+		this.footerPartName = footerPartName;
+	}
+
+	@Override
+	public Optional<String> getHeaderPartName() {
+		return Optional.ofNullable(headerPartName);
+	}
+
+	@Override
+	public void setHeaderPartName(String headerPartName) {
+		this.headerPartName = headerPartName;
+	}
+
+	@Override
+	public void setClassNameGenerator(SerializableFunction<T, String> classNameGenerator) {
+		this.styleNameGenerator = classNameGenerator;
+	}
+
+	@Override
+	public void setHeader(Component headerComponent) {
+		this.headerComponent = headerComponent;
+	}
+
+	@Override
+	public void setHeader(String labelText) {
+		this.headerText = Localizable.of(labelText);
+	}
+
+	@Override
+	public void setKey(String key) {
+		this.columnKey = key;
+	}
+
+	@Override
+	public void setTooltipGenerator(SerializableFunction<T, String> tooltipGenerator) {
+		this.tooltipGenerator = tooltipGenerator;
+	}
+	@Override
+	public SerializableFunction<T, String> getPartNameGenerator() {
+		return partNameGenerator;
+	}
+	@Override
+	public void setPartNameGenerator(SerializableFunction<T, String> partNameGenerator) {
+		this.partNameGenerator = partNameGenerator;
+	}
 }

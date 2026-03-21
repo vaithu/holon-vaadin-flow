@@ -15,10 +15,6 @@
  */
 package com.holonplatform.vaadin.flow.internal.components.builders;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.function.Function;
-
 import com.holonplatform.core.internal.utils.ObjectUtils;
 import com.holonplatform.vaadin.flow.components.Input;
 import com.holonplatform.vaadin.flow.components.ValueHolder.ValueChangeEvent;
@@ -28,6 +24,10 @@ import com.holonplatform.vaadin.flow.components.builders.InputConfigurator;
 import com.holonplatform.vaadin.flow.components.events.ReadonlyChangeListener;
 import com.holonplatform.vaadin.flow.components.support.InputAdaptersContainer;
 import com.vaadin.flow.component.Component;
+
+import java.util.LinkedList;
+import java.util.List;
+import java.util.function.Function;
 
 /**
  * Base {@link InputConfigurator} class.
@@ -54,6 +54,7 @@ public abstract class AbstractInputConfigurator<T, E extends ValueChangeEvent<T>
 	 */
 	public AbstractInputConfigurator(C component, InputAdaptersContainer<T> adapters) {
 		super(component);
+
 		this.adapters = (adapters != null) ? adapters : InputAdaptersContainer.create();
 	}
 

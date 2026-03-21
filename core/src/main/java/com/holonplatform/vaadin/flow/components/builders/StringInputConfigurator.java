@@ -31,7 +31,8 @@ public interface StringInputConfigurator<C extends StringInputConfigurator<C>>
 		extends InputValueConfigurator<String, ValueChangeEvent<String>, C>, TextInputConfigurator<C>,
 		HasSizeConfigurator<C>, HasStyleConfigurator<C>, HasAutofocusConfigurator<C>,
 		FocusableConfigurator<Component, C>, HasPrefixAndSuffixConfigurator<C>, CompositionNotifierConfigurator<C>,
-		HasPlaceholderConfigurator<C>, HasLabelConfigurator<C>, HasTitleConfigurator<C>, HasPatternConfigurator<C>,
+		HasPlaceholderConfigurator<C>, HasLabelConfigurator<C>, HasTitleConfigurator<C>, HasTooltipConfigurator<C>,
+		HasPatternConfigurator<C>,
 		HasThemeVariantConfigurator<TextFieldVariant, C>, DeferrableLocalizationConfigurator<C> {
 
 }

@@ -15,10 +15,6 @@
  */
 package com.holonplatform.vaadin.flow.internal.components.builders;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.function.Consumer;
-
 import com.holonplatform.vaadin.flow.components.builders.FormLayoutConfigurator;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasEnabled;
@@ -27,6 +23,10 @@ import com.vaadin.flow.component.HasStyle;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.formlayout.FormLayout.FormItem;
 import com.vaadin.flow.component.formlayout.FormLayout.ResponsiveStep;
+import com.vaadin.flow.component.shared.HasTooltip;
+
+import java.util.*;
+import java.util.function.Consumer;
 
 /**
  * Base {@link FormLayoutConfigurator} implementation.
@@ -37,6 +37,9 @@ import com.vaadin.flow.component.formlayout.FormLayout.ResponsiveStep;
  */
 public abstract class AbstractFormLayoutConfigurator<C extends FormLayoutConfigurator<C>>
 		extends AbstractComponentConfigurator<FormLayout, C> implements FormLayoutConfigurator<C> {
+
+	private final List<Integer> columnSizeList = new ArrayList<>();
+	private boolean autoUpdate;
 
 	public AbstractFormLayoutConfigurator(FormLayout component) {
 		super(component);
@@ -57,7 +60,12 @@ public abstract class AbstractFormLayoutConfigurator<C extends FormLayoutConfigu
 		return Optional.of(getComponent());
 	}
 
-	/*
+    @Override
+    protected Optional<HasTooltip> hasTooltip() {
+        return Optional.empty();
+    }
+
+    /*
 	 * (non-Javadoc)
 	 * @see com.holonplatform.vaadin.flow.components.builders.HasComponentsConfigurator#add(com.vaadin.flow.component.
 	 * Component[])
@@ -65,6 +73,25 @@ public abstract class AbstractFormLayoutConfigurator<C extends FormLayoutConfigu
 	@Override
 	public C add(Component... components) {
 		getComponent().add(components);
+		return getConfigurator();
+	}
+
+
+	@Override
+	public C addComponentAsFirst(Component component) {
+		getComponent().addComponentAsFirst(component);
+		return getConfigurator();
+	}
+
+	@Override
+	public C addComponentAtIndex(int index, Component component) {
+		getComponent().addComponentAtIndex(index, component);
+		return getConfigurator();
+	}
+
+	@Override
+	public C add(String text) {
+		getComponent().add(text);
 		return getConfigurator();
 	}
 
@@ -107,5 +134,40 @@ public abstract class AbstractFormLayoutConfigurator<C extends FormLayoutConfigu
 		}
 		return getConfigurator();
 	}
+
+	@Override
+	public C add(int colSpan, Component... components) {
+		columnSizeList.add(colSpan);
+		Arrays.stream(components).sequential()
+				.forEach(component -> {
+					getComponent().add(component, colSpan);
+				});
+		return getConfigurator();
+	}
+
+	@Override
+	public C colSpan(int colSpan, Component... components) {
+		columnSizeList.add(colSpan);
+		Arrays.stream(components).sequential()
+				.forEach(component -> {
+					getComponent().setColspan(component, colSpan);
+				});
+		return getConfigurator();
+	}
+
+	protected List<Integer> getColumnSizeList() {
+		return columnSizeList;
+	}
+
+	protected boolean isAutoUpdateResponsiveStepColumnSizeEnabled() {
+		return autoUpdate;
+	}
+
+	@Override
+	public C autoUpdateResponsiveStepColumnSizeEnabled(boolean autoUpdate) {
+		this.autoUpdate = autoUpdate;
+		return getConfigurator();
+	}
+
 
 }
