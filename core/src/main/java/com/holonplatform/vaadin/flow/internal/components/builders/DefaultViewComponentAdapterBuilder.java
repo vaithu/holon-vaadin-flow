@@ -46,7 +46,7 @@ public class DefaultViewComponentAdapterBuilder<C extends Component, T>
 	/**
 	 * Constructor.
 	 * @param content The fixed content component (not null)
-	 * @param valueConsumer The consumer to configure the content component each time the value changes (not null)
+	 * @param valueConsumer The consumer to create the content component each time the value changes (not null)
 	 */
 	public DefaultViewComponentAdapterBuilder(C content, BiConsumer<C, T> valueConsumer) {
 		super(new ViewComponentAdapter<>(content, valueConsumer));

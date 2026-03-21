@@ -83,7 +83,7 @@ public interface FocusableConfigurator<T extends Component, C extends FocusableC
 	/**
 	 * Adds a shortcut which focuses the component when the provided key is pressed.
 	 * <p>
-	 * A {@link ShortcutConfigurator} API is returned to further configure the shortcut listener. The
+	 * A {@link ShortcutConfigurator} API is returned to further create the shortcut listener. The
 	 * {@link ShortcutConfigurator#add()} method should be used to add the shortcut listener and go back to the parent
 	 * builder.
 	 * </p>

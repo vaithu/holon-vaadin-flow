@@ -152,7 +152,7 @@ public class DefaultOptionsMultiSelectInputBuilder<T, ITEM> extends
 			component.setDataProvider(DataProvider.ofCollection(Collections.emptySet()));
 		}
 
-		// configure captions
+		// create captions
 		if (!customItemCaptionGenerator && !itemCaptions.isEmpty()) {
 			component.setItemLabelGenerator(
 					new DeferrableItemLabelGenerator<>(itemCaptions, component, isDeferredLocalizationEnabled()));

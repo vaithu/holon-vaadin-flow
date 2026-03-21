@@ -23,7 +23,7 @@ import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Span;
 
 /**
- * Interface to configure a <em>label</em>, i.e. a component to display a text.
+ * Interface to create a <em>label</em>, i.e. a component to display a text.
  *
  * @param <L> Concrete label component type
  * @param <C> Concrete configurator type
@@ -43,14 +43,14 @@ public interface LabelConfigurator<L extends HtmlContainer & ClickNotifier, C ex
     }
 
     /**
-     * Obtain a {@link LabelConfigurator} to configure given label component.
+     * Obtain a {@link LabelConfigurator} to create given label component.
      * <p>
      * The component must be a {@link HtmlContainer} and {@link ClickNotifier}, such as {@link Span} or {@link Div}.
      * </p>
      *
      * @param <L>       Label component type
-     * @param component The component to configure (not null)
-     * @return A {@link LabelConfigurator} to configure given component
+     * @param component The component to create (not null)
+     * @return A {@link LabelConfigurator} to create given component
      */
     static <L extends HtmlContainer & ClickNotifier> BaseLabelConfigurator<L> configure(L component) {
         return new DefaultLabelConfigurator<>(component);

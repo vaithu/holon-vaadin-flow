@@ -35,7 +35,7 @@ public interface MenuBarBuilder extends
 	// builders
 
 	/**
-	 * Create a new {@link MenuBarBuilder} to create and configure {@link MenuBar} component instances.
+	 * Create a new {@link MenuBarBuilder} to create and create {@link MenuBar} component instances.
 	 * @return A new {@link MenuBarBuilder}
 	 */
 	static MenuBarBuilder create() {

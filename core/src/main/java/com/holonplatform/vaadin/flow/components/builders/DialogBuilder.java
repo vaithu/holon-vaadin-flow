@@ -197,14 +197,14 @@ public interface DialogBuilder<B extends DialogBuilder<B>> extends DialogConfigu
 			extends DialogBuilder<ConfirmDialogBuilder>, ClosableDialogConfigurator<ConfirmDialogBuilder> {
 
 		/**
-		 * Provide a {@link Consumer} to configure the default <em>OK</em> button shown in the dialog toolbar.
+		 * Provide a {@link Consumer} to create the default <em>OK</em> button shown in the dialog toolbar.
 		 * @param configurator The button configurator (not null)
 		 * @return this
 		 */
 		ConfirmDialogBuilder okButtonConfigurator(Consumer<BaseButtonConfigurator> configurator);
 
 		/**
-		 * Provide a {@link Consumer} to configure the default user <em>denial</em> button.
+		 * Provide a {@link Consumer} to create the default user <em>denial</em> button.
 		 * @param configurator The button configurator (not null)
 		 * @return this
 		 */
@@ -226,14 +226,14 @@ public interface DialogBuilder<B extends DialogBuilder<B>> extends DialogConfigu
 	public interface QuestionDialogBuilder extends DialogBuilder<QuestionDialogBuilder> {
 
 		/**
-		 * Provide a {@link Consumer} to configure the default user <em>confirmation</em> button.
+		 * Provide a {@link Consumer} to create the default user <em>confirmation</em> button.
 		 * @param configurator The button configurator (not null)
 		 * @return this
 		 */
 		QuestionDialogBuilder confirmButtonConfigurator(Consumer<BaseButtonConfigurator> configurator);
 
 		/**
-		 * Provide a {@link Consumer} to configure the default user <em>denial</em> button.
+		 * Provide a {@link Consumer} to create the default user <em>denial</em> button.
 		 * @param configurator The button configurator (not null)
 		 * @return this
 		 */
@@ -254,14 +254,14 @@ public interface DialogBuilder<B extends DialogBuilder<B>> extends DialogConfigu
 	public interface DeleteDialogBuilder extends DialogBuilder<DeleteDialogBuilder> {
 
 		/**
-		 * Provide a {@link Consumer} to configure the default user <em>confirmation</em> button.
+		 * Provide a {@link Consumer} to create the default user <em>confirmation</em> button.
 		 * @param configurator The button configurator (not null)
 		 * @return this
 		 */
 		DeleteDialogBuilder confirmButtonConfigurator(Consumer<BaseButtonConfigurator> configurator);
 
 		/**
-		 * Provide a {@link Consumer} to configure the default user <em>denial</em> button.
+		 * Provide a {@link Consumer} to create the default user <em>denial</em> button.
 		 * @param configurator The button configurator (not null)
 		 * @return this
 		 */
@@ -272,7 +272,7 @@ public interface DialogBuilder<B extends DialogBuilder<B>> extends DialogConfigu
 	public interface SaveAndNewDialogBuilder extends DialogBuilder<SaveAndNewDialogBuilder> {
 
 		/**
-		 * Provide a {@link Consumer} to configure the default user <em>save</em> button.
+		 * Provide a {@link Consumer} to create the default user <em>save</em> button.
 		 * @param configurator The button configurator (not null)
 		 * @return this
 		 */
@@ -280,7 +280,7 @@ public interface DialogBuilder<B extends DialogBuilder<B>> extends DialogConfigu
 		SaveAndNewDialogBuilder saveAndNewButtonConfigurator(Consumer<BaseButtonConfigurator> configurator);
 
 		/**
-		 * Provide a {@link Consumer} to configure the default user <em>denial</em> button.
+		 * Provide a {@link Consumer} to create the default user <em>denial</em> button.
 		 * @param configurator The button configurator (not null)
 		 * @return this
 		 */
@@ -292,7 +292,7 @@ public interface DialogBuilder<B extends DialogBuilder<B>> extends DialogConfigu
 	public interface SaveDialogBuilder extends DialogBuilder<SaveDialogBuilder> {
 
 		/**
-		 * Provide a {@link Consumer} to configure the default user <em>save</em> button.
+		 * Provide a {@link Consumer} to create the default user <em>save</em> button.
 		 * @param configurator The button configurator (not null)
 		 * @return this
 		 */
@@ -300,7 +300,7 @@ public interface DialogBuilder<B extends DialogBuilder<B>> extends DialogConfigu
 		SaveDialogBuilder saveButtonConfigurator(Consumer<BaseButtonConfigurator> configurator);
 
 		/**
-		 * Provide a {@link Consumer} to configure the default user <em>denial</em> button.
+		 * Provide a {@link Consumer} to create the default user <em>denial</em> button.
 		 * @param configurator The button configurator (not null)
 		 * @return this
 		 */

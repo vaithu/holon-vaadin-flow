@@ -28,7 +28,7 @@ public interface ZohoConfigurator<C extends ZohoConfigurator<C>> extends Compone
     C grid(BeanListing<?> listing);
     C grid(PropertyListing listing);
 
-    C gridHeader(GridHeader<?> gridHeader);
+    C gridHeader(GridHeader gridHeader);
 
     C masterHeader(Header header);
     C detailsHeader(Header header);

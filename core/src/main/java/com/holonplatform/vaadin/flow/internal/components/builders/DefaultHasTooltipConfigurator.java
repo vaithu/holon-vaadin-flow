@@ -25,7 +25,7 @@ public class DefaultHasTooltipConfigurator<C extends HasTooltip> extends Abstrac
 
     /**
      * Constructor.
-     * @param component The component to configure (not null)
+     * @param component The component to create (not null)
      * @param setTooltip Actual operation to set the tooltip (not null)
      */
     public DefaultHasTooltipConfigurator(C component, Consumer<String> setTooltip) {
@@ -34,14 +34,14 @@ public class DefaultHasTooltipConfigurator<C extends HasTooltip> extends Abstrac
 
     /**
      * Constructor.
-     * @param component The component to configure (not null)
+     * @param component The component to create (not null)
      * @param setTooltip Actual operation to set the tooltip (not null)
      * @param deferrableLocalization Optional {@link HasDeferrableLocalization} reference
      */
     public DefaultHasTooltipConfigurator(C component, Consumer<String> setTooltip,
                                        HasDeferrableLocalization deferrableLocalization) {
         super(setTooltip, deferrableLocalization);
-        ObjectUtils.argumentNotNull(component, "The component to configure must be not null");
+        ObjectUtils.argumentNotNull(component, "The component to create must be not null");
         this.component = component;
     }
 

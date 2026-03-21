@@ -13,7 +13,7 @@ import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.component.tabs.TabsVariant;
 
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
@@ -25,8 +25,8 @@ public abstract class AbstractAutoTabsConfigurator<C extends AutoTabsConfigurato
     /**
      * Contents of the TabSheet.
      */
-    private final Map<Tab, Component> contentsTab = new LinkedHashMap<>();
-    private final Map<Tab, Initializer<Component>> lazyContentsTab = new LinkedHashMap<>();
+    private final Map<Tab, Component> contentsTab = new HashMap<>();
+    private final Map<Tab, Initializer<Component>> lazyContentsTab = new HashMap<>();
 
     private boolean isCacheEnabled;
     // display area
@@ -71,7 +71,7 @@ public abstract class AbstractAutoTabsConfigurator<C extends AutoTabsConfigurato
 
     @Override
     public C withSelectedChangeEvent(Function<ComponentEventListener<Tabs.SelectedChangeEvent>, Component> contentSet) {
-        setContent(contentSet.apply(Tabs.SelectedChangeEvent::getSelectedTab));
+        contentSet.apply(event -> setContent(event.getSelectedTab()));
         return getConfigurator();
     }
 

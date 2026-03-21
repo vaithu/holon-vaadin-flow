@@ -103,8 +103,8 @@ public abstract class AbstractGridMainView<T> implements GridMainView<T> {
     private void createShowHideColumnsButton(SearchBarConfigurator<SearchBarBuilder> configurator) {
         DefaultShowAndHideColumns<T> defaultShowAndHideColumns = new DefaultShowAndHideColumns<>();
         defaultShowAndHideColumns.showAndHideColumns(getBeanListing());
-        configurator.addComponentAtIndex(2, defaultShowAndHideColumns.getShowHideBtn());
-        configurator.addComponentAtIndex(3, defaultShowAndHideColumns.getPopover());
+        configurator.getLayout().addComponentAtIndex(2, defaultShowAndHideColumns.getShowHideBtn());
+        configurator.getLayout().addComponentAtIndex(3, defaultShowAndHideColumns.getPopover());
 
     }
 

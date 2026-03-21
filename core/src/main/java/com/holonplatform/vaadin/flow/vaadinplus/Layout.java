@@ -1,10 +1,10 @@
 package com.holonplatform.vaadin.flow.vaadinplus;
 
 import com.holonplatform.vaadin.flow.internal.lumo.*;
-import com.holonplatform.vaadin.flow.internal.lumo.Breakpoint;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.theme.lumo.LumoUtility;
+import lombok.Getter;
 
 import java.util.HashMap;
 
@@ -15,6 +15,7 @@ public class Layout extends Div {
     private BoxSizing boxSizing;
     private Display display;
     private final HashMap<Breakpoint, Display> responsiveDisplay;
+    @Getter
     private FlexDirection flexDirection;
     private FlexWrap flexWrap;
     private final HashMap<Breakpoint, FlexDirection> responsiveFlexDirection;
@@ -29,8 +30,7 @@ public class Layout extends Div {
     private Position position;
 
     public Layout() {
-        setDisplay(Display.FLEX);
-
+//        setDisplay(Display.FLEX);
         this.responsiveDisplay = new HashMap<>();
         this.responsiveFlexDirection = new HashMap<>();
         this.responsiveColumns = new HashMap<>();

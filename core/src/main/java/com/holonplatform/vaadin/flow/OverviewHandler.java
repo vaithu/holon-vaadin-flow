@@ -1,5 +1,6 @@
 package com.holonplatform.vaadin.flow;
 
+import com.holonplatform.core.datastore.DataTarget;
 import com.holonplatform.core.property.PropertyBox;
 import com.holonplatform.core.property.PropertySet;
 import com.holonplatform.core.query.QueryFilter;
@@ -10,6 +11,7 @@ import com.holonplatform.vaadin.flow.vaadinplus.KeyValuePairs;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.Optional;
 
 public class OverviewHandler<T> {
 
@@ -38,8 +40,14 @@ public class OverviewHandler<T> {
             UIUtils.handleNoRecordsFound(container);
         }
 
+        private Optional<PropertyBox> findOne(QueryFilter queryFilter, PropertySet<?> properties) {
+            return beanCrud.getDatastore().query(DataTarget.named(beanCrud.getBeanRecord().beanClass().getName()))
+                    .filter(queryFilter)
+                    .findOne(properties);
+        }
+
         public void findAndHandleItem(QueryFilter queryFilter, PropertySet<?> propertySet) {
-            beanCrud.findOne(queryFilter, propertySet).ifPresentOrElse(propertyBox -> {
+            findOne(queryFilter,propertySet).ifPresentOrElse(propertyBox -> {
                 this.propertyBox = propertyBox;
                 if (UIUtils.isPropertyBoxEmpty(this.propertyBox)) {
                     handleNoValuesFound();

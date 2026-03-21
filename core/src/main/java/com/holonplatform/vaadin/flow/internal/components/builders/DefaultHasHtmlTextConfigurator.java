@@ -39,7 +39,7 @@ public class DefaultHasHtmlTextConfigurator extends AbstractLocalizationSupportC
 
 	/**
 	 * Constructor.
-	 * @param component Component to configure (not null)
+	 * @param component Component to create (not null)
 	 */
 	public DefaultHasHtmlTextConfigurator(HasElement component) {
 		this(component, null);
@@ -47,12 +47,12 @@ public class DefaultHasHtmlTextConfigurator extends AbstractLocalizationSupportC
 
 	/**
 	 * Constructor.
-	 * @param component Component to configure (not null)
+	 * @param component Component to create (not null)
 	 * @param deferrableLocalization Optional {@link HasDeferrableLocalization} reference
 	 */
 	public DefaultHasHtmlTextConfigurator(HasElement component, HasDeferrableLocalization deferrableLocalization) {
 		super(text -> component.getElement().setProperty(INNER_HTML_PROPERTY, text), deferrableLocalization);
-		ObjectUtils.argumentNotNull(component, "The component to configure must be not null");
+		ObjectUtils.argumentNotNull(component, "The component to create must be not null");
 		this.component = component;
 	}
 

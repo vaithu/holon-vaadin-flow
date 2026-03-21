@@ -92,30 +92,6 @@ public abstract class AbstractSearchBarConfigurator<C extends SearchBarConfigura
         return getConfigurator();
     }
 
-    @Override
-    public C add(Component... components) {
-        getComponent().add(components);
-        return getConfigurator();
-    }
-
-    @Override
-    public C addComponentAsFirst(Component component) {
-        getComponent().addComponentAsFirst(component);
-        return getConfigurator();
-    }
-
-    @Override
-    public C addComponentAtIndex(int index, Component component) {
-        getComponent().addComponentAtIndex(index, component);
-        return getConfigurator();
-    }
-
-    @Override
-    public C add(String text) {
-        getComponent().add(text);
-        return getConfigurator();
-    }
-
     /**
      * If the component supports {@link HasSize}, return the component as {@link HasSize}.
      *
@@ -156,5 +132,8 @@ public abstract class AbstractSearchBarConfigurator<C extends SearchBarConfigura
         return Optional.empty();
     }
 
-
+    @Override
+    public HorizontalLayout getLayout() {
+        return getComponent();
+    }
 }

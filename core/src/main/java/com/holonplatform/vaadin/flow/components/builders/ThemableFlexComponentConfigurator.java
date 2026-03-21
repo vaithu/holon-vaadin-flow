@@ -34,7 +34,7 @@ public interface ThemableFlexComponentConfigurator<C extends ThemableFlexCompone
 
 	/**
 	 * Get a new {@link VerticalLayoutConfigurator} for given component.
-	 * @param component The component to configure (not null)
+	 * @param component The component to create (not null)
 	 * @return A new {@link VerticalLayoutConfigurator}
 	 */
 	static VerticalLayoutConfigurator configure(VerticalLayout component) {
@@ -43,7 +43,7 @@ public interface ThemableFlexComponentConfigurator<C extends ThemableFlexCompone
 
 	/**
 	 * Get a new {@link HorizontalLayoutConfigurator} for given component.
-	 * @param component The component to configure (not null)
+	 * @param component The component to create (not null)
 	 * @return A new {@link HorizontalLayoutConfigurator}
 	 */
 	static HorizontalLayoutConfigurator configure(HorizontalLayout component) {

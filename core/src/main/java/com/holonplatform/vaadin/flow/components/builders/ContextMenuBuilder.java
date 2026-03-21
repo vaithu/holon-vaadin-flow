@@ -56,7 +56,7 @@ public interface ContextMenuBuilder extends
 
 	/**
 	 * Build the {@link ContextMenu}. The context menu will not be bound to any target component, the
-	 * {@link ContextMenu#setTarget(Component)} method should be used later to configure the target component.
+	 * {@link ContextMenu#setTarget(Component)} method should be used later to create the target component.
 	 * @return The {@link ContextMenu} instance
 	 */
 	default ContextMenu build() {
@@ -66,7 +66,7 @@ public interface ContextMenuBuilder extends
 	// builders
 
 	/**
-	 * Create a new {@link ContextMenuBuilder} to create and configure {@link ContextMenu} component instances.
+	 * Create a new {@link ContextMenuBuilder} to create and create {@link ContextMenu} component instances.
 	 * @return A new {@link ContextMenuBuilder}
 	 */
 	static ContextMenuBuilder create() {

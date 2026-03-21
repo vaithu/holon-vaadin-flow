@@ -33,7 +33,7 @@ public interface LabelBuilder<L extends HtmlContainer & ClickNotifier>
 
 	/**
 	 * Obtain a {@link LabelBuilder} to create a label component using a {@link Span} tag.
-	 * @return The {@link LabelBuilder} to configure and obtain the component instance
+	 * @return The {@link LabelBuilder} to create and obtain the component instance
 	 */
 	static LabelBuilder<Span> span() {
 		return new DefaultLabelBuilder<>(new Span());
@@ -41,7 +41,7 @@ public interface LabelBuilder<L extends HtmlContainer & ClickNotifier>
 
 	/**
 	 * Obtain a {@link LabelBuilder} to create a label component using a {@link Div} tag.
-	 * @return The {@link LabelBuilder} to configure and obtain the component instance
+	 * @return The {@link LabelBuilder} to create and obtain the component instance
 	 */
 	static LabelBuilder<Div> div() {
 		return new DefaultLabelBuilder<>(new Div());
@@ -49,7 +49,7 @@ public interface LabelBuilder<L extends HtmlContainer & ClickNotifier>
 
 	/**
 	 * Obtain a {@link LabelBuilder} to create a label component using a {@link Paragraph} tag.
-	 * @return The {@link LabelBuilder} to configure and obtain the component instance
+	 * @return The {@link LabelBuilder} to create and obtain the component instance
 	 */
 	static LabelBuilder<Paragraph> paragraph() {
 		return new DefaultLabelBuilder<>(new Paragraph());
@@ -57,7 +57,7 @@ public interface LabelBuilder<L extends HtmlContainer & ClickNotifier>
 
 	/**
 	 * Obtain a {@link LabelBuilder} to create a label component using a {@link H1} tag.
-	 * @return The {@link LabelBuilder} to configure and obtain the component instance
+	 * @return The {@link LabelBuilder} to create and obtain the component instance
 	 */
 	static LabelBuilder<H1> h1() {
 		return new DefaultLabelBuilder<>(new H1());
@@ -65,7 +65,7 @@ public interface LabelBuilder<L extends HtmlContainer & ClickNotifier>
 
 	/**
 	 * Obtain a {@link LabelBuilder} to create a label component using a {@link H2} tag.
-	 * @return The {@link LabelBuilder} to configure and obtain the component instance
+	 * @return The {@link LabelBuilder} to create and obtain the component instance
 	 */
 	static LabelBuilder<H2> h2() {
 		return new DefaultLabelBuilder<>(new H2());
@@ -73,7 +73,7 @@ public interface LabelBuilder<L extends HtmlContainer & ClickNotifier>
 
 	/**
 	 * Obtain a {@link LabelBuilder} to create a label component using a {@link H3} tag.
-	 * @return The {@link LabelBuilder} to configure and obtain the component instance
+	 * @return The {@link LabelBuilder} to create and obtain the component instance
 	 */
 	static LabelBuilder<H3> h3() {
 		return new DefaultLabelBuilder<>(new H3());
@@ -81,7 +81,7 @@ public interface LabelBuilder<L extends HtmlContainer & ClickNotifier>
 
 	/**
 	 * Obtain a {@link LabelBuilder} to create a label component using a {@link H4} tag.
-	 * @return The {@link LabelBuilder} to configure and obtain the component instance
+	 * @return The {@link LabelBuilder} to create and obtain the component instance
 	 */
 	static LabelBuilder<H4> h4() {
 		return new DefaultLabelBuilder<>(new H4());
@@ -89,7 +89,7 @@ public interface LabelBuilder<L extends HtmlContainer & ClickNotifier>
 
 	/**
 	 * Obtain a {@link LabelBuilder} to create a label component using a {@link H5} tag.
-	 * @return The {@link LabelBuilder} to configure and obtain the component instance
+	 * @return The {@link LabelBuilder} to create and obtain the component instance
 	 */
 	static LabelBuilder<H5> h5() {
 		return new DefaultLabelBuilder<>(new H5());
@@ -97,7 +97,7 @@ public interface LabelBuilder<L extends HtmlContainer & ClickNotifier>
 
 	/**
 	 * Obtain a {@link LabelBuilder} to create a label component using a {@link H6} tag.
-	 * @return The {@link LabelBuilder} to configure and obtain the component instance
+	 * @return The {@link LabelBuilder} to create and obtain the component instance
 	 */
 	static LabelBuilder<H6> h6() {
 		return new DefaultLabelBuilder<>(new H6());

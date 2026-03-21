@@ -1,70 +1,66 @@
 package com.holonplatform.vaadin.flow.vaadinplus.components;
 
-import com.holonplatform.vaadin.flow.components.BeanListing;
+import com.holonplatform.vaadin.flow.components.builders.LabelBuilder;
 import com.holonplatform.vaadin.flow.vaadinplus.utilities.Font;
 import com.holonplatform.vaadin.flow.vaadinplus.utilities.HeadingLevel;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.data.selection.SelectionEvent;
-import com.vaadin.flow.data.selection.SelectionListener;
+import com.vaadin.flow.theme.lumo.LumoUtility;
 import com.vaadin.flow.theme.lumo.LumoUtility.Background;
 
-public class GridHeader<T> extends Header {
+import java.util.Optional;
+
+public class GridHeader extends Header {
 
     private String title;
     private Component[] defaultActions;
     private Component[] contextActions;
-    private Grid<T> grid;
+    private Grid<?> grid;
+    // Keep a reference so we can fall back to it when title is null
+    private LabelBuilder<?> labelBuilder;
 
     public GridHeader(String title) {
         this(title, HeadingLevel.H2);
         setHeadingFontSize(Font.Size.LARGE);
+        addClassName("grid-header");
     }
 
-    public GridHeader(String title, Grid<T> grid) {
+    public GridHeader(LabelBuilder<?> labelBuilder) {
+        super(labelBuilder);
+        this.labelBuilder = labelBuilder;
+        addClassName("grid-header");
+    }
+
+    public GridHeader(String title, Grid<?> grid) {
         this(title, HeadingLevel.H2);
         setGrid(grid);
     }
 
-    public GridHeader(String title, BeanListing<T> beanListing) {
-        this(title, HeadingLevel.H2);
-        setGrid(beanListing);
+    public Optional<String> getTitle() {
+        return Optional.ofNullable(title);
     }
 
     public GridHeader(String title, HeadingLevel level) {
         super(title, level);
         this.title = title;
         setHeadingFontSize(Font.Size.LARGE);
+        addClassName("grid-header");
     }
 
-    public GridHeader(String title, HeadingLevel level, Grid<T>grid) {
+    public GridHeader(String title, HeadingLevel level, Grid<?> grid) {
         this(title, level);
         setGrid(grid);
     }
 
-    public GridHeader(String title, HeadingLevel level, BeanListing<T> beanListing) {
-        this(title, level);
-        setGrid(beanListing);
-    }
-
-    public void setGrid(Grid<T>grid) {
-        grid.addSelectionListener(this::addSelectionListener);
+    public void setGrid(Grid<?> grid) {
         this.grid = grid;
+        this.grid.addSelectionListener(this::addSelectionListener);
     }
 
-    private void addSelectionListener(SelectionEvent<Grid<T>, T> selectionEvent) {
+    private void addSelectionListener(SelectionEvent<? extends Grid<?>, ?> selectionEvent) {
         int size = selectionEvent.getAllSelectedItems().size();
         updateActionsVisibility(size);
-    }
-
-    @SuppressWarnings("unchecked")
-    public void setGrid(BeanListing<T> beanListing) {
-        beanListing.addSelectionListener((SelectionListener<Grid<T>, T>) this::addSelectionListener);
-        if (beanListing instanceof Grid<?>) {
-            this.grid = (Grid<T>) beanListing.getComponent();
-        } else {
-            throw new IllegalArgumentException("BeanListing is not a grid");
-        }
     }
 
     public void setDefaultActions(Component... components) {
@@ -73,10 +69,11 @@ public class GridHeader<T> extends Header {
     }
 
     private void setDefaultActionsVisible(boolean visible) {
-        if (this.defaultActions != null)
+        if (this.defaultActions != null) {
             for (Component defaultAction : this.defaultActions) {
                 defaultAction.setVisible(visible);
             }
+        }
     }
 
     public void setContextActions(Component... components) {
@@ -85,39 +82,62 @@ public class GridHeader<T> extends Header {
     }
 
     private void setContextActionsVisible(boolean visible) {
-        if (this.contextActions != null)
+        if (this.contextActions != null) {
             for (Component contextAction : this.contextActions) {
                 contextAction.setVisible(visible);
             }
+        }
     }
 
-    private void updateActions() {
-        this.actions.removeAll();
-        addActions(this.defaultActions);
+    public void updateActions() {
+        setActions(this.defaultActions);
         addActions(this.contextActions);
-        updateActionsVisibility(this.grid.getSelectedItems().size());
+
+        if (this.grid != null) {
+            updateActionsVisibility(this.grid.getSelectedItems().size());
+        } else {
+            updateActionsVisibility(0);
+        }
     }
 
-    private void updateActionsVisibility(int size) {
+    /**
+     * Update header appearance and actions visibility based on selection size.
+     * Uses `title` when not null; otherwise falls back to LabelBuilder if present.
+     */
+    public void updateActionsVisibility(int size) {
         if (size == 0) {
-            setHeading(this.title);
-            setHeadingFontSize(Font.Size.LARGE);
-            setHeadingFontWeight(Font.Weight.SEMIBOLD);
-            // setHeadingLineHeight(Font.LineHeight.XSMALL);
+
+            if (this.title != null) {
+                setHeading(title);
+                setHeadingFontSize(Font.Size.LARGE);
+                setHeadingFontWeight(Font.Weight.SEMIBOLD);
+                // setHeadingLineHeight(Font.LineHeight.XSMALL);
+
+
+            } else {
+                labelBuilder.styleNames(LumoUtility.FontSize.LARGE, LumoUtility.FontWeight.SEMIBOLD);
+            }
 
             removeClassNames(Background.PRIMARY_10);
             setDefaultActionsVisible(true);
             setContextActionsVisible(false);
 
         } else {
-            setHeading(size + " items selected");
-            setHeadingFontSize(Font.Size.MEDIUM);
-            setHeadingFontWeight(Font.Weight.NORMAL);
-            // setHeadingLineHeight(Font.LineHeight.MEDIUM);
+            if (this.title != null) {
+                setHeading(size + " items selected");
+                setHeadingFontSize(Font.Size.MEDIUM);
+                setHeadingFontWeight(Font.Weight.NORMAL);
+                // setHeadingLineHeight(Font.LineHeight.MEDIUM);
+
+
+            } else {
+                labelBuilder.styleNames(LumoUtility.FontSize.MEDIUM, LumoUtility.FontWeight.NORMAL);
+            }
 
             addClassNames(Background.PRIMARY_10);
             setDefaultActionsVisible(false);
             setContextActionsVisible(true);
+
         }
     }
 

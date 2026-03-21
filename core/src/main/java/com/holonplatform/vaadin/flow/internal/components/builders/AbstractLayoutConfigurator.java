@@ -3,7 +3,7 @@ package com.holonplatform.vaadin.flow.internal.components.builders;
 import com.holonplatform.vaadin.flow.components.builders.LayoutConfigurator;
 import com.holonplatform.vaadin.flow.internal.lumo.*;
 import com.holonplatform.vaadin.flow.vaadinplus.Layout;
-import com.holonplatform.vaadin.flow.internal.lumo.Breakpoint;
+import com.iyensoft.vaadin.flow.utils.responsive.ViewMode;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasEnabled;
 import com.vaadin.flow.component.HasSize;
@@ -50,6 +50,11 @@ public abstract class AbstractLayoutConfigurator<C extends LayoutConfigurator<C>
     }
 
     @Override
+    public C flex() {
+        return display(Display.FLEX);
+    }
+
+    @Override
     public C add(Component... components) {
         getComponent().add(components);
         return getConfigurator();
@@ -89,6 +94,17 @@ public abstract class AbstractLayoutConfigurator<C extends LayoutConfigurator<C>
     public C flexDirection(Breakpoint breakpoint, FlexDirection flexDirection) {
         getComponent().setFlexDirection(breakpoint,flexDirection);
         return getConfigurator();
+    }
+
+    @Override
+    public C display(ViewMode viewMode, Display display) {
+
+        return display(viewMode.toBreakpoint(), display);
+    }
+
+    @Override
+    public C flexDirection(ViewMode viewMode, FlexDirection flexDirection) {
+        return flexDirection(viewMode.toBreakpoint(), flexDirection);
     }
 
     @Override

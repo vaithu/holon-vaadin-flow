@@ -53,7 +53,7 @@ public interface HasStyleConfigurator<C extends HasStyleConfigurator<C>> {
 
 	/**
 	 * Create a new {@link BaseHasStyleConfigurator}.
-	 * @param component Component to configure (not null)
+	 * @param component Component to create (not null)
 	 * @return A new {@link BaseHasStyleConfigurator}
 	 */
 	static BaseHasStyleConfigurator create(HasStyle component) {

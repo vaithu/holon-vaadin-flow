@@ -164,7 +164,7 @@ public class DefaultSingleSelectInputBuilder<T, ITEM>
 			component.setDataProvider(DataProvider.ofCollection(Collections.emptySet()));
 		}
 
-		// configure captions
+		// create captions
 		if (!customItemCaptionGenerator && !itemCaptions.isEmpty()) {
 			component.setTextRenderer(
 					new DeferrableItemLabelGenerator<>(itemCaptions, component, isDeferredLocalizationEnabled()));

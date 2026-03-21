@@ -42,7 +42,7 @@ public class DefaultFlexComponentConfigurator<C extends Component>
 
 	public DefaultFlexComponentConfigurator(FlexComponent component) {
 		super();
-		ObjectUtils.argumentNotNull(component, "The component to configure must be not null");
+		ObjectUtils.argumentNotNull(component, "The component to create must be not null");
 		this.component = component;
 
 		this.sizeConfigurator = new DefaultHasSizeConfigurator(component);

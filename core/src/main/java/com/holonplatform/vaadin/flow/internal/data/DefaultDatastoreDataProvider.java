@@ -362,7 +362,7 @@ public class DefaultDatastoreDataProvider<T, F> extends AbstractBackEndDataProvi
 	}
 
 	/**
-	 * Build a {@link Query} using the Datastore and configure it with the query
+	 * Build a {@link Query} using the Datastore and create it with the query
 	 * filters and sorts.
 	 * @param query     The data provider query
 	 * @param withSorts Whether to apply the query sorts, if any

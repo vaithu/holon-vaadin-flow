@@ -5,16 +5,15 @@ import com.holonplatform.core.property.PropertyBox;
 import com.holonplatform.core.property.PropertySet;
 import com.holonplatform.vaadin.flow.HasOptionsBar;
 import com.holonplatform.vaadin.flow.components.*;
-import com.holonplatform.vaadin.flow.components.builders.BooleanInputBuilder;
-import com.holonplatform.vaadin.flow.components.builders.BulkActionBuilder;
-import com.holonplatform.vaadin.flow.components.builders.LabelBuilder;
-import com.holonplatform.vaadin.flow.components.builders.SearchBarBuilder;
+import com.holonplatform.vaadin.flow.components.builders.*;
+import com.holonplatform.vaadin.flow.components.css.CSSUtility;
 import com.holonplatform.vaadin.flow.components.css.WhiteSpace;
-import com.holonplatform.vaadin.flow.enums.ScreenSize;
 import com.holonplatform.vaadin.flow.internal.components.support.BreakPoint;
+import com.holonplatform.vaadin.flow.internal.lumo.SeparatorColor;
 import com.holonplatform.vaadin.flow.vaadinplus.KeyValuePair;
 import com.holonplatform.vaadin.flow.vaadinplus.KeyValuePairs;
 import com.holonplatform.vaadin.flow.vaadinplus.Layout;
+import com.iyensoft.vaadin.flow.utils.responsive.ViewMode;
 import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -30,8 +29,8 @@ import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridMultiSelectionModel;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.grid.dataview.GridLazyDataView;
-import com.vaadin.flow.component.html.ListItem;
 import com.vaadin.flow.component.html.*;
+import com.vaadin.flow.component.html.ListItem;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.menubar.MenuBar;
@@ -132,16 +131,6 @@ public class UIUtils {
 
     private static NumberFormat currencyFormat = NumberFormat.getCurrencyInstance();
 
-    /****************************************/
-//    https://github.com/fredpena/vaadin-i18n/blob/main/src/main/java/dev/fredpena/app/views/MainLayout.java
-    public static MenuItemComponent createIconItem(MenuBar menu, VaadinIcon iconName, String label, String ariaLabel) {
-        return createIconItem(menu, new Icon(iconName), label, ariaLabel, false);
-    }
-
-    public static MenuItemComponent createIconItem(MenuBar menu, LumoIcon iconName, String label, String ariaLabel) {
-        return createIconItem(menu, iconName.create(), label, ariaLabel, false);
-    }
-
 
     public static H2 bigTitle(String text) {
         final var day = new H2(text);
@@ -160,31 +149,6 @@ public class UIUtils {
 //                Layout.Z_10
         );
         return day;
-    }
-
-    private static MenuItemComponent createIconItem(HasMenuItems menu, String iconName, String label) {
-
-        return createIconItem(menu, createIcon(iconName), label, null, true);
-    }
-
-    public static MenuItemComponent createIconItem(HasMenuItems menu, Component component, String label, String ariaLabel, boolean isChild) {
-        if (isChild) {
-            component.getStyle().set("margin-right", "var(--lumo-space-m)");
-        }
-
-        MenuItem item = menu.addItem(component, e -> {
-        });
-
-        if (ariaLabel != null) {
-            item.setAriaLabel(ariaLabel);
-        }
-
-        Text text = new Text(label);
-        if (label != null) {
-            item.add(text);
-        }
-
-        return new MenuItemComponent(item, text);
     }
 
     public static Button addNewItemButton() {
@@ -207,12 +171,6 @@ public class UIUtils {
                 .prefixComponent(VaadinIcon.SEARCH.create())
                 .withFocusShortcutKey(Key.KEY_F, KeyModifier.CONTROL)
                 .build();
-    }
-
-    private static Component createIcon(String name) {
-        Image image = new Image("images/%s.png".formatted(name), "");
-        image.setMaxWidth("25px");
-        return image;
     }
 
     public static String[] getTitleStyles() {
@@ -391,10 +349,18 @@ public class UIUtils {
                 .add(UIUtils.createNoRecordsFoundImage());
     }
 
-    private record MenuItemComponent(MenuItem menuItem, Text text) {
-
+    public static Span separator(SeparatorColor color) {
+        return Components.utils.divider()
+                .verticalSeparator()
+                .styleNames(color.getClassName(), CSSUtility.Bootstrap.D_NONE, CSSUtility.Bootstrap.D_SM_FLEX)
+                .build();
     }
 
+    public static void removeAll(Layout layout) {
+        if (layout != null) {
+            layout.removeAll();
+        }
+    }
 
     /****************************************/
 
@@ -472,72 +438,6 @@ public class UIUtils {
 
     // Styles
 
-    public static Button createPrimaryButton(String text) {
-        return createButton(text, ButtonVariant.LUMO_PRIMARY);
-    }
-
-    public static Button createPrimaryButton(VaadinIcon icon) {
-        return createButton(icon, ButtonVariant.LUMO_PRIMARY);
-    }
-
-    public static Button createPrimaryButton(String text, VaadinIcon icon) {
-        return createButton(text, icon, ButtonVariant.LUMO_PRIMARY);
-    }
-
-    public static Button createTertiaryButton(String text) {
-        return createButton(text, ButtonVariant.LUMO_TERTIARY);
-    }
-
-    public static Button createTertiaryButton(VaadinIcon icon) {
-        return createButton(icon, ButtonVariant.LUMO_TERTIARY);
-    }
-
-    public static Button createTertiaryButton(String text, VaadinIcon icon) {
-        return createButton(text, icon, ButtonVariant.LUMO_TERTIARY);
-    }
-
-    public static Button createTertiaryInlineButton(String text) {
-        return createButton(text, LUMO_TERTIARY_INLINE);
-    }
-
-    public static Button createTertiaryInlineButton(VaadinIcon icon) {
-        return createButton(icon, LUMO_TERTIARY_INLINE);
-    }
-
-    public static Button createTertiaryInlineButton(String text,
-                                                    VaadinIcon icon) {
-        return createButton(text, icon, LUMO_TERTIARY_INLINE);
-    }
-
-
-    public static Button createSuccessButton(String text) {
-        return createButton(text, ButtonVariant.LUMO_SUCCESS);
-    }
-
-    public static Button createSuccessButton(VaadinIcon icon) {
-        return createButton(icon, ButtonVariant.LUMO_SUCCESS);
-    }
-
-    public static Button createSuccessButton(String text, VaadinIcon icon) {
-        return createButton(text, icon, ButtonVariant.LUMO_SUCCESS);
-    }
-
-    public static Button createSuccessPrimaryButton(String text) {
-        return createButton(text, ButtonVariant.LUMO_SUCCESS,
-                ButtonVariant.LUMO_PRIMARY);
-    }
-
-    public static Button createSuccessPrimaryButton(VaadinIcon icon) {
-        return createButton(icon, ButtonVariant.LUMO_SUCCESS,
-                ButtonVariant.LUMO_PRIMARY);
-    }
-
-    public static Button createSuccessPrimaryButton(String text,
-                                                    VaadinIcon icon) {
-        return createButton(text, icon, ButtonVariant.LUMO_SUCCESS,
-                ButtonVariant.LUMO_PRIMARY);
-    }
-
 
     public static void clear(List<PropertyInputForm> inputForms) {
         inputForms.forEach(propertyInputForm -> propertyInputForm.clear());
@@ -562,118 +462,13 @@ public class UIUtils {
         inputForms.forEach(propertyInputForm -> propertyInputForm.setEnabled(enabled));
     }
 
-    public static Button createErrorButton(String text) {
-        return createButton(text, ButtonVariant.LUMO_ERROR);
-    }
-
-    public static Button createErrorButton(VaadinIcon icon) {
-        return createButton(icon, ButtonVariant.LUMO_ERROR);
-    }
-
-    public static Button createErrorButton(String text, VaadinIcon icon) {
-        return createButton(text, icon, ButtonVariant.LUMO_ERROR);
-    }
-
-    public static Button createErrorPrimaryButton(String text) {
-        return createButton(text, ButtonVariant.LUMO_ERROR,
-                ButtonVariant.LUMO_PRIMARY);
-    }
-
-    public static Button createErrorPrimaryButton(VaadinIcon icon) {
-        return createButton(icon, ButtonVariant.LUMO_ERROR,
-                ButtonVariant.LUMO_PRIMARY);
-    }
-
-    public static Button createErrorPrimaryButton(String text,
-                                                  VaadinIcon icon) {
-        return createButton(text, icon, ButtonVariant.LUMO_ERROR,
-                ButtonVariant.LUMO_PRIMARY);
-    }
-
-    public static Button createContrastButton(String text) {
-        return createButton(text, ButtonVariant.LUMO_CONTRAST);
-    }
-
-    public static Button createContrastButton(VaadinIcon icon) {
-        return createButton(icon, ButtonVariant.LUMO_CONTRAST);
-    }
-
-    public static Button createContrastButton(String text, VaadinIcon icon) {
-        return createButton(text, icon, ButtonVariant.LUMO_CONTRAST);
-    }
-
-    public static Button createContrastPrimaryButton(String text) {
-        return createButton(text, ButtonVariant.LUMO_CONTRAST,
-                ButtonVariant.LUMO_PRIMARY);
-    }
-
-    public static Button createContrastPrimaryButton(VaadinIcon icon) {
-        return createButton(icon, ButtonVariant.LUMO_CONTRAST,
-                ButtonVariant.LUMO_PRIMARY);
-    }
-
-    public static Button createContrastPrimaryButton(String text,
-                                                     VaadinIcon icon) {
-        return createButton(text, icon, ButtonVariant.LUMO_CONTRAST,
-                ButtonVariant.LUMO_PRIMARY);
-    }
-
     // Size
-
-    public static Button createSmallButton(String text) {
-        return createButton(text, ButtonVariant.LUMO_SMALL);
-    }
-
-    public static Button createSmallButton(VaadinIcon icon) {
-        return createButton(icon, ButtonVariant.LUMO_SMALL);
-    }
-
-    public static Button createSmallButton(String text, VaadinIcon icon) {
-        return createButton(text, icon, ButtonVariant.LUMO_SMALL);
-    }
-
-    public static Button createLargeButton(String text) {
-        return createButton(text, ButtonVariant.LUMO_LARGE);
-    }
-
-    public static Button createLargeButton(VaadinIcon icon) {
-        return createButton(icon, ButtonVariant.LUMO_LARGE);
-    }
-
-    public static Button createLargeButton(String text, VaadinIcon icon) {
-        return createButton(text, icon, ButtonVariant.LUMO_LARGE);
-    }
 
     // Text
 
-    public static Button createButton(String text, ButtonVariant... variants) {
-        Button button = new Button(text);
-        button.addThemeVariants(variants);
-        button.getElement().setAttribute("aria-label", text);
-        return button;
-    }
-
     // Icon
 
-    public static Button createButton(VaadinIcon icon,
-                                      ButtonVariant... variants) {
-        Button button = new Button(new Icon(icon));
-        button.addThemeVariants(variants);
-        return button;
-    }
-
     // Text and icon
-
-    public static Button createButton(String text, VaadinIcon icon,
-                                      ButtonVariant... variants) {
-        Icon i = new Icon(icon);
-        i.addClassName(LumoUtility.IconSize.SMALL);
-//        i.getElement().setAttribute("slot", "prefix");
-        Button button = new Button(text);
-        button.setPrefixComponent(i);
-        button.addThemeVariants(variants);
-        return button;
-    }
 
     /* ==== TEXTFIELDS ==== */
 
@@ -685,13 +480,6 @@ public class UIUtils {
 
 
     /* === MISC === */
-
-
-    public static Button createFloatingActionButton(VaadinIcon icon) {
-        Button button = createPrimaryButton(icon);
-        button.addThemeName("fab");
-        return button;
-    }
 
 
     /* === NUMBERS === */
@@ -735,69 +523,13 @@ public class UIUtils {
 
     /* === ICONS === */
 
-    public static Icon createPrimaryIcon(VaadinIcon icon) {
-        Icon i = new Icon(icon);
-        setTextColor(LumoUtility.TextColor.PRIMARY, i);
-        return i;
-    }
-
-    public static Icon createSecondaryIcon(VaadinIcon icon) {
-        Icon i = new Icon(icon);
-        setTextColor(LumoUtility.TextColor.SECONDARY, i);
-        return i;
-    }
-
-    public static Icon createTertiaryIcon(VaadinIcon icon) {
-        Icon i = new Icon(icon);
-        setTextColor(LumoUtility.TextColor.TERTIARY, i);
-        return i;
-    }
-
-    public static Icon createDisabledIcon(VaadinIcon icon) {
-        Icon i = new Icon(icon);
-        setTextColor(LumoUtility.TextColor.DISABLED, i);
-        return i;
-    }
-
-    public static Icon createSuccessIcon(VaadinIcon icon) {
-        Icon i = new Icon(icon);
-        setTextColor(LumoUtility.TextColor.SUCCESS, i);
-        return i;
-    }
-
-    public static Icon createErrorIcon(VaadinIcon icon) {
-        Icon i = new Icon(icon);
-        setTextColor(LumoUtility.TextColor.ERROR, i);
-        return i;
-    }
-
     public static void formatPhoneField(TextField field) {
         field.setAllowedCharPattern("[0-9()]");
         field.setMinLength(10);
         field.setMaxLength(10);
     }
 
-    public static Icon createSmallIcon(VaadinIcon icon) {
-        Icon i = new Icon(icon);
-        i.addClassName(LumoUtility.IconSize.SMALL);
-        return i;
-    }
-
-    public static Icon createLargeIcon(VaadinIcon icon) {
-        Icon i = new Icon(icon);
-        i.addClassName(LumoUtility.IconSize.LARGE);
-        return i;
-    }
-
     // Combinations
-
-    public static Icon createIcon(String iconSize, String color,
-                                  VaadinIcon icon) {
-        Icon i = new Icon(icon);
-        i.addClassNames(iconSize, color);
-        setTextColor(color, i);
-        return i;
-    }
 
     /* === DATES === */
 
@@ -921,38 +653,6 @@ public class UIUtils {
     }
 
 
-    public static MenuItem createIconItem(HasMenuItems menu, LumoIcon iconName, String label, String ariaLabel,
-                                          ComponentEventListener<ClickEvent<MenuItem>> clickListener) {
-        Icon icon = new Icon("lumo", iconName.toString().toLowerCase());
-
-        MenuItem item = menu.addItem(icon, clickListener);
-        item.setAriaLabel(ariaLabel);
-
-        if (label != null) {
-            item.add(new Text(label));
-        }
-
-        return item;
-    }
-
-    public static MenuItem createIconItem(HasMenuItems menu, VaadinIcon iconName, String label, String ariaLabel,
-                                          ComponentEventListener<ClickEvent<MenuItem>> clickListener) {
-        Icon icon = new Icon(iconName);
-
-        icon.getStyle().set("width", "var(--lumo-icon-size-s)");
-        icon.getStyle().set("height", "var(--lumo-icon-size-s)");
-        icon.getStyle().set("marginRight", "var(--lumo-space-s)");
-
-        MenuItem item = menu.addItem(icon, clickListener);
-        item.setAriaLabel(ariaLabel);
-
-        if (label != null) {
-            item.add(new Text(label));
-        }
-
-        return item;
-    }
-
     public static void setWhiteSpace(WhiteSpace whiteSpace,
                                      Component... components) {
         for (Component component : components) {
@@ -974,9 +674,6 @@ public class UIUtils {
     public static void addErrorHandling(Upload upload) {
         upload.addFileRejectedListener(e -> {
             Notification.show(("File was rejected") + ": " + e.getErrorMessage());
-        });
-        upload.addFailedListener(e -> {
-            Notification.show(("Upload failed") + ": " + e.getReason());
         });
     }
 
@@ -1037,14 +734,6 @@ public class UIUtils {
         UI.getCurrent().getElement().executeJs("window.sessionStorage.setItem($0, $1);", key, value);
     }
 
-    public static Button createCloseBtn(Notification notification) {
-        Button closeBtn = new Button(VaadinIcon.CLOSE_SMALL.create(),
-                clickEvent -> notification.close());
-        closeBtn.addThemeVariants(LUMO_TERTIARY_INLINE);
-
-        return closeBtn;
-    }
-
 
     public static void setWidth(String value, Component... components) {
         for (Component component : components) {
@@ -1061,10 +750,6 @@ public class UIUtils {
         }
     }
 
-
-    public static Icon createTrashIcon() {
-        return createIcon(LumoUtility.IconSize.SMALL, LumoUtility.TextColor.ERROR, VaadinIcon.TRASH);
-    }
 
     public static Div addDummyDiv(String size) {
         Div dummyDiv = new Div();
@@ -1100,10 +785,6 @@ public class UIUtils {
 
     public static boolean isMobile(int width) {
         return width < MOBILE_BREAKPOINT;
-    }
-
-    public static Button createRefreshButton() {
-        return createTertiaryButton(VaadinIcon.REFRESH);
     }
 
     public static void successNotification(String text) {
@@ -1158,17 +839,6 @@ public class UIUtils {
                 new FormLayout.ResponsiveStep("600px", 1, FormLayout.ResponsiveStep.LabelsPosition.ASIDE));
     }
 
-
-    public static Icon createEditIcon() {
-        return createIcon(LumoUtility.IconSize.SMALL, LumoUtility.TextColor.PRIMARY, VaadinIcon.EDIT);
-    }
-
-    public static Button createButton(String text, LumoIcon lumoIcon, ButtonVariant... variants) {
-        Button button = new Button(text);
-        button.setPrefixComponent(lumoIcon.create());
-        button.addThemeVariants(variants);
-        return button;
-    }
 
     public static void createReadOnlyTextArea(TextArea textArea) {
         textArea.addClassNames(LumoUtility.TextColor.DISABLED, LumoUtility.BorderColor.CONTRAST_10,
@@ -1391,12 +1061,6 @@ public class UIUtils {
         return save;
     }
 
-    public static Icon createCloseIcon() {
-        final Icon closeIcon = VaadinIcon.CLOSE_SMALL.create();
-        closeIcon.addClassName(LumoUtility.IconSize.SMALL);
-        return closeIcon;
-    }
-
     public static Locale[] getAvailableLocales() {
         Locale[] availableLocales = Locale.getAvailableLocales();
         Arrays.sort(availableLocales, Comparator.comparing(Locale::getDisplayName));
@@ -1409,13 +1073,6 @@ public class UIUtils {
         grid
                 .addColumn(new NumberRenderer<>(value -> (Number) value, NumberFormat.getInstance(locale)))
                 .setHeader("Formatted number");
-    }
-
-    public static Button createCloseButton() {
-        var closeBtn = new Button(createCloseIcon());
-        closeBtn.addThemeVariants(LUMO_TERTIARY_INLINE, ButtonVariant.LUMO_ICON);
-//        closeBtn.setThemeName("icon");
-        return closeBtn;
     }
 
     public static Component createWidget(String title, Double accountBalance) {
@@ -1543,113 +1200,6 @@ public class UIUtils {
         }
     }
 
-    public static Icon badgeIcon(VaadinIcon vaadinIcon, String ariaLabel) {
-        return createIconBadge(vaadinIcon, ariaLabel, "badge");
-    }
-
-    public static Icon badgeIconSuceess(VaadinIcon vaadinIcon, String ariaLabel) {
-        return createIconBadge(vaadinIcon, ariaLabel, "badge success");
-    }
-
-    public static Icon badgeIconError(VaadinIcon vaadinIcon, String ariaLabel) {
-        return createIconBadge(vaadinIcon, ariaLabel, "badge error");
-    }
-
-    public static Icon badgeIconContrast(VaadinIcon vaadinIcon, String ariaLabel) {
-        return createIconBadge(vaadinIcon, ariaLabel, "badge contrast");
-    }
-
-    public static Icon badgeIconPrimary(VaadinIcon vaadinIcon, String ariaLabel) {
-        return createIconBadge(vaadinIcon, ariaLabel, "badge primary");
-    }
-
-    public static Icon badgeIconPrimarySuccess(VaadinIcon vaadinIcon, String ariaLabel) {
-        return createIconBadge(vaadinIcon, ariaLabel, "badge success primary");
-    }
-
-    public static Icon badgeIconPrimaryError(VaadinIcon vaadinIcon, String ariaLabel) {
-        return createIconBadge(vaadinIcon, ariaLabel, "badge error primary");
-    }
-
-    public static Icon badgeIconPrimaryContrast(VaadinIcon vaadinIcon, String ariaLabel) {
-        return createIconBadge(vaadinIcon, ariaLabel, "badge contrast primary");
-    }
-
-    public static Icon badgeIconSmall(VaadinIcon vaadinIcon, String ariaLabel) {
-        return createIconBadge(vaadinIcon, ariaLabel, "badge small");
-    }
-
-    public static Icon badgeIconSmallSuccess(VaadinIcon vaadinIcon, String ariaLabel) {
-        return createIconBadge(vaadinIcon, ariaLabel, "badge success small");
-    }
-
-    public static Icon badgeIconSmallError(VaadinIcon vaadinIcon, String ariaLabel) {
-        return createIconBadge(vaadinIcon, ariaLabel, "badge error smalle");
-    }
-
-    public static Icon badgeIconSmallContrast(VaadinIcon vaadinIcon, String ariaLabel) {
-        return createIconBadge(vaadinIcon, ariaLabel, "badge contrast small");
-    }
-
-    public static Icon badgeIconPrimarySmall(VaadinIcon vaadinIcon, String ariaLabel) {
-        return createIconBadge(vaadinIcon, ariaLabel, "badge small primary");
-    }
-
-    public static Icon badgeIconPrimarySmallSuccess(VaadinIcon vaadinIcon, String ariaLabel) {
-        return createIconBadge(vaadinIcon, ariaLabel, "badge success small primary");
-    }
-
-    public static Icon badgeIconPrimarySmallError(VaadinIcon vaadinIcon, String ariaLabel) {
-        return createIconBadge(vaadinIcon, ariaLabel, "badge error small primary");
-    }
-
-    public static Icon badgeIconPrimarySmallContrast(VaadinIcon vaadinIcon, String ariaLabel) {
-        return createIconBadge(vaadinIcon, ariaLabel, "badge contrast small primary");
-    }
-
-    public static Icon badgeIconPill(VaadinIcon vaadinIcon, String ariaLabel) {
-        return createIconBadge(vaadinIcon, ariaLabel, "badge pill");
-    }
-
-    public static Icon badgeIconPillSuccess(VaadinIcon vaadinIcon, String ariaLabel) {
-        return createIconBadge(vaadinIcon, ariaLabel, "badge success pill");
-    }
-
-    public static Icon badgeIconPillError(VaadinIcon vaadinIcon, String ariaLabel) {
-        return createIconBadge(vaadinIcon, ariaLabel, "badge error pill");
-    }
-
-    public static Icon badgeIconPillContrast(VaadinIcon vaadinIcon, String ariaLabel) {
-        return createIconBadge(vaadinIcon, ariaLabel, "badge contrast pill");
-    }
-
-    public static Icon badgeIconPillPrimary(VaadinIcon vaadinIcon, String ariaLabel) {
-        return createIconBadge(vaadinIcon, ariaLabel, "badge primary pill");
-    }
-
-    public static Icon badgeIconPillPrimarySuccess(VaadinIcon vaadinIcon, String ariaLabel) {
-        return createIconBadge(vaadinIcon, ariaLabel, "badge success primary pill");
-    }
-
-    public static Icon badgeIconPillPrimaryError(VaadinIcon vaadinIcon, String ariaLabel) {
-        return createIconBadge(vaadinIcon, ariaLabel, "badge error primary pill");
-    }
-
-    public static Icon badgeIconPillPrimaryContrast(VaadinIcon vaadinIcon, String ariaLabel) {
-        return createIconBadge(vaadinIcon, ariaLabel, "badge contrast primary pill");
-    }
-
-
-    private static Icon createIconBadge(VaadinIcon vaadinIcon, String ariaLabel, String theme) {
-        Icon icon = vaadinIcon.create();
-        icon.getStyle().set("padding", "var(--lumo-space-xs");
-        // Accessible label
-        icon.getElement().setAttribute("aria-label", ariaLabel);
-        // Tooltip
-        icon.getElement().setAttribute("title", ariaLabel);
-        icon.getElement().getThemeList().add(theme);
-        return icon;
-    }
 
     public static Component createTextFieldFilterHeader(Consumer<String> filterChangeConsumer) {
         return textFieldFilter(filterChangeConsumer);
@@ -1891,20 +1441,6 @@ public class UIUtils {
         }
     }
 
-    public static Icon createStatusIcon(String status) {
-        boolean isAvailable = "Available".equals(status);
-        Icon icon;
-        if (isAvailable) {
-            icon = VaadinIcon.CHECK.create();
-            icon.getElement().getThemeList().add("badge success");
-        } else {
-            icon = VaadinIcon.CLOSE_SMALL.create();
-            icon.getElement().getThemeList().add("badge error");
-        }
-        icon.getStyle().set("padding", "var(--lumo-space-xs");
-        return icon;
-    }
-
     /**
      * Check whether the current browser is running on a touch device.
      *
@@ -1964,32 +1500,6 @@ public class UIUtils {
         });
     }
 
-    public static Icon createIcon(VaadinIcon vaadinIcon) {
-        Icon icon = vaadinIcon.create();
-       /* icon.getStyle().set("color", "var(--lumo-primary-text-color)")
-                .set("margin-inline-end", "var(--lumo-space-s")
-                .set("padding", "var(--lumo-space-xs");*/
-        icon.addClassName(LumoUtility.TextColor.PRIMARY);
-        icon.setSize("20px");
-        return icon;
-    }
-
-    public static HorizontalLayout createIconMenuItem(VaadinIcon vaadinIcon, String text) {
-
-        Icon icon = new Icon(vaadinIcon);
-        icon.addClassName(LumoUtility.TextColor.PRIMARY);
-        icon.setSize("15px");
-
-        return Components.hl()
-                .fullWidth()
-                .spacing()
-                .padding(false)
-                .alignItems(FlexComponent.Alignment.CENTER)
-                .add(icon)
-                .add(new Text(text))
-                .build();
-    }
-
     public static void notifyOptimisticLockingFailureException() {
         Notification n = Notification.show(
                 "Error updating the data. Somebody else has updated the record while you were making changes.");
@@ -1999,15 +1509,6 @@ public class UIUtils {
 
     public static void notifyValidationException() {
         Notification.show("Failed to update the data. Check again that all values are valid");
-    }
-
-    public static MenuItem createIconItem(MenuBar menu, VaadinIcon iconName,
-                                          String ariaLabel) {
-        Icon icon = new Icon(iconName);
-        MenuItem item = menu.addItem(icon);
-        item.setAriaLabel(ariaLabel);
-
-        return item;
     }
 
     public static BulkActionBuilder createBulkActionBuilder(GridMultiSelectionModel<?> gridMultiSelectionModel) {
@@ -2057,25 +1558,25 @@ public class UIUtils {
 
         @Override
         public MenuItem importEntity(MenuBar menuBar) {
-            MenuItem menuItem = createIconItem(menuBar, LumoIcon.DOWNLOAD, "Import", "Import").menuItem();
+            MenuItem menuItem = Icons.createIconItem(menuBar, LumoIcon.DOWNLOAD, "Import", "Import").menuItem();
             return menuItem;
         }
 
         @Override
         public MenuItem exportEntity(MenuBar menuBar) {
-            MenuItem menuItem = createIconItem(menuBar, LumoIcon.UPLOAD, "Export", "Export").menuItem();
+            MenuItem menuItem = Icons.createIconItem(menuBar, LumoIcon.UPLOAD, "Export", "Export").menuItem();
             return menuItem;
         }
 
         @Override
         public MenuItem refreshList(MenuBar menuBar) {
-            MenuItem menuItem = createIconItem(menuBar, VaadinIcon.REFRESH, "Refresh", "Refresh").menuItem();
+            MenuItem menuItem = Icons.createIconItem(menuBar, VaadinIcon.REFRESH, "Refresh", "Refresh").menuItem();
             return menuItem;
         }
 
         @Override
         public MenuItem advancedSearch(MenuBar menuBar) {
-            MenuItem menuItem = createIconItem(menuBar, LumoIcon.SEARCH, "Search", "Advanced Search").menuItem();
+            MenuItem menuItem = Icons.createIconItem(menuBar, LumoIcon.SEARCH, "Search", "Advanced Search").menuItem();
             return menuItem;
         }
     }
@@ -2121,7 +1622,7 @@ public class UIUtils {
     }
 
     public static Span createNoRecordsFoundSpan() {
-        return Components.badge
+        return Components.Badge
                 .badgeError()
                 .text("No Records Found")
                 .build();
@@ -2154,23 +1655,24 @@ public class UIUtils {
         }
     }
 
-    public static ScreenSize getScreenSize(int width) {
+    public static ViewMode getViewMode(int width) {
 
         return switch (getBreakPoint(width)) {
-            case BREAKPOINT_XS, BREAKPOINT_SM -> ScreenSize.MOBILE;
-            case BREAKPOINT_MD -> ScreenSize.TABLET;
-            default -> ScreenSize.DESKTOP;
+            case BREAKPOINT_XS, BREAKPOINT_SM -> ViewMode.MOBILE;
+            case BREAKPOINT_MD -> ViewMode.TABLET;
+            default -> ViewMode.DESKTOP;
         };
     }
 
-    public static ScreenSize getScreenSize(int width, int height) {
+    public static ViewMode getViewMode(int width, int height) {
 
         if (width <= 600) {
-            return (width > height) ? ScreenSize.MOBILE_LANDSCAPE : ScreenSize.MOBILE_PORTRAIT;
+            return (width > height) ? ViewMode.MOBILE_LANDSCAPE : ViewMode.MOBILE_PORTRAIT;
         } else if (width <= 1024) {
-            return ScreenSize.TABLET;
+            return ViewMode.TABLET;
+
         } else {
-            return ScreenSize.DESKTOP;
+            return ViewMode.DESKTOP;
         }
     }
 
@@ -2191,26 +1693,566 @@ public class UIUtils {
         return div.getChildren().anyMatch(UIUtils::isGrid);
     }
 
-    public static Optional<ScreenSize> findScreenSize(UI ui, int width) {
-        final ScreenSize[] screenSize = new ScreenSize[1];
+    public static Optional<ViewMode> findScreenSize(UI ui, int width) {
+        final ViewMode[] viewMode = new ViewMode[1];
         ui.getPage().addBrowserWindowResizeListener(browserWindowResizeEvent -> {
 
-            if (UIUtils.getScreenSize(browserWindowResizeEvent.getWidth()) == ScreenSize.MOBILE) {
-                screenSize[0] = ScreenSize.MOBILE;
-            } else if (UIUtils.getScreenSize(browserWindowResizeEvent.getWidth()) == ScreenSize.DESKTOP) {
-                screenSize[0] = ScreenSize.DESKTOP;
+            if (UIUtils.getViewMode(browserWindowResizeEvent.getWidth()) == ViewMode.MOBILE) {
+                viewMode[0] = ViewMode.MOBILE;
+            } else if (UIUtils.getViewMode(browserWindowResizeEvent.getWidth()) == ViewMode.DESKTOP) {
+                viewMode[0] = ViewMode.DESKTOP;
             }
 
         });
 
-        if (width != 0 && UIUtils.getScreenSize(width) == ScreenSize.MOBILE) {
-            screenSize[0] = ScreenSize.MOBILE;
-        } else if (UIUtils.getScreenSize(width) == ScreenSize.DESKTOP) {
-            screenSize[0] = ScreenSize.DESKTOP;
+        if (width != 0 && UIUtils.getViewMode(width) == ViewMode.MOBILE) {
+            viewMode[0] = ViewMode.MOBILE;
+        } else if (UIUtils.getViewMode(width) == ViewMode.DESKTOP) {
+            viewMode[0] = ViewMode.DESKTOP;
         }
 
-        return Optional.ofNullable(screenSize[0]);
+        return Optional.ofNullable(viewMode[0]);
 
+    }
+
+    public static final class Buttons {
+
+        private Buttons() {}
+
+        public static Button createErrorButton(String text) {
+            return createButton(text, ButtonVariant.LUMO_ERROR);
+        }
+
+        public static Button createErrorButton(VaadinIcon icon) {
+            return createButton(icon, ButtonVariant.LUMO_ERROR);
+        }
+
+        public static Button createErrorButton(String text, VaadinIcon icon) {
+            return createButton(text, icon, ButtonVariant.LUMO_ERROR);
+        }
+
+        public static Button createErrorPrimaryButton(String text) {
+            return createButton(text, ButtonVariant.LUMO_ERROR,
+                    ButtonVariant.LUMO_PRIMARY);
+        }
+
+        public static Button createErrorPrimaryButton(VaadinIcon icon) {
+            return createButton(icon, ButtonVariant.LUMO_ERROR,
+                    ButtonVariant.LUMO_PRIMARY);
+        }
+
+        public static Button createErrorPrimaryButton(String text,
+                                                          VaadinIcon icon) {
+            return createButton(text, icon, ButtonVariant.LUMO_ERROR,
+                    ButtonVariant.LUMO_PRIMARY);
+        }
+
+        public static Button createContrastButton(String text) {
+            return createButton(text, ButtonVariant.LUMO_CONTRAST);
+        }
+
+        public static Button createContrastButton(VaadinIcon icon) {
+            return createButton(icon, ButtonVariant.LUMO_CONTRAST);
+        }
+
+        public static Button createContrastButton(String text, VaadinIcon icon) {
+            return createButton(text, icon, ButtonVariant.LUMO_CONTRAST);
+        }
+
+        public static Button createContrastPrimaryButton(String text) {
+            return createButton(text, ButtonVariant.LUMO_CONTRAST,
+                    ButtonVariant.LUMO_PRIMARY);
+        }
+
+        public static Button createContrastPrimaryButton(VaadinIcon icon) {
+            return createButton(icon, ButtonVariant.LUMO_CONTRAST,
+                    ButtonVariant.LUMO_PRIMARY);
+        }
+
+        public static Button createContrastPrimaryButton(String text,
+                                                             VaadinIcon icon) {
+            return createButton(text, icon, ButtonVariant.LUMO_CONTRAST,
+                    ButtonVariant.LUMO_PRIMARY);
+        }
+
+        public static Button createLargeButton(String text) {
+            return createButton(text, ButtonVariant.LUMO_LARGE);
+        }
+
+        public static Button createLargeButton(VaadinIcon icon) {
+            return createButton(icon, ButtonVariant.LUMO_LARGE);
+        }
+
+        public static Button createLargeButton(String text, VaadinIcon icon) {
+            return createButton(text, icon, ButtonVariant.LUMO_LARGE);
+        }
+
+        public static Button createButton(String text, ButtonVariant... variants) {
+            Button button = new Button(text);
+            button.addThemeVariants(variants);
+            button.getElement().setAttribute("aria-label", text);
+            return button;
+        }
+
+        public static Button createButton(VaadinIcon icon,
+                                              ButtonVariant... variants) {
+            Button button = new Button(new Icon(icon));
+            button.addThemeVariants(variants);
+            return button;
+        }
+
+        public static Button createButton(String text, VaadinIcon icon,
+                                              ButtonVariant... variants) {
+            Icon i = new Icon(icon);
+            i.addClassName(LumoUtility.IconSize.SMALL);
+    //        i.getElement().setAttribute("slot", "prefix");
+            Button button = new Button(text);
+            button.setPrefixComponent(i);
+            button.addThemeVariants(variants);
+            return button;
+        }
+
+        public static Button createFloatingActionButton(VaadinIcon icon) {
+            Button button = createPrimaryButton(icon);
+            button.addThemeName("fab");
+            return button;
+        }
+
+        public static Button createCloseBtn(Notification notification) {
+            Button closeBtn = new Button(VaadinIcon.CLOSE_SMALL.create(),
+                    clickEvent -> notification.close());
+            closeBtn.addThemeVariants(LUMO_TERTIARY_INLINE);
+
+            return closeBtn;
+        }
+
+        public static Button createButton(String text, LumoIcon lumoIcon, ButtonVariant... variants) {
+            Button button = new Button(text);
+            button.setPrefixComponent(lumoIcon.create());
+            button.addThemeVariants(variants);
+            return button;
+        }
+
+        public static Button createCloseButton() {
+            var closeBtn = new Button(Icons.createCloseIcon());
+            closeBtn.addThemeVariants(LUMO_TERTIARY_INLINE, ButtonVariant.LUMO_ICON);
+    //        closeBtn.setThemeName("icon");
+            return closeBtn;
+        }
+
+        public static Button createPrimaryButton(String text) {
+            return createButton(text, ButtonVariant.LUMO_PRIMARY);
+        }
+
+        public static Button createPrimaryButton(VaadinIcon icon) {
+            return createButton(icon, ButtonVariant.LUMO_PRIMARY);
+        }
+
+        public static Button createPrimaryButton(String text, VaadinIcon icon) {
+            return createButton(text, icon, ButtonVariant.LUMO_PRIMARY);
+        }
+
+        public static Button createTertiaryButton(String text) {
+            return createButton(text, ButtonVariant.LUMO_TERTIARY);
+        }
+
+        public static Button createTertiaryButton(VaadinIcon icon) {
+            return createButton(icon, ButtonVariant.LUMO_TERTIARY);
+        }
+
+        public static Button createTertiaryButton(String text, VaadinIcon icon) {
+            return createButton(text, icon, ButtonVariant.LUMO_TERTIARY);
+        }
+
+        public static Button backButton(Consumer<ButtonConfigurator.BaseButtonConfigurator> configurator) {
+            Button back = createTertiaryButton(VaadinIcon.ANGLE_LEFT);
+            back.setAriaLabel("Back");
+            configurator.accept(ButtonConfigurator.configure(back));
+            return back;
+        }
+
+        public static Button closeButton(Consumer<ButtonConfigurator.BaseButtonConfigurator> configurator) {
+            Button close = createCloseButton();
+            close.setAriaLabel("Close");
+            configurator.accept(ButtonConfigurator.configure(close));
+            return close;
+        }
+
+        public static Button createTertiaryInlineButton(String text) {
+            return createButton(text, LUMO_TERTIARY_INLINE);
+        }
+
+        public static Button createTertiaryInlineButton(VaadinIcon icon) {
+            return createButton(icon, LUMO_TERTIARY_INLINE);
+        }
+
+        public static Button createTertiaryInlineButton(String text,
+                                                            VaadinIcon icon) {
+            return createButton(text, icon, LUMO_TERTIARY_INLINE);
+        }
+
+        public static Button createSuccessButton(String text) {
+            return createButton(text, ButtonVariant.LUMO_SUCCESS);
+        }
+
+        public static Button createSuccessButton(VaadinIcon icon) {
+            return createButton(icon, ButtonVariant.LUMO_SUCCESS);
+        }
+
+        public static Button createSuccessButton(String text, VaadinIcon icon) {
+            return createButton(text, icon, ButtonVariant.LUMO_SUCCESS);
+        }
+
+        public static Button createSuccessPrimaryButton(String text) {
+            return createButton(text, ButtonVariant.LUMO_SUCCESS,
+                    ButtonVariant.LUMO_PRIMARY);
+        }
+
+        public static Button createSuccessPrimaryButton(VaadinIcon icon) {
+            return createButton(icon, ButtonVariant.LUMO_SUCCESS,
+                    ButtonVariant.LUMO_PRIMARY);
+        }
+
+        public static Button createSuccessPrimaryButton(String text,
+                                                            VaadinIcon icon) {
+            return createButton(text, icon, ButtonVariant.LUMO_SUCCESS,
+                    ButtonVariant.LUMO_PRIMARY);
+        }
+
+        public static Button createSmallButton(String text) {
+            return createButton(text, ButtonVariant.LUMO_SMALL);
+        }
+
+        public static Button createSmallButton(VaadinIcon icon) {
+            return createButton(icon, ButtonVariant.LUMO_SMALL);
+        }
+
+        public static Button createSmallButton(String text, VaadinIcon icon) {
+            return createButton(text, icon, ButtonVariant.LUMO_SMALL);
+        }
+
+        public static Button createRefreshButton() {
+            return createTertiaryButton(VaadinIcon.REFRESH);
+        }
+
+    }
+
+    public static final class  Badge {
+
+        private  Badge() {}
+
+        public static Icon badgeIcon(VaadinIcon vaadinIcon, String ariaLabel) {
+            return Icons.createIconBadge(vaadinIcon, ariaLabel, "badge");
+        }
+
+        public static Icon badgeIconSuceess(VaadinIcon vaadinIcon, String ariaLabel) {
+            return Icons.createIconBadge(vaadinIcon, ariaLabel, "badge success");
+        }
+
+        public static Icon badgeIconError(VaadinIcon vaadinIcon, String ariaLabel) {
+            return Icons.createIconBadge(vaadinIcon, ariaLabel, "badge error");
+        }
+
+        public static Icon badgeIconContrast(VaadinIcon vaadinIcon, String ariaLabel) {
+            return Icons.createIconBadge(vaadinIcon, ariaLabel, "badge contrast");
+        }
+
+        public static Icon badgeIconPrimary(VaadinIcon vaadinIcon, String ariaLabel) {
+            return Icons.createIconBadge(vaadinIcon, ariaLabel, "badge primary");
+        }
+
+        public static Icon badgeIconPrimarySuccess(VaadinIcon vaadinIcon, String ariaLabel) {
+            return Icons.createIconBadge(vaadinIcon, ariaLabel, "badge success primary");
+        }
+
+        public static Icon badgeIconPrimaryError(VaadinIcon vaadinIcon, String ariaLabel) {
+            return Icons.createIconBadge(vaadinIcon, ariaLabel, "badge error primary");
+        }
+
+        public static Icon badgeIconPrimaryContrast(VaadinIcon vaadinIcon, String ariaLabel) {
+            return Icons.createIconBadge(vaadinIcon, ariaLabel, "badge contrast primary");
+        }
+
+        public static Icon badgeIconSmall(VaadinIcon vaadinIcon, String ariaLabel) {
+            return Icons.createIconBadge(vaadinIcon, ariaLabel, "badge small");
+        }
+
+        public static Icon badgeIconSmallSuccess(VaadinIcon vaadinIcon, String ariaLabel) {
+            return Icons.createIconBadge(vaadinIcon, ariaLabel, "badge success small");
+        }
+
+        public static Icon badgeIconSmallError(VaadinIcon vaadinIcon, String ariaLabel) {
+            return Icons.createIconBadge(vaadinIcon, ariaLabel, "badge error smalle");
+        }
+
+        public static Icon badgeIconSmallContrast(VaadinIcon vaadinIcon, String ariaLabel) {
+            return Icons.createIconBadge(vaadinIcon, ariaLabel, "badge contrast small");
+        }
+
+        public static Icon badgeIconPrimarySmall(VaadinIcon vaadinIcon, String ariaLabel) {
+            return Icons.createIconBadge(vaadinIcon, ariaLabel, "badge small primary");
+        }
+
+        public static Icon badgeIconPrimarySmallSuccess(VaadinIcon vaadinIcon, String ariaLabel) {
+            return Icons.createIconBadge(vaadinIcon, ariaLabel, "badge success small primary");
+        }
+
+        public static Icon badgeIconPrimarySmallError(VaadinIcon vaadinIcon, String ariaLabel) {
+            return Icons.createIconBadge(vaadinIcon, ariaLabel, "badge error small primary");
+        }
+
+        public static Icon badgeIconPrimarySmallContrast(VaadinIcon vaadinIcon, String ariaLabel) {
+            return Icons.createIconBadge(vaadinIcon, ariaLabel, "badge contrast small primary");
+        }
+
+        public static Icon badgeIconPill(VaadinIcon vaadinIcon, String ariaLabel) {
+            return Icons.createIconBadge(vaadinIcon, ariaLabel, "badge pill");
+        }
+
+        public static Icon badgeIconPillSuccess(VaadinIcon vaadinIcon, String ariaLabel) {
+            return Icons.createIconBadge(vaadinIcon, ariaLabel, "badge success pill");
+        }
+
+        public static Icon badgeIconPillError(VaadinIcon vaadinIcon, String ariaLabel) {
+            return Icons.createIconBadge(vaadinIcon, ariaLabel, "badge error pill");
+        }
+
+        public static Icon badgeIconPillContrast(VaadinIcon vaadinIcon, String ariaLabel) {
+            return Icons.createIconBadge(vaadinIcon, ariaLabel, "badge contrast pill");
+        }
+
+        public static Icon badgeIconPillPrimary(VaadinIcon vaadinIcon, String ariaLabel) {
+            return Icons.createIconBadge(vaadinIcon, ariaLabel, "badge primary pill");
+        }
+
+        public static Icon badgeIconPillPrimarySuccess(VaadinIcon vaadinIcon, String ariaLabel) {
+            return Icons.createIconBadge(vaadinIcon, ariaLabel, "badge success primary pill");
+        }
+
+        public static Icon badgeIconPillPrimaryError(VaadinIcon vaadinIcon, String ariaLabel) {
+            return Icons.createIconBadge(vaadinIcon, ariaLabel, "badge error primary pill");
+        }
+
+        public static Icon badgeIconPillPrimaryContrast(VaadinIcon vaadinIcon, String ariaLabel) {
+            return Icons.createIconBadge(vaadinIcon, ariaLabel, "badge contrast primary pill");
+        }
+
+        public static Span createBadge(int value) {
+            Span badge = new Span(String.valueOf(value));
+            badge.getElement().getThemeList().add("badge small contrast");
+            badge.getStyle().set("margin-inline-start", "var(--lumo-space-xs)");
+            return badge;
+        }
+    }
+
+    public static final class Icons {
+
+        private  Icons() {}
+
+        public record MenuItemComponent(MenuItem menuItem, Text text) { }
+
+        /****************************************/
+    //    https://github.com/fredpena/vaadin-i18n/blob/main/src/main/java/dev/fredpena/app/views/MainLayout.java
+        public static MenuItemComponent createIconItem(MenuBar menu, VaadinIcon iconName, String label, String ariaLabel) {
+            return createIconItem(menu, new Icon(iconName), label, ariaLabel, false);
+        }
+
+        public static MenuItemComponent createIconItem(MenuBar menu, LumoIcon iconName, String label, String ariaLabel) {
+            return createIconItem(menu, iconName.create(), label, ariaLabel, false);
+        }
+
+        private static MenuItemComponent createIconItem(HasMenuItems menu, String iconName, String label) {
+
+            return createIconItem(menu, createIcon(iconName), label, null, true);
+        }
+
+        public static MenuItemComponent createIconItem(HasMenuItems menu, Component component, String label, String ariaLabel, boolean isChild) {
+            if (isChild) {
+                component.getStyle().set("margin-right", "var(--lumo-space-m)");
+            }
+
+            MenuItem item = menu.addItem(component, e -> {
+            });
+
+            if (ariaLabel != null) {
+                item.setAriaLabel(ariaLabel);
+            }
+
+            Text text = new Text(label);
+            if (label != null) {
+                item.add(text);
+            }
+
+            return new MenuItemComponent(item, text);
+        }
+
+        private static Component createIcon(String name) {
+            Image image = new Image("images/%s.png".formatted(name), "");
+            image.setMaxWidth("25px");
+            return image;
+        }
+
+        public static Icon createPrimaryIcon(VaadinIcon icon) {
+            Icon i = new Icon(icon);
+            setTextColor(LumoUtility.TextColor.PRIMARY, i);
+            return i;
+        }
+
+        public static Icon createSecondaryIcon(VaadinIcon icon) {
+            Icon i = new Icon(icon);
+            setTextColor(LumoUtility.TextColor.SECONDARY, i);
+            return i;
+        }
+
+        public static Icon createTertiaryIcon(VaadinIcon icon) {
+            Icon i = new Icon(icon);
+            setTextColor(LumoUtility.TextColor.TERTIARY, i);
+            return i;
+        }
+
+        public static Icon createDisabledIcon(VaadinIcon icon) {
+            Icon i = new Icon(icon);
+            setTextColor(LumoUtility.TextColor.DISABLED, i);
+            return i;
+        }
+
+        public static Icon createSuccessIcon(VaadinIcon icon) {
+            Icon i = new Icon(icon);
+            setTextColor(LumoUtility.TextColor.SUCCESS, i);
+            return i;
+        }
+
+        public static Icon createErrorIcon(VaadinIcon icon) {
+            Icon i = new Icon(icon);
+            setTextColor(LumoUtility.TextColor.ERROR, i);
+            return i;
+        }
+
+        public static Icon createSmallIcon(VaadinIcon icon) {
+            Icon i = new Icon(icon);
+            i.addClassName(LumoUtility.IconSize.SMALL);
+            return i;
+        }
+
+        public static Icon createLargeIcon(VaadinIcon icon) {
+            Icon i = new Icon(icon);
+            i.addClassName(LumoUtility.IconSize.LARGE);
+            return i;
+        }
+
+        public static Icon createIcon(String iconSize, String color,
+                                          VaadinIcon icon) {
+            Icon i = new Icon(icon);
+            i.addClassNames(iconSize, color);
+            setTextColor(color, i);
+            return i;
+        }
+
+        public static MenuItem createIconItem(HasMenuItems menu, LumoIcon iconName, String label, String ariaLabel,
+                                                  ComponentEventListener<ClickEvent<MenuItem>> clickListener) {
+            Icon icon = new Icon("lumo", iconName.toString().toLowerCase());
+
+            MenuItem item = menu.addItem(icon, clickListener);
+            item.setAriaLabel(ariaLabel);
+
+            if (label != null) {
+                item.add(new Text(label));
+            }
+
+            return item;
+        }
+
+        public static MenuItem createIconItem(HasMenuItems menu, VaadinIcon iconName, String label, String ariaLabel,
+                                                  ComponentEventListener<ClickEvent<MenuItem>> clickListener) {
+            Icon icon = new Icon(iconName);
+
+            icon.getStyle().set("width", "var(--lumo-icon-size-s)");
+            icon.getStyle().set("height", "var(--lumo-icon-size-s)");
+            icon.getStyle().set("marginRight", "var(--lumo-space-s)");
+
+            MenuItem item = menu.addItem(icon, clickListener);
+            item.setAriaLabel(ariaLabel);
+
+            if (label != null) {
+                item.add(new Text(label));
+            }
+
+            return item;
+        }
+
+        public static Icon createTrashIcon() {
+            return createIcon(LumoUtility.IconSize.SMALL, LumoUtility.TextColor.ERROR, VaadinIcon.TRASH);
+        }
+
+        public static Icon createEditIcon() {
+            return createIcon(LumoUtility.IconSize.SMALL, LumoUtility.TextColor.PRIMARY, VaadinIcon.EDIT);
+        }
+
+        public static Icon createCloseIcon() {
+            final Icon closeIcon = VaadinIcon.CLOSE_SMALL.create();
+            closeIcon.addClassName(LumoUtility.IconSize.SMALL);
+            return closeIcon;
+        }
+
+        private static Icon createIconBadge(VaadinIcon vaadinIcon, String ariaLabel, String theme) {
+            Icon icon = vaadinIcon.create();
+            icon.getStyle().set("padding", "var(--lumo-space-xs");
+            // Accessible label
+            icon.getElement().setAttribute("aria-label", ariaLabel);
+            // Tooltip
+            icon.getElement().setAttribute("title", ariaLabel);
+            icon.getElement().getThemeList().add(theme);
+            return icon;
+        }
+
+        public static Icon createStatusIcon(String status) {
+            boolean isAvailable = "Available".equals(status);
+            Icon icon;
+            if (isAvailable) {
+                icon = VaadinIcon.CHECK.create();
+                icon.getElement().getThemeList().add("badge success");
+            } else {
+                icon = VaadinIcon.CLOSE_SMALL.create();
+                icon.getElement().getThemeList().add("badge error");
+            }
+            icon.getStyle().set("padding", "var(--lumo-space-xs");
+            return icon;
+        }
+
+        public static Icon createIcon(VaadinIcon vaadinIcon) {
+            Icon icon = vaadinIcon.create();
+           /* icon.getStyle().set("color", "var(--lumo-primary-text-color)")
+                    .set("margin-inline-end", "var(--lumo-space-s")
+                    .set("padding", "var(--lumo-space-xs");*/
+            icon.addClassName(LumoUtility.TextColor.PRIMARY);
+            icon.setSize("20px");
+            return icon;
+        }
+
+        public static HorizontalLayout createIconMenuItem(VaadinIcon vaadinIcon, String text) {
+
+            Icon icon = new Icon(vaadinIcon);
+            icon.addClassName(LumoUtility.TextColor.PRIMARY);
+            icon.setSize("15px");
+
+            return Components.hl()
+                    .fullWidth()
+                    .spacing()
+                    .padding(false)
+                    .alignItems(FlexComponent.Alignment.CENTER)
+                    .add(icon)
+                    .add(new Text(text))
+                    .build();
+        }
+
+        public static MenuItem createIconItem(MenuBar menu, VaadinIcon iconName,
+                                                  String ariaLabel) {
+            Icon icon = new Icon(iconName);
+            MenuItem item = menu.addItem(icon);
+            item.setAriaLabel(ariaLabel);
+
+            return item;
+        }
     }
 
 }

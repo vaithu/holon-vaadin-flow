@@ -39,7 +39,7 @@ public class MessageLocalizationSupportConfigurator<C extends Component>
 	public MessageLocalizationSupportConfigurator(C component, Consumer<String> operation,
 			HasDeferrableLocalization deferrableLocalization) {
 		super(operation, deferrableLocalization);
-		ObjectUtils.argumentNotNull(component, "The component to configure must be not null");
+		ObjectUtils.argumentNotNull(component, "The component to create must be not null");
 		this.component = component;
 	}
 

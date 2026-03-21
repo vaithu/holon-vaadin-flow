@@ -65,7 +65,7 @@ public interface ClickNotifierConfigurator<S, E extends ClickEvent<S>, C extends
 	/**
 	 * Adds a shortcut to perform a <em>click</em> action for this component when the provided key is pressed.
 	 * <p>
-	 * A {@link ShortcutConfigurator} API is returned to further configure the shortcut listener. The
+	 * A {@link ShortcutConfigurator} API is returned to further create the shortcut listener. The
 	 * {@link ShortcutConfigurator#add()} method should be used to add the shortcut listener and go back to the parent
 	 * builder.
 	 * </p>

@@ -29,6 +29,7 @@ import com.holonplatform.vaadin.flow.internal.components.builders.AbstractLocalD
 import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.BlurNotifier.BlurEvent;
 import com.vaadin.flow.component.FocusNotifier.FocusEvent;
+import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.ValueContext;
 import com.vaadin.flow.data.converter.LocalDateToDateConverter;
 import com.vaadin.flow.dom.DomEventListener;
@@ -105,7 +106,8 @@ public abstract class AbstractDateInputBuilder<C extends DateInputConfigurator<C
 		if (date != null) {
 			final LocalDateToDateConverter converter = (timeZone != null) ? new LocalDateToDateConverter(timeZone)
 					: new LocalDateToDateConverter();
-			return converter.convertToPresentation(date, new ValueContext());
+            return converter.convertToPresentation(date,
+                    new ValueContext((Binder<?>) null, (Component) null, (HasValue<?, ?>) null));
 		}
 		return null;
 	}

@@ -3,11 +3,12 @@ package com.holonplatform.vaadin.flow.components.builders;
 import com.holonplatform.vaadin.flow.internal.components.builders.DefaultLayoutConfigurator;
 import com.holonplatform.vaadin.flow.internal.lumo.*;
 import com.holonplatform.vaadin.flow.vaadinplus.Layout;
+import com.iyensoft.vaadin.flow.utils.responsive.ViewMode;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.theme.lumo.LumoUtility;
 
 public interface LayoutConfigurator<C extends LayoutConfigurator<C>> extends ComponentConfigurator<C>,
-        HasSizeConfigurator<C>, HasStyleConfigurator<C>, HasEnabledConfigurator<C>, HasComponentsConfigurator<C> {
+        HasSizeConfigurator<C>, HasStyleConfigurator<C>, HasEnabledConfigurator<C>, HasComponentsConfigurator<C>  {
 
     C alignItems(AlignItems alignItems);
 
@@ -17,12 +18,17 @@ public interface LayoutConfigurator<C extends LayoutConfigurator<C>> extends Com
 
     C display(Display display);
 
+    C flex();
+
     C display(Breakpoint breakpoint, Display display);
+
+    C display(ViewMode viewMode, Display display);
 
     C flexDirection(FlexDirection flexDirection);
 
     C flexDirection(Breakpoint breakpoint, FlexDirection flexDirection);
 
+    C flexDirection(ViewMode viewMode, FlexDirection flexDirection);
     C flexBasis(String flexBasis, Component... components);
 
     C flexGrow();
@@ -52,6 +58,12 @@ public interface LayoutConfigurator<C extends LayoutConfigurator<C>> extends Com
      * Sets the number of grid columns for a given breakpoint.
      */
     C columns(Breakpoint breakpoint, GridColumns gridColumns);
+ /**
+     * Sets the number of grid columns for a given breakpoint.
+     */
+    default C columns(ViewMode viewMode, GridColumns gridColumns) {
+        return columns(viewMode.toBreakpoint(),gridColumns);
+    }
 
     C columnSpan(ColumnSpan columnSpan, Component... components);
 
@@ -96,7 +108,7 @@ public interface LayoutConfigurator<C extends LayoutConfigurator<C>> extends Com
     /**
      * Get a new {@link LayoutConfigurator} for given component.
      *
-     * @param component The component to configure (not null)
+     * @param component The component to create (not null)
      * @return A new {@link LayoutConfigurator}
      */
     static LayoutConfigurator.BaseLayoutConfigurator configure(Layout component) {

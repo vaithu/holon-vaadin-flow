@@ -148,11 +148,11 @@ public class DefaultValidatableInputConfigurator<T>
 	/**
 	 * Configure the validatable input.
 	 * @param <V> Input type
-	 * @param input The input to configure
+	 * @param input The input to create
 	 * @return The configured input
 	 */
 	public <V extends ValidatableInput<T>> V configure(V input) {
-		// configure
+		// create
 		validators.forEach(v -> input.addValidator(v));
 		if (validationStatusHandler != null) {
 			input.setValidationStatusHandler(validationStatusHandler);

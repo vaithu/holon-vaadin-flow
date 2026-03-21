@@ -79,7 +79,7 @@ import java.util.function.Function;
  * 
  * @since 5.2.0
  */
-public interface Input<T> extends ValueHolder<T, ValueChangeEvent<T>>, ValueComponent<T>, KeyNotifierConfigurator {
+public interface Input<T> extends ValueHolder<T, ValueChangeEvent<T>>, ValueComponent<T> {
 
 	/**
 	 * Sets the read-only mode of this input component. The user can't change the
@@ -292,7 +292,7 @@ public interface Input<T> extends ValueHolder<T, ValueChangeEvent<T>>, ValueComp
 	}
 
 	/**
-	 * Get a builder to configure and create a new {@link Input} from another
+	 * Get a builder to create and create a new {@link Input} from another
 	 * {@link Input} with a different value type, using given {@link Converter} to
 	 * perform value conversions.
 	 * @param <T>       Presentation value type

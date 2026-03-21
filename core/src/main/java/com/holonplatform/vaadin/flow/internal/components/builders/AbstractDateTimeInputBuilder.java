@@ -29,6 +29,7 @@ import com.holonplatform.vaadin.flow.internal.components.builders.AbstractLocalD
 import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.BlurNotifier.BlurEvent;
 import com.vaadin.flow.component.FocusNotifier.FocusEvent;
+import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.ValueContext;
 import com.vaadin.flow.data.converter.LocalDateTimeToDateConverter;
 import com.vaadin.flow.dom.DomEventListener;
@@ -107,7 +108,8 @@ public abstract class AbstractDateTimeInputBuilder<C extends DateTimeInputConfig
 			final LocalDateTimeToDateConverter converter = (timeZone != null)
 					? new LocalDateTimeToDateConverter(timeZone)
 					: new LocalDateTimeToDateConverter(ZoneId.systemDefault());
-			return converter.convertToPresentation(date, new ValueContext());
+            return converter.convertToPresentation(date,
+                    new ValueContext((Binder<?>) null, (Component) null, (HasValue<?, ?>) null));
 		}
 		return null;
 	}
@@ -165,34 +167,6 @@ public abstract class AbstractDateTimeInputBuilder<C extends DateTimeInputConfig
 	@Override
 	public C timeZone(ZoneId zone) {
 		this.timeZone = zone;
-		return getConfigurator();
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * com.holonplatform.vaadin.flow.components.builders.HasTimeInputConfigurator#
-	 * spacing(boolean)
-	 */
-	@Deprecated
-	@Override
-	public C spacing(boolean spacing) {
-		localDateTimeInputBuilder.spacing(spacing);
-		return getConfigurator();
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * com.holonplatform.vaadin.flow.components.builders.HasTimeInputConfigurator#
-	 * timeInputWidth(java.lang.String)
-	 */
-	@Deprecated
-	@Override
-	public C timeInputWidth(String timeInputWidth) {
-		localDateTimeInputBuilder.timeInputWidth(timeInputWidth);
 		return getConfigurator();
 	}
 
@@ -623,20 +597,6 @@ public abstract class AbstractDateTimeInputBuilder<C extends DateTimeInputConfig
 	@Override
 	public C label(Localizable label) {
 		localDateTimeInputBuilder.label(label);
-		return getConfigurator();
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * com.holonplatform.vaadin.flow.components.builders.HasTimeInputConfigurator#
-	 * timeStep(java.time.Duration)
-	 */
-	@Deprecated
-	@Override
-	public C timeStep(Duration step) {
-		localDateTimeInputBuilder.timeStep(step);
 		return getConfigurator();
 	}
 

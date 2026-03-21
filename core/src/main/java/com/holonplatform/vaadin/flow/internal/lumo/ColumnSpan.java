@@ -1,7 +1,9 @@
 package com.holonplatform.vaadin.flow.internal.lumo;
 
 import com.vaadin.flow.theme.lumo.LumoUtility;
+import lombok.Getter;
 
+@Getter
 public enum ColumnSpan {
         COLUMN_SPAN_1(LumoUtility.Grid.Column.COLUMN_SPAN_1),
         COLUMN_SPAN_2(LumoUtility.Grid.Column.COLUMN_SPAN_2),
@@ -19,11 +21,8 @@ public enum ColumnSpan {
 
         private final String className;
 
-        private ColumnSpan(String className) {
+        ColumnSpan(String className) {
             this.className = className;
         }
 
-        public String getClassName() {
-            return this.className;
-        }
-    }
+}

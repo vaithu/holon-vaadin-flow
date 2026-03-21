@@ -88,7 +88,7 @@ public interface HasLabelConfigurator<C extends HasLabelConfigurator<C>> {
 	 * Create a new {@link BaseHasLabelConfigurator}.
 	 * @param <C> Component type
 	 * @param setLabelOperation Operation to use to set the component label (not null)
-	 * @param component Component to configure (not null)
+	 * @param component Component to create (not null)
 	 * @return A new {@link BaseHasLabelConfigurator}
 	 */
 	static <C extends HasElement> BaseHasLabelConfigurator create(C component, Consumer<String> setLabelOperation) {
@@ -99,7 +99,7 @@ public interface HasLabelConfigurator<C extends HasLabelConfigurator<C>> {
 	 * Create a new {@link BaseHasLabelConfigurator}.
 	 * @param <C> Component type
 	 * @param setLabelOperation Operation to use to set the component label (not null)
-	 * @param component Component to configure (not null)
+	 * @param component Component to create (not null)
 	 * @param deferrableLocalization Optional {@link HasDeferrableLocalization} reference
 	 * @return A new {@link BaseHasLabelConfigurator}
 	 */

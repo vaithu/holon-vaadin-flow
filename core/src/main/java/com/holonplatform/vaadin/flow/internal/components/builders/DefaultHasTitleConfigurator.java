@@ -39,7 +39,7 @@ public class DefaultHasTitleConfigurator<C extends HasElement> extends AbstractL
 
 	/**
 	 * Constructor.
-	 * @param component The component to configure (not null)
+	 * @param component The component to create (not null)
 	 * @param setTitleOperation Actual operation to set the title (not null)
 	 */
 	public DefaultHasTitleConfigurator(C component, Consumer<String> setTitleOperation) {
@@ -48,14 +48,14 @@ public class DefaultHasTitleConfigurator<C extends HasElement> extends AbstractL
 
 	/**
 	 * Constructor.
-	 * @param component The component to configure (not null)
+	 * @param component The component to create (not null)
 	 * @param setTitleOperation Actual operation to set the title (not null)
 	 * @param deferrableLocalization Optional {@link HasDeferrableLocalization} reference
 	 */
 	public DefaultHasTitleConfigurator(C component, Consumer<String> setTitleOperation,
 			HasDeferrableLocalization deferrableLocalization) {
 		super(text -> setTitleOperation.accept(text), deferrableLocalization);
-		ObjectUtils.argumentNotNull(component, "The component to configure must be not null");
+		ObjectUtils.argumentNotNull(component, "The component to create must be not null");
 		this.component = component;
 	}
 

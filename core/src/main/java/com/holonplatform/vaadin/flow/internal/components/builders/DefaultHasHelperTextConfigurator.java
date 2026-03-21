@@ -40,7 +40,7 @@ public class DefaultHasHelperTextConfigurator<C extends HasHelper> extends Abstr
 
 	/**
 	 * Constructor.
-	 * @param component The component to configure (not null)
+	 * @param component The component to create (not null)
 	 * @param setHelperText Actual operation to set the helper text (not null)
 	 */
 	public DefaultHasHelperTextConfigurator(C component, Consumer<String> setHelperText) {
@@ -49,14 +49,14 @@ public class DefaultHasHelperTextConfigurator<C extends HasHelper> extends Abstr
 
 	/**
 	 * Constructor.
-	 * @param component The component to configure (not null)
+	 * @param component The component to create (not null)
 	 * @param setHelperText Actual operation to set the helper text (not null)
 	 * @param deferrableLocalization Optional {@link HasDeferrableLocalization} reference
 	 */
 	public DefaultHasHelperTextConfigurator(C component, Consumer<String> setHelperText,
                                             HasDeferrableLocalization deferrableLocalization) {
 		super(text -> setHelperText.accept(text), deferrableLocalization);
-		ObjectUtils.argumentNotNull(component, "The component to configure must be not null");
+		ObjectUtils.argumentNotNull(component, "The component to create must be not null");
 		this.component = component;
 	}
 

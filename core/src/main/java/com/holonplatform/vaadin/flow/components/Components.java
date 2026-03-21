@@ -52,12 +52,13 @@ import com.holonplatform.vaadin.flow.data.ItemConverter;
 import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
 import com.holonplatform.vaadin.flow.internal.components.DefaultFormFooter;
 import com.holonplatform.vaadin.flow.internal.components.DefaultTimeline;
-import com.holonplatform.vaadin.flow.internal.components.DefaultXPanel;
 import com.holonplatform.vaadin.flow.internal.components.builders.DefaultAccordionHeaderBuilder;
 import com.holonplatform.vaadin.flow.internal.components.builders.DefaultCloseButtonBuilder;
-import com.holonplatform.vaadin.flow.internal.components.builders.DefaultMobileGridTemplateBuilder;
 import com.holonplatform.vaadin.flow.internal.components.builders.DefaultOptionsButtonBuilder;
 import com.holonplatform.vaadin.flow.vaadinplus.Layout;
+import com.iyensoft.vaadin.flow.components.IyenPanel;
+import com.iyensoft.vaadin.flow.components.builders.*;
+import com.iyensoft.vaadin.flow.internal.components.builders.MobileGridColumnBuilder;
 import com.vaadin.flow.component.ClickNotifier;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HtmlContainer;
@@ -115,7 +116,7 @@ public interface Components {
 
     /**
      * Configuration property which can be used for a {@link LocalTime} type
-     * {@link Property} to configure the <em>steps</em> to show for the
+     * {@link Property} to create the <em>steps</em> to show for the
      * {@link Input} component bound to the property, i.e. the intervals for the
      * displayed items in the time input dropdown.
      * <p>
@@ -133,7 +134,7 @@ public interface Components {
     // Configurators
 
     /**
-     * Get a {@link LabelConfigurator} to configure given <em>label</em> type
+     * Get a {@link LabelConfigurator} to create given <em>label</em> type
      * component.
      * <p>
      * The component must be a {@link HtmlContainer} and a {@link ClickNotifier},
@@ -141,7 +142,7 @@ public interface Components {
      * </p>
      *
      * @param <L>   Label element type
-     * @param label The component to configure (not null)
+     * @param label The component to create (not null)
      * @return A {@link LabelConfigurator}
      */
     @SuppressWarnings("rawtypes")
@@ -150,9 +151,9 @@ public interface Components {
     }
 
     /**
-     * Get a {@link ButtonConfigurator} to configure given {@link Button} instance.
+     * Get a {@link ButtonConfigurator} to create given {@link Button} instance.
      *
-     * @param button Button to configure (not null)
+     * @param button Button to create (not null)
      * @return A {@link ButtonConfigurator}
      */
     static BaseButtonConfigurator configure(Button button) {
@@ -160,10 +161,10 @@ public interface Components {
     }
 
     /**
-     * Get a {@link VerticalLayoutConfigurator} to configure given
+     * Get a {@link VerticalLayoutConfigurator} to create given
      * {@link VerticalLayout}.
      *
-     * @param layout Layout to configure
+     * @param layout Layout to create
      * @return A new {@link VerticalLayoutConfigurator}
      */
     static VerticalLayoutConfigurator configure(VerticalLayout layout) {
@@ -171,10 +172,10 @@ public interface Components {
     }
 
     /**
-     * Get a {@link HorizontalLayoutConfigurator} to configure given
+     * Get a {@link HorizontalLayoutConfigurator} to create given
      * {@link HorizontalLayout}.
      *
-     * @param layout Layout to configure
+     * @param layout Layout to create
      * @return A new {@link HorizontalLayoutConfigurator}
      */
     static HorizontalLayoutConfigurator configure(HorizontalLayout layout) {
@@ -182,10 +183,10 @@ public interface Components {
     }
 
     /**
-     * Get a {@link BaseFormLayoutConfigurator} to configure given
+     * Get a {@link BaseFormLayoutConfigurator} to create given
      * {@link FormLayout}.
      *
-     * @param layout Layout to configure
+     * @param layout Layout to create
      * @return A new {@link BaseFormLayoutConfigurator}
      */
     static BaseFormLayoutConfigurator configure(FormLayout layout) {
@@ -228,8 +229,19 @@ public interface Components {
 		return CardGridBuilder.create().withCard(new Div());
 	}*/
 
+    static GridHeaderBuilder gridHeader(String title) {
+        return GridHeaderBuilder.create(title);
+    }
+    static GridHeaderBuilder gridHeader(LabelBuilder<?> labelBuilder) {
+        return GridHeaderBuilder.create(labelBuilder);
+    }
+
     static TabsBuilder tabs() {
         return TabsBuilder.create();
+    }
+
+    static LazyTabsBuilder lazyTabs() {
+        return LazyTabsBuilder.create();
     }
 
     static AutoTabsBuilder autoTabs() {
@@ -290,10 +302,6 @@ public interface Components {
         return TabSheetBuilder.create();
     }
 
-    static DefaultMobileGridTemplateBuilder mobileGrid() {
-        return new DefaultMobileGridTemplateBuilder();
-    }
-
     static TitleBuilder titlePanel() {
         return TitleBuilder.create();
     }
@@ -328,7 +336,7 @@ public interface Components {
      * This is an alias for the {@link #divLabel()} ()} method.
      * </p>
      *
-     * @return The {@link LabelBuilder} to configure and obtain the component
+     * @return The {@link LabelBuilder} to create and obtain the component
      * instance
      */
     static LabelBuilder<Div> label() {
@@ -339,7 +347,7 @@ public interface Components {
      * Obtain a {@link LabelBuilder} to create a label component using a
      * {@link Span} tag.
      *
-     * @return The {@link LabelBuilder} to configure and obtain the component
+     * @return The {@link LabelBuilder} to create and obtain the component
      * instance
      */
     static LabelBuilder<Span> span() {
@@ -351,7 +359,7 @@ public interface Components {
      * Obtain a {@link LabelBuilder} to create a label component using a {@link Div}
      * tag.
      *
-     * @return The {@link LabelBuilder} to configure and obtain the component
+     * @return The {@link LabelBuilder} to create and obtain the component
      * instance
      */
     static LabelBuilder<Div> divLabel() {
@@ -362,7 +370,7 @@ public interface Components {
      * Obtain a {@link LabelBuilder} to create a label component using a
      * {@link Paragraph} tag.
      *
-     * @return The {@link LabelBuilder} to configure and obtain the component
+     * @return The {@link LabelBuilder} to create and obtain the component
      * instance
      */
     static LabelBuilder<Paragraph> paragraph() {
@@ -373,7 +381,7 @@ public interface Components {
      * Obtain a {@link LabelBuilder} to create a label component using a {@link H1}
      * tag.
      *
-     * @return The {@link LabelBuilder} to configure and obtain the component
+     * @return The {@link LabelBuilder} to create and obtain the component
      * instance
      */
     static LabelBuilder<H1> h1() {
@@ -384,7 +392,7 @@ public interface Components {
      * Obtain a {@link LabelBuilder} to create a label component using a {@link H2}
      * tag.
      *
-     * @return The {@link LabelBuilder} to configure and obtain the component
+     * @return The {@link LabelBuilder} to create and obtain the component
      * instance
      */
     static LabelBuilder<H2> h2() {
@@ -399,7 +407,7 @@ public interface Components {
      * Obtain a {@link LabelBuilder} to create a label component using a {@link H3}
      * tag.
      *
-     * @return The {@link LabelBuilder} to configure and obtain the component
+     * @return The {@link LabelBuilder} to create and obtain the component
      * instance
      */
     static LabelBuilder<H3> h3() {
@@ -410,7 +418,7 @@ public interface Components {
      * Obtain a {@link LabelBuilder} to create a label component using a {@link H4}
      * tag.
      *
-     * @return The {@link LabelBuilder} to configure and obtain the component
+     * @return The {@link LabelBuilder} to create and obtain the component
      * instance
      */
     static LabelBuilder<H4> h4() {
@@ -421,7 +429,7 @@ public interface Components {
      * Obtain a {@link LabelBuilder} to create a label component using a {@link H5}
      * tag.
      *
-     * @return The {@link LabelBuilder} to configure and obtain the component
+     * @return The {@link LabelBuilder} to create and obtain the component
      * instance
      */
     static LabelBuilder<H5> h5() {
@@ -432,7 +440,7 @@ public interface Components {
      * Obtain a {@link LabelBuilder} to create a label component using a {@link H6}
      * tag.
      *
-     * @return The {@link LabelBuilder} to configure and obtain the component
+     * @return The {@link LabelBuilder} to create and obtain the component
      * instance
      */
     static LabelBuilder<H6> h6() {
@@ -460,6 +468,18 @@ public interface Components {
         return HeaderBuilder.create(title);
     }
 
+    static HeaderBuilder header(LabelBuilder<?> labelBuilder) {
+        return HeaderBuilder.create(labelBuilder);
+    }
+
+    static MobileGridColumnBuilder mobileGridColumn() {
+        return MobileGridColumnBuilder.create();
+    }
+
+    static MobileGridColumnBuilder mobileGridColumn(Layout layout) {
+        return MobileGridColumnBuilder.create(layout);
+    }
+
     static
 
     interface utils {
@@ -484,6 +504,33 @@ public interface Components {
         return ZohoBuilder.create(mobile);
     }
 
+    static IyenMasterBuilder master() {
+        return IyenMasterBuilder.create();
+    }
+
+    static IyenDetailBuilder detail() {
+        return IyenDetailBuilder.create();
+    }
+
+    static IyenMasterBuilder master(Layout layout) {
+        return IyenMasterBuilder.create(layout);
+    }
+
+    static IyenDetailBuilder detail(Layout layout) {
+        return IyenDetailBuilder.create(layout);
+    }
+
+    static IyenViewBuilder iyenView() {
+        return IyenViewBuilder.create();
+    }
+
+    static IyenViewBuilder iyenView(Layout layout) {
+        return IyenViewBuilder.create(layout);
+    }
+
+    static CardBuilder card() {
+        return CardBuilder.create();
+    }
     static RowBuilder row() {
         return RowBuilder.create();
     }
@@ -492,8 +539,16 @@ public interface Components {
         return ColumnBuilder.create();
     }
 
-    static DefaultXPanel panel() {
+   /* static DefaultXPanel panel() {
         return new DefaultXPanel();
+    }*/
+
+    static PanelBuilder panel(Component... components) {
+        return PanelBuilder.create(components);
+    }
+
+    static PanelBuilder panel() {
+        return PanelBuilder.create(new IyenPanel());
     }
 
 
@@ -971,12 +1026,12 @@ public interface Components {
 
     }
 
-    interface badge {
+    interface Badge {
         /**
          * Obtain a {@link LabelBuilder} to create a badge component using a
          * {@link Span} tag.
          *
-         * @return The {@link LabelBuilder} to configure and obtain the component
+         * @return The {@link LabelBuilder} to create and obtain the component
          * instance
          */
         static LabelBuilder<Span> badge() {
@@ -989,7 +1044,7 @@ public interface Components {
          * Obtain a {@link LabelBuilder} to create a badge success component using a
          * {@link Span} tag.
          *
-         * @return The {@link LabelBuilder} to configure and obtain the component
+         * @return The {@link LabelBuilder} to create and obtain the component
          * instance
          */
         static LabelBuilder<Span> badgeSuccess() {
@@ -1002,7 +1057,7 @@ public interface Components {
          * Obtain a {@link LabelBuilder} to create a badge error component using a
          * {@link Span} tag.
          *
-         * @return The {@link LabelBuilder} to configure and obtain the component
+         * @return The {@link LabelBuilder} to create and obtain the component
          * instance
          */
         static LabelBuilder<Span> badgeError() {
@@ -1015,7 +1070,7 @@ public interface Components {
          * Obtain a {@link LabelBuilder} to create a badge primary component using a
          * {@link Span} tag.
          *
-         * @return The {@link LabelBuilder} to configure and obtain the component
+         * @return The {@link LabelBuilder} to create and obtain the component
          * instance
          */
         static LabelBuilder<Span> badgePrimary() {
@@ -1028,7 +1083,7 @@ public interface Components {
          * Obtain a {@link LabelBuilder} to create a badge success primary component using a
          * {@link Span} tag.
          *
-         * @return The {@link LabelBuilder} to configure and obtain the component
+         * @return The {@link LabelBuilder} to create and obtain the component
          * instance
          */
         static LabelBuilder<Span> badgePrimarySuccess() {
@@ -1041,7 +1096,7 @@ public interface Components {
          * Obtain a {@link LabelBuilder} to create a badge contrast component using a
          * {@link Span} tag.
          *
-         * @return The {@link LabelBuilder} to configure and obtain the component
+         * @return The {@link LabelBuilder} to create and obtain the component
          * instance
          */
         static LabelBuilder<Span> badgePrimaryError() {
@@ -1054,7 +1109,7 @@ public interface Components {
          * Obtain a {@link LabelBuilder} to create a badge contrast component using a
          * {@link Span} tag.
          *
-         * @return The {@link LabelBuilder} to configure and obtain the component
+         * @return The {@link LabelBuilder} to create and obtain the component
          * instance
          */
         static LabelBuilder<Span> badgePrimaryContrast() {
@@ -1067,7 +1122,7 @@ public interface Components {
          * Obtain a {@link LabelBuilder} to create a badge small component using a
          * {@link Span} tag.
          *
-         * @return The {@link LabelBuilder} to configure and obtain the component
+         * @return The {@link LabelBuilder} to create and obtain the component
          * instance
          */
         static LabelBuilder<Span> badgeSmall() {
@@ -1080,7 +1135,7 @@ public interface Components {
          * Obtain a {@link LabelBuilder} to create a badge contrast component using a
          * {@link Span} tag.
          *
-         * @return The {@link LabelBuilder} to configure and obtain the component
+         * @return The {@link LabelBuilder} to create and obtain the component
          * instance
          */
         static LabelBuilder<Span> badgeSmallSuccess() {
@@ -1093,7 +1148,7 @@ public interface Components {
          * Obtain a {@link LabelBuilder} to create a badge error small component using a
          * {@link Span} tag.
          *
-         * @return The {@link LabelBuilder} to configure and obtain the component
+         * @return The {@link LabelBuilder} to create and obtain the component
          * instance
          */
         static LabelBuilder<Span> badgeSmallError() {
@@ -1106,7 +1161,7 @@ public interface Components {
          * Obtain a {@link LabelBuilder} to create a badge contrast small component using a
          * {@link Span} tag.
          *
-         * @return The {@link LabelBuilder} to configure and obtain the component
+         * @return The {@link LabelBuilder} to create and obtain the component
          * instance
          */
         static LabelBuilder<Span> badgeSmallContrast() {
@@ -1119,7 +1174,7 @@ public interface Components {
          * Obtain a {@link LabelBuilder} to create a badge small primary component using a
          * {@link Span} tag.
          *
-         * @return The {@link LabelBuilder} to configure and obtain the component
+         * @return The {@link LabelBuilder} to create and obtain the component
          * instance
          */
         static LabelBuilder<Span> badgeSmallPrimary() {
@@ -1132,7 +1187,7 @@ public interface Components {
          * Obtain a {@link LabelBuilder} to create a badge success small primary component using a
          * {@link Span} tag.
          *
-         * @return The {@link LabelBuilder} to configure and obtain the component
+         * @return The {@link LabelBuilder} to create and obtain the component
          * instance
          */
         static LabelBuilder<Span> badgeSmallPrimarySuccess() {
@@ -1145,7 +1200,7 @@ public interface Components {
          * Obtain a {@link LabelBuilder} to create a badge error small primary component using a
          * {@link Span} tag.
          *
-         * @return The {@link LabelBuilder} to configure and obtain the component
+         * @return The {@link LabelBuilder} to create and obtain the component
          * instance
          */
         static LabelBuilder<Span> badgeSmallPrimaryError() {
@@ -1158,7 +1213,7 @@ public interface Components {
          * Obtain a {@link LabelBuilder} to create a badge contrast small primary component using a
          * {@link Span} tag.
          *
-         * @return The {@link LabelBuilder} to configure and obtain the component
+         * @return The {@link LabelBuilder} to create and obtain the component
          * instance
          */
         static LabelBuilder<Span> badgeSmallPrimaryContrast() {
@@ -1171,7 +1226,7 @@ public interface Components {
          * Obtain a {@link LabelBuilder} to create a badge pill component using a
          * {@link Span} tag.
          *
-         * @return The {@link LabelBuilder} to configure and obtain the component
+         * @return The {@link LabelBuilder} to create and obtain the component
          * instance
          */
         static LabelBuilder<Span> badgePill() {
@@ -1184,7 +1239,7 @@ public interface Components {
          * Obtain a {@link LabelBuilder} to create a badge success pill component using a
          * {@link Span} tag.
          *
-         * @return The {@link LabelBuilder} to configure and obtain the component
+         * @return The {@link LabelBuilder} to create and obtain the component
          * instance
          */
         static LabelBuilder<Span> badgePillSuccess() {
@@ -1197,7 +1252,7 @@ public interface Components {
          * Obtain a {@link LabelBuilder} to create a badge error pill component using a
          * {@link Span} tag.
          *
-         * @return The {@link LabelBuilder} to configure and obtain the component
+         * @return The {@link LabelBuilder} to create and obtain the component
          * instance
          */
         static LabelBuilder<Span> badgePillError() {
@@ -1210,7 +1265,7 @@ public interface Components {
          * Obtain a {@link LabelBuilder} to create a badge contrast pill component using a
          * {@link Span} tag.
          *
-         * @return The {@link LabelBuilder} to configure and obtain the component
+         * @return The {@link LabelBuilder} to create and obtain the component
          * instance
          */
         static LabelBuilder<Span> badgePillContrast() {
@@ -1223,7 +1278,7 @@ public interface Components {
          * Obtain a {@link LabelBuilder} to create a badge primary pill component using a
          * {@link Span} tag.
          *
-         * @return The {@link LabelBuilder} to configure and obtain the component
+         * @return The {@link LabelBuilder} to create and obtain the component
          * instance
          */
         static LabelBuilder<Span> badgePillPrimary() {
@@ -1236,7 +1291,7 @@ public interface Components {
          * Obtain a {@link LabelBuilder} to create a badge success primary pill component using a
          * {@link Span} tag.
          *
-         * @return The {@link LabelBuilder} to configure and obtain the component
+         * @return The {@link LabelBuilder} to create and obtain the component
          * instance
          */
         static LabelBuilder<Span> badgePillPrimarySuccess() {
@@ -1249,7 +1304,7 @@ public interface Components {
          * Obtain a {@link LabelBuilder} to create a badge error primary pill component using a
          * {@link Span} tag.
          *
-         * @return The {@link LabelBuilder} to configure and obtain the component
+         * @return The {@link LabelBuilder} to create and obtain the component
          * instance
          */
         static LabelBuilder<Span> badgePillPrimaryError() {
@@ -1262,7 +1317,7 @@ public interface Components {
          * Obtain a {@link LabelBuilder} to create a badge contrast primary pill component using a
          * {@link Span} tag.
          *
-         * @return The {@link LabelBuilder} to configure and obtain the component
+         * @return The {@link LabelBuilder} to create and obtain the component
          * instance
          */
         static LabelBuilder<Span> badgePillPrimaryContrast() {

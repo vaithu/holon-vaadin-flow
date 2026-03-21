@@ -39,7 +39,7 @@ public class DefaultHasPlaceholderConfigurator<C extends HasElement> extends Abs
 
 	/**
 	 * Constructor.
-	 * @param component The component to configure (not null)
+	 * @param component The component to create (not null)
 	 * @param setPlaceholderOperation Actual operation to set the placeholder (not null)
 	 */
 	public DefaultHasPlaceholderConfigurator(C component, Consumer<String> setPlaceholderOperation) {
@@ -48,14 +48,14 @@ public class DefaultHasPlaceholderConfigurator<C extends HasElement> extends Abs
 
 	/**
 	 * Constructor.
-	 * @param component The component to configure (not null)
+	 * @param component The component to create (not null)
 	 * @param setPlaceholderOperation Actual operation to set the placeholder (not null)
 	 * @param deferrableLocalization Optional {@link HasDeferrableLocalization} reference
 	 */
 	public DefaultHasPlaceholderConfigurator(C component, Consumer<String> setPlaceholderOperation,
 			HasDeferrableLocalization deferrableLocalization) {
 		super(text -> setPlaceholderOperation.accept(text), deferrableLocalization);
-		ObjectUtils.argumentNotNull(component, "The component to configure must be not null");
+		ObjectUtils.argumentNotNull(component, "The component to create must be not null");
 		this.component = component;
 	}
 

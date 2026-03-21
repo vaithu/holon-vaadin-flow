@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+@Deprecated
 public final class DefaultBeanCrudV2<T> implements HasBeanRecord<T>{
 
     private final DefaultBeanDatastore beanDatastore;

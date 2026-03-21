@@ -1,7 +1,7 @@
 package com.holonplatform.vaadin.flow.test;
 
 import com.holonplatform.vaadin.flow.components.builders.TabBuilder;
-import com.holonplatform.vaadin.flow.components.builders.TabsBuilder;
+import com.iyensoft.vaadin.flow.components.builders.TabsBuilder;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;

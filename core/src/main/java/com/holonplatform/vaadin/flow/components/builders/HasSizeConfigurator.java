@@ -185,7 +185,7 @@ public interface HasSizeConfigurator<C extends HasSizeConfigurator<C>> {
 
 	/**
 	 * Create a new {@link BaseHasSizeConfigurator}.
-	 * @param component Component to configure (not null)
+	 * @param component Component to create (not null)
 	 * @return A new {@link BaseHasSizeConfigurator}
 	 */
 	static BaseHasSizeConfigurator create(HasSize component) {

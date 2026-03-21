@@ -156,7 +156,7 @@ public abstract class AbstractZohoConfigurator<C extends ZohoConfigurator<C>> ex
     }
 
     @Override
-    public C gridHeader(GridHeader<?> gridHeader) {
+    public C gridHeader(GridHeader gridHeader) {
         return masterContent(gridHeader);
     }
 

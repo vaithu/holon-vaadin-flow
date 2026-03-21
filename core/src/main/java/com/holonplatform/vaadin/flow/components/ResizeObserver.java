@@ -16,21 +16,21 @@ import java.util.logging.Logger;
 /**
  * A helper to detect and observe size changes of components. Provides a Java API around the
  * <a href="https://developer.mozilla.org/en-US/docs/Web/API/ResizeObserver">ResizeObserver</a> JS API.
- * Allows you for example to easily configure Grid columns for different
+ * Allows you for example to easily create Grid columns for different
  * devices or swap component implementations based on the screen size/orientation.
  * <p>
- *     When you start to observe a component size, the initial size is reported immediately.
- *     So unlike with the Page#addBrowserWindowResizeListener, you don't need to wait for the first resize event
- *     or to combine it with the Page#retrieveExtendedClientDetails to get the initial size.
+ * When you start to observe a component size, the initial size is reported immediately.
+ * So unlike with the Page#addBrowserWindowResizeListener, you don't need to wait for the first resize event
+ * or to combine it with the Page#retrieveExtendedClientDetails to get the initial size.
  * </p>
  * <p>
- *     There is one ResizeObserver instance per UI, but your listeners are attached to a specific component.
- *     As the current version of Vaadin does not support extending UI, but this API is designed to be
- *     UI specific, fetch a ResizeObserver instance with {@link #of(UI)} or {@link #get()} (this uses
- *     {@link UI#getCurrent()} ).
+ * There is one ResizeObserver instance per UI, but your listeners are attached to a specific component.
+ * As the current version of Vaadin does not support extending UI, but this API is designed to be
+ * UI specific, fetch a ResizeObserver instance with {@link #of(UI)} or {@link #get()} (this uses
+ * {@link UI#getCurrent()} ).
  * </p>
  * <p>
- *     There are two ways to listen to size changes:
+ * There are two ways to listen to size changes:
  * </p>
  * <ul>
  *     <li>Using the {@link #addResizeListener(Component, ComponentEventListener)} method, which is a Vaadin core
@@ -63,6 +63,20 @@ public class ResizeObserver {
         }
 
         /**
+         * @return the new width of the component in pixels
+         */
+        public int getWidth() {
+            return dimensions.width();
+        }
+
+        /**
+         * @return the new height of the component in pixels
+         */
+        public int getHeight() {
+            return dimensions.height();
+        }
+
+        /**
          * @return the new dimensions of the component
          */
         public Dimensions getDimensions() {
@@ -81,14 +95,14 @@ public class ResizeObserver {
      * A record that describes the size and position of a component. Serialized from the browsers
      * <a href="https://developer.mozilla.org/en-US/docs/Web/API/DOMRectReadOnly">DOMRectReadOnly</a>
      *
-     * @param x the x coordinate of the DOMRectReadOnly's origin.
-     * @param y the y coordinate of the DOMRectReadOnly's origin.
-     * @param width the width of the DOMRectReadOnly.
+     * @param x      the x coordinate of the DOMRectReadOnly's origin.
+     * @param y      the y coordinate of the DOMRectReadOnly's origin.
+     * @param width  the width of the DOMRectReadOnly.
      * @param height the height of the DOMRectReadOnly.
-     * @param top the top coordinate value of the DOMRectReadOnly (usually the same as y).
-     * @param right the right coordinate value of the DOMRectReadOnly (usually the same as x + width).
+     * @param top    the top coordinate value of the DOMRectReadOnly (usually the same as y).
+     * @param right  the right coordinate value of the DOMRectReadOnly (usually the same as x + width).
      * @param bottom the bottom coordinate value of the DOMRectReadOnly (usually the same as y + height).
-     * @param left the left coordinate value of the DOMRectReadOnly (usually the same as x).
+     * @param left   the left coordinate value of the DOMRectReadOnly (usually the same as x).
      */
     public record Dimensions(
             int x,
@@ -98,8 +112,13 @@ public class ResizeObserver {
             int top,
             int right,
             int bottom,
-            int left
-    ) {}
+            int left,
+            int offsetLeft,
+            int offsetTop,
+            int offsetWidth,
+            int offsetHeight
+    ) {
+    }
 
     private record ComponentMapping(int id, Component component, ArrayList<SizeChangeListener> listeners) {
         private ComponentMapping(int id, Component component) {
@@ -107,11 +126,11 @@ public class ResizeObserver {
         }
     }
 
-    private final Map<Component,Integer> componentToId = new HashMap<>();
-    private final Map<Integer,ComponentMapping> idToComponentMapping = new HashMap<>();
+    private final Map<Component, Integer> componentToId = new HashMap<>();
+    private final Map<Integer, ComponentMapping> idToComponentMapping = new HashMap<>();
     private int nextId = 0;
 
-    private static ObjectMapper om = new ObjectMapper();
+    private static final ObjectMapper om = new ObjectMapper();
 
     private final UI ui;
     private final Element uiElement;
@@ -123,7 +142,7 @@ public class ResizeObserver {
      */
     public static ResizeObserver of(UI ui) {
         ResizeObserver resizeObserver = ComponentUtil.getData(ui, ResizeObserver.class);
-        if(resizeObserver == null) {
+        if (resizeObserver == null) {
             resizeObserver = new ResizeObserver(ui);
             ComponentUtil.setData(ui, ResizeObserver.class, resizeObserver);
         }
@@ -147,8 +166,12 @@ public class ResizeObserver {
                   for (const entry of entries) {
                     if (entry.target.isConnected && entry.contentBoxSize) {
                       const id = entry.target._resizeObserverId;
-                      const contentBoxSize = entry.contentBoxSize[0];
-                      sizes[id] = JSON.stringify(entry.contentRect);
+                      const dimensions = JSON.parse(JSON.stringify(entry.contentRect));
+                      dimensions.offsetLeft = entry.target.offsetLeft;
+                      dimensions.offsetTop = entry.target.offsetTop;
+                      dimensions.offsetWidth = entry.target.offsetWidth;
+                      dimensions.offsetHeight = entry.target.offsetHeight;
+                      sizes[id] = JSON.stringify(dimensions);
                     } else {
                       console.log("Ignoring resize event for detached element " + entry.target._resizeObserverId +  ", TODO: cleanup??");
                     }
@@ -161,12 +184,12 @@ public class ResizeObserver {
                 """);
         reg = uiElement.addEventListener("element-resize", event -> {
                     JsonObject object = event.getEventData().getObject("event.dimensions");
-                    for(String idx : object.keys()) {
+                    for (String idx : object.keys()) {
                         String json = object.getString(idx);
                         try {
                             Dimensions dimensions = om.readValue(json, Dimensions.class);
                             ComponentMapping componentMapping = idToComponentMapping.get(Integer.valueOf(idx));
-                            if(componentMapping != null) {
+                            if (componentMapping != null) {
                                 // Old deprecated API
                                 new ArrayList<>(componentMapping.listeners()).forEach(l -> l.onChange(dimensions));
                                 // Vaadin core style API
@@ -195,19 +218,19 @@ public class ResizeObserver {
         Runnable register = () -> {
             var componentElement = c.getElement();
             uiElement.executeJs("""
-                    const el = $0;
-                    const id = $1;
-                    if(el instanceof HTMLElement) {
-                        el._resizeObserverId = id;
-                        this._resizeObserver.observe(el);
-                        this._resizeObserverElements[id] = el;
-                    } else {
-                        throw new Error("el not Element, Flow bug?");
-                    }
-                """, componentElement, id).then(jsonvalue -> {
+                        const el = $0;
+                        const id = $1;
+                        if(el instanceof HTMLElement) {
+                            el._resizeObserverId = id;
+                            this._resizeObserver.observe(el);
+                            this._resizeObserverElements[id] = el;
+                        } else {
+                            throw new Error("el not Element, Flow bug?");
+                        }
+                    """, componentElement, id).then(jsonvalue -> {
             });
         };
-        if(c.isAttached()) {
+        if (c.isAttached()) {
             register.run();
         } else {
             c.addAttachListener(e -> {
@@ -216,7 +239,7 @@ public class ResizeObserver {
             });
         }
         c.addDetachListener(e -> {
-            if(e.getUI().isClosing()) {
+            if (e.getUI().isClosing()) {
                 // UI itself is being closed, no need to do clean up
                 return;
             }
@@ -225,12 +248,12 @@ public class ResizeObserver {
             // Note sure how browsers have implemented ResizeObserver, but manually cleaning
             // up elements registered to the observer to avoid memory leaks
             uiElement.executeJs("""
-                    const el = this._resizeObserverElements[$0];
-                    if(el) {
-                        delete this._resizeObserverElements[$0];
-                        this._resizeObserver.unobserve(el);
-                    }
-                """, id);
+                        const el = this._resizeObserverElements[$0];
+                        if(el) {
+                            delete this._resizeObserverElements[$0];
+                            this._resizeObserver.unobserve(el);
+                        }
+                    """, id);
             e.unregisterListener();
         });
 
@@ -242,7 +265,7 @@ public class ResizeObserver {
      * size is reported immediately.
      *
      * @param component the component to observe
-     * @param listener the listener to be notified
+     * @param listener  the listener to be notified
      * @return a registration that can be used to stop listening
      */
     public Registration addResizeListener(Component component, ComponentEventListener<SizeChangeEvent> listener) {
@@ -251,7 +274,7 @@ public class ResizeObserver {
         return () -> {
             ComponentMapping componentMapping = getComponentMapping(component);
             componentMapping.listeners().remove(sizeChangeListener);
-            if(componentMapping.listeners().isEmpty()) {
+            if (componentMapping.listeners().isEmpty()) {
                 // Do cleanup if no listeners left
                 unobserve(component);
             }
@@ -261,8 +284,9 @@ public class ResizeObserver {
 
     /**
      * Observe the size of a component. The listener will be notified when the size of the component changes.
+     *
      * @param component the component to observe
-     * @param listener the listener to be notified
+     * @param listener  the listener to be notified
      * @return this for chaining
      */
     public ResizeObserver observe(Component component, SizeChangeListener listener) {
@@ -274,13 +298,13 @@ public class ResizeObserver {
      * Stop observing the size of a component.
      *
      * @param component the component to stop observing
-     * @param listener the listener to remove
+     * @param listener  the listener to remove
      * @return this for chaining
      */
     public ResizeObserver unobserve(Component component, SizeChangeListener listener) {
         ComponentMapping componentMapping = getComponentMapping(component);
         componentMapping.listeners().remove(listener);
-        if(componentMapping.listeners().isEmpty()) {
+        if (componentMapping.listeners().isEmpty()) {
             unobserve(component);
         }
         return this;
@@ -297,12 +321,12 @@ public class ResizeObserver {
         idToComponentMapping.remove(componentMapping.id());
         componentToId.remove(component);
         uiElement.executeJs("""
-                const el = this._resizeObserverElements[$0];
-                if(el) {
-                    delete this._resizeObserverElements[$0];
-                    this._resizeObserver.unobserve(el);
-                }
-            """, componentMapping.id());
+                    const el = this._resizeObserverElements[$0];
+                    if(el) {
+                        delete this._resizeObserverElements[$0];
+                        this._resizeObserver.unobserve(el);
+                    }
+                """, componentMapping.id());
         return this;
     }
 

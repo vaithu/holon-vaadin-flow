@@ -54,7 +54,7 @@ public interface FlexLayoutConfigurator<C extends FlexLayoutConfigurator<C>> ext
     /**
      * Get a new {@link FlexLayoutConfigurator} for given component.
      *
-     * @param component The component to configure (not null)
+     * @param component The component to create (not null)
      * @return A new {@link FlexLayoutConfigurator}
      */
     static BaseFlexLayoutConfigurator configure(FlexLayout component) {

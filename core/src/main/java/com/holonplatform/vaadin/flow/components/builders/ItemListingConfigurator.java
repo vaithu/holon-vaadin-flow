@@ -17,6 +17,8 @@ package com.holonplatform.vaadin.flow.components.builders;
 
 import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.core.internal.utils.ObjectUtils;
+import com.holonplatform.core.property.PathProperty;
+import com.holonplatform.core.property.Property;
 import com.holonplatform.core.query.QuerySort.SortDirection;
 import com.holonplatform.vaadin.flow.components.ItemListing;
 import com.holonplatform.vaadin.flow.components.ItemListing.*;
@@ -38,6 +40,7 @@ import com.vaadin.flow.data.renderer.TextRenderer;
 import com.vaadin.flow.function.SerializableFunction;
 import com.vaadin.flow.function.ValueProvider;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
@@ -236,7 +239,7 @@ public interface ItemListingConfigurator<T, P, L extends ItemListing<T, P>, C ex
     /**
      * Set whether the column which corresponds to given property is user-sortable.
      *
-     * @param property The property to configure (not null)
+     * @param property The property to create (not null)
      * @param sortable Whether given property is user-sortable
      * @return this
      */
@@ -253,7 +256,7 @@ public interface ItemListingConfigurator<T, P, L extends ItemListing<T, P>, C ex
     /**
      * Set whether the column which corresponds to given property is user-resizable.
      *
-     * @param property  The property to configure (not null)
+     * @param property  The property to create (not null)
      * @param resizable Whether given property is user-resizable
      * @return this
      */
@@ -272,13 +275,14 @@ public interface ItemListingConfigurator<T, P, L extends ItemListing<T, P>, C ex
     C toggleableColumns();
 
     C compact();
+    C stretch();
 
     C wrapCellContent();
 
     /**
      * Set whether the column which corresponds to given property is visible.
      *
-     * @param property The property to configure (not null)
+     * @param property The property to create (not null)
      * @param visible  Whether given property is visible
      * @return this
      */
@@ -287,7 +291,7 @@ public interface ItemListingConfigurator<T, P, L extends ItemListing<T, P>, C ex
     /**
      * Set the column which corresponds to given property as hidden.
      *
-     * @param property The property to configure (not null)
+     * @param property The property to create (not null)
      * @return this
      * @see #visible(Object, boolean)
      */
@@ -302,7 +306,7 @@ public interface ItemListingConfigurator<T, P, L extends ItemListing<T, P>, C ex
      * item is in edit mode.
      * </p>
      *
-     * @param property The property to configure (not null)
+     * @param property The property to create (not null)
      * @param readOnly Whether given property is read-only
      * @return this
      */
@@ -311,7 +315,7 @@ public interface ItemListingConfigurator<T, P, L extends ItemListing<T, P>, C ex
     /**
      * Set whether the column which corresponds to given property is frozen.
      *
-     * @param property The property to configure (not null)
+     * @param property The property to create (not null)
      * @param frozen   Whether given property is frozen
      * @return this
      */
@@ -320,7 +324,7 @@ public interface ItemListingConfigurator<T, P, L extends ItemListing<T, P>, C ex
     /**
      * Set whether the column which corresponds to given property is frozen at the end.
      *
-     * @param property The property to configure (not null)
+     * @param property The property to create (not null)
      * @param frozen   Whether given property is frozen
      * @return this
      */
@@ -339,7 +343,7 @@ public interface ItemListingConfigurator<T, P, L extends ItemListing<T, P>, C ex
      * Sets the width of the column which corresponds to given property as a
      * CSS-string.
      *
-     * @param property The property to configure (not null)
+     * @param property The property to create (not null)
      * @param width    the width to set
      * @return this
      */
@@ -360,7 +364,7 @@ public interface ItemListingConfigurator<T, P, L extends ItemListing<T, P>, C ex
      * the column width might notmatch the contents anymore.
      * </p>
      *
-     * @param property  The property to configure (not null)
+     * @param property  The property to create (not null)
      * @param autoWidth Whether to enable the column auto-width
      * @return this
      * @since 5.3.0
@@ -381,7 +385,7 @@ public interface ItemListingConfigurator<T, P, L extends ItemListing<T, P>, C ex
      * the column width might notmatch the contents anymore.
      * </p>
      *
-     * @param property The property to configure (not null)
+     * @param property The property to create (not null)
      * @return this
      * @since 5.3.0
      */
@@ -395,7 +399,7 @@ public interface ItemListingConfigurator<T, P, L extends ItemListing<T, P>, C ex
      * When set to 0, column width is fixed.
      * </p>
      *
-     * @param property The property to configure (not null)
+     * @param property The property to create (not null)
      * @param flexGrow the flex grow ratio to set
      * @return this
      */
@@ -407,7 +411,7 @@ public interface ItemListingConfigurator<T, P, L extends ItemListing<T, P>, C ex
      * When set to 0, column width is fixed.
      * </p>
      *
-     * @param properties The properties to configure (not null)
+     * @param properties The properties to create (not null)
      * @param flexGrow the flex grow ratio to set
      * @return this
      */
@@ -463,7 +467,7 @@ public interface ItemListingConfigurator<T, P, L extends ItemListing<T, P>, C ex
      * column's classes will win.
      * </p>
      *
-     * @param property           The property to configure (not null)
+     * @param property           The property to create (not null)
      * @param styleNameGenerator The function to use to generate the cell CSS style
      *                           class name
      * @return this
@@ -499,7 +503,7 @@ public interface ItemListingConfigurator<T, P, L extends ItemListing<T, P>, C ex
      * Default is {@link ColumnAlignment#LEFT}.
      * </p>
      *
-     * @param property  The property to configure (not null)
+     * @param property  The property to create (not null)
      * @param alignment the text alignment to set
      * @return this
      */
@@ -509,7 +513,7 @@ public interface ItemListingConfigurator<T, P, L extends ItemListing<T, P>, C ex
      * Sets the {@link Renderer} to use for the column which corresponds to given
      * property.
      *
-     * @param property The property to configure (not null)
+     * @param property The property to create (not null)
      * @param renderer The column renderer to use
      * @return this
      */
@@ -526,7 +530,7 @@ public interface ItemListingConfigurator<T, P, L extends ItemListing<T, P>, C ex
      * using given function to provide the component for each listing item.
      *
      * @param <R>      Component type
-     * @param property The property to configure (not null)
+     * @param property The property to create (not null)
      * @param renderer The function to use to provide the component for each listing
      *                 item (not null)
      * @return this
@@ -540,7 +544,7 @@ public interface ItemListingConfigurator<T, P, L extends ItemListing<T, P>, C ex
      * Sets the {@link ValueProvider} to use to obtain the text to display in the
      * column which corresponds to given property.
      *
-     * @param property      The property to configure (not null)
+     * @param property      The property to create (not null)
      * @param valueProvider The value provider to use
      * @return this
      */
@@ -550,7 +554,7 @@ public interface ItemListingConfigurator<T, P, L extends ItemListing<T, P>, C ex
      * Sets comparator to use with in-memory sorting for the column which
      * corresponds to given property.
      *
-     * @param property   The property to configure (not null)
+     * @param property   The property to create (not null)
      * @param comparator The comparator to use with in-memory sorting
      * @return this
      */
@@ -560,7 +564,7 @@ public interface ItemListingConfigurator<T, P, L extends ItemListing<T, P>, C ex
      * Set the properties to use to implement the sort logic to apply when the
      * column which corresponds to given property is user-sorted.
      *
-     * @param property       The property to configure (not null)
+     * @param property       The property to create (not null)
      * @param sortProperties The properties to use to sort the column
      * @return this
      */
@@ -570,7 +574,7 @@ public interface ItemListingConfigurator<T, P, L extends ItemListing<T, P>, C ex
      * Set the properties to use to implement the sort logic to apply when the
      * column which corresponds to given property is user-sorted.
      *
-     * @param property       The property to configure (not null)
+     * @param property       The property to create (not null)
      * @param sortProperties The properties to use to sort the column
      * @return this
      */
@@ -583,7 +587,7 @@ public interface ItemListingConfigurator<T, P, L extends ItemListing<T, P>, C ex
      * Set the function to use to obtain the {@link ItemSort}s to use when the
      * column which corresponds to given property is user-sorted.
      *
-     * @param property     The property to configure (not null)
+     * @param property     The property to create (not null)
      * @param sortProvider Sort provider
      * @return this
      */
@@ -592,7 +596,7 @@ public interface ItemListingConfigurator<T, P, L extends ItemListing<T, P>, C ex
     /**
      * Set the header text for the column which corresponds to given property.
      *
-     * @param property The property to configure (not null)
+     * @param property The property to create (not null)
      * @param header   Localizable column header text (not null)
      * @return this
      */
@@ -601,7 +605,7 @@ public interface ItemListingConfigurator<T, P, L extends ItemListing<T, P>, C ex
     /**
      * Set the header text for the column which corresponds to given property.
      *
-     * @param property The property to configure (not null)
+     * @param property The property to create (not null)
      * @param header   The column header text
      * @return this
      */
@@ -612,7 +616,7 @@ public interface ItemListingConfigurator<T, P, L extends ItemListing<T, P>, C ex
     /**
      * Set the header text for the column which corresponds to given property.
      *
-     * @param property          The property to configure (not null)
+     * @param property          The property to create (not null)
      * @param defaultHeader     The default column header text
      * @param headerMessageCode The column header text translation message code
      * @return this
@@ -625,7 +629,7 @@ public interface ItemListingConfigurator<T, P, L extends ItemListing<T, P>, C ex
      * Set the {@link Component} to use as header for the column which corresponds
      * to given property.
      *
-     * @param property The property to configure (not null)
+     * @param property The property to create (not null)
      * @param header   The column header component
      * @return this
      */
@@ -642,7 +646,7 @@ public interface ItemListingConfigurator<T, P, L extends ItemListing<T, P>, C ex
     /**
      * Set the footer text for the column which corresponds to given property.
      *
-     * @param property The property to configure (not null)
+     * @param property The property to create (not null)
      * @param footer   Localizable column footer text (not null)
      * @return this
      */
@@ -659,7 +663,7 @@ public interface ItemListingConfigurator<T, P, L extends ItemListing<T, P>, C ex
     /**
      * Set the footer text for the column which corresponds to given property.
      *
-     * @param property The property to configure (not null)
+     * @param property The property to create (not null)
      * @param footer   The column footer text
      * @return this
      */
@@ -670,7 +674,7 @@ public interface ItemListingConfigurator<T, P, L extends ItemListing<T, P>, C ex
     /**
      * Set the footer text for the column which corresponds to given property.
      *
-     * @param property          The property to configure (not null)
+     * @param property          The property to create (not null)
      * @param defaultFooter     The default column footer text
      * @param footerMessageCode The column footer text translation message code
      * @return this
@@ -683,14 +687,14 @@ public interface ItemListingConfigurator<T, P, L extends ItemListing<T, P>, C ex
      * Set the {@link Component} to use as footer for the column which corresponds
      * to given property.
      *
-     * @param property The property to configure (not null)
+     * @param property The property to create (not null)
      * @param footer   The column footer component
      * @return this
      */
     C footerComponent(P property, Component footer);
 
     /**
-     * Add a {@link ColumnPostProcessor} which can be used to furtherly configure
+     * Add a {@link ColumnPostProcessor} which can be used to furtherly create
      * each listing column before adding it to the listing component.
      *
      * @param columnPostProcessor The post processor to add (not null)
@@ -879,7 +883,7 @@ public interface ItemListingConfigurator<T, P, L extends ItemListing<T, P>, C ex
     C multiSort(boolean multiSort);
 
     /**
-     * Get a {@link ItemListingContextMenuBuilder} to configure and add a context
+     * Get a {@link ItemListingContextMenuBuilder} to create and add a context
      * menu to show for each listing item.
      * <p>
      * Use the {@link ItemListingContextMenuBuilder#add()} method to add the context
@@ -895,7 +899,7 @@ public interface ItemListingConfigurator<T, P, L extends ItemListing<T, P>, C ex
     ItemListingContextMenuBuilder<T, P, L, C> contextMenu();
 
     /**
-     * Provide a {@link Consumer} to configure the item listing header section,
+     * Provide a {@link Consumer} to create the item listing header section,
      * using the {@link ItemListingSection} API.
      *
      * @param headerConfigurator The item listing header section configurator (not
@@ -905,7 +909,7 @@ public interface ItemListingConfigurator<T, P, L extends ItemListing<T, P>, C ex
     C header(Consumer<EditableItemListingSection<P>> headerConfigurator);
 
     /**
-     * Provide a {@link Consumer} to configure the item listing footer section,
+     * Provide a {@link Consumer} to create the item listing footer section,
      * using the {@link ItemListingSection} API.
      *
      * @param footerConfigurator The item listing footer section configurator (not
@@ -1166,6 +1170,20 @@ public interface ItemListingConfigurator<T, P, L extends ItemListing<T, P>, C ex
      * @return this
      */
     C withColumnReorderListener(ColumnReorderListener<T, P> listener);
+
+    /**
+     * Set a default text that should be displayed when the listing has no data
+     * @param text The text to display inside the empty listing
+     * @return this
+     */
+    C emptyStateText(String text);
+
+    /**
+     * Set a default component that should be displayed when the listing has no data
+     * @param component The component to display inside the empty listing
+     * @return this
+     */
+    C emptyStateComponent(Component component);
 
     // -------
 
@@ -1482,7 +1500,7 @@ public interface ItemListingConfigurator<T, P, L extends ItemListing<T, P>, C ex
     }
 
     /**
-     * A post processor which can be used to furtherly configure a listing column
+     * A post processor which can be used to furtherly create a listing column
      * before adding it to the listing component.
      *
      * @param <P> Property type
@@ -1497,7 +1515,7 @@ public interface ItemListingConfigurator<T, P, L extends ItemListing<T, P>, C ex
          * @param property     The property which identifies the column
          * @param header       The column header
          * @param configurator The {@link ColumnConfigurator} which can be used to
-         *                     configure the column
+         *                     create the column
          */
         void configureColumn(P property, String header, ColumnConfigurator configurator);
 

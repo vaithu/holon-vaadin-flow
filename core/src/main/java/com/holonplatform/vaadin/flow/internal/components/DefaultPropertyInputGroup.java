@@ -553,12 +553,12 @@ public class DefaultPropertyInputGroup extends AbstractPropertySetGroup<Input<?>
 		final InputPropertyConfiguration<T> propertyConfiguration = configuration.get(property);
 		// render
 		final Input<T> component = render(propertyConfiguration)
-				// configure input
+				// create input
 				.map(input -> configureInput(propertyConfiguration, input))
 				// exception when Input not available
 				.orElseThrow(() -> new NoSuitableRendererAvailableException(
 						"No renderer available to render the property [" + property + "] as an Input"));
-		// configure
+		// create
 		getPostProcessors().forEach(postProcessor -> postProcessor.accept(property, component));
 		// register
 		components.set(property, component);
@@ -592,7 +592,7 @@ public class DefaultPropertyInputGroup extends AbstractPropertySetGroup<Input<?>
 	 * Configure the {@link Input} component using given configuration.
 	 * @param <T> Property type
 	 * @param configuration Property configuration (not null)
-	 * @param input The {@link Input} component to configure
+	 * @param input The {@link Input} component to create
 	 * @return The configured {@link Input}
 	 */
 	protected <T> Input<T> configureInput(final InputPropertyConfiguration<T> configuration, final Input<T> input) {

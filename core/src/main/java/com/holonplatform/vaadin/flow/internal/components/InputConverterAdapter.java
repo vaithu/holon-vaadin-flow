@@ -1,12 +1,12 @@
 /*
  * Copyright 2016-2017 Axioma srl.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -27,6 +27,7 @@ import com.holonplatform.vaadin.flow.components.support.InputAdaptersContainer;
 import com.holonplatform.vaadin.flow.internal.components.events.DefaultValueChangeEvent;
 import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.shared.HasTooltip;
+import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.ValueContext;
 import com.vaadin.flow.data.converter.Converter;
 import com.vaadin.flow.data.value.HasValueChangeMode;
@@ -38,7 +39,7 @@ import java.util.function.Function;
 /**
  * Adapter class to build a {@link Input} of a different value type from another {@link Input}, using a suitable
  * {@link Converter}.
- * 
+ *
  * @param <T> Presentation value type
  * @param <V> Model value type
  *
@@ -338,47 +339,18 @@ public class InputConverterAdapter<T, V> implements Input<V> {
 		return converter.convertToPresentation(value, _valueContext());
 	}
 
-	/**
-	 * Build the {@link ValueContext} to be used with the converter.
-	 * @return the {@link ValueContext}
-	 */
-	private ValueContext _valueContext() {
-		final Component component = getComponent();
-		if (component != null) {
-			return new ValueContext(component);
-		} else {
-			return new ValueContext();
-		}
-	}
+    /**
+     * Build the {@link ValueContext} to be used with the converter.
+     * @return the {@link ValueContext}
+     */
+    private ValueContext _valueContext() {
+        final Component component = getComponent();
+        if (component != null) {
+            return new ValueContext((Binder<?>) null, component, (HasValue<?, ?>) null);
+        } else {
+            return new ValueContext((Binder<?>) null, (Component) null, (HasValue<?, ?>) null);
+        }
+    }
 
-	@Override
-	public KeyNotifierConfigurator withKeyDownListener(ComponentEventListener listener) {
-		return input.withKeyDownListener(listener);
-	}
-
-	@Override
-	public KeyNotifierConfigurator withKeyPressListener(ComponentEventListener listener) {
-		return input.withKeyPressListener(listener);
-	}
-
-	@Override
-	public KeyNotifierConfigurator withKeyUpListener(ComponentEventListener listener) {
-		return input.withKeyUpListener(listener);
-	}
-
-	@Override
-	public KeyNotifierConfigurator withKeyDownListener(Key key, ComponentEventListener listener, KeyModifier... modifiers) {
-		return input.withKeyDownListener(key, listener, modifiers);
-	}
-
-	@Override
-	public KeyNotifierConfigurator withKeyPressListener(Key key, ComponentEventListener listener, KeyModifier... modifiers) {
-		return input.withKeyPressListener(key, listener, modifiers);
-	}
-
-	@Override
-	public KeyNotifierConfigurator withKeyUpListener(Key key, ComponentEventListener listener, KeyModifier... modifiers) {
-		return input.withKeyUpListener(key, listener, modifiers);
-	}
 
 }

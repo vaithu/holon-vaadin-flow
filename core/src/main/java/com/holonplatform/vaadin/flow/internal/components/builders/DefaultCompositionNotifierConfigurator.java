@@ -35,11 +35,11 @@ public class DefaultCompositionNotifierConfigurator
 
 	/**
 	 * Constructor.
-	 * @param component Component to configure (not null)
+	 * @param component Component to create (not null)
 	 */
 	public DefaultCompositionNotifierConfigurator(CompositionNotifier component) {
 		super();
-		ObjectUtils.argumentNotNull(component, "The component to configure must be not null");
+		ObjectUtils.argumentNotNull(component, "The component to create must be not null");
 		this.component = component;
 	}
 

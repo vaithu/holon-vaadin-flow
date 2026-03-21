@@ -59,9 +59,9 @@ public interface HasIconConfigurator<C extends HasIconConfigurator<C>> {
 
 
 	/**
-	 * Obtain an {@link IconConfigurator} for given {@link VaadinIcon} representation to configure the icon and add it
+	 * Obtain an {@link IconConfigurator} for given {@link VaadinIcon} representation to create the icon and add it
 	 * to che component using {@link IconConfigurator#add()}.
-	 * @param icon The icon to configure and add to the component (not null)
+	 * @param icon The icon to create and add to the component (not null)
 	 * @return The icon configurator
 	 */
 	default IconConfigurator<C> iconConfigurator(VaadinIcon icon) {
@@ -70,15 +70,15 @@ public interface HasIconConfigurator<C extends HasIconConfigurator<C>> {
 	}
 
 	/**
-	 * Obtain an {@link IconConfigurator} for given icon to configure it and add it to che component using
+	 * Obtain an {@link IconConfigurator} for given icon to create it and add it to che component using
 	 * {@link IconConfigurator#add()}.
-	 * @param icon The icon to configure and add to the component (not null)
+	 * @param icon The icon to create and add to the component (not null)
 	 * @return The icon configurator
 	 */
 	IconConfigurator<C> iconConfigurator(Icon icon);
 
 	/**
-	 * Obtain an {@link IconConfigurator} for given {@link Icon} representation to configure the icon and add it to
+	 * Obtain an {@link IconConfigurator} for given {@link Icon} representation to create the icon and add it to
 	 * che component using {@link IconConfigurator#add()}.
 	 * @param collection the icon collection
 	 * @param icon the icon name (not null)

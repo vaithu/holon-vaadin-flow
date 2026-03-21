@@ -26,7 +26,7 @@ public class DetailsDrawerHeader extends FlexBoxLayout {
         setFlexDirection(FlexDirection.COLUMN);
         setWidthFull();
 
-        this.close = UIUtils.createTertiaryInlineButton(VaadinIcon.CLOSE);
+        this.close = UIUtils.Buttons.createTertiaryInlineButton(VaadinIcon.CLOSE);
         this.close.addClassNames(LumoUtility.Margin.Left.AUTO);
         UIUtils.setLineHeight("1", this.close);
 

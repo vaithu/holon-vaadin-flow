@@ -52,7 +52,7 @@ public interface MenuBarConfigurator<L extends EventListener, M extends MenuBar,
      * </p>
      *
      * @param text Localizable menu item text content
-     * @return A {@link MenuItemBuilder} to configure and add the menu item
+     * @return A {@link MenuItemBuilder} to create and add the menu item
      * @see LocalizationProvider
      */
     MenuItemBuilder<L, M, I, S, C> withMenuItem(Localizable text);
@@ -64,7 +64,7 @@ public interface MenuBarConfigurator<L extends EventListener, M extends MenuBar,
      * </p>
      *
      * @param text Menu item text content
-     * @return A {@link MenuItemBuilder} to configure and add the menu item
+     * @return A {@link MenuItemBuilder} to create and add the menu item
      */
     default MenuItemBuilder<L, M, I, S, C> withMenuItem(String text) {
         return withMenuItem(Localizable.builder().message(text).build());
@@ -80,7 +80,7 @@ public interface MenuBarConfigurator<L extends EventListener, M extends MenuBar,
      *                    <code>messageCode</code>.
      * @param messageCode Menu item text content translation message key
      * @param arguments   Optional translation arguments
-     * @return A {@link MenuItemBuilder} to configure and add the menu item
+     * @return A {@link MenuItemBuilder} to create and add the menu item
      * @see LocalizationProvider
      */
     default MenuItemBuilder<L, M, I, S, C> withMenuItem(String defaultText, String messageCode, Object... arguments) {
@@ -95,7 +95,7 @@ public interface MenuBarConfigurator<L extends EventListener, M extends MenuBar,
      * </p>
      *
      * @param component The menu item component (not null)
-     * @return A {@link MenuItemBuilder} to configure and add the menu item
+     * @return A {@link MenuItemBuilder} to create and add the menu item
      */
     MenuItemBuilder<L, M, I, S, C> withMenuItem(Component component);
 
@@ -106,7 +106,7 @@ public interface MenuBarConfigurator<L extends EventListener, M extends MenuBar,
      * </p>
      *
      * @param component The menu item component (not null)
-     * @return A {@link MenuItemBuilder} to configure and add the menu item
+     * @return A {@link MenuItemBuilder} to create and add the menu item
      */
     default MenuItemBuilder<L, M, I, S, C> withMenuItem(HasComponent component) {
         ObjectUtils.argumentNotNull(component, "HasComponent must be not null");
@@ -358,7 +358,7 @@ public interface MenuBarConfigurator<L extends EventListener, M extends MenuBar,
          * Adds a new item component with the given text content and click listener to the context menu overlay.
          * <p>
          * This is a convenience method for the use case where you have a list of highlightable MenuItems inside the overlay.
-         * If you want to configure the contents of the overlay without wrapping them inside MenuItems,
+         * If you want to create the contents of the overlay without wrapping them inside MenuItems,
          * or if you just want to add some non-highlightable components between the items, use the ContextMenuBase.add(Component...) method.
          *
          * @param text
@@ -377,7 +377,7 @@ public interface MenuBarConfigurator<L extends EventListener, M extends MenuBar,
          * Adds a new item component with the given component and click listener to the context menu overlay.
          * <p>
          * This is a convenience method for the use case where you have a list of highlightable MenuItems inside the overlay.
-         * If you want to configure the contents of the overlay without wrapping them inside MenuItems,
+         * If you want to create the contents of the overlay without wrapping them inside MenuItems,
          * or if you just want to add some non-highlightable components between the items,
          * use the ContextMenuBase.add(Component...) method.
          *

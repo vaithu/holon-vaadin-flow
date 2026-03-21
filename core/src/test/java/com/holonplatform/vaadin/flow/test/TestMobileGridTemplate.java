@@ -11,20 +11,20 @@ public class TestMobileGridTemplate {
 
     @Test
     public void testBuilders() {
-        Div div = Components.mobileGrid()
-                .primaryText("test")
-                .badge("1")
-                .secondaryText("Secondary")
-                .tertiaryText("tertiary")
+        Div div = Components.mobileGridColumn()
+                .withPrimaryText("test")
+                .withBadgeAsPrimary("1")
+                .withSecondaryText("Secondary")
+                .withTertiaryText("tertiary")
                 .build();
 
-             assertNotNull(div);
-        assertEquals(1, div.getChildren().count());
+        assertNotNull(div);
+        assertEquals(3, div.getChildren().count());
         div.getChildren().findFirst()
                 .ifPresent(component -> {
 //                    System.out.println(component.getClassName());
-                    assertEquals(3, component.getChildren().count());
+                    assertEquals(2, component.getChildren().count());
                 })
-                ;
+        ;
     }
 }

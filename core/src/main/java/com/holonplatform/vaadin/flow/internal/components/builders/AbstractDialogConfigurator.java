@@ -28,7 +28,6 @@ import com.vaadin.flow.component.dialog.Dialog.DialogResizeEvent;
 import com.vaadin.flow.component.dialog.Dialog.OpenedChangeEvent;
 import com.vaadin.flow.component.dialog.DialogVariant;
 import com.vaadin.flow.component.html.Paragraph;
-import com.vaadin.flow.component.shared.HasTooltip;
 import com.vaadin.flow.theme.lumo.LumoUtility;
 
 import java.util.Optional;
@@ -66,11 +65,6 @@ public abstract class AbstractDialogConfigurator<C extends DialogConfigurator<C>
     @Override
     protected Optional<HasEnabled> hasEnabled() {
         return Optional.of(getComponent());
-    }
-
-    @Override
-    protected Optional<HasTooltip> hasTooltip() {
-        return Optional.empty();
     }
 
     /*

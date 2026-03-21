@@ -31,11 +31,11 @@ public class DefaultHasSizeConfigurator implements BaseHasSizeConfigurator {
 
 	/**
 	 * Constructor.
-	 * @param component Component to configure (not null)
+	 * @param component Component to create (not null)
 	 */
 	public DefaultHasSizeConfigurator(HasSize component) {
 		super();
-		ObjectUtils.argumentNotNull(component, "The component to configure must be not null");
+		ObjectUtils.argumentNotNull(component, "The component to create must be not null");
 		this.component = component;
 	}
 

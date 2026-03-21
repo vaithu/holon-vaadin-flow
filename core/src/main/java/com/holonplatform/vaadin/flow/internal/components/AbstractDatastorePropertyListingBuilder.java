@@ -64,8 +64,26 @@ public abstract class AbstractDatastorePropertyListingBuilder implements Propert
     }
 
     @Override
+    public PropertyListingBuilder.DatastorePropertyListingBuilder stretch() {
+        builder.stretch();
+        return this;
+    }
+
+    @Override
     public PropertyListingBuilder.DatastorePropertyListingBuilder wrapCellContent() {
         builder.wrapCellContent();
+        return this;
+    }
+
+    @Override
+    public PropertyListingBuilder.DatastorePropertyListingBuilder emptyStateText(String text) {
+        builder.emptyStateText(text);
+        return this;
+    }
+
+    @Override
+    public PropertyListingBuilder.DatastorePropertyListingBuilder emptyStateComponent(Component component) {
+        builder.emptyStateComponent(component);
         return this;
     }
 
@@ -380,7 +398,7 @@ public abstract class AbstractDatastorePropertyListingBuilder implements Propert
     /**
      * Set whether the column which corresponds to given property is frozen at the end.
      *
-     * @param property The property to configure (not null)
+     * @param property The property to create (not null)
      * @param frozen   Whether given property is frozen
      * @return this
      */
@@ -428,7 +446,7 @@ public abstract class AbstractDatastorePropertyListingBuilder implements Propert
      * </p>
      *
      * @param flexGrow   the flex grow ratio to set
-     * @param properties The properties to configure (not null)
+     * @param properties The properties to create (not null)
      * @return this
      */
     @Override

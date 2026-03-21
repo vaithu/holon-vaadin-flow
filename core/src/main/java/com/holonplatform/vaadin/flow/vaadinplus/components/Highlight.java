@@ -15,12 +15,14 @@ public class Highlight extends Layout {
     private Font.Size valueFontSize;
 
     // Components
-    private Layout prefix;
-    private Layout column;
+    private final Layout prefix;
+    private final Layout column;
     private Component heading;
-    private Component value;
-    private Layout details;
-    private Layout suffix;
+    private final Component value;
+    private final Layout details;
+    private final Layout suffix;
+
+    // ---------- Constructors ----------
 
     public Highlight(String heading, String value) {
         this(null, heading, value, null);
@@ -35,36 +37,59 @@ public class Highlight extends Layout {
     }
 
     public Highlight(Component prefix, String heading, String value, Component suffix) {
-        addClassNames(LumoUtility.Background.BASE, LumoUtility.Padding.Horizontal.MEDIUM, LumoUtility.Padding.Vertical.SMALL);
+        // Base layout styling
+        addClassNames(
+                LumoUtility.Background.BASE,
+                LumoUtility.Padding.Horizontal.MEDIUM,
+                LumoUtility.Padding.Vertical.SMALL
+        );
         setAlignItems(AlignItems.CENTER);
         setGap(Gap.MEDIUM);
         setPosition(Position.RELATIVE);
 
+        // Prefix
         this.prefix = new Layout();
+        this.prefix.setDisplay(Display.FLEX);
         setPrefix(prefix);
 
+        // Heading
         this.heading = new H3(heading);
-        this.heading.addClassNames(LumoUtility.FontSize.SMALL, LumoUtility.FontWeight.NORMAL, LumoUtility.TextColor.SECONDARY);
+        this.heading.addClassNames(
+                LumoUtility.FontSize.SMALL,
+                LumoUtility.FontWeight.NORMAL,
+                LumoUtility.TextColor.SECONDARY
+        );
 
-        this.value = new Span(value);
-        this.value.addClassNames(LumoUtility.FontWeight.MEDIUM);
+        // Value
+        Span valueSpan = new Span(value);
+        valueSpan.addClassNames(LumoUtility.FontWeight.MEDIUM);
+        this.value = valueSpan;
         setValueFontSize(Font.Size.XLARGE);
 
+        // Details
         this.details = new Layout();
         this.details.setFlexWrap(FlexWrap.WRAP);
         this.details.setGap(Gap.SMALL);
-        setDetails(null);
+        this.details.setDisplay(Display.FLEX);
+        setDetails((Component[]) null);
 
+        // Column (heading + value + details)
         this.column = new Layout(this.heading, this.value, this.details);
         this.column.addClassNames(LumoUtility.Padding.Vertical.XSMALL);
+        this.column.setDisplay(Display.FLEX);
         this.column.setFlexDirection(FlexDirection.COLUMN);
         this.column.setFlexGrow();
 
+        // Suffix
         this.suffix = new Layout();
+        this.suffix.setDisplay(Display.FLEX);
         setSuffix(suffix);
 
+        // Compose the final layout
         add(this.prefix, this.column, this.suffix);
     }
+
+    // ---------- Public API ----------
 
     /**
      * Sets the prefix.
@@ -82,23 +107,32 @@ public class Highlight extends Layout {
     }
 
     /**
-     * Sets the label.
+     * Sets the heading text.
      */
     public void setHeading(String heading) {
         this.heading.getElement().setText(heading);
     }
 
+    /**
+     * Changes the heading level (e.g. H1–H6) using HeadingLevel.
+     */
     public void setHeadingLevel(HeadingLevel level) {
-        Component heading = level.getComponent(this.heading.getElement().getText());
+        String currentText = this.heading.getElement().getText();
+        Component newHeading = level.getComponent(currentText);
+
         if (this.heading != null) {
-            replace(this.heading, heading);
+            replace(this.heading, newHeading);
         }
-        this.heading = heading;
-        this.heading.addClassNames(LumoUtility.FontSize.SMALL, LumoUtility.TextColor.SECONDARY);
+
+        this.heading = newHeading;
+        this.heading.addClassNames(
+                LumoUtility.FontSize.SMALL,
+                LumoUtility.TextColor.SECONDARY
+        );
     }
 
     /**
-     * Sets the value.
+     * Sets the value text.
      */
     public void setValue(String value) {
         this.value.getElement().setText(value);
@@ -111,12 +145,12 @@ public class Highlight extends Layout {
         if (this.valueFontSize != null) {
             this.value.removeClassName(this.valueFontSize.getClassName());
         }
-        this.value.addClassNames(fontSize.getClassName());
+        this.value.addClassName(fontSize.getClassName());
         this.valueFontSize = fontSize;
     }
 
     /**
-     * Sets the details.
+     * Sets the details components.
      */
     public void setDetails(Component... components) {
         this.details.removeAll();
@@ -131,7 +165,7 @@ public class Highlight extends Layout {
     }
 
     /**
-     * Sets the suffix.
+     * Sets the suffix components.
      */
     public void setSuffix(Component... components) {
         this.suffix.removeAll();

@@ -218,7 +218,7 @@ public abstract class AbstractComposablePropertyForm<C extends Component, E exte
 	/**
 	 * Configure given component using given property.
 	 * @param property Property to which the component refers
-	 * @param component Component to configure
+	 * @param component Component to create
 	 */
 	protected void configurePropertyComponent(Property<?> property, E component) {
 		if (component != null) {

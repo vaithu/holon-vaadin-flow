@@ -1,7 +1,9 @@
 package com.holonplatform.vaadin.flow.internal.lumo;
 
 import com.vaadin.flow.theme.lumo.LumoUtility;
+import lombok.Getter;
 
+@Getter
 public enum GridColumns {
         COLUMNS_1(LumoUtility.Grid.Column.COLUMNS_1),
         COLUMNS_2(LumoUtility.Grid.Column.COLUMNS_2),
@@ -18,11 +20,8 @@ public enum GridColumns {
 
         private final String className;
 
-        private GridColumns(String className) {
+        GridColumns(String className) {
             this.className = className;
         }
 
-        public String getClassName() {
-            return this.className;
-        }
-    }
+}

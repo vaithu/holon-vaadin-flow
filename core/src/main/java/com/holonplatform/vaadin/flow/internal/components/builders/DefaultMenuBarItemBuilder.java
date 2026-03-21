@@ -43,9 +43,7 @@ public class DefaultMenuBarItemBuilder<M extends MenuBar, I extends MenuItem, S 
 
 	private final B parentBuilder;
 	private final MenuItem menuItem;
-	private final SubMenu subMenu;
-	private MenuItem newMenuItem;
-	private final Function<com.vaadin.flow.component.ClickEvent<MenuItem>, ClickEvent<MenuItem>> clickEventConverter;
+    private final Function<com.vaadin.flow.component.ClickEvent<MenuItem>, ClickEvent<MenuItem>> clickEventConverter;
 
 	public DefaultMenuBarItemBuilder(B parentBuilder, MenuItem menuItem,
                                      Function<com.vaadin.flow.component.ClickEvent<MenuItem>, ClickEvent<MenuItem>> clickEventConverter) {
@@ -55,7 +53,6 @@ public class DefaultMenuBarItemBuilder<M extends MenuBar, I extends MenuItem, S 
 		ObjectUtils.argumentNotNull(clickEventConverter, "Click event converter must be not null");
 		this.parentBuilder = parentBuilder;
 		this.menuItem = menuItem;
-		this.subMenu = menuItem.getSubMenu();
 		this.clickEventConverter = clickEventConverter;
 	}
 

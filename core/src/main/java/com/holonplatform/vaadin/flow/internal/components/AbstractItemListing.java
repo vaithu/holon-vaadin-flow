@@ -71,6 +71,7 @@ import com.vaadin.flow.data.renderer.NumberRenderer;
 import com.vaadin.flow.data.renderer.Renderer;
 import com.vaadin.flow.function.SerializableFunction;
 import com.vaadin.flow.function.ValueProvider;
+import com.vaadin.flow.theme.lumo.LumoUtility;
 
 import java.io.Serial;
 import java.text.NumberFormat;
@@ -365,6 +366,11 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
     }
 
     @Override
+    public void stretch() {
+        getGrid().addClassName(LumoUtility.AlignSelf.STRETCH);
+    }
+
+    @Override
     public void wrapCellContent() {
         getGrid().addThemeVariants(GridVariant.LUMO_WRAP_CELL_CONTENT);
     }
@@ -593,7 +599,7 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
      * @return The unique column key
      */
     protected String ensureUniqueColumnKey(String key) {
-        if (propertyColumns.values().stream().map(column -> column.getColumnKey())
+        if (propertyColumns.values().stream().map(ItemListingColumn::getColumnKey)
                 .anyMatch(columnKey -> columnKey.equals(key))) {
             return key + "_" + columnKeySuffix.incrementAndGet();
         }
@@ -632,7 +638,7 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
             return Optional.empty();
         }
         return propertyColumns.entrySet().stream().filter(entry -> columnKey.equals(entry.getValue().getColumnKey()))
-                .map(entry -> entry.getKey()).findFirst();
+                .map(Map.Entry::getKey).findFirst();
     }
 
     /**
@@ -654,7 +660,7 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
     @Override
     public List<P> getVisibleColumns() {
         return getVisibleColumnProperties().stream()
-                .filter(property -> getColumn(property).map(column -> column.isVisible()).orElse(false))
+                .filter(property -> getColumn(property).map(Component::isVisible).orElse(false))
                 .collect(Collectors.toList());
     }
 
@@ -765,13 +771,13 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
     }
 
     @Override
-    public void addItemClickListener(ComponentEventListener<com.vaadin.flow.component.grid.ItemClickEvent<T>> listener) {
-        getGrid().addItemClickListener(listener);
+    public com.vaadin.flow.shared.Registration addItemClickListener(ComponentEventListener<com.vaadin.flow.component.grid.ItemClickEvent<T>> listener) {
+       return getGrid().addItemClickListener(listener);
     }
 
     @Override
-    public void addSelectionListener(com.vaadin.flow.data.selection.SelectionListener<Grid<T>, T> listener) {
-        getGrid().addSelectionListener(listener);
+    public com.vaadin.flow.shared.Registration addSelectionListener(com.vaadin.flow.data.selection.SelectionListener<Grid<T>, T> listener) {
+      return  getGrid().addSelectionListener(listener);
     }
 
     @Override
@@ -1239,19 +1245,19 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
     /**
      * Set the grid visible columns.
      *
-     * @param visibileColumns The visible columns to set
+     * @param visibleColumns The visible columns to set
      */
     @SuppressWarnings("unchecked")
-    protected void setVisibleColumns(List<? extends P> visibileColumns) {
-        if (visibileColumns != null) {
-            for (P property : visibileColumns) {
+    protected void setVisibleColumns(List<? extends P> visibleColumns) {
+        if (visibleColumns != null) {
+            for (P property : visibleColumns) {
                 if (!properties.contains(property)) {
                     throw new IllegalArgumentException("The property [" + property
                             + "] to set as visible column is not part of the listing property set");
                 }
             }
         }
-        this.visibleColumns = (visibileColumns != null) ? (List<P>) visibileColumns : Collections.emptyList();
+        this.visibleColumns = (visibleColumns != null) ? (List<P>) visibleColumns : Collections.emptyList();
     }
 
     /**
@@ -1336,7 +1342,7 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
         getGrid().removeAllColumns();
         columnsHeaders.clear();
         // add a column for each visible property
-        getVisibleColumnProperties().forEach(property -> addGridColumn(property));
+        getVisibleColumnProperties().forEach(this::addGridColumn);
 //        log.info("Visible columns are {}", getVisibleColumns());
         // selection listeners
         setupSelectionListeners();
@@ -1361,7 +1367,7 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
         final ItemListingColumn<P, T, ?> configuration = preProcessConfiguration(getColumnConfiguration(property));
         // add the column
         final Column<T> column = generateGridColumn(configuration);
-        // configure the column
+        // create the column
         column.setKey(configuration.getColumnKey());
         // header
         getColumnHeader(configuration).flatMap(t -> LocalizationProvider.localize(t)).ifPresent(h -> {
@@ -1397,7 +1403,7 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
             column.setFlexGrow(configuration.getFlexGrow());
         }
         // style class name
-        configuration.getStyleNameGenerator().ifPresent(g -> column.setClassNameGenerator(item -> g.apply(item)));
+        configuration.getStyleNameGenerator().ifPresent(g -> column.setPartNameGenerator(item -> g.apply(item)));
         // alignment
         configuration.getAlignment().ifPresent(a -> column.setTextAlign(asColumnTextAlign(a)));
         // sort
@@ -2257,7 +2263,7 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
                             editor.hasLabel().ifPresent(l -> l.setLabel(""));
                             // set the column editor
                             column.setEditorComponent(editor.getComponent());
-                            // configure and bind
+                            // create and bind
                             editorBindings.put(configureAndBind(binder, configuration, editor), property);
                         });
                     });
@@ -2306,7 +2312,7 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
      *
      * @param binder        The editor Binder
      * @param configuration Property column configuration (not null)
-     * @param input         The {@link Input} component to configure
+     * @param input         The {@link Input} component to create
      * @return The editor binding
      */
     @SuppressWarnings({"unchecked", "rawtypes"})
@@ -2321,7 +2327,7 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
      * @param <V>           Input type
      * @param binder        The editor Binder
      * @param configuration Property column configuration (not null)
-     * @param input         The {@link Input} component to configure
+     * @param input         The {@link Input} component to create
      * @return The editor binding builder
      */
     protected <V> BindingBuilder<T, V> configureInput(Binder<T> binder, ItemListingColumn<P, T, V> configuration,
@@ -3018,8 +3024,26 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
         }
 
         @Override
+        public C stretch() {
+            instance.stretch();
+            return getConfigurator();
+        }
+
+        @Override
         public C wrapCellContent() {
             instance.wrapCellContent();
+            return getConfigurator();
+        }
+
+        @Override
+        public C emptyStateText(String text) {
+            instance.setEmptyStateText(text);
+            return getConfigurator();
+        }
+
+        @Override
+        public C emptyStateComponent(Component component) {
+            instance.setEmptyStateComponent(component);
             return getConfigurator();
         }
 
@@ -3384,7 +3408,7 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
         /**
          * Set whether the column which corresponds to given property is frozen at the end.
          *
-         * @param property The property to configure (not null)
+         * @param property The property to create (not null)
          * @param frozen   Whether given property is frozen
          * @return this
          */
@@ -3456,7 +3480,7 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
          * </p>
          *
          * @param flexGrow   the flex grow ratio to set
-         * @param properties The properties to configure (not null)
+         * @param properties The properties to create (not null)
          * @return this
          */
         @Override
@@ -3477,7 +3501,7 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
         @Override
         public C styleNameGenerator(Function<T, String> styleNameGenerator) {
             if (styleNameGenerator != null) {
-                instance.getGrid().setClassNameGenerator(item -> styleNameGenerator.apply(item));
+                instance.getGrid().setPartNameGenerator(item -> styleNameGenerator.apply(item));
             }
             return getConfigurator();
         }
@@ -3559,7 +3583,7 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
         @Override
         public C statusColumn(P property, String available) {
 
-            return renderer(property, new ComponentRenderer<>(() -> UIUtils.createStatusIcon(available)));
+            return renderer(property, new ComponentRenderer<>(() -> UIUtils.Icons.createStatusIcon(available)));
         }
 
         /*

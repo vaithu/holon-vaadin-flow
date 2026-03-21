@@ -29,7 +29,7 @@ import com.holonplatform.vaadin.flow.components.Input;
  */
 @SuppressWarnings("deprecation")
 public interface DateTimeInputConfigurator<C extends DateTimeInputConfigurator<C>>
-		extends BaseTemporalInputConfigurator<Date, C>, HasTimeInputConfigurator<C> {
+		extends BaseTemporalInputConfigurator<Date, C> {
 
 	/**
 	 * Set the time zone id to use.

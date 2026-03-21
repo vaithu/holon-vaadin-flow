@@ -1,6 +1,7 @@
 package com.holonplatform.vaadin.flow.components;
 
 import com.holonplatform.core.Context;
+import com.holonplatform.core.beans.BeanIntrospector;
 import com.holonplatform.core.datastore.DataTarget;
 import com.holonplatform.core.datastore.Datastore;
 import com.holonplatform.core.datastore.DefaultWriteOption;
@@ -8,11 +9,13 @@ import com.holonplatform.core.internal.utils.TypeUtils;
 import com.holonplatform.core.property.*;
 import com.holonplatform.core.query.BeanProjection;
 import com.holonplatform.core.query.QueryFilter;
+import com.holonplatform.core.query.QueryProjection;
 import com.holonplatform.core.query.QuerySort;
 import com.holonplatform.vaadin.flow.components.utils.BeanUtils;
 import com.holonplatform.vaadin.flow.internal.BeanRecord;
 import com.vaadin.flow.data.provider.Query;
 import jakarta.transaction.Transactional;
+import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,6 +30,7 @@ public class DefaultBeanCrud<T> implements HasBeanRecord<T> {
 
     private static final Logger log = LoggerFactory.getLogger(DefaultBeanCrud.class);
 
+    @Getter
     private final Datastore datastore;
     private BeanRecord<T> beanRecord;
 
@@ -175,35 +179,26 @@ public class DefaultBeanCrud<T> implements HasBeanRecord<T> {
         return filterBy(query, queryFilter);
     }
 
-    public Optional<PropertyBox> findOne(QueryFilter... queryFilters) {
+    public Stream<T> findAll(QueryFilter... queryFilters) {
         return datastore.query(DataTarget.named(getBeanRecord().beanClass().getName()))
                 .filter(queryFilters)
-                .findOne(getBeanRecord().columnList());
+                .stream(QueryProjection.bean(getBeanRecord().beanClass()));
     }
 
-    public Optional<PropertyBox> findOne(QueryFilter queryFilter, PropertySet<?> properties) {
+    public Optional<T> findOne(QueryFilter... queryFilters) {
         return datastore.query(DataTarget.named(getBeanRecord().beanClass().getName()))
-                .filter(queryFilter)
+                .filter(queryFilters)
+                .findOne(QueryProjection.bean(getBeanRecord().beanClass()));
+    }
+
+    public Optional<T> findOne(PropertySet<?> properties, T bean, QueryFilter... queryFilters) {
+        Optional<PropertyBox> propertyBox = datastore.query(DataTarget.named(getBeanRecord().beanClass().getName()))
+                .filter(queryFilters)
                 .findOne(properties);
+        return propertyBox.map(box -> BeanIntrospector.getDefault().write(box, bean));
     }
 
-    public Optional<T> findOne(T beanInstance,QueryFilter queryFilter, PropertySet<?> properties) {
-        return convertToBean(beanInstance,findOne(queryFilter, properties));
-    }
 
-    private Optional<T> convertToBean(T beanInstance,Optional<PropertyBox> propertyBox) {
-        if (propertyBox.isPresent()) {
-            final T bean = (T) BeanUtils.getBean(propertyBox.get(), beanInstance);
-            return Optional.ofNullable(bean);
-        } else {
-            return Optional.empty();
-        }
-    }
-
-    public Optional<T> findOne(T beanInstance, QueryFilter... queryFilters) {
-        final Optional<PropertyBox> propertyBox = findOne(queryFilters);
-        return convertToBean(beanInstance, propertyBox);
-    }
 
 
     @Transactional
@@ -219,10 +214,6 @@ public class DefaultBeanCrud<T> implements HasBeanRecord<T> {
         final Class<?> beanClazz = BeanUtils.getBeanClass(beanInstance);
         datastore.refresh(DataTarget.named(beanClazz.getName()), propertyBox);
         return BeanUtils.getBean(propertyBox, beanInstance);
-    }
-
-    public Datastore getDatastore() {
-        return datastore;
     }
 
     @Override

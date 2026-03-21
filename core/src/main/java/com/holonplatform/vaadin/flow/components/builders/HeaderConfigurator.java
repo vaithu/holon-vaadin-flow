@@ -4,39 +4,39 @@ import com.holonplatform.vaadin.flow.internal.components.builders.DefaultHeaderC
 import com.holonplatform.vaadin.flow.vaadinplus.Layout;
 import com.holonplatform.vaadin.flow.vaadinplus.components.BreadcrumbItem;
 import com.holonplatform.vaadin.flow.vaadinplus.components.Header;
-import com.holonplatform.vaadin.flow.vaadinplus.utilities.Color;
-import com.holonplatform.vaadin.flow.vaadinplus.utilities.Font;
-import com.holonplatform.vaadin.flow.vaadinplus.utilities.HeadingLevel;
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.menubar.MenuBar;
 import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.Tabs;
 
+import java.util.Optional;
 import java.util.function.Consumer;
 
 public interface HeaderConfigurator<C extends HeaderConfigurator<C>> extends ComponentConfigurator<C>,
-        HasSizeConfigurator<C>, HasStyleConfigurator<C>, HasEnabledConfigurator<C>, HasComponentsConfigurator<C> {
+        HasSizeConfigurator<C>, HasStyleConfigurator<C>, HasEnabledConfigurator<C> {
 
     C prefix(Component... components);
 
+    default C hidePrefixOnDesktop() {
+        return hidePrefixOnDesktop(true);
+    }
+
+    C hidePrefixOnDesktop(boolean hidePrefixOnDesktop);
+
     C breadcrumb(BreadcrumbItem... items);
-
-    C heading(String title, HeadingLevel level);
-
-    C heading(String title);
-
-    C headingFontSize(Font.Size fontSize);
-
-    C headingFontWeight(Font.Weight fontWeight);
-
-    C headingId(String id);
-
-    C headingLineHeight(Font.LineHeight lineHeight);
-
-    C headingTextColor(Color.Text textColor);
 
     C details(Component... components);
 
     C actions(Component... components);
+
+    C edit(Consumer<ButtonConfigurator.BaseButtonConfigurator> configurator);
+
+    C options(MenuBar menuBar);
+    C options(Consumer<ButtonConfigurator.BaseButtonConfigurator> configurator);
+
+    C newBtn(Consumer<ButtonConfigurator.BaseButtonConfigurator> configurator);
+
+    C refresh(Consumer<ButtonConfigurator.BaseButtonConfigurator> configurator);
 
     C close(Consumer<ButtonConfigurator.BaseButtonConfigurator> configurator);
 
@@ -44,11 +44,13 @@ public interface HeaderConfigurator<C extends HeaderConfigurator<C>> extends Com
 
     Layout getColumnLayout();
 
-    Tabs getTabs();
+    Optional<Tabs> getTabs();
 
     C tabs(Tab... tabs);
 
     C tabs(Tabs tabs);
+
+    C withoutBorder();
 
     static HeaderConfigurator.BaseHeaderConfigurator configure(Header header) {
         return new DefaultHeaderConfigurator(header);

@@ -20,8 +20,7 @@ public interface MenuItemConfigurator<C extends MenuItemConfigurator<C>> extends
 
     /**
      * Adds a new item component with the given component and click listener to the context menu overlay.
-     *
-     * This is a convenience method for the use case where you have a list of highlightable MenuItems inside the overlay. If you want to configure the contents of the overlay without wrapping them inside MenuItems, or if you just want to add some non-highlightable components between the items, use the ContextMenuBase.add(Component...) method.
+     * This is a convenience method for the use case where you have a list of highlightable MenuItems inside the overlay. If you want to create the contents of the overlay without wrapping them inside MenuItems, or if you just want to add some non-highlightable components between the items, use the ContextMenuBase.add(Component...) method.
      * @param component
      * @param clickListener
      * @return
@@ -34,7 +33,7 @@ public interface MenuItemConfigurator<C extends MenuItemConfigurator<C>> extends
     /**
      * Adds a new item component with the given text content and click listener to the context menu overlay.
      *
-     * This is a convenience method for the use case where you have a list of highlightable MenuItems inside the overlay. If you want to configure the contents of the overlay without wrapping them inside MenuItems, or if you just want to add some non-highlightable components between the items, use the ContextMenuBase.add(Component...) method
+     * This is a convenience method for the use case where you have a list of highlightable MenuItems inside the overlay. If you want to create the contents of the overlay without wrapping them inside MenuItems, or if you just want to add some non-highlightable components between the items, use the ContextMenuBase.add(Component...) method
      * @param text
      * @param clickListener
      * @return

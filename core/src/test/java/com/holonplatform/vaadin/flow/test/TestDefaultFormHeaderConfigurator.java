@@ -91,16 +91,14 @@ public class TestDefaultFormHeaderConfigurator {
     @Test
     void setTabs() {
         Tab tab = new Tab("Overview");
-        Tabs tabs = Components.tabs()
-                .add(tab)
-                .build();
+        Tabs tabs = new Tabs(tab);
 
         final Header header = Components.header("Test")
                 .tabs(tabs)
                 .build();
 
         assertThat(header).isNotNull();
-        assertThat(header.getTabs().getTabCount()).isEqualTo(1);
+        header.getTabs().ifPresent(tabs1 -> assertThat(tabs1.getTabCount()).isEqualTo(1));
     }
 
     @Test

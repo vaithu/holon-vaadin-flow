@@ -91,7 +91,7 @@ public interface DivConfigurator<C extends DivConfigurator<C>> extends HasCompon
     /**
      * Get a new {@link DivConfigurator} for given component.
      *
-     * @param component The component to configure (not null)
+     * @param component The component to create (not null)
      * @return A new {@link DivConfigurator}
      */
     static BaseDivConfigurator configure(Div component) {

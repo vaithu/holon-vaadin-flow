@@ -19,7 +19,7 @@ import com.holonplatform.vaadin.flow.components.Input;
 import com.holonplatform.vaadin.flow.components.ValueHolder.ValueChangeEvent;
 
 /**
- * Interface to configure an {@link Input} with value configuration support.
+ * Interface to create an {@link Input} with value configuration support.
  * 
  * @param <T> Value type
  * @param <E> Value change event type

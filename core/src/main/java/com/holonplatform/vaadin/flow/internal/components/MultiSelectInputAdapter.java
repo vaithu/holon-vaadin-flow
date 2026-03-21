@@ -431,33 +431,5 @@ public class MultiSelectInputAdapter<T, ITEM, C extends Component> implements Mu
 		adapters.setAdapter(type, adapter);
 	}
 
-	@Override
-	public KeyNotifierConfigurator withKeyDownListener(ComponentEventListener listener) {
-		return input.withKeyDownListener(listener);
-	}
 
-	@Override
-	public KeyNotifierConfigurator withKeyPressListener(ComponentEventListener listener) {
-		return input.withKeyPressListener(listener);
-	}
-
-	@Override
-	public KeyNotifierConfigurator withKeyUpListener(ComponentEventListener listener) {
-		return input.withKeyUpListener(listener);
-	}
-
-	@Override
-	public KeyNotifierConfigurator withKeyDownListener(Key key, ComponentEventListener listener, KeyModifier... modifiers) {
-		return input.withKeyDownListener(key, listener, modifiers);
-	}
-
-	@Override
-	public KeyNotifierConfigurator withKeyPressListener(Key key, ComponentEventListener listener, KeyModifier... modifiers) {
-		return input.withKeyPressListener(key, listener, modifiers);
-	}
-
-	@Override
-	public KeyNotifierConfigurator withKeyUpListener(Key key, ComponentEventListener listener, KeyModifier... modifiers) {
-		return input.withKeyUpListener(key, listener, modifiers);
-	}
 }

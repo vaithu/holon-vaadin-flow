@@ -103,9 +103,9 @@ public interface ButtonConfigurator<C extends ButtonConfigurator<C>> extends Com
 	}
 
 	/**
-	 * Obtain a {@link ButtonConfigurator} to configure given {@link Button} component.
-	 * @param button The component to configure (not null)
-	 * @return A {@link ButtonConfigurator} to configure given component
+	 * Obtain a {@link ButtonConfigurator} to create given {@link Button} component.
+	 * @param button The component to create (not null)
+	 * @return A {@link ButtonConfigurator} to create given component
 	 */
 	static BaseButtonConfigurator configure(Button button) {
 		return new DefaultButtonConfigurator(button);

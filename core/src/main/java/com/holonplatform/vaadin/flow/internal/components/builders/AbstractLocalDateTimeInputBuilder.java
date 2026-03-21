@@ -167,51 +167,6 @@ public abstract class AbstractLocalDateTimeInputBuilder<C extends LocalDateTimeI
 		return ValidatableInput.from(buildAsInput());
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * com.holonplatform.vaadin.flow.components.builders.LocalDateTimeInputBuilder#
-	 * spacing(boolean)
-	 */
-	@Deprecated
-	@Override
-	public C spacing(boolean spacing) {
-		// Not supported in Vaadin DateTimePicker
-		// getComponent().setSpacing(spacing);
-		return getConfigurator();
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * com.holonplatform.vaadin.flow.components.builders.HasTimeInputConfigurator#
-	 * timeInputWidth(java.lang.String)
-	 */
-	@Deprecated
-	@Override
-	public C timeInputWidth(String timeInputWidth) {
-		// Not supported in Vaadin DateTimePicker
-		// getComponent().setTimeInputWidth(timeInputWidth);
-		return getConfigurator();
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * com.holonplatform.vaadin.flow.components.builders.HasTimeInputConfigurator#
-	 * timeStep(java.time.Duration)
-	 */
-	@Deprecated
-	@Override
-	public C timeStep(Duration step) {
-		// Not supported in Vaadin DateTimePicker
-		// getComponent().setStep(step);
-		return getConfigurator();
-	}
-
 	@Override
 	public C autoOpen(boolean autoOpen) {
 		getComponent().setAutoOpen(autoOpen);
@@ -479,10 +434,7 @@ public abstract class AbstractLocalDateTimeInputBuilder<C extends LocalDateTimeI
 		if (localization.getFirstDayOfWeek() != null) {
 			dpi.setFirstDayOfWeek(localization.getFirstDayOfWeek().intValue());
 		}
-		/*localization.getWeek().ifPresent(m -> dpi.setWeek(LocalizationProvider.localize(m).orElse("")));
-		localization.getCalendar().ifPresent(m -> dpi.setCalendar(LocalizationProvider.localize(m).orElse("")));
-		localization.getClear().ifPresent(m -> dpi.setClear(LocalizationProvider.localize(m).orElse("")));*/
-		localization.getToday().ifPresent(m -> dpi.setToday(LocalizationProvider.localize(m).orElse("")));
+        localization.getToday().ifPresent(m -> dpi.setToday(LocalizationProvider.localize(m).orElse("")));
 		localization.getCancel().ifPresent(m -> dpi.setCancel(LocalizationProvider.localize(m).orElse("")));
 		return dpi;
 	}

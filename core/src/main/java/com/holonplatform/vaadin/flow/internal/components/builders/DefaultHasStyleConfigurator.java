@@ -31,11 +31,11 @@ public class DefaultHasStyleConfigurator implements BaseHasStyleConfigurator {
 
 	/**
 	 * Constructor.
-	 * @param component Component to configure (not null)
+	 * @param component Component to create (not null)
 	 */
 	public DefaultHasStyleConfigurator(HasStyle component) {
 		super();
-		ObjectUtils.argumentNotNull(component, "The component to configure must be not null");
+		ObjectUtils.argumentNotNull(component, "The component to create must be not null");
 		this.component = component;
 	}
 

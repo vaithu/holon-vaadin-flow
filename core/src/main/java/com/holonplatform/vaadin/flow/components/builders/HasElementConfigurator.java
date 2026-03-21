@@ -46,7 +46,7 @@ public interface HasElementConfigurator<C extends HasElementConfigurator<C>> {
 	C withEventListener(String eventType, DomEventListener listener);
 
 	/**
-	 * Adds an event listener for the given event type and configure a filter.
+	 * Adds an event listener for the given event type and create a filter.
 	 * <p>
 	 * A filter is JavaScript expression that is used for filtering events to this listener. When an event is fired in
 	 * the browser, the expression is evaluated and an event is sent to the server only if the expression value is

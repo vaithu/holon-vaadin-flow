@@ -50,7 +50,7 @@ public class ViewComponentAdapter<C extends Component, T> extends AbstractViewCo
 	/**
 	 * Constructor.
 	 * @param content The fixed content component (not null)
-	 * @param valueConsumer The consumer to configure the content component each time the value changes (not null)
+	 * @param valueConsumer The consumer to create the content component each time the value changes (not null)
 	 */
 	public ViewComponentAdapter(C content, BiConsumer<C, T> valueConsumer) {
 		super(content);

@@ -246,7 +246,7 @@ public interface DatastoreLazyDataProvider<T, F> extends BackEndDataProvider<T, 
 	}
 
 	/**
-	 * Get a builder to create and configure a new {@link DatastoreLazyDataProvider}
+	 * Get a builder to create and create a new {@link DatastoreLazyDataProvider}
 	 * which uses {@link PropertyBox} items type and {@link QueryFilter} type data
 	 * provider filters.
 	 * @param datastore   The {@link Datastore} to use (not null)
@@ -261,7 +261,7 @@ public interface DatastoreLazyDataProvider<T, F> extends BackEndDataProvider<T, 
 	}
 
 	/**
-	 * Get a builder to create and configure a new {@link DatastoreLazyDataProvider}
+	 * Get a builder to create and create a new {@link DatastoreLazyDataProvider}
 	 * which uses {@link PropertyBox} items type and {@link QueryFilter} type data
 	 * provider filters.
 	 * @param datastore  The {@link Datastore} to use (not null)
@@ -276,7 +276,7 @@ public interface DatastoreLazyDataProvider<T, F> extends BackEndDataProvider<T, 
 	}
 
 	/**
-	 * Get a builder to create and configure a new {@link DatastoreLazyDataProvider}
+	 * Get a builder to create and create a new {@link DatastoreLazyDataProvider}
 	 * which uses {@link PropertyBox} items type.
 	 * @param <F>             Query filter type
 	 * @param datastore       The {@link Datastore} to use (not null)
@@ -294,7 +294,7 @@ public interface DatastoreLazyDataProvider<T, F> extends BackEndDataProvider<T, 
 	}
 
 	/**
-	 * Get a builder to create and configure a new {@link DatastoreLazyDataProvider}
+	 * Get a builder to create and create a new {@link DatastoreLazyDataProvider}
 	 * which uses {@link PropertyBox} items type.
 	 * @param <F>             Query filter type
 	 * @param datastore       The {@link Datastore} to use (not null)
@@ -312,7 +312,7 @@ public interface DatastoreLazyDataProvider<T, F> extends BackEndDataProvider<T, 
 	}
 
 	/**
-	 * Get a builder to create and configure a new {@link DatastoreLazyDataProvider}
+	 * Get a builder to create and create a new {@link DatastoreLazyDataProvider}
 	 * using given <code>beanType</code> as item type and {@link QueryFilter} type
 	 * data provider filters.
 	 * <p>
@@ -332,7 +332,7 @@ public interface DatastoreLazyDataProvider<T, F> extends BackEndDataProvider<T, 
 	}
 
 	/**
-	 * Get a builder to create and configure a new {@link DatastoreLazyDataProvider}
+	 * Get a builder to create and create a new {@link DatastoreLazyDataProvider}
 	 * using given <code>beanType</code> as item type.
 	 * <p>
 	 * The provided <code>beanType</code> class must be compliant with the JavaBeans
@@ -356,7 +356,7 @@ public interface DatastoreLazyDataProvider<T, F> extends BackEndDataProvider<T, 
 	}
 
 	/**
-	 * Get a builder to create and configure a new {@link DatastoreLazyDataProvider}.
+	 * Get a builder to create and create a new {@link DatastoreLazyDataProvider}.
 	 * @param <T>             Data type
 	 * @param <F>             Query filter type
 	 * @param datastore       The {@link Datastore} to use (not null)

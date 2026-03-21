@@ -56,7 +56,7 @@ public interface ViewComponentAdapterBuilder<T> extends ViewComponentConfigurato
 	 * @param <C> View component content type
 	 * @param type Value type
 	 * @param content The fixed content component (not null)
-	 * @param valueConsumer The consumer to configure the content component each time the value changes (not null)
+	 * @param valueConsumer The consumer to create the content component each time the value changes (not null)
 	 * @return A new {@link ViewComponentAdapterBuilder}
 	 */
 	static <T, C extends Component> ViewComponentAdapterBuilder<T> create(Class<T> type, C content,

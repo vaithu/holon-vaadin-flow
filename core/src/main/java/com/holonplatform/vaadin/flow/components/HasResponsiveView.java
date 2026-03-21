@@ -1,7 +1,7 @@
 package com.holonplatform.vaadin.flow.components;
 
 import com.holonplatform.vaadin.flow.components.utils.UIUtils;
-import com.holonplatform.vaadin.flow.enums.ScreenSize;
+import com.iyensoft.vaadin.flow.utils.responsive.ViewMode;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.html.Div;
 import org.slf4j.Logger;
@@ -35,17 +35,17 @@ public interface HasResponsiveView {
     }*/
 
     default void enableResponsiveView(Div parentLayout, UI ui, int width) {
-        final ScreenSize[] screenSizes = new ScreenSize[1];
+        final ViewMode[] viewModes = new ViewMode[1];
 
         ui.getPage().addBrowserWindowResizeListener(browserWindowResizeEvent -> {
 
-            if (UIUtils.getScreenSize(browserWindowResizeEvent.getWidth()) == ScreenSize.MOBILE) {
+            if (UIUtils.getViewMode(browserWindowResizeEvent.getWidth()) == ViewMode.MOBILE) {
                 mobileView(parentLayout);
-                screenSizes[0] = ScreenSize.MOBILE;
+                viewModes[0] = ViewMode.MOBILE;
                 log.info("This is mobile from Browser resize");
-            } else if (UIUtils.getScreenSize(browserWindowResizeEvent.getWidth()) == ScreenSize.DESKTOP) {
+            } else if (UIUtils.getViewMode(browserWindowResizeEvent.getWidth()) == ViewMode.DESKTOP) {
                 desktopView(parentLayout);
-                screenSizes[0] = ScreenSize.DESKTOP;
+                viewModes[0] = ViewMode.DESKTOP;
                 log.info("This is desktop from Browser resize");
             }
 
@@ -53,20 +53,20 @@ public interface HasResponsiveView {
 
 
         ui.getPage().retrieveExtendedClientDetails(extendedClientDetails -> {
-            if ((UIUtils.getScreenSize(extendedClientDetails.getWindowInnerWidth()) == ScreenSize.MOBILE && width != 0)
+            if ((UIUtils.getViewMode(extendedClientDetails.getWindowInnerWidth()) == ViewMode.MOBILE && width != 0)
                     || extendedClientDetails.isIOS()) {
 
                 mobileView(parentLayout);
-                screenSizes[0] = ScreenSize.MOBILE;
+                viewModes[0] = ViewMode.MOBILE;
                 log.info("This is mobile retrieveExtendedClientDetails");
-            } else if (UIUtils.getScreenSize(extendedClientDetails.getWindowInnerWidth()) == ScreenSize.DESKTOP || width == 0) {
+            } else if (UIUtils.getViewMode(extendedClientDetails.getWindowInnerWidth()) == ViewMode.DESKTOP || width == 0) {
                 desktopView(parentLayout);
-                screenSizes[0] = ScreenSize.DESKTOP;
+                viewModes[0] = ViewMode.DESKTOP;
                 log.info("This is desktop retrieveExtendedClientDetails {}", extendedClientDetails.getWindowInnerWidth());
             }
         });
 
-        if (screenSizes[0] == null) {
+        if (viewModes[0] == null) {
            /* if (width != 0 && UIUtils.getScreenSize(width) == ScreenSize.MOBILE) {
                 mobileView(parentLayout);
                 log.info("This is mobile");
@@ -75,7 +75,7 @@ public interface HasResponsiveView {
                 log.info("This is desktop");
             }*/
         } else {
-            log.info("This is {}}", screenSizes[0]);
+            log.info("This is {}}", viewModes[0]);
         }
 
     }

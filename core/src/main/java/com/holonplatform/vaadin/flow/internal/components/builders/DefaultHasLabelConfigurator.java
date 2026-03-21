@@ -40,7 +40,7 @@ public class DefaultHasLabelConfigurator<C extends HasElement> extends AbstractL
 
 	/**
 	 * Constructor.
-	 * @param component The component to configure (not null)
+	 * @param component The component to create (not null)
 	 * @param setLabelOperation Actual operation to set the label (not null)
 	 */
 	public DefaultHasLabelConfigurator(C component, Consumer<String> setLabelOperation) {
@@ -49,14 +49,14 @@ public class DefaultHasLabelConfigurator<C extends HasElement> extends AbstractL
 
 	/**
 	 * Constructor.
-	 * @param component The component to configure (not null)
+	 * @param component The component to create (not null)
 	 * @param setLabelOperation Actual operation to set the label (not null)
 	 * @param deferrableLocalization Optional {@link HasDeferrableLocalization} reference
 	 */
 	public DefaultHasLabelConfigurator(C component, Consumer<String> setLabelOperation,
 			HasDeferrableLocalization deferrableLocalization) {
 		super(text -> setLabelOperation.accept(text), deferrableLocalization);
-		ObjectUtils.argumentNotNull(component, "The component to configure must be not null");
+		ObjectUtils.argumentNotNull(component, "The component to create must be not null");
 		this.component = component;
 	}
 

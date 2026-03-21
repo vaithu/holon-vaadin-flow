@@ -3,6 +3,7 @@ package com.holonplatform.vaadin.flow.test;
 import com.holonplatform.vaadin.flow.components.Components;
 import com.vaadin.flow.component.accordion.Accordion;
 import com.vaadin.flow.component.accordion.AccordionPanel;
+import com.vaadin.flow.component.html.Div;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -18,6 +19,6 @@ public class TestAccordion {
 
         assertNotNull(accordion);
         assertEquals(1,accordion.getChildren().count());
-        accordion.getChildren().forEach(component -> assertInstanceOf(AccordionPanel.class,component));
+        accordion.getChildren().forEach(component -> assertInstanceOf(AccordionPanel.class, component));
     }
 }

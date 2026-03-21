@@ -21,8 +21,8 @@ public class DetailsDrawerFooter extends FlexBoxLayout {
         ,LumoUtility.Padding.Horizontal.LARGE);
         setWidthFull();
 
-        save = UIUtils.createPrimaryButton("Save");
-        cancel = UIUtils.createTertiaryButton("Cancel");
+        save = UIUtils.Buttons.createPrimaryButton("Save");
+        cancel = UIUtils.Buttons.createTertiaryButton("Cancel");
         add(save, cancel);
     }
 

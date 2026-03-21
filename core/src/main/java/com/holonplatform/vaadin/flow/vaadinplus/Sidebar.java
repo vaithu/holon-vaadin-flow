@@ -12,12 +12,14 @@ import com.vaadin.flow.component.html.Section;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.theme.lumo.LumoUtility.*;
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
 public class Sidebar extends Section implements HasEnabled, HasTheme {
 
     private Header header;
 
+    @Getter
     private Layout content;
 
     public Sidebar(String title, Component... components) {
@@ -135,10 +137,6 @@ public class Sidebar extends Section implements HasEnabled, HasTheme {
 
     public void removeHeaderThemeName(String theme) {
         this.header.getElement().getThemeList().remove(theme);
-    }
-
-    public Layout getContent() {
-        return this.content;
     }
 
 }

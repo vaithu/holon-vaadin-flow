@@ -111,7 +111,7 @@ public interface ViewComponent<V> extends ValueHolder<V, ValueChangeEvent<V>>, V
 	// ------- adapters
 
 	/**
-	 * Create a new {@link ViewComponentAdapterBuilder} to configure and create a {@link ViewComponent} from a custom
+	 * Create a new {@link ViewComponentAdapterBuilder} to create and create a {@link ViewComponent} from a custom
 	 * {@link Component}.
 	 * <p>
 	 * The {@link ViewComponent} content will be replaced by the {@link Component} provided by the given function each
@@ -130,13 +130,13 @@ public interface ViewComponent<V> extends ValueHolder<V, ValueChangeEvent<V>>, V
 	}
 
 	/**
-	 * Create a new {@link ViewComponentAdapterBuilder} to configure and create a {@link ViewComponent} from a custom
+	 * Create a new {@link ViewComponentAdapterBuilder} to create and create a {@link ViewComponent} from a custom
 	 * {@link Component}.
 	 * @param <T> Value type
 	 * @param <C> View component content type
 	 * @param type Value type
 	 * @param content The {@link ViewComponent} content component to use (not null)
-	 * @param valueConsumer The consumer to use to configure the content component each time the value changes (not
+	 * @param valueConsumer The consumer to use to create the content component each time the value changes (not
 	 *        null)
 	 * @return A new {@link ViewComponentAdapterBuilder}
 	 */

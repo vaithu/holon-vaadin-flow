@@ -85,7 +85,7 @@ public interface BaseTemporalInputConfigurator<D, C extends BaseTemporalInputCon
 	/**
 	 * Set the Date Input calendar localization messages.
 	 * <p>
-	 * Use {@link #localization()} to obtain a suitable builder to configure the calendar localization messages.
+	 * Use {@link #localization()} to obtain a suitable builder to create the calendar localization messages.
 	 * </p>
 	 * @param localization Calendar localization messages
 	 * @return this
@@ -95,7 +95,7 @@ public interface BaseTemporalInputConfigurator<D, C extends BaseTemporalInputCon
 	/**
 	 * Get a builder to setup the Date Input calendar localization messages.
 	 * <p>
-	 * The {@link CalendarLocalizationBuilder#set()} method can be used to configure the localization and go back to the
+	 * The {@link CalendarLocalizationBuilder#set()} method can be used to create the localization and go back to the
 	 * parent Date Input builder.
 	 * </p>
 	 * @return A {@link CalendarLocalizationBuilder} to setup the Date Input calendar localization messages

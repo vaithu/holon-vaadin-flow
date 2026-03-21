@@ -23,7 +23,7 @@ import com.holonplatform.vaadin.flow.components.events.ReadonlyChangeListener;
 import java.util.function.Function;
 
 /**
- * Interface to configure an {@link Input}.
+ * Interface to create an {@link Input}.
  * 
  * @param <T> Value type
  * @param <E> Value change event type

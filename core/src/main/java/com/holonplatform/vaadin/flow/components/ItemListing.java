@@ -34,6 +34,7 @@ import com.vaadin.flow.data.provider.QuerySortOrder;
 import com.vaadin.flow.data.renderer.Renderer;
 import com.vaadin.flow.function.SerializableFunction;
 import com.vaadin.flow.function.ValueProvider;
+import com.vaadin.flow.shared.Registration;
 
 import java.io.Serializable;
 import java.util.Arrays;
@@ -114,9 +115,9 @@ public interface ItemListing<T, P> extends ItemSet, Selectable<T>, HasComponent 
 
     <V extends Component> Grid.Column<T> addComponentColumn(ValueProvider<T, V> componentProvider);
 
-    void addItemClickListener(ComponentEventListener<ItemClickEvent<T>> listener);
+    Registration addItemClickListener(ComponentEventListener<ItemClickEvent<T>> listener);
 
-    void addSelectionListener(com.vaadin.flow.data.selection.SelectionListener<Grid<T>, T> listener);
+    Registration addSelectionListener(com.vaadin.flow.data.selection.SelectionListener<Grid<T>, T> listener);
 
     void addHoverEffect(AttachEvent attachEvent, SerializableFunction<T, String> partNameGenerator);
 
@@ -314,6 +315,8 @@ public interface ItemListing<T, P> extends ItemSet, Selectable<T>, HasComponent 
     Optional<T> getItemAtIndex(int index);
 
     void compact();
+
+    void stretch();
 
     void wrapCellContent();
 

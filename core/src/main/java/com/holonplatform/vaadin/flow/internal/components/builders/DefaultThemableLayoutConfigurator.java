@@ -33,7 +33,7 @@ public class DefaultThemableLayoutConfigurator
 
 	public DefaultThemableLayoutConfigurator(ThemableLayout component) {
 		super();
-		ObjectUtils.argumentNotNull(component, "The component to configure must be not null");
+		ObjectUtils.argumentNotNull(component, "The component to create must be not null");
 		this.component = component;
 	}
 
@@ -111,5 +111,15 @@ public class DefaultThemableLayoutConfigurator
 		component.setBoxSizing(boxSizing);
 		return this;
 	}
+
+    /*
+     * (non-Javadoc)
+     * @see com.holonplatform.vaadin.flow.components.builders.ThemableLayoutConfigurator#wrap(boolean)
+     */
+    @Override
+    public DefaultThemableLayoutConfigurator wrap(boolean wrap) {
+        component.setWrap(wrap);
+        return this;
+    }
 
 }

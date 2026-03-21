@@ -50,7 +50,7 @@ public interface CardGridConfigurator<C extends CardGridConfigurator<C>> extends
     /**
      * Get a new {@link CardGridConfigurator} for given component.
      *
-     * @param component The component to configure (not null)
+     * @param component The component to create (not null)
      * @return A new {@link CardGridConfigurator}
      */
     static BaseCardGridConfigurator configure(Div component) {

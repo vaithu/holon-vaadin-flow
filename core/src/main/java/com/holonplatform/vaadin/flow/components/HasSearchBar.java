@@ -2,6 +2,7 @@ package com.holonplatform.vaadin.flow.components;
 
 import com.holonplatform.vaadin.flow.components.builders.ButtonConfigurator;
 import com.holonplatform.vaadin.flow.components.builders.HasOptionsMenuBarConfigurator;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 
 import java.util.function.Consumer;
 
@@ -12,7 +13,7 @@ public interface HasSearchBar<C extends HasSearchBar<C>> extends HasOptionsMenuB
     C newButton(Consumer<ButtonConfigurator.BaseButtonConfigurator> configurator);
 
 
-
+    HorizontalLayout getLayout();
 
 
 }

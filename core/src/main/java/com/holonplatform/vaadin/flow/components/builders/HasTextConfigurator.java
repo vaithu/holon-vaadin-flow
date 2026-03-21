@@ -83,7 +83,7 @@ public interface HasTextConfigurator<C extends HasTextConfigurator<C>> {
 
 	/**
 	 * Create a new {@link BaseHasTextConfigurator}.
-	 * @param component Component to configure (not null)
+	 * @param component Component to create (not null)
 	 * @return A new {@link BaseHasTextConfigurator}
 	 */
 	static BaseHasTextConfigurator create(HasText component) {
@@ -92,7 +92,7 @@ public interface HasTextConfigurator<C extends HasTextConfigurator<C>> {
 
 	/**
 	 * Create a new {@link BaseHasTextConfigurator}.
-	 * @param component Component to configure (not null)
+	 * @param component Component to create (not null)
 	 * @param deferrableLocalization Deferrable localization provider
 	 * @return A new {@link BaseHasTextConfigurator}
 	 */

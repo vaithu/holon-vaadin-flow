@@ -314,6 +314,8 @@ public class DefaultBeanListing<T> extends AbstractItemListing<T, String> implem
         // noop
     }
 
+
+
     // ------- Builder
 
     /**
@@ -658,6 +660,12 @@ public class DefaultBeanListing<T> extends AbstractItemListing<T, String> implem
         }
 
         @Override
+        public DatastoreBeanListingBuilder<T> stretch() {
+            builder.stretch();
+            return this;
+        }
+
+        @Override
         public DatastoreBeanListingBuilder<T> wrapCellContent() {
             builder.wrapCellContent();
             return this;
@@ -807,7 +815,7 @@ public class DefaultBeanListing<T> extends AbstractItemListing<T, String> implem
         /**
          * Set whether the column which corresponds to given property is frozen at the end.
          *
-         * @param property The property to configure (not null)
+         * @param property The property to create (not null)
          * @param frozen   Whether given property is frozen
          * @return this
          */
@@ -833,6 +841,18 @@ public class DefaultBeanListing<T> extends AbstractItemListing<T, String> implem
             return this;
         }
 
+        @Override
+        public DatastoreBeanListingBuilder<T> emptyStateText(String text) {
+            builder.emptyStateText(text);
+            return this;
+        }
+
+        @Override
+        public DatastoreBeanListingBuilder<T> emptyStateComponent(Component component) {
+            builder.emptyStateComponent(component);
+            return this;
+        }
+
 		/*@Override
 		public DatastoreBeanListingBuilder<T> withIndexColumn(String property) {
 			builder.withIndexColumn(property);
@@ -852,7 +872,7 @@ public class DefaultBeanListing<T> extends AbstractItemListing<T, String> implem
          * </p>
          *
          * @param flexGrow   the flex grow ratio to set
-         * @param properties The properties to configure (not null)
+         * @param properties The properties to create (not null)
          * @return this
          */
         @Override

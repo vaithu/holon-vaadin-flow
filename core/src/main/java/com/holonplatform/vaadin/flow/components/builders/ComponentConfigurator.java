@@ -25,7 +25,7 @@ import com.vaadin.flow.component.DetachEvent;
 import com.vaadin.flow.dom.Element;
 
 /**
- * Interface to configure a {@link Component}.
+ * Interface to create a {@link Component}.
  * 
  * @param <C> Concrete configurator type
  * 
@@ -73,7 +73,7 @@ public interface ComponentConfigurator<C extends ComponentConfigurator<C>> exten
 
 	/**
 	 * Configure the component {@link Element}.
-	 * @param element The consumer to use to configure the component {@link Element} (not null)
+	 * @param element The consumer to use to create the component {@link Element} (not null)
 	 * @return this
 	 * @since 5.2.3
 	 */
@@ -104,8 +104,8 @@ public interface ComponentConfigurator<C extends ComponentConfigurator<C>> exten
 
 	/**
 	 * Create a new {@link BaseComponentConfigurator} on given <code>component</code>.
-	 * @param component Component to configure (not null)
-	 * @return A new {@link BaseComponentConfigurator} to configure given component
+	 * @param component Component to create (not null)
+	 * @return A new {@link BaseComponentConfigurator} to create given component
 	 */
 	static BaseComponentConfigurator create(Component component) {
 		return new DefaultComponentConfigurator(component);

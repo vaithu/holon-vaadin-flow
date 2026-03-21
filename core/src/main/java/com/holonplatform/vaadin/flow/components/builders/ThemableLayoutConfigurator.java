@@ -124,4 +124,34 @@ public interface ThemableLayoutConfigurator<C extends ThemableLayoutConfigurator
 	 */
 	C boxSizing(BoxSizing boxSizing);
 
-}
+    /**
+     * Sets whether items should wrap to new lines/columns when they exceed the layout's boundaries.
+     * When enabled, items maintain their size and create new rows or columns as needed, depending on
+     * the layout's orientation.
+     * <p>
+     * When disabled, items will be compressed to fit within a single row/column.
+     *
+     * @param wrap true to enable wrapping, false to force items into a single row/column
+     * @return this
+     */
+    C wrap(boolean wrap);
+
+    /**
+     * Sets the <code>wrap</code> theme setting for the element. If a theme supports this attribute, it
+     * will apply wrap to the element.
+     * @return this
+     */
+    default C wrap() {
+        return wrap(true);
+    }
+
+    /**
+     * Remove the <code>wrap</code> theme setting for the element. If a theme supports this attribute,
+     * it will remove wrap to the element.
+     * @return this
+     */
+    default C withoutWrap() {
+        return wrap(false);
+    }
+
+    }

@@ -9,7 +9,7 @@ import com.vaadin.flow.theme.lumo.LumoUtility.Display;
 
 public class BreadcrumbItem extends ListItem implements AfterNavigationObserver {
 
-    private RouterLink link;
+    private final RouterLink link;
 
     public BreadcrumbItem(RouterLink link) {
         addClassNames(Display.FLEX);

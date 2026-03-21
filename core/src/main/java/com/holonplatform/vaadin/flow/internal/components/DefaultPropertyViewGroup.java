@@ -211,7 +211,7 @@ public class DefaultPropertyViewGroup extends AbstractPropertySetGroup<ViewCompo
 			final ViewComponent<T> component = render(propertyConfiguration)
 					.orElseThrow(() -> new NoSuitableRendererAvailableException(
 							"No renderer available to render the property [" + property + "] as a ViewComponent"));
-			// configure
+			// create
 			getPostProcessors().forEach(postProcessor -> postProcessor.accept(property, component));
 			// register
 			components.set(property, component);

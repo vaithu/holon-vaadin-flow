@@ -59,7 +59,7 @@ public interface FormLayoutConfigurator<C extends FormLayoutConfigurator<C>> ext
 	 * Create and add a new {@link FormItem} to this layout that wraps the given field with a label.
 	 * @param field the field component to wrap
 	 * @param label the label component to set
-	 * @param formItem Optional {@link Consumer} to configure the created {@link FormItem} instance
+	 * @param formItem Optional {@link Consumer} to create the created {@link FormItem} instance
 	 * @return this
 	 */
 	C withFormItem(Component field, Component label, Consumer<FormItem> formItem);
@@ -68,7 +68,7 @@ public interface FormLayoutConfigurator<C extends FormLayoutConfigurator<C>> ext
 	 * Create and add a new {@link FormItem} to this layout that wraps the given field with a label.
 	 * @param field the field component to wrap (not null)
 	 * @param label the label component to set
-	 * @param formItem Optional {@link Consumer} to configure the created {@link FormItem} instance
+	 * @param formItem Optional {@link Consumer} to create the created {@link FormItem} instance
 	 * @return this
 	 */
 	default C withFormItem(HasComponent field, Component label, Consumer<FormItem> formItem) {
@@ -102,7 +102,7 @@ public interface FormLayoutConfigurator<C extends FormLayoutConfigurator<C>> ext
 	 * Create and add a new {@link FormItem} to this layout that wraps the given field with a label.
 	 * @param field the field component to wrap
 	 * @param label the label text to set
-	 * @param formItem Optional {@link Consumer} to configure the created {@link FormItem} instance
+	 * @param formItem Optional {@link Consumer} to create the created {@link FormItem} instance
 	 * @return this
 	 */
 	C withFormItem(Component field, String label, Consumer<FormItem> formItem);
@@ -111,7 +111,7 @@ public interface FormLayoutConfigurator<C extends FormLayoutConfigurator<C>> ext
 	 * Create and add a new {@link FormItem} to this layout that wraps the given field with a label.
 	 * @param field the field component to wrap
 	 * @param label the label text to set
-	 * @param formItem Optional {@link Consumer} to configure the created {@link FormItem} instance
+	 * @param formItem Optional {@link Consumer} to create the created {@link FormItem} instance
 	 * @return this
 	 */
 	default C withFormItem(HasComponent field, String label, Consumer<FormItem> formItem) {
@@ -150,7 +150,7 @@ public interface FormLayoutConfigurator<C extends FormLayoutConfigurator<C>> ext
 
 	/**
 	 * Get a new {@link FormLayoutConfigurator} for given component.
-	 * @param component The component to configure (not null)
+	 * @param component The component to create (not null)
 	 * @return A new {@link FormLayoutConfigurator}
 	 */
 	static BaseFormLayoutConfigurator configure(FormLayout component) {

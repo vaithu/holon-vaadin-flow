@@ -544,7 +544,7 @@ public class DefaultPropertyListing extends AbstractItemListing<PropertyBox, Pro
 
 	public static class DefaultDatastorePropertyListingBuilder extends AbstractDatastorePropertyListingBuilder {
 
-		private final DatastoreDataProvider<PropertyBox, QueryFilter> datastoreDataProvider;
+        private final DatastoreDataProvider<PropertyBox, QueryFilter> datastoreDataProvider;
 
 		public DefaultDatastorePropertyListingBuilder(DefaultPropertyListingBuilder builder,
 				DatastoreDataProvider<PropertyBox, QueryFilter> datastoreDataProvider) {
@@ -552,8 +552,7 @@ public class DefaultPropertyListing extends AbstractItemListing<PropertyBox, Pro
 			this.datastoreDataProvider = datastoreDataProvider;
 		}
 
-
-		/*
+        /*
 		 * (non-Javadoc)
 		 * 
 		 * @see com.holonplatform.vaadin.flow.components.builders.
@@ -613,15 +612,15 @@ public class DefaultPropertyListing extends AbstractItemListing<PropertyBox, Pro
 
 	public static class DefaultDatastoreLazyPropertyListingBuilder extends AbstractDatastorePropertyListingBuilder {
 
-		private final DatastoreLazyDataProvider<PropertyBox, QueryFilter> datastoreDataProvider;
+        private final DatastoreLazyDataProvider<PropertyBox, QueryFilter> datastoreDataProvider;
 
 		public DefaultDatastoreLazyPropertyListingBuilder(DefaultPropertyListingBuilder builder,
 													  DatastoreLazyDataProvider<PropertyBox, QueryFilter> datastoreDataProvider) {
 			super(builder);
-			this.datastoreDataProvider = datastoreDataProvider;
+            this.datastoreDataProvider = datastoreDataProvider;
 		}
 
-		/*
+        /*
 		 * (non-Javadoc)
 		 *
 		 * @see com.holonplatform.vaadin.flow.components.builders.

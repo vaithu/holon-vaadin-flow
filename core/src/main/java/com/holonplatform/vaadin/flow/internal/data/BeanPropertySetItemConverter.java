@@ -15,6 +15,7 @@
  */
 package com.holonplatform.vaadin.flow.internal.data;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.function.Function;
 
 import com.holonplatform.core.beans.BeanPropertySet;
@@ -47,16 +48,18 @@ public class BeanPropertySetItemConverter<T> implements Function<PropertyBox, T>
 	 * @see java.util.function.Function#apply(java.lang.Object)
 	 */
 	@Override
-	public T apply(PropertyBox item) {
-		if (item != null) {
-			try {
-				return beanPropertySet.write(item, beanPropertySet.getBeanClass().newInstance(), true);
-			} catch (InstantiationException | IllegalAccessException e) {
-				throw new RuntimeException("Failed to convert item [" + item + "] into a bean class instance ["
-						+ beanPropertySet.getBeanClass().getName() + "]", e);
-			}
-		}
-		return null;
-	}
+    public T apply(PropertyBox item) {
+        if (item != null) {
+            try {
+                return beanPropertySet.write(item,
+                        beanPropertySet.getBeanClass().getDeclaredConstructor().newInstance(), true);
+            } catch (InstantiationException | IllegalAccessException | IllegalArgumentException
+                     | InvocationTargetException | NoSuchMethodException | SecurityException e) {
+                throw new RuntimeException("Failed to convert item [" + item + "] into a bean class instance ["
+                        + beanPropertySet.getBeanClass().getName() + "]", e);
+            }
+        }
+        return null;
+    }
 
 }

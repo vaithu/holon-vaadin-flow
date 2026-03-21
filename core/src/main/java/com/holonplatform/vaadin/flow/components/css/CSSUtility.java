@@ -1738,18 +1738,18 @@ public final class CSSUtility {
     }
 
 
-    public class FontFamily {
+    public static final class FontFamily {
         public static final String MONOSPACE = "monospace";
     }
 
-    public class Padding {
-        public class Responsive {
-            public class Horizontal {
+    static public class Padding {
+        public static class Responsive {
+            public static class Horizontal {
                 public static final String M = "padding-r-h-m";
                 public static final String L = "padding-r-h-l";
             }
 
-            public class Vertical {
+            public static class Vertical {
                 public static final String M = "padding-r-v-m";
                 public static final String L = "padding-r-v-l";
             }
@@ -2024,7 +2024,7 @@ public final class CSSUtility {
     }
 
 
-    public final class Mobile {
+    public static final class Mobile {
         private Mobile() {
 
         }

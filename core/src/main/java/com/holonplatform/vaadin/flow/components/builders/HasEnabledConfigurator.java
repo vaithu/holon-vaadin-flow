@@ -53,7 +53,7 @@ public interface HasEnabledConfigurator<C extends HasEnabledConfigurator<C>> {
 
 	/**
 	 * Create a new {@link BaseHasEnabledConfigurator}.
-	 * @param component Component to configure (not null)
+	 * @param component Component to create (not null)
 	 * @return A new {@link BaseHasEnabledConfigurator}
 	 */
 	static BaseHasEnabledConfigurator create(HasEnabled component) {

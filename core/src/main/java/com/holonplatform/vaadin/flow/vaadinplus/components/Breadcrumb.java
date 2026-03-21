@@ -6,7 +6,7 @@ import com.vaadin.flow.theme.lumo.LumoUtility.*;
 
 public class Breadcrumb extends Nav {
 
-    private OrderedList list;
+    private final OrderedList list;
 
     public Breadcrumb() {
         addClassName("breadcrumb");

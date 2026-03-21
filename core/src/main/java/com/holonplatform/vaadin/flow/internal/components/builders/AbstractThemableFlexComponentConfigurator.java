@@ -105,6 +105,12 @@ public abstract class AbstractThemableFlexComponentConfigurator<L extends Compon
 		return getConfigurator();
 	}
 
+    @Override
+    public C wrap(boolean wrap) {
+        themableLayoutConfigurator.wrap(wrap);
+        return getConfigurator();
+    }
+
 	/*
 	 * (non-Javadoc)
 	 * @see com.holonplatform.vaadin.flow.components.builders.FlexComponentConfigurator#alignItems(com.vaadin.flow.
