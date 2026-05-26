@@ -5,9 +5,7 @@ import com.holonplatform.vaadin.flow.components.builders.ZohoViewBuilder;
 import com.holonplatform.vaadin.flow.components.builders.ZohoViewConfigurator;
 import com.holonplatform.vaadin.flow.test.pojo.Person;
 import com.holonplatform.vaadin.flow.vaadinplus.Layout;
-import com.holonplatform.vaadin.flow.vaadinplus.utilities.HeadingLevel;
 import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.grid.Grid;
 import org.junit.jupiter.api.Test;
 
 public class TestZohoView {

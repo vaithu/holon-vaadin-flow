@@ -1,0 +1,314 @@
+/*
+ * master-detail-layout.css
+ *
+ * Component-level styles for MasterDetailLayout<T>.
+ * Supplements master-details.css (structural) with polished visual defaults.
+ *
+ * ── Design tokens ─────────────────────────────────────────────────────────
+ * Override any token on .mdl-root (or any ancestor) to theme the component:
+ *
+ *   --mdl-primary            Primary accent          default: #185FA5
+ *   --mdl-primary-subtle     Selected row fill       default: #EBF4FF
+ *   --mdl-surface-0          White surface           default: #ffffff
+ *   --mdl-surface-50         Page / detail bg        default: #f8f9fb
+ *   --mdl-surface-100        Divider / hover bg      default: #f3f4f6
+ *   --mdl-surface-200        Border colour           default: #e8eaed
+ *   --mdl-text-secondary     Secondary text          default: #6b7280
+ *   --mdl-text-tertiary      Placeholder / meta      default: #9ca3af
+ *   --mdl-master-basis       Master panel width (% or px)   default: 30%
+ *   --mdl-selected-row-bg    Row fill on select      default: --mdl-primary-subtle
+ *   --mdl-selected-row-accent Left accent bar        default: --mdl-primary
+ *   --mdl-separator-width    Vertical divider width  default: 2px
+ *   --mdl-separator-color    Vertical divider colour default: --mdl-surface-200
+ *   --mdl-master-bg          Master panel bg         default: --mdl-surface-0
+ *   --mdl-detail-bg          Detail scroll area bg   default: --mdl-surface-50
+ *   --mdl-font               Font family             default: system UI stack
+ */
+
+/* -----------------------------------------------------------------------
+ * 0) Design tokens — defaults scoped to the component root.
+ *    All colours are derivable from these primitives.
+ * ----------------------------------------------------------------------- */
+
+.mdl-root {
+    --mdl-primary:              #185FA5;
+    --mdl-primary-subtle:       #EBF4FF;
+    --mdl-surface-0:            #ffffff;
+    --mdl-surface-50:           #f8f9fb;
+    --mdl-surface-100:          #f3f4f6;
+    --mdl-surface-200:          #e8eaed;
+    --mdl-text-secondary:       #6b7280;
+    --mdl-text-tertiary:        #9ca3af;
+
+    /* Derived tokens — override individually if needed */
+    --mdl-selected-row-accent:  var(--mdl-primary);
+    --mdl-separator-width:      2px;
+    --mdl-font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+                'Helvetica Neue', Arial, sans-serif;
+
+    /*
+     * Master / detail split ratio.
+     * ─────────────────────────────
+     * This is the SINGLE place to control how wide the master panel is.
+     * It is forwarded to master-details.css via --iyen-master-desktop-basis.
+     *
+     * Recommended ranges:
+     *   Narrow content list   →  28%–32%
+     *   Wide content list     →  40%–50%
+     *   Icon-only sidebar     →  64px  (use a px value for fixed-width sidebars)
+     *
+     * Override on any ancestor or directly on .mdl-root:
+     *   my-view .mdl-root { --mdl-master-basis: 35%; }
+     */
+    --mdl-master-basis:           30%;
+
+    /* Wire down to master-details.css — do not override this directly */
+    --iyen-master-desktop-basis:  var(--mdl-master-basis);
+}
+
+/* -----------------------------------------------------------------------
+ * 1) Root wrapper — flex column fills the available height.
+ *    Added by MasterDetailLayout via addClassName("mdl-root").
+ * ----------------------------------------------------------------------- */
+
+.mdl-root {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    min-height: 0;
+    width: 100%;
+    box-sizing: border-box;
+    overflow: hidden;
+    font-family: var(--mdl-font);
+}
+
+/* -----------------------------------------------------------------------
+ * 2) Responsive-host wrapper — IyenResponsiveLayout fills the root.
+ * ----------------------------------------------------------------------- */
+
+.mdl-responsive-host {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    min-height: 0;
+    width: 100%;
+    overflow: hidden;  /* belt-and-suspenders: clip before main.iyen-responsive-layout */
+}
+
+/*
+ * CSS SPEC TRAP: master-details.css sets overflow-x: hidden on
+ * main.iyen-responsive-layout. The spec mandates that when one overflow axis
+ * is hidden/scroll, the other cannot remain visible — the browser silently
+ * promotes it to auto. This creates a second, unintended scroll container
+ * stacked above .iyen-detail-scroll (the ONLY intended scroller).
+ *
+ * Fix: inside MasterDetailLayout (context: .mdl-root), explicitly set
+ * overflow: hidden on the main element so the browser has nothing to promote,
+ * and give it flex:1 1 auto so it fills the finite-height .mdl-responsive-host.
+ */
+.mdl-root main.iyen-responsive-layout {
+    overflow: hidden;
+    flex: 1 1 auto;
+    height: 100%;
+}
+
+/* -----------------------------------------------------------------------
+ * 3) Master panel — white background, no default padding.
+ *    Override: master-details.css adds padding + overflow:auto which we
+ *    undo here so the grid itself manages its scroll.
+ * ----------------------------------------------------------------------- */
+
+.mdl-root .iyen-master {
+    padding: 0;
+    overflow: hidden;
+}
+
+/* At ≥ 1024px master-details.css applies position:sticky + align-self:flex-start
+   which clips the panel to content height. We override to full stretch.
+   The flex-basis is already set correctly at 768px in master-details.css;
+   we only need to undo the positional properties here.                   */
+@media (min-width: 1024px) {
+    .mdl-root .iyen-master {
+        position: relative;
+        align-self: stretch;
+        max-height: none;
+    }
+}
+
+/* -----------------------------------------------------------------------
+ * 4) Master content wrapper — stacks search toolbar + grid inside the
+ *    master panel's content row (row 2 of the desktop subgrid).
+ *    Flex column fills remaining height; grid takes all leftover space.
+ * ----------------------------------------------------------------------- */
+
+.mdl-master-grid {
+    flex: 1 1 auto;
+    min-height: 0;
+    width: 100%;
+}
+
+.mdl-root .iyen-master-content {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow: hidden;
+}
+
+/* -----------------------------------------------------------------------
+ * 5) Layout — CSS Grid at desktop (controlled by master-details.css).
+ *    master-details.css switches .iyen-md-row to display:grid at >= 768 px
+ *    with grid-template-columns driven by --iyen-master-desktop-basis
+ *    (wired from --mdl-master-basis above).  No flex override needed here —
+ *    the old flex:0 0 override would fight the grid sizing.
+ *    Only ensure the master sits in column 1 inside .mdl-root.
+ * ----------------------------------------------------------------------- */
+
+@media (min-width: 768px) {
+    .mdl-root .iyen-master {
+        /* Grid placement — column 1 is already correct from master-details.css
+           but we pin it here so .mdl-root-scoped specificity can't lose. */
+        grid-column: 1;
+        /* flex sizing must be unset — grid-template-columns governs width */
+        flex: unset;
+        max-width: unset;
+    }
+
+    .mdl-root .iyen-master-content {
+        overflow-y: auto; /* content row scrolls; master column no longer does */
+    }
+}
+
+/* -----------------------------------------------------------------------
+ * 6) Separator — 1 px vertical line between master and detail panels.
+ *    Overrides the default border-color from master-details.css with the
+ *    component-level surface token so it blends with the white master bg.
+ * ----------------------------------------------------------------------- */
+
+.mdl-root .iyen-md-separator {
+    background-color: var(--mdl-surface-200, #e8eaed);
+    /* Reset any leftover position/height from master-details.css */
+    position: relative;
+    height: auto;
+}
+
+/* -----------------------------------------------------------------------
+ * 7) Detail panel — light gray background creates visual hierarchy between
+ *    the flat white master and the scrollable content area.
+ *    Also removes the default 1rem right+bottom padding from master-details.css
+ *    (that padding was designed for scroll-within-page layouts; in MasterDetail-
+ *    Layout the scroll area manages its own internal spacing).
+ * ----------------------------------------------------------------------- */
+
+.mdl-root .iyen-detail {
+    padding: 0;                /* remove default "0 1rem 1rem 0" from master-details.css */
+    overflow: hidden;          /* belt-and-suspenders: clip horizontal overflow here too */
+}
+
+/*
+ * Align header/tabs/scroll to a consistent 1.5rem horizontal gutter.
+ * master-details.css already sets 1.5rem on header/tabs/scroll; these
+ * overrides ensure the values hold inside the MasterDetailLayout context.
+ */
+.mdl-root .iyen-detail-header {
+    padding: 1rem 1.5rem;
+    background: var(--mdl-surface-0);
+    border-bottom: 1px solid var(--mdl-surface-100);
+}
+
+.mdl-root .iyen-detail-tabs {
+    padding: 0 1.5rem;
+    background: var(--mdl-surface-0);
+    border-bottom: 1px solid var(--mdl-surface-100);
+}
+
+.mdl-root .iyen-detail-scroll {
+    padding: 1.5rem;
+    gap: 0.875rem;             /* ≈14px between section cards — matches image */
+    min-height: 0;             /* required: grid item must not overflow its 1fr row */
+}
+
+/* -----------------------------------------------------------------------
+ * 8) Grid rows — cursor, row separators, selection highlight, hover tint.
+ * ----------------------------------------------------------------------- */
+
+/* All rows are clickable — pointer cursor signals this */
+.mdl-master-grid::part(row) {
+    cursor: pointer;
+    transition: background 80ms ease;
+}
+
+/* Subtle row separator — `body-cell` ::part applies per cell */
+.mdl-root .mdl-master-grid::part(body-cell) {
+    border-bottom: 1px solid var(--mdl-surface-100);
+    /* Remove Vaadin's default cell padding so our row-cell component
+       controls its own vertical spacing via padding on the rendered Div */
+    padding-block: 0;
+}
+
+/* ── Selected row ──
+ *  Grid.setPartNameGenerator returns "mdl-selected" for the active row.
+ *  ::part() pierces the vaadin-grid shadow DOM.
+ *  3px inset box-shadow acts as the left accent bar (avoids layout shift). */
+
+.mdl-master-grid::part(mdl-selected) {
+    box-shadow: inset 3px 0 0 var(--mdl-selected-row-accent);
+}
+
+/* -----------------------------------------------------------------------
+ * 8) Empty-state placeholder — shown when no item is selected.
+ *    Two cases:
+ *    a) Slot is truly empty (before the first selection ever happens) → :empty::before
+ *    b) Slot has cached components (Option A — build-once) but none is selected →
+ *       .mdl-detail--no-selection::before + > * { display:none }
+ * ----------------------------------------------------------------------- */
+
+.iyen-detail-scroll:empty::before,
+.iyen-detail-scroll.mdl-detail--no-selection::before {
+    content: "Select an item to view details";
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1 1 auto;
+    min-height: 120px;
+    padding: 2rem;
+    font-size: 0.8125rem;
+    letter-spacing: 0.01em;
+    text-align: center;
+    pointer-events: none;
+}
+
+/* Hide cached components while no row is selected (Option A). */
+.iyen-detail-scroll.mdl-detail--no-selection > * {
+    display: none;
+}
+
+
+/* -----------------------------------------------------------------------
+ * 9) Mobile sheet — content area aligned with desktop detail layout.
+ * ----------------------------------------------------------------------- */
+
+.sheet__content > .iyen-detail-scroll {
+    padding: 0;
+    border: none;
+}
+
+/* -----------------------------------------------------------------------
+ * 10) Detail content fade-in — smooth entry on every selection change.
+ *     With Option A (build-once), components stay in the DOM but are hidden
+ *     by .mdl-detail--no-selection.  The animation is re-triggered by
+ *     targeting children only when the slot is NOT in the hidden state, so
+ *     each time showDesktopSlot() removes the class the animation replays.
+ *     Only on tablet/desktop; mobile sheet has its own slide animation.
+ * ----------------------------------------------------------------------- */
+
+@media (min-width: 768px) {
+    .iyen-detail-scroll:not(.mdl-detail--no-selection) > * {
+        animation: mdl-fade-in 150ms ease-out both;
+    }
+}
+
+@keyframes mdl-fade-in {
+    from { opacity: 0; transform: translateY(4px); }
+    to   { opacity: 1; transform: none; }
+}

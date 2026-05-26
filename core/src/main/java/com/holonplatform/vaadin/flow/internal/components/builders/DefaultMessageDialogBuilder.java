@@ -30,19 +30,11 @@ public class DefaultMessageDialogBuilder extends AbstractClosableDialogConfigura
 		super();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.holonplatform.vaadin.flow.internal.components.builders.AbstractComponentConfigurator#getConfigurator()
-	 */
 	@Override
 	protected MessageDialogBuilder getConfigurator() {
 		return this;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.holonplatform.vaadin.flow.components.builders.DialogBuilder#build()
-	 */
 	@Override
 	public Dialog build() {
 		return getComponent();

@@ -15,23 +15,6 @@
  */
 package com.holonplatform.vaadin.flow.test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.time.LocalTime;
-import java.util.Collection;
-import java.util.Locale;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
-
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
 import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.vaadin.flow.components.Components;
 import com.holonplatform.vaadin.flow.components.Input;
@@ -43,6 +26,18 @@ import com.holonplatform.vaadin.flow.test.util.TestAdapter;
 import com.vaadin.flow.component.ComponentUtil;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.internal.CurrentInstance;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import java.time.LocalTime;
+import java.util.Collection;
+import java.util.Locale;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class TestLocalTimeInput {
 
@@ -236,6 +231,31 @@ public class TestLocalTimeInput {
 			UI.getCurrent().add(input2.getComponent());
 			ComponentUtil.onComponentAttach(input2.getComponent(), true);
 			assertEquals("TestUS", ComponentTestUtils.getLabel(input2));
+		});
+
+	}
+
+	@Test
+	public void testAriaLabel() {
+
+		Input<LocalTime> input = Input.localTime().ariaLabel("Local time input").build();
+		assertNull(ComponentTestUtils.getElementAttribute(input.getComponent(), "aria-label"));
+
+		input = Input.localTime().ariaLabelledBy("local-time-input-label").build();
+		assertNull(ComponentTestUtils.getElementAttribute(input.getComponent(), "aria-labelledby"));
+
+		LocalizationTestUtils.withTestLocalizationContext(() -> {
+			Input<LocalTime> localized = Input.localTime()
+					.ariaLabel(Localizable.builder().message("test").messageCode("test.code").build()).build();
+			assertNull(ComponentTestUtils.getElementAttribute(localized.getComponent(), "aria-label"));
+		});
+
+		LocalizationTestUtils.withTestLocalizationContext(() -> {
+			Input<LocalTime> localized = Input.localTime().deferLocalization()
+					.ariaLabel(Localizable.builder().message("test").messageCode("test.code").build()).build();
+			assertNull(ComponentTestUtils.getElementAttribute(localized.getComponent(), "aria-label"));
+			ComponentUtil.onComponentAttach(localized.getComponent(), true);
+			assertNull(ComponentTestUtils.getElementAttribute(localized.getComponent(), "aria-label"));
 		});
 
 	}

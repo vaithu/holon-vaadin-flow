@@ -1,39 +1,22 @@
 package com.holonplatform.vaadin.flow.vaadinplus.utilities;
 
-import com.vaadin.flow.theme.lumo.LumoUtility;
-
 public class Font {
 
-    public enum LineHeight {
-        NONE(LumoUtility.LineHeight.NONE),
-        XSMALL(LumoUtility.LineHeight.XSMALL),
-        SMALL(LumoUtility.LineHeight.SMALL),
-        MEDIUM(LumoUtility.LineHeight.MEDIUM);
-
-        private final String className;
-
-        private LineHeight(String className) {
-            this.className = className;
-        }
-
-        public String getClassName() {
-            return this.className;
-        }
-    }
+    private Font() {}
 
     public enum Size {
-        XXSMALL(LumoUtility.FontSize.XXSMALL),
-        XSMALL(LumoUtility.FontSize.XSMALL),
-        SMALL(LumoUtility.FontSize.SMALL),
-        MEDIUM(LumoUtility.FontSize.MEDIUM),
-        LARGE(LumoUtility.FontSize.LARGE),
-        XLARGE(LumoUtility.FontSize.XLARGE),
-        XXLARGE(LumoUtility.FontSize.XXLARGE),
-        XXXLARGE(LumoUtility.FontSize.XXXLARGE);
+        XXSMALL("font-size-xxsmall"),
+        XSMALL("font-size-xsmall"),
+        SMALL("font-size-small"),
+        MEDIUM("font-size-medium"),
+        LARGE("font-size-large"),
+        XLARGE("font-size-xlarge"),
+        XXLARGE("font-size-xxlarge"),
+        XXXLARGE("font-size-xxxlarge");
 
         private final String className;
 
-        private Size(String className) {
+        Size(String className) {
             this.className = className;
         }
 
@@ -43,19 +26,36 @@ public class Font {
     }
 
     public enum Weight {
-        THIN(LumoUtility.FontWeight.THIN),
-        EXTRALIGHT(LumoUtility.FontWeight.EXTRALIGHT),
-        LIGHT(LumoUtility.FontWeight.LIGHT),
-        NORMAL(LumoUtility.FontWeight.NORMAL),
-        MEDIUM(LumoUtility.FontWeight.MEDIUM),
-        SEMIBOLD(LumoUtility.FontWeight.SEMIBOLD),
-        BOLD(LumoUtility.FontWeight.BOLD),
-        EXTRABOLD(LumoUtility.FontWeight.EXTRABOLD),
-        BLACK(LumoUtility.FontWeight.BLACK);
+        THIN("font-weight-thin"),
+        EXTRALIGHT("font-weight-extralight"),
+        LIGHT("font-weight-light"),
+        NORMAL("font-weight-normal"),
+        MEDIUM("font-weight-medium"),
+        SEMIBOLD("font-weight-semibold"),
+        BOLD("font-weight-bold"),
+        EXTRABOLD("font-weight-extrabold"),
+        BLACK("font-weight-black");
 
         private final String className;
 
-        private Weight(String className) {
+        Weight(String className) {
+            this.className = className;
+        }
+
+        public String getClassName() {
+            return this.className;
+        }
+    }
+
+    public enum LineHeight {
+        NONE("line-height-none"),
+        XSMALL("line-height-xsmall"),
+        SMALL("line-height-small"),
+        MEDIUM("line-height-medium");
+
+        private final String className;
+
+        LineHeight(String className) {
             this.className = className;
         }
 

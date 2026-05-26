@@ -10,11 +10,6 @@ public class DefaultTabsConfigurator
         super(tabs);
     }
 
-    /**
-     * Get the actual configurator.
-     *
-     * @return the actual configurator
-     */
     @Override
     protected BaseTabsConfigurator getConfigurator() {
         return this;

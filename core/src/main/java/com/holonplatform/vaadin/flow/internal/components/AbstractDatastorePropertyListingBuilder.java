@@ -13,6 +13,7 @@ import com.holonplatform.vaadin.flow.data.ItemSort;
 import com.holonplatform.vaadin.flow.internal.components.builders.DefaultShortcutConfigurator;
 import com.holonplatform.vaadin.flow.internal.components.support.ItemListingColumn;
 import com.vaadin.flow.component.*;
+import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridMultiSelectionModel;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.grid.dnd.GridDropMode;
@@ -87,6 +88,24 @@ public abstract class AbstractDatastorePropertyListingBuilder implements Propert
         return this;
     }
 
+    @Override
+    public PropertyListingBuilder.DatastorePropertyListingBuilder tooltipMarkdownEnabled(boolean markdownEnabled) {
+        builder.tooltipMarkdownEnabled(markdownEnabled);
+        return this;
+    }
+
+    @Override
+    public PropertyListingBuilder.DatastorePropertyListingBuilder scrollToColumn(int columnIndex) {
+        builder.scrollToColumn(columnIndex);
+        return this;
+    }
+
+    @Override
+    public PropertyListingBuilder.DatastorePropertyListingBuilder scrollToColumn(Grid.Column<PropertyBox> column) {
+        builder.scrollToColumn(column);
+        return this;
+    }
+
     /**
      * Set all items selected
      *
@@ -125,7 +144,7 @@ public abstract class AbstractDatastorePropertyListingBuilder implements Propert
     public <X> ItemListingColumnBuilder<PropertyBox, Property<?>, PropertyListing, PropertyListingBuilder.DatastorePropertyListingBuilder> withColumn(
             ValueProvider<PropertyBox, X> valueProvider) {
         ObjectUtils.argumentNotNull(valueProvider, "ValueProvider must be not null");
-        return withColumn(VirtualProperty.create(Object.class, item -> valueProvider.apply(item)));
+        return withColumn(VirtualProperty.create(Object.class, valueProvider::apply));
     }
 
     /*
@@ -156,7 +175,7 @@ public abstract class AbstractDatastorePropertyListingBuilder implements Propert
     public ItemListingColumnBuilder<PropertyBox, Property<?>, PropertyListing, PropertyListingBuilder.DatastorePropertyListingBuilder> withComponentColumn(
             ValueProvider<PropertyBox, Component> valueProvider) {
         ObjectUtils.argumentNotNull(valueProvider, "ValueProvider must be not null");
-        return withComponentColumn(VirtualProperty.create(Component.class, item -> valueProvider.apply(item)));
+        return withComponentColumn(VirtualProperty.create(Component.class, valueProvider::apply));
     }
 
     @Override
@@ -277,10 +296,7 @@ public abstract class AbstractDatastorePropertyListingBuilder implements Propert
         return this;
     }
 
-    /**
-     *  an initial set of columns for each of the bean's properties.
-     * @return
-     */
+    // Legacy placeholder for auto-create-columns support parity.
    /* @Override
     public PropertyListingBuilder.DatastorePropertyListingBuilder autoCreateColumns(boolean autoCreateColumns) {
         builder.autoCreateColumns(autoCreateColumns);
@@ -1534,6 +1550,21 @@ public abstract class AbstractDatastorePropertyListingBuilder implements Propert
     public PropertyListingBuilder.DatastorePropertyListingBuilder items(CallbackDataProvider.FetchCallback<PropertyBox, Void> fetchCallback,
                                                                         CallbackDataProvider.CountCallback<PropertyBox, Void> countCallback) {
         builder.items(fetchCallback, countCallback);
+        return this;
+    }
+
+    @Override
+    public PropertyListingBuilder.DatastorePropertyListingBuilder itemsPageable(
+            com.vaadin.flow.component.grid.Grid.SpringData.FetchCallback<?, PropertyBox> fetchCallback) {
+        builder.itemsPageable(fetchCallback);
+        return this;
+    }
+
+    @Override
+    public PropertyListingBuilder.DatastorePropertyListingBuilder itemsPageable(
+            com.vaadin.flow.component.grid.Grid.SpringData.FetchCallback<?, PropertyBox> fetchCallback,
+            com.vaadin.flow.component.grid.Grid.SpringData.CountCallback<?> countCallback) {
+        builder.itemsPageable(fetchCallback, countCallback);
         return this;
     }
 

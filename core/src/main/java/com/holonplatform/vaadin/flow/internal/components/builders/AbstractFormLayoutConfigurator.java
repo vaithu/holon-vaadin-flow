@@ -25,7 +25,10 @@ import com.vaadin.flow.component.formlayout.FormLayout.FormItem;
 import com.vaadin.flow.component.formlayout.FormLayout.ResponsiveStep;
 import com.vaadin.flow.component.shared.HasTooltip;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 /**
@@ -138,20 +141,18 @@ public abstract class AbstractFormLayoutConfigurator<C extends FormLayoutConfigu
 	@Override
 	public C add(int colSpan, Component... components) {
 		columnSizeList.add(colSpan);
-		Arrays.stream(components).sequential()
-				.forEach(component -> {
-					getComponent().add(component, colSpan);
-				});
+		Arrays.stream(components).forEach(component -> {
+			getComponent().add(component, colSpan);
+		});
 		return getConfigurator();
 	}
 
 	@Override
 	public C colSpan(int colSpan, Component... components) {
 		columnSizeList.add(colSpan);
-		Arrays.stream(components).sequential()
-				.forEach(component -> {
-					getComponent().setColspan(component, colSpan);
-				});
+		Arrays.stream(components).forEach(component -> {
+			getComponent().setColspan(component, colSpan);
+		});
 		return getConfigurator();
 	}
 

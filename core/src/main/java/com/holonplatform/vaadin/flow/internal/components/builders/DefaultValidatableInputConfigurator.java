@@ -15,10 +15,6 @@
  */
 package com.holonplatform.vaadin.flow.internal.components.builders;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
-
 import com.holonplatform.core.Validator;
 import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.core.internal.utils.ObjectUtils;
@@ -27,6 +23,10 @@ import com.holonplatform.vaadin.flow.components.ValidatableInput;
 import com.holonplatform.vaadin.flow.components.ValidationStatusHandler;
 import com.holonplatform.vaadin.flow.components.builders.ValidatableInputConfigurator;
 import com.holonplatform.vaadin.flow.internal.components.RequiredInputValidator;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * Default {@link ValidatableInputConfigurator} implementation.
@@ -44,7 +44,7 @@ public class DefaultValidatableInputConfigurator<T>
 
 	private Localizable requiredMessage;
 
-	private final List<Validator<T>> validators = new LinkedList<>();
+	private final List<Validator<T>> validators = new ArrayList<>();
 
 	private ValidationStatusHandler<ValidatableInput<T>> validationStatusHandler;
 

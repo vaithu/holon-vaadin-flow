@@ -15,8 +15,8 @@
  */
 package com.holonplatform.vaadin.flow.internal.data;
 
+import java.util.ArrayList;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -43,7 +43,7 @@ public class DefaultItemListingDataProviderAdapter<T, F> extends AbstractDataPro
 
 	private boolean frozen = false;
 
-	private final List<T> additionalItems = new LinkedList<>();
+	private final List<T> additionalItems = new ArrayList<>();
 
 	/**
 	 * Constructor.

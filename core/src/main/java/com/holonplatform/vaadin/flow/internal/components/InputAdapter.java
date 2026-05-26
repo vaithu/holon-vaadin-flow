@@ -21,7 +21,6 @@ import com.holonplatform.vaadin.flow.components.HasLabel;
 import com.holonplatform.vaadin.flow.components.HasPlaceholder;
 import com.holonplatform.vaadin.flow.components.HasTitle;
 import com.holonplatform.vaadin.flow.components.Input;
-import com.holonplatform.vaadin.flow.components.builders.KeyNotifierConfigurator;
 import com.holonplatform.vaadin.flow.components.events.InvalidChangeEventNotifier;
 import com.holonplatform.vaadin.flow.components.events.ReadonlyChangeEvent;
 import com.holonplatform.vaadin.flow.components.events.ReadonlyChangeListener;
@@ -37,7 +36,7 @@ import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.value.HasValueChangeMode;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -91,7 +90,7 @@ public class InputAdapter<T, V extends HasValue<?, T>, C extends Component> impl
 	/**
 	 * Read-only change listeners
 	 */
-	private final List<ReadonlyChangeListener> readonlyChangeListeners = new LinkedList<>();
+	private final List<ReadonlyChangeListener> readonlyChangeListeners = new ArrayList<>();
 
 	/**
 	 * Adapters

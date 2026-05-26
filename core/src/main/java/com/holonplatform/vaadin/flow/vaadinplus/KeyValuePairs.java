@@ -5,14 +5,14 @@ import com.holonplatform.vaadin.flow.internal.lumo.Breakpoint;
 import com.holonplatform.vaadin.flow.internal.lumo.ColumnSpan;
 import com.holonplatform.vaadin.flow.internal.lumo.GridColumns;
 import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.HasTheme;
 import com.vaadin.flow.component.Unit;
+import com.vaadin.flow.component.dependency.StyleSheet;
+import com.vaadin.flow.component.HasTheme;
 import com.vaadin.flow.component.html.DescriptionList;
-import com.vaadin.flow.theme.lumo.LumoUtility.Display;
-import com.vaadin.flow.theme.lumo.LumoUtility.Margin;
 
 import java.util.HashMap;
 
+@StyleSheet("context://key-value-pair.css")
 public class KeyValuePairs extends DescriptionList implements HasTheme {
 
     public static final String STRIPES = "stripes";
@@ -22,7 +22,7 @@ public class KeyValuePairs extends DescriptionList implements HasTheme {
     private Background background;
 
     public KeyValuePairs(KeyValuePair... pairs) {
-        addClassNames("key-value-pairs", Display.GRID, Margin.Vertical.NONE);
+        addClassName("key-value-pairs");
         setBackground(Background.BASE);
 
         this.columnSpans = new HashMap<>();

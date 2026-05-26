@@ -1,0 +1,150 @@
+/*
+ * sidebar.css
+ *
+ * Mobile-first styles for Sidebar — a fixed slide-in panel.
+ *
+ * BEM namespace: .sidebar
+ *
+ * Structure:
+ *   .sidebar                      — <section> root (fixed panel)
+ *   .sidebar__header              — <header> bar with title and actions
+ *   .sidebar__header--centered    — modifier: vertically center header items (no description)
+ *   .sidebar__title               — <h2> panel title
+ *   .sidebar__description         — <span> optional subtitle
+ *   .sidebar__content             — main scrollable content region
+ *   .sidebar__btn                 — icon button (close / back) — tertiary style
+ *   .sidebar__btn--close          — modifier: hidden on mobile, visible on desktop
+ *   .sidebar__btn--back           — modifier: visible on mobile, hidden on desktop
+ *
+ * Open/close state is toggled by adding/removing the utility classes
+ * `end-0` (visible) and `-end-full` (hidden) in Java.
+ *
+ * Mobile  (< 640 px) — compact panel, close arrow visible, close ✕ hidden.
+ * Desktop (≥ 640 px) — full-width capped at 480 px, ✕ visible, arrow hidden.
+ */
+
+/* -----------------------------------------------------------------------
+ * Positioning utility classes used by Sidebar.java (open/close toggle)
+ *
+ *  .bottom-0        — stretches panel to bottom edge
+ *  .top-0           — stretches panel to top edge
+ *  .z-10            — z-index stacking above page content
+ *  .transition-all  — smooth slide animation for open/close
+ *  .end-0           — inset-inline-end: 0  → panel is fully visible
+ * .-end-full        — inset-inline-end: -100% → panel is hidden off-screen
+ * ----------------------------------------------------------------------- */
+
+.bottom-0       { bottom: 0; }
+.top-0          { top: 0; }
+.z-10           { z-index: 10; }
+.transition-all { transition: inset-inline-end 0.3s ease-in-out; }
+.end-0          { inset-inline-end: 0; }
+.-end-full      { inset-inline-end: -100%; }
+
+/* -----------------------------------------------------------------------
+ * Root
+ * ----------------------------------------------------------------------- */
+
+.sidebar {
+    display: flex;
+    flex-direction: column;
+    border-inline-start: 1px solid var(--color-border, var(--gray-200, #dde0e5));
+    box-shadow: var(--shadow-lg, 0 8px 24px rgba(0,0,0,.11), 0 2px 6px rgba(0,0,0,.06));
+    overflow: hidden;
+    position: fixed;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+@media (min-width: 640px) {
+    .sidebar {
+        width: 480px;
+        max-width: 100%;
+    }
+}
+
+/* -----------------------------------------------------------------------
+ * Header
+ * ----------------------------------------------------------------------- */
+
+.sidebar__header {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--color-border, var(--gray-200, #dde0e5));
+    padding: 0.75rem 1rem 0.75rem 1.5rem;
+    box-sizing: border-box;
+}
+
+.sidebar__header--centered {
+    align-items: center;
+}
+
+/* -----------------------------------------------------------------------
+ * Title & description
+ * ----------------------------------------------------------------------- */
+
+.sidebar__title {
+    font-size: 1rem;
+    font-weight: 600;
+    line-height: 1.4;
+    margin: 0;
+}
+
+.sidebar__description {
+    font-size: 0.8125rem;
+    display: block;
+    margin-top: 0.125rem;
+}
+
+/* -----------------------------------------------------------------------
+ * Content
+ * ----------------------------------------------------------------------- */
+
+.sidebar__content {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding: 0.5rem 1.5rem 1rem 1.5rem;
+    box-sizing: border-box;
+}
+
+/* -----------------------------------------------------------------------
+ * Buttons (tertiary icon style — no background, no border)
+ * ----------------------------------------------------------------------- */
+
+vaadin-button.sidebar__btn::part(button) {
+    border: none;
+    box-shadow: none;
+    padding: 0.25rem;
+    cursor: pointer;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+vaadin-button.sidebar__btn::part(button):hover {
+    border-radius: 0.375rem;
+}
+
+/* Back arrow: visible on mobile, hidden on desktop */
+.sidebar__btn--back {
+    display: inline-flex;
+}
+
+@media (min-width: 640px) {
+    .sidebar__btn--back {
+        display: none;
+    }
+}
+
+/* Close ✕: hidden on mobile, visible on desktop */
+.sidebar__btn--close {
+    display: none;
+}
+
+@media (min-width: 640px) {
+    .sidebar__btn--close {
+        display: inline-flex;
+    }
+}
+
+

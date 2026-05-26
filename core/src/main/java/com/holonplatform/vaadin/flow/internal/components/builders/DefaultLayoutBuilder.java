@@ -16,22 +16,11 @@ public class DefaultLayoutBuilder
         super(new Layout(components));
     }
 
-    /**
-     * Build and returns the component.
-     *
-     * @return The component instance
-     */
-
     @Override
     public Layout build() {
         return getComponent();
     }
 
-    /**
-     * Get the actual configurator.
-     *
-     * @return the actual configurator
-     */
     @Override
     protected LayoutBuilder getConfigurator() {
         return this;

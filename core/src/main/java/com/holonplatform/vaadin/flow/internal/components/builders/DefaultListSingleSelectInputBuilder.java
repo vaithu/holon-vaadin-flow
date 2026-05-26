@@ -71,7 +71,7 @@ public class DefaultListSingleSelectInputBuilder<T, ITEM>
 
 	protected final DefaultHasEnabledConfigurator enabledConfigurator;
 
-	protected final List<SelectionListener<T>> selectionListeners = new LinkedList<>();
+	protected final List<SelectionListener<T>> selectionListeners = new ArrayList<>();
 
 	private final Class<? extends T> type;
 	private final Class<ITEM> itemType;

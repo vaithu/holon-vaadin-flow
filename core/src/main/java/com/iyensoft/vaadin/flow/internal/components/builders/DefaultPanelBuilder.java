@@ -16,22 +16,11 @@ public class DefaultPanelBuilder
         super(new IyenPanel(components));
     }
 
-    /**
-     * Build and returns the component.
-     *
-     * @return The component instance
-     */
-
     @Override
     public IyenPanel build() {
         return getComponent();
     }
 
-    /**
-     * Get the actual configurator.
-     *
-     * @return the actual configurator
-     */
     @Override
     protected PanelBuilder getConfigurator() {
         return this;

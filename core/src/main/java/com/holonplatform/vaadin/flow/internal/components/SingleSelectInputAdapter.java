@@ -20,7 +20,6 @@ import com.holonplatform.core.internal.utils.ObjectUtils;
 import com.holonplatform.vaadin.flow.components.HasLabel;
 import com.holonplatform.vaadin.flow.components.HasPlaceholder;
 import com.holonplatform.vaadin.flow.components.*;
-import com.holonplatform.vaadin.flow.components.builders.KeyNotifierConfigurator;
 import com.holonplatform.vaadin.flow.components.events.InvalidChangeEventNotifier;
 import com.holonplatform.vaadin.flow.components.events.ReadonlyChangeListener;
 import com.holonplatform.vaadin.flow.internal.components.events.DefaultSelectionEvent;
@@ -28,7 +27,7 @@ import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.shared.HasTooltip;
 import com.vaadin.flow.data.value.HasValueChangeMode;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -43,7 +42,7 @@ public class SingleSelectInputAdapter<T> implements SingleSelect<T> {
 
 	private static final long serialVersionUID = -2059845261833011783L;
 
-	private final List<SelectionListener<T>> selectionListeners = new LinkedList<>();
+	private final List<SelectionListener<T>> selectionListeners = new ArrayList<>();
 
 	private final Input<T> input;
 

@@ -1,0 +1,794 @@
+/*
+ * vaadin-shell-theme.css
+ * ──────────────────────────────────────────────────────────────────────────
+ *  ⚙  INTERNAL FILE — DO NOT EDIT FOR BRANDING
+ *
+ *  Vaadin component wiring layer.  References design tokens via var() but
+ *  defines none itself.  ALL tokens live in brand-override-example.css.
+ *
+ *  Sections:
+ *    1. Lumo bridge   — wires design tokens → --lumo-* (primary, radius, etc.)
+ *    2. App layout    — vaadin-app-layout (navbar / drawer / content)
+ *    3. Side nav      — vaadin-side-nav, vaadin-side-nav-item
+ *    4. Button        — primary / hover states
+ *    5. Grid          — row colours, header, selection tint
+ *    6. Form inputs   — background, border, focus ring
+ *    7. Typography    — heading resets, .type-* utility classes, .surface-card
+ *
+ *  Load order (copy the annotations from brand-override-example.css header):
+ *    @StyleSheet(Lumo.STYLESHEET)
+ *    @StyleSheet("context://vaadin-shell-theme.css")      ← this file
+ *    @StyleSheet("context://my-brand.css")                ← edit this
+ *    @StyleSheet("context://app-shell.css")               ← do not edit
+ */
+
+/* ── Global base resets ──────────────────────────────────────────── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin:  0;
+  padding: 0;
+}
+
+* {
+  scrollbar-width: thin;
+}
+
+
+/* ══════════════════════════════════════════════════════════════
+   1. LUMO BRIDGE  +  AURA BRIDGE
+   Aliases design tokens → --lumo-* (for Lumo-based components)
+                         → --aura-* (for Aura theme — does NOT use --lumo-*)
+   Tokens are defined in brand-override-example.css.
+   ══════════════════════════════════════════════════════════════ */
+:root {
+  /* Primary (Lumo) */
+  --lumo-primary-color:           var(--brand-500);
+  --lumo-primary-text-color:      var(--brand-700);
+  --lumo-primary-color-10pct:     color-mix(in srgb, var(--brand-500) 10%, transparent);
+  --lumo-primary-color-50pct:     color-mix(in srgb, var(--brand-500) 50%, transparent);
+
+  /* Primary (Aura) — Aura ignores --lumo-primary-color; must use --aura-accent-color-* */
+  --aura-accent-color-light:      var(--brand-500);
+  --aura-accent-color-dark:       var(--brand-400);
+
+  /* Typography */
+  --lumo-font-family:             var(--font-body);
+  --lumo-body-text-color:         var(--text-primary);
+  --lumo-header-text-color:       var(--text-primary);
+  --lumo-secondary-text-color:    var(--text-secondary);
+  --lumo-disabled-text-color:     var(--text-tertiary);
+
+  /* Radius */
+  --lumo-border-radius-m:         var(--radius-md);
+  --lumo-border-radius-l:         var(--radius-lg);
+
+  /* Surfaces */
+  --lumo-base-color:              var(--surface-0);
+  --vaadin-background-color:      var(--surface-0);
+  --vaadin-background-container:  var(--surface-1);
+
+  /* Shell layout helpers (used in sections 2-3 below) */
+  --shell-topbar-height:     var(--toolbar-h, 52px);
+  --shell-nav-width:         var(--sidenav-width, 220px);
+  --shell-content-padding:   1.75rem 2rem;
+}
+
+
+/* ══════════════════════════════════════════════════════════════
+   2. APP LAYOUT  (vaadin-app-layout)
+   Parts: navbar | drawer | content
+   ══════════════════════════════════════════════════════════════ */
+
+/* Topbar */
+vaadin-app-layout::part(navbar) {
+  background:    var(--surface-0);
+  border-bottom: 1px solid var(--zinc-200);
+  min-height:    var(--shell-topbar-height);
+  padding:       0 1.25rem;
+  box-shadow:    none;
+  /* Override focus / link colour scoped to the topbar */
+  --lumo-primary-text-color: var(--brand-700);
+}
+
+/* Sidebar / drawer */
+vaadin-app-layout::part(drawer) {
+  background:  var(--sidenav-bg, var(--surface-0));
+  border-right: 1px solid var(--sidenav-border, var(--zinc-200));
+  width:        var(--shell-nav-width);
+  box-shadow:   none;
+  padding-top:  0.75rem;
+}
+
+/* Main content area */
+vaadin-app-layout::part(content) {
+  background: var(--surface-1);
+  padding:    var(--shell-content-padding);
+}
+
+
+/* ══════════════════════════════════════════════════════════════
+   3. SIDE NAVIGATION  (vaadin-side-nav + vaadin-side-nav-item)
+   ══════════════════════════════════════════════════════════════ */
+
+vaadin-side-nav {
+  width:   100%;
+  padding: 0;
+  --vaadin-side-nav-background: transparent;
+}
+
+/* Section group label */
+vaadin-side-nav::part(label) {
+  font-size:      var(--sidenav-label-font-size, var(--font-size-xs, 0.6875rem));
+  font-weight:    600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color:          var(--sidenav-label-color, var(--text-tertiary));
+  padding:        var(--sidenav-label-padding, 0.75rem 0.875rem 0.25rem);
+}
+
+/* Item link — default */
+vaadin-side-nav-item::part(link) {
+  color:         var(--sidenav-item-color, var(--text-secondary));
+  font-size:     var(--sidenav-item-font-size, 0.8125rem);
+  font-weight:   var(--sidenav-item-font-weight, 400);
+  padding:       var(--sidenav-item-padding, 0.4375rem 0.875rem);
+  border-radius: var(--sidenav-item-radius, 0);
+  border-left:   3px solid transparent;
+  background:    transparent;
+  transition:    background var(--transition-fast, 120ms ease),
+                 color      var(--transition-fast, 120ms ease);
+}
+
+vaadin-side-nav-item:hover::part(link) {
+  background: var(--sidenav-item-hover-bg, var(--brand-50));
+  color:      var(--sidenav-item-hover-color, var(--brand-700));
+}
+
+/* Active / current item */
+vaadin-side-nav-item[active]::part(link),
+vaadin-side-nav-item[current]::part(link) {
+  color:             var(--sidenav-item-active-color, var(--brand-700));
+  background:        var(--sidenav-item-active-bg, var(--brand-50));
+  border-left-color: var(--sidenav-item-active-border, var(--brand-500));
+  font-weight:       var(--sidenav-item-active-font-weight, 500);
+}
+
+/* Prefix icon */
+vaadin-side-nav-item > vaadin-icon,
+vaadin-side-nav-item > [slot="prefix"] {
+  color:       var(--sidenav-icon-color, var(--text-tertiary));
+  width:       1rem;
+  height:      1rem;
+  flex-shrink: 0;
+}
+
+vaadin-side-nav-item[active]  > vaadin-icon,
+vaadin-side-nav-item[current] > vaadin-icon,
+vaadin-side-nav-item[active]  > [slot="prefix"],
+vaadin-side-nav-item[current] > [slot="prefix"] {
+  color: var(--sidenav-icon-active-color, var(--brand-500));
+}
+
+/* Suffix / badge chip inside nav item */
+vaadin-side-nav-item > [slot="suffix"] {
+  font-size:     var(--font-size-xs, 0.6875rem);
+  background:    var(--sidenav-badge-bg, var(--brand-50));
+  color:         var(--sidenav-badge-color, var(--brand-700));
+  border-radius: var(--sidenav-badge-radius, var(--radius-xs, 4px));
+  padding:       1px 6px;
+  margin-left:   auto;
+  font-weight:   600;
+  min-width:     18px;
+  text-align:    center;
+}
+
+
+/* ══════════════════════════════════════════════════════════════
+   4. BUTTON  (vaadin-button)
+   ──────────────────────────────────────────────────────────────
+   Four visual variants mapped to Vaadin theme attributes:
+     Primary   → theme="primary"   — filled brand color
+     Secondary → theme="contrast"  — gray fill, no ring
+     Outline   → (default)         — white + ring + elevation
+     Ghost     → theme="tertiary"  — transparent, no border
+
+   Aura renders borders via --vaadin-button-shadow (box-shadow),
+   not a real CSS border. We set both the Aura shadow property
+   AND a host-level box-shadow as a reliable light-DOM fallback.
+   All properties below confirmed supported by Aura (+ Lumo where noted):
+     --vaadin-button-background    Aura, Lumo
+     --vaadin-button-border-color  Aura
+     --vaadin-button-border-width  Aura
+     --vaadin-button-border-radius Aura, Lumo
+     --vaadin-button-font-weight   Aura, Lumo  ← official typography API
+     --vaadin-button-height        Aura, Lumo
+     --vaadin-button-shadow        Aura
+     --vaadin-button-text-color    Aura, Lumo
+   ══════════════════════════════════════════════════════════════ */
+html {
+  --vaadin-button-background:    var(--surface-0);
+  --vaadin-button-border-color:  var(--zinc-200);
+  --vaadin-button-border-width:  1px;
+  --vaadin-button-border-radius: var(--radius-md);
+  --vaadin-button-font-weight:   400;
+  --vaadin-button-text-color:    var(--text-secondary);
+  --vaadin-button-height:        var(--btn-h-md, 36px);
+  /* Outline (default): micro-lift drop shadow + 1px ring */
+  --vaadin-button-shadow:
+    0 1px 3px 0   rgb(0 0 0 / 0.10),
+    0 1px 2px -1px rgb(0 0 0 / 0.06),
+    0 0 0 1px var(--zinc-200, #e4e4e7);
+}
+
+/* ── OUTLINE (default) ── white + elevation shadow + border ring */
+vaadin-button:not([theme~="primary"]):not([theme~="error"]):not([theme~="success"]):not([theme~="warning"]):not([theme~="tertiary"]):not([theme~="contrast"]) {
+  box-shadow:
+    0 1px 3px 0   rgb(0 0 0 / 0.10),
+    0 1px 2px -1px rgb(0 0 0 / 0.06),
+    0 0 0 1px var(--zinc-200, #e4e4e7);
+}
+
+vaadin-button:not([theme~="primary"]):not([theme~="error"]):not([theme~="success"]):not([theme~="warning"]):not([theme~="tertiary"]):not([theme~="contrast"]):not([disabled]):hover {
+  /* shadcn pattern: hover = background tint only; border/shadow stay the same as rest.
+     Brand colour is NOT used here — it belongs exclusively on the primary button fill. */
+  --vaadin-button-background: var(--zinc-100);
+  --vaadin-button-text-color: var(--text-primary);
+}
+
+/* ── SECONDARY (contrast) ── gray fill, no outline ring */
+vaadin-button[theme~="contrast"] {
+  --vaadin-button-background:   var(--zinc-100, #f4f4f5);
+  --vaadin-button-border-color: transparent;
+  --vaadin-button-border-width: 0;
+  --vaadin-button-text-color:   var(--text-primary);
+  --vaadin-button-shadow:
+    0 1px 2px 0   rgb(0 0 0 / 0.08),
+    0 0 0 1px     rgb(0 0 0 / 0.05);
+  box-shadow:
+    0 1px 2px 0   rgb(0 0 0 / 0.08),
+    0 0 0 1px     rgb(0 0 0 / 0.05);
+}
+
+vaadin-button[theme~="contrast"]:not([disabled]):hover {
+  --vaadin-button-background:   var(--zinc-200, #e4e4e7);
+  --vaadin-button-shadow:
+    0 2px 5px 0   rgb(0 0 0 / 0.10),
+    0 0 0 1px     rgb(0 0 0 / 0.07);
+  box-shadow:
+    0 2px 5px 0   rgb(0 0 0 / 0.10),
+    0 0 0 1px     rgb(0 0 0 / 0.07);
+}
+
+/* ── PRIMARY ── filled brand color */
+vaadin-button[theme~="primary"] {
+  --vaadin-button-background:   var(--brand-600);
+  --vaadin-button-border-color: var(--brand-600);
+  --vaadin-button-text-color:   #ffffff;
+  --vaadin-button-font-weight:  500;
+  --vaadin-button-shadow:
+    0 1px 3px 0   color-mix(in srgb, var(--brand-600, #d97706) 40%, transparent),
+    0 1px 2px -1px rgb(0 0 0 / 0.10);
+  box-shadow:
+    0 1px 3px 0   color-mix(in srgb, var(--brand-600, #d97706) 40%, transparent),
+    0 1px 2px -1px rgb(0 0 0 / 0.10);
+}
+
+vaadin-button[theme~="primary"]:not([disabled]):hover {
+  --vaadin-button-background:   var(--brand-700);
+  --vaadin-button-border-color: var(--brand-700);
+  --vaadin-button-shadow:
+    0 4px 8px 0   color-mix(in srgb, var(--brand-700, #b45309) 45%, transparent),
+    0 2px 4px -1px rgb(0 0 0 / 0.12);
+  box-shadow:
+    0 4px 8px 0   color-mix(in srgb, var(--brand-700, #b45309) 45%, transparent),
+    0 2px 4px -1px rgb(0 0 0 / 0.12);
+}
+
+/* ── ERROR (outlined — red text + red ring) ── */
+vaadin-button[theme~="error"]:not([theme~="primary"]) {
+  --vaadin-button-background:   var(--surface-0);
+  --vaadin-button-text-color:   var(--err, #dc2626);
+  --vaadin-button-border-color: var(--err, #dc2626);
+  --vaadin-button-shadow:
+    0 1px 3px 0   rgb(0 0 0 / 0.08),
+    0 0 0 1px var(--err, #dc2626);
+  box-shadow:
+    0 1px 3px 0   rgb(0 0 0 / 0.08),
+    0 0 0 1px var(--err, #dc2626);
+}
+
+vaadin-button[theme~="error"]:not([theme~="primary"]):not([disabled]):hover {
+  --vaadin-button-background: var(--err-light, #fef2f2);
+}
+
+/* ── ERROR PRIMARY (filled red) ── */
+vaadin-button[theme~="error"][theme~="primary"] {
+  --vaadin-button-background:   var(--err, #dc2626);
+  --vaadin-button-border-color: var(--err, #dc2626);
+  --vaadin-button-text-color:   #ffffff;
+  --vaadin-button-font-weight:  500;
+  --vaadin-button-shadow:
+    0 1px 3px 0   rgb(220 38 38 / 0.40),
+    0 1px 2px -1px rgb(0 0 0 / 0.10);
+  box-shadow:
+    0 1px 3px 0   rgb(220 38 38 / 0.40),
+    0 1px 2px -1px rgb(0 0 0 / 0.10);
+}
+
+vaadin-button[theme~="error"][theme~="primary"]:not([disabled]):hover {
+  --vaadin-button-background:   var(--err-dark, #b91c1c);
+  --vaadin-button-border-color: var(--err-dark, #b91c1c);
+  --vaadin-button-shadow:
+    0 3px 7px 0   rgb(220 38 38 / 0.45),
+    0 1px 3px -1px rgb(0 0 0 / 0.12);
+  box-shadow:
+    0 3px 7px 0   rgb(220 38 38 / 0.45),
+    0 1px 3px -1px rgb(0 0 0 / 0.12);
+}
+
+/* ── SUCCESS (outlined — green text + green ring) ── */
+vaadin-button[theme~="success"]:not([theme~="primary"]) {
+  --vaadin-button-background:   var(--surface-0);
+  --vaadin-button-text-color:   var(--ok-dark, #166534);
+  --vaadin-button-border-color: var(--ok, #16a34a);
+  --vaadin-button-shadow:
+    0 1px 3px 0   rgb(0 0 0 / 0.08),
+    0 0 0 1px var(--ok, #16a34a);
+  box-shadow:
+    0 1px 3px 0   rgb(0 0 0 / 0.08),
+    0 0 0 1px var(--ok, #16a34a);
+}
+
+vaadin-button[theme~="success"]:not([theme~="primary"]):not([disabled]):hover {
+  --vaadin-button-background: var(--ok-light, #f0fdf4);
+}
+
+/* ── SUCCESS PRIMARY (filled green) ── */
+vaadin-button[theme~="success"][theme~="primary"] {
+  --vaadin-button-background:   var(--ok, #16a34a);
+  --vaadin-button-border-color: var(--ok, #16a34a);
+  --vaadin-button-text-color:   #ffffff;
+  --vaadin-button-font-weight:  500;
+  --vaadin-button-shadow:
+    0 1px 3px 0   rgb(22 163 74 / 0.40),
+    0 1px 2px -1px rgb(0 0 0 / 0.10);
+  box-shadow:
+    0 1px 3px 0   rgb(22 163 74 / 0.40),
+    0 1px 2px -1px rgb(0 0 0 / 0.10);
+}
+
+vaadin-button[theme~="success"][theme~="primary"]:not([disabled]):hover {
+  --vaadin-button-background:   var(--ok-dark, #166534);
+  --vaadin-button-border-color: var(--ok-dark, #166534);
+  --vaadin-button-shadow:
+    0 3px 7px 0   rgb(22 163 74 / 0.45),
+    0 1px 3px -1px rgb(0 0 0 / 0.12);
+  box-shadow:
+    0 3px 7px 0   rgb(22 163 74 / 0.45),
+    0 1px 3px -1px rgb(0 0 0 / 0.12);
+}
+
+/* ── GHOST (tertiary) ── transparent, no border */
+vaadin-button[theme~="tertiary"] {
+  --vaadin-button-background:   transparent;
+  --vaadin-button-border-color: transparent;
+  --vaadin-button-border-width: 0;
+  --vaadin-button-shadow:       none;
+  box-shadow: none;
+}
+
+vaadin-button[theme~="tertiary"]:not([disabled]):hover {
+  --vaadin-button-background: color-mix(in srgb, var(--text-primary, #0f172a) 6%, transparent);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   4b. UNIVERSAL BUTTON FOCUS RINGS
+   ──────────────────────────────────────────────────────────────
+   Vaadin 25 sets [focus-ring] on the HOST element during keyboard
+   (Tab) navigation — identical to :focus-visible semantics.
+   [focused] also fires on mouse/pointer focus and must NOT be
+   used for visible focus indicators (WCAG 2.4.11).
+
+   Targeting the HOST element (not ::part(button)) with !important
+   wins over any shadow-DOM internal theme styles, ensuring the
+   ring is ALWAYS visible regardless of [theme] variant or CSS class.
+
+   Double-ring pattern (shadcn / Tailwind standard):
+     2 px surface-0 — white gap between button edge and outer ring
+     4 px brand-500 — coloured keyboard-focus indicator
+   ══════════════════════════════════════════════════════════════ */
+
+/* Universal — covers ALL vaadin-button variants and classes */
+vaadin-button[focus-ring] {
+  box-shadow:
+    0 0 0 2px var(--surface-0, #ffffff),
+    0 0 0 4px var(--brand-500, #3b82f6) !important;
+  outline: none !important;
+}
+
+/* vaadin-menu-bar-button is a separate custom element */
+vaadin-menu-bar-button[focus-ring] {
+  box-shadow:
+    0 0 0 2px var(--surface-0, #ffffff),
+    0 0 0 4px var(--brand-500, #3b82f6) !important;
+  outline: none !important;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   5. GRID  (vaadin-grid)
+   ══════════════════════════════════════════════════════════════ */
+:root {
+  --vaadin-grid-cell-background:          var(--surface-0);
+  --vaadin-grid-header-cell-background:   var(--surface-1);
+  --vaadin-grid-row-background-selected:  var(--brand-50);
+  --vaadin-grid-row-color-selected:       var(--brand-700);
+  --vaadin-grid-border-color:             var(--zinc-200);
+}
+
+/* ── Outer frame — card feel ── */
+vaadin-grid {
+  border        : 1px solid var(--zinc-200, #e4e4e7);
+  border-radius : var(--radius-md, 0.5rem);
+  overflow      : hidden;
+}
+
+/* ── Header — compact uppercase labels ── */
+vaadin-grid::part(header-cell) {
+  background     : var(--surface-1, #f8fafc);
+  font-size      : 0.6875rem;
+  font-weight    : 600;
+  letter-spacing : 0.06em;
+  text-transform : uppercase;
+  color          : var(--text-secondary, #6b7280);
+  border-bottom  : 1px solid var(--zinc-200, #e4e4e7);
+  padding-block  : 0.625rem;
+}
+
+/* ── Body cells — hairline row separators; NO transition (prevents selection flicker) ── */
+vaadin-grid::part(body-cell) {
+  border-bottom : 1px solid var(--zinc-100, #f4f4f5);
+  font-size     : var(--font-size-base, 0.8125rem);
+}
+
+/* ── Full-row hover — set the CSS variable that every cell reads for background ──
+   vaadin-grid::part(row):hover covers all cells in the row at once.
+   Per-cell hover via ::part(body-cell):hover only covered the single hovered cell.  */
+vaadin-grid::part(row):hover {
+  --vaadin-grid-cell-background : color-mix(in srgb, var(--brand-400, #60a5fa) 5%, var(--surface-0, #ffffff));
+}
+
+/* ── Footer ── */
+vaadin-grid::part(footer-cell) {
+  background  : var(--surface-1, #f8fafc);
+  font-weight : 500;
+  border-top  : 1px solid var(--zinc-200, #e4e4e7);
+}
+
+/* ── Selected row ──
+   Same --vaadin-grid-cell-background variable pattern: Vaadin's internal shadow CSS
+   reads this variable for each cell's background, so setting it on the cell part
+   is the correct override point.
+   Top + bottom box-shadows create an accent line without layout shift.              */
+vaadin-grid::part(selected-row-cell) {
+  --vaadin-grid-cell-background : var(--brand-50, #eff6ff);
+  color       : var(--brand-700, #1d4ed8);
+  font-weight : 500;
+  box-shadow  : 0 -1px 0 0 var(--brand-200, #bfdbfe),
+                0  1px 0 0 var(--brand-200, #bfdbfe);
+}
+
+vaadin-grid::part(selected-row-cell):hover {
+  --vaadin-grid-cell-background : var(--brand-100, #dbeafe);
+}
+
+/* Kill any Aura animation/transition on rows/cells — prevents flicker on selection */
+vaadin-grid::part(row),
+vaadin-grid::part(body-cell),
+vaadin-grid::part(selected-row),
+vaadin-grid::part(selected-row-cell) {
+  animation  : none !important;
+  transition : none !important;
+}
+
+/* ── Numeric column cells ──
+   Part 'col-numeric' set via Grid.Column.setPartNameGenerator() in ListingBundleBuilder.
+   Targets the shadow-DOM <td>. text-align and font-family are inherited CSS properties
+   so they flow from <td> through the slot to vaadin-grid-cell-content and its text.  */
+vaadin-grid::part(col-numeric) {
+  text-align          : right;
+  font-family         : var(--font-mono, ui-monospace, 'Cascadia Code', 'Fira Code', monospace);
+  font-variant-numeric: tabular-nums;
+  letter-spacing      : -0.01em;
+}
+
+
+/* ══════════════════════════════════════════════════════════════
+   6. FORM INPUTS  (vaadin-text-field, vaadin-combo-box, etc.)
+   ──────────────────────────────────────────────────────────────
+   Strategy: "shadow-as-border" pattern.
+     box-shadow: <micro-lift>, 0 0 0 1px <border-color>
+   This gives inputs physical depth on any surface (including white)
+   without touching layout geometry.  The CSS custom properties set
+   the baseline; the ::part() rules are the reliable fallback because
+   Aura does not honour --vaadin-input-field-border-width on all
+   component variants.
+   ══════════════════════════════════════════════════════════════ */
+:root {
+  /* Field surface */
+  --vaadin-input-field-background:    var(--comp-bg, var(--surface-0));
+  --vaadin-input-field-border-color:  var(--comp-border-color, var(--zinc-200));
+  --vaadin-input-field-border-width:  1px;
+  --vaadin-input-field-border-radius: var(--comp-radius, var(--radius-md));
+
+  /* Content colours */
+  --vaadin-input-field-value-color:       var(--text-primary);
+  --vaadin-input-field-placeholder-color: var(--text-tertiary);
+  --vaadin-input-field-label-color:       var(--text-secondary);
+
+  /* Focus ring */
+  --vaadin-focus-ring-color:  var(--brand-500);
+  --vaadin-focus-ring-width:  2px;
+
+  /* Hover border — neutral darkening, NOT brand.
+     Brand colour belongs on focus only; hover is a subtle interactive affordance. */
+  --comp-border-hover: var(--zinc-400, #a1a1aa);
+
+  /* Disabled state
+     --vaadin-input-field-disabled-text-color  → Aura ONLY
+     --vaadin-input-field-disabled-value-color → Lumo ONLY  (different property name!)
+     Set both for cross-theme compatibility.                             */
+  --vaadin-input-field-disabled-background:   var(--surface-2);
+  --vaadin-input-field-disabled-text-color:   var(--text-disabled);   /* Aura */
+  --vaadin-input-field-disabled-value-color:  var(--text-disabled);   /* Lumo */
+}
+
+/* Label — static neutral colour, never changes on focus or invalid state.
+   Aura's shadow DOM tints the focused label to --aura-accent-color-light (amber).
+   External ::part() rules always override shadow-internal styles by CSS spec.
+   shadcn/ui pattern: label is always --text-secondary regardless of field state. */
+vaadin-text-field::part(label),
+vaadin-combo-box::part(label),
+vaadin-select::part(label),
+vaadin-date-picker::part(label),
+vaadin-date-time-picker-date-picker::part(label),
+vaadin-date-time-picker-time-picker::part(label),
+vaadin-time-picker::part(label),
+vaadin-number-field::part(label),
+vaadin-integer-field::part(label),
+vaadin-big-decimal-field::part(label),
+vaadin-password-field::part(label),
+vaadin-email-field::part(label),
+vaadin-search-field::part(label),
+vaadin-text-area::part(label) {
+  color: var(--vaadin-input-field-label-color, var(--text-secondary));
+  transition: none;
+}
+
+/* Invalid label — red only (not amber) */
+vaadin-text-field[invalid]::part(label),
+vaadin-combo-box[invalid]::part(label),
+vaadin-select[invalid]::part(label),
+vaadin-date-picker[invalid]::part(label),
+vaadin-number-field[invalid]::part(label),
+vaadin-integer-field[invalid]::part(label),
+vaadin-password-field[invalid]::part(label),
+vaadin-email-field[invalid]::part(label),
+vaadin-text-area[invalid]::part(label) {
+  color: var(--comp-border-error, var(--err, #dc2626));
+}
+
+/* Direct ::part() shadow — visible on any surface including pure white.
+   "shadow-as-border": the second layer (0 0 0 1px) acts as the outline
+   so it never shifts surrounding layout.                              */
+vaadin-text-field::part(input-field),
+vaadin-combo-box::part(input-field),
+vaadin-select::part(input-field),
+vaadin-date-picker::part(input-field),
+vaadin-date-time-picker-date-picker::part(input-field),
+vaadin-date-time-picker-time-picker::part(input-field),
+vaadin-time-picker::part(input-field),
+vaadin-number-field::part(input-field),
+vaadin-integer-field::part(input-field),
+vaadin-big-decimal-field::part(input-field),
+vaadin-password-field::part(input-field),
+vaadin-email-field::part(input-field),
+vaadin-search-field::part(input-field) {
+  box-shadow:
+    var(--comp-shadow, 0 1px 3px 0 rgb(0 0 0 / .08)),
+    0 0 0 1px var(--comp-border-color, var(--zinc-200));
+  transition: box-shadow var(--transition-fast, 120ms ease);
+}
+
+vaadin-text-area::part(textarea) {
+  box-shadow:
+    var(--comp-shadow, 0 1px 3px 0 rgb(0 0 0 / .08)),
+    0 0 0 1px var(--comp-border-color, var(--zinc-200));
+  transition: box-shadow var(--transition-fast, 120ms ease);
+}
+
+/* Hover — neutral border darkening.
+   Signals "this field is interactive" without using brand colour.
+   Brand colour (--brand-500) is reserved for the focus ring below. */
+vaadin-text-field:not([disabled]):not([invalid]):hover::part(input-field),
+vaadin-combo-box:not([disabled]):not([invalid]):hover::part(input-field),
+vaadin-select:not([disabled]):not([invalid]):hover::part(input-field),
+vaadin-date-picker:not([disabled]):not([invalid]):hover::part(input-field),
+vaadin-date-time-picker-date-picker:not([disabled]):not([invalid]):hover::part(input-field),
+vaadin-date-time-picker-time-picker:not([disabled]):not([invalid]):hover::part(input-field),
+vaadin-time-picker:not([disabled]):not([invalid]):hover::part(input-field),
+vaadin-number-field:not([disabled]):not([invalid]):hover::part(input-field),
+vaadin-integer-field:not([disabled]):not([invalid]):hover::part(input-field),
+vaadin-big-decimal-field:not([disabled]):not([invalid]):hover::part(input-field),
+vaadin-password-field:not([disabled]):not([invalid]):hover::part(input-field),
+vaadin-email-field:not([disabled]):not([invalid]):hover::part(input-field),
+vaadin-search-field:not([disabled]):not([invalid]):hover::part(input-field),
+vaadin-text-area:not([disabled]):not([invalid]):hover::part(textarea) {
+  box-shadow:
+    var(--comp-shadow, 0 1px 3px 0 rgb(0 0 0 / .08)),
+    0 0 0 1px var(--comp-border-hover, var(--zinc-400, #a1a1aa));
+}
+
+/* Focus — full accent ring with offset halo */
+vaadin-text-field:not([disabled])[focused]::part(input-field),
+vaadin-combo-box:not([disabled])[focused]::part(input-field),
+vaadin-select:not([disabled])[opened]::part(input-field),
+vaadin-date-picker:not([disabled])[focused]::part(input-field),
+vaadin-number-field:not([disabled])[focused]::part(input-field),
+vaadin-password-field:not([disabled])[focused]::part(input-field),
+vaadin-email-field:not([disabled])[focused]::part(input-field),
+vaadin-text-area:not([disabled])[focused]::part(textarea) {
+  box-shadow: var(--comp-focus-ring,
+    0 0 0 2px var(--surface-0),
+    0 0 0 4px var(--brand-500));
+}
+
+/* Invalid state */
+vaadin-text-field[invalid]::part(input-field),
+vaadin-combo-box[invalid]::part(input-field),
+vaadin-number-field[invalid]::part(input-field),
+vaadin-password-field[invalid]::part(input-field),
+vaadin-email-field[invalid]::part(input-field),
+vaadin-text-area[invalid]::part(textarea) {
+  box-shadow:
+    var(--comp-shadow, 0 1px 3px 0 rgb(0 0 0 / .08)),
+    0 0 0 1px var(--comp-border-error, var(--err));
+}
+
+
+/* ══════════════════════════════════════════════════════════════
+   7. TYPOGRAPHY  +  SURFACE UTILITIES
+   ──────────────────────────────────────────────────────────────
+   How to extend:
+     • Add a new --type-sz-* / --type-wt-* token to §8e of
+       brand-override-example.css.
+     • Add a matching .type-* class below.
+     • Assign it in Java with  component.addClassName("type-h2")
+       — never inline CSS.
+   ══════════════════════════════════════════════════════════════ */
+
+/* Heading resets — strip browser UA margin/padding, apply scale */
+h1, .type-h1 {
+  font-size:      var(--type-sz-h1,   1.5rem);
+  font-weight:    var(--type-wt-h1,   600);
+  line-height:    var(--type-lh-h1,   1.2);
+  letter-spacing: var(--type-ls-h1,   -0.02em);
+  color:          var(--text-primary);
+  margin: 0;
+}
+h2, .type-h2 {
+  font-size:      var(--type-sz-h2,   1.25rem);
+  font-weight:    var(--type-wt-h2,   600);
+  line-height:    var(--type-lh-h2,   1.25);
+  letter-spacing: var(--type-ls-h2,   -0.015em);
+  color:          var(--text-primary);
+  margin: 0;
+}
+h3, .type-h3 {
+  font-size:      var(--type-sz-h3,   1.125rem);
+  font-weight:    var(--type-wt-h3,   600);
+  line-height:    var(--type-lh-h3,   1.3);
+  letter-spacing: var(--type-ls-h3,   -0.01em);
+  color:          var(--text-primary);
+  margin: 0;
+}
+h4, .type-h4 {
+  font-size:      var(--type-sz-h4,   1rem);
+  font-weight:    var(--type-wt-h4,   600);
+  line-height:    var(--type-lh-h4,   1.4);
+  letter-spacing: var(--type-ls-h4,   0);
+  color:          var(--text-primary);
+  margin: 0;
+}
+
+/* Display — page hero text */
+.type-display {
+  font-size:      var(--type-sz-display, 2rem);
+  font-weight:    var(--type-wt-display, 700);
+  line-height:    var(--type-lh-display, 1.15);
+  letter-spacing: var(--type-ls-display, -0.025em);
+  color:          var(--text-primary);
+}
+
+/* Body variants */
+.type-body-lg  { font-size: var(--type-sz-body-lg, 1rem);      font-weight: var(--type-wt-body, 400); line-height: var(--type-lh-body-lg, 1.6); color: var(--text-primary); }
+.type-body     { font-size: var(--type-sz-body,    0.875rem);   font-weight: var(--type-wt-body, 400); line-height: var(--type-lh-body,    1.5); color: var(--text-primary); }
+.type-body-sm  { font-size: var(--type-sz-body-sm, 0.8125rem);  font-weight: var(--type-wt-body, 400); line-height: var(--type-lh-body-sm, 1.5); color: var(--text-secondary); }
+.type-caption  { font-size: var(--type-sz-caption, 0.75rem);    font-weight: var(--type-wt-body, 400); line-height: var(--type-lh-caption, 1.4); color: var(--text-tertiary); }
+.type-overline { font-size: var(--type-sz-overline,0.6875rem);  font-weight: var(--type-wt-overline, 600); line-height: 1; letter-spacing: var(--type-ls-overline, 0.1em); text-transform: uppercase; color: var(--text-tertiary); }
+.type-mono     { font-family: var(--font-mono); font-size: var(--type-sz-mono, 0.8125rem); }
+
+/* ── Surface utilities ───────────────────────────────────────────── */
+
+/* Card — white panel on surface-1 page background.
+   Produces the three-tier depth model:
+     Page (surface-1) → Card (surface-0 + shadow) → Inputs (surface-0 + ring) */
+.surface-card {
+  background:    var(--surface-0);
+  border:        1px solid var(--zinc-200);
+  border-radius: var(--radius-lg);
+  box-shadow:    var(--shadow-xs);
+  padding:       var(--space-4) var(--space-5);
+}
+
+/* Inset panel — slightly tinted, used inside cards for sub-sections */
+.surface-panel {
+  background:    var(--surface-2);
+  border:        1px solid var(--zinc-100);
+  border-radius: var(--radius-md);
+  padding:       var(--space-3) var(--space-4);
+}
+
+/* Section divider — semantic horizontal rule replacement */
+.surface-divider {
+  border: none;
+  border-top: var(--border-subtle);
+  margin: 0;
+}
+
+
+/* ══════════════════════════════════════════════════════════════
+   8. MENU BAR  (vaadin-menu-bar)
+   ──────────────────────────────────────────────────────────────
+   Menu bar buttons must be visibly interactive at rest — a ghost
+   button on a light page background is indistinguishable from text.
+   Pattern: clean outlined pill (white bg, neutral ring, no elevation).
+     • Rest     → surface-0 white + zinc-200 ring  — clearly a button
+     • Hover    → zinc-100 tint, text → primary    — background only
+     • Expanded → brand-50 tint + brand ring        — "open" signal
+   ══════════════════════════════════════════════════════════════ */
+
+vaadin-menu-bar {
+  background: transparent;
+}
+
+/* ── Rest: outlined white pill — clearly interactive ── */
+vaadin-menu-bar-button {
+  --vaadin-button-background:   var(--surface-0);
+  --vaadin-button-border-color: var(--zinc-200);
+  --vaadin-button-border-width: 1px;
+  --vaadin-button-shadow:       0 0 0 1px var(--zinc-200);
+  --vaadin-button-text-color:   var(--text-secondary);
+  --vaadin-button-font-weight:  500;
+  box-shadow: 0 0 0 1px var(--zinc-200);
+}
+
+/* ── Hover: neutral tint only — border/ring unchanged ── */
+vaadin-menu-bar-button:not([disabled]):hover {
+  --vaadin-button-background: var(--zinc-100);
+  --vaadin-button-text-color: var(--text-primary);
+}
+
+/* ── Expanded (dropdown open): brand accent ── */
+vaadin-menu-bar-button[expanded] {
+  --vaadin-button-background:  color-mix(in srgb, var(--brand-500) 10%, var(--surface-0, #ffffff));
+  --vaadin-button-text-color:  var(--brand-700);
+  --vaadin-button-font-weight: 600;
+  --vaadin-button-shadow:      0 0 0 1px var(--brand-400);
+  box-shadow:                  0 0 0 1px var(--brand-400);
+}
+

@@ -15,14 +15,6 @@
  */
 package com.holonplatform.vaadin.flow.internal.components.builders;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Predicate;
-
 import com.holonplatform.core.TypedExpression;
 import com.holonplatform.core.Validator;
 import com.holonplatform.core.datastore.DataTarget;
@@ -35,12 +27,8 @@ import com.holonplatform.core.property.PropertyBox;
 import com.holonplatform.core.query.QueryConfigurationProvider;
 import com.holonplatform.core.query.QueryFilter;
 import com.holonplatform.core.query.QuerySort;
-import com.holonplatform.vaadin.flow.components.Input;
+import com.holonplatform.vaadin.flow.components.*;
 import com.holonplatform.vaadin.flow.components.Selectable.SelectionListener;
-import com.holonplatform.vaadin.flow.components.SingleSelect;
-import com.holonplatform.vaadin.flow.components.ValidatableInput;
-import com.holonplatform.vaadin.flow.components.ValidatableSingleSelect;
-import com.holonplatform.vaadin.flow.components.ValidationStatusHandler;
 import com.holonplatform.vaadin.flow.components.ValueHolder.ValueChangeEvent;
 import com.holonplatform.vaadin.flow.components.ValueHolder.ValueChangeListener;
 import com.holonplatform.vaadin.flow.components.builders.ListSingleSelectConfigurator.PropertyListSingleSelectInputBuilder;
@@ -59,6 +47,14 @@ import com.vaadin.flow.data.provider.QuerySortOrder;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.dom.DomEventListener;
 import com.vaadin.flow.dom.Element;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 /**
  * Default {@link PropertyListSingleSelectInputBuilder} implementation.
@@ -151,7 +147,7 @@ public class DefaultPropertyListSingleSelectInputBuilder<T> extends AbstractProp
 	 */
 	@Override
 	public DatastorePropertyListSingleSelectInputBuilder<T> dataSource(Datastore datastore, DataTarget<?> target) {
-		return dataSource(datastore, target, Collections.singletonList(selectionProperty));
+		return dataSource(datastore, target, List.of(selectionProperty));
 	}
 
 	/*
@@ -234,7 +230,7 @@ public class DefaultPropertyListSingleSelectInputBuilder<T> extends AbstractProp
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * com.holonplatform.vaadin.flow.components.builders.InputBuilder#validatable()
+	 * com.holonplatform.vaadin.flow.components.builders.Input#validatable()
 	 */
 	@Override
 	public ValidatablePropertyListSingleSelectInputBuilder<T> validatable() {
@@ -746,6 +742,24 @@ public class DefaultPropertyListSingleSelectInputBuilder<T> extends AbstractProp
 			return this;
 		}
 
+		@Override
+		public ValidatablePropertyListSingleSelectInputBuilder<T> withPrefixComponent(Component component) {
+			builder.withPrefixComponent(component);
+			return this;
+		}
+
+		@Override
+		public ValidatablePropertyListSingleSelectInputBuilder<T> withComponentBefore(PropertyBox beforeItem, Component component) {
+			builder.withComponentBefore(beforeItem, component);
+			return this;
+		}
+
+		@Override
+		public ValidatablePropertyListSingleSelectInputBuilder<T> withComponentAfter(PropertyBox afterItem, Component component) {
+			builder.withComponentAfter(afterItem, component);
+			return this;
+		}
+
 		/*
 		 * (non-Javadoc)
 		 * 
@@ -770,6 +784,18 @@ public class DefaultPropertyListSingleSelectInputBuilder<T> extends AbstractProp
 		@Override
 		public ValidatablePropertyListSingleSelectInputBuilder<T> items(PropertyBox... items) {
 			builder.items(items);
+			return this;
+		}
+
+		@Override
+		public ValidatablePropertyListSingleSelectInputBuilder<T> items(Iterable<PropertyBox> items) {
+			builder.items(items);
+			return this;
+		}
+
+		@Override
+		public ValidatablePropertyListSingleSelectInputBuilder<T> addItem(PropertyBox item) {
+			builder.addItem(item);
 			return this;
 		}
 
@@ -1112,31 +1138,6 @@ public class DefaultPropertyListSingleSelectInputBuilder<T> extends AbstractProp
 		/*
 		 * (non-Javadoc)
 		 * 
-		 * @see
-		 * com.holonplatform.vaadin.flow.components.builders.HasItemsConfigurator#items(
-		 * java.lang.Iterable)
-		 */
-		@Override
-		public ValidatablePropertyListSingleSelectInputBuilder<T> items(Iterable<PropertyBox> items) {
-			builder.items(items);
-			return this;
-		}
-
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see com.holonplatform.vaadin.flow.components.builders.HasItemsConfigurator#
-		 * addItem(java.lang.Object)
-		 */
-		@Override
-		public ValidatablePropertyListSingleSelectInputBuilder<T> addItem(PropertyBox item) {
-			builder.addItem(item);
-			return this;
-		}
-
-		/*
-		 * (non-Javadoc)
-		 * 
 		 * @see com.holonplatform.vaadin.flow.components.builders.
 		 * PropertySelectInputConfigurator#itemCaptionProperty(com.
 		 * holonplatform.core.property.Property)
@@ -1159,13 +1160,6 @@ public class DefaultPropertyListSingleSelectInputBuilder<T> extends AbstractProp
 			return this;
 		}
 
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see com.holonplatform.vaadin.flow.components.builders.
-		 * ValidatableInputConfigurator#validationStatusHandler(com.
-		 * holonplatform.vaadin.flow.components.ValidationStatusHandler)
-		 */
 		@Override
 		public ValidatablePropertyListSingleSelectInputBuilder<T> validationStatusHandler(
 				ValidationStatusHandler<ValidatableInput<T>> validationStatusHandler) {
@@ -1173,60 +1167,22 @@ public class DefaultPropertyListSingleSelectInputBuilder<T> extends AbstractProp
 			return this;
 		}
 
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see com.holonplatform.vaadin.flow.components.builders.
-		 * ValidatableInputConfigurator#validateOnValueChange(boolean)
-		 */
 		@Override
-		public ValidatablePropertyListSingleSelectInputBuilder<T> validateOnValueChange(boolean validateOnValueChange) {
+		public ValidatablePropertyListSingleSelectInputBuilder<T> validateOnValueChange(
+				boolean validateOnValueChange) {
 			validatableInputConfigurator.validateOnValueChange(validateOnValueChange);
 			return this;
 		}
 
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see com.holonplatform.vaadin.flow.components.builders.
-		 * ValidatableInputConfigurator#required(com.holonplatform. core.Validator)
-		 */
 		@Override
 		public ValidatablePropertyListSingleSelectInputBuilder<T> required(Validator<T> validator) {
 			validatableInputConfigurator.required(validator);
 			return this;
 		}
 
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see com.holonplatform.vaadin.flow.components.builders.
-		 * ValidatableInputConfigurator#required(com.holonplatform.
-		 * core.i18n.Localizable)
-		 */
 		@Override
 		public ValidatablePropertyListSingleSelectInputBuilder<T> required(Localizable message) {
 			validatableInputConfigurator.required(message);
-			return this;
-		}
-
-		@Override
-		public ValidatablePropertyListSingleSelectInputBuilder<T> withPrefixComponent(Component component) {
-			builder.withPrefixComponent(component);
-			return this;
-		}
-
-		@Override
-		public ValidatablePropertyListSingleSelectInputBuilder<T> withComponentBefore(PropertyBox beforeItem,
-				Component component) {
-			builder.withComponentBefore(beforeItem, component);
-			return this;
-		}
-
-		@Override
-		public ValidatablePropertyListSingleSelectInputBuilder<T> withComponentAfter(PropertyBox afterItem,
-				Component component) {
-			builder.withComponentAfter(afterItem, component);
 			return this;
 		}
 
@@ -1237,13 +1193,6 @@ public class DefaultPropertyListSingleSelectInputBuilder<T> extends AbstractProp
 			return this;
 		}
 
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see
-		 * com.holonplatform.vaadin.flow.components.builders.BaseValidatableInputBuilder
-		 * #build()
-		 */
 		@Override
 		public ValidatableSingleSelect<T> build() {
 			return validatableInputConfigurator.configure(ValidatableSingleSelect.from(builder.build()));
@@ -1270,6 +1219,19 @@ public class DefaultPropertyListSingleSelectInputBuilder<T> extends AbstractProp
 				AdditionalItemsProvider<PropertyBox> additionalItemsProvider) {
 			this.datastoreDataProvider.setAdditionalItemsProvider(additionalItemsProvider);
 			return withAttachListener(e -> this.datastoreDataProvider.refreshAll());
+		}
+
+		@Override
+		public DatastorePropertyListSingleSelectInputBuilder<T> withQueryConfigurationProvider(
+				QueryConfigurationProvider queryConfigurationProvider) {
+			datastoreDataProvider.addQueryConfigurationProvider(queryConfigurationProvider);
+			return this;
+		}
+
+		@Override
+		public DatastorePropertyListSingleSelectInputBuilder<T> withDefaultQuerySort(QuerySort defaultQuerySort) {
+			datastoreDataProvider.setDefaultSort(defaultQuerySort);
+			return this;
 		}
 
 		/*
@@ -1661,62 +1623,6 @@ public class DefaultPropertyListSingleSelectInputBuilder<T> extends AbstractProp
 		/*
 		 * (non-Javadoc)
 		 * 
-		 * @see com.holonplatform.vaadin.flow.components.builders.
-		 * DatastoreDataProviderConfigurator#
-		 * withQueryConfigurationProvider(com.holonplatform.core.query.
-		 * QueryConfigurationProvider)
-		 */
-		@Override
-		public DatastorePropertyListSingleSelectInputBuilder<T> withQueryConfigurationProvider(
-				QueryConfigurationProvider queryConfigurationProvider) {
-			datastoreDataProvider.addQueryConfigurationProvider(queryConfigurationProvider);
-			return this;
-		}
-
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see com.holonplatform.vaadin.flow.components.builders.
-		 * DatastoreDataProviderConfigurator#withDefaultQuerySort(com.
-		 * holonplatform.core.query.QuerySort)
-		 */
-		@Override
-		public DatastorePropertyListSingleSelectInputBuilder<T> withDefaultQuerySort(QuerySort defaultQuerySort) {
-			datastoreDataProvider.setDefaultSort(defaultQuerySort);
-			return this;
-		}
-
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see com.holonplatform.vaadin.flow.components.builders.
-		 * DatastoreDataProviderConfigurator#itemIdentifierProvider(
-		 * java.util.function.Function)
-		 */
-		@Override
-		public DatastorePropertyListSingleSelectInputBuilder<T> itemIdentifierProvider(
-				Function<PropertyBox, Object> itemIdentifierProvider) {
-			datastoreDataProvider.setItemIdentifier(itemIdentifierProvider);
-			return this;
-		}
-
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see com.holonplatform.vaadin.flow.components.builders.
-		 * DatastoreDataProviderConfigurator#querySortOrderConverter(
-		 * java.util.function.Function)
-		 */
-		@Override
-		public DatastorePropertyListSingleSelectInputBuilder<T> querySortOrderConverter(
-				Function<QuerySortOrder, QuerySort> querySortOrderConverter) {
-			datastoreDataProvider.setQuerySortOrderConverter(querySortOrderConverter);
-			return this;
-		}
-
-		/*
-		 * (non-Javadoc)
-		 * 
 		 * @see
 		 * com.holonplatform.vaadin.flow.components.builders.SingleSelectConfigurator#
 		 * renderer(com.vaadin.flow.data. renderer.ComponentRenderer)
@@ -1765,6 +1671,20 @@ public class DefaultPropertyListSingleSelectInputBuilder<T> extends AbstractProp
 		@Override
 		public DatastorePropertyListSingleSelectInputBuilder<T> failWhenItemNotPresent(boolean failWhenItemNotPresent) {
 			builder.failWhenItemNotPresent(failWhenItemNotPresent);
+			return this;
+		}
+
+		@Override
+		public DatastorePropertyListSingleSelectInputBuilder<T> querySortOrderConverter(
+				Function<QuerySortOrder, QuerySort> querySortOrderConverter) {
+			datastoreDataProvider.setQuerySortOrderConverter(querySortOrderConverter);
+			return this;
+		}
+
+		@Override
+		public DatastorePropertyListSingleSelectInputBuilder<T> itemIdentifierProvider(
+				Function<PropertyBox, Object> itemIdentifierProvider) {
+			datastoreDataProvider.setItemIdentifier(itemIdentifierProvider);
 			return this;
 		}
 
@@ -2223,108 +2143,16 @@ public class DefaultPropertyListSingleSelectInputBuilder<T> extends AbstractProp
 			return this;
 		}
 
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see com.holonplatform.vaadin.flow.components.builders.
-		 * PropertySelectInputConfigurator#itemCaptionProperty(com.
-		 * holonplatform.core.property.Property)
-		 */
 		@Override
 		public ValidatableDatastorePropertyListSingleSelectInputBuilder<T> itemCaptionProperty(Property<?> property) {
 			builder.itemCaptionProperty(property);
 			return this;
 		}
 
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see
-		 * com.holonplatform.vaadin.flow.components.builders.SingleSelectConfigurator#
-		 * renderer(com.vaadin.flow.data. renderer.ComponentRenderer)
-		 */
 		@Override
-		public ValidatableDatastorePropertyListSingleSelectInputBuilder<T> renderer(
-				ComponentRenderer<? extends Component, PropertyBox> renderer) {
-			builder.renderer(renderer);
-			return this;
-		}
-
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see
-		 * com.holonplatform.vaadin.flow.components.builders.HasItemEnableConfigurator#
-		 * itemEnabledProvider(java.util. function.Predicate)
-		 */
-		@Override
-		public ValidatableDatastorePropertyListSingleSelectInputBuilder<T> itemEnabledProvider(
-				Predicate<PropertyBox> itemEnabledProvider) {
-			builder.itemEnabledProvider(itemEnabledProvider);
-			return this;
-		}
-
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see com.holonplatform.vaadin.flow.components.builders.
-		 * ValidatableInputConfigurator#withValidator(com. holonplatform.core.Validator)
-		 */
-		@Override
-		public ValidatableDatastorePropertyListSingleSelectInputBuilder<T> withValidator(Validator<T> validator) {
-			validatableInputConfigurator.withValidator(validator);
-			return this;
-		}
-
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see com.holonplatform.vaadin.flow.components.builders.
-		 * ValidatableInputConfigurator#validationStatusHandler(com.
-		 * holonplatform.vaadin.flow.components.ValidationStatusHandler)
-		 */
-		@Override
-		public ValidatableDatastorePropertyListSingleSelectInputBuilder<T> validationStatusHandler(
-				ValidationStatusHandler<ValidatableInput<T>> validationStatusHandler) {
-			validatableInputConfigurator.validationStatusHandler(validationStatusHandler);
-			return this;
-		}
-
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see com.holonplatform.vaadin.flow.components.builders.
-		 * ValidatableInputConfigurator#validateOnValueChange(boolean)
-		 */
-		@Override
-		public ValidatableDatastorePropertyListSingleSelectInputBuilder<T> validateOnValueChange(
-				boolean validateOnValueChange) {
-			validatableInputConfigurator.validateOnValueChange(validateOnValueChange);
-			return this;
-		}
-
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see com.holonplatform.vaadin.flow.components.builders.
-		 * ValidatableInputConfigurator#required(com.holonplatform. core.Validator)
-		 */
-		@Override
-		public ValidatableDatastorePropertyListSingleSelectInputBuilder<T> required(Validator<T> validator) {
-			validatableInputConfigurator.required(validator);
-			return this;
-		}
-
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see com.holonplatform.vaadin.flow.components.builders.
-		 * ValidatableInputConfigurator#required(com.holonplatform.
-		 * core.i18n.Localizable)
-		 */
-		@Override
-		public ValidatableDatastorePropertyListSingleSelectInputBuilder<T> required(Localizable message) {
-			validatableInputConfigurator.required(message);
+		public ValidatableDatastorePropertyListSingleSelectInputBuilder<T> failWhenItemNotPresent(
+				boolean failWhenItemNotPresent) {
+			builder.failWhenItemNotPresent(failWhenItemNotPresent);
 			return this;
 		}
 
@@ -2349,19 +2177,51 @@ public class DefaultPropertyListSingleSelectInputBuilder<T> extends AbstractProp
 		}
 
 		@Override
-		public ValidatableDatastorePropertyListSingleSelectInputBuilder<T> failWhenItemNotPresent(
-				boolean failWhenItemNotPresent) {
-			builder.failWhenItemNotPresent(failWhenItemNotPresent);
+		public ValidatableDatastorePropertyListSingleSelectInputBuilder<T> renderer(
+				ComponentRenderer<? extends Component, PropertyBox> renderer) {
+			builder.renderer(renderer);
 			return this;
 		}
 
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see
-		 * com.holonplatform.vaadin.flow.components.builders.BaseValidatableInputBuilder
-		 * #build()
-		 */
+		@Override
+		public ValidatableDatastorePropertyListSingleSelectInputBuilder<T> itemEnabledProvider(
+				Predicate<PropertyBox> itemEnabledProvider) {
+			builder.itemEnabledProvider(itemEnabledProvider);
+			return this;
+		}
+
+		@Override
+		public ValidatableDatastorePropertyListSingleSelectInputBuilder<T> withValidator(Validator<T> validator) {
+			validatableInputConfigurator.withValidator(validator);
+			return this;
+		}
+
+		@Override
+		public ValidatableDatastorePropertyListSingleSelectInputBuilder<T> validationStatusHandler(
+				ValidationStatusHandler<ValidatableInput<T>> validationStatusHandler) {
+			validatableInputConfigurator.validationStatusHandler(validationStatusHandler);
+			return this;
+		}
+
+		@Override
+		public ValidatableDatastorePropertyListSingleSelectInputBuilder<T> validateOnValueChange(
+				boolean validateOnValueChange) {
+			validatableInputConfigurator.validateOnValueChange(validateOnValueChange);
+			return this;
+		}
+
+		@Override
+		public ValidatableDatastorePropertyListSingleSelectInputBuilder<T> required(Validator<T> validator) {
+			validatableInputConfigurator.required(validator);
+			return this;
+		}
+
+		@Override
+		public ValidatableDatastorePropertyListSingleSelectInputBuilder<T> required(Localizable message) {
+			validatableInputConfigurator.required(message);
+			return this;
+		}
+
 		@Override
 		public ValidatableSingleSelect<T> build() {
 			return validatableInputConfigurator.configure(ValidatableSingleSelect.from(builder.build()));

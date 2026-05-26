@@ -1,0 +1,774 @@
+/*
+ * alert-dialog.css
+ *
+ * Mobile-first styles for AlertDialog — the shadcn/ui + Tailwind UI-inspired
+ * confirmation dialog.
+ *
+ * THREE LAYERS OF STYLING
+ * ───────────────────────
+ *   1. Overlay-level  vaadin-dialog-overlay[theme~="alert-dialog"]::part(*)
+ *      AlertDialog calls getElement().getThemeList().add("alert-dialog") so Vaadin
+ *      Flow automatically mirrors the theme attribute from <vaadin-dialog> to
+ *      <vaadin-dialog-overlay>.  These ::part() selectors control the overlay box,
+ *      backdrop, and content slot.
+ *
+ *   2. Content-level  .alert-dialog__*  BEM classes (light DOM)
+ *      Controls the header, footer, title, description and button layout.
+ *
+ *   3. Feature modifiers
+ *      .alert-dialog--has-icon   — adjusts header layout when an icon badge is present
+ *      .alert-dialog--centered   — centers icon, title, description and footer buttons
+ *      .alert-dialog--stacked    — forces buttons to always stack vertically
+ *      .alert-dialog--closeable  — reveals the absolute close button
+ *      Theme values for size: alert-dialog-sm / alert-dialog-lg / alert-dialog-xl / alert-dialog-2xl
+ *      Theme value for mobile: alert-dialog-fullscreen-mobile
+ *
+ * RESPONSIVE BEHAVIOUR
+ * ────────────────────
+ *   AlertDialog is a non-dismissible CONFIRMATION dialog — a centred modal is more
+ *   appropriate than a bottom sheet because it signals "you cannot swipe away this
+ *   decision".
+ *
+ *   All screen sizes: centred, width = min(90vw, 28rem)  [default MD size]
+ *
+ *   Mobile  (< 640 px) — buttons stacked vertically (primary action on top),
+ *                         full-width touch targets (44 px min-height).
+ *   Desktop (≥ 640 px) — buttons in a horizontal row, auto-width.
+ */
+
+/* ==========================================================================
+   SECTION 1 — OVERLAY-LEVEL (shadow DOM ::part() selectors)
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+ * Backdrop
+ * -------------------------------------------------------------------------- */
+
+vaadin-dialog-overlay[theme~="alert-dialog"]::part(backdrop) {
+    transition: opacity 200ms ease;
+}
+
+/* --------------------------------------------------------------------------
+ * Overlay box — centred on all screen sizes.
+ *
+ * --vaadin-dialog-overlay-width is the Vaadin 25.1 standard custom property.
+ * It controls the width of the overlay box regardless of viewport size.
+ * -------------------------------------------------------------------------- */
+
+vaadin-dialog-overlay[theme~="alert-dialog"] {
+    --vaadin-dialog-overlay-width: min(90vw, 28rem);
+}
+
+vaadin-dialog-overlay[theme~="alert-dialog"]::part(overlay) {
+    width: var(--vaadin-dialog-overlay-width, min(90vw, 28rem));
+    border-radius: 0.75rem;
+    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.2);
+    padding: 0;
+    overflow: hidden;
+    /* Entry animation — scale + fade, following Tailwind UI panel transition */
+    animation: alert-dialog-overlay-in 150ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* --------------------------------------------------------------------------
+ * Content slot — padding delegated to .alert-dialog wrapper
+ * -------------------------------------------------------------------------- */
+
+vaadin-dialog-overlay[theme~="alert-dialog"]::part(content) {
+    padding: 0;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+}
+
+/* ==========================================================================
+   SECTION 2 — CONTENT-LEVEL (light DOM BEM classes)
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+ * Header
+ *
+ * Column layout by default (icon on top, text below).
+ * When .alert-dialog--has-icon, switches to a flex-row on desktop so the
+ * icon badge sits to the left of the title/description.
+ * -------------------------------------------------------------------------- */
+
+.alert-dialog__header {
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+    box-sizing: border-box;
+}
+
+/* Text wrapper — kept for semantic nesting; fills the column */
+.alert-dialog__header-text {
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+}
+
+/* --------------------------------------------------------------------------
+ * Optional header close button
+ *
+ * Lives at the ROOT of .alert-dialog wrapper (not inside the header div).
+ * Hidden by default — AlertDialog is intentionally non-dismissible.
+ * Show via builder: .closeIcon(icon) or .withCloseButton(true)
+ * -------------------------------------------------------------------------- */
+
+.alert-dialog {
+    position: relative;  /* positioning context for the absolute close button */
+}
+
+.alert-dialog__close-btn {
+    --vaadin-button-border-width:  0;
+    --vaadin-button-border-radius: 0.375rem;
+    --vaadin-button-padding:       0.25rem;
+    --vaadin-button-shadow:        none;
+    --vaadin-button-margin:        0;
+
+    display: none;              /* hidden unless .alert-dialog--closeable is present */
+    position: absolute;
+    top:   0.75rem;
+    right: 0.75rem;
+    z-index: 1;
+
+    min-width:  2rem;
+    min-height: 2rem;
+    box-sizing: border-box;
+}
+
+/* Size the Vaadin icon inside the close button */
+.alert-dialog__close-btn vaadin-icon,
+.alert-dialog__close-btn svg {
+    width:  1rem;
+    height: 1rem;
+}
+
+/* Reveal when the parent wrapper carries the modifier class */
+.alert-dialog--closeable .alert-dialog__close-btn {
+    display: inline-flex;
+}
+
+/* --------------------------------------------------------------------------
+ * Title
+ * -------------------------------------------------------------------------- */
+
+.alert-dialog__title {
+    margin: 0;
+    font-size: 1.125rem;
+    font-weight: 600;
+    line-height: 1.4;
+}
+
+/* --------------------------------------------------------------------------
+ * Description
+ * -------------------------------------------------------------------------- */
+
+.alert-dialog__description {
+    margin: 0;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    padding-bottom: 15px;
+}
+
+/* --------------------------------------------------------------------------
+ * Footer
+ *
+ * Clean white footer — no tinted background, no heavy border.
+ * A hairline separator provides just enough visual separation
+ * without creating a visually distinct "band".
+ *
+ * Mobile: column-reverse — primary CTA on top (closest to thumb).
+ * Desktop (≥ 640 px): row — cancel left, action right.
+ * -------------------------------------------------------------------------- */
+
+.alert-dialog__footer {
+    display: flex;
+    flex-direction: column-reverse;   /* primary CTA on top on mobile */
+    gap: 0.5rem;
+    box-sizing: border-box;
+}
+
+@media (min-width: 640px) {
+    .alert-dialog__footer {
+        flex-direction: row;
+        justify-content: flex-end;
+    }
+}
+
+/* --------------------------------------------------------------------------
+ * Cancel button
+ *
+ * Styled via Vaadin Aura CSS custom properties so that the text colour
+ * is driven by --vaadin-button-text-color (picked up inside shadow DOM),
+ * not by the host-level `color` property which vaadin-button ignores.
+ *
+ * Mobile: full-width, 44 px touch target.
+ * Desktop: auto-width.
+ * -------------------------------------------------------------------------- */
+
+.alert-dialog__cancel {
+    --vaadin-button-border-width:  1px;
+    --vaadin-button-border-radius: 0.375rem;
+    --vaadin-button-font-size:     0.875rem;
+    --vaadin-button-font-weight:   500;
+    --vaadin-button-padding:       0.375rem 0.875rem;
+    --vaadin-button-height:        2.25rem;   /* 36 px — compact */
+    --vaadin-button-shadow:        none;
+    --vaadin-button-margin:        0;
+
+    width: 100%;          /* full-width on mobile */
+    box-sizing: border-box;
+}
+
+.alert-dialog__cancel[focus-ring] {
+    box-shadow: 0 0 0 2px var(--surface-0, #ffffff),
+                0 0 0 4px var(--brand-500, #3b82f6) !important;
+    outline: none !important;
+}
+
+@media (min-width: 640px) {
+    .alert-dialog__cancel {
+        width: auto;
+        min-width: 5rem;
+    }
+}
+
+/* --------------------------------------------------------------------------
+ * Action (confirm) button
+ *
+ * Mobile: full-width, 44 px touch target.
+ * Desktop: auto-width.
+ * -------------------------------------------------------------------------- */
+
+.alert-dialog__action {
+    --vaadin-button-border-width:  1px;
+    --vaadin-button-border-radius: 0.375rem;
+    --vaadin-button-font-size:     0.875rem;
+    --vaadin-button-font-weight:   500;
+    --vaadin-button-padding:       0.375rem 0.875rem;
+    --vaadin-button-height:        2.25rem;   /* 36 px — compact */
+    --vaadin-button-shadow:        none;
+    --vaadin-button-margin:        0;
+
+    width: 100%;          /* full-width on mobile */
+    box-sizing: border-box;
+}
+
+.alert-dialog__action[focus-ring] {
+    box-shadow: 0 0 0 2px var(--surface-0, #ffffff),
+                0 0 0 4px var(--brand-500, #3b82f6) !important;
+    outline: none !important;
+}
+
+@media (min-width: 640px) {
+    .alert-dialog__action {
+        width: auto;
+        min-width: 5rem;
+    }
+}
+
+/* ==========================================================================
+   SECTION 3 — TAILWIND UI PLUS FEATURES
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+ * 1. Entry animation
+ *
+ * The overlay panel scales in from 96 % and fades up from a slight upward
+ * offset — matching the Tailwind UI dialog panel transition pattern.
+ * -------------------------------------------------------------------------- */
+
+@keyframes alert-dialog-overlay-in {
+    from {
+        opacity: 0;
+        transform: scale(0.96) translateY(-0.375rem);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+/* --------------------------------------------------------------------------
+ * 2. ARIA-linked IDs
+ *
+ * The title and description elements already receive unique IDs in Java and
+ * aria-labelledby / aria-describedby are set on the dialog host element.
+ * No CSS changes are required for this feature.
+ * -------------------------------------------------------------------------- */
+
+/* --------------------------------------------------------------------------
+ * 3. Header icon badge (Tailwind UI "with icon" modal pattern)
+ *
+ * A circular badge displayed above (mobile) or beside (desktop) the title.
+ * Icon variant colour is applied via an additional modifier class on the badge.
+ * -------------------------------------------------------------------------- */
+
+.alert-dialog__icon-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.alert-dialog__icon-wrapper vaadin-icon,
+.alert-dialog__icon-wrapper svg {
+    width:  1.25rem;
+    height: 1.25rem;
+}
+
+/* --------------------------------------------------------------------------
+ * 4. Header layout with icon badge
+ *
+ * Mobile  (default): icon stacked above text — flex-col is already default.
+ *   Give the icon a bottom margin to separate it from the title.
+ * Desktop (≥ 640 px): icon badge on the LEFT, header-text grows to fill the
+ *   remaining width — matching the shadcn/ui sm:flex sm:items-start pattern.
+ * -------------------------------------------------------------------------- */
+
+.alert-dialog--has-icon .alert-dialog__icon-wrapper {
+    margin-bottom: 0.875rem;
+}
+
+@media (min-width: 640px) {
+    .alert-dialog--has-icon .alert-dialog__header {
+        flex-direction: row;
+        align-items: flex-start;
+        gap: 1rem;
+        /* keeps same 1.5rem top as default header */
+    }
+
+    .alert-dialog--has-icon .alert-dialog__icon-wrapper {
+        margin-bottom: 0;
+        margin-top: 0.125rem;  /* optical alignment with H4 cap-height */
+    }
+
+    .alert-dialog--has-icon .alert-dialog__header-text {
+        flex: 1 1 0;
+    }
+}
+
+/* --------------------------------------------------------------------------
+ * 5. Centered alignment variant
+ *
+ * Centers the icon badge, title, description, and footer buttons.
+ * On desktop, overrides the has-icon left-side layout so the icon stays
+ * centred above the title.
+ * -------------------------------------------------------------------------- */
+
+.alert-dialog--centered .alert-dialog__header {
+    align-items: center;
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
+}
+
+.alert-dialog--centered .alert-dialog__icon-wrapper {
+    margin-bottom: 1rem;
+}
+
+.alert-dialog--centered .alert-dialog__header-text {
+    align-items: center;
+}
+
+.alert-dialog--centered .alert-dialog__title,
+.alert-dialog--centered .alert-dialog__description {
+    text-align: center;
+}
+
+/* Centered footer: horizontally centred buttons */
+.alert-dialog--centered .alert-dialog__footer {
+    justify-content: center;
+}
+
+/* Override has-icon desktop row back to column when centered */
+@media (min-width: 640px) {
+    .alert-dialog--centered.alert-dialog--has-icon .alert-dialog__header {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .alert-dialog--centered.alert-dialog--has-icon .alert-dialog__icon-wrapper {
+        margin-bottom: 1rem;
+        margin-top: 0;
+    }
+}
+
+/* --------------------------------------------------------------------------
+ * 6. Secondary action button
+ *
+ * Sits between the cancel button and the primary action in the footer.
+ * Uses an outlined style (same as cancel) to visually separate it from the
+ * primary destructive/success action.
+ * -------------------------------------------------------------------------- */
+
+.alert-dialog__secondary-action {
+    --vaadin-button-border-width:  1px;
+    --vaadin-button-border-radius: 0.375rem;
+    --vaadin-button-font-size:     0.875rem;
+    --vaadin-button-font-weight:   500;
+    --vaadin-button-padding:       0.375rem 0.875rem;
+    --vaadin-button-height:        2.25rem;
+    --vaadin-button-shadow:        none;
+    --vaadin-button-margin:        0;
+
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.alert-dialog__secondary-action[focus-ring] {
+    box-shadow: 0 0 0 2px var(--surface-0, #ffffff),
+                0 0 0 4px var(--brand-500, #3b82f6) !important;
+    outline: none !important;
+}
+
+@media (min-width: 640px) {
+    .alert-dialog__secondary-action {
+        width: auto;
+        min-width: 5rem;
+    }
+}
+
+/* --------------------------------------------------------------------------
+ * 7. Scrollable body content slot
+ *
+ * Sits between the header (title/description) and the footer (buttons).
+ * Independently scrollable for longer content such as item lists or forms.
+ * A top border separates it from the header.
+ * -------------------------------------------------------------------------- */
+
+.alert-dialog__body {
+    padding: 0.75rem 1.25rem 0.75rem;
+    border-top: 1px solid var(--alert-dialog-footer-border, #f0f0f2);
+    max-height: 60vh;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+    font-size: 0.875rem;
+    line-height: 1.6;
+    box-sizing: border-box;
+}
+
+/* --------------------------------------------------------------------------
+ * 8. Loading / async state on the action button
+ *
+ * Rotates the REFRESH icon (set as the button prefix icon in Java) as a
+ * spinner, and reduces opacity to signal a pending operation.
+ * The button is also disabled (set in Java) to prevent double-submission.
+ * -------------------------------------------------------------------------- */
+
+.alert-dialog__action--loading {
+    opacity: 0.75;
+    cursor: not-allowed;
+}
+
+/* Spin the Vaadin REFRESH icon used as a loading indicator */
+.alert-dialog__spinner {
+    animation: alert-dialog-spin 0.75s linear infinite;
+}
+
+@keyframes alert-dialog-spin {
+    to { transform: rotate(360deg); }
+}
+
+/* --------------------------------------------------------------------------
+ * 9. Size variants
+ *
+ * Each size variant adds a second theme attribute to the vaadin-dialog element
+ * which is mirrored to vaadin-dialog-overlay, allowing us to override the
+ * --vaadin-dialog-overlay-width custom property per size.
+ *
+ * SM  → 24 rem  (384 px)  — compact confirmation
+ * MD  → 28 rem  (448 px)  — default (no extra theme value needed)
+ * LG  → 32 rem  (512 px)  — extra description / icon-heavy header
+ * XL  → 36 rem  (576 px)  — wide, e.g. form inside the body slot
+ * 2XL → 42 rem  (672 px)  — rich content such as a scrollable list
+ * -------------------------------------------------------------------------- */
+
+vaadin-dialog-overlay[theme~="alert-dialog"][theme~="alert-dialog-sm"] {
+    --vaadin-dialog-overlay-width: min(90vw, 24rem);
+}
+
+vaadin-dialog-overlay[theme~="alert-dialog"][theme~="alert-dialog-lg"] {
+    --vaadin-dialog-overlay-width: min(90vw, 32rem);
+}
+
+vaadin-dialog-overlay[theme~="alert-dialog"][theme~="alert-dialog-xl"] {
+    --vaadin-dialog-overlay-width: min(90vw, 36rem);
+}
+
+vaadin-dialog-overlay[theme~="alert-dialog"][theme~="alert-dialog-2xl"] {
+    --vaadin-dialog-overlay-width: min(90vw, 42rem);
+}
+
+/* --------------------------------------------------------------------------
+ * 10. Stacked buttons modifier
+ *
+ * Forces the footer into a vertical column layout on all screen sizes,
+ * overriding the default desktop-row behaviour.
+ * Useful for narrow dialogs (Size.SM) or when button labels are long.
+ * -------------------------------------------------------------------------- */
+
+.alert-dialog--stacked .alert-dialog__footer,
+.alert-dialog--stacked .alert-dialog__footer {
+    flex-direction: column-reverse;
+}
+
+@media (min-width: 640px) {
+    .alert-dialog--stacked .alert-dialog__footer {
+        flex-direction: column-reverse; /* override desktop row */
+        align-items: stretch;
+    }
+
+    .alert-dialog--stacked .alert-dialog__cancel,
+    .alert-dialog--stacked .alert-dialog__secondary-action,
+    .alert-dialog--stacked .alert-dialog__action {
+        width: 100%;
+    }
+}
+
+/* --------------------------------------------------------------------------
+ * 11. Full-screen on mobile / bottom-sheet pattern
+ *
+ * On mobile (≤ 639 px) the overlay anchors to the bottom of the viewport,
+ * takes up the full width, and shows only the top two corners rounded —
+ * giving the "bottom sheet" feel common in Tailwind UI mobile patterns.
+ *
+ * On larger screens the dialog reverts to the normal centred panel.
+ * -------------------------------------------------------------------------- */
+
+@media (max-width: 639px) {
+    vaadin-dialog-overlay[theme~="alert-dialog"][theme~="alert-dialog-fullscreen-mobile"] {
+        --vaadin-dialog-overlay-width: 100vw;
+        align-items: flex-end; /* push panel to the bottom of the viewport */
+    }
+
+    vaadin-dialog-overlay[theme~="alert-dialog"][theme~="alert-dialog-fullscreen-mobile"]::part(overlay) {
+        width: 100vw;
+        max-width: 100vw;
+        border-radius: 0.875rem 0.875rem 0 0; /* only top corners rounded */
+        margin: 0;
+        animation: alert-dialog-sheet-in 200ms cubic-bezier(0.32, 0.72, 0, 1) both;
+    }
+}
+
+/* Slide-up entrance for the bottom-sheet variant */
+@keyframes alert-dialog-sheet-in {
+    from {
+        opacity: 0.8;
+        transform: translateY(100%);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ==========================================================================
+   SECTION 4 — COLOUR RULES
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+ * Cancel button — neutral outlined style
+ * -------------------------------------------------------------------------- */
+
+.alert-dialog__cancel {
+    --vaadin-button-background:   transparent;
+    --vaadin-button-text-color:   #374151;
+    --vaadin-button-border-color: #d1d5db;
+}
+
+.alert-dialog__cancel:hover {
+    --vaadin-button-background:   #f9fafb;
+}
+
+/* --------------------------------------------------------------------------
+ * Secondary action button — same neutral outlined style as cancel
+ * -------------------------------------------------------------------------- */
+
+.alert-dialog__secondary-action {
+    --vaadin-button-background:   transparent;
+    --vaadin-button-text-color:   #374151;
+    --vaadin-button-border-color: #d1d5db;
+}
+
+.alert-dialog__secondary-action:hover {
+    --vaadin-button-background:   #f9fafb;
+}
+
+/* --------------------------------------------------------------------------
+ * Action (confirm) button — DEFAULT (dark/primary)
+ * -------------------------------------------------------------------------- */
+
+.alert-dialog__action {
+    --vaadin-button-background:   #0f172a;
+    --vaadin-button-text-color:   #ffffff;
+    --vaadin-button-border-color: #0f172a;
+}
+
+.alert-dialog__action:hover {
+    --vaadin-button-background:   #1e293b;
+    --vaadin-button-border-color: #1e293b;
+}
+
+/* --------------------------------------------------------------------------
+ * Action button — DESTRUCTIVE (red)
+ * -------------------------------------------------------------------------- */
+
+.alert-dialog__action--destructive {
+    --vaadin-button-background:   #dc2626;
+    --vaadin-button-text-color:   #ffffff;
+    --vaadin-button-border-color: #dc2626;
+}
+
+.alert-dialog__action--destructive:hover {
+    --vaadin-button-background:   #b91c1c;
+    --vaadin-button-border-color: #b91c1c;
+}
+
+/* --------------------------------------------------------------------------
+ * Action button — WARNING (orange)
+ * -------------------------------------------------------------------------- */
+
+.alert-dialog__action--warning {
+    --vaadin-button-background:   #f97316;
+    --vaadin-button-text-color:   #ffffff;
+    --vaadin-button-border-color: #f97316;
+}
+
+.alert-dialog__action--warning:hover {
+    --vaadin-button-background:   #ea580c;
+    --vaadin-button-border-color: #ea580c;
+}
+
+/* --------------------------------------------------------------------------
+ * Action button — SUCCESS (green)
+ * -------------------------------------------------------------------------- */
+
+.alert-dialog__action--success {
+    --vaadin-button-background:   #16a34a;
+    --vaadin-button-text-color:   #ffffff;
+    --vaadin-button-border-color: #16a34a;
+}
+
+.alert-dialog__action--success:hover {
+    --vaadin-button-background:   #15803d;
+    --vaadin-button-border-color: #15803d;
+}
+
+/* --------------------------------------------------------------------------
+ * Action button — INFO (violet)
+ * -------------------------------------------------------------------------- */
+
+.alert-dialog__action--info {
+    --vaadin-button-background:   #7c3aed;
+    --vaadin-button-text-color:   #ffffff;
+    --vaadin-button-border-color: #7c3aed;
+}
+
+.alert-dialog__action--info:hover {
+    --vaadin-button-background:   #6d28d9;
+    --vaadin-button-border-color: #6d28d9;
+}
+
+/* --------------------------------------------------------------------------
+ * Icon wrapper — neutral default badge
+ * -------------------------------------------------------------------------- */
+
+.alert-dialog__icon-wrapper {
+    background-color: #f1f5f9;
+    color:            #64748b;
+}
+
+/* Vaadin icon inherits color from the wrapper */
+.alert-dialog__icon-wrapper vaadin-icon,
+.alert-dialog__icon-wrapper svg {
+    color: inherit;
+}
+
+/* --------------------------------------------------------------------------
+ * Icon wrapper — DESTRUCTIVE (red tint)
+ * -------------------------------------------------------------------------- */
+
+.alert-dialog__icon-wrapper--destructive {
+    background-color: #fef2f2;
+    color:            #dc2626;
+}
+
+/* --------------------------------------------------------------------------
+ * Icon wrapper — WARNING (amber tint)
+ * -------------------------------------------------------------------------- */
+
+.alert-dialog__icon-wrapper--warning {
+    background-color: #fffbeb;
+    color:            #f97316;
+}
+
+/* --------------------------------------------------------------------------
+ * Icon wrapper — SUCCESS (green tint) — matches image row 1 & 2
+ * -------------------------------------------------------------------------- */
+
+.alert-dialog__icon-wrapper--success {
+    background-color: #f0fdf4;
+    color:            #16a34a;
+}
+
+/* --------------------------------------------------------------------------
+ * Icon wrapper — INFO (violet tint) — matches image row 4
+ * -------------------------------------------------------------------------- */
+
+.alert-dialog__icon-wrapper--info {
+    background-color: #f5f3ff;
+    color:            #7c3aed;
+}
+
+/* --------------------------------------------------------------------------
+ * Dark mode overrides
+ * -------------------------------------------------------------------------- */
+
+@media (prefers-color-scheme: dark) {
+    .alert-dialog__cancel,
+    .alert-dialog__secondary-action {
+        --vaadin-button-text-color:   #d1d5db;
+        --vaadin-button-border-color: #374151;
+    }
+
+    .alert-dialog__cancel:hover,
+    .alert-dialog__secondary-action:hover {
+        --vaadin-button-background:   #1f2937;
+    }
+
+    .alert-dialog__action {
+        --vaadin-button-background:   #f1f5f9;
+        --vaadin-button-text-color:   #0f172a;
+        --vaadin-button-border-color: #f1f5f9;
+    }
+
+    .alert-dialog__icon-wrapper {
+        background-color: #1e293b;
+        color:            #94a3b8;
+    }
+
+    .alert-dialog__icon-wrapper--destructive {
+        background-color: #450a0a;
+        color:            #f87171;
+    }
+
+    .alert-dialog__icon-wrapper--warning {
+        background-color: #451a03;
+        color:            #fb923c;
+    }
+
+    .alert-dialog__icon-wrapper--success {
+        background-color: #052e16;
+        color:            #4ade80;
+    }
+
+    .alert-dialog__icon-wrapper--info {
+        background-color: #2e1065;
+        color:            #a78bfa;
+    }
+}
+

@@ -15,16 +15,6 @@
  */
 package com.holonplatform.vaadin.flow.test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.concurrent.atomic.AtomicBoolean;
-
-import org.junit.jupiter.api.Test;
-
 import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.vaadin.flow.components.Components;
 import com.holonplatform.vaadin.flow.components.builders.ButtonBuilder;
@@ -35,9 +25,13 @@ import com.holonplatform.vaadin.flow.test.util.LocalizationTestUtils;
 import com.vaadin.flow.component.ComponentUtil;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.icon.Icon;
-import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.dom.ElementConstants;
+import org.junit.jupiter.api.Test;
+
+import java.util.concurrent.atomic.AtomicBoolean;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class TestButton {
 
@@ -347,6 +341,31 @@ public class TestButton {
 			ComponentUtil.onComponentAttach(button2, true);
 			assertEquals("TestUS", button2.getText());
 			assertEquals("TestUS", button2.getElement().getAttribute("title"));
+		});
+
+	}
+
+	@Test
+	public void testAriaLabel() {
+
+		Button button = ButtonBuilder.create().ariaLabel("Action button").build();
+		assertEquals("Action button", button.getElement().getAttribute("aria-label"));
+
+		button = ButtonBuilder.create().ariaLabelledBy("action-button-label").build();
+		assertEquals("action-button-label", button.getElement().getAttribute("aria-labelledby"));
+
+		LocalizationTestUtils.withTestLocalizationContext(() -> {
+			Button localized = ButtonBuilder.create()
+					.ariaLabel(Localizable.builder().message("test").messageCode("test.code").build()).build();
+			assertEquals("TestUS", localized.getElement().getAttribute("aria-label"));
+		});
+
+		LocalizationTestUtils.withTestLocalizationContext(() -> {
+			Button localized = ButtonBuilder.create().deferLocalization()
+					.ariaLabel(Localizable.builder().message("test").messageCode("test.code").build()).build();
+			assertEquals("test", localized.getElement().getAttribute("aria-label"));
+			ComponentUtil.onComponentAttach(localized, true);
+			assertEquals("TestUS", localized.getElement().getAttribute("aria-label"));
 		});
 
 	}

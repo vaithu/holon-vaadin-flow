@@ -20,6 +20,7 @@ import com.holonplatform.vaadin.flow.components.builders.ButtonConfigurator;
 import com.holonplatform.vaadin.flow.components.builders.ShortcutConfigurator;
 import com.holonplatform.vaadin.flow.components.events.ClickEvent;
 import com.holonplatform.vaadin.flow.components.events.ClickEventListener;
+import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
 import com.holonplatform.vaadin.flow.internal.components.support.ComponentClickListenerAdapter;
 import com.vaadin.flow.component.BlurNotifier.BlurEvent;
 import com.vaadin.flow.component.*;
@@ -28,9 +29,7 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.icon.Icon;
-import com.vaadin.flow.component.shared.HasTooltip;
-import com.vaadin.flow.theme.lumo.LumoUtility;
-import elemental.json.JsonValue;
+import tools.jackson.databind.JsonNode;
 
 import java.util.Optional;
 
@@ -73,8 +72,9 @@ public abstract class AbstractButtonConfigurator<C extends ButtonConfigurator<C>
 	}
 
 	@Override
-	protected Optional<HasTooltip> hasTooltip() {
-		return Optional.of(getComponent());
+	public C icon(Component icon) {
+		getComponent().setIcon(icon);
+		return getConfigurator();
 	}
 
 	@Override
@@ -85,65 +85,58 @@ public abstract class AbstractButtonConfigurator<C extends ButtonConfigurator<C>
 
 	@Override
 	public C image(Image image) {
-		return icon(image);
+		getComponent().setIcon(image);
+		return getConfigurator();
 	}
 
 	@Override
 	public C marginInlineEndAuto() {
-		getComponent().getStyle().set("margin-inline-end", "auto");
+		getComponent().addClassName("btn--push-end");
 		return getConfigurator();
 	}
 
 	@Override
 	public C marginInlineStartAuto() {
-		getComponent().getStyle().set("margin-inline-start", "auto");
+		getComponent().addClassName("btn--push-start");
 		return getConfigurator();
 	}
 
-	private void removeStyles(Button component) {
-		component.getClassNames().forEach(s -> component.removeClassName(s));
-	}
-
 	private C border(String border) {
-		/*removeStyles(getComponent());
-		getComponent().addClassName(border);*/
-
-		Button button = getComponent();
-		button.getStyle().setBorder("1px solid");
-		button.addClassName(border);
-
-		button.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
+		// btn--outlined-border  → buttons.css: vaadin-button::part(base) { border: 1px solid; }
+		// btn--tertiary         → buttons.css: background: transparent; box-shadow: none
+		// <border>              → utilities.css: the specific border-color class
+		getComponent().addClassNames("btn--outlined-border", "btn--tertiary", border);
 		return getConfigurator();
 	}
 
 	@Override
 	public C borderContrast() {
-		return border(LumoUtility.BorderColor.CONTRAST);
+		return border("border-color-contrast");
 	}
 
 	@Override
 	public C borderPrimary() {
-		return border(LumoUtility.BorderColor.PRIMARY_50);
+		return border("border-color-primary-50");
 	}
 
 	@Override
 	public C borderError() {
-		return border(LumoUtility.BorderColor.ERROR_50);
+		return border("border-color-error-50");
 	}
 
 	@Override
 	public C borderWarning() {
-		return border(LumoUtility.BorderColor.WARNING);
+		return border("border-color-warning");
 	}
 
 	@Override
 	public C borderSuccess() {
-		return border(LumoUtility.BorderColor.SUCCESS_50);
+		return border("border-color-success-50");
 	}
 
 	@Override
 	public C borderRadius() {
-		getComponent().getStyle().setBorderRadius("--var(lumo-border-radius-m)");
+		getComponent().addClassName("btn--rounded");
 		return getConfigurator();
 	}
 
@@ -152,52 +145,17 @@ public abstract class AbstractButtonConfigurator<C extends ButtonConfigurator<C>
 		return getComponent();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * com.holonplatform.vaadin.flow.components.builders.HasThemeVariantConfigurator
-	 * #withThemeVariants(java.lang.Enum[])
-	 */
-	@Override
-	public C withThemeVariants(ButtonVariant... variants) {
-		getComponent().addThemeVariants(variants);
-		return getConfigurator();
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * com.holonplatform.vaadin.flow.components.builders.HasIconConfigurator#icon(
-	 * com.vaadin.flow.component.Component)
-	 */
-	@Override
-	public C icon(Component icon) {
-		getComponent().setIcon(icon);
-		return getConfigurator();
-	}
-
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.holonplatform.vaadin.flow.components.builders.HasIconConfigurator#
-	 * iconConfigurator(com.vaadin.flow.component. icon.Icon)
-	 */
-	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	public IconConfigurator<C> iconConfigurator(Icon icon) {
 		return new DefaultIconConfigurator(this, icon);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * com.holonplatform.vaadin.flow.components.builders.HasTextConfigurator#text(
-	 * com.holonplatform.core.i18n. Localizable)
-	 */
+	@Override
+	public C withThemeVariants(ButtonVariant... variants) {
+		getComponent().setThemeVariants(variants);
+		return getConfigurator();
+	}
+
 	@Override
 	public C text(Localizable text) {
 		textConfigurator.text(text);
@@ -206,7 +164,7 @@ public abstract class AbstractButtonConfigurator<C extends ButtonConfigurator<C>
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * com.holonplatform.vaadin.flow.components.builders.HasTitleConfigurator#title(
 	 * com.holonplatform.core.i18n. Localizable)
@@ -266,8 +224,8 @@ public abstract class AbstractButtonConfigurator<C extends ButtonConfigurator<C>
 				.addEventListener(
 						"click",
 						e -> {
-							JsonValue detail = e.getEventData().get("event.detail");
-							if (avoidDoubleClick && detail.asNumber() > 1) {
+							JsonNode detail = e.getEventData().get("event.detail");
+							if (avoidDoubleClick && detail.asInt() > 1) {
 								// double click, ignore
 							} else {
 								getComponent().addClickListener(new ComponentClickListenerAdapter<>(clickEventListener));
@@ -425,7 +383,7 @@ public abstract class AbstractButtonConfigurator<C extends ButtonConfigurator<C>
 
 	@Override
 	public C success() {
-		getComponent().addThemeVariants(ButtonVariant.LUMO_SUCCESS);
+		getComponent().addThemeVariants(ButtonVariant.SUCCESS);
 		return getConfigurator();
 	}
 
@@ -433,5 +391,35 @@ public abstract class AbstractButtonConfigurator<C extends ButtonConfigurator<C>
 	public C contrast() {
 		getComponent().addThemeVariants(ButtonVariant.LUMO_CONTRAST);
 		return getConfigurator();
+	}
+
+	@Override
+	public C ariaLabel(String ariaLabel) {
+		getComponent().setAriaLabel(ariaLabel);
+		return getConfigurator();
+	}
+
+	@Override
+	public C ariaLabelledBy(String ariaLabelledBy) {
+		getComponent().setAriaLabelledBy(ariaLabelledBy);
+		return getConfigurator();
+	}
+
+	@Override
+	public C ariaLabel(Localizable ariaLabel) {
+		final String defaultAriaLabel = (ariaLabel != null && ariaLabel.getMessage() != null) ? ariaLabel.getMessage()
+				: "";
+		if (ariaLabel == null) {
+			return ariaLabel(defaultAriaLabel);
+		}
+		if (isDeferredLocalizationEnabled()) {
+			ariaLabel(defaultAriaLabel);
+			return withAttachListener(event -> {
+				if (event.isInitialAttach()) {
+					LocalizationProvider.localize(ariaLabel).ifPresent(this::ariaLabel);
+				}
+			});
+		}
+		return ariaLabel(LocalizationProvider.localize(ariaLabel).orElse(defaultAriaLabel));
 	}
 }

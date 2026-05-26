@@ -17,6 +17,7 @@ package com.holonplatform.vaadin.flow.components.builders;
 
 import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
+import com.vaadin.flow.signals.Signal;
 
 /**
  * Configurator for components which support a placeholder.
@@ -37,6 +38,18 @@ public interface HasPlaceholderConfigurator<C extends HasPlaceholderConfigurator
 	 * @see LocalizationProvider
 	 */
 	C placeholder(Localizable placeholder);
+
+	/**
+	 * Bind the component placeholder to given {@link Signal}.
+	 * @param placeholderSignal Placeholder signal (not null)
+	 * @return this
+	 * @since 5.5.8
+	 */
+	@SuppressWarnings("unchecked")
+	default C bindPlaceholder(Signal<? extends Localizable> placeholderSignal) {
+		SignalBindings.bind(this, placeholderSignal, this::placeholder);
+		return (C) this;
+	}
 
 	/**
 	 * Set the component placeholder, i.e. a hint to the user of what can be entered in the control.

@@ -11,6 +11,7 @@ import com.holonplatform.vaadin.flow.components.css.CSSConstants;
 import com.holonplatform.vaadin.flow.internal.lumo.Background;
 import com.holonplatform.vaadin.flow.vaadinplus.components.GridHeader;
 import com.holonplatform.vaadin.flow.vaadinplus.components.Header;
+import com.holonplatform.vaadin.flow.vaadinplus.components.Separator;
 import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
@@ -18,7 +19,6 @@ import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.shared.HasTooltip;
-import com.vaadin.flow.theme.lumo.LumoUtility;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -49,7 +49,7 @@ public abstract class AbstractZohoConfigurator<C extends ZohoConfigurator<C>> ex
                 .id("master")
                 .spacing()
                 .withoutPadding()
-                .styleNames(LumoUtility.Padding.Top.LARGE)
+                .styleNames("padding-top-large")
                 .build();
 
         if (desktop) {
@@ -59,7 +59,7 @@ public abstract class AbstractZohoConfigurator<C extends ZohoConfigurator<C>> ex
         }
 
         Components.configure(content)
-                .styleNames(LumoUtility.Flex.GROW)
+                .styleNames("flex-grow-1")
                 .fullHeight()
                 .withoutSpacing()
                 .addAndAlign(masterLayout, FlexComponent.Alignment.STRETCH);
@@ -193,10 +193,12 @@ public abstract class AbstractZohoConfigurator<C extends ZohoConfigurator<C>> ex
 
     @Override
     public C separator(Background background) {
-        getComponent().addComponentAtIndex(1,Components.utils.divider()
-                .verticalSeparator()
-                .styleNames(background.getClassName())
-                .build());
+        Separator sep = Separator.builder()
+                .orientation(Separator.Orientation.VERTICAL)
+                .decorative(true)
+                .styleName(background.getClassName())
+                .build();
+        getComponent().addComponentAtIndex(1, sep);
         return getConfigurator();
     }
 

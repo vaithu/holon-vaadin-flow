@@ -1,0 +1,303 @@
+/* ============================================================
+   live-chat.css  –  LiveChat component layout
+   Uses the project design-system tokens:
+     --surface-*    (background layers)
+     --zinc-*       (borders, dividers)
+     --brand-*      (accent colour)
+     --text-*       (typography)
+     --radius-*     (border radius)
+     --sp-*         (spacing)
+     --font-size-*  (typography scale)
+   All tokens are defined in:
+     vaadin-shell-theme.css  (base + Lumo bridge)
+     brand-*.css             (brand palette)
+   ============================================================ */
+
+/* ---------- component-local tokens ---------- */
+:root {
+    --live-chat-bg:             var(--surface-0);
+    --live-chat-border:         var(--zinc-200);
+    --live-chat-radius:         var(--radius-md, 8px);
+    --live-chat-channel-width:  220px;
+    --live-chat-header-height:  56px;
+    --live-chat-input-bg:       var(--surface-1, #f9fafb);
+    --live-chat-gap:            var(--sp-3, 0.75rem);
+}
+
+/* ---------- shell ---------- */
+.live-chat {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    height: 100%;
+    min-height: 400px;
+    overflow: hidden;
+    border: 1px solid var(--live-chat-border);
+    border-radius: var(--live-chat-radius);
+    background: var(--live-chat-bg);
+}
+
+/* ---------- panel (main area) ---------- */
+.live-chat__panel {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 0;
+    min-width: 0;
+    overflow: hidden;
+}
+
+/* ---------- header ---------- */
+.live-chat__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: var(--live-chat-header-height);
+    padding: 0 var(--live-chat-gap);
+    border-bottom: 1px solid var(--live-chat-border);
+    flex-shrink: 0;
+}
+
+.live-chat__room-title {
+    margin: 0;
+    font-size: var(--font-size-lg, 1rem);
+    font-weight: 600;
+    color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Avatar group — shows who is currently in the room.
+   Each avatar shows the person's name on hover (Vaadin default).
+   This is the primary "who else is here" indicator. */
+.live-chat__avatars {
+    margin-inline-start: auto;
+    flex-shrink: 0;
+    cursor: default;
+}
+
+/* Tooltip-style label below the avatar group */
+.live-chat__header vaadin-avatar-group::part(avatar) {
+    cursor: pointer;
+}
+
+/* ---------- history (older-page static list) ---------- */
+.live-chat__history {
+    flex-shrink: 0;
+    width: 100%;
+}
+
+/* ---------- "Load older messages" button ---------- */
+.live-chat__load-more {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--sp-1, 0.25rem) var(--sp-2, 0.5rem);
+    margin-block: var(--sp-1, 0.25rem);
+    font-size: var(--font-size-sm, 0.75rem);
+    color: var(--brand-700, #2563eb);
+    cursor: pointer;
+    border-radius: var(--radius-sm, 4px);
+    transition: background 0.15s;
+    user-select: none;
+    flex-shrink: 0;
+}
+
+.live-chat__load-more:hover {
+    background: var(--brand-50, #eff6ff);
+}
+
+.live-chat__load-more::before {
+    content: "↑ ";
+    font-weight: 600;
+}
+
+/* ---------- messages ---------- */
+.live-chat__messages {
+    flex: 1 1 0;
+    min-height: 0;
+    overflow-y: auto;
+    padding: var(--sp-4, 1rem) var(--live-chat-gap);
+    scroll-behavior: smooth;
+}
+
+/* ============================================================
+   Conversation bubble layout  (WhatsApp / iMessage style)
+
+   vaadin-message-list renders vaadin-message as light-DOM children
+   so external CSS on vaadin-message-list { display: flex } makes
+   vaadin-message elements flex items.
+
+   Left  = incoming (others)  → margin-inline-end: auto
+   Right = outgoing (own)     → margin-inline-start: auto
+   Both techniques work in flex AND in block contexts.
+   ============================================================ */
+
+/* ── Make the list a flex column ─────────────────────────────── */
+.live-chat__messages vaadin-message-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-2, 0.5rem);
+    width: 100%;
+    min-height: 100%;
+    padding-block: var(--sp-2, 0.5rem);
+}
+
+/* ── Base bubble — incoming / others (LEFT) ──────────────────── */
+.live-chat__messages vaadin-message {
+    --vaadin-message-name-color:  var(--text-secondary);
+    --vaadin-message-time-color:  var(--text-tertiary);
+    --vaadin-message-text-color:  var(--text-primary);
+    background: var(--surface-2, #f0f0f0);
+    border-radius: 18px 18px 18px 4px;   /* left tail */
+    padding: var(--sp-2, 0.5rem) var(--sp-3, 0.75rem);
+    max-width: 70%;
+    width: fit-content;
+    /* Push to the LEFT — auto right margin fills remaining space */
+    margin-inline-start: 0;
+    margin-inline-end: auto;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, .06);
+}
+
+.live-chat__messages vaadin-message::part(name) {
+    font-size: var(--font-size-xs, 0.6875rem);
+    font-weight: 600;
+}
+
+.live-chat__messages vaadin-message::part(time) {
+    font-size: var(--font-size-xs, 0.6875rem);
+}
+
+/* ── Own messages (RIGHT) ────────────────────────────────────── */
+.live-chat__messages vaadin-message[theme~="live-chat-own-message"] {
+    --vaadin-message-text-color:  #fff;
+    --vaadin-message-time-color:  rgba(255, 255, 255, 0.72);
+    --vaadin-message-name-color:  transparent;
+    background: var(--brand-500, #3b82f6);
+    border-radius: 18px 18px 4px 18px;   /* right tail */
+    /* Push to the RIGHT — auto left margin fills remaining space */
+    margin-inline-start: auto;
+    margin-inline-end: 0;
+    /* Flip avatar to right side */
+    flex-direction: row-reverse;
+}
+
+.live-chat__messages vaadin-message[theme~="live-chat-own-message"]::part(content) {
+    align-items: flex-end;
+}
+
+.live-chat__messages vaadin-message[theme~="live-chat-own-message"]::part(header) {
+    flex-direction: row-reverse;
+}
+
+/* Hide our own name and avatar — always redundant */
+.live-chat__messages vaadin-message[theme~="live-chat-own-message"]::part(name),
+.live-chat__messages vaadin-message[theme~="live-chat-own-message"]::part(avatar) {
+    display: none;
+}
+
+/* ── Direct-message mode — hide avatar + name for ALL messages ── */
+.live-chat--direct .live-chat__messages vaadin-message::part(avatar),
+.live-chat--direct .live-chat__messages vaadin-message::part(name) {
+    display: none;
+}
+
+/* ---------- typing indicator wrapper ---------- */
+    padding: 0 var(--live-chat-gap);
+    min-height: 24px;
+    flex-shrink: 0;
+}
+
+/* ---------- input bar ---------- */
+.live-chat__input-bar {
+    border-top: 1px solid var(--live-chat-border);
+    padding: var(--live-chat-gap);
+    flex-shrink: 0;
+    background: var(--live-chat-input-bg);
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-1, 0.25rem);
+}
+
+.live-chat__input-bar vaadin-message-input,
+.live-chat__input {
+    width: 100%;
+}
+
+/* ============================================================
+   Multi-channel layout
+   ============================================================ */
+
+.live-chat--with-channels .live-chat__channels {
+    width: var(--live-chat-channel-width);
+    flex-shrink: 0;
+    border-right: 1px solid var(--live-chat-border);
+    overflow-y: auto;
+}
+
+/* ============================================================
+   Demo-specific sizing helpers (used by LiveChatDemoView)
+   ============================================================ */
+
+.demo-chat-pane {
+    height: 400px;
+}
+
+.demo-chat-full {
+    height: 480px;
+}
+
+.demo-chat-tall {
+    height: 540px;
+}
+
+.demo-chat-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--sp-4, 1rem);
+}
+
+/* ---- LiveChatDemoView page structure ---- */
+
+.demo-section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-3, 0.75rem);
+    padding: var(--sp-5, 1.25rem) 0;
+    border-top: 1px solid var(--zinc-200);
+}
+
+.demo-section:first-of-type {
+    border-top: none;
+}
+
+.live-chat-demo__tab-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--sp-2, 0.5rem);
+    margin-bottom: var(--sp-3, 0.75rem);
+}
+
+.live-chat-demo__tab-link {
+    display: inline-block;
+    padding: var(--sp-1, 0.25rem) var(--sp-2, 0.5rem);
+    border-radius: var(--radius-sm, 4px);
+    background: var(--brand-50);
+    color: var(--brand-700);
+    font-size: var(--font-size-sm, 0.75rem);
+    font-family: var(--font-mono, monospace);
+    cursor: pointer;
+    transition: background 0.15s;
+    user-select: none;
+}
+
+.live-chat-demo__tab-link:hover {
+    background: var(--brand-500);
+    color: #fff;
+}
+
+.live-chat-demo__hint {
+    font-size: var(--font-size-xs, 0.6875rem);
+    color: var(--text-tertiary);
+    font-style: italic;
+}

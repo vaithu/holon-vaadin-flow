@@ -1,30 +1,41 @@
 package com.iyensoft.vaadin.flow.internal.components.builders;
 
+import com.holonplatform.core.i18n.Localizable;
+import com.holonplatform.vaadin.flow.components.Components;
+import com.holonplatform.vaadin.flow.components.builders.DeferrableLocalizationConfigurator;
 import com.holonplatform.vaadin.flow.components.utils.UIUtils;
-import com.holonplatform.vaadin.flow.internal.components.builders.AbstractComponentConfigurator;
+import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
+import com.holonplatform.vaadin.flow.internal.components.builders.AbstractLocalizableComponentConfigurator;
 import com.iyensoft.vaadin.flow.components.builders.LazyTabsConfigurator;
 import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.shared.HasTooltip;
 import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.TabVariant;
 import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.component.tabs.TabsVariant;
-import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 /**
  * Tabs configurator with optional lazy content and caching.
+ * <p>
+ * Extends {@link AbstractLocalizableComponentConfigurator} so that the
+ * {@link DeferrableLocalizationConfigurator} contract is satisfied: when deferred localization
+ * is enabled, {@link Localizable} tab labels are applied on the first UI attach cycle;
+ * otherwise they are resolved immediately at configuration time.
  */
-public abstract class AbstractLazyTabsConfigurator<C extends LazyTabsConfigurator<C>>
-        extends AbstractComponentConfigurator<VerticalLayout, C>
+public abstract class AbstractLazyTabsConfigurator<C extends LazyTabsConfigurator<C> & DeferrableLocalizationConfigurator<C>>
+        extends AbstractLocalizableComponentConfigurator<VerticalLayout, C>
         implements LazyTabsConfigurator<C> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractLazyTabsConfigurator.class);
@@ -44,34 +55,82 @@ public abstract class AbstractLazyTabsConfigurator<C extends LazyTabsConfigurato
 
     private boolean enableCaching = false;
 
-    @Getter
     private final Tabs tabs = new Tabs();
 
     // Display area
-    @Getter
-    private final VerticalLayout contentContainer = new VerticalLayout();
+    private final Div contentContainer = Components.div().build();
+
+    public Tabs getTabs() {
+        return tabs;
+    }
+
+    public Div getContentContainer() {
+        return contentContainer;
+    }
 
     public AbstractLazyTabsConfigurator(VerticalLayout component) {
         super(component);
-        contentContainer.setPadding(false);
-        contentContainer.setSpacing(false);
+        contentContainer.addClassName("lazy-tabs-content");
         contentContainer.setSizeFull();
+        contentContainer.addAttachListener(e -> e.getUI().getPage().addStyleSheet("context://lazy-tabs.css"));
         tabs.setWidthFull();
 
         // Keep the content area in sync with the selected tab
         tabs.addSelectedChangeListener(e -> switchToTab(e.getSelectedTab()));
     }
 
+    // ── Deferred-localization helper ──────────────────────────────────────────
+
+    /**
+     * Creates a {@link Tab} whose label text respects the current deferred-localization flag.
+     * <ul>
+     *   <li>Deferred OFF (default): label resolved immediately, fallback to message().</li>
+     *   <li>Deferred ON: fallback message shown immediately; proper translation applied on
+     *       the first UI attach cycle via an {@code AttachListener} on the {@link Tab}.</li>
+     * </ul>
+     */
+    private Tab createTab(Localizable label) {
+        if (isDeferredLocalizationEnabled()) {
+            Tab tab = new Tab(label.getMessage());
+            tab.addAttachListener(e -> {
+                if (e.isInitialAttach()) {
+                    LocalizationProvider.localize(label).ifPresent(tab::setLabel);
+                }
+            });
+            return tab;
+        } else {
+            return new Tab(LocalizationProvider.localize(label).orElse(label.getMessage()));
+        }
+    }
+
+    private Span createBadge(int value) {
+        return UIUtils.Badge.createBadge(value);
+    }
+
     /**
      * Convenience wrapper: Tabs on top + content below.
      */
     public Component buildTabsWithContent() {
-        VerticalLayout wrapper = new VerticalLayout();
+        VerticalLayout wrapper = Components.vl().build();
         wrapper.setPadding(false);
         wrapper.setSpacing(false);
         wrapper.setSizeFull();
         wrapper.add(tabs, contentContainer);
         return wrapper;
+    }
+
+    /**
+     * Convenience wrapper: Tabs on the left + content on the right.
+     * Use this for vertical-orientation side-by-side layouts instead of
+     * assembling {@code getTabs()} + {@code getContentContainer()} manually.
+     */
+    @Override
+    public HorizontalLayout buildHorizontal() {
+        HorizontalLayout layout = Components.hl().add(tabs, contentContainer).build();
+        layout.setPadding(false);
+        layout.setSpacing(false);
+        layout.setSizeFull();
+        return layout;
     }
 
     @Override
@@ -102,7 +161,7 @@ public abstract class AbstractLazyTabsConfigurator<C extends LazyTabsConfigurato
             Supplier<Component> supplier = tabSupplierMap.get(tab);
             if (supplier == null) {
                 // Fallback UI + warn
-                content = new Div("No content registered for this tab.");
+                content = Components.div().add(Components.span().text("No content registered for this tab.").build()).build();
                 LOGGER.warn("No content supplier registered for tab: {}", safeLabel(tab));
             } else {
                 content = supplier.get(); // create or return supplier-provided instance
@@ -128,9 +187,7 @@ public abstract class AbstractLazyTabsConfigurator<C extends LazyTabsConfigurato
         }
     }
 
-    // ----------------------------
-    // TabsConfigurator API
-    // ----------------------------
+    // ── Configuration API ────────────────────────────────────────────────────
 
     @Override
     public C enableCache(boolean enableCache) {
@@ -151,15 +208,14 @@ public abstract class AbstractLazyTabsConfigurator<C extends LazyTabsConfigurato
     }
 
     @Override
-    public C scrollIntoView(ScrollOptions scrollOptions) {
-        tabs.scrollIntoView(scrollOptions);
+    public C scrollIntoView(ScrollIntoViewOption... options) {
+        tabs.scrollIntoView(options);
         return getConfigurator();
     }
 
     @Override
-    public C autoSelect(boolean autoSelect) {
-        // Vaadin 24.9 API
-        tabs.setAutoselect(autoSelect);
+    public C autoselect(boolean autoselect) {
+        tabs.setAutoselect(autoselect);
         return getConfigurator();
     }
 
@@ -179,9 +235,7 @@ public abstract class AbstractLazyTabsConfigurator<C extends LazyTabsConfigurato
     public C selectedIndex(int selectedIndex) {
         tabs.setSelectedIndex(selectedIndex);
         Tab selected = tabs.getSelectedTab();
-        if (selected != null) {
-            switchToTab(selected);
-        }
+        if (selected != null) switchToTab(selected);
         return getConfigurator();
     }
 
@@ -189,22 +243,18 @@ public abstract class AbstractLazyTabsConfigurator<C extends LazyTabsConfigurato
     public C selectedTab(Tab tab) {
         getTabs().setSelectedTab(tab);
         Tab selected = tabs.getSelectedTab();
-        if (selected != null) {
-            switchToTab(selected);
-        }
+        if (selected != null) switchToTab(selected);
         return getConfigurator();
     }
 
     @Override
     public C selectedTab(String tabTitle) {
-        // FIX: do not create a new Tab; resolve the existing child instead
         Tab existing = tabs.getChildren()
                 .filter(c -> c instanceof Tab)
                 .map(c -> (Tab) c)
                 .filter(t -> Objects.equals(t.getLabel(), tabTitle))
                 .findFirst()
                 .orElse(null);
-
         if (existing != null) {
             return selectedTab(existing);
         } else {
@@ -214,103 +264,167 @@ public abstract class AbstractLazyTabsConfigurator<C extends LazyTabsConfigurato
     }
 
     @Override
-    public C withSelectedChangeEvent(ComponentEventListener<Tabs.SelectedChangeEvent> listener) {
+    public C withSelectedChangeListener(ComponentEventListener<Tabs.SelectedChangeEvent> listener) {
         tabs.addSelectedChangeListener(listener);
         return getConfigurator();
     }
 
-    // ---------- Tab content registration (eager & lazy) ----------
+    // ── Eager tabs (String label) ─────────────────────────────────────────────
 
     @Override
     public C withEagerTab(String label, Component component) {
-        Tab tab = new Tab(label);
-        return withEagerTab(tab, component);
+        return withEagerTab(new Tab(label), component);
     }
 
     @Override
     public C withEagerTab(Tab tab, Component component) {
-        // Eager: always return the same instance provided by the caller
-        tabs.add(tab);
+        // Register supplier BEFORE adding to Tabs: Tabs auto-selects the first
+        // added tab and fires SelectedChangeEvent immediately, so the supplier
+        // must already be present in the map when switchToTab is invoked.
         tabSupplierMap.put(tab, () -> component);
-        return getConfigurator();
-    }
-
-    /**
-     * Lazy convenience by label.
-     */
-    @Override
-    public C withLazyTab(String label, Supplier<Component> supplier) {
-        return withLazyTab(new Tab(label), supplier);
-    }
-
-    @Override
-    public C withLazyTab(Tab tab, Supplier<Component> factory) {
-        Objects.requireNonNull(factory, "The component cannot be null");
         tabs.add(tab);
-        tabSupplierMap.put(tab, factory);
         return getConfigurator();
     }
 
     @Override
     public C withEagerTab(String label, Icon icon, Component component) {
-        Tab tab = new Tab(icon, new Span(label));
-        return withEagerTab(tab, component);
-    }
-
-    /**
-     * Helper method for creating a badge.
-     */
-    private Span createBadge(int value) {
-        return UIUtils.Badge.createBadge(value);
+        return withEagerTab(new Tab(icon, Components.span().text(label).build()), component);
     }
 
     @Override
     public C withEagerTab(String label, int counter, Component component) {
-        Tab tab = new Tab(new Span(label), createBadge(counter));
-        return withEagerTab(tab, component);
+        return withEagerTab(new Tab(Components.span().text(label).build(), createBadge(counter)), component);
     }
 
     @Override
     public C withEagerTab(String label, int counter, TabVariant tabVariant, Component component) {
-        Tab tab = new Tab(new Span(label), createBadge(counter));
+        Tab tab = new Tab(Components.span().text(label).build(), createBadge(counter));
         tab.addThemeVariants(tabVariant);
         return withEagerTab(tab, component);
     }
 
     @Override
     public C withEagerTab(String label, Icon icon, TabVariant tabVariant, Component component) {
-        Tab tab = new Tab(icon, new Span(label));
+        Tab tab = new Tab(icon, Components.span().text(label).build());
+        tab.addThemeVariants(tabVariant);
+        return withEagerTab(tab, component);
+    }
+
+    // ── Eager tabs (Localizable i18n label) ──────────────────────────────────
+
+    @Override
+    public C withEagerTab(Localizable label, Component component) {
+        return withEagerTab(createTab(label), component);
+    }
+
+    @Override
+    public C withEagerTab(Localizable label, Icon icon, Component component) {
+        Tab tab = createTab(label);
+        tab.addComponentAsFirst(icon);
+        return withEagerTab(tab, component);
+    }
+
+    @Override
+    public C withEagerTab(Localizable label, int counter, Component component) {
+        Tab tab = createTab(label);
+        tab.add(createBadge(counter));
+        return withEagerTab(tab, component);
+    }
+
+    @Override
+    public C withEagerTab(Localizable label, int counter, TabVariant tabVariant, Component component) {
+        Tab tab = createTab(label);
+        tab.add(createBadge(counter));
         tab.addThemeVariants(tabVariant);
         return withEagerTab(tab, component);
     }
 
     @Override
-    public C withLazyTab(String label, Icon icon, Supplier<Component> component) {
-        Tab tab = new Tab(icon, new Span(label));
-        return withLazyTab(tab, component);
+    public C withEagerTab(Localizable label, Icon icon, TabVariant tabVariant, Component component) {
+        Tab tab = createTab(label);
+        tab.addComponentAsFirst(icon);
+        tab.addThemeVariants(tabVariant);
+        return withEagerTab(tab, component);
+    }
+
+    // ── Lazy tabs (String label) ──────────────────────────────────────────────
+
+    @Override
+    public C withLazyTab(String label, Supplier<Component> factory) {
+        return withLazyTab(new Tab(label), factory);
+    }
+
+    @Override
+    public C withLazyTab(Tab tab, Supplier<Component> factory) {
+        Objects.requireNonNull(factory, "factory must not be null");
+        // Register supplier BEFORE adding to Tabs for the same reason as withEagerTab.
+        tabSupplierMap.put(tab, factory);
+        tabs.add(tab);
+        return getConfigurator();
+    }
+
+    @Override
+    public C withLazyTab(String label, Icon icon, Supplier<Component> factory) {
+        return withLazyTab(new Tab(icon, Components.span().text(label).build()), factory);
     }
 
     @Override
     public C withLazyTab(String label, int counter, Supplier<Component> factory) {
-        Tab tab = new Tab(new Span(label), createBadge(counter));
-        return withLazyTab(tab, factory);
+        return withLazyTab(new Tab(Components.span().text(label).build(), createBadge(counter)), factory);
     }
 
     @Override
     public C withLazyTab(String label, Icon icon, TabVariant tabVariant, Supplier<Component> factory) {
-        Tab tab = new Tab(icon, new Span(label));
+        Tab tab = new Tab(icon, Components.span().text(label).build());
         tab.addThemeVariants(tabVariant);
         return withLazyTab(tab, factory);
     }
 
     @Override
     public C withLazyTab(String label, int counter, TabVariant tabVariant, Supplier<Component> factory) {
-        Tab tab = new Tab(new Span(label), createBadge(counter));
+        Tab tab = new Tab(Components.span().text(label).build(), createBadge(counter));
         tab.addThemeVariants(tabVariant);
         return withLazyTab(tab, factory);
     }
 
-    // ---------- Theme variants ----------
+    // ── Lazy tabs (Localizable i18n label) ───────────────────────────────────
+
+    @Override
+    public C withLazyTab(Localizable label, Supplier<Component> factory) {
+        return withLazyTab(createTab(label), factory);
+    }
+
+    @Override
+    public C withLazyTab(Localizable label, Icon icon, Supplier<Component> factory) {
+        Tab tab = createTab(label);
+        tab.addComponentAsFirst(icon);
+        return withLazyTab(tab, factory);
+    }
+
+    @Override
+    public C withLazyTab(Localizable label, int counter, Supplier<Component> factory) {
+        Tab tab = createTab(label);
+        tab.add(createBadge(counter));
+        return withLazyTab(tab, factory);
+    }
+
+    @Override
+    public C withLazyTab(Localizable label, int counter, TabVariant tabVariant, Supplier<Component> factory) {
+        Tab tab = createTab(label);
+        tab.add(createBadge(counter));
+        tab.addThemeVariants(tabVariant);
+        return withLazyTab(tab, factory);
+    }
+
+    @Override
+    public C withLazyTab(Localizable label, Icon icon, TabVariant tabVariant, Supplier<Component> factory) {
+        Tab tab = createTab(label);
+        tab.addComponentAsFirst(icon);
+        tab.addThemeVariants(tabVariant);
+        return withLazyTab(tab, factory);
+    }
+
+    // ── Theme variants ────────────────────────────────────────────────────────
 
     @Override
     public C withThemeVariants(TabsVariant... variants) {
@@ -318,25 +432,15 @@ public abstract class AbstractLazyTabsConfigurator<C extends LazyTabsConfigurato
         return getConfigurator();
     }
 
-    // ---------- Capabilities (Vaadin 24.9) ----------
+    // ── Capabilities ──────────────────────────────────────────────────────────
 
     @Override
-    protected Optional<HasSize> hasSize() {
-        return Optional.of(tabs);
-    }
+    protected Optional<HasSize> hasSize() { return Optional.of(tabs); }
 
     @Override
-    protected Optional<HasStyle> hasStyle() {
-        return Optional.of(tabs);
-    }
+    protected Optional<HasStyle> hasStyle() { return Optional.of(tabs); }
 
     @Override
-    protected Optional<HasEnabled> hasEnabled() {
-        return Optional.of(tabs); // Tabs implements HasEnabled in 24.9
-    }
-
-    @Override
-    protected Optional<HasTooltip> hasTooltip() {
-        return Optional.empty();
-    }
+    protected Optional<HasEnabled> hasEnabled() { return Optional.of(tabs); }
 }
+

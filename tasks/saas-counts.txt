@@ -1,0 +1,12 @@
+tenant-core : 33
+tenant-data : 44
+tenant-security : 40
+tenant-onboarding : 24
+tenant-audit : 24
+tenant-settings : 14
+tenant-limits : 20
+tenant-users : 16
+tenant-billing : 18
+tenant-vaadin : 34
+tenant-admin : 14
+

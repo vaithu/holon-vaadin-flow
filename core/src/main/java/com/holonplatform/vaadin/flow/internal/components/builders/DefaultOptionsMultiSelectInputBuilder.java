@@ -67,7 +67,7 @@ public class DefaultOptionsMultiSelectInputBuilder<T, ITEM> extends
 
 	protected final DefaultHasLabelConfigurator<CheckboxGroup<ITEM>> labelConfigurator;
 
-	protected final List<SelectionListener<T>> selectionListeners = new LinkedList<>();
+	protected final List<SelectionListener<T>> selectionListeners = new ArrayList<>();
 
 	private final Class<? extends T> type;
 	private final Class<ITEM> itemType;

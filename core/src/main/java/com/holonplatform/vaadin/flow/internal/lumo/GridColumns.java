@@ -1,27 +1,26 @@
 package com.holonplatform.vaadin.flow.internal.lumo;
 
-import com.vaadin.flow.theme.lumo.LumoUtility;
-import lombok.Getter;
-
-@Getter
 public enum GridColumns {
-        COLUMNS_1(LumoUtility.Grid.Column.COLUMNS_1),
-        COLUMNS_2(LumoUtility.Grid.Column.COLUMNS_2),
-        COLUMNS_3(LumoUtility.Grid.Column.COLUMNS_3),
-        COLUMNS_4(LumoUtility.Grid.Column.COLUMNS_4),
-        COLUMNS_5(LumoUtility.Grid.Column.COLUMNS_5),
-        COLUMNS_6(LumoUtility.Grid.Column.COLUMNS_6),
-        COLUMNS_7(LumoUtility.Grid.Column.COLUMNS_7),
-        COLUMNS_8(LumoUtility.Grid.Column.COLUMNS_8),
-        COLUMNS_9(LumoUtility.Grid.Column.COLUMNS_9),
-        COLUMNS_10(LumoUtility.Grid.Column.COLUMNS_10),
-        COLUMNS_11(LumoUtility.Grid.Column.COLUMNS_11),
-        COLUMNS_12(LumoUtility.Grid.Column.COLUMNS_12);
+    COLUMNS_1("grid-cols-1"),
+    COLUMNS_2("grid-cols-2"),
+    COLUMNS_3("grid-cols-3"),
+    COLUMNS_4("grid-cols-4"),
+    COLUMNS_5("grid-cols-5"),
+    COLUMNS_6("grid-cols-6"),
+    COLUMNS_7("grid-cols-7"),
+    COLUMNS_8("grid-cols-8"),
+    COLUMNS_9("grid-cols-9"),
+    COLUMNS_10("grid-cols-10"),
+    COLUMNS_11("grid-cols-11"),
+    COLUMNS_12("grid-cols-12");
 
-        private final String className;
+    private final String className;
 
-        GridColumns(String className) {
-            this.className = className;
-        }
+    private GridColumns(String className) {
+        this.className = className;
+    }
 
+    public String getClassName() {
+        return this.className;
+    }
 }

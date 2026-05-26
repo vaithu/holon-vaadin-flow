@@ -15,11 +15,12 @@
  */
 package com.holonplatform.vaadin.flow.internal.components.events;
 
-import java.util.Optional;
-
 import com.holonplatform.core.internal.utils.ObjectUtils;
 import com.holonplatform.vaadin.flow.components.events.InvalidChangeEvent;
 import com.vaadin.flow.component.HasValidation;
+
+import java.io.Serial;
+import java.util.Optional;
 
 /**
  * Default {@link InvalidChangeEvent} implementation.
@@ -28,6 +29,7 @@ import com.vaadin.flow.component.HasValidation;
  */
 public class DefaultInvalidChangeEvent implements InvalidChangeEvent {
 
+	@Serial
 	private static final long serialVersionUID = -1331658541535165306L;
 
 	private final boolean fromClient;
@@ -64,10 +66,7 @@ public class DefaultInvalidChangeEvent implements InvalidChangeEvent {
 	 */
 	@Override
 	public Optional<String> getErrorMessage() {
-		if (hasValidation.getErrorMessage() != null && hasValidation.getErrorMessage().trim().equals("")) {
-			return Optional.empty();
-		}
-		return Optional.ofNullable(hasValidation.getErrorMessage());
+		return Optional.ofNullable(hasValidation.getErrorMessage()).filter(s -> !s.isBlank());
 	}
 
 }

@@ -49,9 +49,7 @@ public abstract class AbstractHeaderConfigurator<C extends HeaderConfigurator<C>
     public C hidePrefixOnDesktop(boolean hidePrefixOnDesktop) {
         if (hidePrefixOnDesktop && getComponent().getPrefixComponents() != null) {
             Arrays.stream(getComponent().getPrefixComponents()).filter(Objects::nonNull)
-                    .forEach(component -> {
-                        component.addClassName(CSSUtility.Bootstrap.D_MD_NONE);
-                    });
+                    .forEach(component -> component.addClassName(CSSUtility.Bootstrap.D_MD_NONE));
         }
         return getConfigurator();
     }
@@ -101,7 +99,6 @@ public abstract class AbstractHeaderConfigurator<C extends HeaderConfigurator<C>
     public C options(Consumer<ButtonConfigurator.BaseButtonConfigurator> configurator) {
         Button moreBtn = Components.button()
                 .icon(VaadinIcon.ELLIPSIS_DOTS_V)
-//                .withThemeVariants(ButtonVariant.LUMO_TERTIARY)
                 .title("Options")
                 .build();
         return addActions(configurator, moreBtn);
@@ -122,7 +119,6 @@ public abstract class AbstractHeaderConfigurator<C extends HeaderConfigurator<C>
     public C refresh(Consumer<ButtonConfigurator.BaseButtonConfigurator> configurator) {
         Button moreBtn = Components.button()
                 .icon(VaadinIcon.REFRESH)
-//                .withThemeVariants(ButtonVariant.LUMO_TERTIARY)
                 .title("Refresh")
                 .build();
         return addActions(configurator, moreBtn);
@@ -156,9 +152,7 @@ public abstract class AbstractHeaderConfigurator<C extends HeaderConfigurator<C>
     @Override
     public C tabs(Tab... tabs) {
         getComponent().setTabs(tabs);
-        return
-
-                getConfigurator();
+        return getConfigurator();
     }
 
     @Override
@@ -169,7 +163,8 @@ public abstract class AbstractHeaderConfigurator<C extends HeaderConfigurator<C>
 
     @Override
     public C withoutBorder() {
-        getComponent().getStyle().set("border-bottom", "none !important");
+        // Inline CSS forbidden — use a CSS class instead (see layout.css)
+        getComponent().addClassName("header--no-border");
         return getConfigurator();
     }
 

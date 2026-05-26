@@ -35,7 +35,6 @@ import com.vaadin.flow.component.datetimepicker.DateTimePicker;
 import com.vaadin.flow.component.shared.HasTooltip;
 import com.vaadin.flow.shared.Registration;
 
-import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -61,6 +60,7 @@ public abstract class AbstractLocalDateTimeInputBuilder<C extends LocalDateTimeI
 
 	private LocalDateTime initialValue;
 	private final DefaultHasTooltipConfigurator<DateTimePicker> tooltipConfigurator;
+	private final DefaultHasHelperTextConfigurator<DateTimePicker> helperTextConfigurator;
 
 	public AbstractLocalDateTimeInputBuilder() {
 		this(new DateTimePicker(), null, null, null, Collections.emptyList(), Collections.emptyList(),
@@ -87,6 +87,8 @@ public abstract class AbstractLocalDateTimeInputBuilder<C extends LocalDateTimeI
 		tooltipConfigurator = new DefaultHasTooltipConfigurator<>(getComponent(), tooltip -> {
 			getComponent().setTooltipText(tooltip);
 		}, this);
+		helperTextConfigurator = new DefaultHasHelperTextConfigurator<>(getComponent(), getComponent()::setHelperText,
+				this);
 
 
 	}
@@ -317,6 +319,54 @@ public abstract class AbstractLocalDateTimeInputBuilder<C extends LocalDateTimeI
 		return getConfigurator();
 	}
 
+	@Override
+	public C helperText(Localizable helperText) {
+		helperTextConfigurator.helperText(helperText);
+		return getConfigurator();
+	}
+
+	@Override
+	public C helperText(String helperText) {
+		helperTextConfigurator.helperText(helperText);
+		return getConfigurator();
+	}
+
+	@Override
+	public C helperComponent(Component component) {
+		helperTextConfigurator.helperComponent(component);
+		return getConfigurator();
+	}
+
+	@Override
+	public C ariaLabel(String ariaLabel) {
+		getComponent().setAriaLabel(ariaLabel);
+		return getConfigurator();
+	}
+
+	@Override
+	public C ariaLabelledBy(String ariaLabelledBy) {
+		getComponent().getElement().setAttribute("aria-labelledby", ariaLabelledBy);
+		return getConfigurator();
+	}
+
+	@Override
+	public C ariaLabel(Localizable ariaLabel) {
+		final String defaultAriaLabel = (ariaLabel != null && ariaLabel.getMessage() != null) ? ariaLabel.getMessage()
+				: "";
+		if (ariaLabel == null) {
+			return ariaLabel(defaultAriaLabel);
+		}
+		if (isDeferredLocalizationEnabled()) {
+			ariaLabel(defaultAriaLabel);
+			return withAttachListener(event -> {
+				if (event.isInitialAttach()) {
+					LocalizationProvider.localize(ariaLabel).ifPresent(this::ariaLabel);
+				}
+			});
+		}
+		return ariaLabel(LocalizationProvider.localize(ariaLabel).orElse(defaultAriaLabel));
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -421,15 +471,15 @@ public abstract class AbstractLocalDateTimeInputBuilder<C extends LocalDateTimeI
 		DatePickerI18n dpi = new DatePickerI18n();
 		if (!localization.getMonthNames().isEmpty()) {
 			dpi.setMonthNames(localization.getMonthNames().stream()
-					.map(m -> LocalizationProvider.localize(m).orElse("")).collect(Collectors.toList()));
+					.map(m -> LocalizationProvider.localize(m).orElse("")).toList());
 		}
 		if (!localization.getWeekdays().isEmpty()) {
 			dpi.setWeekdays(localization.getWeekdays().stream().map(m -> LocalizationProvider.localize(m).orElse(""))
-					.collect(Collectors.toList()));
+					.toList());
 		}
 		if (!localization.getWeekdaysShort().isEmpty()) {
 			dpi.setWeekdaysShort(localization.getWeekdaysShort().stream()
-					.map(m -> LocalizationProvider.localize(m).orElse("")).collect(Collectors.toList()));
+					.map(m -> LocalizationProvider.localize(m).orElse("")).toList());
 		}
 		if (localization.getFirstDayOfWeek() != null) {
 			dpi.setFirstDayOfWeek(localization.getFirstDayOfWeek().intValue());
@@ -723,3 +773,8 @@ public abstract class AbstractLocalDateTimeInputBuilder<C extends LocalDateTimeI
 	}
 
 }
+
+
+
+
+

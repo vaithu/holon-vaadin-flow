@@ -15,15 +15,6 @@
  */
 package com.holonplatform.vaadin.flow.internal.data;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.function.Function;
-import java.util.stream.Stream;
-
 import com.holonplatform.core.ParameterSet;
 import com.holonplatform.core.Path;
 import com.holonplatform.core.datastore.DataTarget;
@@ -42,6 +33,10 @@ import com.holonplatform.vaadin.flow.data.DatastoreDataProvider;
 import com.vaadin.flow.data.provider.AbstractBackEndDataProvider;
 import com.vaadin.flow.data.provider.Query;
 import com.vaadin.flow.data.provider.QuerySortOrder;
+
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Stream;
 
 /**
  * Defaut {@link DatastoreDataProvider} implementation.
@@ -94,7 +89,7 @@ public class DefaultDatastoreDataProvider<T, F> extends AbstractBackEndDataProvi
 	/**
 	 * Query configuration providers
 	 */
-	private List<QueryConfigurationProvider> queryConfigurationProviders = new LinkedList<>();
+	private List<QueryConfigurationProvider> queryConfigurationProviders = new ArrayList<>();
 
 	/**
 	 * Default query sort
@@ -286,7 +281,7 @@ public class DefaultDatastoreDataProvider<T, F> extends AbstractBackEndDataProvi
 
 	@Override
 	public Optional<QueryFilter> getQueryFilter() {
-		final List<QueryFilter> filters = new LinkedList<>();
+		final List<QueryFilter> filters = new ArrayList<>();
 		queryConfigurationProviders.forEach(p -> {
 			QueryFilter qf = p.getQueryFilter();
 			if (qf != null) {
@@ -347,7 +342,7 @@ public class DefaultDatastoreDataProvider<T, F> extends AbstractBackEndDataProvi
 	 */
 	@Override
 	protected int sizeInBackEnd(Query<T, F> query) {
-		return Long.valueOf(_query(query, false).count()).intValue() + _sizeAdditional(query);
+		return (int) _query(query, false).count() + _sizeAdditional(query);
 
 	}
 
@@ -374,7 +369,7 @@ public class DefaultDatastoreDataProvider<T, F> extends AbstractBackEndDataProvi
 		com.holonplatform.core.query.Query q = datastore.query(target);
 
 		// filters
-		final List<QueryFilter> filters = new LinkedList<>();
+		final List<QueryFilter> filters = new ArrayList<>();
 
 		// data provider filter
 		if (query != null) {
@@ -397,7 +392,7 @@ public class DefaultDatastoreDataProvider<T, F> extends AbstractBackEndDataProvi
 
 		// sorts
 		if (withSorts) {
-			final List<QuerySort> sorts = new LinkedList<>();
+			final List<QuerySort> sorts = new ArrayList<>();
 
 			// data provider sorts
 			if (query != null) {
@@ -411,7 +406,7 @@ public class DefaultDatastoreDataProvider<T, F> extends AbstractBackEndDataProvi
 
 			// default sort
 			if (sorts.isEmpty()) {
-				getDefaultSort().ifPresent(ds -> sorts.add(ds));
+				getDefaultSort().ifPresent(sorts::add);
 			}
 
 			// provided sorts

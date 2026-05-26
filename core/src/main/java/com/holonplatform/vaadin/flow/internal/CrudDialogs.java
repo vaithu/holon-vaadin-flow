@@ -22,8 +22,8 @@ public class CrudDialogs {
                     }
 
                 })
-                .withHeader(Localizable.of("Delete", "delete.code"))
-                .text(Localizable.of("Do you want delete these selected items?", "delete.statement.code"))
+                .withTitle(Localizable.of("Delete", "delete.code"))
+                .withContent(Localizable.of("Do you want delete these selected items?", "delete.statement.code"))
                 .build()
                 .open();
 

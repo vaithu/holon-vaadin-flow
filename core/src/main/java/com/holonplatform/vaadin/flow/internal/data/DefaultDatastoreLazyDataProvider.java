@@ -89,7 +89,7 @@ public class DefaultDatastoreLazyDataProvider<T, F> extends AbstractBackEndDataP
 	/**
 	 * Query configuration providers
 	 */
-	private List<QueryConfigurationProvider> queryConfigurationProviders = new LinkedList<>();
+	private List<QueryConfigurationProvider> queryConfigurationProviders = new ArrayList<>();
 
 	/**
 	 * Default query sort
@@ -281,7 +281,7 @@ public class DefaultDatastoreLazyDataProvider<T, F> extends AbstractBackEndDataP
 
 	@Override
 	public Optional<QueryFilter> getQueryFilter() {
-		final List<QueryFilter> filters = new LinkedList<>();
+		final List<QueryFilter> filters = new ArrayList<>();
 		queryConfigurationProviders.forEach(p -> {
 			QueryFilter qf = p.getQueryFilter();
 			if (qf != null) {
@@ -342,7 +342,7 @@ public class DefaultDatastoreLazyDataProvider<T, F> extends AbstractBackEndDataP
 	 */
 	@Override
 	protected int sizeInBackEnd(Query<T, F> query) {
-		return Long.valueOf(_query(query, false).count()).intValue() + _sizeAdditional(query);
+		return (int) _query(query, false).count() + _sizeAdditional(query);
 
 	}
 
@@ -369,7 +369,7 @@ public class DefaultDatastoreLazyDataProvider<T, F> extends AbstractBackEndDataP
 		com.holonplatform.core.query.Query q = datastore.query(target);
 
 		// filters
-		final List<QueryFilter> filters = new LinkedList<>();
+		final List<QueryFilter> filters = new ArrayList<>();
 
 		// data provider filter
 		if (query != null) {
@@ -392,7 +392,7 @@ public class DefaultDatastoreLazyDataProvider<T, F> extends AbstractBackEndDataP
 
 		// sorts
 		if (withSorts) {
-			final List<QuerySort> sorts = new LinkedList<>();
+			final List<QuerySort> sorts = new ArrayList<>();
 
 			// data provider sorts
 			if (query != null) {
@@ -406,7 +406,7 @@ public class DefaultDatastoreLazyDataProvider<T, F> extends AbstractBackEndDataP
 
 			// default sort
 			if (sorts.isEmpty()) {
-				getDefaultSort().ifPresent(ds -> sorts.add(ds));
+				getDefaultSort().ifPresent(sorts::add);
 			}
 
 			// provided sorts

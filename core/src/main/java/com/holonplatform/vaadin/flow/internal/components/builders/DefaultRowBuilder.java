@@ -1,7 +1,9 @@
 package com.holonplatform.vaadin.flow.internal.components.builders;
 
+import com.holonplatform.vaadin.flow.components.Components;
 import com.holonplatform.vaadin.flow.components.builders.ColumnBuilder;
 import com.holonplatform.vaadin.flow.components.builders.RowBuilder;
+import com.iyensoft.vaadin.flow.utils.responsive.ViewMode;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.dom.Element;
@@ -13,74 +15,56 @@ public class DefaultRowBuilder implements RowBuilder {
     private final Div divRow;
 
     public DefaultRowBuilder() {
-        divRow = new Div();
-        divRow.addClassName("row");
-    }
-
-    /**
-     * Get the UI {@link Component} which represents this object.
-     *
-     * @return the UI component (not null)
-     */
-    @Override
-    public Component getComponent() {
-        return this.divRow;
+        divRow = Components.div().styleName("row").build();
     }
 
     @Override
-    public Element getElement() {
-        return this.divRow.getElement();
-    }
-
-    /**
-     * Adds one or more CSS style class names to this component.
-     *
-     * @param styleNames The CSS style class names to be added to the component
-     * @return this
-     */
-    @Override
-    public RowBuilder styleNames(String... styleNames) {
-        divRow.addClassNames(styleNames);
-        return this;
-    }
-
-    /**
-     * Adds a CSS style class names to this component.
-     * <p>
-     * Multiple styles can be specified as a space-separated list of style names.
-     * </p>
-     *
-     * @param styleName The CSS style class name to be added to the component
-     * @return this
-     */
-    @Override
-    public RowBuilder styleName(String styleName) {
-        divRow.addClassName(styleName);
-        return this;
-    }
-
-
+    public Component getComponent() { return this.divRow; }
 
     @Override
-    public RowBuilder add(Component... components) {
-        divRow.add(components);
-        return this;
-    }
+    public Element getElement() { return this.divRow.getElement(); }
+
+    @Override
+    public RowBuilder styleNames(String... styleNames) { divRow.addClassNames(styleNames); return this; }
+
+    @Override
+    public RowBuilder styleName(String styleName) { divRow.addClassName(styleName); return this; }
+
+    @Override
+    public RowBuilder add(Component... components) { divRow.add(components); return this; }
 
     @Override
     public RowBuilder add(ColumnBuilder... columnBuilders) {
-        Arrays.stream(columnBuilders).forEach(columnBuilder -> divRow.add(columnBuilder.build()));
+        Arrays.stream(columnBuilders).forEach(cb -> divRow.add(cb.build()));
         return this;
     }
 
     @Override
-    public RowBuilder remove(Component... components) {
-        divRow.remove(components);
+    public RowBuilder remove(Component... components) { divRow.remove(components); return this; }
+
+    /**
+     * Overrides the default 12-col layout with a fixed column count at all viewport sizes.
+     * Adds {@code grid-cols-{cols}} — placed after {@code .row} in layout.css so it wins the cascade.
+     */
+    @Override
+    public RowBuilder gridColumns(int cols) {
+        divRow.addClassName("grid-cols-" + cols);
+        return this;
+    }
+
+    /**
+     * Sets the column count for a specific breakpoint via {@link ViewMode#toCssClass(String)}.
+     * Example: {@code gridColumns(ViewMode.DESKTOP, 3)} → {@code lg:grid-cols-3}.
+     */
+    @Override
+    public RowBuilder gridColumns(ViewMode mode, int cols) {
+        divRow.addClassName(mode.toCssClass("grid-cols-" + cols));
         return this;
     }
 
     @Override
-    public Div build() {
-        return divRow;
-    }
+    public Div build() { return divRow; }
 }
+
+
+

@@ -25,7 +25,7 @@ import com.holonplatform.vaadin.flow.components.events.ReadonlyChangeListener;
 import com.holonplatform.vaadin.flow.components.support.InputAdaptersContainer;
 import com.vaadin.flow.component.Component;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
@@ -42,8 +42,8 @@ import java.util.function.Function;
 public abstract class AbstractInputConfigurator<T, E extends ValueChangeEvent<T>, C extends Component, B extends InputConfigurator<T, E, B> & DeferrableLocalizationConfigurator<B>>
 		extends AbstractLocalizableComponentConfigurator<C, B> implements InputConfigurator<T, E, B> {
 
-	private final List<ValueChangeListener<T, E>> valueChangeListeners = new LinkedList<>();
-	private final List<ReadonlyChangeListener> readonlyChangeListeners = new LinkedList<>();
+	private final List<ValueChangeListener<T, E>> valueChangeListeners = new ArrayList<>();
+	private final List<ReadonlyChangeListener> readonlyChangeListeners = new ArrayList<>();
 
 	private final InputAdaptersContainer<T> adapters;
 

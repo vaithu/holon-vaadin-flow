@@ -1,0 +1,121 @@
+/* ============================================================
+   chat-channel-list.css  –  Sidebar channel/room selector
+   Uses project design-system tokens (--surface-*, --brand-*,
+   --zinc-*, --text-*, --radius-*, --sp-*, --font-size-*).
+   ============================================================ */
+
+:root {
+    --chat-channel-list-bg:           var(--surface-1);
+    --chat-channel-list-active:       var(--brand-50);
+    --chat-channel-list-hover:        var(--zinc-100, #f5f4f0);
+    --chat-channel-list-text:         var(--text-secondary);
+    --chat-channel-list-active-text:  var(--brand-700);
+    --chat-channel-list-gap:          var(--sp-1, 0.25rem);
+    --chat-channel-list-padding:      var(--sp-2, 0.5rem);
+}
+
+.chat-channel-list {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    background: var(--chat-channel-list-bg);
+    padding: var(--chat-channel-list-padding);
+    box-sizing: border-box;
+    gap: 2px;
+    overflow-y: auto;
+}
+
+/* ---------- section header (flex row for label + action buttons) ---------- */
+.chat-channel-list__header {
+    display: flex;
+    align-items: center;
+    padding: var(--chat-channel-list-padding);
+    user-select: none;
+}
+
+.chat-channel-list__header-label {
+    font-size: var(--font-size-xs, 0.6875rem);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-tertiary);
+    flex: 1 1 0;
+}
+
+/* ---------- header action buttons (Create / Browse) ---------- */
+.chat-channel-list__header-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    border-radius: var(--radius-sm, 4px);
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+    flex-shrink: 0;
+}
+
+.chat-channel-list__header-btn:hover {
+    background: var(--chat-channel-list-hover);
+    color: var(--brand-700);
+}
+
+/* ---------- individual room row ---------- */
+.chat-channel-list__item {
+    display: flex;
+    align-items: center;
+    gap: var(--chat-channel-list-gap);
+    padding: 6px var(--chat-channel-list-padding);
+    border-radius: var(--radius-sm, 4px);
+    cursor: pointer;
+    transition: background 0.15s;
+    user-select: none;
+    min-height: 32px;
+}
+
+.chat-channel-list__item:hover {
+    background: var(--chat-channel-list-hover);
+}
+
+.chat-channel-list__item--active {
+    background: var(--chat-channel-list-active);
+}
+
+.chat-channel-list__item--active .chat-channel-list__name {
+    color: var(--chat-channel-list-active-text);
+    font-weight: 600;
+}
+
+/* ---------- icon (# / @) ---------- */
+.chat-channel-list__icon {
+    flex-shrink: 0;
+    width: 16px;
+    text-align: center;
+    font-weight: 600;
+    color: var(--text-tertiary);
+    font-size: var(--font-size-base, 0.8125rem);
+}
+
+/* ---------- name ---------- */
+.chat-channel-list__name {
+    flex: 1 1 0;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: var(--chat-channel-list-text);
+    font-size: var(--font-size-base, 0.8125rem);
+}
+
+/* ---------- unread badge ---------- */
+.chat-channel-list__badge {
+    flex-shrink: 0;
+    margin-inline-start: auto;
+    font-size: var(--font-size-xs, 0.6875rem);
+    min-width: 18px;
+    text-align: center;
+}

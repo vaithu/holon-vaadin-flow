@@ -17,6 +17,7 @@ package com.holonplatform.vaadin.flow.components;
 
 import com.holonplatform.vaadin.flow.components.builders.BeanListingBuilder;
 import com.holonplatform.vaadin.flow.internal.components.DefaultBeanListing;
+import com.vaadin.flow.component.grid.dataview.GridLazyDataView;
 
 /**
  * An {@link ItemListing} component using a bean type as item type and the bean property names as property set.
@@ -26,6 +27,51 @@ import com.holonplatform.vaadin.flow.internal.components.DefaultBeanListing;
  * @since 5.2.0
  */
 public interface BeanListing<T> extends ItemListing<T, String> {
+
+	/**
+	 * Sets listing items using a fetch callback that also receives the current
+	 * combined filter from the provided {@link FilterInputGroup}.
+	 *
+	 * @param filterGroup filter group to resolve the active combined filter from
+	 * @param fetchCallback callback that receives query metadata and current filter
+	 * @return lazy data view bound to the listing data provider
+	 * @since 10.0.0
+	 */
+	@Override
+	default GridLazyDataView<T> setItems(
+			FilterInputGroup filterGroup,
+			FilterInputSupport.FilteredFetchCallback<T> fetchCallback) {
+		return ItemListing.super.setItems(filterGroup, fetchCallback);
+	}
+
+	/**
+	 * Registers a listener to refresh this listing whenever any filter in the
+	 * provided group changes.
+	 *
+	 * @param filterGroup filter group to observe
+	 * @return registration to remove the listener
+	 * @since 10.0.0
+	 */
+	@Override
+	default com.holonplatform.core.Registration refreshOnFilterChange(FilterInputGroup filterGroup) {
+		return ItemListing.super.refreshOnFilterChange(filterGroup);
+	}
+
+	/**
+	 * Convenience method that sets filtered items and registers auto-refresh on
+	 * filter changes in one call.
+	 *
+	 * @param filterGroup filter group to observe and resolve filters from
+	 * @param fetchCallback callback that receives query metadata and current filter
+	 * @return registration to remove the auto-refresh listener
+	 * @since 10.0.0
+	 */
+	@Override
+	default com.holonplatform.core.Registration bindFilters(
+			FilterInputGroup filterGroup,
+			FilterInputSupport.FilteredFetchCallback<T> fetchCallback) {
+		return ItemListing.super.bindFilters(filterGroup, fetchCallback);
+	}
 
 	/**
 	 * Get a {@link BeanListingBuilder} to create and setup a {@link BeanListing} using given <code>beanType</code>.

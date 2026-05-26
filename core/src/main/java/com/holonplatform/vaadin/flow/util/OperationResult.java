@@ -22,6 +22,7 @@ import java.util.function.Supplier;
  * Operation result object.
  */
 public interface OperationResult {
+
     static OperationResult fail() {
         return FailedOperationResult.INSTANCE;
     }
@@ -30,14 +31,17 @@ public interface OperationResult {
         return SuccessOperationResult.INSTANCE;
     }
 
-    /**
-     * @return status of the operation
-     */
+    /** @return status of the operation */
     Status getStatus();
 
+    /** @return {@code true} if this result represents a successful operation */
+    default boolean isSuccess() {
+        return getStatus() == Status.SUCCESS;
+    }
+
     /**
-     * Creates new operation result that represents composition of two operation results. If this result is resolved as
-     * successful, then the second result will be obtained from the passed supplier.
+     * Creates new operation result that represents composition of two operation results.
+     * If this result is successful, the next step will be obtained from the passed supplier.
      *
      * @param nextStep the next operation result supplier
      * @return new composite operation result
@@ -45,7 +49,7 @@ public interface OperationResult {
     OperationResult compose(Supplier<OperationResult> nextStep);
 
     /**
-     * Adds success callback to the operation result.
+     * Runs {@code runnable} if this result is a success.
      *
      * @param runnable callback
      * @return this
@@ -53,12 +57,46 @@ public interface OperationResult {
     OperationResult then(Runnable runnable);
 
     /**
-     * Adds fail callback to the operation result.
+     * Runs {@code runnable} if this result is a failure.
      *
      * @param runnable callback
      * @return this
      */
     OperationResult otherwise(Runnable runnable);
+
+    /**
+     * Fluent alias for {@link #then(Runnable)} — runs {@code action} on success.
+     * Allows callers to write {@code result.andThen(onSuccess).orElse(onFail)}
+     * instead of {@code result.then(onSuccess).otherwise(onFail)}.
+     *
+     * @param action callback
+     * @return this
+     */
+    default OperationResult andThen(Runnable action) {
+        return then(action);
+    }
+
+    /**
+     * Fluent alias for {@link #otherwise(Runnable)} — runs {@code action} on failure.
+     *
+     * @param action callback
+     * @return this
+     */
+    default OperationResult orElse(Runnable action) {
+        return otherwise(action);
+    }
+
+    /**
+     * Chains success-path continuation and failure callback in a single call,
+     * eliminating boilerplate for the common {@code .then(ok).otherwise(err)} pattern.
+     *
+     * @param onSuccess run when successful
+     * @param onFailure run when failed
+     * @return this
+     */
+    default OperationResult handle(Runnable onSuccess, Runnable onFailure) {
+        return then(onSuccess).otherwise(onFailure);
+    }
 
     enum Status {
         UNKNOWN,

@@ -1,23 +1,24 @@
 package com.holonplatform.vaadin.flow.vaadinplus.components;
 
+import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.vaadin.flow.components.builders.LabelBuilder;
+import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
 import com.holonplatform.vaadin.flow.vaadinplus.utilities.Font;
 import com.holonplatform.vaadin.flow.vaadinplus.utilities.HeadingLevel;
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.data.selection.SelectionEvent;
-import com.vaadin.flow.theme.lumo.LumoUtility;
-import com.vaadin.flow.theme.lumo.LumoUtility.Background;
 
 import java.util.Optional;
 
+@StyleSheet("context://grid-header.css")
 public class GridHeader extends Header {
 
     private String title;
     private Component[] defaultActions;
     private Component[] contextActions;
     private Grid<?> grid;
-    // Keep a reference so we can fall back to it when title is null
     private LabelBuilder<?> labelBuilder;
 
     public GridHeader(String title) {
@@ -51,6 +52,31 @@ public class GridHeader extends Header {
     public GridHeader(String title, HeadingLevel level, Grid<?> grid) {
         this(title, level);
         setGrid(grid);
+    }
+
+    // ── Localizable constructors ────────────────────────────────���─────────────
+
+    public GridHeader(Localizable title) {
+        this(resolve(title), HeadingLevel.H2);
+    }
+
+    public GridHeader(Localizable title, Grid<?> grid) {
+        this(resolve(title), HeadingLevel.H2);
+        setGrid(grid);
+    }
+
+    public GridHeader(Localizable title, HeadingLevel level) {
+        this(resolve(title), level);
+    }
+
+    public GridHeader(Localizable title, HeadingLevel level, Grid<?> grid) {
+        this(resolve(title), level);
+        setGrid(grid);
+    }
+
+    private static String resolve(Localizable l) {
+        return LocalizationProvider.localize(l)
+                .orElseGet(() -> l.getMessage() != null ? l.getMessage() : "");
     }
 
     public void setGrid(Grid<?> grid) {
@@ -102,42 +128,26 @@ public class GridHeader extends Header {
 
     /**
      * Update header appearance and actions visibility based on selection size.
-     * Uses `title` when not null; otherwise falls back to LabelBuilder if present.
      */
     public void updateActionsVisibility(int size) {
-        if (size == 0) {
-
-            if (this.title != null) {
-                setHeading(title);
-                setHeadingFontSize(Font.Size.LARGE);
-                setHeadingFontWeight(Font.Weight.SEMIBOLD);
-                // setHeadingLineHeight(Font.LineHeight.XSMALL);
-
-
-            } else {
-                labelBuilder.styleNames(LumoUtility.FontSize.LARGE, LumoUtility.FontWeight.SEMIBOLD);
+        if (size > 0) {
+            if (labelBuilder != null) {
+                labelBuilder.styleNames("grid-header__label--selected");
+            } else if (title != null) {
+                setHeading(size + " selected");
             }
-
-            removeClassNames(Background.PRIMARY_10);
-            setDefaultActionsVisible(true);
-            setContextActionsVisible(false);
-
-        } else {
-            if (this.title != null) {
-                setHeading(size + " items selected");
-                setHeadingFontSize(Font.Size.MEDIUM);
-                setHeadingFontWeight(Font.Weight.NORMAL);
-                // setHeadingLineHeight(Font.LineHeight.MEDIUM);
-
-
-            } else {
-                labelBuilder.styleNames(LumoUtility.FontSize.MEDIUM, LumoUtility.FontWeight.NORMAL);
-            }
-
-            addClassNames(Background.PRIMARY_10);
+            addClassName("grid-header--selected");
             setDefaultActionsVisible(false);
             setContextActionsVisible(true);
-
+        } else {
+            if (labelBuilder != null) {
+                labelBuilder.styleNames("grid-header__label--default");
+            } else if (title != null) {
+                setHeading(title);
+            }
+            removeClassName("grid-header--selected");
+            setDefaultActionsVisible(true);
+            setContextActionsVisible(false);
         }
     }
 

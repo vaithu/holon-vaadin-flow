@@ -1,18 +1,16 @@
 package com.holonplatform.vaadin.flow.internal.lumo;
 
-import com.vaadin.flow.theme.lumo.LumoUtility;
-
 public enum Overflow {
-        AUTO(LumoUtility.Overflow.AUTO),
-        HIDDEN(LumoUtility.Overflow.HIDDEN);
+    AUTO("overflow-auto"),
+    HIDDEN("overflow-hidden");
 
-        private final String className;
+    private final String className;
 
-        private Overflow(String className) {
-            this.className = className;
-        }
-
-        public String getClassName() {
-            return this.className;
-        }
+    private Overflow(String className) {
+        this.className = className;
     }
+
+    public String getClassName() {
+        return this.className;
+    }
+}

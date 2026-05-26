@@ -1,0 +1,318 @@
+/*
+ * pagination.css
+ *
+ * Production-quality Pagination component — aligned with Tailwind/shadcn-ui v2 design language.
+ *
+ * Page-number links use the **outline** button variant:
+ *   • thin neutral border  (--color-border)
+ *   • transparent / white background
+ *   • subtle grey-fill hover  (--color-accent)
+ *   • focus-visible outline ring
+ *
+ * Previous / Next navigation controls use the **ghost** button variant
+ * (matches shadcn/ui buttonVariants({ variant: "ghost" })):
+ *   • no border, transparent background
+ *   • accent fill on hover
+ *   • box-shadow focus ring (Tailwind ring-1)
+ *   • font-weight: 500 (medium) — distinguishes them from numbered links
+ *
+ * The active page uses the primary fill (--color-primary) so the current position
+ * reads clearly without the heavy "pure-black block" of older designs.
+ *
+ * BEM namespace:  .pagination
+ *
+ * Element classes
+ *   .pagination               — <nav>   landmark wrapper
+ *   .pagination__content      — <ul>    horizontal flex list
+ *   .pagination__item         — <li>    wrapper for each control
+ *   .pagination__link         — square page-number button   (outline variant)
+ *   .pagination__link--active — current page modifier
+ *   .pagination__link--disabled — non-navigable modifier (link / prev / next)
+ *   .pagination__previous     — previous-page rectangular button  (ghost variant)
+ *   .pagination__next         — next-page rectangular button      (ghost variant)
+ *   .pagination__nav-icon     — chevron icon inside previous/next
+ *   .pagination__nav-label    — "Previous" / "Next" text (hidden ≤ 640 px)
+ *   .pagination__ellipsis     — gap indicator (non-interactive)
+ *   .pagination__ellipsis-icon — more_horiz icon
+ *
+ * CSS custom properties (set on .pagination or any ancestor to override):
+ *   --pagination-item-size   min-width / height of square items   (default: 2.25rem / 36px)
+ *   --pagination-radius      border-radius                        (default: 0.375rem / 6px)
+ *   --pagination-gap         gap between items                    (default: 0.25rem  / 4px)
+ *   --pagination-font-size   text size                            (default: 0.875rem / 14px)
+ */
+
+/* ==========================================================================
+   Root nav
+   ========================================================================== */
+
+.pagination {
+    --pg-size: 2rem;
+    --pg-radius: 0.375rem;
+    --pg-gap: 0.25rem;
+    --pg-font-size: 0.875rem;
+    --pg-font-weight: 500;
+    --pg-transition: background-color 120ms ease, color 120ms ease,
+                     border-color 120ms ease, opacity 120ms ease;
+
+    /* Surface colours — active references brand tokens, not hardcoded blue */
+    --pg-bg-rest:     var(--pagination-bg-rest, transparent);
+    --pg-bg-hover:    var(--pagination-bg-hover, var(--surface-2, #f1f5f9));
+    --pg-bg-active:   var(--pagination-bg-active, var(--brand-600, #d97706));   /* ← brand token */
+    --pg-bg-disabled: var(--pagination-bg-disabled, transparent);
+
+    /* Text colours */
+    --pg-color-rest:     var(--pagination-color-rest, var(--text-secondary, #374151));
+    --pg-color-hover:    var(--pagination-color-hover, var(--text-primary, #111827));
+    --pg-color-active:   var(--pagination-color-active, #ffffff);
+    --pg-color-disabled: var(--pagination-color-disabled, var(--text-tertiary, #9ca3af));
+
+    /* Border */
+    --pg-border-rest:     var(--pagination-border-rest, transparent);
+    --pg-border-active:   var(--pagination-border-active, var(--brand-600, #d97706)); /* ← brand token */
+    --pg-border-disabled: var(--pagination-border-disabled, transparent);
+}
+
+/* --------------------------------------------------------------------------
+   Nav wrapper
+   -------------------------------------------------------------------------- */
+.pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
+/* --------------------------------------------------------------------------
+   Content list (<ul>)
+   -------------------------------------------------------------------------- */
+.pagination__content {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: var(--pg-gap);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+/* --------------------------------------------------------------------------
+   Item wrapper (<li>)
+   -------------------------------------------------------------------------- */
+.pagination__item {
+    display: flex;
+    align-items: center;
+}
+
+/* --------------------------------------------------------------------------
+   Base link / button — shared by PaginationLink, Previous, Next
+   -------------------------------------------------------------------------- */
+.pagination__link,
+.pagination__previous,
+.pagination__next {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.375rem;
+    height: var(--pg-size);
+    min-width: var(--pg-size);
+    padding: 0 0.5rem;
+    border-radius: var(--pg-radius);
+    border: 1px solid var(--pg-border-rest);
+    background-color: var(--pg-bg-rest);
+    color: var(--pg-color-rest);
+    font-size: var(--pg-font-size);
+    font-weight: var(--pg-font-weight);
+    line-height: 1;
+    cursor: pointer;
+    user-select: none;
+    text-decoration: none;
+    transition: var(--pg-transition);
+    outline-offset: 2px;
+}
+
+/* --------------------------------------------------------------------------
+   Hover — inactive links and nav buttons
+   -------------------------------------------------------------------------- */
+.pagination__link:not(.pagination__link--active):not(.pagination__link--disabled):hover,
+.pagination__previous:not(.pagination__link--disabled):hover,
+.pagination__next:not(.pagination__link--disabled):hover {
+    background-color: var(--pg-bg-hover);
+    color: var(--pg-color-hover);
+}
+
+/* --------------------------------------------------------------------------
+   Active (current page) — solid filled button
+   -------------------------------------------------------------------------- */
+.pagination__link--active {
+    background-color: var(--pg-bg-active);
+    border-color: var(--pg-border-active);
+    color: var(--pg-color-active);
+    cursor: default;
+    pointer-events: none;
+}
+
+/* --------------------------------------------------------------------------
+   Disabled — Previous / Next at boundary; individual links can also be disabled
+   -------------------------------------------------------------------------- */
+.pagination__link--disabled {
+    background-color: var(--pg-bg-disabled);
+    border-color: var(--pg-border-disabled);
+    color: var(--pg-color-disabled);
+    cursor: not-allowed;
+    pointer-events: none;
+    opacity: 0.5;
+}
+
+/* --------------------------------------------------------------------------
+   Focus-visible ring (keyboard navigation)
+   Uses the global --color-primary token (was --brand-500 which is inconsistent).
+   Active / pressed state matches the universal translateY pattern in buttons.css.
+   -------------------------------------------------------------------------- */
+.pagination__link:focus-visible,
+.pagination__previous:focus-visible,
+.pagination__next:focus-visible {
+    outline        : 2px solid var(--color-primary, #2563eb);
+    outline-offset : 2px;
+}
+
+/* Active / pressed */
+.pagination__link:not(.pagination__link--active):not(.pagination__link--disabled):active,
+.pagination__previous:not(.pagination__link--disabled):active,
+.pagination__next:not(.pagination__link--disabled):active {
+    transform : translateY(1px);
+}
+
+/* --------------------------------------------------------------------------
+   Nav controls — Previous / Next
+   -------------------------------------------------------------------------- */
+.pagination__previous,
+.pagination__next {
+    padding: 0 0.625rem;
+}
+
+.pagination__nav-icon {
+    width: 1rem;
+    height: 1rem;
+    flex-shrink: 0;
+    color: inherit;
+}
+
+.pagination__nav-label {
+    font-size: var(--pg-font-size);
+    font-weight: var(--pg-font-weight);
+}
+
+/* --------------------------------------------------------------------------
+   Ellipsis
+   -------------------------------------------------------------------------- */
+.pagination__ellipsis {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--pg-size);
+    height: var(--pg-size);
+    font-size: var(--pg-font-size);
+    color: var(--pg-color-disabled);
+    user-select: none;
+    pointer-events: none;
+}
+
+/* ==========================================================================
+   ItemListingPaginationBar
+   Modifier class added on top of .pagination when used inside a listing.
+   ========================================================================== */
+
+/*
+ * .listing-pagination-bar
+ * Applied by ItemListingPaginationBar in its constructor.
+ * No visual override needed — the base .pagination styles are sufficient.
+ * This rule exists as a stable CSS hook for application-level overrides.
+ */
+.listing-pagination-bar {
+    /* inherits all .pagination layout; extend here if needed */
+}
+
+/* ==========================================================================
+   ListingToolbar — selector LEFT · [search + filter-button] RIGHT
+   The selector sits naturally on the left. The right group (.listing-toolbar__right)
+   uses margin-inline-start:auto to push itself to the far right in all cases,
+   whether or not a selector is present.
+   Usage in Java: container.addClassName("listing-toolbar")
+   ========================================================================== */
+
+.listing-toolbar {
+    display         : flex;
+    flex-direction  : row;
+    align-items     : center;
+    gap             : 0.75rem;
+    padding-block   : 0.5rem 0.625rem;
+    width           : 100%;
+    border-bottom   : 1px solid var(--zinc-200, #e4e4e7);
+    margin-bottom   : 0.25rem;
+}
+
+/* Right-aligned group: search field + options menu button */
+.listing-toolbar__right {
+    display              : flex;
+    flex-direction       : row;
+    align-items          : center;
+    gap                  : 0.375rem;
+    margin-inline-start  : auto;   /* always push to far right */
+}
+
+/* Search field: fixed max-width, shrinks gracefully */
+.listing-toolbar__search {
+    flex      : 0 1 280px;
+    min-width : 0;
+}
+
+/* Footer / pagination row: centered */
+.listing-footer {
+    display         : flex;
+    justify-content : center;
+    padding-top     : 0.625rem;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════════
+   Integrated filter options button
+   ============================================================================
+   .listing-toolbar__options — the MenuBar containing the filter icon button.
+   ========================================================================== */
+
+/* Prevent the icon button from growing */
+.listing-toolbar__options {
+    flex-shrink : 0;
+}
+
+/* ── Responsive: mobile ≤ 600 px ── */
+@media (max-width: 600px) {
+    .listing-toolbar {
+        flex-direction  : column;
+        align-items     : stretch;
+        gap             : 0.5rem;
+        padding-block   : 0.5rem;
+    }
+    .listing-toolbar__right {
+        flex-direction      : row;
+        margin-inline-start : 0;     /* take full width on mobile */
+        width               : 100%;
+    }
+    .listing-toolbar__search {
+        flex      : 1 1 auto;
+        max-width : 100%;
+    }
+}
+
+/* ==========================================================================
+   Listing grid — always fill its container
+   Class added by ListingBundle on every managed grid so consumers don't need
+   to set width / flex manually in their view layouts.
+   ========================================================================== */
+.listing-bundle-grid {
+    width      : 100%;
+    flex       : 1 1 auto;   /* grow inside flex-column views            */
+    align-self : stretch;    /* stretch inside grid / flex-row parents   */
+    min-width  : 0;          /* prevent flex overflow on narrow screens  */
+}
+

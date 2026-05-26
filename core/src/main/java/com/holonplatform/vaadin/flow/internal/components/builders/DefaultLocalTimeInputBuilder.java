@@ -34,38 +34,22 @@ public class DefaultLocalTimeInputBuilder extends AbstractLocalTimeInputBuilder<
 		super();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.holonplatform.vaadin.flow.internal.components.builders.AbstractComponentConfigurator#getConfigurator()
-	 */
 	@Override
 	protected LocalTimeInputBuilder getConfigurator() {
 		return this;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.holonplatform.vaadin.flow.components.builders.InputConfigurator#required(boolean)
-	 */
 	@Override
 	public LocalTimeInputBuilder required(boolean required) {
 		getComponent().setRequired(required);
 		return getConfigurator();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.holonplatform.vaadin.flow.components.builders.InputBuilder#build()
-	 */
 	@Override
 	public Input<LocalTime> build() {
 		return buildAsInput();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.holonplatform.vaadin.flow.components.builders.InputBuilder#validatable()
-	 */
 	@Override
 	public ValidatableLocalTimeInputBuilder validatable() {
 		return new DefaultValidatableLocalTimeInputBuilder(getComponent(), getValueChangeListeners(),

@@ -4,11 +4,10 @@
     <parent>
         <groupId>com.holon-platform.vaadin</groupId>
         <artifactId>holon-vaadin-flow-root</artifactId>
-        <version>5.5.7-SNAPSHOT</version>
+        <version>10.0.0</version>
     </parent>
 
     <artifactId>holon-vaadin-flow-bom</artifactId>
-    <version>5.5.7-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>${project.groupId}:${project.artifactId}</name>
@@ -22,6 +21,11 @@
             <dependency>
                 <groupId>com.holon-platform.vaadin</groupId>
                 <artifactId>holon-vaadin-flow</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.holon-platform.vaadin</groupId>
+                <artifactId>holon-vaadin-flow-chat</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -41,9 +45,22 @@
             </dependency>
             <dependency>
                 <groupId>com.holon-platform.vaadin</groupId>
+                <artifactId>holon-vaadin-flow-chartjs</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.holon-platform.vaadin</groupId>
+                <artifactId>holon-vaadin-flow-calendar</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.holon-platform.vaadin</groupId>
                 <artifactId>holon-vaadin-flow-test</artifactId>
                 <version>${project.version}</version>
             </dependency>
+
+            <!-- NOTE: Tenant SaaS framework modules have been moved to holon-saas project.
+                 Use com.holon-platform.saas:holon-saas-bom instead. -->
 
             <!-- Spring Boot starters -->
             <dependency>
@@ -51,17 +68,12 @@
                 <artifactId>holon-starter-vaadin-flow</artifactId>
                 <version>${project.version}</version>
             </dependency>
-            <dependency>
-                <groupId>com.holon-platform.vaadin</groupId>
-                <artifactId>holon-starter-vaadin-flow-undertow</artifactId>
-                <version>${project.version}</version>
-            </dependency>
 
             <!-- Vaadin Flow production mode -->
             <dependency>
                 <groupId>com.vaadin</groupId>
                 <artifactId>flow-server-production-mode</artifactId>
-                <version>${vaadin.flow.version}</version>
+                <version>${vaadin.version}</version>
             </dependency>
 
         </dependencies>

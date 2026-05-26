@@ -1,0 +1,558 @@
+/* ============================================================
+   layout.css — Application-owned layout utility classes
+   Replaces dependency on Lumo/Vaadin CSS utility layer.
+   Mobile-first: base = mobile, @media (min-width:640px) = desktop
+   ============================================================ */
+
+/* --- Display --- */
+.flex  { display: flex; }
+.grid  { display: grid; }
+
+/* --- Flex Direction --- */
+.flex-col          { flex-direction: column; }
+.flex-col-reverse  { flex-direction: column-reverse; }
+.flex-row          { flex-direction: row; }
+.flex-row-reverse  { flex-direction: row-reverse; }
+
+/* Responsive flex-row breakpoints */
+@media (min-width: 640px)  { .sm\:flex-row  { flex-direction: row; } }
+@media (min-width: 768px)  { .md\:flex-row  { flex-direction: row; } }
+@media (min-width: 1024px) { .lg\:flex-row  { flex-direction: row; } }
+@media (min-width: 1280px) { .xl\:flex-row  { flex-direction: row; } }
+@media (min-width: 1536px) { .\32xl\:flex-row { flex-direction: row; } }
+
+/* Responsive flex-col breakpoints */
+@media (min-width: 640px)  { .sm\:flex-col  { flex-direction: column; } }
+@media (min-width: 768px)  { .md\:flex-col  { flex-direction: column; } }
+@media (min-width: 1024px) { .lg\:flex-col  { flex-direction: column; } }
+@media (min-width: 1280px) { .xl\:flex-col  { flex-direction: column; } }
+@media (min-width: 1536px) { .\32xl\:flex-col { flex-direction: column; } }
+
+/* --- Flex Wrap --- */
+.flex-nowrap      { flex-wrap: nowrap; }
+.flex-wrap        { flex-wrap: wrap; }
+.flex-wrap-reverse { flex-wrap: wrap-reverse; }
+
+/* Responsive flex-wrap */
+@media (min-width: 640px)  { .sm\:flex-wrap { flex-wrap: wrap; } .sm\:flex-nowrap { flex-wrap: nowrap; } }
+@media (min-width: 768px)  { .md\:flex-wrap { flex-wrap: wrap; } .md\:flex-nowrap { flex-wrap: nowrap; } }
+@media (min-width: 1024px) { .lg\:flex-wrap { flex-wrap: wrap; } .lg\:flex-nowrap { flex-wrap: nowrap; } }
+@media (min-width: 1280px) { .xl\:flex-wrap { flex-wrap: wrap; } .xl\:flex-nowrap { flex-wrap: nowrap; } }
+
+/* --- Align Items --- */
+.items-baseline { align-items: baseline; }
+.items-center   { align-items: center; }
+.items-end      { align-items: flex-end; }
+.items-start    { align-items: flex-start; }
+.items-stretch  { align-items: stretch; }
+
+/* --- Align Self --- */
+.self-auto     { align-self: auto; }
+.self-baseline { align-self: baseline; }
+.self-center   { align-self: center; }
+.self-end      { align-self: flex-end; }
+.self-start    { align-self: flex-start; }
+.self-stretch  { align-self: stretch; }
+
+/* --- Justify Content --- */
+.justify-around  { justify-content: space-around; }
+.justify-between { justify-content: space-between; }
+.justify-center  { justify-content: center; }
+.justify-end     { justify-content: flex-end; }
+.justify-evenly  { justify-content: space-evenly; }
+.justify-start   { justify-content: flex-start; }
+
+/* --- Box Sizing --- */
+.box-border  { box-sizing: border-box; }
+.box-content { box-sizing: content-box; }
+
+/* --- Overflow --- */
+.overflow-auto   { overflow: auto; }
+.overflow-hidden { overflow: hidden; }
+
+/* --- Position --- */
+.absolute { position: absolute; }
+.fixed    { position: fixed; }
+.relative { position: relative; }
+.static   { position: static; }
+.sticky   { position: sticky; }
+
+/* --- Gap (shorthand) --- */
+.gap-px { gap: 1px; }
+.gap-xs { gap: 0.25rem; }
+.gap-s  { gap: 0.5rem; }
+.gap-m  { gap: 1rem; }
+.gap-l  { gap: 1.5rem; }
+.gap-xl { gap: 2.5rem; }
+
+/* --- Column Gap --- */
+.gap-x-px { column-gap: 1px; }
+.gap-x-xs { column-gap: 0.25rem; }
+.gap-x-s  { column-gap: 0.5rem; }
+.gap-x-m  { column-gap: 1rem; }
+.gap-x-l  { column-gap: 1.5rem; }
+.gap-x-xl { column-gap: 2.5rem; }
+
+/* --- Row Gap --- */
+.gap-y-px { row-gap: 1px; }
+.gap-y-xs { row-gap: 0.25rem; }
+.gap-y-s  { row-gap: 0.5rem; }
+.gap-y-m  { row-gap: 1rem; }
+.gap-y-l  { row-gap: 1.5rem; }
+.gap-y-xl { row-gap: 2.5rem; }
+
+/* --- Row (12-column CSS Grid container — use with RowBuilder) ---
+   IMPORTANT: must be defined BEFORE .grid-cols-* so that
+   .gridColumns(N) can override the default 12-col layout. */
+.row {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+}
+
+/* --- Grid Template Columns (overrides .row's column count when combined) --- */
+.grid-cols-1  { grid-template-columns: repeat(1,  minmax(0, 1fr)); }
+.grid-cols-2  { grid-template-columns: repeat(2,  minmax(0, 1fr)); }
+.grid-cols-3  { grid-template-columns: repeat(3,  minmax(0, 1fr)); }
+.grid-cols-4  { grid-template-columns: repeat(4,  minmax(0, 1fr)); }
+.grid-cols-5  { grid-template-columns: repeat(5,  minmax(0, 1fr)); }
+.grid-cols-6  { grid-template-columns: repeat(6,  minmax(0, 1fr)); }
+.grid-cols-7  { grid-template-columns: repeat(7,  minmax(0, 1fr)); }
+.grid-cols-8  { grid-template-columns: repeat(8,  minmax(0, 1fr)); }
+.grid-cols-9  { grid-template-columns: repeat(9,  minmax(0, 1fr)); }
+.grid-cols-10 { grid-template-columns: repeat(10, minmax(0, 1fr)); }
+.grid-cols-11 { grid-template-columns: repeat(11, minmax(0, 1fr)); }
+.grid-cols-12 { grid-template-columns: repeat(12, minmax(0, 1fr)); }
+
+/* --- Column Span (base — no breakpoint) --- */
+.col-span-1    { grid-column: span 1  / span 1; }
+.col-span-2    { grid-column: span 2  / span 2; }
+.col-span-3    { grid-column: span 3  / span 3; }
+.col-span-4    { grid-column: span 4  / span 4; }
+.col-span-5    { grid-column: span 5  / span 5; }
+.col-span-6    { grid-column: span 6  / span 6; }
+.col-span-7    { grid-column: span 7  / span 7; }
+.col-span-8    { grid-column: span 8  / span 8; }
+.col-span-9    { grid-column: span 9  / span 9; }
+.col-span-10   { grid-column: span 10 / span 10; }
+.col-span-11   { grid-column: span 11 / span 11; }
+.col-span-12   { grid-column: span 12 / span 12; }
+.col-span-full { grid-column: 1 / -1; }
+
+/* --- Responsive col-span-* (Tailwind-style: sm:col-span-N, md:col-span-N …) --- */
+@media (min-width: 640px) {
+    .sm\:col-span-1    { grid-column: span 1  / span 1; }
+    .sm\:col-span-2    { grid-column: span 2  / span 2; }
+    .sm\:col-span-3    { grid-column: span 3  / span 3; }
+    .sm\:col-span-4    { grid-column: span 4  / span 4; }
+    .sm\:col-span-5    { grid-column: span 5  / span 5; }
+    .sm\:col-span-6    { grid-column: span 6  / span 6; }
+    .sm\:col-span-7    { grid-column: span 7  / span 7; }
+    .sm\:col-span-8    { grid-column: span 8  / span 8; }
+    .sm\:col-span-9    { grid-column: span 9  / span 9; }
+    .sm\:col-span-10   { grid-column: span 10 / span 10; }
+    .sm\:col-span-11   { grid-column: span 11 / span 11; }
+    .sm\:col-span-12   { grid-column: span 12 / span 12; }
+    .sm\:col-span-full { grid-column: 1 / -1; }
+}
+
+@media (min-width: 768px) {
+    .md\:col-span-1    { grid-column: span 1  / span 1; }
+    .md\:col-span-2    { grid-column: span 2  / span 2; }
+    .md\:col-span-3    { grid-column: span 3  / span 3; }
+    .md\:col-span-4    { grid-column: span 4  / span 4; }
+    .md\:col-span-5    { grid-column: span 5  / span 5; }
+    .md\:col-span-6    { grid-column: span 6  / span 6; }
+    .md\:col-span-7    { grid-column: span 7  / span 7; }
+    .md\:col-span-8    { grid-column: span 8  / span 8; }
+    .md\:col-span-9    { grid-column: span 9  / span 9; }
+    .md\:col-span-10   { grid-column: span 10 / span 10; }
+    .md\:col-span-11   { grid-column: span 11 / span 11; }
+    .md\:col-span-12   { grid-column: span 12 / span 12; }
+    .md\:col-span-full { grid-column: 1 / -1; }
+}
+
+@media (min-width: 1024px) {
+    .lg\:col-span-1    { grid-column: span 1  / span 1; }
+    .lg\:col-span-2    { grid-column: span 2  / span 2; }
+    .lg\:col-span-3    { grid-column: span 3  / span 3; }
+    .lg\:col-span-4    { grid-column: span 4  / span 4; }
+    .lg\:col-span-5    { grid-column: span 5  / span 5; }
+    .lg\:col-span-6    { grid-column: span 6  / span 6; }
+    .lg\:col-span-7    { grid-column: span 7  / span 7; }
+    .lg\:col-span-8    { grid-column: span 8  / span 8; }
+    .lg\:col-span-9    { grid-column: span 9  / span 9; }
+    .lg\:col-span-10   { grid-column: span 10 / span 10; }
+    .lg\:col-span-11   { grid-column: span 11 / span 11; }
+    .lg\:col-span-12   { grid-column: span 12 / span 12; }
+    .lg\:col-span-full { grid-column: 1 / -1; }
+}
+
+@media (min-width: 1280px) {
+    .xl\:col-span-1    { grid-column: span 1  / span 1; }
+    .xl\:col-span-2    { grid-column: span 2  / span 2; }
+    .xl\:col-span-3    { grid-column: span 3  / span 3; }
+    .xl\:col-span-4    { grid-column: span 4  / span 4; }
+    .xl\:col-span-5    { grid-column: span 5  / span 5; }
+    .xl\:col-span-6    { grid-column: span 6  / span 6; }
+    .xl\:col-span-7    { grid-column: span 7  / span 7; }
+    .xl\:col-span-8    { grid-column: span 8  / span 8; }
+    .xl\:col-span-9    { grid-column: span 9  / span 9; }
+    .xl\:col-span-10   { grid-column: span 10 / span 10; }
+    .xl\:col-span-11   { grid-column: span 11 / span 11; }
+    .xl\:col-span-12   { grid-column: span 12 / span 12; }
+    .xl\:col-span-full { grid-column: 1 / -1; }
+}
+
+@media (min-width: 1536px) {
+    .\32xl\:col-span-1    { grid-column: span 1  / span 1; }
+    .\32xl\:col-span-2    { grid-column: span 2  / span 2; }
+    .\32xl\:col-span-3    { grid-column: span 3  / span 3; }
+    .\32xl\:col-span-4    { grid-column: span 4  / span 4; }
+    .\32xl\:col-span-5    { grid-column: span 5  / span 5; }
+    .\32xl\:col-span-6    { grid-column: span 6  / span 6; }
+    .\32xl\:col-span-7    { grid-column: span 7  / span 7; }
+    .\32xl\:col-span-8    { grid-column: span 8  / span 8; }
+    .\32xl\:col-span-9    { grid-column: span 9  / span 9; }
+    .\32xl\:col-span-10   { grid-column: span 10 / span 10; }
+    .\32xl\:col-span-11   { grid-column: span 11 / span 11; }
+    .\32xl\:col-span-12   { grid-column: span 12 / span 12; }
+    .\32xl\:col-span-full { grid-column: 1 / -1; }
+}
+
+/* --- Responsive grid-cols-* (Tailwind-style: sm:grid-cols-N …) --- */
+@media (min-width: 640px)  {
+    .sm\:grid-cols-1  { grid-template-columns: repeat(1,  minmax(0, 1fr)); }
+    .sm\:grid-cols-2  { grid-template-columns: repeat(2,  minmax(0, 1fr)); }
+    .sm\:grid-cols-3  { grid-template-columns: repeat(3,  minmax(0, 1fr)); }
+    .sm\:grid-cols-4  { grid-template-columns: repeat(4,  minmax(0, 1fr)); }
+    .sm\:grid-cols-6  { grid-template-columns: repeat(6,  minmax(0, 1fr)); }
+    .sm\:grid-cols-12 { grid-template-columns: repeat(12, minmax(0, 1fr)); }
+}
+@media (min-width: 768px)  {
+    .md\:grid-cols-1  { grid-template-columns: repeat(1,  minmax(0, 1fr)); }
+    .md\:grid-cols-2  { grid-template-columns: repeat(2,  minmax(0, 1fr)); }
+    .md\:grid-cols-3  { grid-template-columns: repeat(3,  minmax(0, 1fr)); }
+    .md\:grid-cols-4  { grid-template-columns: repeat(4,  minmax(0, 1fr)); }
+    .md\:grid-cols-6  { grid-template-columns: repeat(6,  minmax(0, 1fr)); }
+    .md\:grid-cols-12 { grid-template-columns: repeat(12, minmax(0, 1fr)); }
+}
+@media (min-width: 1024px) {
+    .lg\:grid-cols-1  { grid-template-columns: repeat(1,  minmax(0, 1fr)); }
+    .lg\:grid-cols-2  { grid-template-columns: repeat(2,  minmax(0, 1fr)); }
+    .lg\:grid-cols-3  { grid-template-columns: repeat(3,  minmax(0, 1fr)); }
+    .lg\:grid-cols-4  { grid-template-columns: repeat(4,  minmax(0, 1fr)); }
+    .lg\:grid-cols-6  { grid-template-columns: repeat(6,  minmax(0, 1fr)); }
+    .lg\:grid-cols-12 { grid-template-columns: repeat(12, minmax(0, 1fr)); }
+}
+@media (min-width: 1280px) {
+    .xl\:grid-cols-1  { grid-template-columns: repeat(1,  minmax(0, 1fr)); }
+    .xl\:grid-cols-2  { grid-template-columns: repeat(2,  minmax(0, 1fr)); }
+    .xl\:grid-cols-3  { grid-template-columns: repeat(3,  minmax(0, 1fr)); }
+    .xl\:grid-cols-4  { grid-template-columns: repeat(4,  minmax(0, 1fr)); }
+    .xl\:grid-cols-6  { grid-template-columns: repeat(6,  minmax(0, 1fr)); }
+    .xl\:grid-cols-12 { grid-template-columns: repeat(12, minmax(0, 1fr)); }
+}
+
+
+/* ============================================================
+   Responsive Display / Visibility
+   ============================================================ */
+.hidden      { display: none; }
+.block       { display: block; }
+.inline      { display: inline; }
+.inline-flex { display: inline-flex; }
+
+@media (min-width: 640px)  { .sm\:hidden { display: none; }  .sm\:block { display: block; } .sm\:flex { display: flex; } .sm\:grid { display: grid; } }
+@media (min-width: 768px)  { .md\:hidden { display: none; }  .md\:block { display: block; } .md\:flex { display: flex; } .md\:grid { display: grid; } }
+@media (min-width: 1024px) { .lg\:hidden { display: none; }  .lg\:block { display: block; } .lg\:flex { display: flex; } .lg\:grid { display: grid; } }
+@media (min-width: 1280px) { .xl\:hidden { display: none; }  .xl\:block { display: block; } .xl\:flex { display: flex; } .xl\:grid { display: grid; } }
+@media (min-width: 1536px) { .\32xl\:hidden { display: none; } .\32xl\:block { display: block; } }
+
+/* ============================================================
+   Responsive Gap
+   ============================================================ */
+@media (min-width: 640px) {
+    .sm\:gap-px { gap: 1px;      } .sm\:gap-xs { gap: 0.25rem; }
+    .sm\:gap-s  { gap: 0.5rem;   } .sm\:gap-m  { gap: 1rem;    }
+    .sm\:gap-l  { gap: 1.5rem;   } .sm\:gap-xl { gap: 2.5rem;  }
+}
+@media (min-width: 768px) {
+    .md\:gap-px { gap: 1px;      } .md\:gap-xs { gap: 0.25rem; }
+    .md\:gap-s  { gap: 0.5rem;   } .md\:gap-m  { gap: 1rem;    }
+    .md\:gap-l  { gap: 1.5rem;   } .md\:gap-xl { gap: 2.5rem;  }
+}
+@media (min-width: 1024px) {
+    .lg\:gap-px { gap: 1px;      } .lg\:gap-xs { gap: 0.25rem; }
+    .lg\:gap-s  { gap: 0.5rem;   } .lg\:gap-m  { gap: 1rem;    }
+    .lg\:gap-l  { gap: 1.5rem;   } .lg\:gap-xl { gap: 2.5rem;  }
+}
+@media (min-width: 1280px) {
+    .xl\:gap-xs { gap: 0.25rem; } .xl\:gap-s  { gap: 0.5rem;  }
+    .xl\:gap-m  { gap: 1rem;    } .xl\:gap-l  { gap: 1.5rem;  }
+    .xl\:gap-xl { gap: 2.5rem;  }
+}
+
+/* ============================================================
+   Responsive Align Items
+   ============================================================ */
+@media (min-width: 640px) {
+    .sm\:items-start    { align-items: flex-start; } .sm\:items-end      { align-items: flex-end;   }
+    .sm\:items-center   { align-items: center;     } .sm\:items-baseline { align-items: baseline;   }
+    .sm\:items-stretch  { align-items: stretch;    }
+}
+@media (min-width: 768px) {
+    .md\:items-start    { align-items: flex-start; } .md\:items-end      { align-items: flex-end;   }
+    .md\:items-center   { align-items: center;     } .md\:items-baseline { align-items: baseline;   }
+    .md\:items-stretch  { align-items: stretch;    }
+}
+@media (min-width: 1024px) {
+    .lg\:items-start    { align-items: flex-start; } .lg\:items-end      { align-items: flex-end;   }
+    .lg\:items-center   { align-items: center;     } .lg\:items-baseline { align-items: baseline;   }
+    .lg\:items-stretch  { align-items: stretch;    }
+}
+@media (min-width: 1280px) {
+    .xl\:items-start    { align-items: flex-start; } .xl\:items-end      { align-items: flex-end;   }
+    .xl\:items-center   { align-items: center;     } .xl\:items-baseline { align-items: baseline;   }
+    .xl\:items-stretch  { align-items: stretch;    }
+}
+
+/* ============================================================
+   Responsive Justify Content
+   ============================================================ */
+@media (min-width: 640px) {
+    .sm\:justify-start   { justify-content: flex-start;    } .sm\:justify-end     { justify-content: flex-end;      }
+    .sm\:justify-center  { justify-content: center;        } .sm\:justify-between { justify-content: space-between; }
+    .sm\:justify-around  { justify-content: space-around;  } .sm\:justify-evenly  { justify-content: space-evenly;  }
+}
+@media (min-width: 768px) {
+    .md\:justify-start   { justify-content: flex-start;    } .md\:justify-end     { justify-content: flex-end;      }
+    .md\:justify-center  { justify-content: center;        } .md\:justify-between { justify-content: space-between; }
+    .md\:justify-around  { justify-content: space-around;  } .md\:justify-evenly  { justify-content: space-evenly;  }
+}
+@media (min-width: 1024px) {
+    .lg\:justify-start   { justify-content: flex-start;    } .lg\:justify-end     { justify-content: flex-end;      }
+    .lg\:justify-center  { justify-content: center;        } .lg\:justify-between { justify-content: space-between; }
+    .lg\:justify-around  { justify-content: space-around;  } .lg\:justify-evenly  { justify-content: space-evenly;  }
+}
+@media (min-width: 1280px) {
+    .xl\:justify-start   { justify-content: flex-start;    } .xl\:justify-end     { justify-content: flex-end;      }
+    .xl\:justify-center  { justify-content: center;        } .xl\:justify-between { justify-content: space-between; }
+    .xl\:justify-around  { justify-content: space-around;  } .xl\:justify-evenly  { justify-content: space-evenly;  }
+}
+
+/* ============================================================
+   Sizing utilities
+   ============================================================ */
+
+.w-full     { width: 100%; }
+.h-full     { height: 100%; }
+.min-h-full { min-height: 100%; }
+
+@media (min-width: 640px)  { .sm\:w-full { width: 100%; } }
+@media (min-width: 768px)  { .md\:w-full { width: 100%; } }
+@media (min-width: 1024px) { .lg\:w-full { width: 100%; } }
+@media (min-width: 1280px) { .xl\:w-full { width: 100%; } }
+
+/* ============================================================
+   Additional overflow
+   ============================================================ */
+
+.overflow-scroll  { overflow: scroll; }
+.overflow-visible { overflow: visible; }
+.overflow-x-auto  { overflow-x: auto; }
+.overflow-y-auto  { overflow-y: auto; }
+
+/* ============================================================
+   Text alignment
+   ============================================================ */
+
+.text-left   { text-align: left; }
+.text-center { text-align: center; }
+.text-right  { text-align: right; }
+
+@media (min-width: 640px)  { .sm\:text-left { text-align: left; } .sm\:text-center { text-align: center; } .sm\:text-right { text-align: right; } }
+@media (min-width: 768px)  { .md\:text-left { text-align: left; } .md\:text-center { text-align: center; } .md\:text-right { text-align: right; } }
+@media (min-width: 1024px) { .lg\:text-left { text-align: left; } .lg\:text-center { text-align: center; } .lg\:text-right { text-align: right; } }
+@media (min-width: 1280px) { .xl\:text-left { text-align: left; } .xl\:text-center { text-align: center; } .xl\:text-right { text-align: right; } }
+
+/* ============================================================
+   Flex / Grid child utilities
+   ============================================================ */
+
+.shrink-0 { flex-shrink: 0; }
+.grow-0   { flex-grow: 0; }
+
+/* ============================================================
+   CSS Grid flow
+   ============================================================ */
+
+.grid-flow-row   { grid-auto-flow: row; }
+.grid-flow-col   { grid-auto-flow: column; }
+.grid-flow-dense { grid-auto-flow: dense; }
+
+/* ============================================================
+   Place items (grid shorthand)
+   ============================================================ */
+
+.place-center { place-items: center; }
+
+/* ============================================================
+   Responsive align-self
+   ============================================================ */
+
+@media (min-width: 640px) {
+    .sm\:self-center  { align-self: center;     } .sm\:self-start   { align-self: flex-start; }
+    .sm\:self-end     { align-self: flex-end;   } .sm\:self-stretch { align-self: stretch;    }
+}
+@media (min-width: 768px) {
+    .md\:self-center  { align-self: center;     } .md\:self-start   { align-self: flex-start; }
+    .md\:self-end     { align-self: flex-end;   } .md\:self-stretch { align-self: stretch;    }
+}
+@media (min-width: 1024px) {
+    .lg\:self-center  { align-self: center;     } .lg\:self-start   { align-self: flex-start; }
+    .lg\:self-end     { align-self: flex-end;   } .lg\:self-stretch { align-self: stretch;    }
+}
+@media (min-width: 1280px) {
+    .xl\:self-center  { align-self: center;     } .xl\:self-start   { align-self: flex-start; }
+    .xl\:self-end     { align-self: flex-end;   } .xl\:self-stretch { align-self: stretch;    }
+}
+
+/* ============================================================
+   Padding scale  (tokens mirror gap-* for a unified spacing system)
+   ============================================================ */
+
+.p-0   { padding: 0; }
+.p-px  { padding: 1px; }
+.p-xs  { padding: 0.25rem; }
+.p-s   { padding: 0.5rem; }
+.p-m   { padding: 1rem; }
+.p-l   { padding: 1.5rem; }
+.p-xl  { padding: 2.5rem; }
+
+.px-xs { padding-inline: 0.25rem; } .px-s { padding-inline: 0.5rem; }
+.px-m  { padding-inline: 1rem;    } .px-l { padding-inline: 1.5rem; } .px-xl { padding-inline: 2.5rem; }
+
+.py-xs { padding-block: 0.25rem;  } .py-s { padding-block: 0.5rem; }
+.py-m  { padding-block: 1rem;     } .py-l { padding-block: 1.5rem; } .py-xl { padding-block: 2.5rem; }
+
+/* Responsive padding */
+@media (min-width: 640px) {
+    .sm\:p-xs { padding: 0.25rem; } .sm\:p-s { padding: 0.5rem; }
+    .sm\:p-m  { padding: 1rem;    } .sm\:p-l { padding: 1.5rem; }
+    .sm\:px-s { padding-inline: 0.5rem; } .sm\:px-m { padding-inline: 1rem; }
+    .sm\:py-s { padding-block:  0.5rem; } .sm\:py-m { padding-block:  1rem; }
+}
+@media (min-width: 768px) {
+    .md\:p-xs { padding: 0.25rem; } .md\:p-s { padding: 0.5rem; }
+    .md\:p-m  { padding: 1rem;    } .md\:p-l { padding: 1.5rem; }
+    .md\:px-s { padding-inline: 0.5rem; } .md\:px-m { padding-inline: 1rem; }
+    .md\:py-s { padding-block:  0.5rem; } .md\:py-m { padding-block:  1rem; }
+}
+@media (min-width: 1024px) {
+    .lg\:p-xs { padding: 0.25rem; } .lg\:p-s { padding: 0.5rem; }
+    .lg\:p-m  { padding: 1rem;    } .lg\:p-l { padding: 1.5rem; }
+    .lg\:px-s { padding-inline: 0.5rem; } .lg\:px-m { padding-inline: 1rem; }
+    .lg\:py-s { padding-block:  0.5rem; } .lg\:py-m { padding-block:  1rem; }
+}
+@media (min-width: 1280px) {
+    .xl\:p-xs { padding: 0.25rem; } .xl\:p-s { padding: 0.5rem; }
+    .xl\:p-m  { padding: 1rem;    } .xl\:p-l { padding: 1.5rem; }
+    .xl\:px-s { padding-inline: 0.5rem; } .xl\:px-m { padding-inline: 1rem; }
+    .xl\:py-s { padding-block:  0.5rem; } .xl\:py-m { padding-block:  1rem; }
+}
+
+/* ============================================================
+   Margin scale  (tokens mirror gap-* / p-* for a unified spacing system)
+   ============================================================ */
+
+.m-0    { margin: 0; }
+.m-auto { margin: auto; }
+.m-xs   { margin: 0.25rem; }
+.m-s    { margin: 0.5rem; }
+.m-m    { margin: 1rem; }
+.m-l    { margin: 1.5rem; }
+.m-xl   { margin: 2.5rem; }
+
+/* Inline (x-axis / horizontal) */
+.mx-auto { margin-inline: auto; }
+.mx-xs   { margin-inline: 0.25rem; } .mx-s { margin-inline: 0.5rem; }
+.mx-m    { margin-inline: 1rem;    } .mx-l { margin-inline: 1.5rem; } .mx-xl { margin-inline: 2.5rem; }
+
+/* Block (y-axis / vertical) */
+.my-xs { margin-block: 0.25rem; } .my-s { margin-block: 0.5rem; }
+.my-m  { margin-block: 1rem;    } .my-l { margin-block: 1.5rem; } .my-xl { margin-block: 2.5rem; }
+
+/* Top */
+.mt-xs { margin-top: 0.25rem; } .mt-s { margin-top: 0.5rem; }
+.mt-m  { margin-top: 1rem;    } .mt-l { margin-top: 1.5rem; } .mt-xl { margin-top: 2.5rem; }
+
+/* Bottom */
+.mb-xs { margin-bottom: 0.25rem; } .mb-s { margin-bottom: 0.5rem; }
+.mb-m  { margin-bottom: 1rem;    } .mb-l { margin-bottom: 1.5rem; } .mb-xl { margin-bottom: 2.5rem; }
+
+/* Start (inline-start — LTR: left) */
+.ms-xs { margin-inline-start: 0.25rem; } .ms-s { margin-inline-start: 0.5rem; }
+.ms-m  { margin-inline-start: 1rem;    } .ms-l { margin-inline-start: 1.5rem; }
+
+/* End (inline-end — LTR: right) */
+.me-xs { margin-inline-end: 0.25rem; } .me-s { margin-inline-end: 0.5rem; }
+.me-m  { margin-inline-end: 1rem;    } .me-l { margin-inline-end: 1.5rem; }
+
+/* Responsive margin */
+@media (min-width: 640px) {
+    .sm\:m-0  { margin: 0; } .sm\:m-auto { margin: auto; }
+    .sm\:m-xs { margin: 0.25rem; } .sm\:m-s { margin: 0.5rem; }
+    .sm\:m-m  { margin: 1rem;    } .sm\:m-l { margin: 1.5rem; }
+    .sm\:mx-auto { margin-inline: auto; }
+    .sm\:mx-s { margin-inline: 0.5rem; } .sm\:mx-m { margin-inline: 1rem; }
+    .sm\:my-s { margin-block:  0.5rem; } .sm\:my-m { margin-block:  1rem; }
+    .sm\:mt-s { margin-top:    0.5rem; } .sm\:mt-m { margin-top:    1rem; }
+    .sm\:mb-s { margin-bottom: 0.5rem; } .sm\:mb-m { margin-bottom: 1rem; }
+}
+@media (min-width: 768px) {
+    .md\:m-0  { margin: 0; } .md\:m-auto { margin: auto; }
+    .md\:m-xs { margin: 0.25rem; } .md\:m-s { margin: 0.5rem; }
+    .md\:m-m  { margin: 1rem;    } .md\:m-l { margin: 1.5rem; }
+    .md\:mx-auto { margin-inline: auto; }
+    .md\:mx-s { margin-inline: 0.5rem; } .md\:mx-m { margin-inline: 1rem; }
+    .md\:my-s { margin-block:  0.5rem; } .md\:my-m { margin-block:  1rem; }
+    .md\:mt-s { margin-top:    0.5rem; } .md\:mt-m { margin-top:    1rem; }
+    .md\:mb-s { margin-bottom: 0.5rem; } .md\:mb-m { margin-bottom: 1rem; }
+}
+@media (min-width: 1024px) {
+    .lg\:m-0  { margin: 0; } .lg\:m-auto { margin: auto; }
+    .lg\:m-xs { margin: 0.25rem; } .lg\:m-s { margin: 0.5rem; }
+    .lg\:m-m  { margin: 1rem;    } .lg\:m-l { margin: 1.5rem; }
+    .lg\:mx-auto { margin-inline: auto; }
+    .lg\:mx-s { margin-inline: 0.5rem; } .lg\:mx-m { margin-inline: 1rem; }
+    .lg\:my-s { margin-block:  0.5rem; } .lg\:my-m { margin-block:  1rem; }
+    .lg\:mt-s { margin-top:    0.5rem; } .lg\:mt-m { margin-top:    1rem; }
+    .lg\:mb-s { margin-bottom: 0.5rem; } .lg\:mb-m { margin-bottom: 1rem; }
+}
+@media (min-width: 1280px) {
+    .xl\:mx-auto { margin-inline: auto; }
+    .xl\:m-m  { margin: 1rem; } .xl\:m-l  { margin: 1.5rem; }
+    .xl\:mx-m { margin-inline: 1rem; } .xl\:my-m { margin-block: 1rem; }
+}
+
+/* ── Card surface ─────────────────────────────────────────────────────────
+   Use .rdiv-card for any container that should visually appear as a card:
+   KPI tiles, chart panels, feed widgets, form sections.
+   Use .rdiv-card--elevated for a stronger lift (prominent cards, modals).
+   ──────────────────────────────────────────────────────────────────────── */
+
+.rdiv-card {
+    padding       : var(--lumo-space-m);
+    background    : var(--lumo-base-color);
+    border        : 1px solid var(--lumo-contrast-10pct);
+    border-radius : var(--lumo-border-radius-l);
+}
+
+.rdiv-card--elevated {
+    padding       : var(--lumo-space-m);
+    background    : var(--lumo-base-color);
+    border-radius : var(--lumo-border-radius-l);
+    border        : none;
+    box-shadow    : var(--lumo-box-shadow-s);
+}
+

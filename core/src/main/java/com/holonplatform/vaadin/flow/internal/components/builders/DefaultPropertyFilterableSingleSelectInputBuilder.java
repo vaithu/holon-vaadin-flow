@@ -42,13 +42,14 @@ import com.holonplatform.vaadin.flow.internal.data.PropertyItemConverter;
 import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.BlurNotifier.BlurEvent;
 import com.vaadin.flow.component.FocusNotifier.FocusEvent;
+import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.data.provider.*;
 import com.vaadin.flow.data.renderer.Renderer;
 import com.vaadin.flow.dom.DomEventListener;
 import com.vaadin.flow.dom.Element;
 import com.vaadin.flow.function.SerializableFunction;
 
-import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -167,7 +168,7 @@ public class DefaultPropertyFilterableSingleSelectInputBuilder<T> extends Abstra
 	@Override
 	public DatastorePropertyFilterableSingleSelectInputBuilder<T> dataSource(Datastore datastore,
 			DataTarget<?> target) {
-		return dataSource(datastore, target, Collections.singletonList(selectionProperty));
+		return dataSource(datastore, target, List.of(selectionProperty));
 	}
 
 	/*
@@ -182,7 +183,7 @@ public class DefaultPropertyFilterableSingleSelectInputBuilder<T> extends Abstra
 	@Override
 	public DatastorePropertyFilterableSingleSelectInputBuilder<T> dataSource(Datastore datastore, DataTarget<?> target,
 			Function<String, QueryFilter> filterConverter) {
-		return dataSource(datastore, target, filterConverter, Collections.singletonList(selectionProperty));
+		return dataSource(datastore, target, filterConverter, List.of(selectionProperty));
 	}
 
 	/*
@@ -833,6 +834,19 @@ public class DefaultPropertyFilterableSingleSelectInputBuilder<T> extends Abstra
 	@Override
 	public PropertyFilterableSingleSelectInputBuilder<T> itemCountUnknown() {
 		builder.itemCountUnknown();
+		return this;
+	}
+
+	@Override
+	public PropertyFilterableSingleSelectInputBuilder<T> itemsPageable(Grid.SpringData.FetchCallback<?, T> fetchCallback) {
+		builder.itemsPageable(fetchCallback);
+		return this;
+	}
+
+	@Override
+	public PropertyFilterableSingleSelectInputBuilder<T> itemsPageable(Grid.SpringData.FetchCallback<?, T> fetchCallback,
+			Grid.SpringData.CountCallback<?> countCallback) {
+		builder.itemsPageable(fetchCallback, countCallback);
 		return this;
 	}
 
@@ -1634,6 +1648,19 @@ public class DefaultPropertyFilterableSingleSelectInputBuilder<T> extends Abstra
 			builder.itemCountUnknown();
 			return this;
 		}
+
+		@Override
+		public ValidatablePropertyFilterableSingleSelectInputBuilder<T> itemsPageable(Grid.SpringData.FetchCallback<?, T> fetchCallback) {
+			builder.itemsPageable(fetchCallback);
+			return this;
+		}
+
+		@Override
+		public ValidatablePropertyFilterableSingleSelectInputBuilder<T> itemsPageable(Grid.SpringData.FetchCallback<?, T> fetchCallback,
+				Grid.SpringData.CountCallback<?> countCallback) {
+			builder.itemsPageable(fetchCallback, countCallback);
+			return this;
+		}
 	}
 
 	static class DefaultDatastorePropertyFilterableSingleSelectInputBuilder<T>
@@ -2331,6 +2358,19 @@ public class DefaultPropertyFilterableSingleSelectInputBuilder<T> extends Abstra
 		@Override
 		public DatastorePropertyFilterableSingleSelectInputBuilder<T> itemCountUnknown() {
 			builder.itemCountUnknown();
+			return this;
+		}
+
+		@Override
+		public DatastorePropertyFilterableSingleSelectInputBuilder<T> itemsPageable(Grid.SpringData.FetchCallback<?, T> fetchCallback) {
+			builder.itemsPageable(fetchCallback);
+			return this;
+		}
+
+		@Override
+		public DatastorePropertyFilterableSingleSelectInputBuilder<T> itemsPageable(Grid.SpringData.FetchCallback<?, T> fetchCallback,
+				Grid.SpringData.CountCallback<?> countCallback) {
+			builder.itemsPageable(fetchCallback, countCallback);
 			return this;
 		}
 	}
@@ -3092,6 +3132,19 @@ public class DefaultPropertyFilterableSingleSelectInputBuilder<T> extends Abstra
 		@Override
 		public ValidatableDatastorePropertyFilterableSingleSelectInputBuilder<T> itemCountUnknown() {
 			builder.itemCountUnknown();
+			return this;
+		}
+
+		@Override
+		public ValidatableDatastorePropertyFilterableSingleSelectInputBuilder<T> itemsPageable(Grid.SpringData.FetchCallback<?, T> fetchCallback) {
+			builder.itemsPageable(fetchCallback);
+			return this;
+		}
+
+		@Override
+		public ValidatableDatastorePropertyFilterableSingleSelectInputBuilder<T> itemsPageable(Grid.SpringData.FetchCallback<?, T> fetchCallback,
+				Grid.SpringData.CountCallback<?> countCallback) {
+			builder.itemsPageable(fetchCallback, countCallback);
 			return this;
 		}
 	}

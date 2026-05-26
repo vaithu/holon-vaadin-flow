@@ -49,6 +49,17 @@ public interface DialogBuilder<B extends DialogBuilder<B>> extends DialogConfigu
 		return dialog;
 	}
 
+	/**
+	 * Builds the dialog, wires it to the registered trigger and returns the trigger component.
+	 * <p>Add the returned component to your layout; clicking it will open the dialog.</p>
+	 * <p>Requires a prior call to {@link DialogConfigurator#withTrigger(com.vaadin.flow.component.Component)}
+	 * or one of its overloads.</p>
+	 *
+	 * @return the trigger component with the dialog wired to it
+	 * @throws IllegalStateException if no trigger has been registered
+	 */
+	com.vaadin.flow.component.Component buildTriggered();
+
 	// ------- builders
 
 	/**
@@ -74,10 +85,6 @@ public interface DialogBuilder<B extends DialogBuilder<B>> extends DialogConfigu
 	static ConfirmDialogBuilder confirm(PropertyInputForm inputForm) {
 		return new DefaultConfirmDialogBuilder(inputForm);
 	}
-
-	/*static ConfirmDialogBuilder save(boolean okToCancelDialog) {
-		return new DefaultConfirmDialogBuilder(okToCancelDialog);
-	}*/
 
 	/**
 	 * Get a builder to create a question dialog, with a <em>confirm</em> button and a <em>deny</em> button in the
@@ -271,12 +278,6 @@ public interface DialogBuilder<B extends DialogBuilder<B>> extends DialogConfigu
 
 	public interface SaveAndNewDialogBuilder extends DialogBuilder<SaveAndNewDialogBuilder> {
 
-		/**
-		 * Provide a {@link Consumer} to create the default user <em>save</em> button.
-		 * @param configurator The button configurator (not null)
-		 * @return this
-		 */
-//		SaveAndNewDialogBuilder saveButtonConfigurator(Consumer<BaseButtonConfigurator> configurator);
 		SaveAndNewDialogBuilder saveAndNewButtonConfigurator(Consumer<BaseButtonConfigurator> configurator);
 
 		/**
@@ -291,12 +292,6 @@ public interface DialogBuilder<B extends DialogBuilder<B>> extends DialogConfigu
 
 	public interface SaveDialogBuilder extends DialogBuilder<SaveDialogBuilder> {
 
-		/**
-		 * Provide a {@link Consumer} to create the default user <em>save</em> button.
-		 * @param configurator The button configurator (not null)
-		 * @return this
-		 */
-//		SaveAndNewDialogBuilder saveButtonConfigurator(Consumer<BaseButtonConfigurator> configurator);
 		SaveDialogBuilder saveButtonConfigurator(Consumer<BaseButtonConfigurator> configurator);
 
 		/**

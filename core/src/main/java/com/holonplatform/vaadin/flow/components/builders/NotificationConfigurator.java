@@ -8,6 +8,7 @@ import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.data.binder.ValidationException;
+import com.vaadin.flow.signals.Signal;
 
 import java.util.function.Consumer;
 
@@ -25,9 +26,33 @@ ComponentConfigurator<C>,
 
     C opened(boolean opened);
 
+  /**
+   * Bind the notification opened state to given {@link Signal}.
+   * @param openedSignal Opened-state signal (not null)
+   * @return this
+   * @since 5.5.8
+   */
+  @SuppressWarnings("unchecked")
+  default C bindOpened(Signal<? extends Boolean> openedSignal) {
+    SignalBindings.bind(this, openedSignal, this::opened);
+    return (C) this;
+  }
+
     C position(Notification.Position position);
 
     C text(String text);
+
+  /**
+   * Bind the notification text to given {@link Signal}.
+   * @param textSignal Text signal (not null)
+   * @return this
+   * @since 5.5.8
+   */
+  @SuppressWarnings("unchecked")
+  default C bindText(Signal<String> textSignal) {
+    SignalBindings.bind(this, textSignal, this::text);
+    return (C) this;
+  }
 
     default C text(Localizable localizable) {
         return text(localizable.getMessage());

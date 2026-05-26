@@ -1,113 +1,108 @@
 package com.iyensoft.vaadin.flow.components.builders;
 
+import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.vaadin.flow.components.builders.*;
 import com.iyensoft.vaadin.flow.internal.components.builders.DefaultTabsConfigurator;
-import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.tabs.Tab;
-import com.vaadin.flow.component.tabs.TabVariant;
 import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.component.tabs.TabsVariant;
 
+/**
+ * Fluent configurator for a Vaadin {@link Tabs} <em>bar only</em>.
+ * <p>
+ * This configurator manages the {@link Tabs} header bar — tab items, orientation, selection state,
+ * and theme variants. It does <strong>not</strong> manage tab content panels. Use
+ * {@link com.iyensoft.vaadin.flow.components.builders.LazyTabsBuilder} when you need wired
+ * tab-bar + content area with eager/lazy loading and optional caching.
+ */
 public interface TabsConfigurator<C extends TabsConfigurator<C>>
         extends ComponentConfigurator<C>, HasStyleConfigurator<C>, HasThemeVariantConfigurator<TabsVariant, C>,
-        HasSizeConfigurator<C>,HasEnabledConfigurator<C> {
+        HasSizeConfigurator<C>, HasEnabledConfigurator<C> {
 
-    // ---------------------------------------------------------------------
-    // Tabs management (same names as Tabs)
-    // ---------------------------------------------------------------------
+    // ── Tab items ─────────────────────────────────────────────────────────────
 
-    /**
-     * Adds the given tabs to the component.
-     * Original: Tabs#add(Tab...).
-     */
-    C add(Tab... tabs);
-    C add(String... tabs);
+    /** Adds the given {@link Tab} instances to the bar. */
+    C withTab(Tab... tabs);
 
-    /**
-     * Adds the given tab as the first child of this component.
-     * Original: Tabs#addTabAsFirst(Tab).
-     */
-    C addTabAsFirst(Tab tab);
+    /** Adds labeled tabs from plain string labels. */
+    C withTab(String... labels);
 
-    /**
-     * Adds the given tab as child of this component at the specific index.
-     * Original: Tabs#addTabAtIndex(int, Tab).
-     */
-    C addTabAtIndex(int index, Tab tab);
+    /** Inserts a tab as the first child. */
+    C withTabAsFirst(Tab tab);
 
-    /**
-     * Removes the given child tabs from this component.
-     * Original: Tabs#remove(Tab...).
-     */
+    /** Inserts a tab at the given zero-based index. */
+    C withTabAtIndex(int index, Tab tab);
+
+    /** Removes specific tabs from the bar. */
     C remove(Tab... tabs);
 
-    /**
-     * Removes all tabs from this component.
-     * Original: Tabs#removeAll().
-     */
+    /** Removes all tabs from the bar. */
     C removeAll();
 
-    /**
-     * Replaces the tab in the container with another one without changing position.
-     * Original: Tabs#replace(Tab, Tab).
-     */
+    /** Replaces {@code oldTab} with {@code newTab} at the same position. */
     C replace(Tab oldTab, Tab newTab);
 
-    // ---------------------------------------------------------------------
-    // Behavior & state (no "set" prefix)
-    // ---------------------------------------------------------------------
+    // ── Behavior ──────────────────────────────────────────────────────────────
 
-    /**
-     * Specify that the tabs should be automatically selected.
-     * Original: Tabs#setAutoselect(boolean).
-     */
+    /** Controls whether a tab is automatically selected on attach. */
     C autoselect(boolean autoselect);
 
-    /**
-     * Sets the flex grow property of all enclosed tabs.
-     * Original: Tabs#setFlexGrowForEnclosedTabs(double).
-     */
+    /** Sets the {@code flex-grow} CSS property on all enclosed tabs. */
     C flexGrowForEnclosedTabs(double flexGrow);
 
-    /**
-     * Sets the orientation of this tab sheet.
-     * Original: Tabs#setOrientation(Tabs.Orientation).
-     */
+    /** Sets the orientation of the tab bar. */
     C orientation(Tabs.Orientation orientation);
 
-    // ---------------------------------------------------------------------
-    // Selection (no "set" prefix)
-    // ---------------------------------------------------------------------
+    // ── Selection ─────────────────────────────────────────────────────────────
 
-    /**
-     * Selects a tab based on its zero-based index.
-     * Original: Tabs#setSelectedIndex(int).
-     */
+    /** Selects a tab by zero-based index. */
     C selectedIndex(int selectedIndex);
 
-    /**
-     * Selects the given tab.
-     * Original: Tabs#setSelectedTab(Tab).
-     */
+    /** Selects the given tab. */
     C selectedTab(Tab selectedTab);
 
-    C addSelectedChangeListener(ComponentEventListener<Tabs.SelectedChangeEvent> listener);
+    /** Registers a selection-change listener. */
+    C withSelectedChangeListener(ComponentEventListener<Tabs.SelectedChangeEvent> listener);
 
-    C withTab(String label, Component component);
-    C withTab(String label, Icon icon, Component component);
-    C withTab(String label, int counter, Component component);
-    C withTab(String label, int counter, TabVariant tabVariant, Component component);
-    C withTab(String label, Icon icon, TabVariant tabVariant, Component component);
-    C withTab(Tab tab, Component component);
-    C withTab(String... tabs);
+    // ── Badge / icon decoration ───────────────────────────────────────────────
+
+    /**
+     * Adds a tab with a plain {@code label} and a numeric counter badge.
+     * Equivalent to {@code add(new Tab(new Span(label), Badge.createBadge(counter)))}.
+     */
+    C withTab(String label, int counter);
+
+    /**
+     * Adds a tab with a leading {@code icon} and a plain string {@code label}.
+     */
+    C withTab(String label, Icon icon);
+
+    // ── i18n labeled tabs ─────────────────────────────────────────────────────
+
+    /**
+     * Adds a tab whose label is resolved via the Holon {@link Localizable} API.
+     * When {@link DeferrableLocalizationConfigurator#deferLocalization()} is active,
+     * the resolved message is applied on the first UI attach cycle; otherwise it is
+     * applied immediately. Falls back to {@link Localizable#getMessage()} when no
+     * i18n provider is available.
+     */
+    C withTab(Localizable label);
+
+    /** Adds an i18n-labeled tab with a leading {@link Icon}. */
+    C withTab(Localizable label, Icon icon);
+
+    /** Adds an i18n-labeled tab with a numeric counter badge. */
+    C withTab(Localizable label, int counter);
+
+    // ── configure factory ─────────────────────────────────────────────────────
 
     static BaseTabsConfigurator configure(Tabs tabs) {
         return new DefaultTabsConfigurator(tabs);
     }
 
-    interface BaseTabsConfigurator extends TabsConfigurator<BaseTabsConfigurator> {
+    interface BaseTabsConfigurator extends TabsConfigurator<BaseTabsConfigurator>, DeferrableLocalizationConfigurator<BaseTabsConfigurator> {
 
     }
 }

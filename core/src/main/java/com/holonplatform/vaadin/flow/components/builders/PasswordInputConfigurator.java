@@ -32,6 +32,7 @@ public interface PasswordInputConfigurator<C extends PasswordInputConfigurator<C
 		HasSizeConfigurator<C>, HasStyleConfigurator<C>, HasAutofocusConfigurator<C>,
 		FocusableConfigurator<Component, C>, HasPrefixAndSuffixConfigurator<C>, CompositionNotifierConfigurator<C>,
 		HasPlaceholderConfigurator<C>, HasLabelConfigurator<C>, HasTitleConfigurator<C>, HasPatternConfigurator<C>,
+		HasAriaLabelConfigurator<C>, HasTooltipConfigurator<C>, HasHelperTextConfigurator<C>,
 		HasThemeVariantConfigurator<TextFieldVariant, C>, DeferrableLocalizationConfigurator<C> {
 
 	/**

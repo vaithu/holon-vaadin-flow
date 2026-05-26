@@ -30,19 +30,11 @@ public class DefaultFlexLayoutBuilder extends AbstractFlexLayoutConfigurator<Fle
 		super(new FlexLayout());
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.holonplatform.vaadin.flow.components.builders.ComponentBuilder#build()
-	 */
 	@Override
 	public FlexLayout build() {
 		return getComponent();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.holonplatform.vaadin.flow.internal.components.builders.AbstractComponentConfigurator#getConfigurator()
-	 */
 	@Override
 	protected FlexLayoutBuilder getConfigurator() {
 		return this;

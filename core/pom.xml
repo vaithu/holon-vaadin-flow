@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>com.holon-platform.vaadin</groupId>
 		<artifactId>holon-vaadin-flow-root</artifactId>
-		<version>5.5.7-SNAPSHOT</version>
+		<version>10.0.0</version>
 	</parent>
 
 	<artifactId>holon-vaadin-flow</artifactId>
@@ -21,21 +21,18 @@
 		<dependency>
 			<groupId>com.holon-platform.core</groupId>
 			<artifactId>holon-core</artifactId>
-			<version>${holon.core.version}</version>
 		</dependency>
 
 		<!-- Holon auth -->
 		<dependency>
 			<groupId>com.holon-platform.core</groupId>
 			<artifactId>holon-auth</artifactId>
-			<version>${holon.core.version}</version>
 		</dependency>
 
-		<!-- Vaadin core -->
+		<!-- Vaadin core (transitively includes vaadin-flow-components-base) -->
 		<dependency>
 			<groupId>com.vaadin</groupId>
 			<artifactId>vaadin-core</artifactId>
-			<version>${vaadin.version}</version>
 			<exclusions>
 				<exclusion>
 					<groupId>org.apache.commons</groupId>
@@ -44,13 +41,39 @@
 			</exclusions>
 		</dependency>
 
-
-
 		<!-- Servlet API -->
 		<dependency>
 			<groupId>jakarta.servlet</groupId>
 			<artifactId>jakarta.servlet-api</artifactId>
-			<version>${servlet.version}</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<!-- Optional Spring Security (used by SecurityUtils) -->
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-core</artifactId>
+			<!-- CVE-2024-38821, CVE-2025-41232, CVE-2025-41248 fixed in 6.4.10
+			     CVE-2026-22732: no patch available in any released version yet -->
+			<optional>true</optional>
+		</dependency>
+
+		<!-- Optional Collaboration Engine (used by CollaborationFormSupport) -->
+		<dependency>
+			<groupId>com.vaadin</groupId>
+			<artifactId>collaboration-engine</artifactId>
+			<optional>true</optional>
+		</dependency>
+
+		<!-- Compile-time utilities -->
+		<dependency>
+			<groupId>org.jetbrains</groupId>
+			<artifactId>annotations</artifactId>
+			<scope>compile</scope>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
 			<scope>provided</scope>
 		</dependency>
 
@@ -63,57 +86,40 @@
 		<dependency>
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-core</artifactId>
-			<version>${mockito.version}</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.holon-platform.jdbc</groupId>
 			<artifactId>holon-datastore-jdbc</artifactId>
-			<version>${holon.jdbc.datastore.version}</version>
+
 			<scope>test</scope>
 		</dependency>
+		<!-- CVE-2021-23463, CVE-2021-42392, CVE-2022-23221, CVE-2022-45868 fixed in 2.3.232 -->
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
-			<version>1.4.200</version>
 			<scope>test</scope>
 		</dependency>
-        <dependency>
-            <groupId>com.vaadin</groupId>
-            <artifactId>vaadin-flow-components-base</artifactId>
-            <version>${vaadin.version}</version>
-        </dependency>
+		<!-- CVE-2026-24400 (XXE) fixed in 3.27.7 -->
 		<dependency>
 			<groupId>org.assertj</groupId>
 			<artifactId>assertj-core</artifactId>
-			<version>3.25.1</version>
 			<scope>test</scope>
 		</dependency>
+
+		<!-- Vaadin TestBench Unit (browser-free UI unit testing) -->
 		<dependency>
-			<groupId>org.jetbrains</groupId>
-			<artifactId>annotations</artifactId>
-			<version>24.0.0</version>
-			<scope>compile</scope>
+			<groupId>com.vaadin</groupId>
+			<artifactId>vaadin-testbench-unit-junit6</artifactId>
+			<scope>test</scope>
 		</dependency>
 
 		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-orm</artifactId>
-			<version>6.1.14</version>
+			<groupId>org.parttio</groupId>
+			<artifactId>line-awesome</artifactId>
 		</dependency>
-        <dependency>
-            <groupId>org.springframework.security</groupId>
-            <artifactId>spring-security-core</artifactId>
-            <version>6.3.3</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>1.18.38</version>
-            <scope>provided</scope>
-        </dependency>
-    </dependencies>
+
+	</dependencies>
 
 	<build>
 		<plugins>

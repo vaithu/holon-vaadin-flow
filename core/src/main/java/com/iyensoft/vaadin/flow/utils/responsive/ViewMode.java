@@ -3,8 +3,7 @@ package com.iyensoft.vaadin.flow.utils.responsive;
 import com.holonplatform.vaadin.flow.internal.lumo.Breakpoint;
 import com.vaadin.flow.component.Component;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /*
 *
@@ -49,17 +48,40 @@ public enum ViewMode {
 
     private final String prefix;
     private final Breakpoint breakpoint; // may be null if prefix has no mapping
+    private final String semanticClass;  // precomputed once: "vm-mobile", "vm-tablet", etc.
+    private final String prefixColon;    // precomputed once: "sm:", "md:", "lg:", etc.
 
     /** Prefix-only constructor: Breakpoint is derived from the prefix. */
     ViewMode(String prefix) {
         this.prefix = prefix;
         this.breakpoint = Breakpoint.fromPrefixOrNull(prefix);
+        this.semanticClass = "vm-" + name().toLowerCase().replace('_', '-');
+        this.prefixColon = prefix + ":";
     }
 
     /** Explicit constructor: if you want to override the derived mapping. */
     ViewMode(String prefix, Breakpoint breakpoint) {
         this.prefix = prefix;
         this.breakpoint = breakpoint;
+        this.semanticClass = "vm-" + name().toLowerCase().replace('_', '-');
+        this.prefixColon = prefix + ":";
+    }
+
+    // ── Static O(1) reverse-lookup maps ───────────────────────────────────────
+    // Built once at class-load time; avoids values() array allocation on every call.
+
+    private static final Map<Breakpoint, ViewMode> BY_BREAKPOINT;
+    private static final Map<String, ViewMode>     BY_PREFIX;
+
+    static {
+        Map<Breakpoint, ViewMode> byBp  = new EnumMap<>(Breakpoint.class);
+        Map<String, ViewMode>     byPfx = new HashMap<>(7);
+        for (ViewMode vm : values()) {
+            if (vm.breakpoint != null) byBp.putIfAbsent(vm.breakpoint, vm);
+            byPfx.putIfAbsent(vm.prefix, vm);
+        }
+        BY_BREAKPOINT = Collections.unmodifiableMap(byBp);
+        BY_PREFIX     = Collections.unmodifiableMap(byPfx);
     }
 
     /** Returns prefix like "sm", "md", "lg", "xl", "2xl". */
@@ -72,30 +94,28 @@ public enum ViewMode {
         return breakpoint;
     }
 
-    /** Reverse mapping: Breakpoint → ViewMode (throws if not mapped). */
+    /** O(1) reverse mapping: Breakpoint → ViewMode (throws if not mapped). */
     public static ViewMode fromBreakpoint(Breakpoint bp) {
         if (bp == null) {
             throw new IllegalArgumentException("Breakpoint cannot be null");
         }
-        for (ViewMode vm : values()) {
-            if (bp.equals(vm.breakpoint)) {
-                return vm;
-            }
+        ViewMode vm = BY_BREAKPOINT.get(bp);
+        if (vm == null) {
+            throw new IllegalArgumentException("No ViewMode mapped for Breakpoint: " + bp);
         }
-        throw new IllegalArgumentException("No ViewMode mapped for Breakpoint: " + bp);
+        return vm;
     }
 
-    /** Reverse mapping from prefix string (e.g., "md" → TABLET). */
+    /** O(1) reverse mapping from prefix string (e.g., "md" → TABLET). */
     public static ViewMode fromPrefix(String prefix) {
         if (prefix == null || prefix.isBlank()) {
             throw new IllegalArgumentException("Prefix cannot be null/blank");
         }
-        for (ViewMode vm : values()) {
-            if (vm.prefix.equals(prefix)) {
-                return vm;
-            }
+        ViewMode vm = BY_PREFIX.get(prefix);
+        if (vm == null) {
+            throw new IllegalArgumentException("Unknown ViewMode prefix: " + prefix);
         }
-        throw new IllegalArgumentException("Unknown ViewMode prefix: " + prefix);
+        return vm;
     }
 
     /**
@@ -106,7 +126,8 @@ public enum ViewMode {
      * @return prefixed class "<prefix>:<base>"
      */
     public String toCssClass(String base) {
-        return prefix + ":" + base;
+        // Uses pre-computed prefixColon ("lg:") to avoid string concatenation on every builder call.
+        return prefixColon + base;
     }
 
     /**
@@ -124,8 +145,7 @@ public enum ViewMode {
      */
     public void applyTo(Component component) {
         if (component == null) return;
-        String semantic = ("vm-" + name().toLowerCase().replace('_', '-'));
-        component.getElement().getClassList().add(semantic);
+        component.getElement().getClassList().add(semanticClass);
         component.getElement().setAttribute("data-view-prefix", prefix);
     }
 
@@ -189,8 +209,7 @@ public enum ViewMode {
         if (component == null) return;
 
         // 1) Remove semantic class for this mode
-        String semantic = ("vm-" + name().toLowerCase().replace('_', '-'));
-        component.getElement().getClassList().remove(semantic);
+        component.getElement().getClassList().remove(semanticClass);
 
         // 2) Remove data-view-prefix ONLY if it matches this mode's prefix
         String current = component.getElement().getAttribute("data-view-prefix");
@@ -198,15 +217,9 @@ public enum ViewMode {
             component.getElement().removeAttribute("data-view-prefix");
         }
 
-        // 3) Remove all classes that start with "<prefix>:"
-        List<String> toRemove = new ArrayList<>();
-        for (String cls : component.getElement().getClassList()) {
-            if (cls != null && cls.startsWith(prefix + ":")) {
-                toRemove.add(cls);
-            }
-        }
-        if (!toRemove.isEmpty()) {
-            toRemove.forEach(component.getElement().getClassList()::remove);
-        }
+        // 3) Remove all classes that start with "<prefix>:" — use precomputed prefixColon.
+        // removeIf avoids the two-pass collect-then-remove pattern (no intermediate List allocation).
+        var classList = component.getElement().getClassList();
+        classList.removeIf(cls -> cls != null && cls.startsWith(prefixColon));
     }
 }

@@ -34,7 +34,8 @@ public interface LocalTimeInputConfigurator<C extends LocalTimeInputConfigurator
 		extends InputValueConfigurator<LocalTime, ValueChangeEvent<LocalTime>, C>, HasEnabledConfigurator<C>,
 		HasSizeConfigurator<C>, HasStyleConfigurator<C>, FocusableConfigurator<Component, C>,
 		HasPlaceholderConfigurator<C>, HasLabelConfigurator<C>, HasTitleConfigurator<C>,
-		DeferrableLocalizationConfigurator<C>, HasTooltipConfigurator<C> {
+		DeferrableLocalizationConfigurator<C>, HasTooltipConfigurator<C>, HasAriaLabelConfigurator<C>,
+		HasHelperTextConfigurator<C> {
 
 	/**
 	 * Set the {@link Locale} to use to represent the {@link LocalTime} values.

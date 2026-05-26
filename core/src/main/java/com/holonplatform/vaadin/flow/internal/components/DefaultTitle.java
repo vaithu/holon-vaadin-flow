@@ -2,26 +2,21 @@ package com.holonplatform.vaadin.flow.internal.components;
 
 import com.holonplatform.vaadin.flow.components.HasTitle;
 import com.holonplatform.vaadin.flow.components.builders.LabelBuilder;
+import com.holonplatform.vaadin.flow.internal.lumo.Text;
 import com.vaadin.flow.component.html.H4;
-import com.vaadin.flow.theme.lumo.LumoUtility;
 
 public class DefaultTitle implements HasTitle {
 
-    private LabelBuilder<?> title;
-
-    public DefaultTitle() {
-
-    }
+    private final LabelBuilder<?> title;
 
     public DefaultTitle(LabelBuilder<?> title) {
         this.title = title;
-        this.title.styleNames(LumoUtility.TextColor.PRIMARY, LumoUtility.Padding.SMALL);
+        this.title.styleNames(Text.PRIMARY.getClassName(), "padding-small");
     }
 
     public DefaultTitle(H4 component) {
         this(LabelBuilder.h4().text(component.getText()));
     }
-
 
     /**
      * Get the component title.

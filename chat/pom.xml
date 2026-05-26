@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.holon-platform.vaadin</groupId>
+        <artifactId>holon-vaadin-flow-root</artifactId>
+        <version>10.0.0</version>
+    </parent>
+
+    <artifactId>holon-vaadin-flow-chat</artifactId>
+    <packaging>jar</packaging>
+
+    <name>${project.groupId}:${project.artifactId}</name>
+    <description>Holon Vaadin Flow Chat – real-time MS Teams-like chat components with DB-backed persistence</description>
+
+    <url>https://holon-platform.com</url>
+
+    <dependencies>
+
+        <!-- Core Holon Vaadin components -->
+        <dependency>
+            <groupId>com.holon-platform.vaadin</groupId>
+            <artifactId>holon-vaadin-flow</artifactId>
+        </dependency>
+
+        <!-- Vaadin Collaboration Kit – real-time sync engine (Apache 2.0) -->
+        <dependency>
+            <groupId>com.vaadin</groupId>
+            <artifactId>collaboration-engine</artifactId>
+        </dependency>
+
+        <!-- Jakarta Persistence API – optional, required only when entities are used with JPA Datastore -->
+        <dependency>
+            <groupId>jakarta.persistence</groupId>
+            <artifactId>jakarta.persistence-api</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <!-- Servlet API (provided by container) -->
+        <dependency>
+            <groupId>jakarta.servlet</groupId>
+            <artifactId>jakarta.servlet-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- Test -->
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifestEntries>
+                            <Automatic-Module-Name>com.holonplatform.vaadin.flow.chat</Automatic-Module-Name>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

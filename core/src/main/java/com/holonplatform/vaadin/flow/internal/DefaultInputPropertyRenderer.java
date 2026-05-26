@@ -15,14 +15,6 @@
  */
 package com.holonplatform.vaadin.flow.internal;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.util.Date;
-import java.util.Optional;
-
-import jakarta.annotation.Priority;
-
 import com.holonplatform.core.internal.utils.ObjectUtils;
 import com.holonplatform.core.internal.utils.TypeUtils;
 import com.holonplatform.core.presentation.StringValuePresenter;
@@ -34,6 +26,13 @@ import com.holonplatform.vaadin.flow.components.Input;
 import com.holonplatform.vaadin.flow.components.builders.LocalTimeInputBuilder;
 import com.holonplatform.vaadin.flow.internal.components.EnumItemCaptionGenerator;
 import com.holonplatform.vaadin.flow.internal.converters.DateToLocalTimeConverter;
+import jakarta.annotation.Priority;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.Date;
+import java.util.Optional;
 
 /**
  * Default {@link PropertyRenderer} to create {@link Input} type
@@ -152,7 +151,7 @@ public class DefaultInputPropertyRenderer<T> implements PropertyRenderer<Input, 
 		if (TypeUtils.isNumber(type)) {
 			// Number
 			final Class<? extends Number> numberType = (Class<? extends Number>) type;
-			return Optional.of(Input.number(numberType)).map(input -> (Input<V>) input);
+			return Optional.of(Input.number(numberType).build()).map(input -> (Input<V>) input);
 		}
 
 		return Optional.empty();

@@ -1,0 +1,185 @@
+/* ==========================================================================
+   entity-form-panel.css – EntityFormPanel component styles.
+
+   BEM : .entity-form-panel__[element]--[modifier]
+   All visual decisions live here; no inline styles in Java code.
+   Colours use project CSS custom-property tokens so the panel inherits
+   the active theme palette automatically.
+
+   KEYBOARD NAVIGATION NOTE
+   ─────────────────────────
+   DOM order of footer buttons is intentionally:
+     [Save] [SaveAndNew?] [Clear] [Cancel?]
+   so that pressing Enter on the last form field naturally focuses Save
+   (Holon's focusNextDocumentElement walks forward in the DOM).
+
+   VISUAL order is reversed via CSS `order`:
+     [Clear] [Cancel?]          [SaveAndNew?] [Save]
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   Root container
+   -------------------------------------------------------------------------- */
+.entity-form-panel {
+    display        : flex;
+    flex-direction : column;
+    gap            : var(--space-4, 1rem);
+    width          : 100%;
+    box-sizing     : border-box;
+}
+
+/* --------------------------------------------------------------------------
+   Form body
+   -------------------------------------------------------------------------- */
+.entity-form-panel__body {
+    flex  : 1 1 auto;
+    width : 100%;
+}
+
+/* --------------------------------------------------------------------------
+   Footer — flex row; `gap` between buttons; `flex-wrap` lets the row
+   reflow naturally on very narrow viewports before the 480 px breakpoint
+   forces the two-zone mobile layout.
+   -------------------------------------------------------------------------- */
+.entity-form-panel__footer {
+    display        : flex;
+    flex-direction : row;
+    align-items    : center;
+    flex-wrap      : wrap;
+    gap            : var(--space-2, 0.5rem);
+    padding-top    : var(--space-3, 0.75rem);
+    border-top     : 1px solid var(--color-border, #e4e4e7);
+    width          : 100%;
+    box-sizing     : border-box;
+}
+
+/* ── Button visual order via CSS `order` ─────────────────────────────────── */
+
+/* Save — DOM-first for keyboard Enter, visually rightmost */
+.entity-form-panel__btn-save     { order: 10; }
+
+/* Save & New — visually second from right */
+.entity-form-panel__btn-save-new { order: 9; }
+
+/* Clear — visually leftmost; auto-margin spacer pushes primary zone right */
+.entity-form-panel__btn-clear    { order: 1; margin-inline-end: auto; }
+
+/* Cancel — visually second from left */
+.entity-form-panel__btn-cancel   { order: 2; }
+
+/* --------------------------------------------------------------------------
+   Focus ring for Save (primary).
+   Target the HOST so !important beats the shadow-DOM theme contribution.
+   -------------------------------------------------------------------------- */
+vaadin-button.entity-form-panel__btn-save[focus-ring] {
+    box-shadow: 0 0 0 2px var(--surface-0, #ffffff),
+                0 0 0 4px var(--color-primary, #3b82f6) !important;
+}
+
+/* --------------------------------------------------------------------------
+   Clear & Cancel — secondary outlined buttons.
+
+   The EntityFormPanel Java constructor strips the `theme` attribute from these
+   two buttons.  Without a `theme` attribute the shell-theme "default outlined"
+   style applies automatically (white background, box-shadow border ring,
+   micro-lift elevation).  The rules below refine each button semantically:
+
+     • Clear (Reset) → soft-warning amber tint  (unsaved data will be discarded)
+     • Cancel        → neutral gray tint         (non-destructive dismiss)
+   -------------------------------------------------------------------------- */
+
+/* ── Cancel — neutral gray (non-destructive dismiss) ────────────────────── */
+vaadin-button.entity-form-panel__btn-cancel::part(button) {
+    background-color : var(--surface-1, #f4f4f5);
+    transition       : background-color 120ms ease;
+}
+
+vaadin-button.entity-form-panel__btn-cancel:not([disabled])::part(button):hover {
+    background-color : var(--zinc-200, #e4e4e7);
+}
+
+vaadin-button.entity-form-panel__btn-cancel:not([disabled])::part(button):active {
+    background-color : var(--zinc-300, #d4d4d8);
+}
+
+/* ── Clear (Reset) — soft-warning amber tint ─────────────────────────────
+   Signals that clicking WILL discard unsaved work without a confirmation.
+   Amber == "pause and think" — not as alarming as red, but clearly not neutral.
+   -------------------------------------------------------------------------- */
+vaadin-button.entity-form-panel__btn-clear::part(button) {
+    background-color : color-mix(in srgb, var(--warn, #f59e0b) 8%, transparent);
+    border-color     : color-mix(in srgb, var(--warn, #f59e0b) 30%, transparent) !important;
+    color            : var(--amber-700, #b45309);
+    transition       : background-color 120ms ease, border-color 120ms ease;
+}
+
+vaadin-button.entity-form-panel__btn-clear:not([disabled])::part(button):hover {
+    background-color : color-mix(in srgb, var(--warn, #f59e0b) 15%, transparent);
+    border-color     : color-mix(in srgb, var(--warn, #f59e0b) 50%, transparent) !important;
+}
+
+vaadin-button.entity-form-panel__btn-clear:not([disabled])::part(button):active {
+    background-color : color-mix(in srgb, var(--warn, #f59e0b) 22%, transparent);
+}
+
+/* Focus ring for Clear uses amber rather than brand-500 to stay in semantic family */
+vaadin-button.entity-form-panel__btn-clear[focus-ring] {
+    box-shadow: 0 0 0 2px var(--surface-0, #ffffff),
+                0 0 0 4px var(--warn, #f59e0b) !important;
+    outline: none !important;
+}
+
+/* ── Focus ring — keyboard-only ([focus-ring] set by Vaadin JS) ─────────── */
+vaadin-button.entity-form-panel__btn-clear[focus-ring],
+vaadin-button.entity-form-panel__btn-cancel[focus-ring] {
+    box-shadow: 0 0 0 2px var(--surface-0, #ffffff),
+                0 0 0 4px var(--brand-500, #3b82f6) !important;
+    outline: none !important;
+}
+
+/* --------------------------------------------------------------------------
+   Responsive — mobile  (≤ 480 px)
+
+   Primary actions (Save, Save & New) take their own full-width row each,
+   stacked at the top where the thumb can reach them easily.
+
+   Secondary actions (Clear, Cancel) SHARE a row side-by-side at the bottom.
+   This avoids the awkward "four equal full-width buttons" column seen when
+   everything is treated identically.
+
+   Layout:
+     ┌─────────────────────────┐
+     │         [Save]          │  ← full width, primary blue
+     ├─────────────────────────┤
+     │       [Save & New]      │  ← full width, secondary outlined  (optional)
+     ├──────────────┬──────────┤
+     │    [Clear]   │  [Cancel]│  ← each 50%, neutral outlined      (cancel optional)
+     └──────────────┴──────────┘
+   -------------------------------------------------------------------------- */
+@media (max-width: 480px) {
+
+    /* Remove the auto-margin spacer — it breaks flex-wrap layout */
+    .entity-form-panel__btn-clear { margin-inline-end: 0; }
+
+    /* Primary actions: each owns its row */
+    .entity-form-panel__btn-save {
+        order  : 1;
+        flex   : 1 1 100%;
+    }
+    .entity-form-panel__btn-save-new {
+        order  : 2;
+        flex   : 1 1 100%;
+    }
+
+    /* Secondary actions: share a row equally */
+    .entity-form-panel__btn-clear {
+        order     : 3;
+        flex      : 1 1 0;
+        min-width : 4rem;
+    }
+    .entity-form-panel__btn-cancel {
+        order     : 4;
+        flex      : 1 1 0;
+        min-width : 4rem;
+    }
+}

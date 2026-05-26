@@ -25,6 +25,8 @@ import org.junit.jupiter.api.BeforeEach;
 import java.util.Collections;
 import java.util.Locale;
 import java.util.Properties;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
@@ -81,11 +83,13 @@ public abstract class AbstractVaadinSpringTest {
 		when(vaadinService.getMainDivId(any(VaadinSession.class), any(VaadinRequest.class)))
 				.thenReturn("test-main-div-id");
 		VaadinSession session = mock(VaadinSession.class);
+		Lock sessionLock = new ReentrantLock();
 		when(session.getState()).thenReturn(VaadinSessionState.OPEN);
 		when(session.getSession()).thenReturn(wrappedSession);
 		when(session.getService()).thenReturn(vaadinService);
 		when(session.getSession().getId()).thenReturn(TEST_SESSION_ID);
 		when(session.hasLock()).thenReturn(true);
+		when(session.getLockInstance()).thenReturn(sessionLock);
 		when(session.getLocale()).thenReturn(locale != null ? locale : Locale.US);
 		return session;
 	}

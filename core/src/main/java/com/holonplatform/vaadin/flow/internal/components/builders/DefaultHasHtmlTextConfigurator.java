@@ -20,7 +20,9 @@ import com.holonplatform.core.internal.Logger;
 import com.holonplatform.core.internal.utils.ObjectUtils;
 import com.holonplatform.vaadin.flow.components.builders.HasDeferrableLocalization;
 import com.holonplatform.vaadin.flow.components.builders.HasHtmlTextConfigurator;
+import com.holonplatform.vaadin.flow.components.builders.SignalBindings;
 import com.holonplatform.vaadin.flow.internal.VaadinLogger;
+import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasElement;
 
 /**
@@ -29,7 +31,7 @@ import com.vaadin.flow.component.HasElement;
  * @since 5.2.0
  */
 public class DefaultHasHtmlTextConfigurator extends AbstractLocalizationSupportConfigurator<HasElement>
-		implements HasHtmlTextConfigurator<DefaultHasHtmlTextConfigurator> {
+		implements HasHtmlTextConfigurator<DefaultHasHtmlTextConfigurator>, SignalBindings.Owner {
 
 	private static final Logger LOGGER = VaadinLogger.create();
 
@@ -68,6 +70,11 @@ public class DefaultHasHtmlTextConfigurator extends AbstractLocalizationSupportC
 			LOGGER.debug(() -> "Component [" + component + "] html text localization was deferred");
 		}
 		return this;
+	}
+
+	@Override
+	public Component getSignalBindingOwner() {
+		return (component instanceof Component) ? (Component) component : null;
 	}
 
 }

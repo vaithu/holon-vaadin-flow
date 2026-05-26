@@ -15,15 +15,15 @@
  */
 package com.holonplatform.vaadin.flow.internal.components;
 
-import java.util.Optional;
-import java.util.function.Function;
-
 import com.holonplatform.core.internal.utils.ObjectUtils;
 import com.holonplatform.core.presentation.StringValuePresenter;
 import com.holonplatform.vaadin.flow.components.ViewComponent;
 import com.vaadin.flow.component.PropertyDescriptor;
 import com.vaadin.flow.component.PropertyDescriptors;
 import com.vaadin.flow.component.html.Div;
+
+import java.util.Optional;
+import java.util.function.Function;
 
 /**
  * Default {@link ViewComponent} implementation.
@@ -93,7 +93,7 @@ public class DefaultViewComponent<T> extends AbstractViewComponent<Div, T> {
 	 */
 	protected void setText(String text) {
 		getInternalContent().ifPresent(content -> {
-			if (!isHtml() || text == null || text.trim().equals("")) {
+			if (!isHtml() || text == null || text.isBlank()) {
 				content.setText(text);
 			} else {
 				innerHtmlDescriptor.set(content, text);

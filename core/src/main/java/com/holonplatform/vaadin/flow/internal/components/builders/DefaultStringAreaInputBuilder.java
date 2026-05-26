@@ -32,38 +32,22 @@ public class DefaultStringAreaInputBuilder extends AbstractStringAreaInputBuilde
 		super();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.holonplatform.vaadin.flow.internal.components.builders.AbstractComponentConfigurator#getConfigurator()
-	 */
 	@Override
 	protected StringAreaInputBuilder getConfigurator() {
 		return this;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.holonplatform.vaadin.flow.components.builders.InputConfigurator#required(boolean)
-	 */
 	@Override
 	public StringAreaInputBuilder required(boolean required) {
 		getComponent().setRequired(required);
 		return getConfigurator();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.holonplatform.vaadin.flow.components.builders.InputBuilder#build()
-	 */
 	@Override
 	public Input<String> build() {
 		return buildAsInput();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.holonplatform.vaadin.flow.components.builders.InputBuilder#validatable()
-	 */
 	@Override
 	public ValidatableStringAreaInputBuilder validatable() {
 		return new DefaultValidatableStringAreaInputBuilder(getComponent(), isEmptyValuesAsNull(),

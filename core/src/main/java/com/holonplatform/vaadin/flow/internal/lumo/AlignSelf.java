@@ -1,22 +1,20 @@
 package com.holonplatform.vaadin.flow.internal.lumo;
 
-import com.vaadin.flow.theme.lumo.LumoUtility;
-
 public enum AlignSelf {
-        AUTO(LumoUtility.AlignSelf.AUTO),
-        BASELINE(LumoUtility.AlignSelf.BASELINE),
-        CENTER(LumoUtility.AlignSelf.CENTER),
-        END(LumoUtility.AlignSelf.END),
-        START(LumoUtility.AlignSelf.START),
-        STRETCH(LumoUtility.AlignSelf.STRETCH);
+    AUTO("self-auto"),
+    BASELINE("self-baseline"),
+    CENTER("self-center"),
+    END("self-end"),
+    START("self-start"),
+    STRETCH("self-stretch");
 
-        private final String className;
+    private final String className;
 
-        private AlignSelf(String className) {
-            this.className = className;
-        }
-
-        public String getClassName() {
-            return this.className;
-        }
+    private AlignSelf(String className) {
+        this.className = className;
     }
+
+    public String getClassName() {
+        return this.className;
+    }
+}

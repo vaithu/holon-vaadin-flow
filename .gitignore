@@ -23,6 +23,14 @@ dependency-reduced-pom.xml
 buildNumber.properties
 .mvn/timing.properties
 
+# Scratch / CI artefacts
+*.log
+*.exit
+*.ok
+*-report.txt
+dep-list-*.txt
+*-versions.txt
+
 # Avoid ignoring Maven wrapper jar file (.jar files are usually ignored)
 !/.mvn/wrapper/maven-wrapper.jar
 

@@ -1,0 +1,93 @@
+/*
+ * highlight.css
+ *
+ * Mobile-first styles for Highlight — a KPI / metric card that shows a
+ * labelled numeric value with an optional prefix icon and suffix.
+ *
+ * BEM namespace: .highlight
+ *
+ * Structure:
+ *   .highlight           — root flex row (prefix | column | suffix)
+ *   .highlight__heading  — small muted label above the value ("Revenue", "Users")
+ *   .highlight__value    — the prominent numeric / text value
+ *   .highlight__column   — vertical stack containing heading + value + details
+ *
+ * Mobile  (< 640 px) — full-width card, compact padding.
+ * Desktop (≥ 640 px) — inline, generous padding.
+ */
+
+/* -----------------------------------------------------------------------
+ * Root
+ * ----------------------------------------------------------------------- */
+
+.highlight {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    border: 1px solid var(--color-border, #dde0e5);
+    border-radius: var(--radius-xl, 16px);
+    box-shadow: var(--shadow-xs);
+    padding: 1.25rem 1rem;
+    position: relative;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+@media (min-width: 640px) {
+    .highlight {
+        gap: 1rem;
+        padding: 1.5rem 1.25rem;
+    }
+}
+
+/* -----------------------------------------------------------------------
+ * Column — vertical stack: heading → value → details
+ * ----------------------------------------------------------------------- */
+
+.highlight__column {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    min-width: 0;
+    padding-block: 0.25rem;
+}
+
+/* -----------------------------------------------------------------------
+ * Heading — small muted label
+ * ----------------------------------------------------------------------- */
+
+.highlight__heading {
+    margin: 0;
+    font-size: 0.6875rem;   /* 11px */
+    font-weight: 600;
+    line-height: 1.4;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+@media (min-width: 640px) {
+    .highlight__heading {
+        font-size: 0.6875rem;
+    }
+}
+
+/* -----------------------------------------------------------------------
+ * Value — the prominent numeric / text content
+ *
+ * Font size is also controlled by Font.Size enum classes applied via
+ * Highlight.setValueFontSize(); the .highlight__value class provides the
+ * weight and colour as a baseline.
+ * ----------------------------------------------------------------------- */
+
+.highlight__value {
+    font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+

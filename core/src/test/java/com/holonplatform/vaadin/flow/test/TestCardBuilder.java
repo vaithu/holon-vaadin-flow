@@ -1,41 +1,94 @@
 package com.holonplatform.vaadin.flow.test;
 
-import com.holonplatform.vaadin.flow.components.builders.CardGridBuilder;
-import com.holonplatform.vaadin.flow.components.builders.CardGridConfigurator;
-import com.holonplatform.vaadin.flow.internal.components.builders.DefaultCardGridBuilder;
-import com.vaadin.flow.component.html.Div;
+import com.iyensoft.vaadin.flow.components.builders.CardBuilder;
+import com.vaadin.flow.component.card.Card;
+import com.vaadin.flow.component.html.Span;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
-public class TestCardBuilder {
+/**
+ * Unit tests for {@link CardBuilder}.
+ */
+class TestCardBuilder {
 
     @Test
-    public void testCard() {
-        CardGridBuilder gridBuilder = new DefaultCardGridBuilder(new Div());
-        assertNotNull(gridBuilder);
-        Div parent = gridBuilder.build();
-        assertNotNull(parent);
+    void create_returnsNonNull() {
+        assertNotNull(CardBuilder.create());
+    }
 
-        assertEquals(3, parent.getClassNames().stream().count());
-        gridBuilder.gap(true).large(2);
-        assertEquals(5, parent.getClassNames().stream().count());
+    @Test
+    void create_existingCard() {
+        Card card = new Card();
+        CardBuilder builder = CardBuilder.create(card);
+        assertNotNull(builder);
+        assertSame(card, builder.build());
+    }
 
-        CardGridConfigurator.CardBuilder<CardGridBuilder> cardBuilder = gridBuilder.withCard(new Div());
-        Div card = cardBuilder.build();
+    @Test
+    void build_default_returnsCard() {
+        Card card = CardBuilder.create().build();
         assertNotNull(card);
+    }
 
-        cardBuilder.rowSpan(1);
-        assertEquals(8, card.getClassNames().stream().count());
-        assertEquals(1, parent.getChildren().count());
-        assertEquals(1, card.getChildren().count());
-        card.getChildren().findFirst().ifPresent(component -> {
-            System.out.println(component.getClassNames());
-            assertEquals(2,component.getClassNames().stream().count());
-        });
+    @Test
+    void add_components() {
+        Card card = CardBuilder.create()
+                .add(new Span("Content"))
+                .build();
+        assertTrue(card.getComponentCount() > 0);
+    }
 
+    @Test
+    void withFooter() {
+        Card card = CardBuilder.create()
+                .withFooter(new Span("Footer"))
+                .build();
+        assertNotNull(card);
+    }
 
+    @Test
+    void header_setsHeader() {
+        Card card = CardBuilder.create()
+                .header(new Span("Header"))
+                .build();
+        assertNotNull(card.getHeader());
+    }
 
+    @Test
+    void subtitle_setsSubtitle() {
+        Card card = CardBuilder.create()
+                .subtitle(new Span("Sub"))
+                .build();
+        assertNotNull(card.getSubtitle());
+    }
+
+    @Test
+    void media_setsMedia() {
+        Card card = CardBuilder.create()
+                .media(new Span("Image"))
+                .build();
+        assertNotNull(card.getMedia());
+    }
+
+    @Test
+    void styleName_addsClassName() {
+        Card card = CardBuilder.create()
+                .styleName("my-card")
+                .build();
+        assertTrue(card.getClassNames().contains("my-card"));
+    }
+
+    @Test
+    void fluent_chain() {
+        Card card = CardBuilder.create()
+                .header(new Span("Title"))
+                .subtitle(new Span("Subtitle"))
+                .add(new Span("Body"))
+                .withFooter(new Span("Footer"))
+                .styleName("custom-card")
+                .build();
+        assertNotNull(card);
+        assertTrue(card.getClassNames().contains("custom-card"));
     }
 }

@@ -1,45 +1,83 @@
 package com.holonplatform.vaadin.flow;
 
+import com.holonplatform.vaadin.flow.components.Components;
+import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Span;
-import com.vaadin.flow.theme.lumo.LumoUtility;
 
+/**
+ * A stacked two-line label component with a primary (top) and secondary
+ * (bottom) span. Styled via {@code double-label.css}.
+ *
+ * <p>BEM root: {@code .double-label}</p>
+ *
+ * @since 10.0.0
+ */
+@StyleSheet("context://double-label.css")
 public class DoubleLabel extends Div {
+
     private final Span spanTop;
     private final Span spanBottom;
 
+    /**
+     * Creates a new {@link DoubleLabel} with the given top and bottom text.
+     *
+     * @param titleTop    primary (top) label text
+     * @param titleBottom secondary (bottom) label text
+     */
     public DoubleLabel(String titleTop, String titleBottom) {
-        spanTop = new Span(titleTop);
-        spanTop.addClassNames(LumoUtility.FontSize.MEDIUM, LumoUtility.TextColor.PRIMARY);
-        spanBottom = new Span(titleBottom);
-        spanBottom.addClassNames(LumoUtility.FontSize.LARGE, LumoUtility.TextColor.SECONDARY);
+        addClassName("double-label");
+
+        spanTop = Components.span().text(titleTop).styleName("double-label__top").build();
+        spanBottom = Components.span().text(titleBottom).styleName("double-label__bottom").build();
+
         add(spanTop, spanBottom);
-        addClassNames(LumoUtility.Display.FLEX, LumoUtility.FlexDirection.COLUMN, LumoUtility.Flex.GROW, LumoUtility.Flex.SHRINK_NONE, LumoUtility.AlignItems.CENTER);
-        addClassNames(LumoUtility.Border.BOTTOM, LumoUtility.BorderColor.CONTRAST_10, LumoUtility.Padding.SMALL);
     }
 
-    public DoubleLabel(String titleTop, String titleBottom, boolean noBorders) {
-        this(titleTop, titleBottom);
-        if (noBorders) {
-            removeClassNames(LumoUtility.Border.BOTTOM);
-        }
-        setAlignLeft();
-        setFixedWidth();
-    }
+    // -----------------------------------------------------------------------
+    // Alignment modifiers
+    // -----------------------------------------------------------------------
 
+    /** Aligns both spans to the left (flex-start). */
     public void setAlignLeft() {
-        addClassNames(LumoUtility.AlignItems.START);
-        removeClassNames(LumoUtility.AlignItems.CENTER);
+        addClassName("double-label--align-left");
+        removeClassName("double-label--align-center");
     }
 
-    public void setFixedWidth() {
-        getStyle().set("flex-basis", "300px");
-       /* .flex-basis-300-pixels {
-            flex-basis: 300px;
-        }
-        addClassNames(FLEX_BASIS_300_PIXELS);*/
-        removeClassNames(LumoUtility.Flex.GROW);
+    /** Aligns both spans to the centre (default). */
+    public void setAlignCenter() {
+        addClassName("double-label--align-center");
+        removeClassName("double-label--align-left");
     }
+
+    // -----------------------------------------------------------------------
+    // Width modifiers
+    // -----------------------------------------------------------------------
+
+    /** Sets a fixed 300 px flex-basis (no grow). */
+    public void setFixedWidth() {
+        addClassName("double-label--fixed-width");
+        removeClassName("double-label--grow");
+    }
+
+    /** Allows the component to grow to fill its flex container. */
+    public void setGrow() {
+        addClassName("double-label--grow");
+        removeClassName("double-label--fixed-width");
+    }
+
+    // -----------------------------------------------------------------------
+    // Border modifier
+    // -----------------------------------------------------------------------
+
+    /** Removes the bottom border separator. */
+    public void setNoBorder() {
+        addClassName("double-label--no-border");
+    }
+
+    // -----------------------------------------------------------------------
+    // Accessors
+    // -----------------------------------------------------------------------
 
     public Span getSpanTop() {
         return spanTop;
@@ -48,7 +86,6 @@ public class DoubleLabel extends Div {
     public Span getSpanBottom() {
         return spanBottom;
     }
-
 
     public void setTitleTop(String title) {
         spanTop.setText(title);

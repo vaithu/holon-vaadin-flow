@@ -50,8 +50,8 @@ import java.util.function.Function;
  */
 public abstract class AbstractDateInputBuilder<C extends DateInputConfigurator<C>> implements DateInputConfigurator<C> {
 
-	private final List<ValueChangeListener<Date, ValueChangeEvent<Date>>> valueChangeListeners = new LinkedList<>();
-	private final List<ReadonlyChangeListener> readonlyChangeListeners = new LinkedList<>();
+	private final List<ValueChangeListener<Date, ValueChangeEvent<Date>>> valueChangeListeners = new ArrayList<>();
+	private final List<ReadonlyChangeListener> readonlyChangeListeners = new ArrayList<>();
 
 	private final InputAdaptersContainer<Date> adapters;
 
@@ -532,6 +532,54 @@ public abstract class AbstractDateInputBuilder<C extends DateInputConfigurator<C
 	@Override
 	public C label(Localizable label) {
 		localDateInputBuilder.label(label);
+		return getConfigurator();
+	}
+
+	@Override
+	public C tooltip(Localizable tooltip) {
+		localDateInputBuilder.tooltip(tooltip);
+		return getConfigurator();
+	}
+
+	@Override
+	public C tooltipText(String text) {
+		localDateInputBuilder.tooltipText(text);
+		return getConfigurator();
+	}
+
+	@Override
+	public C helperText(Localizable helperText) {
+		localDateInputBuilder.helperText(helperText);
+		return getConfigurator();
+	}
+
+	@Override
+	public C helperText(String helperText) {
+		localDateInputBuilder.helperText(helperText);
+		return getConfigurator();
+	}
+
+	@Override
+	public C helperComponent(Component component) {
+		localDateInputBuilder.helperComponent(component);
+		return getConfigurator();
+	}
+
+	@Override
+	public C ariaLabel(String ariaLabel) {
+		localDateInputBuilder.ariaLabel(ariaLabel);
+		return getConfigurator();
+	}
+
+	@Override
+	public C ariaLabelledBy(String ariaLabelledBy) {
+		localDateInputBuilder.ariaLabelledBy(ariaLabelledBy);
+		return getConfigurator();
+	}
+
+	@Override
+	public C ariaLabel(Localizable ariaLabel) {
+		localDateInputBuilder.ariaLabel(ariaLabel);
 		return getConfigurator();
 	}
 

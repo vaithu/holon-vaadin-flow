@@ -2,6 +2,7 @@ package com.holonplatform.vaadin.flow.components.builders;
 
 import com.holonplatform.core.i18n.Localizable;
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.signals.Signal;
 
 /**
  * Configurator for {@link com.vaadin.flow.component.HasHelper} type components.
@@ -23,6 +24,18 @@ public interface HasHelperTextConfigurator<C extends HasHelperTextConfigurator<C
     C helperText(String helperText);
 
     C helperText(Localizable helperText);
+
+  /**
+   * Bind the component helper text to given {@link Signal}.
+   * @param helperTextSignal Helper text signal (not null)
+   * @return this
+   * @since 5.5.8
+   */
+  @SuppressWarnings("unchecked")
+  default C bindHelperText(Signal<? extends Localizable> helperTextSignal) {
+    SignalBindings.bind(this, helperTextSignal, this::helperText);
+    return (C) this;
+  }
 
 
 

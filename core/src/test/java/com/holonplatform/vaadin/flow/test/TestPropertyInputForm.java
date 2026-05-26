@@ -15,35 +15,29 @@
  */
 package com.holonplatform.vaadin.flow.test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.Optional;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.StreamSupport;
-
-import org.junit.jupiter.api.Test;
-
 import com.holonplatform.core.i18n.Localizable;
-import com.holonplatform.core.property.NumericProperty;
-import com.holonplatform.core.property.PropertyBox;
-import com.holonplatform.core.property.PropertyRendererRegistry;
+import com.holonplatform.core.property.*;
 import com.holonplatform.core.property.PropertyRendererRegistry.NoSuitableRendererAvailableException;
-import com.holonplatform.core.property.PropertySet;
-import com.holonplatform.core.property.StringProperty;
-import com.holonplatform.core.property.VirtualProperty;
 import com.holonplatform.vaadin.flow.components.Components;
 import com.holonplatform.vaadin.flow.components.Input;
 import com.holonplatform.vaadin.flow.components.PropertyInputForm;
+import com.holonplatform.vaadin.flow.internal.components.DefaultPropertyInputForm;
 import com.holonplatform.vaadin.flow.test.util.ComponentTestUtils;
 import com.holonplatform.vaadin.flow.test.util.LocalizationTestUtils;
 import com.vaadin.flow.component.ComponentUtil;
 import com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.textfield.TextField;
+import org.junit.jupiter.api.Test;
+
+import java.io.Serial;
+import java.lang.reflect.Method;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.StreamSupport;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class TestPropertyInputForm {
 
@@ -83,6 +77,133 @@ public class TestPropertyInputForm {
 		form = PropertyInputForm.horizontalLayout(SET).build();
 		assertNotNull(form);
 		assertNotNull(form.getComponent());
+	}
+
+	@Test
+	public void testEnterMovesFocusToNextFlag() throws Exception {
+		PropertyInputForm form = PropertyInputForm.formLayout(SET).enterMovesFocusToNext(true).build();
+		assertTrue(readEnterMovesFocusToNext(form));
+
+		form = PropertyInputForm.formLayout(SET).build();
+		assertFalse(readEnterMovesFocusToNext(form));
+	}
+
+	@Test
+	public void testValidateOnEnterFocusMoveFlag() throws Exception {
+		PropertyInputForm form = PropertyInputForm.formLayout(SET).validateOnEnterFocusMove(true).build();
+		assertTrue(readValidateOnEnterFocusMove(form));
+
+		form = PropertyInputForm.formLayout(SET).build();
+		assertFalse(readValidateOnEnterFocusMove(form));
+	}
+
+	@Test
+	public void testEnterMovesFocusSkipsDisabledInputs() throws Exception {
+		final StringProperty one = StringProperty.create("one");
+		final StringProperty two = StringProperty.create("two");
+		final StringProperty three = StringProperty.create("three");
+
+		final FocusTrackingTextField firstField = new FocusTrackingTextField();
+		final FocusTrackingTextField secondField = new FocusTrackingTextField();
+		final FocusTrackingTextField thirdField = new FocusTrackingTextField();
+		final Input<String> firstInput = Input.from(firstField);
+		final Input<String> secondInput = Input.from(secondField);
+		final Input<String> thirdInput = Input.from(thirdField);
+
+		secondField.setEnabled(false);
+
+		final PropertyInputForm form = PropertyInputForm.formLayout(one, two, three).bind(one, firstInput)
+				.bind(two, secondInput).bind(three, thirdInput).enterMovesFocusToNext(true).build();
+
+		invokeFocusNextInput((DefaultPropertyInputForm<?>) form, firstInput);
+		assertEquals(0, secondField.getFocusCount());
+		assertEquals(1, thirdField.getFocusCount());
+
+		invokeFocusNextInput((DefaultPropertyInputForm<?>) form, thirdInput);
+		assertEquals(1, thirdField.getFocusCount());
+	}
+
+	@Test
+	public void testEnterMovesFocusSkipsReadOnlyInputs() throws Exception {
+		final StringProperty one = StringProperty.create("one");
+		final StringProperty two = StringProperty.create("two");
+		final StringProperty three = StringProperty.create("three");
+
+		final FocusTrackingTextField firstField = new FocusTrackingTextField();
+		final FocusTrackingTextField secondField = new FocusTrackingTextField();
+		final FocusTrackingTextField thirdField = new FocusTrackingTextField();
+		final Input<String> firstInput = Input.from(firstField);
+		final Input<String> secondInput = Input.from(secondField);
+		final Input<String> thirdInput = Input.from(thirdField);
+
+		secondInput.setReadOnly(true);
+
+		final PropertyInputForm form = PropertyInputForm.formLayout(one, two, three).bind(one, firstInput)
+				.bind(two, secondInput).bind(three, thirdInput).enterMovesFocusToNext(true).build();
+
+		invokeFocusNextInput((DefaultPropertyInputForm<?>) form, firstInput);
+		assertEquals(0, secondField.getFocusCount());
+		assertEquals(1, thirdField.getFocusCount());
+
+		invokeFocusNextInput((DefaultPropertyInputForm<?>) form, thirdInput);
+		assertEquals(1, thirdField.getFocusCount());
+	}
+
+	@Test
+	public void testValidateOnEnterFocusMoveBlocksFocusOnValidationFailure() throws Exception {
+		final StringProperty one = StringProperty.create("one");
+		final StringProperty two = StringProperty.create("two");
+
+		final FocusTrackingTextField firstField = new FocusTrackingTextField();
+		final FocusTrackingTextField secondField = new FocusTrackingTextField();
+		final Input<String> firstInput = Input.from(firstField);
+		final Input<String> secondInput = Input.from(secondField);
+
+		final PropertyInputForm form = PropertyInputForm.formLayout(one, two).bind(one, firstInput).bind(two, secondInput)
+				.required(one).enterMovesFocusToNext(true).validateOnEnterFocusMove(true).build();
+
+		invokeFocusNextInput((DefaultPropertyInputForm<?>) form, firstInput);
+		assertEquals(0, secondField.getFocusCount());
+
+		firstInput.setValue("ok");
+		invokeFocusNextInput((DefaultPropertyInputForm<?>) form, firstInput);
+		assertEquals(1, secondField.getFocusCount());
+	}
+
+	private static boolean readEnterMovesFocusToNext(PropertyInputForm form) throws Exception {
+		final var field = form.getClass().getDeclaredField("enterMovesFocusToNext");
+		field.setAccessible(true);
+		return (boolean) field.get(form);
+	}
+
+	private static boolean readValidateOnEnterFocusMove(PropertyInputForm form) throws Exception {
+		final var field = form.getClass().getDeclaredField("validateOnEnterFocusMove");
+		field.setAccessible(true);
+		return (boolean) field.get(form);
+	}
+
+	private static void invokeFocusNextInput(DefaultPropertyInputForm<?> form, Input<?> input) throws Exception {
+		final Method method = form.getClass().getDeclaredMethod("focusNextInput", Input.class);
+		method.setAccessible(true);
+		method.invoke(form, input);
+	}
+
+	private static final class FocusTrackingTextField extends TextField {
+
+		@Serial
+		private static final long serialVersionUID = -4922487496276078520L;
+
+		private int focusCount;
+
+		@Override
+		public void focus() {
+			focusCount++;
+			super.focus();
+		}
+
+		int getFocusCount() {
+			return focusCount;
+		}
 	}
 
 	@Test

@@ -37,67 +37,54 @@ public class DefaultConfirmDialogBuilder extends AbstractClosableDialogConfigura
         implements ConfirmDialogBuilder {
 
     private final Button okButton;
-
     private Button denyButton;
 
+    /**
+     * Simple confirm dialog — single "OK" action button, no cancel.
+     */
     public DefaultConfirmDialogBuilder() {
         super();
-        this.okButton = ButtonBuilder.create().text(Localizable.of("OK", DialogBuilder.DEFAULT_OK_BUTTON_MESSAGE_CODE))
-                .withClickListener(e -> getComponent().close()).build();
-
+        this.okButton = ButtonBuilder.create()
+                .text(Localizable.of("OK", DialogBuilder.DEFAULT_OK_BUTTON_MESSAGE_CODE))
+                .styleName("h-dialog__action-btn")
+                .withClickListener(e -> getComponent().attemptClose())
+                .build();
+        // Footer: action only (no cancel in a simple message confirm)
         getComponent().addFooterComponent(this.okButton);
-
-
     }
 
-    private void addCancelButton() {
-        this.denyButton = ButtonBuilder.create()
-                .text(Localizable.of("Cancel", DialogBuilder.DEFAULT_DENY_BUTTON_MESSAGE_CODE))
-                .withClickListener(e -> {
-                    getComponent().close();
-                }).build();
-
-        this.denyButton.getStyle().set("margin-right", "auto");
-
-        getComponent().addFooterComponent(this.denyButton);
-    }
-
+    /**
+     * Confirm dialog that validates a {@link PropertyInputForm} before closing.
+     * Includes a cancel button so the user can dismiss without validating.
+     */
     public DefaultConfirmDialogBuilder(PropertyInputForm inputForm) {
         super();
-        this.okButton = ButtonBuilder.create().text(Localizable.of("OK", DialogBuilder.DEFAULT_OK_BUTTON_MESSAGE_CODE))
+        this.okButton = ButtonBuilder.create()
+                .text(Localizable.of("OK", DialogBuilder.DEFAULT_OK_BUTTON_MESSAGE_CODE))
+                .styleName("h-dialog__action-btn")
                 .withClickListener(e -> {
-                    if (inputForm.isValid()) getComponent().close();
-                }).build();
+                    if (inputForm.isValid()) getComponent().attemptClose();
+                })
+                .build();
+        this.denyButton = buildCancelButton();
+        // Footer: cancel on the left, action on the right
+        getComponent().addFooterComponent(this.denyButton);
         getComponent().addFooterComponent(this.okButton);
-        addCancelButton();
     }
 
-    public DefaultConfirmDialogBuilder(boolean okToCancelDialog) {
-        super();
-        this.okButton = ButtonBuilder.create().text(Localizable.of("OK", DialogBuilder.DEFAULT_OK_BUTTON_MESSAGE_CODE))
-                .withClickListener(e -> {
-                    if (okToCancelDialog) getComponent().close();
-                }).build();
-        getComponent().addFooterComponent(this.okButton);
-
-        addCancelButton();
+    private Button buildCancelButton() {
+        return ButtonBuilder.create()
+                .text(Localizable.of("Cancel", DialogBuilder.DEFAULT_DENY_BUTTON_MESSAGE_CODE))
+                .styleName("h-dialog__cancel-btn")
+                .withClickListener(e -> getComponent().attemptClose())
+                .build();
     }
 
-    /*
-     * (non-Javadoc)
-     * @see com.holonplatform.vaadin.flow.internal.components.builders.AbstractComponentConfigurator#getConfigurator()
-     */
     @Override
     protected ConfirmDialogBuilder getConfigurator() {
         return this;
     }
 
-    /*
-     * (non-Javadoc)
-     * @see
-     * com.holonplatform.vaadin.flow.components.builders.DialogBuilder.ConfirmDialogBuilder#okButtonConfigurator(java.
-     * util.function.Consumer)
-     */
     @Override
     public ConfirmDialogBuilder okButtonConfigurator(Consumer<BaseButtonConfigurator> configurator) {
         ObjectUtils.argumentNotNull(configurator, "Configurator must be not null");
@@ -105,26 +92,20 @@ public class DefaultConfirmDialogBuilder extends AbstractClosableDialogConfigura
         return getConfigurator();
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.holonplatform.vaadin.flow.components.builders.DialogBuilder.
-     * QuestionDialogBuilder#denialButtonConfigurator( java.util.function.Consumer)
-     */
     @Override
-    public ConfirmDialogBuilder denialButtonConfigurator(Consumer<ButtonConfigurator.BaseButtonConfigurator> configurator) {
+    public ConfirmDialogBuilder denialButtonConfigurator(Consumer<BaseButtonConfigurator> configurator) {
         ObjectUtils.argumentNotNull(configurator, "Configurator must be not null");
+        if (denyButton == null) {
+            // lazily create and insert the cancel button if not already present
+            this.denyButton = buildCancelButton();
+            getComponent().getFooter().addComponentAsFirst(this.denyButton);
+        }
         configurator.accept(ButtonConfigurator.configure(denyButton));
         return getConfigurator();
     }
 
-    /*
-     * (non-Javadoc)
-     * @see com.holonplatform.vaadin.flow.components.builders.DialogBuilder#build()
-     */
     @Override
     public Dialog build() {
         return getComponent();
     }
-
 }

@@ -1,0 +1,132 @@
+[INFO] Scanning for projects...
+[WARNING] 
+[WARNING] Some problems were encountered while building the effective model for com.holon-platform.vaadin:holon-vaadin-flow-demo:jar:10.0.0
+[WARNING] 'build.plugins.plugin.version' for org.springframework.boot:spring-boot-maven-plugin is missing. @ line 108, column 21
+[WARNING] 
+[WARNING] It is highly recommended to fix these problems because they threaten the stability of your build.
+[WARNING] 
+[WARNING] For this reason, future Maven versions might no longer support building such malformed projects.
+[WARNING] 
+[INFO] 
+[INFO] ------< com.holon-platform.vaadin:holon-vaadin-flow-tenant-data >-------
+[INFO] Building com.holon-platform.vaadin:holon-vaadin-flow-tenant-data 10.0.0
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- jacoco:0.8.12:prepare-agent (pre-unit-test) @ holon-vaadin-flow-tenant-data ---
+[INFO] surefireArgLine set to -javaagent:C:\\Users\\sxp267\\.m2\\repository\\org\\jacoco\\org.jacoco.agent\\0.8.12\\org.jacoco.agent-0.8.12-runtime.jar=destfile=C:\\Users\\sxp267\\IdeaProjects\\holon-vaadin-flow\\tenant-data\\target\\coverage-reports\\jacoco-ut.exec
+[INFO] 
+[INFO] --- remote-resources:3.1.0:process (default) @ holon-vaadin-flow-tenant-data ---
+[INFO] Preparing remote bundle com.holon-platform:holon-shared:1.0.6
+[INFO] Copying 6 resources from 1 bundle.
+[INFO] 
+[INFO] --- resources:3.4.0:resources (default-resources) @ holon-vaadin-flow-tenant-data ---
+[INFO] Copying 1 resource from src\main\resources to target\classes
+[INFO] Copying 6 resources from target\maven-shared-archive-resources to target\classes
+[INFO] 
+[INFO] --- compiler:3.15.0:compile (default-compile) @ holon-vaadin-flow-tenant-data ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.4.0:testResources (default-testResources) @ holon-vaadin-flow-tenant-data ---
+[INFO] skip non existing resourceDirectory C:\Users\sxp267\IdeaProjects\holon-vaadin-flow\tenant-data\src\test\resources
+[INFO] Copying 6 resources from target\maven-shared-archive-resources to target\test-classes
+[INFO] 
+[INFO] --- compiler:3.15.0:testCompile (default-testCompile) @ holon-vaadin-flow-tenant-data ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- surefire:3.5.2:test (default-test) @ holon-vaadin-flow-tenant-data ---
+[INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running com.holonplatform.vaadin.flow.tenant.data.config.TenantDataAutoConfigurationTest
+15:30:21.361 [main] INFO org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseFactory -- Starting embedded database: url='jdbc:h2:mem:master_202133736823000;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=false', username='sa'
+15:30:21.988 [main] INFO com.holonplatform.vaadin.flow.tenant.data.datasource.BoundedTenantDataSourceRegistry -- Closing all 0 cached tenant DataSource pools
+15:30:21.989 [main] INFO org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseFactory -- Shutting down embedded database: url='jdbc:h2:mem:master_202133736823000;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=false'
+15:30:22.035 [main] INFO com.holonplatform.vaadin.flow.tenant.data.datasource.BoundedTenantDataSourceRegistry -- Closing all 0 cached tenant DataSource pools
+15:30:22.098 [main] INFO com.holonplatform.vaadin.flow.tenant.data.datasource.BoundedTenantDataSourceRegistry -- Closing all 0 cached tenant DataSource pools
+15:30:22.138 [main] INFO org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseFactory -- Starting embedded database: url='jdbc:h2:mem:master_202134525622000;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=false', username='sa'
+15:30:22.179 [main] INFO com.holonplatform.vaadin.flow.tenant.data.datasource.BoundedTenantDataSourceRegistry -- Closing all 0 cached tenant DataSource pools
+15:30:22.180 [main] INFO org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseFactory -- Shutting down embedded database: url='jdbc:h2:mem:master_202134525622000;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=false'
+[INFO] Tests run: 12, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 4.153 s -- in com.holonplatform.vaadin.flow.tenant.data.config.TenantDataAutoConfigurationTest
+[INFO] Running com.holonplatform.vaadin.flow.tenant.data.DatabaseDialectTest
+[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.034 s -- in com.holonplatform.vaadin.flow.tenant.data.DatabaseDialectTest
+[INFO] Running com.holonplatform.vaadin.flow.tenant.data.datasource.BoundedTenantDataSourceRegistryTest
+15:30:22.400 [main] INFO com.holonplatform.vaadin.flow.tenant.data.datasource.BoundedTenantDataSourceRegistry -- Evicting oldest DataSource pool for tenant 'a' (cache full at 3)
+15:30:22.418 [main] INFO com.holonplatform.vaadin.flow.tenant.data.datasource.BoundedTenantDataSourceRegistry -- Evicting oldest DataSource pool for tenant 'a' (cache full at 3)
+15:30:22.444 [main] INFO com.holonplatform.vaadin.flow.tenant.data.datasource.BoundedTenantDataSourceRegistry -- Evicted DataSource pool for tenant 'acme'
+[INFO] Tests run: 12, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.114 s -- in com.holonplatform.vaadin.flow.tenant.data.datasource.BoundedTenantDataSourceRegistryTest
+[INFO] Running com.holonplatform.vaadin.flow.tenant.data.datasource.TenantAwareDataSourceTest
+[ERROR] Tests run: 7, Failures: 1, Errors: 2, Skipped: 0, Time elapsed: 2.951 s <<< FAILURE! -- in com.holonplatform.vaadin.flow.tenant.data.datasource.TenantAwareDataSourceTest
+[ERROR] com.holonplatform.vaadin.flow.tenant.data.datasource.TenantAwareDataSourceTest.schemaTenantStrategy_routesToTenantDataSource_whenTenantSet -- Time elapsed: 2.874 s <<< ERROR!
+java.lang.NoSuchMethodError: 'java.lang.String com.holonplatform.vaadin.flow.tenant.TenantContext.peekTenantId()'
+	at com.holonplatform.vaadin.flow.tenant.data.datasource.TenantAwareDataSource.resolveDataSource(TenantAwareDataSource.java:110)
+	at com.holonplatform.vaadin.flow.tenant.data.datasource.TenantAwareDataSource.getConnection(TenantAwareDataSource.java:81)
+	at com.holonplatform.vaadin.flow.tenant.data.datasource.TenantAwareDataSourceTest.schemaTenantStrategy_routesToTenantDataSource_whenTenantSet(TenantAwareDataSourceTest.java:84)
+
+[ERROR] com.holonplatform.vaadin.flow.tenant.data.datasource.TenantAwareDataSourceTest.schemaStrategy_withNullRegistry_throwsWhenTenantPresent -- Time elapsed: 0.017 s <<< FAILURE!
+java.lang.AssertionError: 
+
+Expecting actual throwable to be an instance of:
+  java.lang.IllegalStateException
+but was:
+  java.lang.NoSuchMethodError: 'java.lang.String com.holonplatform.vaadin.flow.tenant.TenantContext.peekTenantId()'
+	at com.holonplatform.vaadin.flow.tenant.data.datasource.TenantAwareDataSource.resolveDataSource(TenantAwareDataSource.java:110)
+	at com.holonplatform.vaadin.flow.tenant.data.datasource.TenantAwareDataSource.getConnection(TenantAwareDataSource.java:81)
+	at org.assertj.core.api.ThrowableAssert.catchThrowable(ThrowableAssert.java:66)
+	...(82 remaining lines not displayed - this can be changed with Assertions.setMaxStackTraceElementsDisplayed)
+	at com.holonplatform.vaadin.flow.tenant.data.datasource.TenantAwareDataSourceTest.schemaStrategy_withNullRegistry_throwsWhenTenantPresent(TenantAwareDataSourceTest.java:118)
+
+[ERROR] com.holonplatform.vaadin.flow.tenant.data.datasource.TenantAwareDataSourceTest.schemaTenantStrategy_fallsBackToMaster_whenNoTenantInContext -- Time elapsed: 0.003 s <<< ERROR!
+java.lang.NoSuchMethodError: 'java.lang.String com.holonplatform.vaadin.flow.tenant.TenantContext.peekTenantId()'
+	at com.holonplatform.vaadin.flow.tenant.data.datasource.TenantAwareDataSource.resolveDataSource(TenantAwareDataSource.java:110)
+	at com.holonplatform.vaadin.flow.tenant.data.datasource.TenantAwareDataSource.getConnection(TenantAwareDataSource.java:81)
+	at com.holonplatform.vaadin.flow.tenant.data.datasource.TenantAwareDataSourceTest.schemaTenantStrategy_fallsBackToMaster_whenNoTenantInContext(TenantAwareDataSourceTest.java:103)
+
+[INFO] Running com.holonplatform.vaadin.flow.tenant.data.migration.TenantSchemaCreatorTest
+15:30:25.408 [main] INFO org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseFactory -- Starting embedded database: url='jdbc:h2:mem:schema_creator_test_202137794744200;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=false', username='sa'
+15:30:25.412 [main] INFO com.holonplatform.vaadin.flow.tenant.data.migration.TenantSchemaCreator$DefaultTenantSchemaCreator -- Creating schema 'tenant_idempotent' if not exists
+15:30:25.437 [main] INFO com.holonplatform.vaadin.flow.tenant.data.migration.TenantSchemaCreator$DefaultTenantSchemaCreator -- Creating schema 'tenant_idempotent' if not exists
+15:30:25.440 [main] INFO org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseFactory -- Starting embedded database: url='jdbc:h2:mem:schema_creator_test_202137827029000;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=false', username='sa'
+15:30:25.444 [main] INFO com.holonplatform.vaadin.flow.tenant.data.migration.TenantSchemaCreator$DefaultTenantSchemaCreator -- Creating schema 'tenant_test' if not exists
+15:30:25.449 [main] INFO org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseFactory -- Starting embedded database: url='jdbc:h2:mem:schema_creator_test_202137835523500;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=false', username='sa'
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.049 s -- in com.holonplatform.vaadin.flow.tenant.data.migration.TenantSchemaCreatorTest
+[INFO] Running com.holonplatform.vaadin.flow.tenant.data.SchemaNameResolverTest
+[INFO] Tests run: 7, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.011 s -- in com.holonplatform.vaadin.flow.tenant.data.SchemaNameResolverTest
+[INFO] 
+[INFO] Results:
+[INFO] 
+[ERROR] Failures: 
+[ERROR]   TenantAwareDataSourceTest.schemaStrategy_withNullRegistry_throwsWhenTenantPresent:118 
+Expecting actual throwable to be an instance of:
+  java.lang.IllegalStateException
+but was:
+  java.lang.NoSuchMethodError: 'java.lang.String com.holonplatform.vaadin.flow.tenant.TenantContext.peekTenantId()'
+	at com.holonplatform.vaadin.flow.tenant.data.datasource.TenantAwareDataSource.resolveDataSource(TenantAwareDataSource.java:110)
+	at com.holonplatform.vaadin.flow.tenant.data.datasource.TenantAwareDataSource.getConnection(TenantAwareDataSource.java:81)
+	at org.assertj.core.api.ThrowableAssert.catchThrowable(ThrowableAssert.java:66)
+	...(82 remaining lines not displayed - this can be changed with Assertions.setMaxStackTraceElementsDisplayed)
+[ERROR] Errors: 
+[ERROR]   TenantAwareDataSourceTest.schemaTenantStrategy_fallsBackToMaster_whenNoTenantInContext:103 » NoSuchMethod 'java.lang.String com.holonplatform.vaadin.flow.tenant.TenantContext.peekTenantId()'
+[ERROR]   TenantAwareDataSourceTest.schemaTenantStrategy_routesToTenantDataSource_whenTenantSet:84 » NoSuchMethod 'java.lang.String com.holonplatform.vaadin.flow.tenant.TenantContext.peekTenantId()'
+[INFO] 
+[ERROR] Tests run: 48, Failures: 1, Errors: 2, Skipped: 0
+[INFO] 
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  22.905 s
+[INFO] Finished at: 2026-05-18T15:30:26-04:00
+[INFO] ------------------------------------------------------------------------
+[ERROR] Failed to execute goal org.apache.maven.plugins:maven-surefire-plugin:3.5.2:test (default-test) on project holon-vaadin-flow-tenant-data: There are test failures.
+[ERROR] 
+[ERROR] See C:\Users\sxp267\IdeaProjects\holon-vaadin-flow\tenant-data\target\surefire-reports for the individual test results.
+[ERROR] See dump files (if any exist) [date].dump, [date]-jvmRun[N].dump and [date].dumpstream.
+[ERROR] -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException

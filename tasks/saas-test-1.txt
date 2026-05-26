@@ -1,0 +1,50 @@
+16:09:32.213 [main] WARN com.holonplatform.vaadin.flow.tenant.security.aop.TenantFeatureAspect -- @RequiresPlan('PROFESSIONAL') invoked with no tenant in context ? access denied
+16:09:32.226 [main] WARN com.holonplatform.vaadin.flow.tenant.security.aop.TenantFeatureAspect -- @CheckTenantFeature('ADVANCED_REPORTS') invoked with no tenant in context ? access denied
+OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+16:09:34.594 [main] WARN com.holonplatform.vaadin.flow.tenant.security.filter.TenantIsolationFilter -- Cross-tenant access attempt: user 'user@acme' (tenant 'acme') tried to access tenant 'beta' at ''
+16:09:34.629 [main] WARN com.holonplatform.vaadin.flow.tenant.security.filter.TenantIsolationFilter -- Cross-tenant access attempt: user 'user@acme' (tenant 'acme') tried to access tenant 'beta' at ''
+16:09:34.635 [main] WARN com.holonplatform.vaadin.flow.tenant.security.filter.TenantIsolationFilter -- Cross-tenant access attempt: user 'user@acme' (tenant 'acme') tried to access tenant 'beta' at ''
+[ERROR] COMPILATION ERROR : 
+[ERROR] /C:/Users/sxp267/IdeaProjects/holon-saas/tenant-onboarding/src/test/java/com/holonplatform/vaadin/flow/tenant/onboarding/internal/DefaultTenantOnboardingServiceTest.java:[7,55] cannot find symbol
+  symbol:   class TenantOnboardingRequest
+  location: package com.holonplatform.vaadin.flow.tenant.onboarding
+[ERROR] /C:/Users/sxp267/IdeaProjects/holon-saas/tenant-onboarding/src/test/java/com/holonplatform/vaadin/flow/tenant/onboarding/internal/DefaultTenantOnboardingServiceTest.java:[8,55] cannot find symbol
+  symbol:   class TenantOnboardingResult
+  location: package com.holonplatform.vaadin.flow.tenant.onboarding
+[ERROR] /C:/Users/sxp267/IdeaProjects/holon-saas/tenant-onboarding/src/test/java/com/holonplatform/vaadin/flow/tenant/onboarding/internal/DefaultTenantOnboardingServiceTest.java:[9,61] package com.holonplatform.vaadin.flow.tenant.onboarding.event does not exist
+[ERROR] /C:/Users/sxp267/IdeaProjects/holon-saas/tenant-onboarding/src/test/java/com/holonplatform/vaadin/flow/tenant/onboarding/internal/DefaultTenantOnboardingServiceTest.java:[10,61] package com.holonplatform.vaadin.flow.tenant.onboarding.event does not exist
+[ERROR] /C:/Users/sxp267/IdeaProjects/holon-saas/tenant-onboarding/src/test/java/com/holonplatform/vaadin/flow/tenant/onboarding/internal/DefaultTenantOnboardingServiceTest.java:[11,65] package com.holonplatform.vaadin.flow.tenant.onboarding.exception does not exist
+[ERROR] /C:/Users/sxp267/IdeaProjects/holon-saas/tenant-onboarding/src/test/java/com/holonplatform/vaadin/flow/tenant/onboarding/internal/DefaultTenantOnboardingServiceTest.java:[12,65] package com.holonplatform.vaadin.flow.tenant.onboarding.exception does not exist
+[ERROR] /C:/Users/sxp267/IdeaProjects/holon-saas/tenant-onboarding/src/test/java/com/holonplatform/vaadin/flow/tenant/onboarding/internal/DefaultTenantOnboardingServiceTest.java:[36,13] cannot find symbol
+  symbol:   class InMemoryTenantRepository
+  location: class com.holonplatform.vaadin.flow.tenant.onboarding.internal.DefaultTenantOnboardingServiceTest
+[ERROR] /C:/Users/sxp267/IdeaProjects/holon-saas/tenant-onboarding/src/test/java/com/holonplatform/vaadin/flow/tenant/onboarding/internal/DefaultTenantOnboardingServiceTest.java:[37,13] cannot find symbol
+  symbol:   class DefaultTenantOnboardingService
+  location: class com.holonplatform.vaadin.flow.tenant.onboarding.internal.DefaultTenantOnboardingServiceTest
+[ERROR] Failed to execute goal org.apache.maven.plugins:maven-compiler-plugin:3.15.0:testCompile (default-testCompile) on project holon-vaadin-flow-tenant-onboarding: Compilation failure: Compilation failure: 
+[ERROR] /C:/Users/sxp267/IdeaProjects/holon-saas/tenant-onboarding/src/test/java/com/holonplatform/vaadin/flow/tenant/onboarding/internal/DefaultTenantOnboardingServiceTest.java:[7,55] cannot find symbol
+[ERROR]   symbol:   class TenantOnboardingRequest
+[ERROR]   location: package com.holonplatform.vaadin.flow.tenant.onboarding
+[ERROR] /C:/Users/sxp267/IdeaProjects/holon-saas/tenant-onboarding/src/test/java/com/holonplatform/vaadin/flow/tenant/onboarding/internal/DefaultTenantOnboardingServiceTest.java:[8,55] cannot find symbol
+[ERROR]   symbol:   class TenantOnboardingResult
+[ERROR]   location: package com.holonplatform.vaadin.flow.tenant.onboarding
+[ERROR] /C:/Users/sxp267/IdeaProjects/holon-saas/tenant-onboarding/src/test/java/com/holonplatform/vaadin/flow/tenant/onboarding/internal/DefaultTenantOnboardingServiceTest.java:[9,61] package com.holonplatform.vaadin.flow.tenant.onboarding.event does not exist
+[ERROR] /C:/Users/sxp267/IdeaProjects/holon-saas/tenant-onboarding/src/test/java/com/holonplatform/vaadin/flow/tenant/onboarding/internal/DefaultTenantOnboardingServiceTest.java:[10,61] package com.holonplatform.vaadin.flow.tenant.onboarding.event does not exist
+[ERROR] /C:/Users/sxp267/IdeaProjects/holon-saas/tenant-onboarding/src/test/java/com/holonplatform/vaadin/flow/tenant/onboarding/internal/DefaultTenantOnboardingServiceTest.java:[11,65] package com.holonplatform.vaadin.flow.tenant.onboarding.exception does not exist
+[ERROR] /C:/Users/sxp267/IdeaProjects/holon-saas/tenant-onboarding/src/test/java/com/holonplatform/vaadin/flow/tenant/onboarding/internal/DefaultTenantOnboardingServiceTest.java:[12,65] package com.holonplatform.vaadin.flow.tenant.onboarding.exception does not exist
+[ERROR] /C:/Users/sxp267/IdeaProjects/holon-saas/tenant-onboarding/src/test/java/com/holonplatform/vaadin/flow/tenant/onboarding/internal/DefaultTenantOnboardingServiceTest.java:[36,13] cannot find symbol
+[ERROR]   symbol:   class InMemoryTenantRepository
+[ERROR]   location: class com.holonplatform.vaadin.flow.tenant.onboarding.internal.DefaultTenantOnboardingServiceTest
+[ERROR] /C:/Users/sxp267/IdeaProjects/holon-saas/tenant-onboarding/src/test/java/com/holonplatform/vaadin/flow/tenant/onboarding/internal/DefaultTenantOnboardingServiceTest.java:[37,13] cannot find symbol
+[ERROR]   symbol:   class DefaultTenantOnboardingService
+[ERROR]   location: class com.holonplatform.vaadin.flow.tenant.onboarding.internal.DefaultTenantOnboardingServiceTest
+[ERROR] -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException
+[ERROR] 
+[ERROR] After correcting the problems, you can resume the build with the command
+[ERROR]   mvn <args> -rf :holon-vaadin-flow-tenant-onboarding

@@ -25,7 +25,7 @@ import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.NativeLabel;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -48,7 +48,7 @@ public abstract class AbstractViewComponent<C extends Component, T> extends Comp
 
 	private T value;
 
-	private final List<ValueChangeListener<T, ValueChangeEvent<T>>> valueChangeListeners = new LinkedList<>();
+	private final List<ValueChangeListener<T, ValueChangeEvent<T>>> valueChangeListeners = new ArrayList<>();
 
 	/**
 	 * Constructor.

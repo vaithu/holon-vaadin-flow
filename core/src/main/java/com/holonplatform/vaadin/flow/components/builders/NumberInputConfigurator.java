@@ -38,7 +38,7 @@ public interface NumberInputConfigurator<T extends Number, C extends NumberInput
 		HasAutocompleteConfigurator<C>, HasSizeConfigurator<C>, HasStyleConfigurator<C>, HasAutofocusConfigurator<C>,
 		FocusableConfigurator<Component, C>, HasPrefixAndSuffixConfigurator<C>, CompositionNotifierConfigurator<C>,
 		HasPlaceholderConfigurator<C>, HasLabelConfigurator<C>, HasTitleConfigurator<C>,HasTooltipConfigurator<C>,
-		HasPatternConfigurator<C>,HasAriaLabelConfigurator<C>,
+		HasPatternConfigurator<C>,HasAriaLabelConfigurator<C>, HasHelperTextConfigurator<C>,
 
 		HasThemeVariantConfigurator<TextFieldVariant, C>, DeferrableLocalizationConfigurator<C> {
 

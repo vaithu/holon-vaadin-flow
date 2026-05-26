@@ -1,0 +1,109 @@
+/*
+ * tokens.css
+ *
+ * Supplementary application-level design tokens.
+ * vaadin-shell-theme.css MUST be loaded first (via AppShellConfigurator)
+ * before this file has any effect.
+ *
+ * What this file owns:
+ *   1. [merged into vaadin-shell-theme.css] — spacing rem aliases (--space-*)
+ *   2. [merged into vaadin-shell-theme.css] — shadow aliases (--shadow-shell/card)
+ *   3. [merged into vaadin-shell-theme.css] — font-size scale (--font-size-*)
+ *   4. [merged into vaadin-shell-theme.css] — layout dimension aliases
+ *   5. [retained here]                      — any additional app-specific tokens
+ *
+ * Note: --radius-*, --border-*, --shadow-*, --sp-*, --font-size-*, --space-*
+ * are all defined in vaadin-shell-theme.css section 0.
+ * This file exists as an optional extension point for future additions.
+ */
+
+:root {
+
+  /* ==========================================================================
+   * 1. Surface shades
+   *    These alias the --surface-* tokens from vaadin-shell-theme.css so that
+   *    older/external code that used hardcoded hex values now inherits dark mode.
+   * ========================================================================== */
+
+
+  /* ==========================================================================
+   * 2. Semantic badge / status colours
+   *    Light-mode tints. Dark mode overrides below remap to low-opacity rgba.
+   * ========================================================================== */
+
+
+
+
+
+
+  /* ==========================================================================
+   * 3. Spacing scale  (rem — scales with user font-size preference)
+   *    --sp-* (px) from vaadin-shell-theme.css is the canonical system.
+   *    These rem aliases allow both naming conventions to work.
+   * ========================================================================== */
+
+  --space-1: 0.25rem;   /* ≈ 4px  */
+  --space-2: 0.5rem;    /* ≈ 8px  */
+  --space-3: 0.75rem;   /* ≈ 12px */
+  --space-4: 1rem;      /* ≈ 16px */
+  --space-5: 1.25rem;   /* ≈ 20px */
+  --space-6: 1.5rem;    /* ≈ 24px */
+
+  /* ==========================================================================
+   * 4. Border-radius scale
+   *    Defined in vaadin-shell-theme.css as --radius-xs/sm/md/lg/xl/2xl/full.
+   *    Do NOT redefine here — all component CSS must use the theme tokens.
+   * ========================================================================== */
+
+  /* ==========================================================================
+   * 5. Border aliases
+   *    vaadin-shell-theme.css defines --border-subtle, --border-default,
+   *    --border-strong, --border-focus, --border-separator, --border-error.
+   *    These are pass-throughs; the theme file owns the actual values.
+   * ========================================================================== */
+
+  /* (no overrides — use --border-* tokens from vaadin-shell-theme.css directly) */
+
+  /* ==========================================================================
+   * 6. Shadow aliases
+   *    Map legacy semantic names onto the theme's shadow scale so older code
+   *    and future component CSS can use either naming convention.
+   * ========================================================================== */
+
+  --shadow-shell: var(--shadow-md);  /* panel / drawer shadows  */
+  --shadow-card:  var(--shadow-xs);  /* card / list-item shadows */
+
+  /* ==========================================================================
+   * 7. Typography scale  (rem — scales with user font-size preference)
+   *
+   *   xs   ≈ 11px  — metadata, timestamps, micro-labels
+   *   sm   = 12px  — captions, helper text, secondary badges
+   *   base ≈ 13px  — default body text for dense UI
+   *   md   = 14px  — standard body, form labels
+   *   lg   = 16px  — headings, page titles (= 1rem at browser default)
+   * ========================================================================== */
+
+  --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+               'Helvetica Neue', Arial, sans-serif;
+
+  --font-size-xs:   0.6875rem;  /* ≈ 11px */
+  --font-size-sm:   0.75rem;    /*   12px  */
+  --font-size-base: 0.8125rem;  /* ≈ 13px  */
+  --font-size-md:   0.875rem;   /*   14px  */
+  --font-size-lg:   1rem;       /*   16px  */
+
+  /* ==========================================================================
+   * 8. Transition presets
+   * ========================================================================== */
+
+  --transition-fast: 120ms ease;
+
+  /* ==========================================================================
+   * 9. Layout dimension aliases
+   *    vaadin-shell-theme.css defines --master-w and --toolbar-h.
+   *    These aliases let older code keep using the longer names.
+   * ========================================================================== */
+
+  --master-panel-width: var(--master-w);    /* 290px — defined in vaadin-shell-theme.css */
+  --toolbar-height:     var(--toolbar-h);   /*  52px — defined in vaadin-shell-theme.css */
+}

@@ -52,18 +52,6 @@ public abstract class AbstractFlexBoxLayoutConfigurator<C extends FlexBoxLayoutC
     }
 
     @Override
-    public C backgroundColor(String value) {
-        getComponent().setBackgroundColor(value);
-        return getConfigurator();
-    }
-
-    @Override
-    public C backgroundColor(String value, String theme) {
-        getComponent().setBackgroundColor(value, theme);
-        return getConfigurator();
-    }
-
-    @Override
     public C borderRadius(BorderRadius radius) {
         getComponent().setBorderRadius(radius);
         return getConfigurator();
@@ -105,41 +93,21 @@ public abstract class AbstractFlexBoxLayoutConfigurator<C extends FlexBoxLayoutC
         return getConfigurator();
     }
 
-    /**
-     * If the component supports {@link HasSize}, return the component as {@link HasSize}.
-     *
-     * @return Optional component as {@link HasSize}, if supported
-     */
     @Override
     protected Optional<HasSize> hasSize() {
         return Optional.of(getComponent());
     }
 
-    /**
-     * If the component supports {@link HasStyle}, return the component as {@link HasStyle}.
-     *
-     * @return Optional component as {@link HasStyle}, if supported
-     */
     @Override
     protected Optional<HasStyle> hasStyle() {
         return Optional.of(getComponent());
     }
 
-    /**
-     * If the component supports {@link HasEnabled}, return the component as {@link HasEnabled}.
-     *
-     * @return Optional component as {@link HasEnabled}, if supported
-     */
     @Override
     protected Optional<HasEnabled> hasEnabled() {
         return Optional.of(getComponent());
     }
 
-    /**
-     * If the component supports {@link HasTooltip}, return the component as {@link HasTooltip}.
-     *
-     * @return Optional component as {@link HasTooltip}, if supported
-     */
     @Override
     protected Optional<HasTooltip> hasTooltip() {
         return Optional.empty();

@@ -15,26 +15,6 @@
  */
 package com.holonplatform.vaadin.flow.test;
 
-import static com.holonplatform.vaadin.flow.test.util.DatastoreTestUtils.CODE;
-import static com.holonplatform.vaadin.flow.test.util.DatastoreTestUtils.DESCRIPTION;
-import static com.holonplatform.vaadin.flow.test.util.DatastoreTestUtils.TARGET1;
-import static com.holonplatform.vaadin.flow.test.util.DatastoreTestUtils.TEST1;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.stream.Collectors;
-
-import org.junit.jupiter.api.Test;
-
 import com.holonplatform.core.datastore.Datastore;
 import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.core.property.Property;
@@ -63,6 +43,14 @@ import com.vaadin.flow.data.provider.DataProvider;
 import com.vaadin.flow.data.provider.Query;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.data.renderer.TextRenderer;
+import org.junit.jupiter.api.Test;
+
+import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Collectors;
+
+import static com.holonplatform.vaadin.flow.test.util.DatastoreTestUtils.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class TestOptionsSingleSelectInput {
 
@@ -242,6 +230,31 @@ public class TestOptionsSingleSelectInput {
 			assertEquals("test", ComponentTestUtils.getLabel(input2));
 			ComponentUtil.onComponentAttach(input2.getComponent(), true);
 			assertEquals("TestUS", ComponentTestUtils.getLabel(input2));
+		});
+
+	}
+
+	@Test
+	public void testAriaLabel() {
+
+		Input<String> input = Input.singleOptionSelect(String.class).ariaLabel("Options single select").build();
+		assertEquals("Options single select", input.getComponent().getElement().getAttribute("aria-label"));
+
+		input = Input.singleOptionSelect(String.class).ariaLabelledBy("options-single-select-label").build();
+		assertEquals("options-single-select-label", input.getComponent().getElement().getAttribute("aria-labelledby"));
+
+		LocalizationTestUtils.withTestLocalizationContext(() -> {
+			Input<String> localized = Input.singleOptionSelect(String.class)
+					.ariaLabel(Localizable.builder().message("test").messageCode("test.code").build()).build();
+			assertEquals("TestUS", localized.getComponent().getElement().getAttribute("aria-label"));
+		});
+
+		LocalizationTestUtils.withTestLocalizationContext(() -> {
+			Input<String> localized = Input.singleOptionSelect(String.class).deferLocalization()
+					.ariaLabel(Localizable.builder().message("test").messageCode("test.code").build()).build();
+			assertEquals("test", localized.getComponent().getElement().getAttribute("aria-label"));
+			ComponentUtil.onComponentAttach(localized.getComponent(), true);
+			assertEquals("TestUS", localized.getComponent().getElement().getAttribute("aria-label"));
 		});
 
 	}

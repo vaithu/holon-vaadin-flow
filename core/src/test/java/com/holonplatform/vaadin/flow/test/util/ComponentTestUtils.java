@@ -15,13 +15,13 @@
  */
 package com.holonplatform.vaadin.flow.test.util;
 
-import java.util.Collections;
-import java.util.Set;
-
 import com.holonplatform.vaadin.flow.components.HasComponent;
 import com.holonplatform.vaadin.flow.components.Input;
 import com.holonplatform.vaadin.flow.components.ViewComponent;
 import com.vaadin.flow.component.HasElement;
+
+import java.util.Collections;
+import java.util.Set;
 
 public final class ComponentTestUtils {
 
@@ -39,6 +39,11 @@ public final class ComponentTestUtils {
 	
 	public static String getStyleAttribute(HasElement component, String attribute) {
 		return component.getElement().getStyle().get(attribute);
+	}
+
+	public static String getElementAttribute(HasElement component, String attribute) {
+		final String value = component.getElement().getAttribute(attribute);
+		return (value != null) ? value : component.getElement().getProperty(attribute);
 	}
 
 	public static String getWidth(HasComponent component) {

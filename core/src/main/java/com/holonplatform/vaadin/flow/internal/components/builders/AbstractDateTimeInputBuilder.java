@@ -35,7 +35,6 @@ import com.vaadin.flow.data.converter.LocalDateTimeToDateConverter;
 import com.vaadin.flow.dom.DomEventListener;
 import com.vaadin.flow.dom.Element;
 
-import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
@@ -52,8 +51,8 @@ import java.util.function.Function;
 public abstract class AbstractDateTimeInputBuilder<C extends DateTimeInputConfigurator<C>>
 		implements DateTimeInputConfigurator<C> {
 
-	private final List<ValueChangeListener<Date, ValueChangeEvent<Date>>> valueChangeListeners = new LinkedList<>();
-	private final List<ReadonlyChangeListener> readonlyChangeListeners = new LinkedList<>();
+	private final List<ValueChangeListener<Date, ValueChangeEvent<Date>>> valueChangeListeners = new ArrayList<>();
+	private final List<ReadonlyChangeListener> readonlyChangeListeners = new ArrayList<>();
 
 	private final InputAdaptersContainer<Date> adapters;
 
@@ -597,6 +596,54 @@ public abstract class AbstractDateTimeInputBuilder<C extends DateTimeInputConfig
 	@Override
 	public C label(Localizable label) {
 		localDateTimeInputBuilder.label(label);
+		return getConfigurator();
+	}
+
+	@Override
+	public C tooltip(Localizable tooltip) {
+		localDateTimeInputBuilder.tooltip(tooltip);
+		return getConfigurator();
+	}
+
+	@Override
+	public C tooltipText(String text) {
+		localDateTimeInputBuilder.tooltipText(text);
+		return getConfigurator();
+	}
+
+	@Override
+	public C helperText(Localizable helperText) {
+		localDateTimeInputBuilder.helperText(helperText);
+		return getConfigurator();
+	}
+
+	@Override
+	public C helperText(String helperText) {
+		localDateTimeInputBuilder.helperText(helperText);
+		return getConfigurator();
+	}
+
+	@Override
+	public C helperComponent(Component component) {
+		localDateTimeInputBuilder.helperComponent(component);
+		return getConfigurator();
+	}
+
+	@Override
+	public C ariaLabel(String ariaLabel) {
+		localDateTimeInputBuilder.ariaLabel(ariaLabel);
+		return getConfigurator();
+	}
+
+	@Override
+	public C ariaLabelledBy(String ariaLabelledBy) {
+		localDateTimeInputBuilder.ariaLabelledBy(ariaLabelledBy);
+		return getConfigurator();
+	}
+
+	@Override
+	public C ariaLabel(Localizable ariaLabel) {
+		localDateTimeInputBuilder.ariaLabel(ariaLabel);
 		return getConfigurator();
 	}
 

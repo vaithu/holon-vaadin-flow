@@ -26,6 +26,7 @@ import com.holonplatform.vaadin.flow.components.events.ClickEvent;
 import com.holonplatform.vaadin.flow.components.events.ClickEventListener;
 import com.holonplatform.vaadin.flow.components.events.ReadonlyChangeListener;
 import com.holonplatform.vaadin.flow.components.support.InputAdaptersContainer;
+import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
 import com.holonplatform.vaadin.flow.internal.components.support.ComponentClickListenerAdapter;
 import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.BlurNotifier.BlurEvent;
@@ -49,6 +50,8 @@ public abstract class AbstractBooleanInputBuilder<C extends BooleanInputConfigur
 		implements BooleanInputConfigurator<C> {
 
 	protected final DefaultHasLabelConfigurator<Checkbox> labelConfigurator;
+	protected final DefaultHasTooltipConfigurator<Checkbox> tooltipConfigurator;
+	protected final DefaultHasHelperTextConfigurator<Checkbox> helperTextConfigurator;
 
 	public AbstractBooleanInputBuilder() {
 		this(new Checkbox(), Collections.emptyList(), Collections.emptyList(), InputAdaptersContainer.create());
@@ -63,6 +66,9 @@ public abstract class AbstractBooleanInputBuilder<C extends BooleanInputConfigur
 		labelConfigurator = new DefaultHasLabelConfigurator<>(getComponent(), label -> {
 			getComponent().setLabel(label);
 		}, this);
+		tooltipConfigurator = new DefaultHasTooltipConfigurator<>(getComponent(), getComponent()::setTooltipText, this);
+		helperTextConfigurator = new DefaultHasHelperTextConfigurator<>(getComponent(), getComponent()::setHelperText,
+				this);
 	}
 
 	@Override
@@ -203,6 +209,36 @@ public abstract class AbstractBooleanInputBuilder<C extends BooleanInputConfigur
 		return getConfigurator();
 	}
 
+	@Override
+	public C tooltip(Localizable tooltip) {
+		tooltipConfigurator.tooltip(tooltip);
+		return getConfigurator();
+	}
+
+	@Override
+	public C tooltipText(String text) {
+		tooltipConfigurator.tooltipText(text);
+		return getConfigurator();
+	}
+
+	@Override
+	public C helperText(Localizable helperText) {
+		helperTextConfigurator.helperText(helperText);
+		return getConfigurator();
+	}
+
+	@Override
+	public C helperText(String helperText) {
+		helperTextConfigurator.helperText(helperText);
+		return getConfigurator();
+	}
+
+	@Override
+	public C helperComponent(Component component) {
+		helperTextConfigurator.helperComponent(component);
+		return getConfigurator();
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * @see
@@ -245,6 +281,36 @@ public abstract class AbstractBooleanInputBuilder<C extends BooleanInputConfigur
 	@Override
 	public C required() {
 		return required(true);
+	}
+
+	@Override
+	public C ariaLabel(String ariaLabel) {
+		getComponent().setAriaLabel(ariaLabel);
+		return getConfigurator();
+	}
+
+	@Override
+	public C ariaLabelledBy(String ariaLabelledBy) {
+		getComponent().setAriaLabelledBy(ariaLabelledBy);
+		return getConfigurator();
+	}
+
+	@Override
+	public C ariaLabel(Localizable ariaLabel) {
+		final String defaultAriaLabel = (ariaLabel != null && ariaLabel.getMessage() != null) ? ariaLabel.getMessage()
+				: "";
+		if (ariaLabel == null) {
+			return ariaLabel(defaultAriaLabel);
+		}
+		if (isDeferredLocalizationEnabled()) {
+			ariaLabel(defaultAriaLabel);
+			return withAttachListener(event -> {
+				if (event.isInitialAttach()) {
+					LocalizationProvider.localize(ariaLabel).ifPresent(this::ariaLabel);
+				}
+			});
+		}
+		return ariaLabel(LocalizationProvider.localize(ariaLabel).orElse(defaultAriaLabel));
 	}
 
 }

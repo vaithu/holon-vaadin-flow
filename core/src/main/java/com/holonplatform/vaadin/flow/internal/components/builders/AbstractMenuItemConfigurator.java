@@ -107,7 +107,7 @@ public abstract class AbstractMenuItemConfigurator<C extends MenuItemConfigurato
 
     @Override
     public C withSubMenu(Icon icon, String text) {
-        icon.getStyle().set("width", "var(--lumo-icon-size-s)");
+        icon.addClassName("menu-item__icon");
         icon.getStyle().set("height", "var(--lumo-icon-size-s)");
         icon.getStyle().set("marginRight", "var(--lumo-space-s)");
         return withSubMenu(icon).add(text);
@@ -164,7 +164,7 @@ public abstract class AbstractMenuItemConfigurator<C extends MenuItemConfigurato
 
     @Override
     public C add(Component... components) {
-        parentMenuItem.getSubMenu().add(components);
+        parentMenuItem.getSubMenu().addComponent(components);
         return getConfigurator();
     }
 

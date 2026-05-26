@@ -1,0 +1,242 @@
+/* ============================================================
+   layout.css — Application-owned layout utility classes
+   Replaces dependency on Lumo/Vaadin CSS utility layer.
+   Mobile-first: base = mobile, @media (min-width:640px) = desktop
+   ============================================================ */
+
+/* --- Display --- */
+.flex  { display: flex; }
+.grid  { display: grid; }
+
+/* --- Flex Direction --- */
+.flex-col          { flex-direction: column; }
+.flex-col-reverse  { flex-direction: column-reverse; }
+.flex-row          { flex-direction: row; }
+.flex-row-reverse  { flex-direction: row-reverse; }
+
+/* Responsive flex-row breakpoints */
+@media (min-width: 640px)  { .sm\:flex-row  { flex-direction: row; } }
+@media (min-width: 768px)  { .md\:flex-row  { flex-direction: row; } }
+@media (min-width: 1024px) { .lg\:flex-row  { flex-direction: row; } }
+@media (min-width: 1280px) { .xl\:flex-row  { flex-direction: row; } }
+@media (min-width: 1536px) { .\32xl\:flex-row { flex-direction: row; } }
+
+/* --- Flex Wrap --- */
+.flex-nowrap      { flex-wrap: nowrap; }
+.flex-wrap        { flex-wrap: wrap; }
+.flex-wrap-reverse { flex-wrap: wrap-reverse; }
+
+/* --- Align Items --- */
+.items-baseline { align-items: baseline; }
+.items-center   { align-items: center; }
+.items-end      { align-items: flex-end; }
+.items-start    { align-items: flex-start; }
+.items-stretch  { align-items: stretch; }
+
+/* --- Align Self --- */
+.self-auto     { align-self: auto; }
+.self-baseline { align-self: baseline; }
+.self-center   { align-self: center; }
+.self-end      { align-self: flex-end; }
+.self-start    { align-self: flex-start; }
+.self-stretch  { align-self: stretch; }
+
+/* --- Justify Content --- */
+.justify-around  { justify-content: space-around; }
+.justify-between { justify-content: space-between; }
+.justify-center  { justify-content: center; }
+.justify-end     { justify-content: flex-end; }
+.justify-evenly  { justify-content: space-evenly; }
+.justify-start   { justify-content: flex-start; }
+
+/* --- Box Sizing --- */
+.box-border  { box-sizing: border-box; }
+.box-content { box-sizing: content-box; }
+
+/* --- Overflow --- */
+.overflow-auto   { overflow: auto; }
+.overflow-hidden { overflow: hidden; }
+
+/* --- Position --- */
+.absolute { position: absolute; }
+.fixed    { position: fixed; }
+.relative { position: relative; }
+.static   { position: static; }
+.sticky   { position: sticky; }
+
+/* --- Gap (shorthand) --- */
+.gap-px { gap: 1px; }
+.gap-xs { gap: 0.25rem; }
+.gap-s  { gap: 0.5rem; }
+.gap-m  { gap: 1rem; }
+.gap-l  { gap: 1.5rem; }
+.gap-xl { gap: 2.5rem; }
+
+/* --- Column Gap --- */
+.gap-x-px { column-gap: 1px; }
+.gap-x-xs { column-gap: 0.25rem; }
+.gap-x-s  { column-gap: 0.5rem; }
+.gap-x-m  { column-gap: 1rem; }
+.gap-x-l  { column-gap: 1.5rem; }
+.gap-x-xl { column-gap: 2.5rem; }
+
+/* --- Row Gap --- */
+.gap-y-px { row-gap: 1px; }
+.gap-y-xs { row-gap: 0.25rem; }
+.gap-y-s  { row-gap: 0.5rem; }
+.gap-y-m  { row-gap: 1rem; }
+.gap-y-l  { row-gap: 1.5rem; }
+.gap-y-xl { row-gap: 2.5rem; }
+
+/* --- Row (12-column CSS Grid container — use with RowBuilder) ---
+   IMPORTANT: must be defined BEFORE .grid-cols-* so that
+   .gridColumns(N) can override the default 12-col layout. */
+.row {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+}
+
+/* --- Grid Template Columns (overrides .row's column count when combined) --- */
+.grid-cols-1  { grid-template-columns: repeat(1,  minmax(0, 1fr)); }
+.grid-cols-2  { grid-template-columns: repeat(2,  minmax(0, 1fr)); }
+.grid-cols-3  { grid-template-columns: repeat(3,  minmax(0, 1fr)); }
+.grid-cols-4  { grid-template-columns: repeat(4,  minmax(0, 1fr)); }
+.grid-cols-5  { grid-template-columns: repeat(5,  minmax(0, 1fr)); }
+.grid-cols-6  { grid-template-columns: repeat(6,  minmax(0, 1fr)); }
+.grid-cols-7  { grid-template-columns: repeat(7,  minmax(0, 1fr)); }
+.grid-cols-8  { grid-template-columns: repeat(8,  minmax(0, 1fr)); }
+.grid-cols-9  { grid-template-columns: repeat(9,  minmax(0, 1fr)); }
+.grid-cols-10 { grid-template-columns: repeat(10, minmax(0, 1fr)); }
+.grid-cols-11 { grid-template-columns: repeat(11, minmax(0, 1fr)); }
+.grid-cols-12 { grid-template-columns: repeat(12, minmax(0, 1fr)); }
+
+/* --- Column Span (base — no breakpoint) --- */
+.col-span-1    { grid-column: span 1  / span 1; }
+.col-span-2    { grid-column: span 2  / span 2; }
+.col-span-3    { grid-column: span 3  / span 3; }
+.col-span-4    { grid-column: span 4  / span 4; }
+.col-span-5    { grid-column: span 5  / span 5; }
+.col-span-6    { grid-column: span 6  / span 6; }
+.col-span-7    { grid-column: span 7  / span 7; }
+.col-span-8    { grid-column: span 8  / span 8; }
+.col-span-9    { grid-column: span 9  / span 9; }
+.col-span-10   { grid-column: span 10 / span 10; }
+.col-span-11   { grid-column: span 11 / span 11; }
+.col-span-12   { grid-column: span 12 / span 12; }
+.col-span-full { grid-column: 1 / -1; }
+
+/* --- Responsive col-span-* (Tailwind-style: sm:col-span-N, md:col-span-N …) --- */
+@media (min-width: 640px) {
+    .sm\:col-span-1    { grid-column: span 1  / span 1; }
+    .sm\:col-span-2    { grid-column: span 2  / span 2; }
+    .sm\:col-span-3    { grid-column: span 3  / span 3; }
+    .sm\:col-span-4    { grid-column: span 4  / span 4; }
+    .sm\:col-span-5    { grid-column: span 5  / span 5; }
+    .sm\:col-span-6    { grid-column: span 6  / span 6; }
+    .sm\:col-span-7    { grid-column: span 7  / span 7; }
+    .sm\:col-span-8    { grid-column: span 8  / span 8; }
+    .sm\:col-span-9    { grid-column: span 9  / span 9; }
+    .sm\:col-span-10   { grid-column: span 10 / span 10; }
+    .sm\:col-span-11   { grid-column: span 11 / span 11; }
+    .sm\:col-span-12   { grid-column: span 12 / span 12; }
+    .sm\:col-span-full { grid-column: 1 / -1; }
+}
+
+@media (min-width: 768px) {
+    .md\:col-span-1    { grid-column: span 1  / span 1; }
+    .md\:col-span-2    { grid-column: span 2  / span 2; }
+    .md\:col-span-3    { grid-column: span 3  / span 3; }
+    .md\:col-span-4    { grid-column: span 4  / span 4; }
+    .md\:col-span-5    { grid-column: span 5  / span 5; }
+    .md\:col-span-6    { grid-column: span 6  / span 6; }
+    .md\:col-span-7    { grid-column: span 7  / span 7; }
+    .md\:col-span-8    { grid-column: span 8  / span 8; }
+    .md\:col-span-9    { grid-column: span 9  / span 9; }
+    .md\:col-span-10   { grid-column: span 10 / span 10; }
+    .md\:col-span-11   { grid-column: span 11 / span 11; }
+    .md\:col-span-12   { grid-column: span 12 / span 12; }
+    .md\:col-span-full { grid-column: 1 / -1; }
+}
+
+@media (min-width: 1024px) {
+    .lg\:col-span-1    { grid-column: span 1  / span 1; }
+    .lg\:col-span-2    { grid-column: span 2  / span 2; }
+    .lg\:col-span-3    { grid-column: span 3  / span 3; }
+    .lg\:col-span-4    { grid-column: span 4  / span 4; }
+    .lg\:col-span-5    { grid-column: span 5  / span 5; }
+    .lg\:col-span-6    { grid-column: span 6  / span 6; }
+    .lg\:col-span-7    { grid-column: span 7  / span 7; }
+    .lg\:col-span-8    { grid-column: span 8  / span 8; }
+    .lg\:col-span-9    { grid-column: span 9  / span 9; }
+    .lg\:col-span-10   { grid-column: span 10 / span 10; }
+    .lg\:col-span-11   { grid-column: span 11 / span 11; }
+    .lg\:col-span-12   { grid-column: span 12 / span 12; }
+    .lg\:col-span-full { grid-column: 1 / -1; }
+}
+
+@media (min-width: 1280px) {
+    .xl\:col-span-1    { grid-column: span 1  / span 1; }
+    .xl\:col-span-2    { grid-column: span 2  / span 2; }
+    .xl\:col-span-3    { grid-column: span 3  / span 3; }
+    .xl\:col-span-4    { grid-column: span 4  / span 4; }
+    .xl\:col-span-5    { grid-column: span 5  / span 5; }
+    .xl\:col-span-6    { grid-column: span 6  / span 6; }
+    .xl\:col-span-7    { grid-column: span 7  / span 7; }
+    .xl\:col-span-8    { grid-column: span 8  / span 8; }
+    .xl\:col-span-9    { grid-column: span 9  / span 9; }
+    .xl\:col-span-10   { grid-column: span 10 / span 10; }
+    .xl\:col-span-11   { grid-column: span 11 / span 11; }
+    .xl\:col-span-12   { grid-column: span 12 / span 12; }
+    .xl\:col-span-full { grid-column: 1 / -1; }
+}
+
+@media (min-width: 1536px) {
+    .\32xl\:col-span-1    { grid-column: span 1  / span 1; }
+    .\32xl\:col-span-2    { grid-column: span 2  / span 2; }
+    .\32xl\:col-span-3    { grid-column: span 3  / span 3; }
+    .\32xl\:col-span-4    { grid-column: span 4  / span 4; }
+    .\32xl\:col-span-5    { grid-column: span 5  / span 5; }
+    .\32xl\:col-span-6    { grid-column: span 6  / span 6; }
+    .\32xl\:col-span-7    { grid-column: span 7  / span 7; }
+    .\32xl\:col-span-8    { grid-column: span 8  / span 8; }
+    .\32xl\:col-span-9    { grid-column: span 9  / span 9; }
+    .\32xl\:col-span-10   { grid-column: span 10 / span 10; }
+    .\32xl\:col-span-11   { grid-column: span 11 / span 11; }
+    .\32xl\:col-span-12   { grid-column: span 12 / span 12; }
+    .\32xl\:col-span-full { grid-column: 1 / -1; }
+}
+
+/* --- Responsive grid-cols-* (Tailwind-style: sm:grid-cols-N …) --- */
+@media (min-width: 640px)  {
+    .sm\:grid-cols-1  { grid-template-columns: repeat(1,  minmax(0, 1fr)); }
+    .sm\:grid-cols-2  { grid-template-columns: repeat(2,  minmax(0, 1fr)); }
+    .sm\:grid-cols-3  { grid-template-columns: repeat(3,  minmax(0, 1fr)); }
+    .sm\:grid-cols-4  { grid-template-columns: repeat(4,  minmax(0, 1fr)); }
+    .sm\:grid-cols-6  { grid-template-columns: repeat(6,  minmax(0, 1fr)); }
+    .sm\:grid-cols-12 { grid-template-columns: repeat(12, minmax(0, 1fr)); }
+}
+@media (min-width: 768px)  {
+    .md\:grid-cols-1  { grid-template-columns: repeat(1,  minmax(0, 1fr)); }
+    .md\:grid-cols-2  { grid-template-columns: repeat(2,  minmax(0, 1fr)); }
+    .md\:grid-cols-3  { grid-template-columns: repeat(3,  minmax(0, 1fr)); }
+    .md\:grid-cols-4  { grid-template-columns: repeat(4,  minmax(0, 1fr)); }
+    .md\:grid-cols-6  { grid-template-columns: repeat(6,  minmax(0, 1fr)); }
+    .md\:grid-cols-12 { grid-template-columns: repeat(12, minmax(0, 1fr)); }
+}
+@media (min-width: 1024px) {
+    .lg\:grid-cols-1  { grid-template-columns: repeat(1,  minmax(0, 1fr)); }
+    .lg\:grid-cols-2  { grid-template-columns: repeat(2,  minmax(0, 1fr)); }
+    .lg\:grid-cols-3  { grid-template-columns: repeat(3,  minmax(0, 1fr)); }
+    .lg\:grid-cols-4  { grid-template-columns: repeat(4,  minmax(0, 1fr)); }
+    .lg\:grid-cols-6  { grid-template-columns: repeat(6,  minmax(0, 1fr)); }
+    .lg\:grid-cols-12 { grid-template-columns: repeat(12, minmax(0, 1fr)); }
+}
+@media (min-width: 1280px) {
+    .xl\:grid-cols-1  { grid-template-columns: repeat(1,  minmax(0, 1fr)); }
+    .xl\:grid-cols-2  { grid-template-columns: repeat(2,  minmax(0, 1fr)); }
+    .xl\:grid-cols-3  { grid-template-columns: repeat(3,  minmax(0, 1fr)); }
+    .xl\:grid-cols-4  { grid-template-columns: repeat(4,  minmax(0, 1fr)); }
+    .xl\:grid-cols-6  { grid-template-columns: repeat(6,  minmax(0, 1fr)); }
+    .xl\:grid-cols-12 { grid-template-columns: repeat(12, minmax(0, 1fr)); }
+}
+

@@ -68,7 +68,7 @@ public class DefaultOptionsSingleSelectInputBuilder<T, ITEM> extends
 
 	protected final DefaultHasLabelConfigurator<RadioButtonGroup<ITEM>> labelConfigurator;
 
-	protected final List<SelectionListener<T>> selectionListeners = new LinkedList<>();
+	protected final List<SelectionListener<T>> selectionListeners = new ArrayList<>();
 
 	private final Class<? extends T> type;
 	private final Class<ITEM> itemType;
@@ -646,12 +646,6 @@ public class DefaultOptionsSingleSelectInputBuilder<T, ITEM> extends
 			return builder.isDeferredLocalizationEnabled();
 		}
 
-		@Override
-		public <A> ValidatableOptionsSingleSelectInputBuilder<T, ITEM> withAdapter(Class<A> type,
-				Function<Input<T>, A> adapter) {
-			builder.withAdapter(type, adapter);
-			return this;
-		}
 
 		/*
 		 * (non-Javadoc)
@@ -814,6 +808,13 @@ public class DefaultOptionsSingleSelectInputBuilder<T, ITEM> extends
 		@Override
 		public ValidatableOptionsSingleSelectInputBuilder<T, ITEM> required() {
 			return required(true);
+		}
+
+		@Override
+		public <A> ValidatableOptionsSingleSelectInputBuilder<T, ITEM> withAdapter(Class<A> type,
+				Function<Input<T>, A> adapter) {
+			builder.withAdapter(type, adapter);
+			return this;
 		}
 
 		/*

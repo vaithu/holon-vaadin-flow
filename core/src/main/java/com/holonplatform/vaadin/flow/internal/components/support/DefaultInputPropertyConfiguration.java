@@ -15,7 +15,7 @@
  */
 package com.holonplatform.vaadin.flow.internal.components.support;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -44,10 +44,10 @@ public class DefaultInputPropertyConfiguration<T> extends DefaultValueComponentP
 	private boolean required;
 	private Localizable requiredMessage;
 	private Supplier<T> defaultValueProvider;
-	private List<Validator<? super T>> validators = new LinkedList<>();
+	private List<Validator<? super T>> validators = new ArrayList<>();
 	private Validator<T> userInputValidator;
 	private ValidationStatusHandler<Input<?>> validationStatusHandler;
-	private List<ValueChangeListener<T, GroupValueChangeEvent<T, Property<?>, Input<?>, PropertyInputGroup>>> valueChangeListeners = new LinkedList<>();
+	private List<ValueChangeListener<T, GroupValueChangeEvent<T, Property<?>, Input<?>, PropertyInputGroup>>> valueChangeListeners = new ArrayList<>();
 
 	public DefaultInputPropertyConfiguration(Property<T> property) {
 		super(property);

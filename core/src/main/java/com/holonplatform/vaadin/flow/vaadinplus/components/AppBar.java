@@ -1,12 +1,12 @@
 package com.holonplatform.vaadin.flow.vaadinplus.components;
 
-import com.holonplatform.vaadin.flow.internal.lumo.*;
 import com.holonplatform.vaadin.flow.vaadinplus.Layout;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasTheme;
+import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.html.Header;
-import com.vaadin.flow.theme.lumo.LumoUtility;
 
+@StyleSheet("context://app-bar.css")
 public class AppBar extends Header implements HasTheme {
 
     private final Layout start;
@@ -14,30 +14,19 @@ public class AppBar extends Header implements HasTheme {
     private final Layout end;
 
     public AppBar(Component... components) {
-        addClassNames(LumoUtility.Background.BASE, LumoUtility.BoxSizing.BORDER, LumoUtility.Display.FLEX,
-                LumoUtility.Gap.LARGE, LumoUtility.Height.XLARGE,
-                LumoUtility.Padding.Horizontal.MEDIUM);
-        setWidthFull();
-
         this.start = new Layout();
-        this.start.setDisplay(Display.FLEX);
-        this.start.setAlignItems(AlignItems.CENTER);
-        this.start.setGap(Gap.LARGE);
-        this.start.setOverflow(Overflow.HIDDEN);
+        this.start.addClassName("app-bar__start");
 
         this.middle = new Layout();
-        this.middle.setDisplay(Display.FLEX);
-        this.middle.setAlignItems(AlignItems.CENTER);
-        this.middle.setFlexGrow();
-        this.middle.setJustifyContent(JustifyContent.CENTER);
+        this.middle.addClassName("app-bar__middle");
 
         this.end = new Layout();
-        this.end.setDisplay(Display.FLEX);
-        this.end.setAlignItems(AlignItems.CENTER);
-        this.end.setGap(Gap.SMALL);
+        this.end.addClassName("app-bar__end");
 
+        addClassName("app-bar");
+        getElement().setAttribute("role", "banner");
+        setWidthFull();
         add(this.start, this.middle, this.end);
-
         addToStart(components);
     }
 

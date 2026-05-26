@@ -1,11 +1,18 @@
 package com.iyensoft.vaadin.flow.internal.components.builders;
 
+import com.holonplatform.vaadin.flow.components.Components;
+import com.holonplatform.vaadin.flow.components.utils.UIUtils;
 import com.iyensoft.vaadin.flow.components.HasIyenView;
 import com.iyensoft.vaadin.flow.utils.responsive.IyenResponsiveLayout;
 import com.iyensoft.vaadin.flow.utils.responsive.ViewMode;
 import com.vaadin.flow.component.AttachEvent;
+import com.vaadin.flow.component.DetachEvent;
+import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Main;
+import com.vaadin.flow.component.page.WindowSize;
+import com.vaadin.flow.shared.Registration;
+import com.vaadin.flow.signals.Signal;
 import lombok.Getter;
 
 /**
@@ -15,6 +22,7 @@ import lombok.Getter;
  *  - mirrors current ViewMode and exposes it to subclasses
  *  - wires a single IyenResponsiveLayout instance
  */
+@StyleSheet(value = "context://master-details.css")
 public abstract class AbstractIyenView extends Main implements HasIyenView {
 
     private boolean initialized = false;
@@ -25,15 +33,15 @@ public abstract class AbstractIyenView extends Main implements HasIyenView {
     @Getter
     private IyenResponsiveLayout iyenResponsiveLayout;
 
+    /** Listener registration — cleaned up on detach. */
+    private Registration modeListenerRegistration;
+
     /** Shared overlay container for drawers/dialogs/toasts mounted INSIDE <main>. */
-    private final Div overlayHost = new Div();
+    private final Div overlayHost = Components.div().styleName("iyen-overlay-host").build();
 
     protected AbstractIyenView() {
         // IMPORTANT: must match CSS ("main.iyen-responsive-layout")
         addClassName("iyen-responsive-layout");
-
-        // Overlay host lives inside <main>; CSS controls its absolute fill and pointer-events
-        overlayHost.addClassName("iyen-overlay-host");
     }
 
     @Override
@@ -43,21 +51,33 @@ public abstract class AbstractIyenView extends Main implements HasIyenView {
             initialized = true;
 
             // Build responsive layout once
-            if (selectInitialMode() == null) {
-                iyenResponsiveLayout = new IyenResponsiveLayout(master(), detail());
-            } else {
-                iyenResponsiveLayout = new IyenResponsiveLayout(master(), detail(), selectInitialMode());
-            }
+            ViewMode initialMode = selectInitialMode();
+            iyenResponsiveLayout = (initialMode == null)
+                    ? new IyenResponsiveLayout(master(), detail())
+                    : new IyenResponsiveLayout(master(), detail(), initialMode);
 
             // Allow subclasses to tweak separator / options
             configureLayout(iyenResponsiveLayout);
 
-            // Mirror mode updates into this base class (subclasses can read via getViewMode())
-            iyenResponsiveLayout.addModeChangeListener(this::onViewModeChanged);
-
             // Compose: [ responsive content | overlay host ]
             add(iyenResponsiveLayout, overlayHost);
         }
+
+        // Re-register on every attach because detach removes the previous registration.
+        if (modeListenerRegistration == null) {
+            modeListenerRegistration = iyenResponsiveLayout.addModeChangeListener(this::onViewModeChanged);
+        }
+
+        synchronizeCurrentMode(event);
+    }
+
+    @Override
+    protected void onDetach(DetachEvent event) {
+        if (modeListenerRegistration != null) {
+            modeListenerRegistration.remove();
+            modeListenerRegistration = null;
+        }
+        super.onDetach(event);
     }
 
     /** Protected access for subclasses to mount drawers/overlays in a single canonical place. */
@@ -68,6 +88,19 @@ public abstract class AbstractIyenView extends Main implements HasIyenView {
     /** Called whenever IyenResponsiveLayout detects a new mode. */
     protected void onViewModeChanged(ViewMode mode) {
         this.currentMode = mode;
+    }
+
+    private void synchronizeCurrentMode(AttachEvent event) {
+        ViewMode layoutMode = iyenResponsiveLayout.getCurrentMode();
+        if (layoutMode != null) {
+            onViewModeChanged(layoutMode);
+            return;
+        }
+
+        WindowSize windowSize = Signal.untracked(() -> event.getUI().getPage().windowSizeSignal().get());
+        if (windowSize != null) {
+            onViewModeChanged(UIUtils.getViewMode(windowSize.width(), windowSize.height()));
+        }
     }
 
     /** Subclasses use this; always reads the latest mirrored mode. */

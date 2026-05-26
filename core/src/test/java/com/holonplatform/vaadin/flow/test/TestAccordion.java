@@ -3,7 +3,6 @@ package com.holonplatform.vaadin.flow.test;
 import com.holonplatform.vaadin.flow.components.Components;
 import com.vaadin.flow.component.accordion.Accordion;
 import com.vaadin.flow.component.accordion.AccordionPanel;
-import com.vaadin.flow.component.html.Div;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

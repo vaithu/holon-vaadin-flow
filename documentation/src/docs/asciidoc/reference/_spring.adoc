@@ -107,12 +107,3 @@ _Maven coordinates_:
 <version>{revnumber}</version>
 ----
 
-*2.* The *Vaadin Flow starter using Undertow* provides the same dependencies as the previous starter, but uses *Undertow* instead of Tomcat as embedded servlet container.
-
-_Maven coordinates_:
-[source, xml, subs="attributes+"]
-----
-<groupId>com.holon-platform.vaadin</groupId>
-<artifactId>holon-starter-vaadin-flow-undertow</artifactId>
-<version>{revnumber}</version>
-----

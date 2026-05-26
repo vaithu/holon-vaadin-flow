@@ -19,18 +19,17 @@ import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.core.internal.utils.ObjectUtils;
 import com.holonplatform.vaadin.flow.components.builders.ButtonBuilder;
 import com.holonplatform.vaadin.flow.components.builders.ButtonConfigurator;
-import com.holonplatform.vaadin.flow.components.builders.ButtonConfigurator.BaseButtonConfigurator;
 import com.holonplatform.vaadin.flow.components.builders.DialogBuilder;
+import com.vaadin.flow.component.ModalityMode;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dialog.Dialog;
 
 import java.util.function.Consumer;
 
 /**
- * Default {@link QuestionDialogBuilder} implementation.
+ * Default {@link DialogBuilder.DeleteDialogBuilder} implementation.
  *
- * @since 5.2.0
+ * @since 5.5.4
  */
 public class DefaultDeleteDialogBuilder extends AbstractDialogConfigurator<DialogBuilder.DeleteDialogBuilder>
 		implements DialogBuilder.DeleteDialogBuilder {
@@ -42,80 +41,59 @@ public class DefaultDeleteDialogBuilder extends AbstractDialogConfigurator<Dialo
 
 		super();
 		ObjectUtils.argumentNotNull(deleteDialogCallback, "Delete dialog callback must be not null");
+
 		this.confirmButton = ButtonBuilder.create()
-				.text(Localizable.of("Delete", DialogBuilder.DEFAULT_CONFIRM_BUTTON_MESSAGE_CODE)).withClickListener(e -> {
-					getComponent().close();
+				.text(Localizable.of("Delete", DialogBuilder.DEFAULT_DELETE_BUTTON_MESSAGE_CODE))
+				.styleName("h-dialog__action-btn h-dialog__action-btn--destructive")
+				.withClickListener(e -> {
+					getComponent().attemptClose();
 					deleteDialogCallback.onUserAnswer(true);
 				})
-				.withThemeVariants(ButtonVariant.LUMO_ERROR,ButtonVariant.LUMO_PRIMARY)
-//				.styleNames(LumoUtility.AlignSelf.END)
 				.build();
 		this.denyButton = ButtonBuilder.create()
-				.text(Localizable.of("Cancel", DialogBuilder.DEFAULT_DENY_BUTTON_MESSAGE_CODE)).withClickListener(e -> {
-					getComponent().close();
+				.text(Localizable.of("Cancel", DialogBuilder.DEFAULT_DENY_BUTTON_MESSAGE_CODE))
+				.styleName("h-dialog__cancel-btn")
+				.autofocus()
+				.withClickListener(e -> {
+					getComponent().attemptClose();
 					deleteDialogCallback.onUserAnswer(false);
 				})
-				.autofocus()
-				.withThemeVariants(ButtonVariant.LUMO_TERTIARY)
 				.build();
-
-		this.denyButton.getStyle().set("margin-right", "auto");
 
 		getComponent().addFooterComponent(this.denyButton);
 		getComponent().addFooterComponent(this.confirmButton);
 
-		getComponent().setCloseOnEsc(true);
+		// Force explicit choice — ESC must not silently dismiss without firing the deny callback
+		getComponent().setCloseOnEsc(false);
 		getComponent().setCloseOnOutsideClick(false);
 
 		// since 5.5.0: set modal by default
-		getComponent().setModal(true);
+		getComponent().setModality(ModalityMode.STRICT);
+
+		// shadcn/ui AlertDialog pattern — hide close button to force explicit choice
+		getComponent().setCloseButtonVisible(false);
 
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.holonplatform.vaadin.flow.components.builders.DialogBuilder.
-	 * QuestionDialogBuilder#confirmButtonConfigurator( java.util.function.Consumer)
-	 */
 	@Override
-	public DeleteDialogBuilder confirmButtonConfigurator(Consumer<BaseButtonConfigurator> configurator) {
+	public DeleteDialogBuilder confirmButtonConfigurator(Consumer<ButtonConfigurator.BaseButtonConfigurator> configurator) {
 		ObjectUtils.argumentNotNull(configurator, "Configurator must be not null");
 		configurator.accept(ButtonConfigurator.configure(confirmButton));
 		return getConfigurator();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.holonplatform.vaadin.flow.components.builders.DialogBuilder.
-	 * QuestionDialogBuilder#denialButtonConfigurator( java.util.function.Consumer)
-	 */
 	@Override
-	public DeleteDialogBuilder denialButtonConfigurator(Consumer<BaseButtonConfigurator> configurator) {
+	public DeleteDialogBuilder denialButtonConfigurator(Consumer<ButtonConfigurator.BaseButtonConfigurator> configurator) {
 		ObjectUtils.argumentNotNull(configurator, "Configurator must be not null");
 		configurator.accept(ButtonConfigurator.configure(denyButton));
-
-
 		return getConfigurator();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.holonplatform.vaadin.flow.internal.components.builders.
-	 * AbstractComponentConfigurator#getConfigurator()
-	 */
 	@Override
 	protected DeleteDialogBuilder getConfigurator() {
 		return this;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.holonplatform.vaadin.flow.components.builders.DialogBuilder#build()
-	 */
 	@Override
 	public Dialog build() {
 		return getComponent();

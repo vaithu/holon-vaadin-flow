@@ -74,7 +74,7 @@ public abstract class AbstractContextMenuConfigurator<M extends ContextMenuBase<
 
 	@Override
 	protected Optional<HasEnabled> hasEnabled() {
-		return Optional.of(getComponent());
+		return Optional.empty();
 	}
 
     @Override

@@ -88,8 +88,8 @@ public abstract class AbstractCardConfigurator<C extends CardConfigurator<C>>
      * ------------------------------------------------- */
 
     @Override
-    public C addToFooter(Component... footerComponent) {
-        getComponent().addToFooter(footerComponent);
+    public C withFooter(Component... footerComponents) {
+        getComponent().addToFooter(footerComponents);
         return getConfigurator();
     }
 

@@ -15,16 +15,11 @@
  */
 package com.holonplatform.vaadin.flow.components;
 
-import java.util.Optional;
-
 import com.holonplatform.vaadin.flow.internal.components.HasComponentAdapter;
-import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.HasElement;
-import com.vaadin.flow.component.HasEnabled;
-import com.vaadin.flow.component.HasSize;
-import com.vaadin.flow.component.HasStyle;
-import com.vaadin.flow.component.HasValidation;
+import com.vaadin.flow.component.*;
 import com.vaadin.flow.dom.Element;
+
+import java.util.Optional;
 
 /**
  * Represents and object which can be represented by a UI {@link Component}, which can be obtained using the
@@ -79,7 +74,8 @@ public interface HasComponent extends HasElement {
 	 *         otherwise.
 	 */
 	default Optional<HasEnabled> hasEnabled() {
-		return (getComponent() instanceof HasEnabled) ? Optional.of((HasEnabled) getComponent()) : Optional.empty();
+		final Component c = getComponent();
+		return (c instanceof HasEnabled h) ? Optional.of(h) : Optional.empty();
 	}
 
 	/**
@@ -97,7 +93,8 @@ public interface HasComponent extends HasElement {
 	 *         otherwise.
 	 */
 	default Optional<HasSize> hasSize() {
-		return (getComponent() instanceof HasSize) ? Optional.of((HasSize) getComponent()) : Optional.empty();
+		final Component c = getComponent();
+		return (c instanceof HasSize h) ? Optional.of(h) : Optional.empty();
 	}
 
 	/**
@@ -115,8 +112,8 @@ public interface HasComponent extends HasElement {
 	 *         otherwise.
 	 */
 	default Optional<HasValidation> hasValidation() {
-		return (getComponent() instanceof HasValidation) ? Optional.of((HasValidation) getComponent())
-				: Optional.empty();
+		final Component c = getComponent();
+		return (c instanceof HasValidation h) ? Optional.of(h) : Optional.empty();
 	}
 
 	// ------- builders

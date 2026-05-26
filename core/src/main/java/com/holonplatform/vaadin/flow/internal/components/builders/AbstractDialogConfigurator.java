@@ -23,14 +23,12 @@ import com.holonplatform.vaadin.flow.components.events.ClickEventListener;
 import com.holonplatform.vaadin.flow.internal.components.DefaultDialog;
 import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dialog.Dialog.DialogResizeEvent;
 import com.vaadin.flow.component.dialog.Dialog.OpenedChangeEvent;
-import com.vaadin.flow.component.dialog.DialogVariant;
 import com.vaadin.flow.component.html.Paragraph;
-import com.vaadin.flow.theme.lumo.LumoUtility;
 
 import java.util.Optional;
+import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 
 /**
@@ -42,14 +40,14 @@ import java.util.function.Consumer;
 public abstract class AbstractDialogConfigurator<C extends DialogConfigurator<C>>
         extends AbstractLocalizableComponentConfigurator<DefaultDialog, C> implements DialogConfigurator<C> {
 
-    private final MessageLocalizationSupportConfigurator<DefaultDialog> messageConfigurator;
+    /** Registered trigger component — opens the dialog when clicked. */
+    private Component dialogTrigger;
+
+    /** Guards against wiring the same trigger DOM listener more than once. */
+    private boolean triggerWired = false;
 
     public AbstractDialogConfigurator() {
         super(new DefaultDialog());
-
-        this.messageConfigurator = new MessageLocalizationSupportConfigurator<>(getComponent(),
-                text -> getComponent().setMessage(text), this);
-        getComponent().addThemeVariants(DialogVariant.LUMO_NO_PADDING);
     }
 
     @Override
@@ -67,42 +65,181 @@ public abstract class AbstractDialogConfigurator<C extends DialogConfigurator<C>
         return Optional.of(getComponent());
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * com.holonplatform.vaadin.flow.components.builders.HasTextConfigurator#text(
-     * com.holonplatform.core.i18n. Localizable)
-     */
+    // -----------------------------------------------------------------------
+    // Legacy text() convenience — delegates to withContent() for any call site
+    // that still uses the old text(Localizable) API entry point.
+    // -----------------------------------------------------------------------
+
     @Override
     public C text(Localizable text) {
-        messageConfigurator.setMessage(text);
+        return withContent(text);
+    }
+
+    @Override
+    public C text(String text) {
+        return withContent(text);
+    }
+
+    // -----------------------------------------------------------------------
+    // Header
+    // -----------------------------------------------------------------------
+
+    @Override
+    public C withTitle(String text) {
+        getComponent().setDialogTitle(text);
         return getConfigurator();
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.holonplatform.vaadin.flow.components.builders.DialogConfigurator#
-     * withComponent(com.vaadin.flow.component. Component)
-     */
+    @Override
+    public C withTitle(Localizable localizable) {
+        getComponent().setDialogTitle(localizable);
+        return getConfigurator();
+    }
+
+    @Override
+    public C withDescription(String text) {
+        getComponent().setDialogDescription(text);
+        return getConfigurator();
+    }
+
+    @Override
+    public C withDescription(Localizable localizable) {
+        getComponent().setDialogDescription(localizable);
+        return getConfigurator();
+    }
+
+    // -----------------------------------------------------------------------
+    // Lifecycle callbacks
+    // -----------------------------------------------------------------------
+
+    @Override
+    public C onOpen(Runnable onOpen) {
+        getComponent().setOnOpen(onOpen);
+        return getConfigurator();
+    }
+
+    @Override
+    public C onClose(Runnable onClose) {
+        getComponent().setOnClose(onClose);
+        return getConfigurator();
+    }
+
+    @Override
+    public C onClose(BooleanSupplier onClose) {
+        getComponent().setOnClose(onClose);
+        return getConfigurator();
+    }
+
+    // -----------------------------------------------------------------------
+    // Body content
+    // -----------------------------------------------------------------------
+
     @Override
     public C withComponent(Component component) {
         getComponent().addContentComponent(component);
         return getConfigurator();
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.holonplatform.vaadin.flow.components.builders.DialogConfigurator#
-     * withToolbarComponent(com.vaadin.flow. component.Component)
-     */
     @Override
-    public C withToolbarComponent(Component component) {
-        getComponent().addFooterComponent(component);
+    public C withContent(Component... components) {
+        getComponent().addContentComponent(components);
         return getConfigurator();
     }
+
+    @Override
+    public C withContent(String message) {
+        Paragraph p = new Paragraph(message);
+        p.addClassName("h-dialog__text");
+        return withContent(p);
+    }
+
+    /**
+     * Adds a localised text paragraph to the dialog body.
+     * {@code message} is the fallback text; {@code messageCode} is the i18n key resolved
+     * via {@link com.holonplatform.vaadin.flow.i18n.LocalizationProvider}.
+     */
+    @Override
+    public C withContent(String message, String messageCode) {
+        return withContent(Localizable.of(message, messageCode));
+    }
+
+    @Override
+    public C withContent(Localizable message) {
+        String resolved = com.holonplatform.vaadin.flow.i18n.LocalizationProvider
+                .localize(message).orElse(message.getMessage());
+        Paragraph p = new Paragraph(resolved);
+        p.addClassName("h-dialog__text");
+        return withContent(p);
+    }
+
+    // -----------------------------------------------------------------------
+    // Footer — clean DSL
+    // -----------------------------------------------------------------------
+
+    /**
+     * Adds a primary action button (label + click handler) to the footer.
+     * Cancel button must be added separately via {@link #withCancelButton()}.
+     */
+    @Override
+    public C withActionButton(String text,
+                               ClickEventListener<Button, ClickEvent<Button>> onClick) {
+        ObjectUtils.argumentNotNull(onClick, "Click listener must be not null");
+        Button btn = ButtonBuilder.create()
+                .text(text)
+                .styleName("h-dialog__action-btn")
+                .withClickListener(onClick)
+                .withClickListener(e -> getComponent().attemptClose())
+                .build();
+        return withFooter(btn);
+    }
+
+    @Override
+    public C withActionButton(String text, String textCode,
+                               ClickEventListener<Button, ClickEvent<Button>> onClick) {
+        ObjectUtils.argumentNotNull(onClick, "Click listener must be not null");
+        Button btn = ButtonBuilder.create()
+                .text(Localizable.of(text, textCode))
+                .styleName("h-dialog__action-btn")
+                .withClickListener(onClick)
+                .withClickListener(e -> getComponent().attemptClose())
+                .build();
+        return withFooter(btn);
+    }
+
+    @Override
+    public C withActionButton(Consumer<ButtonConfigurator.BaseButtonConfigurator> configurator) {
+        ObjectUtils.argumentNotNull(configurator, "Configurator must be not null");
+        Button btn = ButtonBuilder.create()
+                .styleName("h-dialog__action-btn")
+                .withClickListener(e -> getComponent().attemptClose())
+                .build();
+        configurator.accept(ButtonConfigurator.configure(btn));
+        return withFooter(btn);
+    }
+
+    @Override
+    public C withCancelButton() {
+        return withFooter(createCancelButton());
+    }
+
+    @Override
+    public C withCancelButton(Consumer<ButtonConfigurator.BaseButtonConfigurator> configurator) {
+        ObjectUtils.argumentNotNull(configurator, "Configurator must be not null");
+        Button cancelBtn = createCancelButton();
+        configurator.accept(ButtonConfigurator.configure(cancelBtn));
+        return withFooter(cancelBtn);
+    }
+
+    /** Low-level footer escape hatch — adds components directly to the footer slot. */
+    @Override
+    public C withFooter(Component... components) {
+        getComponent().getFooter().add(components);
+        return getConfigurator();
+    }
+
+    // -----------------------------------------------------------------------
+    // Behaviour
+    // -----------------------------------------------------------------------
 
     @Override
     public C makeDialogResponsive() {
@@ -110,12 +247,6 @@ public abstract class AbstractDialogConfigurator<C extends DialogConfigurator<C>
         return getConfigurator();
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.holonplatform.vaadin.flow.components.builders.DialogConfigurator#
-     * withOpenedChangeListener(com.vaadin.flow. component.ComponentEventListener)
-     */
     @Override
     public C withOpenedChangeListener(ComponentEventListener<OpenedChangeEvent> listener) {
         ObjectUtils.argumentNotNull(listener, "Event listener must be not null");
@@ -144,159 +275,187 @@ public abstract class AbstractDialogConfigurator<C extends DialogConfigurator<C>
 
     @Override
     public C modal(boolean modal) {
-        getComponent().setModal(modal);
+        getComponent().setModality(modal ? ModalityMode.STRICT : ModalityMode.MODELESS);
         return getConfigurator();
     }
 
-    @Override
-    public C withHeader(String title, Component component) {
-        getComponent().setHeaderTitle(title);
-        getComponent().add(component);
-        return getConfigurator();
-    }
+    // -----------------------------------------------------------------------
+    // Variant-aware action buttons
+    // -----------------------------------------------------------------------
 
     @Override
-    public C withHeader(String title) {
-        getComponent().setHeaderTitle(title);
-        return getConfigurator();
-    }
-
-    @Override
-    public C withHeader(Localizable localizable) {
-        getComponent().setHeaderTitle(localizable.getMessage());
-        return getConfigurator();
-    }
-
-    @Override
-    public C withFooter(boolean showCancelBtn, Component... components) {
-        if (showCancelBtn) {
-            getComponent().addFooterComponent(createCancelBtn());
-        }
-        return withFooter(components);
-    }
-
-    private Button createCancelBtn() {
-        Button cancelButton = new Button("Cancel", (e) -> getComponent().close());
-        cancelButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
-        addFooterRightComponent(cancelButton);
-        return cancelButton;
-    }
-
-
-    private void addFooterRightComponent(Component component) {
-        component.getStyle().set("margin-right", "auto");
-        getComponent().getFooter().add(component);
-    }
-
-    @Override
-    public C withFooter(String btnText, ClickEventListener<Button, ClickEvent<Button>> buttonClickEvent) {
-        Button button = ButtonBuilder.create()
-                .text(btnText)
-//				.withThemeVariants(ButtonVariant.LUMO_ERROR, ButtonVariant.LUMO_PRIMARY)
-                .styleNames(LumoUtility.AlignSelf.END)
-                .withClickListener(buttonClickEvent)
-                .withClickListener(event -> getComponent().close())
+    public C withActionButton(String text, DialogConfigurator.ActionVariant variant,
+                               ClickEventListener<Button, ClickEvent<Button>> onClick) {
+        ObjectUtils.argumentNotNull(onClick, "Click listener must be not null");
+        Button btn = ButtonBuilder.create()
+                .text(text)
+                .styleName(actionButtonStyle(variant))
+                .withClickListener(onClick)
+                .withClickListener(e -> getComponent().attemptClose())
                 .build();
-        return withFooter(true, button);
+        return withFooter(btn);
     }
 
     @Override
-    public C withFooter(String btnText, String btnTextCode, ClickEventListener<Button,
-            ClickEvent<Button>> buttonClickEvent) {
-        Button button = ButtonBuilder.create()
-                .text(Localizable.of(btnText, btnTextCode))
-                .withClickListener(buttonClickEvent)
-                .withClickListener(event -> getComponent().close())
-//				.withThemeVariants(ButtonVariant.LUMO_ERROR,ButtonVariant.LUMO_PRIMARY)
-                .styleNames(LumoUtility.AlignSelf.END)
+    public C withActionButton(String text, String textCode,
+                               DialogConfigurator.ActionVariant variant,
+                               ClickEventListener<Button, ClickEvent<Button>> onClick) {
+        ObjectUtils.argumentNotNull(onClick, "Click listener must be not null");
+        Button btn = ButtonBuilder.create()
+                .text(Localizable.of(text, textCode))
+                .styleName(actionButtonStyle(variant))
+                .withClickListener(onClick)
+                .withClickListener(e -> getComponent().attemptClose())
                 .build();
-        return withFooter(true, button);
+        return withFooter(btn);
     }
 
     @Override
-    public C withFooter(boolean showCancelBtn, Consumer<ButtonConfigurator.BaseButtonConfigurator> deleteConfigurator) {
-        ObjectUtils.argumentNotNull(deleteConfigurator, "Configurator must be not null");
-        if (showCancelBtn) {
-            deleteConfigurator.accept(ButtonConfigurator.configure(createCancelBtn()));
-            return withFooter(deleteConfigurator);
-        }
+    public C withActionButton(DialogConfigurator.ActionVariant variant,
+                               Consumer<ButtonConfigurator.BaseButtonConfigurator> configurator) {
+        ObjectUtils.argumentNotNull(configurator, "Configurator must be not null");
+        Button btn = ButtonBuilder.create()
+                .styleName(actionButtonStyle(variant))
+                .withClickListener(e -> getComponent().attemptClose())
+                .build();
+        configurator.accept(ButtonConfigurator.configure(btn));
+        return withFooter(btn);
+    }
+
+    // -----------------------------------------------------------------------
+    // Close button control  (shadcn/ui DialogClose)
+    // -----------------------------------------------------------------------
+
+    @Override
+    public C withCloseButton(boolean visible) {
+        getComponent().setCloseButtonVisible(visible);
         return getConfigurator();
     }
 
-    private Button createDeleteBtn() {
+    @Override
+    public C withCloseButton(Consumer<ButtonConfigurator.BaseButtonConfigurator> configurator) {
+        ObjectUtils.argumentNotNull(configurator, "Configurator must be not null");
+        getComponent().configureCloseButton(btn ->
+                configurator.accept(ButtonConfigurator.configure(btn)));
+        return getConfigurator();
+    }
+
+    @Override
+    public C closeIcon(Component icon) {
+        ObjectUtils.argumentNotNull(icon, "Icon must be not null");
+        getComponent().setCloseButtonIcon(icon);
+        return getConfigurator();
+    }
+
+    // -----------------------------------------------------------------------
+    // Size variants  (shadcn/ui size prop + Tailwind Plus max-w-*)
+    // -----------------------------------------------------------------------
+
+    @Override
+    public C withSize(DialogConfigurator.DialogSize size) {
+        ObjectUtils.argumentNotNull(size, "DialogSize must be not null");
+        getComponent().setDialogSize(size);
+        return getConfigurator();
+    }
+
+    // -----------------------------------------------------------------------
+    // Icon header  (Tailwind Plus "with icon" modal pattern)
+    // -----------------------------------------------------------------------
+
+    @Override
+    public C withHeaderIcon(Component icon, DialogConfigurator.IconVariant variant) {
+        ObjectUtils.argumentNotNull(icon, "Icon must be not null");
+        ObjectUtils.argumentNotNull(variant, "IconVariant must be not null");
+        getComponent().addHeaderIcon(icon, variant.getCssClass());
+        return getConfigurator();
+    }
+
+    // -----------------------------------------------------------------------
+    // Centered variant  (Tailwind Plus "centred modal" pattern)
+    // -----------------------------------------------------------------------
+
+    @Override
+    public C centered() {
+        getComponent().setCentered(true);
+        return getConfigurator();
+    }
+
+    // -----------------------------------------------------------------------
+    // Trigger (DialogTrigger equivalent)
+    // -----------------------------------------------------------------------
+
+    @Override
+    public C withTrigger(Component trigger) {
+        ObjectUtils.argumentNotNull(trigger, "Trigger must be not null");
+        this.dialogTrigger = trigger;
+        this.triggerWired = false; // reset so the new trigger gets wired on buildTriggered()
+        return getConfigurator();
+    }
+
+    @Override
+    public C withTrigger(String text) {
+        ObjectUtils.argumentNotNull(text, "Trigger text must be not null");
+        return withTrigger(ButtonBuilder.create()
+                .text(text)
+                .styleName("h-dialog__trigger")
+                .build());
+    }
+
+    @Override
+    public C withTrigger(Consumer<ButtonConfigurator.BaseButtonConfigurator> configurator) {
+        ObjectUtils.argumentNotNull(configurator, "Configurator must be not null");
+        Button btn = ButtonBuilder.create()
+                .styleName("h-dialog__trigger")
+                .build();
+        configurator.accept(ButtonConfigurator.configure(btn));
+        return withTrigger(btn);
+    }
+
+    /**
+     * Builds the dialog, wires the click listener on the registered trigger and returns it.
+     * Satisfies the {@link com.holonplatform.vaadin.flow.components.builders.DialogBuilder#buildTriggered()}
+     * contract — concrete builders inherit this via the class hierarchy.
+     *
+     * @return the trigger component with the dialog wired to it
+     * @throws IllegalStateException if no trigger has been registered
+     */
+    public Component buildTriggered() {
+        if (dialogTrigger == null) {
+            throw new IllegalStateException(
+                    "No trigger configured. Call withTrigger() before buildTriggered().");
+        }
+        if (!triggerWired) {
+            dialogTrigger.getElement().addEventListener("click", e -> getComponent().open());
+            triggerWired = true;
+        }
+        return dialogTrigger;
+    }
+
+    // -----------------------------------------------------------------------
+    // Internal helpers
+    // -----------------------------------------------------------------------
+
+    /**
+     * Builds the CSS class string for an action button given its variant.
+     * Always includes the base {@code h-dialog__action-btn} class.
+     */
+    private static String actionButtonStyle(DialogConfigurator.ActionVariant variant) {
+        if (variant == null || variant == DialogConfigurator.ActionVariant.DEFAULT) {
+            return "h-dialog__action-btn";
+        }
+        return "h-dialog__action-btn " + variant.getCssModifier();
+    }
+
+    /**
+     * Creates a pre-styled "Cancel" button.
+     * The button closes the dialog via {@link DefaultDialog#attemptClose()} so that any
+     * registered close guard is respected.
+     */
+    private Button createCancelButton() {
         return ButtonBuilder.create()
-                .text(Localizable.of("Delete", DialogBuilder.DEFAULT_DELETE_BUTTON_MESSAGE_CODE))
-                .withThemeVariants(ButtonVariant.LUMO_ERROR, ButtonVariant.LUMO_PRIMARY)
-                .styleNames(LumoUtility.AlignSelf.END)
+                .text(Localizable.of("Cancel", DialogBuilder.DEFAULT_DENY_BUTTON_MESSAGE_CODE))
+                .styleName("h-dialog__cancel-btn")
+                .withClickListener(e -> getComponent().attemptClose())
                 .build();
-    }
-
-    @Override
-    public C withFooter(Consumer<ButtonConfigurator.BaseButtonConfigurator> cancelConfigurator) {
-        ObjectUtils.argumentNotNull(cancelConfigurator, "Configurator must be not null");
-        Button button = ButtonBuilder.create()
-                .withClickListener(event -> getComponent().close())
-                .build();
-        cancelConfigurator.accept(ButtonConfigurator.configure(button));
-        return withFooter(button);
-    }
-
-    @Override
-    public C withFooter(Consumer<ButtonConfigurator.BaseButtonConfigurator> cancelConfigurator, Component... components) {
-        ObjectUtils.argumentNotNull(cancelConfigurator, "Configurator must be not null");
-        Button cancelButton = ButtonBuilder.create()
-                .text(Localizable.of("Cancel", DialogBuilder.DEFAULT_DENY_BUTTON_MESSAGE_CODE)).withClickListener(e -> {
-                    getComponent().close();
-                })
-                .withThemeVariants(ButtonVariant.LUMO_TERTIARY)
-                .styleNames(LumoUtility.AlignSelf.START)
-                .build();
-
-        cancelConfigurator.accept(ButtonConfigurator.configure(cancelButton));
-        addFooterRightComponent(cancelButton);
-        return withFooter(components);
-    }
-
-    @Override
-    public C withContent(Component... components) {
-        getComponent().addContentComponent(components);
-        return getConfigurator();
-    }
-
-    @Override
-    public C withContent(String message) {
-        Paragraph paragraph = LabelBuilder.paragraph()
-                .text(message)
-                .styleNames(LumoUtility.FontSize.MEDIUM, LumoUtility.Padding.Top.NONE,
-                        LumoUtility.Padding.Bottom.NONE)
-                .build();
-        return withContent(paragraph);
-    }
-
-    @Override
-    public C withContent(String message, String messageCode) {
-        Paragraph paragraph = LabelBuilder.paragraph()
-                .text(message, messageCode)
-                .styleNames(LumoUtility.FontSize.MEDIUM, LumoUtility.Padding.Top.NONE,
-                        LumoUtility.Padding.Bottom.NONE)
-                .build();
-        return withContent(paragraph);
-    }
-
-
-    @Override
-    public C withContent(Localizable message) {
-        Paragraph paragraph = LabelBuilder.paragraph()
-                .text(message)
-                .styleNames(LumoUtility.FontSize.MEDIUM, LumoUtility.Padding.Top.NONE,
-                        LumoUtility.Padding.Bottom.NONE)
-                .build();
-        return withContent(paragraph);
-    }
-
-    @Override
-    public C withFooter(Component... components) {
-        getComponent().getFooter().add(components);
-        return getConfigurator();
     }
 }

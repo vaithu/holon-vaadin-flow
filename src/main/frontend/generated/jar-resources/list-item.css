@@ -1,0 +1,155 @@
+/*
+ * list-item.css
+ *
+ * Mobile-first styles for the ListItem component.
+ *
+ * BEM namespace: .list-item
+ *
+ * Structure:
+ *   .list-item                   — root FlexBoxLayout row
+ *   .list-item__content          — vertical column (primary + secondary labels)
+ *   .list-item__prefix           — leading slot (avatar, icon, etc.)
+ *   .list-item__suffix           — trailing slot (actions, badges, etc.)
+ *   .list-item--no-h-padding     — modifier: removes horizontal padding
+ */
+
+.list-item {
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
+    min-height: 2.75rem;              /* WCAG 2.5.8 — 44 px touch target */
+    padding: 0.5625rem 1rem;          /* ≈9px top/bottom, 16px sides     */
+}
+
+.list-item__content {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.list-item__prefix {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    margin-inline-end: 0.75rem;
+}
+
+.list-item__suffix {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    margin-inline-start: 0.75rem;
+}
+
+.list-item--no-h-padding {
+    padding-inline: 0;
+}
+
+/* -----------------------------------------------------------------------
+ * Interactive states
+ * (Used when .list-item acts as a selectable row in a VirtualList or Grid renderer)
+ * ----------------------------------------------------------------------- */
+
+.list-item--selectable {
+    cursor: pointer;
+    border-left: 3px solid transparent;
+    transition: background var(--transition-fast, 120ms ease),
+                border-color var(--transition-fast, 120ms ease);
+}
+
+.list-item--selectable:hover {
+    background-color : rgb(0 0 0 / 0.04);
+}
+
+.list-item--selectable:active {
+    background-color : rgb(0 0 0 / 0.07);
+    transform        : translateY(0);  /* prevent inherited translateY from offsetting the row */
+}
+
+.list-item--selectable:focus-visible {
+    outline: 2px solid var(--color-primary, #2563eb);
+    outline-offset: -2px;
+}
+
+/* Selected state — apply via Java: item.addClassName("list-item--selected") */
+.list-item--selected {
+    border-left-color : var(--color-primary, #2563eb);
+    background-color  : rgb(37 99 235 / 0.06);
+}
+
+/* -----------------------------------------------------------------------
+ * Primary / secondary text inside .list-item__content
+ * ----------------------------------------------------------------------- */
+
+.list-item__primary {
+    font-size: var(--font-size-base, 0.8125rem);
+    font-weight: 500;
+    line-height: 1.4;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.list-item__secondary {
+    font-size: var(--font-size-xs, 0.6875rem);
+    line-height: 1.4;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-top: 0.125rem;
+}
+
+/* -----------------------------------------------------------------------
+ * Status badge on a list item  →  Vaadin Badge (theme="pill")
+ * ----------------------------------------------------------------------- */
+
+.list-item__badge {
+    font-size: var(--font-size-xs, 0.6875rem);
+    font-weight: 500;
+    line-height: 1;
+    padding: 0.1875rem var(--space-2, 0.5rem);
+    border-radius: var(--radius-full, 9999px);
+    flex-shrink: 0;
+    letter-spacing: 0.01em;
+}
+
+.list-item__badge--active  { background: var(--color-active-bg, #dcfce7); color: var(--color-active-fg, #166534); }
+.list-item__badge--idle    { background: var(--color-idle-bg,   #f3f4f6); color: var(--color-idle-fg,   #4b5563); }
+.list-item__badge--new     { background: var(--color-new-bg,    #ede9fe); color: var(--color-new-fg,    #5b21b6); }
+.list-item__badge--danger  { background: var(--color-danger-bg, #fff5f5); color: var(--color-danger-fg, #991b1b); }
+
+/* -----------------------------------------------------------------------
+ * Initials avatar — a circular <div> showing 1–2 letter initials.
+ * Complement to <vaadin-avatar>; no Lumo variant required.
+ * ----------------------------------------------------------------------- */
+
+.list-item__avatar {
+    width: 2.125rem;    /* ≈34px */
+    height: 2.125rem;
+    border-radius: var(--radius-full, 9999px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--font-size-xs, 0.6875rem);
+    font-weight: 600;
+    line-height: 1;
+    flex-shrink: 0;
+    user-select: none;
+}
+
+/* Avatar colour variants — assign one modifier class via Java addClassName() */
+.list-item__avatar--blue   { background: #dbeafe; color: #1d4ed8; }
+.list-item__avatar--teal   { background: #d1fae5; color: #065f46; }
+.list-item__avatar--coral  { background: #fee2e2; color: #991b1b; }
+.list-item__avatar--purple { background: #ede9fe; color: #5b21b6; }
+.list-item__avatar--amber  { background: var(--color-warning-bg, #fef3c7); color: var(--color-warning-fg, #92400e); }
+.list-item__avatar--green  { background: var(--color-active-bg,  #dcfce7); color: var(--color-active-fg,  #166534); }
+
+/* Large avatar variant — used in detail header */
+.list-item__avatar--lg {
+    width: 2.75rem;    /* ≈44px */
+    height: 2.75rem;
+    font-size: var(--font-size-md, 0.875rem);
+}
+

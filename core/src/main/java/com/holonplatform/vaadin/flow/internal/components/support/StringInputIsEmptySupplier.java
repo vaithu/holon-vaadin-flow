@@ -15,9 +15,9 @@
  */
 package com.holonplatform.vaadin.flow.internal.components.support;
 
-import java.util.function.Function;
-
 import com.vaadin.flow.component.HasValue;
+
+import java.util.function.Function;
 
 /**
  * An is empty supplier for {@link String} type Inputs with empty and blank value support.
@@ -43,10 +43,10 @@ public class StringInputIsEmptySupplier<V extends HasValue<?, String>> implement
 		if (value == null) {
 			return true;
 		}
-		if (value.trim().length() == 0 && blankValuesAsNull) {
+		if (value.isBlank() && blankValuesAsNull) {
 			return true;
 		}
-		if (value.length() == 0 && emptyValuesAsNull) {
+		if (value.isEmpty() && emptyValuesAsNull) {
 			return true;
 		}
 		return t.isEmpty();

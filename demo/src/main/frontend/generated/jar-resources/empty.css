@@ -1,0 +1,129 @@
+/*
+ * empty.css
+ *
+ * Mobile-first styles for Empty — the shadcn/ui-inspired empty-state component.
+ *
+ * BEM namespace: .empty
+ *
+ * Structure:
+ *   .empty               — root wrapper
+ *   .empty__icon         — icon / illustration slot (hidden when not set)
+ *   .empty__content      — content slot (title + description + action)
+ *   .empty__title        — heading text ("No results found")
+ *   .empty__description  — supporting description text
+ *   .empty__action       — action buttons area
+ *
+ * Mobile  (< 640 px) — compact padding, stacked buttons.
+ * Desktop (≥ 640 px) — generous padding, horizontal button row.
+ */
+
+/* -----------------------------------------------------------------------
+ * Root — mobile: compact padding and gap
+ * ----------------------------------------------------------------------- */
+
+.empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;              /* tighter gap on mobile */
+    padding: 1.5rem 1rem;   /* reduced from 3rem on mobile */
+    text-align: center;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Desktop: more generous spacing */
+@media (min-width: 640px) {
+    .empty {
+        gap: 1.5rem;
+        padding: 3rem 1.5rem;
+    }
+}
+
+/* -----------------------------------------------------------------------
+ * Icon slot
+ * ----------------------------------------------------------------------- */
+
+.empty__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 3rem;            /* slightly smaller on mobile */
+    height: 3rem;
+}
+
+@media (min-width: 640px) {
+    .empty__icon {
+        width: 3.5rem;
+        height: 3.5rem;
+    }
+}
+
+/* -----------------------------------------------------------------------
+ * Content slot
+ * ----------------------------------------------------------------------- */
+
+.empty__content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    max-width: 28rem;
+}
+
+/* -----------------------------------------------------------------------
+ * Title
+ * ----------------------------------------------------------------------- */
+
+.empty__title {
+    margin: 0;
+    font-size: 1rem;        /* slightly smaller on mobile */
+    font-weight: 600;
+    line-height: 1.4;
+}
+
+@media (min-width: 640px) {
+    .empty__title {
+        font-size: 1.125rem;
+    }
+}
+
+/* -----------------------------------------------------------------------
+ * Description
+ * ----------------------------------------------------------------------- */
+
+.empty__description {
+    margin: 0;
+    font-size: 0.875rem;
+    line-height: 1.6;
+}
+
+/* -----------------------------------------------------------------------
+ * Action — mobile: vertical stack, full-width buttons
+ * ----------------------------------------------------------------------- */
+
+.empty__action {
+    display: flex;
+    flex-direction: column;   /* stack vertically on mobile */
+    align-items: stretch;     /* full-width buttons on mobile */
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+    width: 100%;
+}
+
+/* Desktop: horizontal row, centred, auto-width */
+@media (min-width: 640px) {
+    .empty__action {
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        flex-wrap: wrap;
+        width: auto;
+    }
+}
+
+/* Touch targets (WCAG 2.5.8 — 44 px) */
+.empty__action > vaadin-button,
+.empty__action > button {
+    min-height: 2.75rem; /* 44 px */
+}

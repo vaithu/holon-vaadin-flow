@@ -394,6 +394,21 @@ public class TestFilterableSingleSelectInput {
     }
 
     @Test
+    public void testAriaLabel() {
+        Input<String> input = Input.singleSelect(String.class).ariaLabel("Filterable single select").build();
+        assertEquals("Filterable single select", input.getComponent().getElement().getAttribute("aria-label"));
+
+        input = Input.singleSelect(String.class).ariaLabelledBy("filterable-single-select-label").build();
+        assertEquals("filterable-single-select-label",
+                input.getComponent().getElement().getAttribute("aria-labelledby"));
+
+        input = Input.singleSelect(String.class)
+                .ariaLabel(Localizable.builder().message("Localized filterable single select").build()).build();
+        assertEquals("Localized filterable single select",
+                input.getComponent().getElement().getAttribute("aria-label"));
+    }
+
+    @Test
     public void testPattern() {
 
         Input<String> input = Input.singleSelect(String.class).pattern("[0-9]*").build();

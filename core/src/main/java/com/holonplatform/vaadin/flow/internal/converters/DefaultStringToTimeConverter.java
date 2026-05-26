@@ -15,16 +15,16 @@
  */
 package com.holonplatform.vaadin.flow.internal.converters;
 
+import com.holonplatform.vaadin.flow.components.converters.StringToTimeConverter;
+import com.vaadin.flow.data.binder.Result;
+import com.vaadin.flow.data.binder.ValueContext;
+
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
-
-import com.holonplatform.vaadin.flow.components.converters.StringToTimeConverter;
-import com.vaadin.flow.data.binder.Result;
-import com.vaadin.flow.data.binder.ValueContext;
 
 /**
  * Default {@link StringToTimeConverter} implementation.
@@ -82,7 +82,7 @@ public class DefaultStringToTimeConverter extends AbstractLocaleSupportConverter
 	 */
 	@Override
 	public Result<LocalTime> convertToModel(String value, ValueContext context) {
-		if (value != null && !value.trim().equals("")) {
+		if (value != null && !value.isBlank()) {
 			try {
 				return Result.ok(LocalTime.parse(value, getDateTimeFormatter(context)));
 			} catch (Exception e) {

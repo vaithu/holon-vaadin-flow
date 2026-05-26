@@ -16,7 +16,6 @@ import com.holonplatform.vaadin.flow.internal.CrudNotification;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.grid.dataview.GridLazyDataView;
 import com.vaadin.flow.component.html.Span;
-import com.vaadin.flow.theme.lumo.LumoUtility;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -67,7 +66,10 @@ public abstract class AbstractGridMainView<T> implements GridMainView<T> {
     @Override
     public BulkActionBuilder createBulkActionBuilder() {
         return bulkActionBuilder = Components.bulkActionBar()
-                .styleNames(LumoUtility.Background.PRIMARY_10, LumoUtility.Padding.MEDIUM)
+                .styleNames(
+                        com.holonplatform.vaadin.flow.internal.lumo.Background.PRIMARY_10.getClassName(),
+                        "bulk-action-bar--padded"
+                )
                 .selectAll(BooleanInputBuilder.create()
                         .withValueChangeListener(booleanValueChangeEvent -> {
 

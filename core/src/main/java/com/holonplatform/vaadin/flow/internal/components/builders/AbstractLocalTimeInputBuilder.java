@@ -24,6 +24,7 @@ import com.holonplatform.vaadin.flow.components.builders.LocalTimeInputConfigura
 import com.holonplatform.vaadin.flow.components.builders.ShortcutConfigurator;
 import com.holonplatform.vaadin.flow.components.events.ReadonlyChangeListener;
 import com.holonplatform.vaadin.flow.components.support.InputAdaptersContainer;
+import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
 import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.BlurNotifier.BlurEvent;
 import com.vaadin.flow.component.FocusNotifier.FocusEvent;
@@ -51,6 +52,7 @@ public abstract class AbstractLocalTimeInputBuilder<C extends LocalTimeInputConf
 	protected final DefaultHasLabelConfigurator<TimePicker> labelConfigurator;
 	protected final DefaultHasTitleConfigurator<TimePicker> titleConfigurator;
 	protected final DefaultHasTooltipConfigurator<TimePicker> tooltipConfigurator;
+	protected final DefaultHasHelperTextConfigurator<TimePicker> helperTextConfigurator;
 	protected final DefaultHasPlaceholderConfigurator<TimePicker> placeholderConfigurator;
 
 	public AbstractLocalTimeInputBuilder() {
@@ -77,6 +79,8 @@ public abstract class AbstractLocalTimeInputBuilder<C extends LocalTimeInputConf
 		tooltipConfigurator = new DefaultHasTooltipConfigurator<>(getComponent(), tooltip -> {
 			getComponent().setTooltipText(tooltip);
 		}, this);
+		helperTextConfigurator = new DefaultHasHelperTextConfigurator<>(getComponent(), getComponent()::setHelperText,
+				this);
 		placeholderConfigurator = new DefaultHasPlaceholderConfigurator<>(getComponent(), placeholder -> {
 			getComponent().setPlaceholder(placeholder);
 		}, this);
@@ -293,6 +297,54 @@ public abstract class AbstractLocalTimeInputBuilder<C extends LocalTimeInputConf
 	public C tooltipText(String text) {
 		tooltipConfigurator.tooltipText(text);
 		return getConfigurator();
+	}
+
+	@Override
+	public C helperText(Localizable helperText) {
+		helperTextConfigurator.helperText(helperText);
+		return getConfigurator();
+	}
+
+	@Override
+	public C helperText(String helperText) {
+		helperTextConfigurator.helperText(helperText);
+		return getConfigurator();
+	}
+
+	@Override
+	public C helperComponent(Component component) {
+		helperTextConfigurator.helperComponent(component);
+		return getConfigurator();
+	}
+
+	@Override
+	public C ariaLabel(String ariaLabel) {
+		getComponent().setAriaLabel(ariaLabel);
+		return getConfigurator();
+	}
+
+	@Override
+	public C ariaLabelledBy(String ariaLabelledBy) {
+		getComponent().setAriaLabelledBy(ariaLabelledBy);
+		return getConfigurator();
+	}
+
+	@Override
+	public C ariaLabel(Localizable ariaLabel) {
+		final String defaultAriaLabel = (ariaLabel != null && ariaLabel.getMessage() != null) ? ariaLabel.getMessage()
+				: "";
+		if (ariaLabel == null) {
+			return ariaLabel(defaultAriaLabel);
+		}
+		if (isDeferredLocalizationEnabled()) {
+			ariaLabel(defaultAriaLabel);
+			return withAttachListener(event -> {
+				if (event.isInitialAttach()) {
+					LocalizationProvider.localize(ariaLabel).ifPresent(this::ariaLabel);
+				}
+			});
+		}
+		return ariaLabel(LocalizationProvider.localize(ariaLabel).orElse(defaultAriaLabel));
 	}
 
 }

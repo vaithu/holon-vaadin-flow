@@ -32,7 +32,7 @@ public interface StringInputConfigurator<C extends StringInputConfigurator<C>>
 		HasSizeConfigurator<C>, HasStyleConfigurator<C>, HasAutofocusConfigurator<C>,
 		FocusableConfigurator<Component, C>, HasPrefixAndSuffixConfigurator<C>, CompositionNotifierConfigurator<C>,
 		HasPlaceholderConfigurator<C>, HasLabelConfigurator<C>, HasTitleConfigurator<C>, HasTooltipConfigurator<C>,
-		HasPatternConfigurator<C>,
+		HasPatternConfigurator<C>, HasAriaLabelConfigurator<C>, HasHelperTextConfigurator<C>,
 		HasThemeVariantConfigurator<TextFieldVariant, C>, DeferrableLocalizationConfigurator<C> {
 
 }

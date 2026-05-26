@@ -49,7 +49,7 @@ public interface DivConfigurator<C extends DivConfigurator<C>> extends HasCompon
 
     C horizontalRule();
     C horizontalRule(String... styles);
-    C horizontalRule(int size,String... styles);
+    C horizontalRule(int size, String... styles);
 
     default C horizontalRule(Background background) {
         return horizontalRule(background.getClassName());

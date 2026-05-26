@@ -209,6 +209,5 @@ Artifact id | Description
 `holon-vaadin-flow-spring` | __Spring__ integration 
 `holon-vaadin-flow-spring-boot` | __Spring Boot__ integration 
 `holon-starter-vaadin-flow` | __Spring Boot__ _starter_ 
-`holon-starter-vaadin-flow-undertow` | __Spring Boot__ _starter_ using Undertow as embedded servlet container
 `holon-vaadin-flow-bom` | Bill Of Materials
 `documentation-vaadin-flow` | Documentation

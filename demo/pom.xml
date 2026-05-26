@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.holon-platform.vaadin</groupId>
+        <artifactId>holon-vaadin-flow-root</artifactId>
+        <version>10.0.0</version>
+    </parent>
+
+    <artifactId>holon-vaadin-flow-demo</artifactId>
+    <packaging>jar</packaging>
+
+    <name>${project.groupId}:${project.artifactId}</name>
+    <description>Holon Vaadin Flow – interactive component showcase</description>
+
+    <dependencies>
+
+        <!-- Spring Boot starter: web + Holon boot auto-config + Vaadin -->
+        <dependency>
+            <groupId>com.holon-platform.vaadin</groupId>
+            <artifactId>holon-starter-vaadin-flow</artifactId>
+        </dependency>
+
+        <!-- Core module with the components being demonstrated -->
+        <dependency>
+            <groupId>com.holon-platform.vaadin</groupId>
+            <artifactId>holon-vaadin-flow</artifactId>
+        </dependency>
+
+        <!-- Chart.js integration -->
+        <dependency>
+            <groupId>com.holon-platform.vaadin</groupId>
+            <artifactId>holon-vaadin-flow-chartjs</artifactId>
+        </dependency>
+
+        <!-- Calendar integration -->
+        <dependency>
+            <groupId>com.holon-platform.vaadin</groupId>
+            <artifactId>holon-vaadin-flow-calendar</artifactId>
+        </dependency>
+
+        <!-- Live Chat module (also brings in collaboration-engine transitively) -->
+        <dependency>
+            <groupId>com.holon-platform.vaadin</groupId>
+            <artifactId>holon-vaadin-flow-chat</artifactId>
+        </dependency>
+
+        <!-- collaboration-engine: explicit dependency for CollaborationFormSupport demo -->
+        <dependency>
+            <groupId>com.vaadin</groupId>
+            <artifactId>collaboration-engine</artifactId>
+        </dependency>
+
+        <!-- Vaadin dev server (dev mode only – excluded from production) -->
+        <dependency>
+            <groupId>com.vaadin</groupId>
+            <artifactId>vaadin-dev</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <!-- Customer CRUD module -->
+        <dependency>
+            <groupId>com.holon-platform.vaadin</groupId>
+            <artifactId>holon-vaadin-flow-customer</artifactId>
+        </dependency>
+
+        <!-- Spring Data JPA + Hibernate (schema creation via ddl-auto) -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+
+        <!-- Spring Boot persistence module — provides @EntityScan (moved here in Spring Boot 4) -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-persistence</artifactId>
+        </dependency>
+
+        <!-- Holon JPA Datastore — auto-configures a Datastore from Spring's EntityManagerFactory.
+             DefaultBeanCrud resolves it from Holon Context at runtime. -->
+        <dependency>
+            <groupId>com.holon-platform.jpa</groupId>
+            <artifactId>holon-datastore-jpa-spring-boot</artifactId>
+        </dependency>
+
+        <!-- H2 in-memory database (demo persistence) -->
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+
+        <!-- Logging -->
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+        </dependency>
+
+        <!-- Lombok -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <plugins>
+            <!-- Makes the JAR executable via `java -jar` -->
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+            <!-- JDK9 Automatic-Module-Name -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifestEntries>
+                            <Automatic-Module-Name>com.holonplatform.vaadin.flow.demo</Automatic-Module-Name>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
+

@@ -7,7 +7,6 @@ import com.holonplatform.vaadin.flow.components.GridDetailView;
 import com.holonplatform.vaadin.flow.components.builders.FormHeaderBuilder;
 import com.holonplatform.vaadin.flow.components.builders.LabelBuilder;
 import com.vaadin.flow.component.html.H3;
-import com.vaadin.flow.theme.lumo.LumoUtility;
 
 public abstract class AbstractGridDetailView<T> implements GridDetailView<T> {
 
@@ -57,7 +56,7 @@ public abstract class AbstractGridDetailView<T> implements GridDetailView<T> {
     @Override
     public FormHeaderBuilder createDetailHeader() {
         return Components.formHeader()
-                .styleNames(LumoUtility.Padding.NONE)
+                .styleNames("padding-none")
                 .title(formHeaderLabelBuilder = createFormHeaderLabelBuilder())
                 .additionalItems(addAdditionalOptionsToDetailHeader())
                 .editBtnConfigurator(baseButtonConfigurator -> {

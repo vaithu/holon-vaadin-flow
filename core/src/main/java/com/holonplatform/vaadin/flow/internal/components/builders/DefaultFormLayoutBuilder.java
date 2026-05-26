@@ -31,33 +31,20 @@ public class DefaultFormLayoutBuilder extends AbstractFormLayoutConfigurator<For
         super(new FormLayout());
     }
 
-    /*
-     * (non-Javadoc)
-     * @see com.holonplatform.vaadin.flow.components.builders.ComponentBuilder#build()
-     */
     @Override
     public FormLayout build() {
         if (isAutoUpdateResponsiveStepColumnSizeEnabled()) {
-            System.out.println(getColumnSizeList());
             final int sum = getColumnSizeList().stream().mapToInt(Integer::intValue).sum();
-            System.out.println("Sum :" + sum);
             getComponent().setResponsiveSteps(UIUtils.updateColumnValues(
                     getComponent().getResponsiveSteps(), sum
             ));
         }
-
-
         return getComponent();
     }
 
-    /*
-     * (non-Javadoc)
-     * @see com.holonplatform.vaadin.flow.internal.components.builders.AbstractComponentConfigurator#getConfigurator()
-     */
     @Override
     protected FormLayoutBuilder getConfigurator() {
         return this;
     }
-
 
 }

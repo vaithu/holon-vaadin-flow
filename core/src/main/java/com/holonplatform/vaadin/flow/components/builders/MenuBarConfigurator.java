@@ -25,7 +25,7 @@ import com.vaadin.flow.component.contextmenu.MenuItem;
 import com.vaadin.flow.component.contextmenu.SubMenu;
 import com.vaadin.flow.component.menubar.MenuBar;
 import com.vaadin.flow.component.menubar.MenuBarVariant;
-import com.vaadin.flow.theme.lumo.LumoUtility;
+
 
 import java.util.EventListener;
 
@@ -315,9 +315,8 @@ public interface MenuBarConfigurator<L extends EventListener, M extends MenuBar,
          */
         MenuItemBuilder<L, M, I, S, B> keepOpen(boolean keepOpen);
 
-        default MenuItemBuilder<L, M, I, S, B> primary() {
-            return styleNames(LumoUtility.Background.PRIMARY,
-                    LumoUtility.TextColor.PRIMARY_CONTRAST);
+        default MenuItemBuilder<L, M, I, S, B> highlight() {
+            return styleNames("color-bg-primary", "color-text-primary-contrast");
         }
 
        /* SubMenuItemBuilder<L, M, I, S, B> withSubMenu(String text);

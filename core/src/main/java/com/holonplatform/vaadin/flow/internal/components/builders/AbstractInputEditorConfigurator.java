@@ -11,7 +11,6 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.shared.HasTooltip;
-import com.vaadin.flow.theme.lumo.LumoUtility;
 
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -33,19 +32,19 @@ public abstract class AbstractInputEditorConfigurator<C extends HasInputEditorCo
         super(horizontalLayout);
         saveBtn = ButtonBuilder.create()
                 .tertiaryInline()
-                .icon(smallIcon("lumo","checkmark",LumoUtility.TextColor.SUCCESS))
+                .icon(smallIcon("lumo", "checkmark", com.holonplatform.vaadin.flow.internal.lumo.Text.SUCCESS.getClassName()))
                 .onClick(event -> showEditButtons(true))
                 .build();
 
         editBtn = ButtonBuilder.create()
                 .tertiaryInline()
-                .icon(smallIcon("lumo", "edit",LumoUtility.TextColor.PRIMARY))
+                .icon(smallIcon("lumo", "edit", com.holonplatform.vaadin.flow.internal.lumo.Text.PRIMARY.getClassName()))
                 .onClick(event -> showEditButtons(false))
                 .build();
 
         cancelBtn = ButtonBuilder.create()
                 .tertiaryInline()
-                .icon(smallIcon("lumo", "cross",LumoUtility.TextColor.ERROR))
+                .icon(smallIcon("lumo", "cross", com.holonplatform.vaadin.flow.internal.lumo.Text.ERROR.getClassName()))
                 .onClick(event -> showEditButtons(true))
                 .build();
 
@@ -54,9 +53,9 @@ public abstract class AbstractInputEditorConfigurator<C extends HasInputEditorCo
 
     }
 
-    private Icon smallIcon(String collection, String name,String color) {
+    private Icon smallIcon(String collection, String name, String color) {
         Icon icon = new Icon(collection, name);
-        icon.addClassNames(LumoUtility.IconSize.SMALL,color);
+        icon.addClassNames("icon-size-small", color);
         return icon;
     }
 

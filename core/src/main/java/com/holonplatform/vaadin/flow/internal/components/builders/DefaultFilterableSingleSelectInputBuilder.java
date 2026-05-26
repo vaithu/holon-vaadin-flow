@@ -47,6 +47,7 @@ import com.vaadin.flow.component.BlurNotifier.BlurEvent;
 import com.vaadin.flow.component.FocusNotifier.FocusEvent;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.combobox.ComboBoxBase.CustomValueSetEvent;
+import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.shared.HasTooltip;
 import com.vaadin.flow.data.provider.*;
 import com.vaadin.flow.data.renderer.Renderer;
@@ -75,9 +76,9 @@ public class DefaultFilterableSingleSelectInputBuilder<T, ITEM> extends
 	protected final DefaultHasLabelConfigurator<ComboBox<ITEM>> labelConfigurator;
 	protected final DefaultHasPlaceholderConfigurator<ComboBox<ITEM>> placeholderConfigurator;
 
-	protected final List<SelectionListener<T>> selectionListeners = new LinkedList<>();
+	protected final List<SelectionListener<T>> selectionListeners = new ArrayList<>();
 
-	protected final List<CustomValueSetListener<T>> customValueSetListeners = new LinkedList<>();
+	protected final List<CustomValueSetListener<T>> customValueSetListeners = new ArrayList<>();
 
 	private final Class<? extends T> type;
 	private final Class<ITEM> itemType;
@@ -203,49 +204,86 @@ public class DefaultFilterableSingleSelectInputBuilder<T, ITEM> extends
 		return select;
 	}
 
-	private void alert() {
-		System.out.println("This needs to be verified Babu if not working correctly");
-	}
-
+	@SuppressWarnings("unchecked")
 	@Override
 	public FilterableSingleSelectInputBuilder<T, ITEM> items(BackEndDataProvider<T, ITEM> dataProvider) {
-		alert();
 		getComponent().setItems((BackEndDataProvider<ITEM, String>) dataProvider);
 		return getConfigurator();
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public FilterableSingleSelectInputBuilder<T, ITEM> items(CallbackDataProvider.FetchCallback<T, ITEM> fetchCallback) {
-		alert();
-
 		getComponent().setItems((CallbackDataProvider.FetchCallback<ITEM, String>) fetchCallback);
 		return getConfigurator();
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public FilterableSingleSelectInputBuilder<T, ITEM> items(CallbackDataProvider.FetchCallback<T, ITEM> fetchCallback, CallbackDataProvider.CountCallback<T, ITEM> countCallback) {
-		alert();
 		getComponent().setItems((CallbackDataProvider.FetchCallback<ITEM, String>) fetchCallback, (CallbackDataProvider.CountCallback<ITEM, String>) countCallback);
 		return getConfigurator();
 	}
 
+	@SuppressWarnings({"rawtypes", "unchecked"})
+	@Override
+	public FilterableSingleSelectInputBuilder<T, ITEM> itemsPageable(Grid.SpringData.FetchCallback<?, T> fetchCallback) {
+		final com.vaadin.flow.component.combobox.ComboBoxBase.SpringData.FetchCallback springFetchCallback = (pageable,
+				filter) -> ((Grid.SpringData.FetchCallback) fetchCallback).fetch(pageable);
+		invokeSetItemsPageable(springFetchCallback);
+		return getConfigurator();
+	}
+
+	@SuppressWarnings({"rawtypes", "unchecked"})
+	@Override
+	public FilterableSingleSelectInputBuilder<T, ITEM> itemsPageable(Grid.SpringData.FetchCallback<?, T> fetchCallback,
+			Grid.SpringData.CountCallback<?> countCallback) {
+		final com.vaadin.flow.component.combobox.ComboBoxBase.SpringData.FetchCallback springFetchCallback = (pageable,
+				filter) -> ((Grid.SpringData.FetchCallback) fetchCallback).fetch(pageable);
+		final com.vaadin.flow.component.combobox.ComboBoxBase.SpringData.CountCallback springCountCallback = (pageable,
+				filter) -> ((Grid.SpringData.CountCallback) countCallback).count(pageable);
+		invokeSetItemsPageable(springFetchCallback, springCountCallback);
+		return getConfigurator();
+	}
+
+	private void invokeSetItemsPageable(
+			com.vaadin.flow.component.combobox.ComboBoxBase.SpringData.FetchCallback<?, ITEM> fetchCallback) {
+		try {
+			final java.lang.reflect.Method method = getComponent().getClass().getMethod("setItemsPageable",
+					com.vaadin.flow.component.combobox.ComboBoxBase.SpringData.FetchCallback.class);
+			method.invoke(getComponent(), fetchCallback);
+		} catch (ReflectiveOperationException e) {
+			throw new IllegalStateException("Spring Data pageable support is not available", e);
+		}
+	}
+
+	private void invokeSetItemsPageable(
+			com.vaadin.flow.component.combobox.ComboBoxBase.SpringData.FetchCallback<?, ITEM> fetchCallback,
+			com.vaadin.flow.component.combobox.ComboBoxBase.SpringData.CountCallback<?> countCallback) {
+		try {
+			final java.lang.reflect.Method method = getComponent().getClass().getMethod("setItemsPageable",
+					com.vaadin.flow.component.combobox.ComboBoxBase.SpringData.FetchCallback.class,
+					com.vaadin.flow.component.combobox.ComboBoxBase.SpringData.CountCallback.class);
+			method.invoke(getComponent(), fetchCallback, countCallback);
+		} catch (ReflectiveOperationException e) {
+			throw new IllegalStateException("Spring Data pageable support is not available", e);
+		}
+	}
+
 	@Override
 	public FilterableSingleSelectInputBuilder<T, ITEM> itemCountEstimate(int itemCountEstimate) {
-		alert();
 		getComponent().getLazyDataView().setItemCountEstimate(itemCountEstimate);
 		return this;
 	}
 
 	@Override
 	public FilterableSingleSelectInputBuilder<T, ITEM> itemCountEstimateIncrease(int itemCountEstimateIncrease) {
-		alert();
 		getComponent().getLazyDataView().setItemCountEstimateIncrease(itemCountEstimateIncrease);
 		return this;
 	}
 
 	@Override
 	public FilterableSingleSelectInputBuilder<T, ITEM> itemCountUnknown() {
-		alert();
 		getComponent().getLazyDataView().setItemCountUnknown();
 		return this;
 	}
@@ -1416,6 +1454,21 @@ public class DefaultFilterableSingleSelectInputBuilder<T, ITEM> extends
 		}
 
 		@Override
+		public ValidatableFilterableSingleSelectInputBuilder<T, ITEM> itemsPageable(
+				Grid.SpringData.FetchCallback<?, T> fetchCallback) {
+			builder.itemsPageable(fetchCallback);
+			return this;
+		}
+
+		@Override
+		public ValidatableFilterableSingleSelectInputBuilder<T, ITEM> itemsPageable(
+				Grid.SpringData.FetchCallback<?, T> fetchCallback,
+				Grid.SpringData.CountCallback<?> countCallback) {
+			builder.itemsPageable(fetchCallback, countCallback);
+			return this;
+		}
+
+		@Override
 		public ValidatableFilterableSingleSelectInputBuilder<T, ITEM> itemCountEstimate(int itemCountEstimate) {
 			builder.itemCountEstimate(itemCountEstimate);
 			return this;
@@ -2075,6 +2128,21 @@ public class DefaultFilterableSingleSelectInputBuilder<T, ITEM> extends
 		public DatastoreFilterableSingleSelectInputBuilder<T, ITEM> items(CallbackDataProvider.FetchCallback<T, 
 				ITEM> fetchCallback, CallbackDataProvider.CountCallback<T, ITEM> countCallback) {
 			builder.items(fetchCallback, countCallback);
+			return this;
+		}
+
+		@Override
+		public DatastoreFilterableSingleSelectInputBuilder<T, ITEM> itemsPageable(
+				Grid.SpringData.FetchCallback<?, T> fetchCallback) {
+			builder.itemsPageable(fetchCallback);
+			return this;
+		}
+
+		@Override
+		public DatastoreFilterableSingleSelectInputBuilder<T, ITEM> itemsPageable(
+				Grid.SpringData.FetchCallback<?, T> fetchCallback,
+				Grid.SpringData.CountCallback<?> countCallback) {
+			builder.itemsPageable(fetchCallback, countCallback);
 			return this;
 		}
 
@@ -2800,6 +2868,21 @@ public class DefaultFilterableSingleSelectInputBuilder<T, ITEM> extends
 		@Override
 		public ValidatableDatastoreFilterableSingleSelectInputBuilder<T, ITEM> items(CallbackDataProvider.FetchCallback<T, ITEM> fetchCallback, CallbackDataProvider.CountCallback<T, ITEM> countCallback) {
 			builder.items(fetchCallback, countCallback);
+			return this;
+		}
+
+		@Override
+		public ValidatableDatastoreFilterableSingleSelectInputBuilder<T, ITEM> itemsPageable(
+				Grid.SpringData.FetchCallback<?, T> fetchCallback) {
+			builder.itemsPageable(fetchCallback);
+			return this;
+		}
+
+		@Override
+		public ValidatableDatastoreFilterableSingleSelectInputBuilder<T, ITEM> itemsPageable(
+				Grid.SpringData.FetchCallback<?, T> fetchCallback,
+				Grid.SpringData.CountCallback<?> countCallback) {
+			builder.itemsPageable(fetchCallback, countCallback);
 			return this;
 		}
 

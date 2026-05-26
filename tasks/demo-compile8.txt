@@ -1,0 +1,340 @@
+﻿[INFO] Scanning for projects...
+[WARNING] 
+[WARNING] Some problems were encountered while building the effective model for com.holon-platform.vaadin:holon-vaadin-flow-demo:jar:10.0.0
+[WARNING] 'build.plugins.plugin.version' for org.springframework.boot:spring-boot-maven-plugin is missing. @ line 108, column 21
+[WARNING] 
+[WARNING] It is highly recommended to fix these problems because they threaten the stability of your build.
+[WARNING] 
+[WARNING] For this reason, future Maven versions might no longer support building such malformed projects.
+[WARNING] 
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Build Order:
+[INFO] 
+[INFO] com.holon-platform.vaadin:holon-vaadin-flow-root                   [pom]
+[INFO] com.holon-platform.vaadin:holon-vaadin-flow                        [jar]
+[INFO] com.holon-platform.vaadin:holon-vaadin-flow-chartjs                [jar]
+[INFO] com.holon-platform.vaadin:holon-vaadin-flow-calendar               [jar]
+[INFO] com.holon-platform.vaadin:holon-vaadin-flow-navigator              [jar]
+[INFO] com.holon-platform.vaadin:holon-vaadin-flow-spring                 [jar]
+[INFO] com.holon-platform.vaadin:holon-vaadin-flow-spring-boot            [jar]
+[INFO] com.holon-platform.vaadin:holon-starter-vaadin-flow                [jar]
+[INFO] com.holon-platform.vaadin:holon-vaadin-flow-chat                   [jar]
+[INFO] com.holon-platform.vaadin:holon-vaadin-flow-demo                   [jar]
+[INFO] 
+[INFO] ----------< com.holon-platform.vaadin:holon-vaadin-flow-root >----------
+[INFO] Building com.holon-platform.vaadin:holon-vaadin-flow-root 10.0.0  [1/10]
+[INFO]   from pom.xml
+[INFO] --------------------------------[ pom ]---------------------------------
+[INFO] 
+[INFO] --- jacoco:0.8.12:prepare-agent (pre-unit-test) @ holon-vaadin-flow-root ---
+[INFO] surefireArgLine set to -javaagent:C:\\Users\\sxp267\\.m2\\repository\\org\\jacoco\\org.jacoco.agent\\0.8.12\\org.jacoco.agent-0.8.12-runtime.jar=destfile=C:\\Users\\sxp267\\IdeaProjects\\holon-vaadin-flow\\target\\coverage-reports\\jacoco-ut.exec
+[INFO] 
+[INFO] --- remote-resources:3.1.0:process (default) @ holon-vaadin-flow-root ---
+[INFO] Preparing remote bundle com.holon-platform:holon-shared:1.0.6
+[INFO] Copying 6 resources from 1 bundle.
+[INFO] 
+[INFO] ------------< com.holon-platform.vaadin:holon-vaadin-flow >-------------
+[INFO] Building com.holon-platform.vaadin:holon-vaadin-flow 10.0.0       [2/10]
+[INFO]   from core\pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- jacoco:0.8.12:prepare-agent (pre-unit-test) @ holon-vaadin-flow ---
+[INFO] surefireArgLine set to -javaagent:C:\\Users\\sxp267\\.m2\\repository\\org\\jacoco\\org.jacoco.agent\\0.8.12\\org.jacoco.agent-0.8.12-runtime.jar=destfile=C:\\Users\\sxp267\\IdeaProjects\\holon-vaadin-flow\\core\\target\\coverage-reports\\jacoco-ut.exec
+[INFO] 
+[INFO] --- remote-resources:3.1.0:process (default) @ holon-vaadin-flow ---
+[INFO] Preparing remote bundle com.holon-platform:holon-shared:1.0.6
+[INFO] Copying 6 resources from 1 bundle.
+[INFO] 
+[INFO] --- resources:3.4.0:resources (default-resources) @ holon-vaadin-flow ---
+[INFO] Copying 54 resources from src\main\resources to target\classes
+[INFO] Copying 6 resources from target\maven-shared-archive-resources to target\classes
+[INFO] 
+[INFO] --- compiler:3.15.0:compile (default-compile) @ holon-vaadin-flow ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --------< com.holon-platform.vaadin:holon-vaadin-flow-chartjs >---------
+[INFO] Building com.holon-platform.vaadin:holon-vaadin-flow-chartjs 10.0.0 [3/10]
+[INFO]   from chartjs\pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- jacoco:0.8.12:prepare-agent (pre-unit-test) @ holon-vaadin-flow-chartjs ---
+[INFO] surefireArgLine set to -javaagent:C:\\Users\\sxp267\\.m2\\repository\\org\\jacoco\\org.jacoco.agent\\0.8.12\\org.jacoco.agent-0.8.12-runtime.jar=destfile=C:\\Users\\sxp267\\IdeaProjects\\holon-vaadin-flow\\chartjs\\target\\coverage-reports\\jacoco-ut.exec
+[INFO] 
+[INFO] --- remote-resources:3.1.0:process (default) @ holon-vaadin-flow-chartjs ---
+[INFO] Preparing remote bundle com.holon-platform:holon-shared:1.0.6
+[INFO] Copying 6 resources from 1 bundle.
+[INFO] 
+[INFO] --- resources:3.4.0:resources (default-resources) @ holon-vaadin-flow-chartjs ---
+[INFO] Copying 2 resources from src\main\resources to target\classes
+[INFO] Copying 6 resources from target\maven-shared-archive-resources to target\classes
+[INFO] 
+[INFO] --- compiler:3.15.0:compile (default-compile) @ holon-vaadin-flow-chartjs ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --------< com.holon-platform.vaadin:holon-vaadin-flow-calendar >--------
+[INFO] Building com.holon-platform.vaadin:holon-vaadin-flow-calendar 10.0.0 [4/10]
+[INFO]   from calendar\pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- jacoco:0.8.12:prepare-agent (pre-unit-test) @ holon-vaadin-flow-calendar ---
+[INFO] surefireArgLine set to -javaagent:C:\\Users\\sxp267\\.m2\\repository\\org\\jacoco\\org.jacoco.agent\\0.8.12\\org.jacoco.agent-0.8.12-runtime.jar=destfile=C:\\Users\\sxp267\\IdeaProjects\\holon-vaadin-flow\\calendar\\target\\coverage-reports\\jacoco-ut.exec
+[INFO] 
+[INFO] --- remote-resources:3.1.0:process (default) @ holon-vaadin-flow-calendar ---
+[INFO] Preparing remote bundle com.holon-platform:holon-shared:1.0.6
+[INFO] Copying 6 resources from 1 bundle.
+[INFO] 
+[INFO] --- resources:3.4.0:resources (default-resources) @ holon-vaadin-flow-calendar ---
+[INFO] Copying 1 resource from src\main\resources to target\classes
+[INFO] Copying 6 resources from target\maven-shared-archive-resources to target\classes
+[INFO] 
+[INFO] --- compiler:3.15.0:compile (default-compile) @ holon-vaadin-flow-calendar ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] -------< com.holon-platform.vaadin:holon-vaadin-flow-navigator >--------
+[INFO] Building com.holon-platform.vaadin:holon-vaadin-flow-navigator 10.0.0 [5/10]
+[INFO]   from navigator\pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- jacoco:0.8.12:prepare-agent (pre-unit-test) @ holon-vaadin-flow-navigator ---
+[INFO] surefireArgLine set to -javaagent:C:\\Users\\sxp267\\.m2\\repository\\org\\jacoco\\org.jacoco.agent\\0.8.12\\org.jacoco.agent-0.8.12-runtime.jar=destfile=C:\\Users\\sxp267\\IdeaProjects\\holon-vaadin-flow\\navigator\\target\\coverage-reports\\jacoco-ut.exec
+[INFO] 
+[INFO] --- remote-resources:3.1.0:process (default) @ holon-vaadin-flow-navigator ---
+[INFO] Preparing remote bundle com.holon-platform:holon-shared:1.0.6
+[INFO] Copying 6 resources from 1 bundle.
+[INFO] 
+[INFO] --- resources:3.4.0:resources (default-resources) @ holon-vaadin-flow-navigator ---
+[INFO] Copying 1 resource from src\main\resources to target\classes
+[INFO] Copying 6 resources from target\maven-shared-archive-resources to target\classes
+[INFO] 
+[INFO] --- compiler:3.15.0:compile (default-compile) @ holon-vaadin-flow-navigator ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] ---------< com.holon-platform.vaadin:holon-vaadin-flow-spring >---------
+[INFO] Building com.holon-platform.vaadin:holon-vaadin-flow-spring 10.0.0 [6/10]
+[INFO]   from spring\pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- jacoco:0.8.12:prepare-agent (pre-unit-test) @ holon-vaadin-flow-spring ---
+[INFO] surefireArgLine set to -javaagent:C:\\Users\\sxp267\\.m2\\repository\\org\\jacoco\\org.jacoco.agent\\0.8.12\\org.jacoco.agent-0.8.12-runtime.jar=destfile=C:\\Users\\sxp267\\IdeaProjects\\holon-vaadin-flow\\spring\\target\\coverage-reports\\jacoco-ut.exec
+[INFO] 
+[INFO] --- remote-resources:3.1.0:process (default) @ holon-vaadin-flow-spring ---
+[INFO] Preparing remote bundle com.holon-platform:holon-shared:1.0.6
+[INFO] Copying 6 resources from 1 bundle.
+[INFO] 
+[INFO] --- resources:3.4.0:resources (default-resources) @ holon-vaadin-flow-spring ---
+[INFO] skip non existing resourceDirectory C:\Users\sxp267\IdeaProjects\holon-vaadin-flow\spring\src\main\resources
+[INFO] Copying 6 resources from target\maven-shared-archive-resources to target\classes
+[INFO] 
+[INFO] --- compiler:3.15.0:compile (default-compile) @ holon-vaadin-flow-spring ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] ------< com.holon-platform.vaadin:holon-vaadin-flow-spring-boot >-------
+[INFO] Building com.holon-platform.vaadin:holon-vaadin-flow-spring-boot 10.0.0 [7/10]
+[INFO]   from spring-boot\pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- jacoco:0.8.12:prepare-agent (pre-unit-test) @ holon-vaadin-flow-spring-boot ---
+[INFO] surefireArgLine set to -javaagent:C:\\Users\\sxp267\\.m2\\repository\\org\\jacoco\\org.jacoco.agent\\0.8.12\\org.jacoco.agent-0.8.12-runtime.jar=destfile=C:\\Users\\sxp267\\IdeaProjects\\holon-vaadin-flow\\spring-boot\\target\\coverage-reports\\jacoco-ut.exec
+[INFO] 
+[INFO] --- remote-resources:3.1.0:process (default) @ holon-vaadin-flow-spring-boot ---
+[INFO] Preparing remote bundle com.holon-platform:holon-shared:1.0.6
+[INFO] Copying 6 resources from 1 bundle.
+[INFO] 
+[INFO] --- resources:3.4.0:resources (default-resources) @ holon-vaadin-flow-spring-boot ---
+[INFO] Copying 1 resource from src\main\resources to target\classes
+[INFO] Copying 6 resources from target\maven-shared-archive-resources to target\classes
+[INFO] 
+[INFO] --- compiler:3.15.0:compile (default-compile) @ holon-vaadin-flow-spring-boot ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --------< com.holon-platform.vaadin:holon-starter-vaadin-flow >---------
+[INFO] Building com.holon-platform.vaadin:holon-starter-vaadin-flow 10.0.0 [8/10]
+[INFO]   from starter\pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- jacoco:0.8.12:prepare-agent (pre-unit-test) @ holon-starter-vaadin-flow ---
+[INFO] surefireArgLine set to -javaagent:C:\\Users\\sxp267\\.m2\\repository\\org\\jacoco\\org.jacoco.agent\\0.8.12\\org.jacoco.agent-0.8.12-runtime.jar=destfile=C:\\Users\\sxp267\\IdeaProjects\\holon-vaadin-flow\\starter\\target\\coverage-reports\\jacoco-ut.exec
+[INFO] 
+[INFO] --- remote-resources:3.1.0:process (default) @ holon-starter-vaadin-flow ---
+[INFO] Preparing remote bundle com.holon-platform:holon-shared:1.0.6
+[INFO] Copying 6 resources from 1 bundle.
+[INFO] 
+[INFO] --- resources:3.4.0:resources (default-resources) @ holon-starter-vaadin-flow ---
+[INFO] Copying 1 resource from src\main\resources to target\classes
+[INFO] Copying 6 resources from target\maven-shared-archive-resources to target\classes
+[INFO] 
+[INFO] --- compiler:3.15.0:compile (default-compile) @ holon-starter-vaadin-flow ---
+[INFO] No sources to compile
+[INFO] 
+[INFO] ----------< com.holon-platform.vaadin:holon-vaadin-flow-chat >----------
+[INFO] Building com.holon-platform.vaadin:holon-vaadin-flow-chat 10.0.0  [9/10]
+[INFO]   from chat\pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- jacoco:0.8.12:prepare-agent (pre-unit-test) @ holon-vaadin-flow-chat ---
+[INFO] surefireArgLine set to -javaagent:C:\\Users\\sxp267\\.m2\\repository\\org\\jacoco\\org.jacoco.agent\\0.8.12\\org.jacoco.agent-0.8.12-runtime.jar=destfile=C:\\Users\\sxp267\\IdeaProjects\\holon-vaadin-flow\\chat\\target\\coverage-reports\\jacoco-ut.exec
+[INFO] 
+[INFO] --- remote-resources:3.1.0:process (default) @ holon-vaadin-flow-chat ---
+[INFO] Preparing remote bundle com.holon-platform:holon-shared:1.0.6
+[INFO] Copying 6 resources from 1 bundle.
+[INFO] 
+[INFO] --- resources:3.4.0:resources (default-resources) @ holon-vaadin-flow-chat ---
+[INFO] Copying 8 resources from src\main\resources to target\classes
+[INFO] Copying 6 resources from target\maven-shared-archive-resources to target\classes
+[INFO] 
+[INFO] --- compiler:3.15.0:compile (default-compile) @ holon-vaadin-flow-chat ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] ----------< com.holon-platform.vaadin:holon-vaadin-flow-demo >----------
+[INFO] Building com.holon-platform.vaadin:holon-vaadin-flow-demo 10.0.0 [10/10]
+[INFO]   from demo\pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- jacoco:0.8.12:prepare-agent (pre-unit-test) @ holon-vaadin-flow-demo ---
+[INFO] surefireArgLine set to -javaagent:C:\\Users\\sxp267\\.m2\\repository\\org\\jacoco\\org.jacoco.agent\\0.8.12\\org.jacoco.agent-0.8.12-runtime.jar=destfile=C:\\Users\\sxp267\\IdeaProjects\\holon-vaadin-flow\\demo\\target\\coverage-reports\\jacoco-ut.exec
+[INFO] 
+[INFO] --- remote-resources:3.1.0:process (default) @ holon-vaadin-flow-demo ---
+[INFO] Preparing remote bundle com.holon-platform:holon-shared:1.0.6
+[INFO] Copying 6 resources from 1 bundle.
+[INFO] 
+[INFO] --- resources:3.4.0:resources (default-resources) @ holon-vaadin-flow-demo ---
+[INFO] Copying 10 resources from src\main\resources to target\classes
+[INFO] Copying 6 resources from target\maven-shared-archive-resources to target\classes
+[INFO] 
+[INFO] --- compiler:3.15.0:compile (default-compile) @ holon-vaadin-flow-demo ---
+[INFO] Recompiling the module because of changed source code.
+[INFO] Compiling 101 source files with javac [debug release 21] to target\classes
+[INFO] Annotation processing is enabled because one or more processors were found
+  on the class path. A future release of javac may disable annotation processing
+  unless at least one processor is specified by name (-processor), or a search
+  path is specified (--processor-path, --processor-module-path), or annotation
+  processing is enabled explicitly (-proc:only, -proc:full).
+  Use -Xlint:-options to suppress this message.
+  Use -proc:none to disable annotation processing.
+[INFO] -------------------------------------------------------------
+[WARNING] COMPILATION WARNING : 
+[INFO] -------------------------------------------------------------
+[WARNING] /C:/Users/sxp267/IdeaProjects/holon-vaadin-flow/demo/src/main/java/com/holonplatform/vaadin/flow/demo/ui/views/BeanInputFormDemoView.java:[426,45] unchecked method invocation: method withValidator in interface com.holonplatform.vaadin.flow.components.builders.InputGroupConfigurator.PropertySetInputGroupConfigurator is applied to given types
+  required: com.holonplatform.core.property.Property<V>,com.holonplatform.core.Validator<? super V>
+  found:    com.holonplatform.core.property.Property,com.holonplatform.core.Validator<java.lang.CharSequence>
+[WARNING] /C:/Users/sxp267/IdeaProjects/holon-vaadin-flow/demo/src/main/java/com/holonplatform/vaadin/flow/demo/ui/views/BeanInputFormDemoView.java:[426,46] unchecked conversion
+  required: com.holonplatform.core.property.Property<V>
+  found:    com.holonplatform.core.property.Property
+[WARNING] /C:/Users/sxp267/IdeaProjects/holon-vaadin-flow/demo/src/main/java/com/holonplatform/vaadin/flow/demo/ui/views/BeanInputFormDemoView.java:[430,45] unchecked method invocation: method withValidator in interface com.holonplatform.vaadin.flow.components.builders.InputGroupConfigurator.PropertySetInputGroupConfigurator is applied to given types
+  required: com.holonplatform.core.property.Property<V>,com.holonplatform.core.Validator<? super V>
+  found:    com.holonplatform.core.property.Property,com.holonplatform.core.Validator<java.lang.Object>
+[WARNING] /C:/Users/sxp267/IdeaProjects/holon-vaadin-flow/demo/src/main/java/com/holonplatform/vaadin/flow/demo/ui/views/BeanInputFormDemoView.java:[430,46] unchecked conversion
+  required: com.holonplatform.core.property.Property<V>
+  found:    com.holonplatform.core.property.Property
+[WARNING] /C:/Users/sxp267/IdeaProjects/holon-vaadin-flow/demo/src/main/java/com/holonplatform/vaadin/flow/demo/ui/views/EntityFormPanelDemoView.java:[331,57] unchecked cast
+  required: com.holonplatform.vaadin.flow.components.BeanPropertyInputForm<com.holonplatform.vaadin.flow.demo.ui.views.EntityFormPanelDemoView.Employee>
+  found:    com.holonplatform.vaadin.flow.components.PropertyInputForm
+[WARNING] /C:/Users/sxp267/IdeaProjects/holon-vaadin-flow/demo/src/main/java/com/holonplatform/vaadin/flow/demo/ui/views/EntityFormPanelDemoView.java:[367,60] unchecked cast
+  required: com.holonplatform.core.property.PathProperty<java.lang.String>
+  found:    com.holonplatform.core.property.PathProperty<capture#1 of ?>
+[WARNING] /C:/Users/sxp267/IdeaProjects/holon-vaadin-flow/demo/src/main/java/com/holonplatform/vaadin/flow/demo/ui/views/EntityFormPanelDemoView.java:[370,60] unchecked cast
+  required: com.holonplatform.core.property.PathProperty<java.lang.String>
+  found:    com.holonplatform.core.property.PathProperty<capture#2 of ?>
+[WARNING] /C:/Users/sxp267/IdeaProjects/holon-vaadin-flow/demo/src/main/java/com/holonplatform/vaadin/flow/demo/ui/views/EntityFormPanelDemoView.java:[373,60] unchecked cast
+  required: com.holonplatform.core.property.PathProperty<java.lang.Double>
+  found:    com.holonplatform.core.property.PathProperty<capture#3 of ?>
+[WARNING] /C:/Users/sxp267/IdeaProjects/holon-vaadin-flow/demo/src/main/java/com/holonplatform/vaadin/flow/demo/ui/views/EntityFormPanelDemoView.java:[376,61] unchecked cast
+  required: com.holonplatform.core.property.PathProperty<java.lang.Integer>
+  found:    com.holonplatform.core.property.PathProperty<capture#4 of ?>
+[INFO] 9 warnings 
+[INFO] -------------------------------------------------------------
+[INFO] -------------------------------------------------------------
+[ERROR] COMPILATION ERROR : 
+[INFO] -------------------------------------------------------------
+[ERROR] /C:/Users/sxp267/IdeaProjects/holon-vaadin-flow/demo/src/main/java/com/holonplatform/vaadin/flow/demo/ui/views/LiveChatDemoView.java:[270,34] cannot find symbol
+  symbol:   variable SHARED_SERVICE
+  location: class com.holonplatform.vaadin.flow.demo.ui.views.LiveChatDemoView
+[ERROR] /C:/Users/sxp267/IdeaProjects/holon-vaadin-flow/demo/src/main/java/com/holonplatform/vaadin/flow/demo/ui/views/LiveChatDemoView.java:[291,34] cannot find symbol
+  symbol:   variable SHARED_SERVICE
+  location: class com.holonplatform.vaadin.flow.demo.ui.views.LiveChatDemoView
+[ERROR] /C:/Users/sxp267/IdeaProjects/holon-vaadin-flow/demo/src/main/java/com/holonplatform/vaadin/flow/demo/ui/views/LiveChatDemoView.java:[289,31] cannot find symbol
+  symbol:   variable SHARED_SERVICE
+  location: class com.holonplatform.vaadin.flow.demo.ui.views.LiveChatDemoView
+[ERROR] /C:/Users/sxp267/IdeaProjects/holon-vaadin-flow/demo/src/main/java/com/holonplatform/vaadin/flow/demo/ui/views/LiveChatDemoView.java:[313,9] cannot find symbol
+  symbol:   variable SHARED_SERVICE
+  location: class com.holonplatform.vaadin.flow.demo.ui.views.LiveChatDemoView
+[ERROR] /C:/Users/sxp267/IdeaProjects/holon-vaadin-flow/demo/src/main/java/com/holonplatform/vaadin/flow/demo/ui/views/LiveChatDemoView.java:[314,9] cannot find symbol
+  symbol:   variable SHARED_SERVICE
+  location: class com.holonplatform.vaadin.flow.demo.ui.views.LiveChatDemoView
+[ERROR] /C:/Users/sxp267/IdeaProjects/holon-vaadin-flow/demo/src/main/java/com/holonplatform/vaadin/flow/demo/ui/views/LiveChatDemoView.java:[323,29] cannot find symbol
+  symbol:   variable SHARED_SERVICE
+  location: class com.holonplatform.vaadin.flow.demo.ui.views.LiveChatDemoView
+[ERROR] /C:/Users/sxp267/IdeaProjects/holon-vaadin-flow/demo/src/main/java/com/holonplatform/vaadin/flow/demo/ui/views/LiveChatDemoView.java:[335,47] cannot find symbol
+  symbol:   variable SHARED_SERVICE
+  location: class com.holonplatform.vaadin.flow.demo.ui.views.LiveChatDemoView
+[ERROR] /C:/Users/sxp267/IdeaProjects/holon-vaadin-flow/demo/src/main/java/com/holonplatform/vaadin/flow/demo/ui/views/LiveChatDemoView.java:[359,40] cannot find symbol
+  symbol:   variable SHARED_SERVICE
+  location: class com.holonplatform.vaadin.flow.demo.ui.views.LiveChatDemoView
+[ERROR] /C:/Users/sxp267/IdeaProjects/holon-vaadin-flow/demo/src/main/java/com/holonplatform/vaadin/flow/demo/ui/views/LiveChatDemoView.java:[373,17] cannot find symbol
+  symbol:   variable SHARED_SERVICE
+  location: class com.holonplatform.vaadin.flow.demo.ui.views.LiveChatDemoView
+[ERROR] /C:/Users/sxp267/IdeaProjects/holon-vaadin-flow/demo/src/main/java/com/holonplatform/vaadin/flow/demo/ui/views/LiveChatDemoView.java:[381,17] cannot find symbol
+  symbol:   variable SHARED_SERVICE
+  location: class com.holonplatform.vaadin.flow.demo.ui.views.LiveChatDemoView
+[INFO] 10 errors 
+[INFO] -------------------------------------------------------------
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Summary for com.holon-platform.vaadin:holon-vaadin-flow-root 10.0.0:
+[INFO] 
+[INFO] com.holon-platform.vaadin:holon-vaadin-flow-root ... SUCCESS [01:04 min]
+[INFO] com.holon-platform.vaadin:holon-vaadin-flow ........ SUCCESS [ 32.252 s]
+[INFO] com.holon-platform.vaadin:holon-vaadin-flow-chartjs  SUCCESS [  9.350 s]
+[INFO] com.holon-platform.vaadin:holon-vaadin-flow-calendar SUCCESS [  8.470 s]
+[INFO] com.holon-platform.vaadin:holon-vaadin-flow-navigator SUCCESS [  8.804 s]
+[INFO] com.holon-platform.vaadin:holon-vaadin-flow-spring . SUCCESS [  9.337 s]
+[INFO] com.holon-platform.vaadin:holon-vaadin-flow-spring-boot SUCCESS [ 11.597 s]
+[INFO] com.holon-platform.vaadin:holon-starter-vaadin-flow  SUCCESS [  8.220 s]
+[INFO] com.holon-platform.vaadin:holon-vaadin-flow-chat ... SUCCESS [  7.372 s]
+[INFO] com.holon-platform.vaadin:holon-vaadin-flow-demo ... FAILURE [01:26 min]
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  04:07 min
+[INFO] Finished at: 2026-05-17T06:31:09-04:00
+[INFO] ------------------------------------------------------------------------
+[ERROR] Failed to execute goal org.apache.maven.plugins:maven-compiler-plugin:3.15.0:compile (default-compile) on project holon-vaadin-flow-demo: Compilation failure: Compilation failure: 
+[ERROR] /C:/Users/sxp267/IdeaProjects/holon-vaadin-flow/demo/src/main/java/com/holonplatform/vaadin/flow/demo/ui/views/LiveChatDemoView.java:[270,34] cannot find symbol
+[ERROR]   symbol:   variable SHARED_SERVICE
+[ERROR]   location: class com.holonplatform.vaadin.flow.demo.ui.views.LiveChatDemoView
+[ERROR] /C:/Users/sxp267/IdeaProjects/holon-vaadin-flow/demo/src/main/java/com/holonplatform/vaadin/flow/demo/ui/views/LiveChatDemoView.java:[291,34] cannot find symbol
+[ERROR]   symbol:   variable SHARED_SERVICE
+[ERROR]   location: class com.holonplatform.vaadin.flow.demo.ui.views.LiveChatDemoView
+[ERROR] /C:/Users/sxp267/IdeaProjects/holon-vaadin-flow/demo/src/main/java/com/holonplatform/vaadin/flow/demo/ui/views/LiveChatDemoView.java:[289,31] cannot find symbol
+[ERROR]   symbol:   variable SHARED_SERVICE
+[ERROR]   location: class com.holonplatform.vaadin.flow.demo.ui.views.LiveChatDemoView
+[ERROR] /C:/Users/sxp267/IdeaProjects/holon-vaadin-flow/demo/src/main/java/com/holonplatform/vaadin/flow/demo/ui/views/LiveChatDemoView.java:[313,9] cannot find symbol
+[ERROR]   symbol:   variable SHARED_SERVICE
+[ERROR]   location: class com.holonplatform.vaadin.flow.demo.ui.views.LiveChatDemoView
+[ERROR] /C:/Users/sxp267/IdeaProjects/holon-vaadin-flow/demo/src/main/java/com/holonplatform/vaadin/flow/demo/ui/views/LiveChatDemoView.java:[314,9] cannot find symbol
+[ERROR]   symbol:   variable SHARED_SERVICE
+[ERROR]   location: class com.holonplatform.vaadin.flow.demo.ui.views.LiveChatDemoView
+[ERROR] /C:/Users/sxp267/IdeaProjects/holon-vaadin-flow/demo/src/main/java/com/holonplatform/vaadin/flow/demo/ui/views/LiveChatDemoView.java:[323,29] cannot find symbol
+[ERROR]   symbol:   variable SHARED_SERVICE
+[ERROR]   location: class com.holonplatform.vaadin.flow.demo.ui.views.LiveChatDemoView
+[ERROR] /C:/Users/sxp267/IdeaProjects/holon-vaadin-flow/demo/src/main/java/com/holonplatform/vaadin/flow/demo/ui/views/LiveChatDemoView.java:[335,47] cannot find symbol
+[ERROR]   symbol:   variable SHARED_SERVICE
+[ERROR]   location: class com.holonplatform.vaadin.flow.demo.ui.views.LiveChatDemoView
+[ERROR] /C:/Users/sxp267/IdeaProjects/holon-vaadin-flow/demo/src/main/java/com/holonplatform/vaadin/flow/demo/ui/views/LiveChatDemoView.java:[359,40] cannot find symbol
+[ERROR]   symbol:   variable SHARED_SERVICE
+[ERROR]   location: class com.holonplatform.vaadin.flow.demo.ui.views.LiveChatDemoView
+[ERROR] /C:/Users/sxp267/IdeaProjects/holon-vaadin-flow/demo/src/main/java/com/holonplatform/vaadin/flow/demo/ui/views/LiveChatDemoView.java:[373,17] cannot find symbol
+[ERROR]   symbol:   variable SHARED_SERVICE
+[ERROR]   location: class com.holonplatform.vaadin.flow.demo.ui.views.LiveChatDemoView
+[ERROR] /C:/Users/sxp267/IdeaProjects/holon-vaadin-flow/demo/src/main/java/com/holonplatform/vaadin/flow/demo/ui/views/LiveChatDemoView.java:[381,17] cannot find symbol
+[ERROR]   symbol:   variable SHARED_SERVICE
+[ERROR]   location: class com.holonplatform.vaadin.flow.demo.ui.views.LiveChatDemoView
+[ERROR] -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException
+[ERROR] 
+[ERROR] After correcting the problems, you can resume the build with the command
+[ERROR]   mvn <args> -rf :holon-vaadin-flow-demo

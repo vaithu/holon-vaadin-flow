@@ -18,6 +18,7 @@ package com.holonplatform.vaadin.flow.components.builders;
 import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
 import com.vaadin.flow.component.shared.HasTooltip;
+import com.vaadin.flow.signals.Signal;
 
 /**
  * Configurator for {@link HasTooltip} type components.
@@ -41,6 +42,18 @@ public interface HasTooltipConfigurator<C extends HasTooltipConfigurator<C>> {
 	 * @see LocalizationProvider
 	 */
 	C tooltip(Localizable tooltip);
+
+	/**
+	 * Bind the component tooltip to given {@link Signal}.
+	 * @param tooltipSignal Tooltip signal (not null)
+	 * @return this
+	 * @since 5.5.8
+	 */
+	@SuppressWarnings("unchecked")
+	default C bindTooltip(Signal<? extends Localizable> tooltipSignal) {
+		SignalBindings.bind(this, tooltipSignal, this::tooltip);
+		return (C) this;
+	}
 
 	/**
 	 * Sets the tooltip text. This is an alias for {@link #tooltip(String)}.

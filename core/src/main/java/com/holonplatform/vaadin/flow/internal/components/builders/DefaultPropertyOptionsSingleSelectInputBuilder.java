@@ -15,14 +15,6 @@
  */
 package com.holonplatform.vaadin.flow.internal.components.builders;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Predicate;
-
 import com.holonplatform.core.Validator;
 import com.holonplatform.core.datastore.DataTarget;
 import com.holonplatform.core.datastore.Datastore;
@@ -32,12 +24,8 @@ import com.holonplatform.core.property.Property;
 import com.holonplatform.core.property.PropertyBox;
 import com.holonplatform.core.query.QueryConfigurationProvider;
 import com.holonplatform.core.query.QuerySort;
-import com.holonplatform.vaadin.flow.components.Input;
+import com.holonplatform.vaadin.flow.components.*;
 import com.holonplatform.vaadin.flow.components.Selectable.SelectionListener;
-import com.holonplatform.vaadin.flow.components.SingleSelect;
-import com.holonplatform.vaadin.flow.components.ValidatableInput;
-import com.holonplatform.vaadin.flow.components.ValidatableSingleSelect;
-import com.holonplatform.vaadin.flow.components.ValidationStatusHandler;
 import com.holonplatform.vaadin.flow.components.ValueHolder.ValueChangeEvent;
 import com.holonplatform.vaadin.flow.components.ValueHolder.ValueChangeListener;
 import com.holonplatform.vaadin.flow.components.builders.OptionsSingleSelectConfigurator.PropertyOptionsSingleSelectInputBuilder;
@@ -56,6 +44,14 @@ import com.vaadin.flow.data.provider.QuerySortOrder;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.dom.DomEventListener;
 import com.vaadin.flow.dom.Element;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 /**
  * Default {@link PropertyOptionsSingleSelectInputBuilder} implementation.
@@ -471,7 +467,7 @@ public class DefaultPropertyOptionsSingleSelectInputBuilder<T> extends AbstractP
 	 */
 	@Override
 	public DatastorePropertyOptionsSingleSelectInputBuilder<T> dataSource(Datastore datastore, DataTarget<?> target) {
-		return dataSource(datastore, target, Collections.singletonList(selectionProperty));
+		return dataSource(datastore, target, List.of(selectionProperty));
 	}
 
 	/*

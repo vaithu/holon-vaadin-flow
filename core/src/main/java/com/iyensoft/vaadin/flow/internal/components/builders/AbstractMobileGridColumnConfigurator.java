@@ -74,7 +74,7 @@ public abstract class AbstractMobileGridColumnConfigurator<
     }
 
     private Span createText(String text) {
-        Span span = new Span(text);
+        Span span = Components.span().text(text).build();
         span.getElement().setAttribute("title", text);
         return span;
     }

@@ -67,7 +67,7 @@ public class DefaultListMultiSelectInputBuilder<T, ITEM> extends
 		AbstractInputConfigurator<Set<T>, ValueChangeEvent<Set<T>>, MultiSelectListBox<ITEM>, ListMultiSelectInputBuilder<T, ITEM>>
 		implements ListMultiSelectInputBuilder<T, ITEM> {
 
-	protected final List<SelectionListener<T>> selectionListeners = new LinkedList<>();
+	protected final List<SelectionListener<T>> selectionListeners = new ArrayList<>();
 
 	private final Class<? extends T> type;
 	private final Class<ITEM> itemType;

@@ -17,8 +17,6 @@ package com.holonplatform.vaadin.flow.components.builders;
 
 import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.core.internal.utils.ObjectUtils;
-import com.holonplatform.core.property.PathProperty;
-import com.holonplatform.core.property.Property;
 import com.holonplatform.core.query.QuerySort.SortDirection;
 import com.holonplatform.vaadin.flow.components.ItemListing;
 import com.holonplatform.vaadin.flow.components.ItemListing.*;
@@ -27,6 +25,7 @@ import com.holonplatform.vaadin.flow.components.Selectable.SelectionMode;
 import com.holonplatform.vaadin.flow.components.events.*;
 import com.holonplatform.vaadin.flow.data.ItemSort;
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridMultiSelectionModel.SelectAllCheckboxVisibility;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.grid.contextmenu.GridContextMenu;
@@ -40,7 +39,6 @@ import com.vaadin.flow.data.renderer.TextRenderer;
 import com.vaadin.flow.function.SerializableFunction;
 import com.vaadin.flow.function.ValueProvider;
 
-import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
@@ -1184,6 +1182,33 @@ public interface ItemListingConfigurator<T, P, L extends ItemListing<T, P>, C ex
      * @return this
      */
     C emptyStateComponent(Component component);
+
+    /**
+     * Sets whether tooltip content is rendered as Markdown.
+     *
+     * @param markdownEnabled {@code true} to enable Markdown rendering
+     * @return this
+     * @since 5.5.8
+     */
+    C tooltipMarkdownEnabled(boolean markdownEnabled);
+
+    /**
+     * Scrolls horizontally to make the visible column at given index visible.
+     *
+     * @param columnIndex zero-based visible column index
+     * @return this
+     * @since 5.5.8
+     */
+    C scrollToColumn(int columnIndex);
+
+    /**
+     * Scrolls horizontally to make the given column visible.
+     *
+     * @param column the column to scroll to
+     * @return this
+     * @since 5.5.8
+     */
+    C scrollToColumn(Grid.Column<T> column);
 
     // -------
 

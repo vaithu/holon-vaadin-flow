@@ -2,12 +2,17 @@ package com.holonplatform.vaadin.flow.vaadinplus;
 
 import com.holonplatform.vaadin.flow.internal.lumo.*;
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.theme.lumo.LumoUtility;
 import lombok.Getter;
 
 import java.util.HashMap;
 
+@StyleSheet("context://layout.css")
+@StyleSheet("context://utilities.css")
+@StyleSheet("context://buttons.css")
+@StyleSheet("context://toolbar.css")
+@StyleSheet("context://menu.css")
 public class Layout extends Div {
 
     private AlignItems alignItems;
@@ -30,7 +35,6 @@ public class Layout extends Div {
     private Position position;
 
     public Layout() {
-//        setDisplay(Display.FLEX);
         this.responsiveDisplay = new HashMap<>();
         this.responsiveFlexDirection = new HashMap<>();
         this.responsiveColumns = new HashMap<>();
@@ -105,12 +109,12 @@ public class Layout extends Div {
     }
 
     public void setFlexGrow() {
-        addClassNames(LumoUtility.Flex.GROW);
+        addClassName("flex-grow-1");
     }
 
     public void setFlexGrow(Component... components) {
         for (Component component : components) {
-            component.addClassNames(LumoUtility.Flex.GROW);
+            component.addClassName("flex-grow-1");
         }
     }
 
@@ -122,43 +126,28 @@ public class Layout extends Div {
         this.flexWrap = flexWrap;
     }
 
-    /**
-     * Sets both the column (horizontal) and row (vertical) gap between components.
-     */
     public void setGap(Gap gap) {
         setColumnGap(gap);
         setRowGap(gap);
     }
 
-    /**
-     * Sets the column (horizontal) gap between components.
-     */
     public void setColumnGap(Gap gap) {
         removeColumnGap();
         this.addClassNames(gap.getColumnGap().getClassName());
         this.colGap = gap.getColumnGap();
     }
 
-    /**
-     * Sets the row (vertical) gap between components.
-     */
     public void setRowGap(Gap gap) {
         removeRowGap();
         this.addClassNames(gap.getRowGap().getClassName());
         this.rowGap = gap.getRowGap();
     }
 
-    /**
-     * Removes both the column (horizontal) and row (vertical) gap between components.
-     */
     public void removeGap() {
         removeColumnGap();
         removeRowGap();
     }
 
-    /**
-     * Removes the column (horizontal) gap between components.
-     */
     public void removeColumnGap() {
         if (this.colGap != null) {
             this.removeClassName(this.colGap.getClassName());
@@ -166,9 +155,6 @@ public class Layout extends Div {
         this.colGap = null;
     }
 
-    /**
-     * Removes the row (vertical) gap between components.
-     */
     public void removeRowGap() {
         if (this.rowGap != null) {
             this.removeClassName(this.rowGap.getClassName());
@@ -176,9 +162,6 @@ public class Layout extends Div {
         this.rowGap = null;
     }
 
-    /**
-     * Sets the default number of grid columns.
-     */
     public void setColumns(GridColumns gridColumns) {
         if (this.gridColumns != null) {
             removeClassNames(this.gridColumns.getClassName());
@@ -187,9 +170,6 @@ public class Layout extends Div {
         this.gridColumns = gridColumns;
     }
 
-    /**
-     * Sets the number of grid columns for a given breakpoint.
-     */
     public void setColumns(Breakpoint breakpoint, GridColumns gridColumns) {
         if (this.responsiveColumns.get(breakpoint) != null) {
             removeClassName(breakpoint.getPrefix() + ":" + this.responsiveColumns.get(breakpoint).getClassName());
@@ -208,9 +188,6 @@ public class Layout extends Div {
         }
     }
 
-    /**
-     * Sets the justify content property.
-     */
     public void setJustifyContent(JustifyContent justifyContent) {
         if (this.justifyContent != null) {
             removeClassName(this.justifyContent.getClassName());
@@ -219,9 +196,6 @@ public class Layout extends Div {
         this.justifyContent = justifyContent;
     }
 
-    /**
-     * Sets the line clamp property.
-     */
     public void setLineClamp(LineClamp lineClamp) {
         if (this.lineClamp != null) {
             removeClassName(this.lineClamp.getClassName());
@@ -230,9 +204,6 @@ public class Layout extends Div {
         this.lineClamp = lineClamp;
     }
 
-    /**
-     * Sets the overflow property.
-     */
     public void setOverflow(Overflow overflow) {
         if (this.overflow != null) {
             removeClassNames(this.overflow.getClassName());
@@ -248,6 +219,5 @@ public class Layout extends Div {
         addClassNames(position.getClassName());
         this.position = position;
     }
-
 
 }

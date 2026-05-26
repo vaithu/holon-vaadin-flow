@@ -1,10 +1,12 @@
 package com.holonplatform.vaadin.flow.internal.components.builders;
 
 import com.holonplatform.core.Initializer;
+import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.vaadin.flow.LazyComponent;
+import com.holonplatform.vaadin.flow.components.Components;
 import com.holonplatform.vaadin.flow.components.builders.TabSheetConfigurator;
+import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
 import com.vaadin.flow.component.*;
-import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.shared.HasTooltip;
 import com.vaadin.flow.component.tabs.Tab;
@@ -75,7 +77,7 @@ public abstract class AbstractTabSheetConfigurator<C extends TabSheetConfigurato
 
     @Override
     public C withTab(Icon icon, String tabText, Component component) {
-        getComponent().add(new Tab(icon, new Span(tabText)), component);
+        getComponent().add(new Tab(icon, Components.span().text(tabText).build()), component);
         return getConfigurator();
     }
 
@@ -96,7 +98,7 @@ public abstract class AbstractTabSheetConfigurator<C extends TabSheetConfigurato
 
     @Override
     public C withTab(Icon icon, String tabText, LazyComponent component) {
-        getComponent().add(new Tab(icon, new Span(tabText)), component);
+        getComponent().add(new Tab(icon, Components.span().text(tabText).build()), component);
         return getConfigurator();
     }
 
@@ -110,6 +112,43 @@ public abstract class AbstractTabSheetConfigurator<C extends TabSheetConfigurato
     public C withTab(String tabText, LazyComponent component) {
         getComponent().add(tabText, component);
         return getConfigurator();
+    }
+
+    // ── Localizable overloads ──────────────────────────────────────────────
+
+    @Override
+    public C withTab(Localizable tabText, Component content) {
+        return withTab(resolve(tabText), content);
+    }
+
+    @Override
+    public C withTab(Localizable tabText, Initializer<Component> initializer) {
+        return withTab(resolve(tabText), initializer.get());
+    }
+
+    @Override
+    public C withTab(Icon icon, Localizable tabText, Component content) {
+        return withTab(icon, resolve(tabText), content);
+    }
+
+    @Override
+    public C withTab(Icon icon, Localizable tabText, Initializer<Component> initializer) {
+        return withTab(icon, resolve(tabText), initializer.get());
+    }
+
+    @Override
+    public C withTab(Localizable tabText, LazyComponent component) {
+        return withTab(resolve(tabText), component);
+    }
+
+    @Override
+    public C withTab(Icon icon, Localizable tabText, LazyComponent component) {
+        return withTab(icon, resolve(tabText), component);
+    }
+
+    private static String resolve(Localizable l) {
+        return LocalizationProvider.localize(l)
+                .orElseGet(() -> l.getMessage() != null ? l.getMessage() : "");
     }
 
     /**

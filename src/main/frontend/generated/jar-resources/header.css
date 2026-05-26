@@ -1,0 +1,121 @@
+/*
+ * header.css
+ *
+ * Mobile-first styles for the Header component (iyen-header).
+ *
+ * BEM namespace: .iyen-header
+ *
+ * Structure:
+ *   .iyen-header                       — root layout (inherits from Layout)
+ *   .iyen-header--bordered             — modifier: bottom border when no tabs present
+ *   .iyen-header__row                  — flex row: prefix | column | actions (structural, no padding)
+ *   .iyen-header__row--padded          — modifier: standard row padding (default)
+ *   .iyen-header__tabs--edge-aligned   — modifier: pulls tabs flush with container edges
+ *   .iyen-header__breadcrumb           — breadcrumb slot (above the heading)
+ *   .iyen-header__details              — detail tags row (below the heading)
+ *
+ * Mobile  (< 640 px) — compact padding, actions wrap below heading.
+ * Desktop (≥ 640 px) — generous padding, actions stay on the same row.
+ */
+
+/* -----------------------------------------------------------------------
+ * Root
+ * ----------------------------------------------------------------------- */
+
+.iyen-header {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Bottom border rendered when no Tabs are attached */
+.iyen-header--bordered {
+    border-block-end: 1px solid var(--color-border, #e4e4e7);
+}
+
+/* -----------------------------------------------------------------------
+ * Row — horizontal strip: prefix | column | actions
+ * Structural only — no padding here; use --padded modifier for padding.
+ * Mobile: allow wrapping so actions drop below on small screens.
+ * Desktop: no wrap, all inline.
+ * ----------------------------------------------------------------------- */
+
+.iyen-header__row {
+    display: flex;
+    flex-wrap: wrap;                /* actions wrap on mobile */
+    gap: 0.75rem;
+    align-items: flex-start;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+@media (min-width: 640px) {
+    .iyen-header__row {
+        flex-wrap: nowrap;          /* single line on desktop */
+        gap: 1rem;
+        align-items: center;
+    }
+}
+
+/* Padding modifier — applied by default; removed by configurators that want
+   a padded-free header inside master-view layouts. */
+.iyen-header__row--padded {
+    padding: 0.75rem;               /* compact on mobile */
+}
+
+@media (min-width: 640px) {
+    .iyen-header__row--padded {
+        padding: 1rem;
+    }
+}
+
+/* -----------------------------------------------------------------------
+ * Tabs — edge-aligned modifier
+ * Pulls the Tabs component flush to the left/right container edges by
+ * applying negative horizontal margin — equivalent to the old
+ * LumoUtility.Margin.Minus.Horizontal.LARGE pattern.
+ * ----------------------------------------------------------------------- */
+
+.iyen-header__tabs--edge-aligned {
+    margin-inline: -1rem;
+}
+
+@media (min-width: 640px) {
+    .iyen-header__tabs--edge-aligned {
+        margin-inline: -1.5rem;
+    }
+}
+
+/* -----------------------------------------------------------------------
+ * Breadcrumb slot
+ * ----------------------------------------------------------------------- */
+
+.iyen-header__breadcrumb {
+    margin-block-end: 0.75rem;
+}
+
+@media (min-width: 640px) {
+    .iyen-header__breadcrumb {
+        margin-block-end: 1rem;
+    }
+}
+
+/* -----------------------------------------------------------------------
+ * Details slot (tags / meta below heading)
+ * ----------------------------------------------------------------------- */
+
+.iyen-header__details {
+    margin-block-start: 0.25rem;
+}
+
+/* -----------------------------------------------------------------------
+ * withoutBorder() modifier — suppresses the bottom border.
+ * Two-class specificity beats the single-class .iyen-header--bordered rule.
+ * ----------------------------------------------------------------------- */
+
+.iyen-header.header--no-border,
+.iyen-header.header--no-border.iyen-header--bordered {
+    border-block-end: none;
+}
+
+

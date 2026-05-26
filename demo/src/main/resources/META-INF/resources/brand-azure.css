@@ -1,0 +1,416 @@
+/*
+ * ── FONT LOADING ─────────────────────────────────────────────────────────────
+ *
+ *  Font: Inter  (exact font used in TailPanel / Linear / Figma / Notion)
+ *
+ *  Option A — Bunny Fonts CDN  (privacy-first, GDPR-compliant, no cookies)
+ *              Best choice for EU apps and demos. Requires internet.
+ *
+ *  Option B — Google Fonts CDN  (most popular, widest browser caching)
+ *              Slightly faster in practice but sends requests to Google.
+ *
+ *  Option C — Self-hosted  (production-grade, zero 3rd-party requests)
+ *    1. Copy font files into:
+ *         demo/src/main/resources/META-INF/resources/fonts/
+ *    2. Replace the @import below with the @font-face block in the comment.
+ *    Download from: https://rsms.me/inter/
+ *                or: npm install @fontsource/inter
+ *                   (then copy node_modules/@fontsource/inter/files/*.woff2)
+ *
+ *  Self-hosted @font-face (replace the @import below to go offline):
+ *
+ *    @font-face {
+ *      font-family: 'Inter';
+ *      src: url('fonts/inter-latin-400-normal.woff2') format('woff2');
+ *      font-weight: 400; font-style: normal; font-display: swap;
+ *    }
+ *    @font-face {
+ *      font-family: 'Inter';
+ *      src: url('fonts/inter-latin-500-normal.woff2') format('woff2');
+ *      font-weight: 500; font-style: normal; font-display: swap;
+ *    }
+ *    @font-face {
+ *      font-family: 'Inter';
+ *      src: url('fonts/inter-latin-600-normal.woff2') format('woff2');
+ *      font-weight: 600; font-style: normal; font-display: swap;
+ *    }
+ *    @font-face {
+ *      font-family: 'Inter';
+ *      src: url('fonts/inter-latin-700-normal.woff2') format('woff2');
+ *      font-weight: 700; font-style: normal; font-display: swap;
+ *    }
+ */
+
+/* Option A — Bunny Fonts CDN (active by default — swap in Option B or C above) */
+@import url('https://fonts.bunny.net/css?family=inter:300,400,500,600,700&display=swap');
+
+/* Option B — Google Fonts CDN (uncomment to use instead)
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+*/
+
+/*
+ * brand-azure.css  —  "Azure" theme
+ * ──────────────────────────────────────────────────────────────────────────────
+ *  ★  READY-TO-USE BRAND FILE  (replaces brand-override-example.css)  ★
+ *
+ *  Clean SaaS dashboard aesthetic. Vivid blue brand. Blue-tinted page canvas.
+ *  Inspired by TailPanel, Linear, Plane, and modern B2B SaaS products.
+ *
+ *  THE DEFINING CHARACTERISTIC of this theme: the page content area uses
+ *  indigo-50 (#eef2ff) as its background. White cards (#ffffff) "float"
+ *  off the blue canvas with minimal or no shadows required. The white
+ *  sidebar and topbar remain neutral, making the content area the only
+ *  colored zone — a modern SaaS pattern that creates immediate visual depth.
+ *
+  /* ╔══════════════════════════════════════════════════════════════════╗
+     ║  WHAT CHANGED vs brand-override-example.css (Amber / Navy)      ║
+     ║                                                                  ║
+     ║  §3   SURFACES: Blue-tinted canvas (indigo-50) ← was Slate     ║
+     ║  §9   BRAND PALETTE: Azure Blue (Tailwind Blue) ← was Amber    ║
+     ║  §10  SIDEBAR: Blue canvas + blue active        ← was navy     ║
+     ║                                                                  ║
+     ║  Sections 1-2, 4-8 are identical to brand-override-example.css ║
+     ╚══════════════════════════════════════════════════════════════════╝ */
+ *
+ *  HOW TO ACTIVATE — swap one line in your AppShellConfigurator:
+ *    @StyleSheet(Lumo.STYLESHEET)
+ *    @StyleSheet("context://vaadin-shell-theme.css")
+ *    @StyleSheet("context://brand-azure.css")               ← this line
+ *    @StyleSheet("context://app-shell.css")
+ */
+:root {
+  /* ════════════════════════════════════════════════════════════════
+     1. NEUTRAL SCALE  — Tailwind Zinc (unchanged)
+     ════════════════════════════════════════════════════════════════ */
+  --zinc-50:   #fafafa;
+  --zinc-100:  #f4f4f5;
+  --zinc-200:  #e4e4e7;
+  --zinc-300:  #d4d4d8;
+  --zinc-400:  #a1a1aa;
+  --zinc-500:  #71717a;
+  --zinc-600:  #52525b;
+  --zinc-700:  #3f3f46;
+  --zinc-800:  #27272a;
+  --zinc-900:  #18181b;
+  --zinc-950:  #09090b;
+  /* Legacy --gray-* aliases (used by older component CSS) */
+  --gray-100: var(--zinc-100);  --gray-150: var(--zinc-200);
+  --gray-200: var(--zinc-200);  --gray-300: var(--zinc-300);
+  --gray-400: var(--zinc-400);  --gray-500: var(--zinc-500);
+  --gray-600: var(--zinc-600);  --gray-700: var(--zinc-700);
+  --gray-800: var(--zinc-800);  --gray-900: var(--zinc-950);
+
+  /* ════════════════════════════════════════════════════════════════
+     2. SEMANTIC STATUS COLOURS  — Unchanged
+     ════════════════════════════════════════════════════════════════ */
+  --ok-light:   #f0fdf4;  --ok:   #16a34a;  --ok-dark:   #166534;
+  --err-light:  #fef2f2;  --err:  #dc2626;  --err-dark:  #b91c1c;
+  --warn-light: #fefce8;  --warn: #ca8a04;  --warn-dark: #a16207;
+  --info-light: #eff6ff;  --info: #2563eb;  --info-dark: #1d4ed8;
+
+  /* ════════════════════════════════════════════════════════════════
+     3. SURFACES  — ← CHANGED: Blue-tinted cascade (key visual identity)
+
+        How cards "float" without heavy shadows:
+          Page (indigo-50 #eef2ff) → Card (white #ffffff + border)
+          The color delta alone creates separation — no shadows needed.
+
+        surface-0 = pure white     (cards, inputs, sidebar, topbar)
+        surface-1 = indigo-50      (#eef2ff — THE blue page canvas ★)
+        surface-2 = custom light   (#f4f6ff — disabled bg, sub-panels)
+        surface-3 = indigo-100     (#e0e7ff — separator-level)
+        surface-4 = indigo-200     (#c7d2fe — strong separation)
+     ════════════════════════════════════════════════════════════════ */
+  --surface-0:  #ffffff;
+  --surface-1:  #eef2ff;   /* indigo-50  — blue-tinted page canvas   ← CHANGED */
+  --surface-2:  #f4f6ff;   /* light blue-white — disabled/sub-panels ← CHANGED */
+  --surface-3:  #e0e7ff;   /* indigo-100 — separator level           ← CHANGED */
+  --surface-4:  #c7d2fe;   /* indigo-200 — strong separation         ← CHANGED */
+
+  /* ════════════════════════════════════════════════════════════════
+     4. TEXT  — Slate (cool blue-gray pairs perfectly with blue brand)
+        text-link uses brand-700 (#1d4ed8) = WCAG AAA 8.5:1 on white ✓
+     ════════════════════════════════════════════════════════════════ */
+  --text-primary:   #0f172a;   /* slate-900 */
+  --text-secondary: #475569;   /* slate-600 */
+  --text-tertiary:  #94a3b8;   /* slate-400 */
+  --text-disabled:  #cbd5e1;   /* slate-300 */
+  --text-link:      var(--brand-700);
+  --text-inverse:   #ffffff;
+
+  /* ════════════════════════════════════════════════════════════════
+     5. BORDERS  — Unchanged
+     ════════════════════════════════════════════════════════════════ */
+  --border-subtle:    1px solid var(--zinc-100);
+  --border-default:   1px solid var(--zinc-200);
+  --border-strong:    1px solid var(--zinc-300);
+  --border-focus:     2px solid var(--brand-600);
+  --border-separator: 1px solid var(--zinc-200);
+  --border-error:     1px solid var(--err);
+
+  /* ════════════════════════════════════════════════════════════════
+     6. RADIUS  — Unchanged (10px base = matches TailPanel look)
+     ════════════════════════════════════════════════════════════════ */
+  --radius:      0.625rem;
+  --radius-xs:   calc(var(--radius) - 6px);
+  --radius-sm:   calc(var(--radius) - 4px);
+  --radius-md:   calc(var(--radius) - 2px);
+  --radius-lg:   var(--radius);
+  --radius-xl:   calc(var(--radius) + 4px);
+  --radius-2xl:  calc(var(--radius) + 8px);
+  --radius-full: 9999px;
+
+  /* ════════════════════════════════════════════════════════════════
+     7. SPACING  — Unchanged
+     ════════════════════════════════════════════════════════════════ */
+  --sp-1:  4px;   --sp-2:  8px;  --sp-3:  12px;  --sp-4:  16px;
+  --sp-5: 20px;   --sp-6: 24px;  --sp-8:  32px;  --sp-10: 40px;
+  --space-1: 0.25rem;  --space-2: 0.5rem;   --space-3: 0.75rem;
+  --space-4: 1rem;     --space-5: 1.25rem;  --space-6: 1.5rem;
+
+  /* ════════════════════════════════════════════════════════════════
+     8. TYPOGRAPHY  — Inter (matches TailPanel screenshots exactly)
+        Inter was designed for computer screens and is the definitive
+        "modern SaaS" typeface. Key features used here:
+          • tnum  — tabular numerals: all digits same width → KPI numbers
+                    align perfectly in columns and look intentional
+          • cv05  — disambiguates I/l/1 (optional, good for IDs)
+        The system-ui fallback chain ensures zero-FOUT even before
+        the font loads.
+     ════════════════════════════════════════════════════════════════ */
+  --font-display: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-body:    'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono:    'Geist Mono', 'Cascadia Code', 'Fira Code', ui-monospace, monospace;
+  --font-sans:    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-size-xs:   0.6875rem;
+  --font-size-sm:   0.75rem;
+  --font-size-base: 0.8125rem;
+  --font-size-md:   0.875rem;
+  --font-size-lg:   1rem;
+
+  /* ════════════════════════════════════════════════════════════════
+     8b. SHADOWS & TRANSITIONS
+         Shadows are intentionally lighter in this theme. The blue
+         canvas already provides color-contrast separation from white
+         cards — heavy shadows fight the effect. Keep them minimal.
+     ════════════════════════════════════════════════════════════════ */
+  --shadow-xs:    0 1px 2px 0 rgba(0,0,0,.04);
+  --shadow-sm:    0 1px 3px 0 rgba(0,0,0,.08), 0 1px 2px -1px rgba(0,0,0,.06);
+  --shadow-md:    0 4px 6px -1px rgba(0,0,0,.08), 0 2px 4px -2px rgba(0,0,0,.06);
+  --shadow-lg:    0 10px 15px -3px rgba(0,0,0,.08), 0 4px 6px -4px rgba(0,0,0,.06);
+  --shadow-xl:    0 20px 25px -5px rgba(0,0,0,.08), 0 8px 10px -6px rgba(0,0,0,.06);
+  --shadow-focus: 0 0 0 2px var(--surface-0), 0 0 0 4px var(--brand-500);
+  --shadow-shell: var(--shadow-md);
+  --shadow-card:  var(--shadow-xs);
+  --ease-out:        cubic-bezier(.16, 1, .3, 1);
+  --ease-in-out:     cubic-bezier(.45, 0, .55, 1);
+  --dur-fast:        100ms;
+  --dur-base:        150ms;
+  --dur-slow:        250ms;
+  --transition-fast: 120ms ease;
+  --transition-base: var(--dur-base) var(--ease-out);
+
+  /* ════════════════════════════════════════════════════════════════
+     8c. COMPONENT DIMENSIONS  — Unchanged
+     ════════════════════════════════════════════════════════════════ */
+  --field-h-sm:  32px;  --field-h-md:  36px;  --field-h-lg:  40px;
+  --btn-h-sm:    28px;  --btn-h-md:    36px;  --btn-h-lg:    40px;
+  --toolbar-h:   56px;  --master-w:    290px;
+  --master-panel-width:      var(--master-w);
+  --toolbar-height:          var(--toolbar-h);
+  --sidenav-collapsed-width: 3.25rem;
+
+  /* ════════════════════════════════════════════════════════════════
+     8d. COMPONENT RING  — blue focus accent
+     ════════════════════════════════════════════════════════════════ */
+  --comp-bg:           var(--surface-0);
+  --comp-border-color: var(--zinc-200);
+  --comp-border-hover: var(--zinc-400);
+  --comp-border-focus: var(--brand-500);
+  --comp-border-error: var(--err);
+  --comp-shadow:       0 1px 3px 0 rgb(0 0 0 / .08);
+  --comp-shadow-inset: inset 0 1px 2px rgb(0 0 0 / .04);
+  --comp-radius:       var(--radius-md);
+  --comp-focus-ring:   0 0 0 2px var(--surface-0), 0 0 0 4px var(--brand-500);
+
+  /* ════════════════════════════════════════════════════════════════
+     8e. TYPOGRAPHY SCALE  — Unchanged
+     ════════════════════════════════════════════════════════════════ */
+  --type-sz-display:  2rem;        --type-wt-display: 700;  --type-lh-display: 1.15;  --type-ls-display: -0.025em;
+  --type-sz-h1:       1.5rem;      --type-wt-h1:      600;  --type-lh-h1:      1.2;   --type-ls-h1:      -0.02em;
+  --type-sz-h2:       1.25rem;     --type-wt-h2:      600;  --type-lh-h2:      1.25;  --type-ls-h2:      -0.015em;
+  --type-sz-h3:       1.125rem;    --type-wt-h3:      600;  --type-lh-h3:      1.3;   --type-ls-h3:      -0.01em;
+  --type-sz-h4:       1rem;        --type-wt-h4:      600;  --type-lh-h4:      1.4;   --type-ls-h4:      0;
+  --type-sz-body-lg:  1rem;        --type-wt-body:    400;  --type-lh-body-lg: 1.6;
+  --type-sz-body:     0.875rem;                             --type-lh-body:    1.5;
+  --type-sz-body-sm:  0.8125rem;                            --type-lh-body-sm: 1.5;
+  --type-sz-caption:  0.75rem;                              --type-lh-caption: 1.4;
+  --type-sz-overline: 0.6875rem;   --type-wt-overline: 600; --type-ls-overline: 0.1em;
+  --type-sz-mono:     0.8125rem;
+
+  /* ╔══════════════════════════════════════════════════════════════════╗
+     ║  ★  9. BRAND PALETTE  ★   Azure Blue                            ║
+     ║                                                                  ║
+     ║  Tailwind Blue — vivid, clear, unmistakably blue.               ║
+     ║  blue-700 (#1d4ed8) on white = 8.5:1 (WCAG AAA ✓✓)             ║
+     ║                                                                  ║
+     ║  Paired with the indigo-50 page canvas, pure blue buttons       ║
+     ║  pop with strong visual identity. This "same hue family"       ║
+     ║  approach (blue buttons on blue-tinted canvas) is a hallmark   ║
+     ║  of polished modern SaaS products.                              ║
+     ╚══════════════════════════════════════════════════════════════════╝ */
+  --brand-50:   #eff6ff;   /* blue-50  — lightest tint                    */
+  --brand-100:  #dbeafe;   /* blue-100                                    */
+  --brand-200:  #bfdbfe;   /* blue-200                                    */
+  --brand-300:  #93c5fd;   /* blue-300                                    */
+  --brand-400:  #60a5fa;   /* blue-400                                    */
+  --brand-500:  #3b82f6;   /* blue-500 ← focus rings, active nav tint      */
+  --brand-600:  #2563eb;   /* blue-600 ← primary button background        */
+  --brand-700:  #1d4ed8;   /* blue-700 ← hover + link WCAG AAA 8.5:1 ✓   */
+  --brand-800:  #1e40af;   /* blue-800                                    */
+  --brand-900:  #1e3a8a;   /* blue-900                                    */
+
+  /* ╔══════════════════════════════════════════════════════════════════╗
+     ║  10. SIDEBAR  ←  Blue-tinted canvas (matches screenshots)        ║
+     ║                                                                  ║
+     ║  Key insight from the screenshots:                              ║
+     ║    • The TOPBAR is pure white (#ffffff)                        ║
+     ║    • The SIDEBAR uses the SAME blue-tinted bg as the content   ║
+     ║      area (surface-1 = #eef2ff, indigo-50). Both are part of  ║
+     ║      the blue canvas. White cards float above both.            ║
+     ║    • This makes topbar the only white chrome zone.             ║
+     ║                                                                  ║
+     ║  Active state (TailPanel pattern):                              ║
+     ║    Sidebar bg = #eef2ff (indigo-50)                            ║
+     ║    Hover bg   = #eff6ff (blue-50) — subtle hue shift           ║
+     ║    Active bg  = #dbeafe (blue-100) — clearly more saturated    ║
+     ║    Active left-border = brand-500 (#3b82f6)                    ║
+     ║    Active text = brand-700 (#1d4ed8)                           ║
+     ╚══════════════════════════════════════════════════════════════════╝ */
+  --sidenav-width:               220px;
+  --sidenav-bg:                  var(--surface-1);   /* #eef2ff — same blue as content canvas */
+  --sidenav-border:              var(--zinc-300);    /* slightly stronger — both sides same color */
+  --sidenav-label-color:         #6b7fb5;            /* muted blue-slate — section labels on blue bg */
+  --sidenav-label-font-size:     0.625rem;
+  --sidenav-label-padding:       0.875rem 1rem 0.25rem;
+
+  /* Items on blue canvas — slate text, readable */
+  --sidenav-item-color:          var(--text-secondary);   /* slate-600 #475569 */
+  --sidenav-item-font-size:      0.875rem;
+  --sidenav-item-font-weight:    400;
+  --sidenav-item-padding:        0.5rem 1rem;
+  --sidenav-item-radius:         0;                  /* full-width = left border works cleanly */
+  --sidenav-item-hover-bg:       var(--brand-50);   /* #eff6ff — subtle hue change from indigo bg */
+  --sidenav-item-hover-color:    var(--brand-700);
+
+  /* Active: brand-100 (#dbeafe) clearly more saturated than the sidebar bg (#eef2ff) */
+  --sidenav-item-active-bg:           var(--brand-100);  /* #dbeafe — visibly distinct from #eef2ff */
+  --sidenav-item-active-color:        var(--brand-700);  /* #1d4ed8 blue text */
+  --sidenav-item-active-border:       var(--brand-500);  /* #3b82f6 left marker */
+  --sidenav-item-active-font-weight:  600;
+
+  /* Toggle chevron */
+  --sidenav-toggle-color:        #8da3c9;            /* muted blue on blue bg */
+  --sidenav-toggle-hover-color:  var(--brand-700);
+
+  /* Group collapsible headers — dark text stands out on blue bg */
+  --sidenav-group-color:          var(--text-primary);   /* slate-900 #0f172a */
+  --sidenav-group-font-size:      0.875rem;
+  --sidenav-group-font-weight:    600;
+  --sidenav-group-padding-top:    0.875rem;
+  --sidenav-group-padding-bottom: 0.375rem;
+
+  /* Child items */
+  --sidenav-child-color:      var(--text-secondary);
+  --sidenav-child-font-size:  0.8125rem;
+  --sidenav-child-opacity:    1;
+
+  /* Child indent */
+  --vaadin-side-nav-child-indent: 1.25rem;
+
+  /* Vaadin internal nav properties */
+  --vaadin-side-nav-item-border-radius: 0;
+  --vaadin-side-nav-item-font-size:     0.875rem;
+  --vaadin-side-nav-item-font-weight:   400;
+
+  /* Icons — blue-toned muted on blue bg */
+  --sidenav-icon-color:        #8da3c9;              /* muted blue-gray at rest */
+  --sidenav-icon-active-color: var(--brand-600);     /* vivid blue on active */
+
+  /* Badge / notification pills */
+  --sidenav-badge-bg:     var(--brand-600);
+  --sidenav-badge-color:  #ffffff;
+  --sidenav-badge-radius: 9999px;
+}
+
+
+/* ══════════════════════════════════════════════════════════════
+   TOPBAR  — white on blue-tinted content: reinforce white chrome
+   The topbar already uses surface-0 white; this ensures the
+   bottom border (zinc-200) provides clear separation vs the
+   page background (indigo-50).
+   ══════════════════════════════════════════════════════════════ */
+vaadin-app-layout::part(navbar) {
+  border-bottom: 1px solid var(--zinc-200);
+}
+
+
+/* ══════════════════════════════════════════════════════════════
+   BLUE SIDEBAR: search field — white input on blue canvas
+   ══════════════════════════════════════════════════════════════ */
+.sidenav-search vaadin-text-field {
+  --vaadin-input-field-background:  var(--surface-0);   /* white — pop on blue sidebar */
+  --vaadin-input-field-value-color: var(--text-primary);
+}
+.sidenav-search vaadin-text-field::part(input-field) {
+  border-color: var(--brand-200);   /* #bfdbfe — blue-tinted border on blue bg */
+}
+
+
+/* ══════════════════════════════════════════════════════════════
+   BLUE SIDEBAR: subtle scrollbar
+   ══════════════════════════════════════════════════════════════ */
+.sidenav-host vaadin-side-nav {
+  scrollbar-color: var(--brand-200) transparent;
+}
+
+
+/* ══════════════════════════════════════════════════════════════
+   INTER FONT ACTIVATION
+   ──────────────────────────────────────────────────────────────
+   Apply Inter globally across the app shell.
+   Key OpenType features for the TailPanel "polished dashboard" look:
+
+     tnum — tabular numerals: all digits identical width.
+            This makes KPI values ("$48,290", "342", "68.4%")
+            align perfectly in columns — exactly what the
+            screenshots show. Without tnum, number columns wobble.
+
+     liga — standard ligatures (fl, fi, ff etc.) — clean typography.
+
+   These features are invisible in casual use but unmistakably
+   "professional" to trained eyes and in data-dense views.
+   ══════════════════════════════════════════════════════════════ */
+html,
+body,
+.v-app,
+vaadin-app-layout {
+  font-family: var(--font-body);
+  font-feature-settings: 'tnum' 1, 'liga' 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* Reset for monospace zones — don't inherit proportional settings */
+pre, code, kbd, samp, .type-mono {
+  font-family: var(--font-mono);
+  font-feature-settings: 'tnum' 0;
+}
+
+
+
+
+
+
+

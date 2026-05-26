@@ -424,6 +424,16 @@ public interface Input<T> extends ValueHolder<T, ValueChangeEvent<T>>, ValueComp
 		return NumberInputBuilder.create(numberClass);
 	}
 
+	/**
+	 * Gets a builder to create a NumberField-backed numeric type {@link Input}.
+	 * @param <T>         Number type
+	 * @param numberClass Number class (not null)
+	 * @return A new {@link NumberFieldInputBuilder}
+	 */
+	static <T extends Number> NumberFieldInputBuilder<T> numberField(Class<T> numberClass) {
+		return NumberFieldInputBuilder.create(numberClass);
+	}
+
 	// ------- filterable single select
 
 	/**

@@ -10,7 +10,6 @@ import java.util.ArrayList;
 
 public class FlexBoxLayout extends FlexLayout {
 
-    public static final String BACKGROUND_COLOR = "background-color";
     public static final String BORDER_RADIUS = "border-radius";
     public static final String BOX_SHADOW = "box-shadow";
     public static final String BOX_SIZING = "box-sizing";
@@ -23,20 +22,8 @@ public class FlexBoxLayout extends FlexLayout {
 
     public FlexBoxLayout(Component... components) {
         super(components);
+        addClassName("flex-box-layout");
         spacings = new ArrayList<>();
-    }
-
-    public void setBackgroundColor(String value) {
-        getStyle().set(BACKGROUND_COLOR, value);
-    }
-
-    public void setBackgroundColor(String value, String theme) {
-        getStyle().set(BACKGROUND_COLOR, value);
-        setTheme(theme);
-    }
-
-    public void removeBackgroundColor() {
-        getStyle().remove(BACKGROUND_COLOR);
     }
 
     public void setBorderRadius(BorderRadius radius) {

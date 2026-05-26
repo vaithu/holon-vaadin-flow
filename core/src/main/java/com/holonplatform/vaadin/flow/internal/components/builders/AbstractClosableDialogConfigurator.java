@@ -27,22 +27,12 @@ import com.holonplatform.vaadin.flow.components.builders.DialogConfigurator.Clos
 public abstract class AbstractClosableDialogConfigurator<C extends ClosableDialogConfigurator<C>>
 		extends AbstractDialogConfigurator<C> implements ClosableDialogConfigurator<C> {
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.holonplatform.vaadin.flow.components.builders.DialogConfigurator.ClosableDialogConfigurator#closeOnEsc(
-	 * boolean)
-	 */
 	@Override
 	public C closeOnEsc(boolean closeOnEsc) {
 		getComponent().setCloseOnEsc(closeOnEsc);
 		return getConfigurator();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.holonplatform.vaadin.flow.components.builders.DialogConfigurator.ClosableDialogConfigurator#
-	 * closeOnOutsideClick(boolean)
-	 */
 	@Override
 	public C closeOnOutsideClick(boolean closeOnOutsideClick) {
 		getComponent().setCloseOnOutsideClick(closeOnOutsideClick);

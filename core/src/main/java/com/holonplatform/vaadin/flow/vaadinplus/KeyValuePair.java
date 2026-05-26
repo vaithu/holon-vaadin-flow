@@ -5,15 +5,17 @@ import com.holonplatform.vaadin.flow.internal.lumo.FlexRowBreakpoint;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.Unit;
+import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.html.DescriptionList;
-import com.vaadin.flow.theme.lumo.LumoUtility.*;
 
+@StyleSheet("context://key-value-pair.css")
 public class KeyValuePair extends Layout {
 
     private FlexRowBreakpoint breakpoint;
     private KeyPosition keyPosition;
 
     private final DescriptionList.Term key;
+    private final DescriptionList.Description value1;
 
     public KeyValuePair(String key, String value) {
         this(new Text(key), new Text(value));
@@ -25,15 +27,12 @@ public class KeyValuePair extends Layout {
 
     public KeyValuePair(Component key, Component value) {
         this.key = new DescriptionList.Term(key);
-        this.key.addClassNames(FontSize.SMALL, FontWeight.MEDIUM, TextColor.SECONDARY);
+        this.key.addClassName("key-value-pair__key");
+        this.value1 = new DescriptionList.Description(value);
+        this.value1.addClassName("key-value-pair__value");
+        add(this.key, this.value1);
 
-        DescriptionList.Description value1 = new DescriptionList.Description(value);
-        value1.addClassNames(Margin.Start.NONE);
-
-        add(this.key, value1);
-
-        addClassNames(Padding.Horizontal.MEDIUM, Padding.Vertical.SMALL);
-        setAlignItems(com.holonplatform.vaadin.flow.internal.lumo.AlignItems.BASELINE);
+        addClassName("key-value-pair");
         setBreakpoint(Breakpoint.MEDIUM);
         setColumnGap(com.holonplatform.vaadin.flow.internal.lumo.Gap.MEDIUM);
         setKeyPosition(KeyPosition.SIDE);
@@ -64,16 +63,17 @@ public class KeyValuePair extends Layout {
 
     public void setKeyWidth(float width, Unit unit) {
         this.key.setMinWidth(width, unit);
-        this.key.removeClassNames(Flex.GROW);
+        this.key.removeClassName("key-value-pair__key--grow");
     }
 
     public void setKeyWidthFull() {
         this.key.setMinWidth(null);
-        this.key.addClassNames(Flex.GROW);
+        this.key.addClassName("key-value-pair__key--grow");
     }
 
     public void removeHorizontalPadding() {
-        removeClassName(Padding.Horizontal.MEDIUM);
+        removeClassName("key-value-pair--padded");
+        addClassName("key-value-pair--no-h-padding");
     }
 
     private void updateClassNames() {

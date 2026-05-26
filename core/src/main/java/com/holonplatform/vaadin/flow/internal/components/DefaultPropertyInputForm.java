@@ -28,8 +28,10 @@ import com.holonplatform.vaadin.flow.components.builders.PropertyInputFormBuilde
 import com.holonplatform.vaadin.flow.components.events.GroupValueChangeEvent;
 import com.holonplatform.vaadin.flow.internal.components.builders.AbstractComponentConfigurator;
 import com.vaadin.flow.component.*;
+import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.shared.HasTooltip;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -47,12 +49,134 @@ public class DefaultPropertyInputForm<C extends Component>
 
 	private static final long serialVersionUID = -4202049108110710744L;
 
+	private boolean enterMovesFocusToNext;
+
+	private boolean validateOnEnterFocusMove;
+
+	private transient List<BoundComponentGroup.Binding<Property<?>, Input<?>>> inputBindings = List.of();
+
 	/**
 	 * Constructor.
 	 * @param content Form content (not null)
 	 */
 	public DefaultPropertyInputForm(C content) {
 		super(content);
+	}
+
+	protected void setEnterMovesFocusToNext(boolean enterMovesFocusToNext) {
+		this.enterMovesFocusToNext = enterMovesFocusToNext;
+	}
+
+	protected boolean isEnterMovesFocusToNext() {
+		return enterMovesFocusToNext;
+	}
+
+	protected void setValidateOnEnterFocusMove(boolean validateOnEnterFocusMove) {
+		this.validateOnEnterFocusMove = validateOnEnterFocusMove;
+	}
+
+	protected boolean isValidateOnEnterFocusMove() {
+		return validateOnEnterFocusMove;
+	}
+
+	private void setupEnterFocusNavigation() {
+		this.inputBindings = getBindings().toList();
+		if (!enterMovesFocusToNext) {
+			return;
+		}
+		inputBindings.forEach(binding -> configureEnterFocusNavigation(binding.getElement()));
+	}
+
+	private void configureEnterFocusNavigation(Input<?> input) {
+		if (input == null || input.getComponent() instanceof TextArea) {
+			return;
+		}
+		input.getComponent().getElement().addEventListener("keydown", event -> focusNextInput(input))
+				.setFilter("event.key === 'Enter' && !event.shiftKey && !event.isComposing");
+	}
+
+	private void focusNextInput(Input<?> sourceInput) {
+		if (sourceInput == null || inputBindings.isEmpty()) {
+			return;
+		}
+		if (isValidateOnEnterFocusMove()) {
+			try {
+				getComponentGroup().getValue(true);
+			} catch (ValidationException e) {
+				return;
+			}
+		}
+		int index = -1;
+		for (int i = 0; i < inputBindings.size(); i++) {
+			if (inputBindings.get(i).getElement() == sourceInput) {
+				index = i;
+				break;
+			}
+		}
+		if (index < 0) {
+			return;
+		}
+		boolean moved = false;
+		for (int i = index + 1; i < inputBindings.size(); i++) {
+			final Input<?> candidate = inputBindings.get(i).getElement();
+			if (isFocusable(candidate)) {
+				candidate.focus();
+				moved = true;
+				break;
+			}
+		}
+		if (!moved) {
+			focusNextDocumentElement(sourceInput);
+		}
+	}
+
+	private void focusNextDocumentElement(Input<?> sourceInput) {
+		// Align Enter with browser Tab behavior when the form has no next focusable input,
+		// including focusable custom-element hosts such as Vaadin components.
+		sourceInput.getComponent().getElement().executeJs("""
+				const current = this;
+				const isFocusable = (el) => {
+				  if (!(el instanceof HTMLElement || el instanceof SVGElement)) {
+				    return false;
+				  }
+				  if (el === document.body || el === document.documentElement) {
+				    return false;
+				  }
+				  if (el.hasAttribute('disabled') || el.getAttribute('aria-disabled') === 'true') {
+				    return false;
+				  }
+				  if (el.getAttribute('tabindex') === '-1' || el.tabIndex < 0) {
+				    return false;
+				  }
+				  if (el.hidden || el.getAttribute('aria-hidden') === 'true' || ('inert' in el && el.inert)) {
+				    return false;
+				  }
+				  const style = window.getComputedStyle(el);
+				  if (style.display === 'none' || style.visibility === 'hidden') {
+				    return false;
+				  }
+				  return el.offsetParent !== null || style.position === 'fixed' || el === current;
+				};
+				const focusables = Array.from(document.querySelectorAll('*')).filter(isFocusable);
+				const currentIndex = focusables.indexOf(current);
+				if (currentIndex >= 0 && currentIndex + 1 < focusables.length) {
+				  focusables[currentIndex + 1].focus();
+				}
+				""");
+	}
+
+	private static boolean isFocusable(Input<?> input) {
+		if (input == null || input.isReadOnly()) {
+			return false;
+		}
+		final Component component = input.getComponent();
+		if (!component.isVisible()) {
+			return false;
+		}
+		if (component instanceof HasEnabled hasEnabled && !hasEnabled.isEnabled()) {
+			return false;
+		}
+		return true;
 	}
 
 	/*
@@ -444,6 +568,18 @@ public class DefaultPropertyInputForm<C extends Component>
 		}
 
 		@Override
+		public PropertyInputFormBuilder<C> enterMovesFocusToNext(boolean enterMovesFocusToNext) {
+			instance.setEnterMovesFocusToNext(enterMovesFocusToNext);
+			return this;
+		}
+
+		@Override
+		public PropertyInputFormBuilder<C> validateOnEnterFocusMove(boolean validateOnEnterFocusMove) {
+			instance.setValidateOnEnterFocusMove(validateOnEnterFocusMove);
+			return this;
+		}
+
+		@Override
 		public PropertyInputFormBuilder<C> propertyCaption(Property<?> property, Localizable caption) {
 			ObjectUtils.argumentNotNull(property, "Property must be not null");
 			ObjectUtils.argumentNotNull(caption, "Caption must be not null");
@@ -480,9 +616,8 @@ public class DefaultPropertyInputForm<C extends Component>
 		 */
 		@Override
 		public PropertyInputForm build() {
-			instance.setComponentGroup(inputGroupBuilder.withPostProcessor((property, component) -> {
-				instance.configurePropertyComponent(property, component);
-			}).build());
+			instance.setComponentGroup(inputGroupBuilder.withPostProcessor(instance::configurePropertyComponent).build());
+			instance.setupEnterFocusNavigation();
 			return instance;
 		}
 

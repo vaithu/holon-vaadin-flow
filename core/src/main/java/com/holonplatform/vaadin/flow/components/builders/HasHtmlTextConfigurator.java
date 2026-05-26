@@ -17,6 +17,7 @@ package com.holonplatform.vaadin.flow.components.builders;
 
 import com.holonplatform.core.i18n.Localizable;
 import com.vaadin.flow.component.HasText;
+import com.vaadin.flow.signals.Signal;
 
 /**
  * Configurator for {@link HasText} type components which can support HTML markup.
@@ -39,6 +40,18 @@ public interface HasHtmlTextConfigurator<C extends HasHtmlTextConfigurator<C>> {
 	 * @return this
 	 */
 	C htmlText(Localizable text);
+
+	/**
+	 * Bind the component HTML text content to given {@link Signal}.
+	 * @param textSignal HTML text signal (not null)
+	 * @return this
+	 * @since 5.5.8
+	 */
+	@SuppressWarnings("unchecked")
+	default C bindHtmlText(Signal<? extends Localizable> textSignal) {
+		SignalBindings.bind(this, textSignal, this::htmlText);
+		return (C) this;
+	}
 
 	/**
 	 * Sets the text content with HTML markup support, replacing any previous content.

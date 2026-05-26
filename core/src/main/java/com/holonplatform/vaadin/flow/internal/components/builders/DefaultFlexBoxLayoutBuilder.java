@@ -20,21 +20,11 @@ public class DefaultFlexBoxLayoutBuilder
         super(component);
     }
 
-    /**
-     * Get the actual configurator.
-     *
-     * @return the actual configurator
-     */
     @Override
     protected FlexBoxLayoutBuilder getConfigurator() {
         return this;
     }
 
-    /**
-     * Build and returns the component.
-     *
-     * @return The component instance
-     */
     @Override
     public FlexBoxLayout build() {
         return getComponent();

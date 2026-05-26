@@ -19,6 +19,7 @@ import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
 import com.holonplatform.vaadin.flow.internal.components.builders.DefaultHasTextConfigurator;
 import com.vaadin.flow.component.HasText;
+import com.vaadin.flow.signals.Signal;
 
 /**
  * Configurator for {@link HasText} type components.
@@ -42,6 +43,18 @@ public interface HasTextConfigurator<C extends HasTextConfigurator<C>> {
 	 * @see LocalizationProvider
 	 */
 	C text(Localizable text);
+
+	/**
+	 * Bind the component text content to given {@link Signal}.
+	 * @param textSignal Text signal (not null)
+	 * @return this
+	 * @since 5.5.8
+	 */
+	@SuppressWarnings("unchecked")
+	default C bindText(Signal<? extends Localizable> textSignal) {
+		SignalBindings.bind(this, textSignal, this::text);
+		return (C) this;
+	}
 
 	/**
 	 * Sets the text content, replacing any previous content.

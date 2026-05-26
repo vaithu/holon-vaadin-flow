@@ -18,9 +18,12 @@ package com.holonplatform.vaadin.flow.spring.boot.jmix.flowui.sys;
 
 import com.google.common.base.Strings;
 import com.vaadin.flow.server.*;
+
+import jakarta.annotation.Nullable;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.lang.Nullable;
+
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.userdetails.UserDetails;

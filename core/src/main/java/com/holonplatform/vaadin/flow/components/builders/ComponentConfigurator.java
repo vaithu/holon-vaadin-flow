@@ -15,14 +15,15 @@
  */
 package com.holonplatform.vaadin.flow.components.builders;
 
-import java.util.function.Consumer;
-
 import com.holonplatform.vaadin.flow.internal.components.builders.DefaultComponentConfigurator;
 import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.DetachEvent;
 import com.vaadin.flow.dom.Element;
+import com.vaadin.flow.signals.Signal;
+
+import java.util.function.Consumer;
 
 /**
  * Interface to create a {@link Component}.
@@ -54,6 +55,18 @@ public interface ComponentConfigurator<C extends ComponentConfigurator<C>> exten
 	 * @return this
 	 */
 	C visible(boolean visible);
+
+	/**
+	 * Bind the component visibility to given {@link Signal}.
+	 * @param visibleSignal Visibility signal (not null)
+	 * @return this
+	 * @since 5.5.8
+	 */
+	@SuppressWarnings("unchecked")
+	default C bindVisible(Signal<Boolean> visibleSignal) {
+		SignalBindings.bind(this, visibleSignal, this::visible);
+		return (C) this;
+	}
 
 	/**
 	 * Set the component as not visible.

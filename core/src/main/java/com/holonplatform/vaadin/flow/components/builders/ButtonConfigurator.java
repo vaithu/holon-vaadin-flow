@@ -31,7 +31,8 @@ import com.vaadin.flow.component.html.Image;
  */
 public interface ButtonConfigurator<C extends ButtonConfigurator<C>> extends ComponentConfigurator<C>,
 		HasSizeConfigurator<C>, HasStyleConfigurator<C>, HasIconConfigurator<C>, HasTextConfigurator<C>,HasTooltipConfigurator<C>,
-		HasEnabledConfigurator<C>, HasTitleConfigurator<C>, ClickNotifierConfigurator<Button, ClickEvent<Button>, C>,
+		HasEnabledConfigurator<C>, HasTitleConfigurator<C>, HasAriaLabelConfigurator<C>,
+		ClickNotifierConfigurator<Button, ClickEvent<Button>, C>,
 		FocusableConfigurator<Button, C>, HasAutofocusConfigurator<C>, HasThemeVariantConfigurator<ButtonVariant, C>,
 		DeferrableLocalizationConfigurator<C> {
 

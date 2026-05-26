@@ -1,0 +1,224 @@
+/*
+ * carousel.css
+ *
+ * Production-quality Carousel component — aligned with shadcn/ui Carousel
+ * (https://ui.shadcn.com/docs/components/radix/carousel).
+ *
+ * Sliding is driven by CSS scroll-snap so it is hardware-accelerated with
+ * zero external JS dependencies.  Server-side navigation calls
+ * scrollIntoView({behavior:'smooth'}) to move to the target slide.
+ *
+ * BEM namespace:  .carousel
+ *
+ * Block / Element / Modifier classes
+ * ─────────────────────────────────────────────────────────────────────────────
+ *   .carousel                       root wrapper <div>
+ *   .carousel--horizontal           left-to-right scrolling axis (default)
+ *   .carousel--vertical             top-to-bottom scrolling axis
+ *
+ *   .carousel__content              scroll viewport; direct parent of items
+ *   .carousel__content--vertical    vertical-axis variant of the content area
+ *
+ *   .carousel__item                 individual slide wrapper
+ *
+ *   .carousel__previous             ghost prev button (positioned left / top)
+ *   .carousel__next                 ghost next button (positioned right / bottom)
+ *   .carousel__button-icon          vaadin-icon inside prev / next
+ *   .carousel__button--disabled     opacity + pointer-events off
+ *
+ * CSS custom properties (set on .carousel or any ancestor to override):
+ *   --carousel-item-basis   flex-basis of each slide (default: 100%)
+ *   --carousel-btn-size     width & height of nav buttons (default: 2rem / 32 px)
+ *   --carousel-btn-offset   inset from the edge of the carousel (default: -1rem)
+ *   --carousel-radius       border-radius of buttons (default: 9999px / circle)
+ *   --carousel-transition   button hover transition (default: background-color 0.15s ease)
+ */
+
+/* =============================================================================
+   Root
+   ============================================================================= */
+
+.carousel {
+    position: relative;
+    width: 100%;
+}
+
+/* =============================================================================
+   Content — scroll viewport
+   ============================================================================= */
+
+.carousel__content {
+    display: flex;
+    flex-direction: row;
+    overflow-x: hidden;           /* clip slides; JS scrolls the active one in  */
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    /* No scrollbar — navigated exclusively via the Previous / Next buttons     */
+    scrollbar-width: none;
+}
+
+.carousel__content::-webkit-scrollbar {
+    display: none;
+}
+
+/* Vertical axis variant */
+.carousel__content--vertical {
+    flex-direction: column;
+    overflow-x: unset;
+    overflow-y: hidden;
+    scroll-snap-type: y mandatory;
+}
+
+/* =============================================================================
+   Slide item
+   ============================================================================= */
+
+.carousel__item {
+    flex: 0 0 var(--carousel-item-basis, 100%);
+    min-width: 0;                 /* prevent overflow in flex containers        */
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+    padding-inline: 0.25rem;      /* small inset gap between adjacent slides    */
+    box-sizing: border-box;
+}
+
+/* Vertical: snap on block axis */
+.carousel__content--vertical .carousel__item {
+    flex: 0 0 var(--carousel-item-basis, 100%);
+    min-height: 0;
+    padding-inline: 0;
+    padding-block: 0.25rem;
+}
+
+/* =============================================================================
+   Navigation buttons — circle ghost variant
+   ============================================================================= */
+
+.carousel__previous,
+.carousel__next {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    width: var(--carousel-btn-size, 2rem);
+    height: var(--carousel-btn-size, 2rem);
+    border-radius: var(--carousel-radius, 9999px);
+
+    border: 1px solid var(--color-border, hsl(214.3 31.8% 91.4%));
+    background-color: transparent;
+
+    cursor: pointer;
+    user-select: none;
+    z-index: 1;
+
+    transition: var(--carousel-transition,
+        background-color 0.15s ease,
+        color            0.15s ease,
+        border-color     0.15s ease);
+
+    outline: none;
+}
+
+/* Hover — ghost tint */
+.carousel__previous:not(.carousel__button--disabled):hover,
+.carousel__next:not(.carousel__button--disabled):hover {
+    background-color : rgb(0 0 0 / 0.06);
+    border-color     : var(--color-muted-foreground, #71717a);
+}
+
+/* Active / pressed */
+.carousel__previous:not(.carousel__button--disabled):active,
+.carousel__next:not(.carousel__button--disabled):active {
+    background-color : rgb(0 0 0 / 0.10);
+    transform        : translateY(-50%) scale(0.95);
+}
+
+.carousel__previous {
+    left: var(--carousel-btn-offset, -1rem);
+}
+
+.carousel__next {
+    right: var(--carousel-btn-offset, -1rem);
+}
+
+/* Vertical layout: reposition to top / bottom centre */
+.carousel--vertical .carousel__previous,
+.carousel--vertical .carousel__next {
+    top: unset;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.carousel--vertical .carousel__previous {
+    top: var(--carousel-btn-offset, -1rem);
+    bottom: unset;
+}
+
+.carousel--vertical .carousel__next {
+    bottom: var(--carousel-btn-offset, -1rem);
+    top: unset;
+}
+
+/* =============================================================================
+   Focus-visible ring — consistent outline approach (matches buttons.css universal rule)
+   box-shadow was removed since it conflicts with the active transform on absolute
+   positioned elements and is a different visual language.
+   ============================================================================= */
+
+.carousel__previous:focus-visible,
+.carousel__next:focus-visible {
+    outline        : 2px solid var(--color-primary, #2563eb);
+    outline-offset : 2px;
+}
+
+/* =============================================================================
+   Disabled state
+   ============================================================================= */
+
+.carousel__button--disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+/* =============================================================================
+   Button icon — vaadin-icon chevrons
+   ============================================================================= */
+
+.carousel__button-icon {
+    width: 1rem;
+    height: 1rem;
+    --vaadin-icon-size: 1rem;
+    flex-shrink: 0;
+}
+
+/* =============================================================================
+   Responsive — on narrow viewports pull buttons inside the carousel
+   so they never overflow the page margin
+   ============================================================================= */
+
+@media (max-width: 640px) {
+    .carousel__previous {
+        left: 0.25rem;
+    }
+
+    .carousel__next {
+        right: 0.25rem;
+    }
+
+    .carousel--vertical .carousel__previous {
+        top: 0.25rem;
+        left: 50%;
+    }
+
+    .carousel--vertical .carousel__next {
+        bottom: 0.25rem;
+        left: 50%;
+    }
+}
+

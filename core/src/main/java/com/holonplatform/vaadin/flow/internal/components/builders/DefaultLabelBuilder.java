@@ -32,19 +32,11 @@ public class DefaultLabelBuilder<L extends HtmlContainer & ClickNotifier>
 		super(component);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.holonplatform.vaadin.flow.internal.components.builders.AbstractComponentConfigurator#getConfigurator()
-	 */
 	@Override
 	protected LabelBuilder<L> getConfigurator() {
 		return this;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.holonplatform.vaadin.flow.components.builders.ComponentBuilder#build()
-	 */
 	@Override
 	public L build() {
 		return getComponent();

@@ -1,0 +1,609 @@
+/*
+ * nexus-theme.css
+ * Vaadin 25.1 — Aura + Lumo compatible custom theme
+ * Colour palette: Tailwind v4 OKLCH violet/slate/emerald/amber/red ramps
+ *
+ * ── Loading (Java) ────────────────────────────────────────────────────────
+ *
+ *   Aura (recommended for new Vaadin 25 projects):
+ *     @StyleSheet(Aura.STYLESHEET)
+ *     @StyleSheet("nexus-theme.css")
+ *     public class Application implements AppShellConfigurator { ... }
+ *
+ *   Lumo (existing apps upgrading from Vaadin 24):
+ *     @StyleSheet(Lumo.STYLESHEET)
+ *     @StyleSheet("nexus-theme.css")
+ *     public class Application implements AppShellConfigurator { ... }
+ *
+ *   Dark mode (Java — pick one):
+ *     @ColorScheme(ColorScheme.Value.DARK)     // always dark
+ *     @ColorScheme(ColorScheme.Value.SYSTEM)   // follows OS preference
+ *
+ * ── File location ─────────────────────────────────────────────────────────
+ *   Spring:      src/main/resources/META-INF/resources/nexus-theme.css
+ *   Non-Spring:  src/main/webapp/nexus-theme.css
+ *
+ * ── Sections ──────────────────────────────────────────────────────────────
+ *   1.  Tailwind v4 OKLCH palette (raw tokens)
+ *   2.  Semantic brand tokens     (built from the palette, light defaults)
+ *   3.  Aura theme overrides      (--aura-*)
+ *   4.  Lumo theme overrides      (--lumo-*)
+ *   5.  vaadin-* base properties  (component-level, theme-agnostic)
+ *   6.  App Layout                (vaadin-app-layout)
+ *   7.  Side Nav                  (vaadin-side-nav / vaadin-side-nav-item)
+ *   8.  Button                    (vaadin-button)
+ *   9.  Grid                      (vaadin-grid)
+ *  10.  Text Field / inputs       (vaadin-text-field etc.)
+ *  11.  Badge                     (vaadin-badge — new in 25.1)
+ *  12.  View & card utilities     (.nexus-view, .nexus-card, .nexus-badge)
+ *  13.  Dark mode                 (@media prefers-color-scheme: dark)
+ */
+
+
+/* ============================================================
+   1. TAILWIND v4 OKLCH PALETTE  — raw colour scale
+      Not consumed directly; used to compose semantic tokens.
+   ============================================================ */
+:root {
+
+    /* Violet — primary brand */
+    --tw-violet-50:  oklch(97.1% 0.014 281);
+    --tw-violet-100: oklch(94.3% 0.029 281);
+    --tw-violet-200: oklch(88.5% 0.058 281);
+    --tw-violet-300: oklch(81.1% 0.111 281);
+    --tw-violet-400: oklch(72.3% 0.165 281);
+    --tw-violet-500: oklch(62.7% 0.194 281);
+    --tw-violet-600: oklch(54.1% 0.193 281);
+    --tw-violet-700: oklch(45.6% 0.179 281);
+    --tw-violet-800: oklch(38.0% 0.153 281);
+    --tw-violet-900: oklch(31.0% 0.121 281);
+    --tw-violet-950: oklch(21.6% 0.090 281);
+
+    /* Slate — neutral / UI chrome */
+    --tw-slate-50:  oklch(98.4% 0.003 247);
+    --tw-slate-100: oklch(96.8% 0.007 247);
+    --tw-slate-200: oklch(92.9% 0.013 247);
+    --tw-slate-300: oklch(86.9% 0.022 247);
+    --tw-slate-400: oklch(70.4% 0.028 256);
+    --tw-slate-500: oklch(55.4% 0.023 256);
+    --tw-slate-600: oklch(44.6% 0.019 256);
+    --tw-slate-700: oklch(37.2% 0.017 265);
+    --tw-slate-800: oklch(27.9% 0.015 265);
+    --tw-slate-900: oklch(20.8% 0.012 265);
+    --tw-slate-950: oklch(12.9% 0.008 265);
+
+    /* Emerald — success */
+    --tw-emerald-50:  oklch(97.9% 0.021 166);
+    --tw-emerald-100: oklch(95.0% 0.052 163);
+    --tw-emerald-200: oklch(90.5% 0.093 164);
+    --tw-emerald-500: oklch(69.6% 0.170 162);
+    --tw-emerald-600: oklch(59.6% 0.157 163);
+    --tw-emerald-700: oklch(50.8% 0.127 165);
+    --tw-emerald-800: oklch(43.2% 0.095 166);
+
+    /* Amber — warning */
+    --tw-amber-50:  oklch(98.7% 0.022 95);
+    --tw-amber-100: oklch(96.2% 0.059 95);
+    --tw-amber-200: oklch(92.5% 0.107 95);
+    --tw-amber-400: oklch(82.8% 0.189 84);
+    --tw-amber-500: oklch(76.9% 0.188 70);
+    --tw-amber-600: oklch(66.6% 0.179 58);
+    --tw-amber-700: oklch(55.5% 0.163 48);
+    --tw-amber-800: oklch(47.3% 0.137 46);
+
+    /* Red — danger */
+    --tw-red-50:  oklch(97.1% 0.013 17);
+    --tw-red-100: oklch(93.6% 0.032 17);
+    --tw-red-200: oklch(88.5% 0.063 18);
+    --tw-red-500: oklch(63.7% 0.237 25);
+    --tw-red-600: oklch(57.7% 0.245 27);
+    --tw-red-700: oklch(50.5% 0.213 27);
+    --tw-red-800: oklch(44.4% 0.177 26);
+}
+
+
+/* ============================================================
+   2. SEMANTIC BRAND TOKENS  — light mode defaults
+      Override these to re-skin without touching any selectors.
+   ============================================================ */
+:root {
+
+    /* Primary (violet) */
+    --nexus-color-primary:        var(--tw-violet-500);
+    --nexus-color-primary-hover:  var(--tw-violet-600);
+    --nexus-color-primary-text:   var(--tw-violet-700);
+    --nexus-color-primary-subtle: var(--tw-violet-100);
+    --nexus-color-primary-wash:   var(--tw-violet-50);
+    --nexus-color-primary-strong: var(--tw-violet-900);
+
+    /* Success (emerald) */
+    --nexus-color-success:        var(--tw-emerald-600);
+    --nexus-color-success-text:   var(--tw-emerald-700);
+    --nexus-color-success-subtle: var(--tw-emerald-100);
+    --nexus-color-success-wash:   var(--tw-emerald-50);
+
+    /* Warning (amber) */
+    --nexus-color-warning:        var(--tw-amber-500);
+    --nexus-color-warning-text:   var(--tw-amber-700);
+    --nexus-color-warning-subtle: var(--tw-amber-100);
+    --nexus-color-warning-wash:   var(--tw-amber-50);
+
+    /* Danger (red) */
+    --nexus-color-danger:         var(--tw-red-600);
+    --nexus-color-danger-text:    var(--tw-red-700);
+    --nexus-color-danger-subtle:  var(--tw-red-100);
+    --nexus-color-danger-wash:    var(--tw-red-50);
+
+    /* Surfaces */
+    --nexus-surface-page:         var(--tw-violet-50);   /* content area bg   */
+    --nexus-surface-card:         #ffffff;               /* cards / panels    */
+    --nexus-surface-nav:          var(--tw-slate-50);    /* sidebar bg        */
+    --nexus-surface-topbar:       #ffffff;               /* app header bg     */
+
+    /* Borders */
+    --nexus-border:               var(--tw-violet-100);
+    --nexus-border-strong:        var(--tw-violet-200);
+
+    /* Text */
+    --nexus-text-heading:         var(--tw-violet-950);
+    --nexus-text-body:            var(--tw-slate-700);
+    --nexus-text-muted:           var(--tw-slate-500);
+    --nexus-text-hint:            var(--tw-slate-400);
+
+    /* Layout */
+    --nexus-topbar-height:        54px;
+    --nexus-nav-width:            220px;
+    --nexus-content-padding:      1.75rem 2rem;
+
+    /* Radii — mirrors Tailwind rounded-md / rounded-lg / rounded-xl */
+    --nexus-radius-sm:            0.375rem;
+    --nexus-radius-md:            0.5rem;
+    --nexus-radius-lg:            0.75rem;
+}
+
+
+/* ============================================================
+   3. AURA THEME OVERRIDES  (--aura-*)
+      Used when loading with @StyleSheet(Aura.STYLESHEET).
+      Aura computes text/border colours automatically from these.
+      Ref: https://vaadin.com/docs/latest/styling/themes/aura/color
+   ============================================================ */
+html {
+    /* Accent drives active states, focus rings, primary buttons */
+    --aura-accent-color:             var(--nexus-color-primary);
+
+    /* Neutral — basis for text & border colours */
+    --aura-neutral-light:            var(--tw-slate-700);
+    --aura-neutral-dark:             var(--tw-slate-200);
+
+    /* Page background (light scheme) */
+    --aura-background-color-light:   var(--nexus-surface-page);
+
+    /* Semantic palette */
+    --aura-red:    var(--tw-red-500);
+    --aura-yellow: var(--tw-amber-500);
+    --aura-green:  var(--tw-emerald-500);
+    --aura-blue:   oklch(62.3% 0.214 259);   /* Tailwind blue-500 */
+    --aura-purple: var(--tw-violet-500);
+
+    /* Typography */
+    --aura-font-family: ui-sans-serif, system-ui, -apple-system, sans-serif;
+    --aura-base-radius: 6;                   /* unitless; Aura multiplies by 1px */
+
+    /* App Layout — flush nav & content to the viewport edge */
+    --aura-app-layout-inset: 0;
+}
+
+
+/* ============================================================
+   4. LUMO THEME OVERRIDES  (--lumo-*)
+      Used when loading with @StyleSheet(Lumo.STYLESHEET).
+      Ref: https://vaadin.com/docs/latest/styling/themes/lumo
+   ============================================================ */
+html {
+    --lumo-primary-color:        var(--nexus-color-primary);
+    --lumo-primary-text-color:   var(--nexus-color-primary-text);
+    --lumo-primary-color-10pct:  color-mix(in oklch, var(--nexus-color-primary) 10%, transparent);
+    --lumo-primary-color-50pct:  color-mix(in oklch, var(--nexus-color-primary) 50%, transparent);
+
+    --lumo-font-family:          ui-sans-serif, system-ui, -apple-system, sans-serif;
+    --lumo-font-size-m:          0.875rem;    /* Tailwind text-sm */
+    --lumo-body-text-color:      var(--nexus-text-body);
+    --lumo-header-text-color:    var(--nexus-text-heading);
+    --lumo-secondary-text-color: var(--nexus-text-muted);
+    --lumo-disabled-text-color:  var(--nexus-text-hint);
+
+    --lumo-border-radius-s:      var(--nexus-radius-sm);
+    --lumo-border-radius-m:      var(--nexus-radius-md);
+    --lumo-border-radius-l:      var(--nexus-radius-lg);
+
+    --lumo-base-color:           var(--nexus-surface-card);
+    --lumo-tint-5pct:            color-mix(in oklch, var(--nexus-color-primary) 5%, white);
+    --lumo-shade-5pct:           color-mix(in oklch, var(--nexus-color-primary) 5%, white);
+}
+
+
+/* ============================================================
+   5. --vaadin-* BASE STYLE PROPERTIES  (theme-agnostic)
+      Work with both Aura and Lumo.
+      Ref: https://vaadin.com/docs/latest/styling/styling-components
+   ============================================================ */
+html {
+    /* Spacing tokens consumed by components */
+    --vaadin-gap-xs:        0.25rem;
+    --vaadin-gap-s:         0.5rem;
+    --vaadin-gap-m:         0.75rem;
+    --vaadin-gap-l:         1rem;
+    --vaadin-padding-xs:    0.25rem;
+    --vaadin-padding-s:     0.5rem;
+    --vaadin-padding-m:     0.75rem;
+    --vaadin-padding-l:     1rem;
+
+    /* Radius tokens */
+    --vaadin-radius-s:      var(--nexus-radius-sm);
+    --vaadin-radius-m:      var(--nexus-radius-md);
+    --vaadin-radius-l:      var(--nexus-radius-lg);
+
+    /* Page & container surfaces */
+    --vaadin-background-color:      var(--nexus-surface-card);
+    --vaadin-background-container:  var(--nexus-surface-page);
+
+    /* Focus ring */
+    --vaadin-focus-ring-color: color-mix(in oklch, var(--nexus-color-primary) 50%, transparent);
+}
+
+
+/* ============================================================
+   6. APP LAYOUT  (vaadin-app-layout)
+      Ref: https://vaadin.com/docs/latest/components/app-layout/styling
+      Shadow parts: navbar · drawer · content
+   ============================================================ */
+
+vaadin-app-layout::part(navbar) {
+    background:    var(--nexus-surface-topbar);
+    border-bottom: 1px solid var(--nexus-border);
+    min-height:    var(--nexus-topbar-height);
+    padding:       0 1.25rem;
+    box-shadow:    none;
+    /* Scope Lumo primary colour inside the navbar */
+    --lumo-primary-text-color: var(--nexus-color-primary-text);
+}
+
+vaadin-app-layout::part(drawer) {
+    background:  var(--nexus-surface-nav);
+    border-right: 1px solid var(--nexus-border);
+    width:        var(--nexus-nav-width);
+    box-shadow:   none;
+    padding-top:  0.5rem;
+}
+
+vaadin-app-layout::part(content) {
+    background: var(--nexus-surface-page);
+    padding:    var(--nexus-content-padding);
+}
+
+
+/* ============================================================
+   7. SIDE NAV  (vaadin-side-nav + vaadin-side-nav-item)
+      Ref: https://vaadin.com/docs/latest/components/side-nav/styling
+   ============================================================ */
+
+vaadin-side-nav {
+    width:   100%;
+    padding: 0;
+}
+
+/* Section heading label */
+vaadin-side-nav::part(label) {
+    font-size:      0.625rem;
+    font-weight:    600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color:          var(--nexus-text-hint);
+    padding:        0.75rem 0.875rem 0.25rem;
+}
+
+/* Nav item link */
+vaadin-side-nav-item::part(link) {
+    color:         var(--nexus-text-muted);
+    font-size:     0.8125rem;
+    font-weight:   400;
+    padding:       0.5rem 0.875rem;
+    border-radius: 0;
+    border-left:   2px solid transparent;
+    background:    transparent;
+    transition:    background 0.15s ease, color 0.15s ease;
+    gap:           0.625rem;
+}
+
+vaadin-side-nav-item::part(link):hover {
+    background: color-mix(in oklch, var(--nexus-color-primary) 8%, transparent);
+    color:      var(--nexus-color-primary-text);
+}
+
+/* Active / current — [active] and [current] are the official Vaadin 25 attributes */
+vaadin-side-nav-item[active]::part(link),
+vaadin-side-nav-item[current]::part(link) {
+    color:             var(--nexus-color-primary-text);
+    background:        var(--nexus-color-primary-wash);
+    border-left-color: var(--nexus-color-primary);
+    font-weight:       500;
+}
+
+/* Prefix icons (slot="prefix") */
+vaadin-side-nav-item > [slot="prefix"] {
+    color:       var(--nexus-text-hint);
+    width:       1rem;
+    height:      1rem;
+    flex-shrink: 0;
+}
+
+vaadin-side-nav-item[active] > [slot="prefix"],
+vaadin-side-nav-item[current] > [slot="prefix"] {
+    color: var(--nexus-color-primary);
+}
+
+/* Suffix badge chips (slot="suffix") */
+vaadin-side-nav-item > [slot="suffix"] {
+    font-size:     0.625rem;
+    font-weight:   500;
+    background:    var(--nexus-color-primary-subtle);
+    color:         var(--nexus-color-primary-text);
+    border-radius: var(--nexus-radius-sm);
+    padding:       1px 6px;
+    margin-left:   auto;
+}
+
+
+/* ============================================================
+   8. BUTTON  (vaadin-button)
+      Uses --vaadin-button-* component style properties.
+      ButtonVariant.PRIMARY works across Aura and Lumo in 25.1.
+      Ref: https://vaadin.com/docs/latest/components/button/styling
+   ============================================================ */
+html {
+    --vaadin-button-background:    transparent;
+    --vaadin-button-border-color:  var(--nexus-border-strong);
+    --vaadin-button-text-color:    var(--nexus-text-muted);
+    --vaadin-button-border-radius: var(--nexus-radius-md);
+    --vaadin-button-font-size:     0.8125rem;
+}
+
+vaadin-button[theme~="primary"] {
+    --vaadin-button-background:   var(--nexus-color-primary);
+    --vaadin-button-border-color: var(--nexus-color-primary);
+    --vaadin-button-text-color:   #ffffff;
+}
+
+vaadin-button[theme~="primary"]:hover {
+    --vaadin-button-background:   var(--nexus-color-primary-hover);
+    --vaadin-button-border-color: var(--nexus-color-primary-hover);
+}
+
+vaadin-button[theme~="tertiary"] {
+    --vaadin-button-border-color: transparent;
+    --vaadin-button-text-color:   var(--nexus-color-primary-text);
+}
+
+vaadin-button[theme~="error"] {
+    --vaadin-button-background:   var(--nexus-color-danger);
+    --vaadin-button-border-color: var(--nexus-color-danger);
+    --vaadin-button-text-color:   #ffffff;
+}
+
+vaadin-button[theme~="success"] {
+    --vaadin-button-background:   var(--nexus-color-success);
+    --vaadin-button-border-color: var(--nexus-color-success);
+    --vaadin-button-text-color:   #ffffff;
+}
+
+
+/* ============================================================
+   9. GRID  (vaadin-grid)
+      Ref: https://vaadin.com/docs/latest/components/grid/styling
+   ============================================================ */
+html {
+    --vaadin-grid-cell-background:         var(--nexus-surface-card);
+    --vaadin-grid-header-cell-background:  var(--nexus-surface-page);
+    --vaadin-grid-footer-cell-background:  var(--nexus-surface-page);
+    --vaadin-grid-row-background-selected: var(--nexus-color-primary-wash);
+    --vaadin-grid-row-color-selected:      var(--nexus-color-primary-text);
+    --vaadin-grid-border-color:            var(--nexus-border);
+    --vaadin-grid-cell-padding-inline:     0.75rem;
+    --vaadin-grid-cell-padding-block:      0.5625rem;
+}
+
+vaadin-grid::part(header-cell) {
+    font-size:      0.6875rem;
+    font-weight:    500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color:          var(--nexus-text-hint);
+}
+
+vaadin-grid::part(row):hover {
+    background: color-mix(in oklch, var(--nexus-color-primary) 4%, white);
+}
+
+
+/* ============================================================
+  10. TEXT FIELD / INPUTS
+      Same --vaadin-input-field-* tokens apply to:
+      ComboBox, DatePicker, Select, TimePicker, NumberField, etc.
+      Ref: https://vaadin.com/docs/latest/components/text-field/styling
+   ============================================================ */
+html {
+    --vaadin-input-field-background:       var(--nexus-surface-card);
+    --vaadin-input-field-hover-background: var(--nexus-surface-card);
+    --vaadin-input-field-border-color:     var(--nexus-border-strong);
+    --vaadin-input-field-focused-color:    var(--nexus-color-primary);
+    --vaadin-input-field-border-radius:    var(--nexus-radius-md);
+    --vaadin-input-field-font-size:        0.8125rem;
+}
+
+
+/* ============================================================
+  11. BADGE  (vaadin-badge — new component in Vaadin 25.1)
+      Supports theme variants: success · warning · error · pill
+      Ref: https://vaadin.com/docs/latest/components/badge/styling
+   ============================================================ */
+html {
+    --vaadin-badge-border-radius: var(--nexus-radius-sm);
+    --vaadin-badge-font-size:     0.625rem;
+    --vaadin-badge-font-weight:   500;
+}
+
+vaadin-badge {
+    --vaadin-badge-background: var(--nexus-color-primary-subtle);
+    --vaadin-badge-color:      var(--nexus-color-primary-text);
+}
+
+vaadin-badge[theme~="success"] {
+    --vaadin-badge-background: var(--nexus-color-success-subtle);
+    --vaadin-badge-color:      var(--nexus-color-success-text);
+}
+
+vaadin-badge[theme~="warning"] {
+    --vaadin-badge-background: var(--nexus-color-warning-subtle);
+    --vaadin-badge-color:      var(--nexus-color-warning-text);
+}
+
+vaadin-badge[theme~="error"] {
+    --vaadin-badge-background: var(--nexus-color-danger-subtle);
+    --vaadin-badge-color:      var(--nexus-color-danger-text);
+}
+
+vaadin-badge[theme~="pill"] {
+    --vaadin-badge-border-radius: 9999px;
+}
+
+
+/* ============================================================
+  12. VIEW & CARD UTILITIES
+      .nexus-view  — add to your @Route view's root element
+      .nexus-card  — card / panel container
+      .nexus-badge — HTML fallback for vaadin-badge
+   ============================================================ */
+.nexus-view {
+    padding:    var(--nexus-content-padding);
+    background: var(--nexus-surface-page);
+    min-height: 100%;
+}
+
+.nexus-view h2,
+.nexus-view h3 {
+    color:       var(--nexus-text-heading);
+    font-weight: 500;
+    margin-top:  0;
+}
+
+.nexus-card {
+    background:    var(--nexus-surface-card);
+    border:        1px solid var(--nexus-border);
+    border-radius: var(--nexus-radius-lg);
+    padding:       1rem 1.25rem;
+}
+
+.nexus-badge {
+    display:       inline-flex;
+    align-items:   center;
+    font-size:     0.625rem;
+    font-weight:   500;
+    padding:       2px 8px;
+    border-radius: 9999px;
+    line-height:   1.4;
+}
+
+.nexus-badge--primary {
+    background: var(--nexus-color-primary-subtle);
+    color:      var(--nexus-color-primary-text);
+}
+
+.nexus-badge--success {
+    background: var(--nexus-color-success-subtle);
+    color:      var(--nexus-color-success-text);
+}
+
+.nexus-badge--warning {
+    background: var(--nexus-color-warning-subtle);
+    color:      var(--nexus-color-warning-text);
+}
+
+.nexus-badge--danger {
+    background: var(--nexus-color-danger-subtle);
+    color:      var(--nexus-color-danger-text);
+}
+
+
+/* ============================================================
+  13. DARK MODE
+      Vaadin 25.1 toggles dark mode with color-scheme: dark.
+      Java: @ColorScheme(ColorScheme.Value.DARK) on AppShell,
+            or ColorScheme.Value.SYSTEM to follow the OS.
+      Ref: https://vaadin.com/docs/latest/styling/themes
+   ============================================================ */
+@media (prefers-color-scheme: dark) {
+    :root {
+
+        /* Primary */
+        --nexus-color-primary:        var(--tw-violet-400);
+        --nexus-color-primary-hover:  var(--tw-violet-300);
+        --nexus-color-primary-text:   var(--tw-violet-200);
+        --nexus-color-primary-subtle: oklch(25% 0.06 281);
+        --nexus-color-primary-wash:   oklch(18% 0.04 281);
+        --nexus-color-primary-strong: var(--tw-violet-100);
+
+        /* Success */
+        --nexus-color-success:        var(--tw-emerald-500);
+        --nexus-color-success-text:   var(--tw-emerald-200);
+        --nexus-color-success-subtle: oklch(22% 0.05 163);
+        --nexus-color-success-wash:   oklch(16% 0.03 163);
+
+        /* Warning */
+        --nexus-color-warning:        var(--tw-amber-400);
+        --nexus-color-warning-text:   var(--tw-amber-200);
+        --nexus-color-warning-subtle: oklch(22% 0.06 70);
+        --nexus-color-warning-wash:   oklch(16% 0.04 70);
+
+        /* Danger */
+        --nexus-color-danger:         var(--tw-red-500);
+        --nexus-color-danger-text:    var(--tw-red-200);
+        --nexus-color-danger-subtle:  oklch(22% 0.06 25);
+        --nexus-color-danger-wash:    oklch(16% 0.04 25);
+
+        /* Surfaces */
+        --nexus-surface-page:         oklch(13% 0.008 281);
+        --nexus-surface-card:         oklch(17% 0.010 281);
+        --nexus-surface-nav:          oklch(15% 0.009 281);
+        --nexus-surface-topbar:       oklch(15% 0.009 281);
+
+        /* Borders */
+        --nexus-border:               oklch(25% 0.015 281);
+        --nexus-border-strong:        oklch(30% 0.020 281);
+
+        /* Text */
+        --nexus-text-heading:         var(--tw-violet-100);
+        --nexus-text-body:            var(--tw-slate-300);
+        --nexus-text-muted:           var(--tw-slate-500);
+        --nexus-text-hint:            var(--tw-slate-600);
+    }
+
+    html {
+        color-scheme:                  dark;
+        --aura-background-color-dark:  var(--nexus-surface-page);
+        --lumo-base-color:             var(--nexus-surface-card);
+    }
+
+    vaadin-grid::part(row):hover {
+        background: color-mix(in oklch, var(--nexus-color-primary) 8%, transparent);
+    }
+}
+
+/*
+ * Hard-force dark when Vaadin sets theme="dark" on <html>
+ * (matches @ColorScheme(DARK) + runtime UI.getCurrent()
+ *  .getElement().setAttribute("theme", "dark"))
+ */
+html[theme~="dark"] {
+    color-scheme: dark;
+}

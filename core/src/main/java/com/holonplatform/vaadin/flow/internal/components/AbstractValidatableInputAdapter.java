@@ -20,11 +20,10 @@ import com.holonplatform.core.Validator;
 import com.holonplatform.core.Validator.ValidationException;
 import com.holonplatform.core.beans.Validators;
 import com.holonplatform.core.internal.utils.ObjectUtils;
+import com.holonplatform.vaadin.flow.components.*;
 import com.holonplatform.vaadin.flow.components.HasLabel;
 import com.holonplatform.vaadin.flow.components.HasPlaceholder;
-import com.holonplatform.vaadin.flow.components.*;
 import com.holonplatform.vaadin.flow.components.ValidationStatusHandler.ValidationStatusEvent;
-import com.holonplatform.vaadin.flow.components.builders.KeyNotifierConfigurator;
 import com.holonplatform.vaadin.flow.components.events.InvalidChangeEventNotifier;
 import com.holonplatform.vaadin.flow.components.events.ReadonlyChangeListener;
 import com.holonplatform.vaadin.flow.internal.components.support.DefaultUserInputValidator;
@@ -32,7 +31,7 @@ import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.shared.HasTooltip;
 import com.vaadin.flow.data.value.HasValueChangeMode;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -56,7 +55,7 @@ public abstract class AbstractValidatableInputAdapter<T, I extends Input<T>> imp
 	/**
 	 * Validators
 	 */
-	private final List<Validator<T>> validators = new LinkedList<>();
+	private final List<Validator<T>> validators = new ArrayList<>();
 
 	/**
 	 * Validation status handler
@@ -416,7 +415,7 @@ public abstract class AbstractValidatableInputAdapter<T, I extends Input<T>> imp
 	 */
 	protected void validate(T value) throws ValidationException {
 
-		LinkedList<ValidationException> failures = new LinkedList<>();
+		ArrayList<ValidationException> failures = new ArrayList<>();
 		for (Validator<T> validator : getValidators()) {
 			try {
 				validator.validate(value);
@@ -429,7 +428,7 @@ public abstract class AbstractValidatableInputAdapter<T, I extends Input<T>> imp
 		if (!failures.isEmpty()) {
 
 			final ValidationException validationException = (failures.size() == 1) ? failures.getFirst()
-					: new ValidationException(failures.toArray(new ValidationException[0]));
+					: new ValidationException(failures.toArray(ValidationException[]::new));
 
 			// INVALID: notify ValidationStatusHandler
 			getValidationStatusHandler().ifPresent(vsh -> vsh.validationStatusChange(

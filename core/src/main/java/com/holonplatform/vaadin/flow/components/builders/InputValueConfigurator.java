@@ -17,6 +17,7 @@ package com.holonplatform.vaadin.flow.components.builders;
 
 import com.holonplatform.vaadin.flow.components.Input;
 import com.holonplatform.vaadin.flow.components.ValueHolder.ValueChangeEvent;
+import com.vaadin.flow.signals.Signal;
 
 /**
  * Interface to create an {@link Input} with value configuration support.
@@ -36,5 +37,17 @@ public interface InputValueConfigurator<T, E extends ValueChangeEvent<T>, C exte
 	 * @return this
 	 */
 	C withValue(T value);
+
+	/**
+	 * Bind the input value to given {@link Signal}.
+	 * @param valueSignal Value signal (not null)
+	 * @return this
+	 * @since 5.5.8
+	 */
+	@SuppressWarnings("unchecked")
+	default C bindValue(Signal<? extends T> valueSignal) {
+		SignalBindings.bind(this, valueSignal, this::withValue);
+		return (C) this;
+	}
 
 }

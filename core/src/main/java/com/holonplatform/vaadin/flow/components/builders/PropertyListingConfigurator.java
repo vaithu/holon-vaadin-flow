@@ -15,15 +15,9 @@
  */
 package com.holonplatform.vaadin.flow.components.builders;
 
-import java.util.function.Function;
-
 import com.holonplatform.core.internal.utils.ObjectUtils;
-import com.holonplatform.core.property.Property;
-import com.holonplatform.core.property.PropertyBox;
-import com.holonplatform.core.property.PropertyRenderer;
-import com.holonplatform.core.property.PropertyRendererRegistry;
-import com.holonplatform.core.property.PropertyValueProvider;
-import com.holonplatform.core.property.VirtualProperty;
+import com.holonplatform.core.property.*;
+import com.holonplatform.vaadin.flow.components.Components;
 import com.holonplatform.vaadin.flow.components.Input;
 import com.holonplatform.vaadin.flow.components.Input.InputPropertyRenderer;
 import com.holonplatform.vaadin.flow.components.ItemListing.EditorComponentGroup;
@@ -34,6 +28,8 @@ import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasValue;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.data.converter.Converter;
+
+import java.util.function.Function;
 
 /**
  * {@link PropertyListing} configurator.
@@ -182,7 +178,7 @@ public interface PropertyListingConfigurator<C extends PropertyListingConfigurat
 			if (item.contains(property)) {
 				viewComponent.setValue(item.getValue(property));
 			}
-			return viewComponent.getContentComponent().orElseGet(() -> new Div());
+            return viewComponent.getContentComponent().orElseGet(() -> Components.div().build());
 		});
 	}
 

@@ -1,0 +1,138 @@
+/* ============================================================
+   Alert component
+   BEM: .alert / .alert__* / .alert--*
+
+   Mobile-first: base styles target the smallest viewport.
+   Desktop overrides at ≥ 640 px.
+*/
+
+/* --- Token defaults (overridable per-instance or globally) --- */
+
+:root {
+  --alert-default-border:       var(--color-border, #dde0e5);
+
+  --alert-destructive-border:   var(--color-destructive, #dc2626);
+
+  --alert-warning-border:       var(--color-warning, #ca8a04);
+
+  --alert-success-border:       var(--color-success, #16a34a);
+
+  --alert-info-border:          var(--color-info, #2563eb);
+}
+
+/* --- Base --- */
+
+.alert {
+  /* Icon sizing tokens — change here to update all dependent rules */
+  --alert-icon-size: 1.25rem;
+  --alert-icon-gap:  0.5rem;
+
+  position: relative;
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr;
+  border-radius: 0.5rem;
+  border: 1px solid;
+  padding: 0.875rem;       /* slightly tighter on mobile */
+  box-sizing: border-box;
+}
+
+/* Desktop: more generous padding */
+@media (min-width: 640px) {
+  .alert {
+    padding: 1rem;
+  }
+}
+
+/* --- Title row: icon + title side-by-side --- */
+
+.alert__title-row {
+  display: flex;
+  align-items: flex-start; /* top-align icon with first line of title */
+  gap: 0;
+  min-width: 0;
+}
+
+.alert--has-icon .alert__title-row {
+  gap: var(--alert-icon-gap);
+}
+
+/* --- Icon slot --- */
+
+.alert__icon {
+  flex-shrink: 0;          /* never let the container shrink in flex context */
+  width: 1.25rem;
+  height: 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: visible;       /* must stay visible — overflow:hidden clips vaadin-icon shadow DOM */
+  margin-top: 0.0625rem;  /* optical alignment with the cap-height of the title */
+}
+
+/* vaadin-icon is a custom element that does NOT auto-size from its parent.
+   --vaadin-icon-size drives the internal shadow-DOM SVG in Vaadin 25.
+   Use a direct literal — var() references can silently fail to cross the
+   shadow boundary in some Vaadin versions, producing a near-zero icon.
+.alert__icon vaadin-icon {
+  width: 1.25rem;
+  height: 1.25rem;
+  --vaadin-icon-size: 1.25rem;
+  flex-shrink: 0;
+}
+
+/* --- Content slot --- */
+
+.alert__content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-width: 0;
+}
+
+/* --- Title --- */
+
+.alert__title {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+
+/* --- Description --- */
+
+.alert__description {
+  display: block;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  opacity: 0.9;
+  margin: 0;
+}
+
+/* When an icon is present, indent description + action so they start
+   directly below the title text — not below the icon edge. */
+.alert--has-icon .alert__description,
+.alert--has-icon .alert__action {
+  padding-left: calc(var(--alert-icon-size) + var(--alert-icon-gap));
+}
+
+/* --- Action --- */
+
+.alert__action {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+/*
+ * WCAG 2.5.8 — minimum 24×24 px; we use 44 px (iOS/Material recommended).
+ * Targets both Vaadin buttons and plain <button> elements inside the action slot.
+ */
+.alert__action > vaadin-button,
+.alert__action > button {
+  min-height: 2.75rem; /* 44 px */
+}

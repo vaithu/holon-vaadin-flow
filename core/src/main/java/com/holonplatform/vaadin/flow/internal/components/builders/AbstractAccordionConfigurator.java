@@ -13,50 +13,25 @@ public abstract class AbstractAccordionConfigurator<C extends AccordionConfigura
         extends AbstractLocalizableComponentConfigurator<Accordion, C> implements AccordionConfigurator<C> {
 
 
-    /**
-     * Constructor.
-     *
-     * @param component The component instance (not null)
-     */
     public AbstractAccordionConfigurator(Accordion component) {
         super(component);
     }
 
-    /**
-     * If the component supports {@link HasSize}, return the component as {@link HasSize}.
-     *
-     * @return Optional component as {@link HasSize}, if supported
-     */
     @Override
     protected Optional<HasSize> hasSize() {
         return Optional.of(getComponent());
     }
 
-    /**
-     * If the component supports {@link HasStyle}, return the component as {@link HasStyle}.
-     *
-     * @return Optional component as {@link HasStyle}, if supported
-     */
     @Override
     protected Optional<HasStyle> hasStyle() {
         return Optional.of(getComponent());
     }
 
-    /**
-     * If the component supports {@link HasEnabled}, return the component as {@link HasEnabled}.
-     *
-     * @return Optional component as {@link HasEnabled}, if supported
-     */
     @Override
     protected Optional<HasEnabled> hasEnabled() {
         return Optional.empty();
     }
 
-    /**
-     * If the component supports {@link HasTooltip}, return the component as {@link HasTooltip}.
-     *
-     * @return Optional component as {@link HasTooltip}, if supported
-     */
     @Override
     protected Optional<HasTooltip> hasTooltip() {
         return Optional.empty();
@@ -84,32 +59,32 @@ public abstract class AbstractAccordionConfigurator<C extends AccordionConfigura
     @Override
     public AccordionPanelBuilder<C> withPanel() {
 
-        return new DefaultAccordionPanelBuilder<>(getConfigurator(),new AccordionPanel());
+        return new DefaultAccordionPanelBuilder<>(getConfigurator(), new AccordionPanel());
     }
 
     @Override
     public AccordionPanelBuilder<C> withPanel(Component summary) {
-        return new DefaultAccordionPanelBuilder<>(getConfigurator(),new AccordionPanel(summary));
+        return new DefaultAccordionPanelBuilder<>(getConfigurator(), new AccordionPanel(summary));
     }
 
     @Override
     public AccordionPanelBuilder<C> withPanel(String summary) {
-        return new DefaultAccordionPanelBuilder<>(getConfigurator(),new AccordionPanel(summary));
+        return new DefaultAccordionPanelBuilder<>(getConfigurator(), new AccordionPanel(summary));
     }
 
     @Override
     public AccordionPanelBuilder<C> withPanel(String summary, Component... components) {
-        return new DefaultAccordionPanelBuilder<>(getConfigurator(),new AccordionPanel(summary,components));
+        return new DefaultAccordionPanelBuilder<>(getConfigurator(), new AccordionPanel(summary, components));
     }
 
     @Override
     public AccordionPanelBuilder<C> withPanel(Component summary, Component... components) {
-        return new DefaultAccordionPanelBuilder<>(getConfigurator(),new AccordionPanel(summary,components));
+        return new DefaultAccordionPanelBuilder<>(getConfigurator(), new AccordionPanel(summary, components));
     }
 
     @Override
     public AccordionPanelBuilder<C> withPanel(Component summary, Component content) {
-        return new DefaultAccordionPanelBuilder<>(getConfigurator(),new AccordionPanel(summary,content));
+        return new DefaultAccordionPanelBuilder<>(getConfigurator(), new AccordionPanel(summary, content));
     }
 
 }

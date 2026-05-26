@@ -32,38 +32,22 @@ public class DefaultPasswordInputBuilder extends AbstractPasswordInputBuilder<Pa
 		super();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.holonplatform.vaadin.flow.internal.components.builders.AbstractComponentConfigurator#getConfigurator()
-	 */
 	@Override
 	protected PasswordInputBuilder getConfigurator() {
 		return this;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.holonplatform.vaadin.flow.components.builders.InputConfigurator#required(boolean)
-	 */
 	@Override
 	public PasswordInputBuilder required(boolean required) {
 		getComponent().setRequired(required);
 		return getConfigurator();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.holonplatform.vaadin.flow.components.builders.InputBuilder#build()
-	 */
 	@Override
 	public Input<String> build() {
 		return buildAsInput();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.holonplatform.vaadin.flow.components.builders.InputBuilder#validatable()
-	 */
 	@Override
 	public ValidatablePasswordInputBuilder validatable() {
 		return new DefaultValidatablePasswordInputBuilder(getComponent(), isEmptyValuesAsNull(), isBlankValuesAsNull(),

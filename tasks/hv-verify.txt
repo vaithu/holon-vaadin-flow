@@ -1,0 +1,15 @@
+[WARNING] Some problems were encountered while building the effective model for com.holon-platform.vaadin:holon-vaadin-flow-demo:jar:10.0.0
+[WARNING] 'build.plugins.plugin.version' for org.springframework.boot:spring-boot-maven-plugin is missing. @ line 108, column 21
+[WARNING] It is highly recommended to fix these problems because they threaten the stability of your build.
+[WARNING] For this reason, future Maven versions might no longer support building such malformed projects.
+[INFO] Reactor Build Order:
+[INFO] Building com.holon-platform.vaadin:holon-vaadin-flow-root 10.0.0   [1/9]
+[INFO] Building com.holon-platform.vaadin:holon-vaadin-flow 10.0.0        [2/9]
+[INFO] Building com.holon-platform.vaadin:holon-vaadin-flow-chartjs 10.0.0 [3/9]
+[INFO] Building com.holon-platform.vaadin:holon-vaadin-flow-calendar 10.0.0 [4/9]
+[INFO] Building com.holon-platform.vaadin:holon-vaadin-flow-navigator 10.0.0 [5/9]
+[INFO] Building com.holon-platform.vaadin:holon-vaadin-flow-spring 10.0.0 [6/9]
+[INFO] Building com.holon-platform.vaadin:holon-vaadin-flow-spring-boot 10.0.0 [7/9]
+[INFO] Building com.holon-platform.vaadin:holon-starter-vaadin-flow 10.0.0 [8/9]
+[INFO] Building com.holon-platform.vaadin:holon-vaadin-flow-chat 10.0.0   [9/9]
+[INFO] BUILD SUCCESS

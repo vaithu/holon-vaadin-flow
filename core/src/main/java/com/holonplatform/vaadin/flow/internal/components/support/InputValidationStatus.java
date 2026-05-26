@@ -15,12 +15,11 @@
  */
 package com.holonplatform.vaadin.flow.internal.components.support;
 
-import java.util.Collections;
-import java.util.List;
-
 import com.holonplatform.core.Validator.ValidationException;
 import com.holonplatform.vaadin.flow.components.Input;
 import com.holonplatform.vaadin.flow.components.ValidationStatusHandler.Status;
+
+import java.util.List;
 
 /**
  * Input validation status.
@@ -41,7 +40,7 @@ public interface InputValidationStatus extends ValidationStatus {
 	 * @return A new {@link InputValidationStatus}
 	 */
 	static InputValidationStatus unresolved(Input<?> input) {
-		return new DefaultInputValidationStatus(input, Status.UNRESOLVED, Collections.emptyList());
+		return new DefaultInputValidationStatus(input, Status.UNRESOLVED, List.of());
 	}
 
 	/**
@@ -50,7 +49,7 @@ public interface InputValidationStatus extends ValidationStatus {
 	 * @return A new {@link InputValidationStatus}
 	 */
 	static InputValidationStatus valid(Input<?> input) {
-		return new DefaultInputValidationStatus(input, Status.VALID, Collections.emptyList());
+		return new DefaultInputValidationStatus(input, Status.VALID, List.of());
 	}
 
 	/**
@@ -63,7 +62,7 @@ public interface InputValidationStatus extends ValidationStatus {
 		if (validationException == null) {
 			throw new IllegalArgumentException("Validation exception must be not null");
 		}
-		return new DefaultInputValidationStatus(input, Status.INVALID, Collections.singletonList(validationException));
+		return new DefaultInputValidationStatus(input, Status.INVALID, List.of(validationException));
 	}
 
 	/**

@@ -20,6 +20,7 @@ import com.holonplatform.core.internal.Logger;
 import com.holonplatform.core.internal.utils.ObjectUtils;
 import com.holonplatform.vaadin.flow.components.builders.HasDeferrableLocalization;
 import com.holonplatform.vaadin.flow.components.builders.HasHelperTextConfigurator;
+import com.holonplatform.vaadin.flow.components.builders.SignalBindings;
 import com.holonplatform.vaadin.flow.internal.VaadinLogger;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasHelper;
@@ -32,7 +33,7 @@ import java.util.function.Consumer;
  * @since 5.5.8
  */
 public class DefaultHasHelperTextConfigurator<C extends HasHelper> extends AbstractLocalizationSupportConfigurator<C>
-		implements HasHelperTextConfigurator<DefaultHasHelperTextConfigurator<C>> {
+		implements HasHelperTextConfigurator<DefaultHasHelperTextConfigurator<C>>, SignalBindings.Owner {
 
 	private static final Logger LOGGER = VaadinLogger.create();
 
@@ -97,5 +98,10 @@ public class DefaultHasHelperTextConfigurator<C extends HasHelper> extends Abstr
 	public DefaultHasHelperTextConfigurator<C> helperComponent(Component component) {
 		this.component.setHelperComponent(component);
 		return this;
+	}
+
+	@Override
+	public Component getSignalBindingOwner() {
+		return (component instanceof Component) ? (Component) component : null;
 	}
 }

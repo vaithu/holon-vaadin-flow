@@ -1,19 +1,23 @@
 package com.holonplatform.vaadin.flow;
 
+import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.html.UnorderedList;
-import com.vaadin.flow.theme.lumo.LumoUtility;
 
+/**
+ * An unordered list ({@code <ul>}) used as a price/time list container.
+ * Individual rows should be added as {@link PriceListItem} instances.
+ * Styled via {@code price-list.css}.
+ *
+ * <p>BEM root: {@code .price-list}</p>
+ *
+ * @since 10.0.0
+ */
+@StyleSheet("context://price-list.css")
 public class UnorderedPriceList extends UnorderedList {
 
+    /** Creates a new empty {@link UnorderedPriceList}. */
     public UnorderedPriceList() {
-        addClassNames(
-//                FontFamily.MONO,
-                LumoUtility.ListStyleType.NONE,
-                LumoUtility.Margin.Horizontal.AUTO,
-                LumoUtility.Margin.Vertical.NONE,
-                LumoUtility.MaxWidth.SCREEN_SMALL,
-                LumoUtility.Padding.NONE
-        );
+        addClassName("price-list");
     }
 
 }

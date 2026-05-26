@@ -1,0 +1,226 @@
+/*
+ * key-value-item.css
+ *
+ * Styles for KeyValueItem and KeyValueList components.
+ *
+ * Structure:
+ *   .kv-list                  — 3-column CSS grid container
+ *   .kv-item                  — display:contents — direct grid children:
+ *     .kv-key-col             —   flex-col: [.kv-super?] + .kv-key   (col 1)
+ *     .kv-sep                 —   ":" separator                       (col 2)
+ *     .kv-value-col           —   flex-col: .kv-value + [.kv-sub?]   (col 3)
+ *
+ * Modifiers on .kv-item:
+ *   .kv-divider    — full-width ::after line below the row
+ *   .kv-value-end  — right-aligns value col on mobile only
+ *   .kv-wrap       — allows key + value text to wrap
+ *
+ * Modifier on .kv-value:
+ *   .kv-copyable   — monospace, user-select:text
+ *
+ * Mobile (<600px): separator hidden; grid collapses to 2 columns.
+ */
+
+/* -----------------------------------------------------------------------
+ * Grid container
+ * ----------------------------------------------------------------------- */
+
+.kv-list {
+    display: grid;
+    grid-template-columns:
+        max-content
+        0.5ch
+        1fr;
+
+    row-gap: var(--space-4, 1rem);
+    column-gap: var(--space-4, 1rem);
+    align-items: center; /* sep centres against taller key-col / value-col */
+
+    padding: var(--space-4, 1rem);
+    background-color: var(--color-surface, #ffffff);
+    border: 1px solid rgb(0 0 0 / 0.1);
+    border-radius: var(--radius-m, 0.375rem);
+}
+
+/* -----------------------------------------------------------------------
+ * Row — display:contents flattens children into the parent grid
+ * ----------------------------------------------------------------------- */
+
+.kv-item {
+    display: contents;
+}
+
+/* -----------------------------------------------------------------------
+ * Key column  (grid child 1)
+ * ----------------------------------------------------------------------- */
+
+.kv-key-col {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+}
+
+/* Super text — small tertiary label above the key (e.g. "TRANSACTION TYPE") */
+.kv-super {
+    font-size: var(--font-size-xs, 0.75rem);
+    font-weight: 400;
+    color: var(--color-text-tertiary, rgb(0 0 0 / 0.45));
+    line-height: 1.3;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+}
+
+/* Key label */
+.kv-key {
+    font-size: var(--font-size-sm, 0.875rem);
+    line-height: 1.4;
+    white-space: nowrap;
+}
+
+/* Required indicator (asterisk via CSS ::after) */
+.kv-key[data-required="true"]::after {
+    content: " *";
+    color: var(--color-error, #dc2626);
+    margin-inline-start: 0.125rem;
+}
+
+/* -----------------------------------------------------------------------
+ * Separator  (grid child 2)
+ * ----------------------------------------------------------------------- */
+
+.kv-sep {
+    color: rgb(0 0 0 / 0.4);
+    font-weight: 400;
+    text-align: center;
+    align-self: center; /* always centred even when key-col / value-col are tall */
+}
+
+/* -----------------------------------------------------------------------
+ * Value column  (grid child 3)
+ * ----------------------------------------------------------------------- */
+
+.kv-value-col {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+    min-width: 0;
+}
+
+/* Primary value */
+.kv-value {
+    font-size: var(--font-size-sm, 0.875rem);
+    font-weight: 500;
+    line-height: 1.4;
+    min-width: 0;
+}
+
+/* Empty / null values */
+.kv-value[data-empty="true"] {
+    font-weight: 400;
+    opacity: 0.55;
+}
+
+/* Sub text — small tertiary label below the value (e.g. "Balance: $12,450") */
+.kv-sub {
+    font-size: var(--font-size-xs, 0.75rem);
+    font-weight: 400;
+    color: var(--color-text-tertiary, rgb(0 0 0 / 0.45));
+    line-height: 1.3;
+}
+
+/* Copyable value — monospace, selectable */
+.kv-value.kv-copyable {
+    user-select: text;
+    cursor: text;
+    font-family: var(--font-mono, ui-monospace, monospace);
+    font-size: var(--font-size-xs, 0.75rem);
+}
+
+/* -----------------------------------------------------------------------
+ * Modifier: kv-clickable — interactive row with pointer + hover feedback.
+ *
+ * Because .kv-item uses display:contents it has no box of its own, so
+ * cursor and background must be applied to its three grid children.
+ * :hover / :active DO fire on display:contents elements in all modern
+ * browsers, so the parent selector still works as expected.
+ * ----------------------------------------------------------------------- */
+
+.kv-item.kv-clickable .kv-key-col,
+.kv-item.kv-clickable .kv-sep,
+.kv-item.kv-clickable .kv-value-col {
+    cursor: pointer;
+    transition: background-color 120ms ease;
+    border-radius: var(--radius-s, 0.25rem);
+}
+
+.kv-item.kv-clickable:hover .kv-key-col,
+.kv-item.kv-clickable:hover .kv-sep,
+.kv-item.kv-clickable:hover .kv-value-col {
+    background-color: rgb(0 0 0 / 0.04);
+}
+
+.kv-item.kv-clickable:active .kv-key-col,
+.kv-item.kv-clickable:active .kv-sep,
+.kv-item.kv-clickable:active .kv-value-col {
+    background-color: rgb(0 0 0 / 0.08);
+}
+
+/* -----------------------------------------------------------------------
+ * Modifier: kv-wrap — allow key and value text to wrap
+ * ----------------------------------------------------------------------- */
+
+.kv-item.kv-wrap .kv-key,
+.kv-item.kv-wrap .kv-super {
+    white-space: normal;
+    word-break: break-word;
+}
+
+.kv-item.kv-wrap .kv-value,
+.kv-item.kv-wrap .kv-sub {
+    white-space: normal;
+    overflow-wrap: break-word;
+    word-break: break-word;
+}
+
+/* -----------------------------------------------------------------------
+ * Modifier: kv-divider — full-width line below the row
+ * ::after participates in the parent .kv-list grid (display:contents trick)
+ * ----------------------------------------------------------------------- */
+
+.kv-item.kv-divider::after {
+    content: "";
+    display: block;
+    grid-column: 1 / -1;
+    border-bottom: 1px solid rgb(0 0 0 / 0.08);
+    margin-block: var(--space-1, 0.25rem);
+}
+
+/* -----------------------------------------------------------------------
+ * Mobile (<600px)
+ * ----------------------------------------------------------------------- */
+
+@media (max-width: 600px) {
+
+    /* Collapse to 2 columns; separator is removed from flow via display:none */
+    .kv-list {
+        grid-template-columns: max-content 1fr;
+        column-gap: var(--space-4, 1rem);
+    }
+
+    .kv-sep {
+        display: none;
+    }
+
+    .kv-key {
+        white-space: normal;
+    }
+
+    /* kv-value-end: right-align value col at the trailing edge (mobile only).
+       Useful for bank-statement rows where amounts float to the right. */
+    .kv-item.kv-value-end .kv-value-col {
+        text-align: end;
+        align-items: flex-end; /* right-aligns flex children (value + sub) */
+    }
+}
+

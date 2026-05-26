@@ -15,23 +15,38 @@ import com.holonplatform.vaadin.flow.components.utils.BeanUtils;
 import com.holonplatform.vaadin.flow.internal.BeanRecord;
 import com.vaadin.flow.data.provider.Query;
 import jakarta.transaction.Transactional;
-import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+/**
+ * @deprecated Use {@link com.holonplatform.core.datastore.beans.BeanDatastoreHelper} instead.
+ *             {@code BeanDatastoreHelper} is the official, type-safe holon-core façade for bean
+ *             CRUD operations and offers a far richer query API (findPage, findSlice, findFirst,
+ *             findTop, count, exists, bulk operations, transactions).
+ *             <pre>{@code
+ *             BeanDatastoreHelper<Product> products =
+ *                 BeanDatastoreHelper.of(datastore, Product.class);
+ *             products.save(product);
+ *             Optional<Product> one = products.findOne(filter);
+ *             List<Product> page   = products.findPage(0, 20);
+ *             }</pre>
+ */
+@Deprecated(since = "10.0.0", forRemoval = true)
 public class DefaultBeanCrud<T> implements HasBeanRecord<T> {
 
     private static final Logger log = LoggerFactory.getLogger(DefaultBeanCrud.class);
 
-    @Getter
     private final Datastore datastore;
+
+    public Datastore getDatastore() {
+        return datastore;
+    }
     private BeanRecord<T> beanRecord;
 
     public DefaultBeanCrud() {
@@ -48,69 +63,53 @@ public class DefaultBeanCrud<T> implements HasBeanRecord<T> {
     @Transactional
     public T save(T beanInstance) {
 
-        final PropertyBox propertyBox = BeanUtils.getPropertyBox(beanInstance);
-        final Class<?> beanClazz = BeanUtils.getBeanClass(beanInstance);
-        datastore.save(DataTarget.named(beanClazz.getName()), propertyBox, DefaultWriteOption.BRING_BACK_GENERATED_IDS);
-        return BeanUtils.getBean(propertyBox, beanInstance);
+        final PropertyBox propertyBox = BeanUtils.readFromBean(beanInstance);
+        final Class<?> beanClazz = BeanUtils.resolveBeanClass(beanInstance);
+        datastore.save(DataTarget.named(beanClazz.getName()), propertyBox,
+                DefaultWriteOption.BRING_BACK_GENERATED_IDS_AND_VERSION);
+        return BeanUtils.writeToBean(propertyBox, beanInstance);
     }
 
     @Transactional
     public T insert(T beanInstance) {
 
-        final PropertyBox propertyBox = BeanUtils.getPropertyBox(beanInstance);
-        final Class<?> beanClazz = BeanUtils.getBeanClass(beanInstance);
-        datastore.insert(DataTarget.named(beanClazz.getName()), propertyBox, DefaultWriteOption.BRING_BACK_GENERATED_IDS);
-        return BeanUtils.getBean(propertyBox, beanInstance);
+        final PropertyBox propertyBox = BeanUtils.readFromBean(beanInstance);
+        final Class<?> beanClazz = BeanUtils.resolveBeanClass(beanInstance);
+        datastore.insert(DataTarget.named(beanClazz.getName()), propertyBox,
+                DefaultWriteOption.BRING_BACK_GENERATED_IDS_AND_VERSION);
+        return BeanUtils.writeToBean(propertyBox, beanInstance);
     }
 
 
     @Transactional
     public T update(T beanInstance) {
 
-        final PropertyBox propertyBox = BeanUtils.getPropertyBox(beanInstance);
-        final Class<?> beanClazz = BeanUtils.getBeanClass(beanInstance);
-        datastore.update(DataTarget.named(beanClazz.getName()), propertyBox, DefaultWriteOption.BRING_BACK_GENERATED_IDS);
-        return BeanUtils.getBean(propertyBox, beanInstance);
+        final PropertyBox propertyBox = BeanUtils.readFromBean(beanInstance);
+        final Class<?> beanClazz = BeanUtils.resolveBeanClass(beanInstance);
+        datastore.update(DataTarget.named(beanClazz.getName()), propertyBox,
+                DefaultWriteOption.BRING_BACK_GENERATED_IDS_AND_VERSION);
+        return BeanUtils.writeToBean(propertyBox, beanInstance);
     }
 
     @Transactional
     public List<T> bulkUpdate(List<T> list) {
-        List<T> updatedList = new ArrayList<>();
-        list.forEach(beanInstance -> {
-            final PropertyBox propertyBox = BeanUtils.getPropertyBox(beanInstance);
-            final Class<?> beanClazz = BeanUtils.getBeanClass(beanInstance);
-            datastore.bulkUpdate(DataTarget.named(beanClazz.getName()))
-                    .set(propertyBox)
-                    .withWriteOption(DefaultWriteOption.BRING_BACK_GENERATED_IDS)
-                    .execute();
-
-            updatedList.add(BeanUtils.getBean(propertyBox, beanInstance));
-        });
-
-        return updatedList;
+        return list.stream()
+                .map(this::update)
+                .toList();
     }
 
     @Transactional
     public List<T> bulkInsert(List<T> list) {
-        List<T> updatedList = new ArrayList<>();
-        list.forEach(beanInstance -> {
-            final PropertyBox propertyBox = BeanUtils.getPropertyBox(beanInstance);
-            final Class<?> beanClazz = BeanUtils.getBeanClass(beanInstance);
-            datastore.bulkInsert(DataTarget.named(beanClazz.getName()),propertyBox)
-                    .withWriteOption(DefaultWriteOption.BRING_BACK_GENERATED_IDS)
-                    .execute();
-
-            updatedList.add(BeanUtils.getBean(propertyBox, beanInstance));
-        });
-
-        return updatedList;
+        return list.stream()
+                .map(this::insert)
+                .toList();
     }
 
     @Transactional
     public boolean delete(T beanInstance)  {
 
-        final PropertyBox propertyBox = BeanUtils.getPropertyBox(beanInstance);
-        final Class<?> beanClazz = BeanUtils.getBeanClass(beanInstance);
+        final PropertyBox propertyBox = BeanUtils.readFromBean(beanInstance);
+        final Class<?> beanClazz = BeanUtils.resolveBeanClass(beanInstance);
         final Datastore.OperationResult operationResult = datastore.delete(DataTarget.named(beanClazz.getName()), propertyBox);
 
         return operationResult.getAffectedCount() > 0;
@@ -150,21 +149,13 @@ public class DefaultBeanCrud<T> implements HasBeanRecord<T> {
 
     @SuppressWarnings("unchecked")
     private static QueryFilter getQueryFilter(PathProperty<?> property, String searchFilter) {
-        if (TypeUtils.isString(property.getType())) {
-            return ((StringProperty) property).containsIgnoreCase(searchFilter);
-        } else if (TypeUtils.isBigDecimal(property.getType())) {
-            return ((NumericProperty<BigDecimal>) property)
-                    .eq(new BigDecimal(searchFilter));
-        } else if (TypeUtils.isDouble(property.getType())) {
-            return ((NumericProperty<Double>) property).eq(Double.valueOf(searchFilter));
-        } else if (TypeUtils.isInteger(property.getType())) {
-            return ((NumericProperty<Integer>) property).eq(Integer.valueOf(searchFilter));
-        } else if (TypeUtils.isLong(property.getType())) {
-            return ((NumericProperty<Long>) property).eq(Long.valueOf(searchFilter));
-        } else {
-            throw new IllegalArgumentException("Invalid Type. Please check the allowed types");
-        }
-//        return null;
+        final Class<?> type = property.getType();
+        if (TypeUtils.isString(type))     return ((StringProperty) property).containsIgnoreCase(searchFilter);
+        if (TypeUtils.isBigDecimal(type)) return ((NumericProperty<BigDecimal>) property).eq(new BigDecimal(searchFilter));
+        if (TypeUtils.isDouble(type))     return ((NumericProperty<Double>) property).eq(Double.parseDouble(searchFilter));
+        if (TypeUtils.isInteger(type))    return ((NumericProperty<Integer>) property).eq(Integer.parseInt(searchFilter));
+        if (TypeUtils.isLong(type))       return ((NumericProperty<Long>) property).eq(Long.parseLong(searchFilter));
+        throw new IllegalArgumentException("Unsupported property type: " + type.getName());
     }
 
     public Stream<T> filterBy(Query<T, ?> query, PathProperty<?> pathProperty, String searchText) {
@@ -199,8 +190,6 @@ public class DefaultBeanCrud<T> implements HasBeanRecord<T> {
     }
 
 
-
-
     @Transactional
     public boolean deleteSelectedItems(QueryFilter... queryFilter) {
         return datastore.bulkDelete(DataTarget.named(getBeanRecord().beanClass().getName()))
@@ -210,10 +199,10 @@ public class DefaultBeanCrud<T> implements HasBeanRecord<T> {
 
     public T refresh(T beanInstance) {
 
-        final PropertyBox propertyBox = BeanUtils.getPropertyBox(beanInstance);
-        final Class<?> beanClazz = BeanUtils.getBeanClass(beanInstance);
+        final PropertyBox propertyBox = BeanUtils.readFromBean(beanInstance);
+        final Class<?> beanClazz = BeanUtils.resolveBeanClass(beanInstance);
         datastore.refresh(DataTarget.named(beanClazz.getName()), propertyBox);
-        return BeanUtils.getBean(propertyBox, beanInstance);
+        return BeanUtils.writeToBean(propertyBox, beanInstance);
     }
 
     @Override

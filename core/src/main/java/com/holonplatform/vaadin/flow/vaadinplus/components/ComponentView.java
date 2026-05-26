@@ -1,19 +1,20 @@
 package com.holonplatform.vaadin.flow.vaadinplus.components;
 
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.Main;
-import com.vaadin.flow.theme.lumo.LumoUtility.*;
 
+@StyleSheet("context://component-view.css")
 public class ComponentView extends Main {
 
     public ComponentView() {
-        addClassNames(Display.FLEX, FlexDirection.COLUMN, Padding.Bottom.LARGE, Padding.Horizontal.LARGE);
+        addClassName("component-view");
     }
 
     public void addH2(String text) {
         H2 h2 = new H2(text);
-        h2.addClassNames(FontSize.LARGE, Margin.Bottom.MEDIUM, Margin.Top.LARGE);
+        h2.addClassName("component-view__heading");
         add(h2);
     }
 

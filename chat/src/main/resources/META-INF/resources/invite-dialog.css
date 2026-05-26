@@ -1,0 +1,75 @@
+/* ============================================================
+   invite-dialog.css  –  InviteToGroupDialog styles
+   ============================================================ */
+
+/* ---- Row wrappers ---- */
+.invite-dialog__row-wrapper {
+    padding: var(--sp-2, 0.5rem) 0;
+    border-bottom: 1px solid var(--zinc-100, #f4f4f5);
+}
+
+.invite-dialog__row-wrapper:last-child {
+    border-bottom: none;
+}
+
+/* ---- Name column ---- */
+.invite-dialog__name {
+    font-size: var(--font-size-sm, 0.875rem);
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+/* ---- State badges ---- */
+.invite-dialog__badge--member,
+.invite-dialog__badge--invited,
+.invite-dialog__badge--pending {
+    font-size: var(--font-size-xs, 0.6875rem);
+    padding: 2px 8px;
+    border-radius: var(--radius-full, 999px);
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.invite-dialog__badge--member {
+    background: var(--zinc-100, #f4f4f5);
+    color: var(--text-tertiary);
+}
+
+.invite-dialog__badge--invited {
+    background: var(--brand-50, #eff6ff);
+    color: var(--brand-700, #1d4ed8);
+}
+
+.invite-dialog__badge--pending {
+    background: var(--amber-50, #fffbeb);
+    color: var(--amber-700, #b45309);
+}
+
+/* ---- Hint text ---- */
+.invite-dialog__hint {
+    font-size: var(--font-size-sm, 0.875rem);
+    color: var(--text-secondary);
+    margin-bottom: var(--sp-2, 0.5rem);
+}
+
+/* ---- Sent invitations section header ---- */
+.invite-dialog__sent-header {
+    display: block;
+    font-size: var(--font-size-xs, 0.6875rem);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-tertiary);
+    margin-top: var(--sp-4, 1rem);
+    margin-bottom: var(--sp-1, 0.25rem);
+}
+
+/* ---- Demo pending invitations panel ---- */
+.invite-demo__pending {
+    padding: var(--sp-3, 0.75rem);
+    border: 1px solid var(--zinc-200);
+    border-radius: var(--radius-md, 8px);
+    background: var(--surface-1, #f9fafb);
+    margin-block: var(--sp-3, 0.75rem);
+}
+

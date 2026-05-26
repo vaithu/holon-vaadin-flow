@@ -28,12 +28,16 @@ import com.holonplatform.vaadin.flow.components.ValueHolder;
 import com.holonplatform.vaadin.flow.components.events.GroupValueChangeEvent;
 import com.holonplatform.vaadin.flow.internal.components.events.DefaultGroupValueChangeEvent;
 
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.io.Serial;
+import java.io.NotSerializableException;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.LinkedList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.BiConsumer;
-import java.util.stream.Collectors;
 
 /**
  * Base {@link HasPropertySet} property components group implementation.
@@ -47,7 +51,13 @@ public abstract class AbstractPropertySetGroup<C extends ValueComponent<?>, G ex
 		implements HasPropertySet<Property<?>>,
 		ValueHolder<PropertyBox, GroupValueChangeEvent<PropertyBox, Property<?>, C, G>> {
 
+	@Serial
 	private static final long serialVersionUID = 5966779573345769968L;
+
+	@Serial
+	private void writeObject(ObjectOutputStream out) throws IOException {
+		throw new NotSerializableException(getClass().getName());
+	}
 
 	/**
 	 * Current value
@@ -62,7 +72,7 @@ public abstract class AbstractPropertySetGroup<C extends ValueComponent<?>, G ex
 	/**
 	 * Value change listeners
 	 */
-	private final List<ValueChangeListener<PropertyBox, GroupValueChangeEvent<PropertyBox, Property<?>, C, G>>> valueChangeListeners = new LinkedList<>();
+	private final List<ValueChangeListener<PropertyBox, GroupValueChangeEvent<PropertyBox, Property<?>, C, G>>> valueChangeListeners = new ArrayList<>();
 
 	/**
 	 * Optional {@link PropertyRendererRegistry} to use
@@ -72,7 +82,7 @@ public abstract class AbstractPropertySetGroup<C extends ValueComponent<?>, G ex
 	/**
 	 * Post-processors
 	 */
-	private final transient List<BiConsumer<Property<?>, C>> postProcessors = new LinkedList<>();
+	private final transient List<BiConsumer<Property<?>, C>> postProcessors = new ArrayList<>();
 
 	/**
 	 * Constructor.
@@ -129,7 +139,9 @@ public abstract class AbstractPropertySetGroup<C extends ValueComponent<?>, G ex
 	 */
 	@Override
 	public Collection<Property<?>> getProperties() {
-		return getPropertySet().stream().map(p -> (Property<?>) p).collect(Collectors.toList());
+		List<Property<?>> result = new ArrayList<>();
+		getPropertySet().forEach(p -> result.add(p));
+		return result;
 	}
 
 	/*
@@ -147,7 +159,7 @@ public abstract class AbstractPropertySetGroup<C extends ValueComponent<?>, G ex
 	 * @return the value change listeners
 	 */
 	protected List<ValueChangeListener<PropertyBox, GroupValueChangeEvent<PropertyBox, Property<?>, C, G>>> getValueChangeListeners() {
-		return valueChangeListeners;
+		return Collections.unmodifiableList(valueChangeListeners);
 	}
 
 	/*
@@ -172,6 +184,8 @@ public abstract class AbstractPropertySetGroup<C extends ValueComponent<?>, G ex
 	protected void fireValueChange(PropertyBox oldValue) {
 		final GroupValueChangeEvent<PropertyBox, Property<?>, C, G> valueChangeEvent = new DefaultGroupValueChangeEvent<>(
 				getComponentGroup(), this, oldValue, getCurrentValue(), false);
+		// ArrayList.forEach() uses direct array access internally — no iterator allocation.
+		// No defensive copy needed: Vaadin UI is single-threaded.
 		valueChangeListeners.forEach(l -> l.valueChange(valueChangeEvent));
 	}
 
@@ -209,7 +223,7 @@ public abstract class AbstractPropertySetGroup<C extends ValueComponent<?>, G ex
 	 * @return the post processors
 	 */
 	protected List<BiConsumer<Property<?>, C>> getPostProcessors() {
-		return postProcessors;
+		return Collections.unmodifiableList(postProcessors);
 	}
 
 

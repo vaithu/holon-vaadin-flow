@@ -24,6 +24,7 @@ import com.holonplatform.vaadin.flow.components.builders.ShortcutConfigurator;
 import com.holonplatform.vaadin.flow.components.builders.StringAreaInputConfigurator;
 import com.holonplatform.vaadin.flow.components.events.ReadonlyChangeListener;
 import com.holonplatform.vaadin.flow.components.support.InputAdaptersContainer;
+import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
 import com.holonplatform.vaadin.flow.internal.components.support.StringInputIsEmptySupplier;
 import com.holonplatform.vaadin.flow.internal.components.support.StringInputValueSupplier;
 import com.vaadin.flow.component.*;
@@ -65,6 +66,7 @@ public abstract class AbstractStringAreaInputBuilder<C extends StringAreaInputCo
 	protected final DefaultHasValueChangeModeConfigurator valueChangeModeConfigurator;
 	protected final DefaultHasLabelConfigurator<TextArea> labelConfigurator;
 	protected final DefaultHasTooltipConfigurator<TextArea> tooltipConfigurator;
+	protected final DefaultHasHelperTextConfigurator<TextArea> helperTextConfigurator;
 	protected final DefaultHasPlaceholderConfigurator<TextArea> placeholderConfigurator;
 
 	public AbstractStringAreaInputBuilder() {
@@ -85,7 +87,7 @@ public abstract class AbstractStringAreaInputBuilder<C extends StringAreaInputCo
 		autocompleteConfigurator = new DefaultHasAutocompleteConfigurator(getComponent());
 		autocapitalizeConfigurator = new DefaultHasAutocapitalizeConfigurator(getComponent());
 		autocorrectConfigurator = new DefaultHasAutocorrectConfigurator(getComponent());
-		prefixAndSuffixConfigurator = new DefaultHasPrefixAndSuffixConfigurator(getComponent());
+		prefixAndSuffixConfigurator = new DefaultHasPrefixAndSuffixConfigurator(getComponent(),getComponent());
 		compositionNotifierConfigurator = new DefaultCompositionNotifierConfigurator(getComponent());
 		inputNotifierConfigurator = new DefaultInputNotifierConfigurator(getComponent());
 		keyNotifierConfigurator = new DefaultKeyNotifierConfigurator(getComponent());
@@ -98,8 +100,10 @@ public abstract class AbstractStringAreaInputBuilder<C extends StringAreaInputCo
 			getComponent().setPlaceholder(placeholder);
 		}, this);
 		tooltipConfigurator = new DefaultHasTooltipConfigurator<>(getComponent(), tooltip -> {
-			getComponent().setPlaceholder(tooltip);
+			getComponent().setTooltipText(tooltip);
 		}, this);
+		helperTextConfigurator = new DefaultHasHelperTextConfigurator<>(getComponent(), getComponent()::setHelperText,
+				this);
 
 		getComponent().setClearButtonVisible(true);
 	}
@@ -520,6 +524,24 @@ public abstract class AbstractStringAreaInputBuilder<C extends StringAreaInputCo
 		return getConfigurator();
 	}
 
+	@Override
+	public C helperText(Localizable helperText) {
+		helperTextConfigurator.helperText(helperText);
+		return getConfigurator();
+	}
+
+	@Override
+	public C helperText(String helperText) {
+		helperTextConfigurator.helperText(helperText);
+		return getConfigurator();
+	}
+
+	@Override
+	public C helperComponent(Component component) {
+		helperTextConfigurator.helperComponent(component);
+		return getConfigurator();
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * @see com.holonplatform.vaadin.flow.components.builders.HasLabelConfigurator#label(com.holonplatform.core.i18n.
@@ -549,6 +571,36 @@ public abstract class AbstractStringAreaInputBuilder<C extends StringAreaInputCo
 	@Override
 	public C required() {
 		return required(true);
+	}
+
+	@Override
+	public C ariaLabel(String ariaLabel) {
+		getComponent().setAriaLabel(ariaLabel);
+		return getConfigurator();
+	}
+
+	@Override
+	public C ariaLabelledBy(String ariaLabelledBy) {
+		getComponent().setAriaLabelledBy(ariaLabelledBy);
+		return getConfigurator();
+	}
+
+	@Override
+	public C ariaLabel(Localizable ariaLabel) {
+		final String defaultAriaLabel = (ariaLabel != null && ariaLabel.getMessage() != null) ? ariaLabel.getMessage()
+				: "";
+		if (ariaLabel == null) {
+			return ariaLabel(defaultAriaLabel);
+		}
+		if (isDeferredLocalizationEnabled()) {
+			ariaLabel(defaultAriaLabel);
+			return withAttachListener(event -> {
+				if (event.isInitialAttach()) {
+					LocalizationProvider.localize(ariaLabel).ifPresent(this::ariaLabel);
+				}
+			});
+		}
+		return ariaLabel(LocalizationProvider.localize(ariaLabel).orElse(defaultAriaLabel));
 	}
 
 }

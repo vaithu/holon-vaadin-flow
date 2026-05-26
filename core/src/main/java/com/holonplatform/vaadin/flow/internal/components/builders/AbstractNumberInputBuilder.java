@@ -69,6 +69,7 @@ public abstract class AbstractNumberInputBuilder<T extends Number, C extends Num
 	protected final DefaultHasLabelConfigurator<TextField> labelConfigurator;
 	protected final DefaultHasTitleConfigurator<TextField> titleConfigurator;
 	protected final DefaultHasTooltipConfigurator<TextField> tooltipConfigurator;
+	protected final DefaultHasHelperTextConfigurator<TextField> helperTextConfigurator;
 	protected final DefaultHasPlaceholderConfigurator<TextField> placeholderConfigurator;
 
 	public AbstractNumberInputBuilder(Class<T> numberType) {
@@ -94,7 +95,7 @@ public abstract class AbstractNumberInputBuilder<T extends Number, C extends Num
 		getComponent().setClearButtonVisible(true);
 
 		autocompleteConfigurator = new DefaultHasAutocompleteConfigurator(getComponent());
-		prefixAndSuffixConfigurator = new DefaultHasPrefixAndSuffixConfigurator(getComponent());
+		prefixAndSuffixConfigurator = new DefaultHasPrefixAndSuffixConfigurator(getComponent(),getComponent());
 		compositionNotifierConfigurator = new DefaultCompositionNotifierConfigurator(getComponent());
 		inputNotifierConfigurator = new DefaultInputNotifierConfigurator(getComponent());
 		keyNotifierConfigurator = new DefaultKeyNotifierConfigurator(getComponent());
@@ -109,6 +110,8 @@ public abstract class AbstractNumberInputBuilder<T extends Number, C extends Num
 		tooltipConfigurator = new DefaultHasTooltipConfigurator<>(getComponent(), tooltip -> {
 			getComponent().setTooltipText(tooltip);
 		}, this);
+		helperTextConfigurator = new DefaultHasHelperTextConfigurator<>(getComponent(), getComponent()::setHelperText,
+				this);
 		placeholderConfigurator = new DefaultHasPlaceholderConfigurator<>(getComponent(), placeholder -> {
 			getComponent().setPlaceholder(placeholder);
 		}, this);
@@ -590,6 +593,24 @@ public abstract class AbstractNumberInputBuilder<T extends Number, C extends Num
 		return getConfigurator();
 	}
 
+	@Override
+	public C helperText(Localizable helperText) {
+		helperTextConfigurator.helperText(helperText);
+		return getConfigurator();
+	}
+
+	@Override
+	public C helperText(String helperText) {
+		helperTextConfigurator.helperText(helperText);
+		return getConfigurator();
+	}
+
+	@Override
+	public C helperComponent(Component component) {
+		helperTextConfigurator.helperComponent(component);
+		return getConfigurator();
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * @see
@@ -676,8 +697,20 @@ public abstract class AbstractNumberInputBuilder<T extends Number, C extends Num
 	 */
 	@Override
 	public C ariaLabel(Localizable ariaLabel) {
-		getComponent().setAriaLabel(Localizable.builder().message(ariaLabel).build().getMessage());
-		return getConfigurator();
+		final String defaultAriaLabel = (ariaLabel != null && ariaLabel.getMessage() != null) ? ariaLabel.getMessage()
+				: "";
+		if (ariaLabel == null) {
+			return ariaLabel(defaultAriaLabel);
+		}
+		if (isDeferredLocalizationEnabled()) {
+			ariaLabel(defaultAriaLabel);
+			return withAttachListener(event -> {
+				if (event.isInitialAttach()) {
+					LocalizationProvider.localize(ariaLabel).ifPresent(this::ariaLabel);
+				}
+			});
+		}
+		return ariaLabel(LocalizationProvider.localize(ariaLabel).orElse(defaultAriaLabel));
 	}
 
 	/**

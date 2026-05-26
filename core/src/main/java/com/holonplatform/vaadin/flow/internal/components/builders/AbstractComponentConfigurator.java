@@ -34,7 +34,7 @@ import java.util.function.Consumer;
  * @param <B> Concrete configurator type
  */
 public abstract class AbstractComponentConfigurator<C extends Component, B extends ComponentConfigurator<B>>
-		implements ComponentConfigurator<B> {
+		implements ComponentConfigurator<B>, SignalBindings.Owner {
 
 	protected static final Logger LOGGER = VaadinLogger.create();
 
@@ -142,6 +142,11 @@ public abstract class AbstractComponentConfigurator<C extends Component, B exten
 	 */
 	protected C getComponent() {
 		return component;
+	}
+
+	@Override
+	public Component getSignalBindingOwner() {
+		return getComponent();
 	}
 
 	/**

@@ -3,9 +3,11 @@ package com.holonplatform.vaadin.flow.internal.components.builders;
 import com.holonplatform.vaadin.flow.components.BeanListing;
 import com.holonplatform.vaadin.flow.components.Input;
 import com.holonplatform.vaadin.flow.components.PropertyListing;
-import com.holonplatform.vaadin.flow.components.builders.HeaderBuilder;
 import com.holonplatform.vaadin.flow.components.builders.ZohoViewConfigurator;
-import com.holonplatform.vaadin.flow.internal.lumo.*;
+import com.holonplatform.vaadin.flow.internal.lumo.AlignItems;
+import com.holonplatform.vaadin.flow.internal.lumo.FlexDirection;
+import com.holonplatform.vaadin.flow.internal.lumo.Gap;
+import com.holonplatform.vaadin.flow.internal.lumo.Overflow;
 import com.holonplatform.vaadin.flow.vaadinplus.Layout;
 import com.holonplatform.vaadin.flow.vaadinplus.components.GridHeader;
 import com.holonplatform.vaadin.flow.vaadinplus.components.Header;
@@ -34,12 +36,12 @@ public  abstract class AbstractZohoCommonBuilder< B extends ZohoViewConfigurator
     @Override
     public ZohoViewConfigurator.ZohoCommonBuilder<B> header(Header header) {
         header.setGap(Gap.MEDIUM);
-        header.setHeadingFontSize(Font.Size.XXLARGE);
-
-        // Remove the default padding
         header.getRowLayout().removeClassName(LumoUtility.Padding.MEDIUM);
 
-        // Position the tabs along the edge with negative margins
+        header.getRowLayout().removeClassName("iyen-header__row--padded");
+        header.getTabs().ifPresent(tabs -> tabs.addClassName(LumoUtility.Margin.Minus.Horizontal.LARGE));
+
+        header.getTabs().ifPresent(tabs -> tabs.addClassName("iyen-header__tabs--edge-aligned"));
         header.getTabs().ifPresent(tabs -> tabs.addClassName(LumoUtility.Margin.Minus.Horizontal.LARGE));
         layout.add(header);
         return this;
@@ -78,12 +80,12 @@ public  abstract class AbstractZohoCommonBuilder< B extends ZohoViewConfigurator
 
         Layout toolbar = new Layout(input.getComponent(), buttonLayout);
         applyStylesToToolbarLayout(toolbar);
-
         this.layout.add(toolbar);
         return this;
     }
+
     private void applyStylesToContentLayout(Layout content) {
-        content.addClassNames(LumoUtility.Border.ALL, LumoUtility.BorderRadius.LARGE);
+        content.addClassNames("border-all", "border-radius-large");
         content.setFlexDirection(FlexDirection.COLUMN);
         content.setAlignItems(AlignItems.BASELINE);
         content.setOverflow(Overflow.HIDDEN);
@@ -105,8 +107,8 @@ public  abstract class AbstractZohoCommonBuilder< B extends ZohoViewConfigurator
         return addContent(gridHeader, listing.getComponent());
     }
 
-    private ZohoViewConfigurator.ZohoCommonBuilder<B>  addContent(GridHeader gridHeader, Component contentComponent) {
-        gridHeader.getRowLayout().addClassNames(LumoUtility.Padding.End.SMALL);
+    private ZohoViewConfigurator.ZohoCommonBuilder<B> addContent(GridHeader gridHeader, Component contentComponent) {
+        gridHeader.getRowLayout().addClassName("grid-header__row--end-padded");
         gridHeader.getRowLayout().setAlignItems(AlignItems.BASELINE);
         gridHeader.setHeadingFontSize(Font.Size.LARGE);
         Layout content = new Layout(gridHeader, contentComponent);

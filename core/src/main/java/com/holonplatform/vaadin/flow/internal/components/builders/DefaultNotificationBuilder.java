@@ -6,11 +6,6 @@ import com.vaadin.flow.component.notification.Notification;
 public class DefaultNotificationBuilder
         extends AbstractNotificationConfigurator<NotificationBuilder>
         implements NotificationBuilder {
-    /**
-     * Constructor.
-     *
-     * @param component The component instance (not null)
-     */
     public DefaultNotificationBuilder(Notification component) {
         super(component);
     }
@@ -20,21 +15,11 @@ public class DefaultNotificationBuilder
         autoClose();
     }
 
-    /**
-     * Build and returns the component.
-     *
-     * @return The component instance
-     */
     @Override
     public Notification build() {
         return getComponent();
     }
 
-    /**
-     * Get the actual configurator.
-     *
-     * @return the actual configurator
-     */
     @Override
     protected NotificationBuilder getConfigurator() {
         return this;

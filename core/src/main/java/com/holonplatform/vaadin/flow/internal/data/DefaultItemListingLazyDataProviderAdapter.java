@@ -22,8 +22,8 @@ import com.vaadin.flow.data.provider.AbstractBackEndDataProvider;
 import com.vaadin.flow.data.provider.BackEndDataProvider;
 import com.vaadin.flow.data.provider.Query;
 
+import java.util.ArrayList;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -44,7 +44,7 @@ public class DefaultItemListingLazyDataProviderAdapter<T, F> extends AbstractBac
 
 	private boolean frozen = false;
 
-	private final List<T> additionalItems = new LinkedList<>();
+	private final List<T> additionalItems = new ArrayList<>();
 
 	/**
 	 * Constructor.

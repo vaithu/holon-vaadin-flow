@@ -16,8 +16,6 @@
 package com.holonplatform.vaadin.flow.components.builders;
 
 import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.shared.HasPrefix;
-import com.vaadin.flow.component.shared.HasSuffix;
 
 
 /**

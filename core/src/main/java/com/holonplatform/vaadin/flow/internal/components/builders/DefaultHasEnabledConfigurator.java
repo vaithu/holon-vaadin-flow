@@ -18,6 +18,8 @@ package com.holonplatform.vaadin.flow.internal.components.builders;
 import com.holonplatform.core.internal.utils.ObjectUtils;
 import com.holonplatform.vaadin.flow.components.builders.HasEnabledConfigurator;
 import com.holonplatform.vaadin.flow.components.builders.HasEnabledConfigurator.BaseHasEnabledConfigurator;
+import com.holonplatform.vaadin.flow.components.builders.SignalBindings;
+import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasEnabled;
 
 /**
@@ -25,7 +27,7 @@ import com.vaadin.flow.component.HasEnabled;
  *
  * @since 5.2.0
  */
-public class DefaultHasEnabledConfigurator implements BaseHasEnabledConfigurator {
+public class DefaultHasEnabledConfigurator implements BaseHasEnabledConfigurator, SignalBindings.Owner {
 
 	private final HasEnabled component;
 
@@ -47,6 +49,11 @@ public class DefaultHasEnabledConfigurator implements BaseHasEnabledConfigurator
 	public DefaultHasEnabledConfigurator enabled(boolean enabled) {
 		component.setEnabled(enabled);
 		return this;
+	}
+
+	@Override
+	public Component getSignalBindingOwner() {
+		return (component instanceof Component) ? (Component) component : null;
 	}
 
 }

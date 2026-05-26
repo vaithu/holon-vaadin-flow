@@ -1,17 +1,18 @@
 package com.holonplatform.vaadin.flow.components;
 
+import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.vaadin.flow.components.css.Right;
 import com.holonplatform.vaadin.flow.components.css.WhiteSpace;
 import com.holonplatform.vaadin.flow.components.css.Wide;
 import com.holonplatform.vaadin.flow.components.utils.UIUtils;
+import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.NativeLabel;
-import com.vaadin.flow.theme.lumo.LumoUtility;
 
 public class ListItem extends FlexBoxLayout {
 
-    private final String CLASS_NAME = "list-item";
+    private static final String CLASS_NAME = "list-item";
 
     private Div prefix;
     private Div suffix;
@@ -30,7 +31,7 @@ public class ListItem extends FlexBoxLayout {
 
         this.primary = new NativeLabel(primary);
         this.secondary = new NativeLabel(secondary);
-        this.secondary.addClassNames(LumoUtility.FontSize.SMALL,LumoUtility.TextColor.SECONDARY);
+        this.secondary.addClassNames("font-size-small", "color-text-secondary");
 
         content = new FlexBoxLayout(this.primary, this.secondary);
         content.setClassName(CLASS_NAME + "__content");
@@ -97,16 +98,23 @@ public class ListItem extends FlexBoxLayout {
 
     public void setHorizontalPadding(boolean horizontalPadding) {
         if (horizontalPadding) {
-            getStyle().remove("padding-left");
-            getStyle().remove("padding-right");
+            addClassName("list-item--no-h-padding");
         } else {
-            getStyle().set("padding-left", "0");
-            getStyle().set("padding-right", "0");
+            removeClassName("list-item--no-h-padding");
         }
     }
 
     public void setPrimaryText(String text) {
         primary.setText(text);
+    }
+
+    /**
+     * Sets the primary text from a {@link Localizable} descriptor.
+     *
+     * @param text localizable primary label (not null)
+     */
+    public void setPrimaryText(Localizable text) {
+        primary.setText(resolve(text));
     }
 
     public NativeLabel getPrimary() {
@@ -117,9 +125,23 @@ public class ListItem extends FlexBoxLayout {
         secondary.setText(text);
     }
 
+    /**
+     * Sets the secondary text from a {@link Localizable} descriptor.
+     *
+     * @param text localizable secondary label (not null)
+     */
+    public void setSecondaryText(Localizable text) {
+        secondary.setText(resolve(text));
+    }
+
+    private static String resolve(Localizable l) {
+        return LocalizationProvider.localize(l)
+                .orElseGet(() -> l.getMessage() != null ? l.getMessage() : "");
+    }
+
     public void setPrefix(Component... components) {
         if (prefix == null) {
-            prefix = new Div();
+            prefix = Components.div().build();
             prefix.setClassName(CLASS_NAME + "__prefix");
             getElement().insertChild(0, prefix.getElement());
             getElement().setAttribute("with-prefix", true);
@@ -130,7 +152,7 @@ public class ListItem extends FlexBoxLayout {
 
     public void setSuffix(Component... components) {
         if (suffix == null) {
-            suffix = new Div();
+            suffix = Components.div().build();
             suffix.setClassName(CLASS_NAME + "__suffix");
             getElement().insertChild(getElement().getChildCount(),
                     suffix.getElement());

@@ -10,7 +10,6 @@ import com.vaadin.flow.component.contextmenu.ContextMenu;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.FlexLayout;
-import com.vaadin.flow.theme.lumo.LumoUtility;
 
 import java.util.function.Consumer;
 
@@ -27,11 +26,10 @@ public class DefaultAccordionHeaderBuilder
 
         addNewButton = Components.button()
                 .iconConfigurator(VaadinIcon.PLUS)
-                .styleNames(LumoUtility.IconSize.SMALL)
+                .styleNames("icon-size-small")
                 .add()
                 .text("Add New ")
                 .iconAfterText(false)
-
                 .build();
 
         statusButton = Components.button()
@@ -40,14 +38,12 @@ public class DefaultAccordionHeaderBuilder
                 .text("Status: All")
                 .build();
 
-
-
         getComponent().setWidthFull();
-        getComponent().addClassNames( LumoUtility.Background.CONTRAST_5);
+        getComponent().addClassName("color-bg-contrast-5");
 
         rightSide = Components.flexLayout()
-                .styleNames(LumoUtility.JustifyContent.END, LumoUtility.Flex.GROW, LumoUtility.Gap.MEDIUM)
-                .add(statusButton,addNewButton)
+                .styleNames("justify-end", "flex-grow-1", "gap-m")
+                .add(statusButton, addNewButton)
                 .flexDirection(FlexLayout.FlexDirection.ROW)
                 .fullWidth()
                 .build();

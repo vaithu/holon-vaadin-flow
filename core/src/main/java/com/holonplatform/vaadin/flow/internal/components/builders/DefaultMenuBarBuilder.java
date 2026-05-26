@@ -37,11 +37,7 @@ public class DefaultMenuBarBuilder
 						.configure(new DefaultClickEvent<>(e.getSource(), e.isFromClient()), e));
 	}
 
-    /*
-	 * (non-Javadoc)
-	 * @see com.holonplatform.vaadin.flow.internal.components.builders.AbstractComponentConfigurator#getConfigurator()
-	 */
-	@Override
+@Override
 	protected MenuBarBuilder getConfigurator() {
 		return this;
 	}

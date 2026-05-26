@@ -24,9 +24,9 @@ import com.vaadin.flow.component.grid.Grid.Column;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 /**
  * Default footer {@link ItemListingRow} implementation.
@@ -41,7 +41,6 @@ public class DefaultItemListingFooterRow<P> implements EditableItemListingRow<P>
 	private final Function<P, Column<?>> propertyColumnProvider;
 
 	public DefaultItemListingFooterRow(FooterRow row, Function<P, Column<?>> propertyColumnProvider) {
-		super();
 		ObjectUtils.argumentNotNull(row, "Row must be not null");
 		ObjectUtils.argumentNotNull(propertyColumnProvider, "Property column provider must be not null");
 		this.row = row;
@@ -54,7 +53,7 @@ public class DefaultItemListingFooterRow<P> implements EditableItemListingRow<P>
 	 */
 	@Override
 	public List<ItemListingCell> getCells() {
-		return row.getCells().stream().map(cell -> new DefaultItemListingFooterCell(cell)).collect(Collectors.toList());
+		return row.getCells().stream().<ItemListingCell>map(DefaultItemListingFooterCell::new).toList();
 	}
 
 	/*
@@ -84,9 +83,11 @@ public class DefaultItemListingFooterRow<P> implements EditableItemListingRow<P>
 	@Override
 	public ItemListingCell join(Collection<P> properties) {
 		ObjectUtils.argumentNotNull(properties, "Properties must be not null");
-		final List<Column<?>> columns = properties.stream().map(property -> propertyColumnProvider.apply(property))
-				.filter(column -> column != null).collect(Collectors.toList());
-		return new DefaultItemListingFooterCell(row.join(columns.toArray(new Column<?>[0])));
+		final List<Column<?>> columns = properties.stream()
+				.map(propertyColumnProvider::apply)
+				.filter(Objects::nonNull)
+				.toList();
+		return new DefaultItemListingFooterCell(row.join(columns.toArray(Column<?>[]::new)));
 	}
 
 }

@@ -1,6 +1,7 @@
 package com.holonplatform.vaadin.flow.internal.components.builders;
 
 import com.holonplatform.vaadin.flow.components.BeanListing;
+import com.holonplatform.vaadin.flow.components.Components;
 import com.holonplatform.vaadin.flow.components.builders.ShowAndHideColumns;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
@@ -29,9 +30,8 @@ public class DefaultShowAndHideColumns<T> implements ShowAndHideColumns<T> {
 
     private void createPopOver(CheckboxGroup<String> group, HorizontalLayout footer) {
 
-        this.showHideBtn = new Button(VaadinIcon.GRID_H.create());
-        this.showHideBtn .addThemeVariants(ButtonVariant.LUMO_ICON);
-        this.showHideBtn .setAriaLabel("Show / hide columns");
+        this.showHideBtn = Components.button().icon(VaadinIcon.GRID_H).ariaLabel("Show / hide columns").build();
+        this.showHideBtn.addThemeVariants(ButtonVariant.LUMO_ICON);
 
         this.popover = new Popover();
         popover.setModal(true);
@@ -39,7 +39,7 @@ public class DefaultShowAndHideColumns<T> implements ShowAndHideColumns<T> {
         popover.setPosition(PopoverPosition.BOTTOM_END);
         popover.setTarget(this.showHideBtn );
 
-        Div heading = new Div("Configure columns");
+        Div heading = Components.div().add(Components.span().text("Configure columns").build()).build();
         heading.getStyle().set("font-weight", "600");
         heading.getStyle().set("padding", "var(--lumo-space-xs)");
 
@@ -51,17 +51,13 @@ public class DefaultShowAndHideColumns<T> implements ShowAndHideColumns<T> {
 
         group.setValue(defaultColumns);
 
-        Button showAll = new Button("Show all", (e) -> {
-            group.setValue(new HashSet<>(allColumns));
-        });
+        Button showAll = Components.button().text("Show all").withClickListener(e -> group.setValue(new HashSet<>(allColumns))).build();
         showAll.addThemeVariants(ButtonVariant.LUMO_SMALL);
 
-        Button reset = new Button("Reset", (e) -> {
-            group.setValue(defaultColumns);
-        });
+        Button reset = Components.button().text("Reset").withClickListener(e -> group.setValue(defaultColumns)).build();
         reset.addThemeVariants(ButtonVariant.LUMO_SMALL);
 
-        HorizontalLayout footer = new HorizontalLayout(showAll, reset);
+        HorizontalLayout footer = Components.hl().add(showAll, reset).build();
         footer.setSpacing(false);
         footer.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
         return footer;

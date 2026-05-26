@@ -1,0 +1,86 @@
+/*
+ * notification.css
+ *
+ * Mobile-first styles for Notification utility (NotificationUtil).
+ *
+ * Replaces:
+ *   NotificationVariant.LUMO_ERROR / LUMO_SUCCESS / LUMO_WARNING  (forbidden theme variants)
+ *   ButtonVariant.LUMO_TERTIARY_INLINE                             (forbidden theme variant)
+ *   closeButton.getStyle().setMargin("0 0 0 var(--lumo-space-l)") (forbidden inline style + Lumo token)
+ *
+ * BEM namespace: .notification
+ *
+ * Vaadin Notification renders its content inside a shadow host
+ * (<vaadin-notification-container>).  The inner HorizontalLayout is in light DOM,
+ * so .notification__* BEM classes apply without shadow-piercing selectors.
+ *
+ * Notification colour is controlled by overriding the ::part(overlay) on the
+ * <vaadin-notification> element via [theme~="…"] attribute selectors, which is
+ * the documented Vaadin CSS customisation API and does NOT require calling
+ * addThemeVariants() in Java.
+ *
+ * Java side sets:
+ *   notification.getElement().getThemeList().add("n-error")    / "n-success" / "n-warning"
+ *   closeButton.addClassName("notification__close-btn")
+ */
+
+/* -----------------------------------------------------------------------
+ * Notification layout row — icon | text | close
+ * ----------------------------------------------------------------------- */
+
+.notification__row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.25rem 0;
+    width: 100%;
+}
+
+/* -----------------------------------------------------------------------
+ * Close button — ghost, pushed to trailing edge
+ * Replaces: ButtonVariant.LUMO_TERTIARY_INLINE + getStyle().setMargin(...)
+ * ----------------------------------------------------------------------- */
+
+.notification__close-btn {
+    margin-inline-start: 1rem;  /* replaces "0 0 0 var(--lumo-space-l)" */
+    flex-shrink: 0;
+}
+
+/* Make the button borderless / ghost (replaces LUMO_TERTIARY_INLINE) */
+vaadin-button.notification__close-btn::part(button) {
+    border: none;
+    box-shadow: none;
+    padding: 0.25rem;
+    min-height: 2.75rem; /* WCAG 2.5.8 touch target */
+    min-width: 2.75rem;
+}
+
+vaadin-button.notification__close-btn::part(button):hover {
+    border-radius: 0.25rem;
+}
+
+/* -----------------------------------------------------------------------
+ * Semantic colour variants
+ * [theme~="n-error"] / [theme~="n-success"] / [theme~="n-warning"]
+ *
+ * Vaadin automatically mirrors the <vaadin-notification> theme attribute to
+ * <vaadin-notification-card> so ::part(overlay) can be targeted here.
+ * -----------------------------------------------------------------------*/
+
+vaadin-notification-card[theme~="n-error"]::part(overlay) {
+    border-radius: 0.5rem;
+}
+
+vaadin-notification-card[theme~="n-success"]::part(overlay) {
+    border-radius: 0.5rem;
+}
+
+vaadin-notification-card[theme~="n-warning"]::part(overlay) {
+    border-radius: 0.5rem;
+}
+
+vaadin-notification-card[theme~="n-primary"]::part(overlay) {
+    border-radius: 0.5rem;
+}
+
+

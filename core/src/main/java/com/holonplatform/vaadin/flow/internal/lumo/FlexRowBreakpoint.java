@@ -1,13 +1,11 @@
 package com.holonplatform.vaadin.flow.internal.lumo;
 
-import com.vaadin.flow.theme.lumo.LumoUtility;
-
 public enum FlexRowBreakpoint {
-    SMALL(LumoUtility.FlexDirection.Breakpoint.Small.ROW),
-    MEDIUM(LumoUtility.FlexDirection.Breakpoint.Medium.ROW),
-    LARGE(LumoUtility.FlexDirection.Breakpoint.Large.ROW),
-    XLARGE(LumoUtility.FlexDirection.Breakpoint.XLarge.ROW),
-    XXLARGE(LumoUtility.FlexDirection.Breakpoint.XXLarge.ROW);
+    SMALL("sm:flex-row"),
+    MEDIUM("md:flex-row"),
+    LARGE("lg:flex-row"),
+    XLARGE("xl:flex-row"),
+    XXLARGE("2xl:flex-row");
 
     private final String className;
 

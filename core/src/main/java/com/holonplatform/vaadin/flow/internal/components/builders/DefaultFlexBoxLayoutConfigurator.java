@@ -10,11 +10,6 @@ public class DefaultFlexBoxLayoutConfigurator
         super(layout);
     }
 
-    /**
-     * Get the actual configurator.
-     *
-     * @return the actual configurator
-     */
     @Override
     protected BaseFlexBoxLayoutConfigurator getConfigurator() {
         return this;

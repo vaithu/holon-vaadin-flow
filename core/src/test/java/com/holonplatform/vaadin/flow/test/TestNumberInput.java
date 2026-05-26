@@ -15,21 +15,6 @@
  */
 package com.holonplatform.vaadin.flow.test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.util.Collection;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
-
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-
 import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.vaadin.flow.components.Components;
 import com.holonplatform.vaadin.flow.components.Input;
@@ -43,12 +28,23 @@ import com.vaadin.flow.component.ComponentUtil;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.shared.HasPrefix;
+import com.vaadin.flow.component.shared.HasSuffix;
 import com.vaadin.flow.component.textfield.Autocomplete;
 import com.vaadin.flow.component.textfield.HasAutocomplete;
-import com.vaadin.flow.component.textfield.HasPrefixAndSuffix;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.value.HasValueChangeMode;
 import com.vaadin.flow.data.value.ValueChangeMode;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.Collection;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class TestNumberInput {
 
@@ -225,6 +221,31 @@ public class TestNumberInput {
 	}
 
 	@Test
+	public void testAriaLabel() {
+
+		Input<Integer> input = Input.number(Integer.class).ariaLabel("Number input").build();
+		assertNull(ComponentTestUtils.getElementAttribute(input.getComponent(), "aria-label"));
+
+		input = Input.number(Integer.class).ariaLabelledBy("number-input-label").build();
+		assertNull(ComponentTestUtils.getElementAttribute(input.getComponent(), "aria-labelledby"));
+
+		LocalizationTestUtils.withTestLocalizationContext(() -> {
+			Input<Integer> localized = Input.number(Integer.class)
+					.ariaLabel(Localizable.builder().message("test").messageCode("test.code").build()).build();
+			assertNull(ComponentTestUtils.getElementAttribute(localized.getComponent(), "aria-label"));
+		});
+
+		LocalizationTestUtils.withTestLocalizationContext(() -> {
+			Input<Integer> localized = Input.number(Integer.class).deferLocalization()
+					.ariaLabel(Localizable.builder().message("test").messageCode("test.code").build()).build();
+			assertNull(ComponentTestUtils.getElementAttribute(localized.getComponent(), "aria-label"));
+			ComponentUtil.onComponentAttach(localized.getComponent(), true);
+			assertNull(ComponentTestUtils.getElementAttribute(localized.getComponent(), "aria-label"));
+		});
+
+	}
+
+	@Test
 	public void testTitle() {
 
 		Input<Integer> input = Input.number(Integer.class).title(Localizable.builder().message("test").build()).build();
@@ -391,9 +412,9 @@ public class TestNumberInput {
 		final Button suffix = new Button("suffix");
 
 		Input<Integer> input = Input.number(Integer.class).prefixComponent(prefix).suffixComponent(suffix).build();
-		assertTrue(input.getComponent() instanceof HasPrefixAndSuffix);
-		assertEquals(prefix, ((HasPrefixAndSuffix) input.getComponent()).getPrefixComponent());
-		assertEquals(suffix, ((HasPrefixAndSuffix) input.getComponent()).getSuffixComponent());
+//		assertTrue(input.getComponent() instanceof HasPrefix);
+		assertEquals(prefix, ((HasPrefix) input.getComponent()).getPrefixComponent());
+		assertEquals(suffix, ((HasSuffix) input.getComponent()).getSuffixComponent());
 
 	}
 

@@ -55,7 +55,10 @@ import com.holonplatform.vaadin.flow.internal.components.DefaultTimeline;
 import com.holonplatform.vaadin.flow.internal.components.builders.DefaultAccordionHeaderBuilder;
 import com.holonplatform.vaadin.flow.internal.components.builders.DefaultCloseButtonBuilder;
 import com.holonplatform.vaadin.flow.internal.components.builders.DefaultOptionsButtonBuilder;
+import com.holonplatform.vaadin.flow.vaadinplus.KeyValueItem;
+import com.holonplatform.vaadin.flow.vaadinplus.KeyValueList;
 import com.holonplatform.vaadin.flow.vaadinplus.Layout;
+import com.holonplatform.vaadin.flow.vaadinplus.components.*;
 import com.iyensoft.vaadin.flow.components.IyenPanel;
 import com.iyensoft.vaadin.flow.components.builders.*;
 import com.iyensoft.vaadin.flow.internal.components.builders.MobileGridColumnBuilder;
@@ -64,6 +67,7 @@ import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HtmlContainer;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.accordion.Accordion;
+import com.vaadin.flow.component.avatar.Avatar;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.checkbox.CheckboxGroup;
 import com.vaadin.flow.component.combobox.ComboBox;
@@ -205,13 +209,6 @@ public interface Components {
         return LayoutConfigurator.configure(layout);
     }
 
-    static CardGridConfigurator.BaseCardGridConfigurator cardGrid(Div div) {
-        return CardGridConfigurator.configure(div);
-    }
-
-    static CardGridConfigurator.BaseCardGridConfigurator cardGrid() {
-        return CardGridConfigurator.configure(new Div());
-    }
 
     static NotificationConfigurator.BaseNotificationConfigurator configure(Notification notification) {
         return NotificationConfigurator.configure(notification);
@@ -221,17 +218,10 @@ public interface Components {
         return NotificationBuilder.create();
     }
 
-	/*static CardGridConfigurator.CardBuilder card(Div div) {
-		return CardGridBuilder.create().withCard(div);
-	}
-
-	static CardGridConfigurator.CardBuilder card() {
-		return CardGridBuilder.create().withCard(new Div());
-	}*/
-
     static GridHeaderBuilder gridHeader(String title) {
         return GridHeaderBuilder.create(title);
     }
+
     static GridHeaderBuilder gridHeader(LabelBuilder<?> labelBuilder) {
         return GridHeaderBuilder.create(labelBuilder);
     }
@@ -242,16 +232,6 @@ public interface Components {
 
     static LazyTabsBuilder lazyTabs() {
         return LazyTabsBuilder.create();
-    }
-
-    static AutoTabsBuilder autoTabs() {
-        return AutoTabsBuilder.create();
-    }
-    static AutoTabsBuilder autoTabs(Div div) {
-        return AutoTabsBuilder.create().container(div);
-    }
-    static AutoTabsBuilder autoTabs(VerticalLayout layout) {
-        return AutoTabsBuilder.create().container(layout);
     }
 
     static TabsConfigurator.BaseTabsConfigurator configure(Tabs tabs) {
@@ -324,6 +304,63 @@ public interface Components {
 
     static FlexBoxLayoutBuilder flexBoxLayout() {
         return FlexBoxLayoutBuilder.create();
+    }
+
+    /**
+     * Obtain a {@link SheetBuilder} for a {@link Sheet.Side#BOTTOM} sheet
+     * (slides up from the bottom — primary mobile pattern).
+     *
+     * @return a new {@link SheetBuilder}
+     */
+    static SheetBuilder sheet() {
+        return SheetBuilder.create();
+    }
+
+    /**
+     * Obtain a {@link SheetBuilder} for the given slide direction.
+     *
+     * @param side the edge from which the panel slides in (not null)
+     * @return a new {@link SheetBuilder}
+     */
+    static SheetBuilder sheet(Sheet.Side side) {
+        return SheetBuilder.create(side);
+    }
+
+    /**
+     * Obtain a configurator for an already-created {@link Sheet} instance.
+     *
+     * @param sheet the sheet to configure (not null)
+     * @return a {@link SheetConfigurator.BaseSheetConfigurator}
+     */
+    static SheetConfigurator.BaseSheetConfigurator configure(Sheet sheet) {
+        return SheetConfigurator.configure(sheet);
+    }
+
+    /**
+     * Create a {@link SheetStack} that slides sheets in from the given edge.
+     *
+     * <p>A {@link SheetStack} is a bounded navigation stack backed by a
+     * {@link com.holonplatform.core.utils.SizedStack}. Each {@code push(title, content)}
+     * call creates, configures, and opens a new sheet, applying stacking rules
+     * automatically:</p>
+     * <ul>
+     *   <li>Root sheet — {@code backdropVisible(true)}: dims the app content behind it.</li>
+     *   <li>Child sheets — {@code backdropVisible(false)}: parent not visible through overlay.</li>
+     *   <li>All sheets — {@code fullscreenOnMobile(true)}: full viewport on mobile.</li>
+     * </ul>
+     *
+     * <pre>{@code
+     * var stack = Components.sheetStack(Sheet.Side.RIGHT);
+     * openBtn.addClickListener(e -> stack.push("Categories", categoryList));
+     * catRow.addClickListener(e -> stack.push(cat.name(), productList));
+     * viewBtn.addClickListener(e -> stack.push("Detail", detailView));
+     * }</pre>
+     *
+     * @param side the edge from which all sheets in this stack slide in (not null)
+     * @return a new {@link SheetStack}
+     */
+    static SheetStack sheetStack(Sheet.Side side) {
+        return new SheetStack(side);
     }
 
 
@@ -448,6 +485,45 @@ public interface Components {
     }
 
     /**
+     * Gets a builder to create an anonymous {@link Avatar}.
+     *
+     * @return A new {@link AvatarBuilder}
+     */
+    static AvatarBuilder avatar() {
+        return AvatarBuilder.create();
+    }
+
+    /**
+     * Gets a builder to create a named {@link Avatar}.
+     *
+     * @param name display name shown in the tooltip; auto-generates initials
+     * @return A new {@link AvatarBuilder}
+     */
+    static AvatarBuilder avatar(String name) {
+        return AvatarBuilder.create(name);
+    }
+
+    /**
+     * Gets a builder to create a named {@link Avatar} with a profile image.
+     *
+     * @param name     display name
+     * @param imageUrl profile-image URL
+     * @return A new {@link AvatarBuilder}
+     */
+    static AvatarBuilder avatar(String name, String imageUrl) {
+        return AvatarBuilder.create(name, imageUrl);
+    }
+
+    /**
+     * Gets a builder to create an empty {@link com.vaadin.flow.component.avatar.AvatarGroup}.
+     *
+     * @return A new {@link AvatarGroupBuilder}
+     */
+    static AvatarGroupBuilder avatarGroup() {
+        return AvatarGroupBuilder.create();
+    }
+
+    /**
      * Gets a builder to create {@link Button}s.
      *
      * @return A new {@link ButtonBuilder}
@@ -480,26 +556,384 @@ public interface Components {
         return MobileGridColumnBuilder.create(layout);
     }
 
-    static
+    // -----------------------------------------------------------------------
+    // Alert (shadcn/ui-inspired inline notification banner)
+    // -----------------------------------------------------------------------
 
+    /**
+     * Get an {@link AlertBuilder} to create an {@link Alert} with the default variant.
+     *
+     * @return a new {@link AlertBuilder}
+     */
+    static AlertBuilder alert() {
+        return AlertBuilder.create();
+    }
+
+    /**
+     * Get an {@link AlertBuilder} to create an {@link Alert} with the given variant.
+     *
+     * @param variant the alert variant (not null)
+     * @return a new {@link AlertBuilder}
+     */
+    static AlertBuilder alert(Alert.Variant variant) {
+        return AlertBuilder.create(variant);
+    }
+
+    /**
+     * Get an {@link AlertConfigurator} to configure an existing {@link Alert}.
+     *
+     * @param alert the alert to configure (not null)
+     * @return a {@link AlertConfigurator.BaseAlertConfigurator}
+     */
+    static AlertConfigurator.BaseAlertConfigurator configure(Alert alert) {
+        return AlertConfigurator.configure(alert);
+    }
+
+    // -----------------------------------------------------------------------
+    // AlertModal (shadcn/ui-inspired dismissible modal notification)
+    // -----------------------------------------------------------------------
+
+    /**
+     * Get an {@link AlertModalBuilder} to create an {@link AlertModal} with the default variant.
+     *
+     * @return a new {@link AlertModalBuilder}
+     */
+    static AlertModalBuilder alertModal() {
+        return AlertModalBuilder.create();
+    }
+
+    /**
+     * Get an {@link AlertModalBuilder} to create an {@link AlertModal} with the given variant.
+     *
+     * @param variant the alert variant (not null)
+     * @return a new {@link AlertModalBuilder}
+     */
+    static AlertModalBuilder alertModal(Alert.Variant variant) {
+        return AlertModalBuilder.create(variant);
+    }
+
+    /**
+     * Get an {@link AlertModalConfigurator} to configure an existing {@link AlertModal}.
+     *
+     * @param modal the modal to configure (not null)
+     * @return a {@link AlertModalConfigurator.BaseAlertModalConfigurator}
+     */
+    static AlertModalConfigurator.BaseAlertModalConfigurator configure(AlertModal modal) {
+        return AlertModalConfigurator.configure(modal);
+    }
+
+    // -----------------------------------------------------------------------
+    // IconBadge — circular tinted icon container
+    // -----------------------------------------------------------------------
+
+    /**
+     * Get an {@link IconBadgeBuilder} for a neutral badge (no icon pre-set).
+     *
+     * <pre>{@code
+     * IconBadge badge = Components.iconBadge()
+     *     .icon(VaadinIcon.CHECK_CIRCLE)
+     *     .variant(Alert.Variant.SUCCESS)
+     *     .size(IconBadge.Size.LG)
+     *     .build();
+     * }</pre>
+     *
+     * @return a new {@link IconBadgeBuilder}
+     */
+    static IconBadgeBuilder iconBadge() {
+        return IconBadgeBuilder.create();
+    }
+
+    /**
+     * Get an {@link IconBadgeBuilder} pre-configured with the given icon.
+     *
+     * @param icon the VaadinIcon to display (not null)
+     * @return a new {@link IconBadgeBuilder}
+     */
+    static IconBadgeBuilder iconBadge(com.vaadin.flow.component.icon.VaadinIcon icon) {
+        return IconBadgeBuilder.create(icon);
+    }
+
+    /**
+     * Get an {@link IconBadgeBuilder} pre-configured with icon and variant.
+     *
+     * <pre>{@code
+     * // Green circle + checkmark, large
+     * Components.iconBadge(VaadinIcon.CHECK_CIRCLE, Alert.Variant.SUCCESS)
+     *     .size(IconBadge.Size.LG).build();
+     * }</pre>
+     *
+     * @param icon    the VaadinIcon to display (not null)
+     * @param variant the semantic color variant (null = neutral)
+     * @return a new {@link IconBadgeBuilder}
+     */
+    static IconBadgeBuilder iconBadge(com.vaadin.flow.component.icon.VaadinIcon icon, Alert.Variant variant) {
+        return IconBadgeBuilder.create(icon, variant);
+    }
+
+    /**
+     * Get a fully-specified {@link IconBadgeBuilder}.
+     *
+     * @param icon    the VaadinIcon to display (not null)
+     * @param variant the semantic color variant (null = neutral)
+     * @param size    the size preset (not null)
+     * @return a new {@link IconBadgeBuilder}
+     */
+    static IconBadgeBuilder iconBadge(com.vaadin.flow.component.icon.VaadinIcon icon, Alert.Variant variant, IconBadge.Size size) {
+        return IconBadgeBuilder.create(icon, variant, size);
+    }
+
+    /**
+     * Get an {@link IconBadgeConfigurator} to configure an existing {@link IconBadge}.
+     *
+     * @param badge the badge to configure (not null)
+     * @return a {@link IconBadgeConfigurator.BaseIconBadgeConfigurator}
+     */
+    static IconBadgeConfigurator.BaseIconBadgeConfigurator configure(IconBadge badge) {
+        return IconBadgeConfigurator.configure(badge);
+    }
+
+    // -----------------------------------------------------------------------
+    // Empty (shadcn/ui-inspired empty-state component)
+    // -----------------------------------------------------------------------
+
+    /**
+     * Get an {@link EmptyBuilder} to create an {@link Empty} empty-state component.
+     *
+     * <p>Use this component to communicate that a collection, list, or data set
+     * contains no items — and give the user a clear path forward.</p>
+     *
+     * @return a new {@link EmptyBuilder}
+     */
+    static EmptyBuilder empty() {
+        return EmptyBuilder.create();
+    }
+
+    /**
+     * Get an {@link EmptyConfigurator} to configure an existing {@link Empty} instance.
+     *
+     * @param empty the empty component to configure (not null)
+     * @return a {@link EmptyConfigurator.BaseEmptyConfigurator}
+     */
+    static EmptyConfigurator.BaseEmptyConfigurator configure(Empty empty) {
+        return EmptyConfigurator.configure(empty);
+    }
+
+    // -----------------------------------------------------------------------
+    // InputGroup (shadcn/ui-inspired unified input-field grouping container)
+    // -----------------------------------------------------------------------
+
+    /**
+     * Get an {@link InputGroupBuilder} to create an {@link InputGroup} — a horizontal
+     * flex container that merges input fields, buttons, and text addons into a single
+     * unified control.
+     *
+     * <pre>{@code
+     * InputGroup group = Components.inputGroup()
+     *     .add(new InputGroupText("@"))
+     *     .add(new TextField())
+     *     .add(new Button("Go"))
+     *     .build();
+     * }</pre>
+     *
+     * @return a new {@link InputGroupBuilder}
+     */
+    static InputGroupBuilder inputGroup() {
+        return InputGroupBuilder.create();
+    }
+
+    /**
+     * Get an {@link InputGroupLayoutConfigurator} to configure an existing {@link InputGroup} instance.
+     *
+     * @param inputGroup the group to configure (not null)
+     * @return a {@link InputGroupLayoutConfigurator.BaseInputGroupLayoutConfigurator}
+     */
+    static InputGroupLayoutConfigurator.BaseInputGroupLayoutConfigurator configure(InputGroup inputGroup) {
+        return InputGroupLayoutConfigurator.configure(inputGroup);
+    }
+
+    // -----------------------------------------------------------------------
+    // ButtonGroup (shadcn/ui-inspired button group)
+    // -----------------------------------------------------------------------
+
+    /**
+     * Get a {@link ButtonGroupBuilder} to create a {@link com.holonplatform.vaadin.flow.vaadinplus.components.ButtonGroup}.
+     *
+     * <pre>{@code
+     * ButtonGroup group = Components.buttonGroup()
+     *     .add(new Button("Day"), new Button("Week"), new Button("Month"))
+     *     .build();
+     * }</pre>
+     *
+     * @return a new {@link ButtonGroupBuilder}
+     */
+    static ButtonGroupBuilder buttonGroup() {
+        return ButtonGroupBuilder.create();
+    }
+
+    /**
+     * Get a {@link ButtonGroupConfigurator} to configure an existing
+     * {@link com.holonplatform.vaadin.flow.vaadinplus.components.ButtonGroup} instance.
+     *
+     * @param buttonGroup the group to configure (not null)
+     * @return a {@link ButtonGroupConfigurator.BaseButtonGroupConfigurator}
+     */
+    static ButtonGroupConfigurator.BaseButtonGroupConfigurator configure(
+            com.holonplatform.vaadin.flow.vaadinplus.components.ButtonGroup buttonGroup) {
+        return ButtonGroupConfigurator.configure(buttonGroup);
+    }
+
+    // -----------------------------------------------------------------------
+    // InputOTP (shadcn/ui-inspired one-time password input)
+    // -----------------------------------------------------------------------
+
+    /**
+     * Get an {@link InputOTPBuilder} to create an {@link InputOTP} one-time password input.
+     *
+     * <pre>{@code
+     * InputOTP otp = Components.inputOTP()
+     *     .group(3).separator().group(3)
+     *     .pattern("[0-9]")
+     *     .onComplete(value -> verifyCode(value))
+     *     .build();
+     * }</pre>
+     *
+     * @return a new {@link InputOTPBuilder}
+     */
+    static InputOTPBuilder inputOTP() {
+        return InputOTPBuilder.create();
+    }
+
+    /**
+     * Get an {@link InputOTPConfigurator} to configure an existing {@link InputOTP} instance.
+     *
+     * @param otp the OTP component to configure (not null)
+     * @return a {@link InputOTPConfigurator.BaseInputOTPConfigurator}
+     */
+    static InputOTPConfigurator.BaseInputOTPConfigurator configure(InputOTP otp) {
+        return InputOTPConfigurator.configure(otp);
+    }
+
+    // -----------------------------------------------------------------------
+    // Separator (shadcn/ui-inspired separator)
+    // -----------------------------------------------------------------------
+
+    /**
+     * Get a {@link SeparatorBuilder} to create a {@link Separator} component.
+     *
+     * <pre>{@code
+     * // Horizontal rule (default)
+     * Separator sep = Components.separator().build();
+     *
+     * // Vertical rule
+     * Separator sep = Components.separator()
+     *     .orientation(Separator.Orientation.VERTICAL)
+     *     .build();
+     *
+     * // Decorative (hidden from assistive technologies)
+     * Separator sep = Components.separator()
+     *     .decorative(true)
+     *     .build();
+     * }</pre>
+     *
+     * @return a new {@link SeparatorBuilder}
+     */
+    static SeparatorBuilder separator() {
+        return SeparatorBuilder.create();
+    }
+
+    /**
+     * Get a {@link SeparatorConfigurator} to configure an existing {@link Separator} instance.
+     *
+     * @param separator the separator to configure (not null)
+     * @return a {@link SeparatorConfigurator.BaseSeparatorConfigurator}
+     */
+    static SeparatorConfigurator.BaseSeparatorConfigurator configure(Separator separator) {
+        return SeparatorConfigurator.configure(separator);
+    }
+
+    // -----------------------------------------------------------------------
+    // Stepper
+    // -----------------------------------------------------------------------
+
+    /**
+     * Get a {@link StepperBuilder} to create a {@link FlowStepper} component.
+     *
+     * <pre>{@code
+     * // Horizontal stepper (default)
+     * FlowStepper stepper = Components.stepper()
+     *     .steps("Account", "Details", "Review", "Confirm")
+     *     .build();
+     *
+     * // Vertical stepper starting at step 1
+     * FlowStepper stepper = Components.stepper()
+     *     .steps("Choose Plan", "Payment", "Go Live")
+     *     .currentStep(1)
+     *     .orientation(FlowStepper.Orientation.VERTICAL)
+     *     .build();
+     * }</pre>
+     *
+     * @return a new {@link StepperBuilder}
+     */
+    static StepperBuilder stepper() {
+        return StepperBuilder.create();
+    }
+
+    /**
+     * Get a {@link StepperConfigurator} to configure an existing {@link FlowStepper} instance.
+     *
+     * @param stepper the stepper to configure (not null)
+     * @return a {@link StepperConfigurator.BaseStepperConfigurator}
+     */
+    static StepperConfigurator.BaseStepperConfigurator configure(FlowStepper stepper) {
+        return StepperConfigurator.configure(stepper);
+    }
+
+    // -----------------------------------------------------------------------
+    // Timeline Stepper (audit log)
+    // -----------------------------------------------------------------------
+
+    /**
+     * Get a {@link TimelineStepperBuilder} to create a {@link TimelineStepper} component.
+     *
+     * <pre>{@code
+     * TimelineStepper tl = Components.timelineStepper()
+     *     .pageSize(20)
+     *     .hasMore(true)
+     *     .width("100%")
+     *     .onLoadMore(e -> tl.appendEntries(service.getPage(e.getPage())))
+     *     .build();
+     * }</pre>
+     *
+     * @return a new {@link TimelineStepperBuilder}
+     */
+    static TimelineStepperBuilder timelineStepper() {
+        return TimelineStepperBuilder.create();
+    }
+
+    /**
+     * Get a {@link TimelineStepperConfigurator} to configure an existing
+     * {@link TimelineStepper} instance.
+     *
+     * @param timeline the timeline to configure (not null)
+     * @return a {@link TimelineStepperConfigurator.BaseTimelineStepperConfigurator}
+     */
+    static TimelineStepperConfigurator.BaseTimelineStepperConfigurator configure(TimelineStepper timeline) {
+        return TimelineStepperConfigurator.configure(timeline);
+    }
+
+    static
     interface utils {
         static FormResponsiveStepBuilder responsiveSteps() {
             return FormResponsiveStepBuilder.create();
         }
 
-        static DividerBuilder divider() {
-            return DividerBuilder.create();
-        }
-
-        static DividerBuilder divider(Span span) {
-            return DividerBuilder.create(span);
-        }
 
     }
 
     static ZohoBuilder zoho() {
         return ZohoBuilder.create();
     }
+
     static ZohoBuilder zoho(boolean mobile) {
         return ZohoBuilder.create(mobile);
     }
@@ -531,6 +965,7 @@ public interface Components {
     static CardBuilder card() {
         return CardBuilder.create();
     }
+
     static RowBuilder row() {
         return RowBuilder.create();
     }
@@ -788,7 +1223,7 @@ public interface Components {
          * @param message The dialog message text
          */
         static void showMessage(Localizable message) {
-            message().text(message).open();
+            message().withContent(message).open();
         }
 
         /**
@@ -852,7 +1287,7 @@ public interface Components {
          * @param message The dialog message text
          */
         static void showConfirm(Localizable message) {
-            confirm().text(message).open();
+            confirm().withContent(message).open();
         }
 
         /**
@@ -944,6 +1379,31 @@ public interface Components {
             return DialogBuilder.save(saveDialogCallback);
         }
 
+        // -----------------------------------------------------------------------
+        // AlertDialog (shadcn/ui-inspired non-dismissible confirmation dialog)
+        // -----------------------------------------------------------------------
+
+        /**
+         * Get an {@link AlertDialogBuilder} to create an {@link AlertDialog} — the
+         * shadcn/ui-inspired confirmation dialog that forces an explicit user choice.
+         * <p>By default the dialog is non-dismissible (no ESC, no click-outside).</p>
+         *
+         * @return a new {@link AlertDialogBuilder}
+         */
+        static AlertDialogBuilder alertDialog() {
+            return AlertDialogBuilder.create();
+        }
+
+        /**
+         * Get an {@link AlertDialogConfigurator} to configure an existing {@link AlertDialog}.
+         *
+         * @param dialog the dialog to configure (not null)
+         * @return a {@link AlertDialogConfigurator.BaseAlertDialogConfigurator}
+         */
+        static AlertDialogConfigurator.BaseAlertDialogConfigurator configure(AlertDialog dialog) {
+            return AlertDialogConfigurator.configure(dialog);
+        }
+
         /**
          * Show a question dialog with given localizable message text.
          *
@@ -952,7 +1412,7 @@ public interface Components {
          * @param message                The dialog message text
          */
         static void showQuestion(QuestionDialogCallback questionDialogCallback, Localizable message) {
-            question(questionDialogCallback).text(message).open();
+            question(questionDialogCallback).withContent(message).open();
         }
 
         /**
@@ -992,7 +1452,7 @@ public interface Components {
          * @param message              The dialog message text
          */
         static void showDelete(DialogBuilder.DeleteDialogCallback deleteDialogCallback, Localizable message) {
-            delete(deleteDialogCallback).text(message).open();
+            delete(deleteDialogCallback).withContent(message).open();
         }
 
         /**
@@ -1688,6 +2148,17 @@ public interface Components {
         }
 
         /**
+         * Gets a builder to create a NumberField-backed numeric type {@link Input}.
+         *
+         * @param <T>         Number type
+         * @param numberClass Number class (not null)
+         * @return A new {@link NumberFieldInputBuilder}
+         */
+        static <T extends Number> NumberFieldInputBuilder<T> numberField(Class<T> numberClass) {
+            return Input.numberField(numberClass);
+        }
+
+        /**
          * Gets a builder to create a <em>filterable</em> {@link SingleSelect} type
          * {@link Input}, which uses a {@link ComboBox} as input component.
          * <p>
@@ -2347,13 +2818,13 @@ public interface Components {
          * Get a {@link BeanListingBuilder} to create and setup a {@link BeanListing}
          * using given <code>beanType</code>.
          *
-         * @param <T>      Bean type
-         * @param beanType The bean class, i.e. the item type (not null)
+         * @param <T>               Bean type
+         * @param beanType          The bean class, i.e. the item type (not null)
          * @param autoCreateColumns an initial set of columns for each of the bean's properties.
          * @return A new {@link BeanListingBuilder}
          */
-        static <T> BeanListingBuilder<T> items(Class<T> beanType,boolean autoCreateColumns) {
-            return BeanListing.builder(beanType,autoCreateColumns);
+        static <T> BeanListingBuilder<T> items(Class<T> beanType, boolean autoCreateColumns) {
+            return BeanListing.builder(beanType, autoCreateColumns);
         }
 
         /**
@@ -2380,6 +2851,48 @@ public interface Components {
             return PropertyListing.builder(properties);
         }
 
+    }
+
+    // -----------------------------------------------------------------------
+    // Carousel
+    // -----------------------------------------------------------------------
+
+    /**
+     * Get a {@link CarouselBuilder} to create a horizontal {@link Carousel}.
+     *
+     * <p>Usage:
+     * <pre>{@code
+     * Carousel carousel = Components.carousel()
+     *     .loop(true)
+     *     .addItem(card1, card2, card3)
+     *     .build();
+     * }</pre>
+     *
+     * @return a new {@link CarouselBuilder}
+     */
+    static CarouselBuilder carousel() {
+        return CarouselBuilder.create();
+    }
+
+    /**
+     * Get a {@link CarouselBuilder} to create a {@link Carousel} with the given orientation.
+     *
+     * @param orientation the scroll axis (not null)
+     * @return a new {@link CarouselBuilder}
+     */
+    static CarouselBuilder carousel(Carousel.Orientation orientation) {
+        return CarouselBuilder.create(orientation);
+    }
+
+    /**
+     * Get a {@link CarouselConfigurator.BaseCarouselConfigurator} to configure an
+     * existing {@link Carousel} instance.
+     *
+     * @param carousel the carousel to configure (not null)
+     * @return a new {@link CarouselConfigurator.BaseCarouselConfigurator}
+     */
+    static CarouselConfigurator.BaseCarouselConfigurator configure(Carousel carousel) {
+        return CarouselConfigurator.configure(carousel);
     }
 
     // ------- localization
@@ -2561,5 +3074,409 @@ public interface Components {
         return LocalizationProvider.localize(defaultMessage, messageCode, arguments);
     }
 
+    // -----------------------------------------------------------------------
+    // Page-size selector
+    // -----------------------------------------------------------------------
+
+    /**
+     * Starts building a <em>"Show N entries"</em> page-size selector bound to
+     * the given {@link ItemListing}.
+     *
+     * <pre>{@code
+     * BeanListing<Person> listing = ...;
+     *
+     * ItemListingPageSizeSelector<Person, String> selector =
+     *         Components.pageSizeSelector(listing)
+     *             .withOptions(10, 25, 50, 100)
+     *             .withDefaultSize(25)
+     *             .build();
+     * }</pre>
+     *
+     * @param listing the listing to control (not null)
+     * @param <T>     item type
+     * @param <P>     property type
+     * @return a new {@link ItemListingPageSizeSelector.Builder}
+     * @since 10.0.1
+     */
+    static <T, P> ItemListingPageSizeSelector.Builder<T, P> pageSizeSelector(ItemListing<T, P> listing) {
+        return ItemListingPageSizeSelector.of(listing);
+    }
+
+    /**
+     * Starts building a <em>"Show N entries"</em> page-size selector bound to
+     * the given {@link PropertyListing}.
+     *
+     * <p>Convenience overload that avoids the verbose wildcard generics at call
+     * sites when working with {@link PropertyListing}.</p>
+     *
+     * <pre>{@code
+     * PropertyListing listing = ...;
+     *
+     * ItemListingPageSizeSelector<PropertyBox, Property<?>> selector =
+     *         Components.pageSizeSelector(listing)
+     *             .withOptions(10, 25, 50, 100)
+     *             .withDefaultSize(25)
+     *             .build();
+     * }</pre>
+     *
+     * @param listing the property listing to control (not null)
+     * @return a new {@link ItemListingPageSizeSelector.Builder}
+     * @since 10.0.1
+     */
+    static ItemListingPageSizeSelector.Builder<PropertyBox, Property<?>> pageSizeSelector(PropertyListing listing) {
+        return ItemListingPageSizeSelector.of(listing);
+    }
+
+    // -----------------------------------------------------------------------
+    // Pagination bar
+    // -----------------------------------------------------------------------
+
+    /**
+     * Creates a pagination bar bound to the given {@link ItemListing}.
+     *
+     * <p>The bar renders <em>Previous / numbered pages / Next</em> navigation and
+     * uses a look-ahead fetch to detect the last page without issuing a
+     * {@code COUNT(*)} query.</p>
+     *
+     * <pre>{@code
+     * BeanListing<Person> listing = ...;
+     * ItemListingPaginationBar<Person, String> bar = Components.paginationBar(listing);
+     * layout.add(listing.getComponent(), bar);
+     * }</pre>
+     *
+     * @param listing the listing to paginate (not null)
+     * @param <T>     item type
+     * @param <P>     property type
+     * @return a new {@link ItemListingPaginationBar}
+     * @since 10.0.1
+     */
+    static <T, P> ItemListingPaginationBar<T, P> paginationBar(ItemListing<T, P> listing) {
+        return new ItemListingPaginationBar<>(listing);
+    }
+
+    /**
+     * Creates a pagination bar bound to the given {@link PropertyListing}.
+     *
+     * <p>Convenience overload that avoids verbose wildcard generics at call sites
+     * when working with {@link PropertyListing}.</p>
+     *
+     * <pre>{@code
+     * PropertyListing listing = ...;
+     * ItemListingPaginationBar<PropertyBox, Property<?>> bar = Components.paginationBar(listing);
+     * layout.add(listing.getComponent(), bar);
+     * }</pre>
+     *
+     * @param listing the property listing to paginate (not null)
+     * @return a new {@link ItemListingPaginationBar}
+     * @since 10.0.1
+     */
+    static ItemListingPaginationBar<PropertyBox, Property<?>> paginationBar(PropertyListing listing) {
+        return new ItemListingPaginationBar<>(listing);
+    }
+
+    // -----------------------------------------------------------------------
+    // Listing bundle builder
+    // -----------------------------------------------------------------------
+
+    /**
+     * Creates a fluent {@link ListingBundleBuilder} that assembles a fully pre-wired
+     * {@link ListingBundle} — listing, pagination bar, page-size selector, optional
+     * search field, and optional filter panel — in a single chained call.
+     *
+     * <pre>{@code
+     * var bundle = Components.listing(Product.class)
+     *     .columns("id", "name", "category", "price")
+     *     .pageSizes(10, 25, 50)
+     *     .search("Search products…")
+     *     .fetch((q, text) -> service.fetch(q.getOffset(), q.getLimit(), text))
+     *     .build();
+     *
+     * add(bundle.toolbar(),   // [Show 10▾ entries]  [🔍 Search…]
+     *     bundle.grid(),
+     *     bundle.footer());   // [Previous] [1] [2] [Next]
+     * }</pre>
+     *
+     * @param beanType the bean class to introspect for columns (not null)
+     * @param <T>      item type
+     * @return a new {@link ListingBundleBuilder}
+     * @since 10.0.1
+     */
+    static <T> ListingBundleBuilder<T> listing(Class<T> beanType) {
+        return new ListingBundleBuilder<>(beanType);
+    }
+
+    /**
+     * Creates a fluent {@link PropertyListingBundleBuilder} from an explicit set of
+     * Holon {@link Property} objects.
+     *
+     * <pre>{@code
+     * var bundle = Components.listing(NAME, CATEGORY, PRICE, STATUS)
+     *     .header(NAME, "Product Name")
+     *     .header(PRICE, "Price (€)")
+     *     .pageSizes(10, 25, 50)
+     *     .search("Search…")
+     *     .fetch((q, text) -> service.fetch(q.getOffset(), q.getLimit(), text))
+     *     .build();
+     *
+     * add(bundle.toolbar(), bundle.grid(), bundle.footer());
+     * }</pre>
+     *
+     * @param properties the properties to display as columns (not null)
+     * @return a new {@link PropertyListingBundleBuilder}
+     * @since 10.0.1
+     */
+    static PropertyListingBundleBuilder listing(Property<?>... properties) {
+        return new PropertyListingBundleBuilder(properties);
+    }
+
+    /**
+     * Creates a fluent {@link PropertyListingBundleBuilder} from a Holon {@link PropertySet}.
+     *
+     * <pre>{@code
+     * var bundle = Components.listing(PRODUCT_SET)
+     *     .pageSizes(10, 25, 50)
+     *     .withFilterPanel()
+     *     .fetch((q, text, filter) -> {
+     *         var q2 = datastore.query(TARGET).restrict(q.getLimit(), q.getOffset());
+     *         if (filter != null) q2.filter(filter);
+     *         return q2.stream(PRODUCT_SET);
+     *     })
+     *     .build();
+     * }</pre>
+     *
+     * @param propertySet the property set to display (not null)
+     * @return a new {@link PropertyListingBundleBuilder}
+     * @since 10.0.1
+     */
+    static PropertyListingBundleBuilder listing(PropertySet<?> propertySet) {
+        return new PropertyListingBundleBuilder(propertySet);
+    }
+
+    // -----------------------------------------------------------------------
+    // Highlight KPI card
+    // -----------------------------------------------------------------------
+
+    /**
+     * Creates a fluent {@link HighlightBuilder} for a KPI / metric card with the
+     * given heading label and value text.
+     *
+     * <pre>{@code
+     * Highlight card = Components.highlight("Total Revenue", "$128,430")
+     *     .valueFirst()
+     *     .accentColor(Highlight.AccentColor.PURPLE)
+     *     .valueFontSize(Font.Size.XXLARGE)
+     *     .details(trendSpan)
+     *     .suffix(IconBadge.of(VaadinIcon.DOLLAR, Alert.Variant.INFO))
+     *     .ariaLabel("Total Revenue KPI card")
+     *     .build();
+     * }</pre>
+     *
+     * @param heading the heading label text (not null)
+     * @param value   the value text (not null)
+     * @return a new {@link HighlightBuilder}
+     * @since 10.0.0
+     */
+    static com.holonplatform.vaadin.flow.components.builders.HighlightBuilder highlight(
+            String heading, String value) {
+        return com.holonplatform.vaadin.flow.components.builders.HighlightBuilder.create(heading, value);
+    }
+
+    /**
+     * Creates a fluent {@link HighlightBuilder} for a prefix + heading + value card.
+     *
+     * <pre>{@code
+     * Highlight card = Components.highlight(
+     *         IconBadge.of(VaadinIcon.USER, Alert.Variant.INFO),
+     *         "Active Users", "4,291")
+     *     .details(trendSpan)
+     *     .build();
+     * }</pre>
+     *
+     * @param prefix  the prefix component (left icon / avatar slot)
+     * @param heading the heading label text (not null)
+     * @param value   the value text (not null)
+     * @return a new {@link HighlightBuilder}
+     * @since 10.0.0
+     */
+    static com.holonplatform.vaadin.flow.components.builders.HighlightBuilder highlight(
+            com.vaadin.flow.component.Component prefix, String heading, String value) {
+        return com.holonplatform.vaadin.flow.components.builders.HighlightBuilder.create(prefix, heading, value);
+    }
+
+    // -----------------------------------------------------------------------
+    // EntityFormPanel
+    // -----------------------------------------------------------------------
+
+    /**
+     * Creates an {@link EntityFormPanel.BeanBuilder} for a form panel driven by the
+     * given bean class.
+     *
+     * <p>The form panel wraps a {@link BeanPropertyInputForm} and provides a standard
+     * button footer with mandatory <em>Save</em> and <em>Clear</em> buttons plus
+     * optional <em>Save &amp; New</em> and <em>Cancel</em> buttons.
+     * ENTER-key navigation between inputs is enabled by default.
+     *
+     * <pre>{@code
+     * EntityFormPanel<Customer> panel = Components.<Customer>entityFormPanel(Customer.class)
+     *     .configure(fb -> fb.excludeFields("id"))
+     *     .saveButton(btn -> btn.primary().withText("Save"),
+     *                 customer -> service.save(customer))
+     *     .clearButton(btn -> btn.tertiary().withText("Reset"))
+     *     .cancelButton(btn -> btn.tertiary().withText("Cancel"),
+     *                   () -> dialog.close())
+     *     .build();
+     * }</pre>
+     *
+     * @param <T>       bean type
+     * @param beanClass the bean class to introspect (not null)
+     * @return a new {@link EntityFormPanel.BeanBuilder}
+     * @since 10.0.0
+     */
+    static <T> EntityFormPanel.BeanBuilder<T> entityFormPanel(Class<T> beanClass) {
+        return EntityFormPanel.bean(beanClass);
+    }
+
+    /**
+     * Creates an {@link EntityFormPanel.PropertyBuilder} for a form panel driven by
+     * the given {@link PropertySet}.
+     *
+     * <pre>{@code
+     * EntityFormPanel<PropertyBox> panel = Components.entityFormPanel(CUSTOMER_SET)
+     *     .saveButton(btn -> btn.primary().withText("Save"),
+     *                 pb -> service.save(pb))
+     *     .clearButton(btn -> btn.tertiary().withText("Reset"))
+     *     .build();
+     * }</pre>
+     *
+     * @param propertySet the property set that defines the form fields (not null)
+     * @return a new {@link EntityFormPanel.PropertyBuilder}
+     * @since 10.0.0
+     */
+    static EntityFormPanel.PropertyBuilder entityFormPanel(PropertySet<?> propertySet) {
+        return EntityFormPanel.properties(propertySet);
+    }
+
+    /**
+     * Creates an {@link EntityFormPanel.PropertyBuilder} for a form panel driven by
+     * the given properties (varargs).
+     *
+     * <pre>{@code
+     * EntityFormPanel<PropertyBox> panel = Components.entityFormPanel(NAME, EMAIL, PHONE)
+     *     .saveButton(btn -> btn.primary().withText("Save"),
+     *                 pb -> service.save(pb))
+     *     .clearButton(btn -> btn.tertiary().withText("Reset"))
+     *     .build();
+     * }</pre>
+     *
+     * @param properties the properties that define the form fields (not null)
+     * @return a new {@link EntityFormPanel.PropertyBuilder}
+     * @since 10.0.0
+     */
+    static EntityFormPanel.PropertyBuilder entityFormPanel(Property<?>... properties) {
+        return EntityFormPanel.properties(properties);
+    }
+
+    // -----------------------------------------------------------------------
+    // KeyValueList
+    // -----------------------------------------------------------------------
+
+    /**
+     * Creates an empty {@link KeyValueList}.
+     *
+     * <p>Items can be added fluently:
+     * <pre>{@code
+     * Components.keyValueList()
+     *     .addItem(KeyValueItem.of("Name",  "Jane Smith"))
+     *     .addItem(KeyValueItem.of("Email", "jane@example.com"));
+     * }</pre>
+     *
+     * @return a new empty {@link KeyValueList}
+     * @since 10.0.0
+     */
+    static KeyValueList keyValueList() {
+        return new KeyValueList();
+    }
+
+    /**
+     * Creates a {@link KeyValueList} pre-populated with the given items.
+     *
+     * <pre>{@code
+     * Components.keyValueList(
+     *     KeyValueItem.of("Name",  "Jane Smith"),
+     *     KeyValueItem.of("Email", "jane@example.com")
+     * );
+     * }</pre>
+     *
+     * @param items the {@link KeyValueItem} rows to add (not null)
+     * @return a new {@link KeyValueList} containing the provided items
+     * @since 10.0.0
+     */
+    static KeyValueList keyValueList(KeyValueItem... items) {
+        var list = new KeyValueList();
+        for (KeyValueItem item : items) {
+            list.addItem(item);
+        }
+        return list;
+    }
+
+    // -----------------------------------------------------------------------
+    // LineItemGrid
+    // -----------------------------------------------------------------------
+
+    /**
+     * Creates a new {@link com.holonplatform.vaadin.flow.vaadinplus.components.LineItemGrid.Builder}
+     * for a keyboard-centric inline document line-item spreadsheet.
+     *
+     * <p>All rows are rendered without virtual scrolling so the browser's native Tab order
+     * covers every cell. {@code Enter} moves to the same column in the next row (Excel
+     * behaviour). On mobile viewports the table switches automatically to a card-list view
+     * with a {@link com.holonplatform.vaadin.flow.vaadinplus.components.Sheet} edit panel.</p>
+     *
+     * <pre>{@code
+     * LineItemGrid grid = Components.lineItemGrid()
+     *     .title("Invoice Lines")
+     *     .withItemSuggestion("Laptop", "SKU-001", 1299.00)
+     *     .withTaxOption("GST 10%", 0.10)
+     *     .withInitialRows(2)
+     *     .build();
+     * }</pre>
+     *
+     * @return a new {@link com.holonplatform.vaadin.flow.vaadinplus.components.LineItemGrid.Builder}
+     * @since 10.0.0
+     */
+    static com.holonplatform.vaadin.flow.vaadinplus.components.LineItemGrid.Builder lineItemGrid() {
+        return com.holonplatform.vaadin.flow.vaadinplus.components.LineItemGrid.builder();
+    }
+
+    // -----------------------------------------------------------------------
+    // MasterDetailLayout
+    // -----------------------------------------------------------------------
+
+    /**
+     * Creates a new {@link com.iyensoft.vaadin.flow.components.builders.MasterDetailBuilder}
+     * for a reactive signal-driven master-detail layout.
+     *
+     * <p>On <b>mobile</b> viewports the detail opens as a full-screen
+     * {@link com.holonplatform.vaadin.flow.vaadinplus.components.Sheet} slide-in;
+     * on <b>tablet/desktop</b> master and detail sit side by side.</p>
+     *
+     * <pre>{@code
+     * MasterDetailLayout<Order> layout = Components.<Order>masterDetail()
+     *     .masterGrid(orderGrid)
+     *     .detailContent(order -> new Component[]{ new OrderDetailForm(order) })
+     *     .itemId(o -> String.valueOf(o.getId()),
+     *             id -> orderService.findById(Long.parseLong(id)))
+     *     .onDataChanged(() -> orderGrid.getDataProvider().refreshAll())
+     *     .autoSelectFirst(true)
+     *     .build();
+     * }</pre>
+     *
+     * @param <T> the item type displayed in the master grid
+     * @return a new {@link com.iyensoft.vaadin.flow.components.builders.MasterDetailBuilder}
+     * @since 10.0.0
+     */
+    static <T> com.iyensoft.vaadin.flow.components.builders.MasterDetailBuilder<T> masterDetail() {
+        return com.iyensoft.vaadin.flow.components.builders.MasterDetailBuilder.create();
+    }
 
 }

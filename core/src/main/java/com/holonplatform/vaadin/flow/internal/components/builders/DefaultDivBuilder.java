@@ -9,21 +9,11 @@ public class DefaultDivBuilder extends AbstractDivConfigurator<DivBuilder>
         super(new Div());
     }
 
-    /**
-     * Build and returns the component.
-     *
-     * @return The component instance
-     */
     @Override
     public Div build() {
         return getComponent();
     }
 
-    /**
-     * Get the actual configurator.
-     *
-     * @return the actual configurator
-     */
     @Override
     protected DivBuilder getConfigurator() {
         return this;

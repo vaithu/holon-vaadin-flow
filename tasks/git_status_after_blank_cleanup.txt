@@ -1,0 +1,610 @@
+ M .gitignore
+ M .vscode/settings.json
+ M README.md
+ M bom/pom.xml
+ M core/pom.xml
+ M core/src/main/java/com/holonplatform/vaadin/flow/DoubleLabel.java
+D  core/src/main/java/com/holonplatform/vaadin/flow/HasCard.java
+D  core/src/main/java/com/holonplatform/vaadin/flow/HasFormActionNotification.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/OverviewHandler.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/PriceListItem.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/UnorderedPriceList.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/Badge.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/BeanListing.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/Components.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/DefaultBeanCrud.java
+ D core/src/main/java/com/holonplatform/vaadin/flow/components/DefaultBeanCrudV2.java
+ D core/src/main/java/com/holonplatform/vaadin/flow/components/DetailsDrawer.java
+ D core/src/main/java/com/holonplatform/vaadin/flow/components/DetailsDrawerFooter.java
+ D core/src/main/java/com/holonplatform/vaadin/flow/components/DetailsDrawerHeader.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/FlexBoxLayout.java
+D  core/src/main/java/com/holonplatform/vaadin/flow/components/HasBorderLayout.java
+D  core/src/main/java/com/holonplatform/vaadin/flow/components/HasContent.java
+D  core/src/main/java/com/holonplatform/vaadin/flow/components/HasDesktopView.java
+D  core/src/main/java/com/holonplatform/vaadin/flow/components/HasMobileView.java
+D  core/src/main/java/com/holonplatform/vaadin/flow/components/HasResponsiveView.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/Input.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/ItemListing.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/ListItem.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/PropertyInputForm.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/PropertyListing.java
+D  core/src/main/java/com/holonplatform/vaadin/flow/components/ResizeObservable.java
+D  core/src/main/java/com/holonplatform/vaadin/flow/components/ResizeObserver.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/SplitViewFrame.java
+ D core/src/main/java/com/holonplatform/vaadin/flow/components/builders/AutoTabsBuilder.java
+ D core/src/main/java/com/holonplatform/vaadin/flow/components/builders/AutoTabsConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/builders/BaseTemporalInputConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/builders/BeanListingConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/builders/BooleanInputConfigurator.java
+ D core/src/main/java/com/holonplatform/vaadin/flow/components/builders/BootstrapColumnSizeConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/builders/ButtonConfigurator.java
+D  core/src/main/java/com/holonplatform/vaadin/flow/components/builders/CardGridBuilder.java
+D  core/src/main/java/com/holonplatform/vaadin/flow/components/builders/CardGridConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/builders/ColumnConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/builders/ComponentConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/builders/DialogBuilder.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/builders/DialogConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/builders/DivConfigurator.java
+ D core/src/main/java/com/holonplatform/vaadin/flow/components/builders/DividerBuilder.java
+ D core/src/main/java/com/holonplatform/vaadin/flow/components/builders/DividerConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/builders/FlexBoxLayoutConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/builders/FlexComponentConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/builders/GridHeaderBuilder.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/builders/GridHeaderConfigurator.java
+ D core/src/main/java/com/holonplatform/vaadin/flow/components/builders/GridSizeConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/builders/HasDetailsConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/builders/HasEnabledConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/builders/HasHelperTextConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/builders/HasHtmlTextConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/builders/HasLabelConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/builders/HasLazyDataViewConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/builders/HasOptionsButtonConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/builders/HasPlaceholderConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/builders/HasPrefixAndSuffixConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/builders/HasTextConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/builders/HasTitleConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/builders/HasTooltipConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/builders/HeaderBuilder.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/builders/InputConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/builders/InputValueConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/builders/ItemListingConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/builders/LayoutConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/builders/LocalDateTimeInputConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/builders/LocalTimeInputConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/builders/MenuBarConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/builders/NotificationConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/builders/NumberInputConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/builders/PasswordInputConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/builders/PropertyInputFormConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/builders/RowConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/builders/SelectableInputConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/builders/SingleSelectConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/builders/StringAreaInputConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/builders/StringInputConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/builders/TabConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/builders/ViewComponentConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/builders/ZohoViewConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/utils/BeanUtils.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/utils/NotificationUtil.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/utils/UIUtils.java
+ D core/src/main/java/com/holonplatform/vaadin/flow/enums/ColumnSize.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/CrudDialogs.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/DefaultInputPropertyRenderer.java
+D  core/src/main/java/com/holonplatform/vaadin/flow/internal/ItemFinder.java
+D  core/src/main/java/com/holonplatform/vaadin/flow/internal/Person.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/AbstractDatastorePropertyListingBuilder.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/AbstractItemListing.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/AbstractValidatableInputAdapter.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/DefaultBeanListing.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/DefaultDialog.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/DefaultFormFooter.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/DefaultPropertyInputForm.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/DefaultPropertyInputGroup.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/DefaultPropertyListing.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/DefaultTitle.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/DialogValidationStatusHandler.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/InputAdapter.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/InputConverterAdapter.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/MultiSelectInputAdapter.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/SingleSelectInputAdapter.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/AbstractAccordionConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/AbstractAccordionPanelConfigurator.java
+ D core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/AbstractAutoTabsConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/AbstractBooleanInputBuilder.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/AbstractBulkActionConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/AbstractButtonConfigurator.java
+D  core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/AbstractCardGridConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/AbstractClosableDialogConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/AbstractComponentConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/AbstractContextMenuConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/AbstractDateInputBuilder.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/AbstractDateTimeInputBuilder.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/AbstractDetailsConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/AbstractDialogConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/AbstractDivConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/AbstractFlexBoxLayoutConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/AbstractFlexLayoutConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/AbstractFormHeaderConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/AbstractFormLayoutConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/AbstractGridDetailView.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/AbstractGridMainView.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/AbstractHeaderConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/AbstractInputEditorConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/AbstractLocalDateInputBuilder.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/AbstractLocalDateTimeInputBuilder.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/AbstractLocalTimeInputBuilder.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/AbstractMenuItemConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/AbstractNotificationConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/AbstractNumberInputBuilder.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/AbstractPasswordInputBuilder.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/AbstractSplitLayoutConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/AbstractStringAreaInputBuilder.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/AbstractStringInputBuilder.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/AbstractTabConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/AbstractZohoCommonBuilder.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/AbstractZohoConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/AbstractZohoViewConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/DefaultAccordionBuilder.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/DefaultAccordionConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/DefaultAccordionHeaderBuilder.java
+ D core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/DefaultAutoTabsBuilder.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/DefaultBooleanInputBuilder.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/DefaultBulkActionBuilder.java
+D  core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/DefaultCardBuilder.java
+D  core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/DefaultCardGridBuilder.java
+D  core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/DefaultCardGridConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/DefaultColumnBuilder.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/DefaultComponentConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/DefaultConfirmDialogBuilder.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/DefaultContextMenuBuilder.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/DefaultDateInputBuilder.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/DefaultDateTimeInputBuilder.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/DefaultDeleteDialogBuilder.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/DefaultDetailsBuilder.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/DefaultDivBuilder.java
+ D core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/DefaultDividerBuilder.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/DefaultFilterableSingleSelectInputBuilder.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/DefaultFlexBoxLayoutBuilder.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/DefaultFlexBoxLayoutConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/DefaultFlexLayoutBuilder.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/DefaultFormHeaderBarBuilder.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/DefaultFormLayoutBuilder.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/DefaultGridHeaderBuilder.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/DefaultHasEnabledConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/DefaultHasHelperTextConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/DefaultHasHtmlTextConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/DefaultHasLabelConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/DefaultHasPlaceholderConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/DefaultHasPrefixAndSuffixConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/DefaultHasTextConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/DefaultHasTitleConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/DefaultHasTooltipConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/DefaultHeaderBuilder.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/DefaultHorizontalLayoutBuilder.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/DefaultLabelBuilder.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/DefaultLayoutBuilder.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/DefaultLocalDateInputBuilder.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/DefaultLocalDateTimeInputBuilder.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/DefaultLocalTimeInputBuilder.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/DefaultMenuBarBuilder.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/DefaultMessageDialogBuilder.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/DefaultNotificationBuilder.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/DefaultNumberInputBuilder.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/DefaultPasswordInputBuilder.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/DefaultPropertyFilterableSingleSelectInputBuilder.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/DefaultQuestionDialogBuilder.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/DefaultRowBuilder.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/DefaultSaveAndNewDialogBuilder.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/DefaultSaveDialogBuilder.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/DefaultSearchBarBuilder.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/DefaultSplitLayoutBuilder.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/DefaultStringAreaInputBuilder.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/DefaultStringInputBuilder.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/DefaultTabBuilder.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/DefaultVerticalLayoutBuilder.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/DefaultZohoViewBuilder.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/support/DefaultItemListingColumn.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/lumo/AlignItems.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/lumo/AlignSelf.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/lumo/Background.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/lumo/BoxSizing.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/lumo/ColumnGap.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/lumo/ColumnSpan.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/lumo/Display.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/lumo/FlexDirection.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/lumo/FlexRowBreakpoint.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/lumo/FlexWrap.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/lumo/Gap.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/lumo/GridColumns.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/lumo/JustifyContent.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/lumo/Overflow.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/lumo/Position.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/lumo/RowGap.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/lumo/SeparatorColor.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/lumo/Text.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/util/UnknownOperationResult.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/KeyValuePair.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/KeyValuePairs.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/Layout.java
+ D core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/Sidebar.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/AppBar.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/Breadcrumb.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/BreadcrumbItem.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/ComponentView.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/GridHeader.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/Header.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/Highlight.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/Preview.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/Tag.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/utilities/Color.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/utilities/Font.java
+ M core/src/main/java/com/iyensoft/vaadin/flow/components/builders/CardConfigurator.java
+ M core/src/main/java/com/iyensoft/vaadin/flow/components/builders/LazyTabsBuilder.java
+ M core/src/main/java/com/iyensoft/vaadin/flow/components/builders/LazyTabsConfigurator.java
+ M core/src/main/java/com/iyensoft/vaadin/flow/components/builders/SideNavBuilder.java
+ M core/src/main/java/com/iyensoft/vaadin/flow/components/builders/SideNavConfigurator.java
+ M core/src/main/java/com/iyensoft/vaadin/flow/components/builders/TabsBuilder.java
+ M core/src/main/java/com/iyensoft/vaadin/flow/components/builders/TabsConfigurator.java
+ M core/src/main/java/com/iyensoft/vaadin/flow/internal/components/builders/AbstractCardConfigurator.java
+ M core/src/main/java/com/iyensoft/vaadin/flow/internal/components/builders/AbstractIyenCommonConfigurator.java
+ M core/src/main/java/com/iyensoft/vaadin/flow/internal/components/builders/AbstractIyenView.java
+ M core/src/main/java/com/iyensoft/vaadin/flow/internal/components/builders/AbstractIyenViewConfigurator.java
+ M core/src/main/java/com/iyensoft/vaadin/flow/internal/components/builders/AbstractLazyTabsConfigurator.java
+D  core/src/main/java/com/iyensoft/vaadin/flow/internal/components/builders/AbstractSideNavConfigurator.java
+ M core/src/main/java/com/iyensoft/vaadin/flow/internal/components/builders/AbstractSideNavItemBuilder.java
+ M core/src/main/java/com/iyensoft/vaadin/flow/internal/components/builders/AbstractTabsConfigurator.java
+ M core/src/main/java/com/iyensoft/vaadin/flow/internal/components/builders/DefaultCardConfigurator.java
+ M core/src/main/java/com/iyensoft/vaadin/flow/internal/components/builders/DefaultLazyTabsBuilder.java
+ M core/src/main/java/com/iyensoft/vaadin/flow/internal/components/builders/DefaultLazyTabsConfigurator.java
+ M core/src/main/java/com/iyensoft/vaadin/flow/internal/components/builders/DefaultPanelBuilder.java
+ M core/src/main/java/com/iyensoft/vaadin/flow/internal/components/builders/DefaultTabsBuilder.java
+ M core/src/main/java/com/iyensoft/vaadin/flow/internal/components/builders/DefaultTabsConfigurator.java
+ M core/src/main/java/com/iyensoft/vaadin/flow/utils/responsive/IyenResponsiveLayout.java
+ D core/src/main/java/com/iyensoft/vaadin/flow/utils/responsive/Responsive.java
+ D core/src/main/java/com/iyensoft/vaadin/flow/utils/responsive/ResponsiveClasses.java
+ D core/src/main/java/com/iyensoft/vaadin/flow/utils/responsive/ResponsiveDSL.java
+ D core/src/main/java/com/iyensoft/vaadin/flow/utils/responsive/ResponsiveGridDSL.java
+ D core/src/main/java/com/iyensoft/vaadin/flow/utils/responsive/ResponsiveHelpers.java
+ D core/src/main/java/com/iyensoft/vaadin/flow/utils/responsive/ResponsivePlus.java
+ M core/src/test/java/com/holonplatform/vaadin/flow/test/AbstractLazyTabsConfiguratorTest.java
+ M core/src/test/java/com/holonplatform/vaadin/flow/test/AbstractSessionTest.java
+ M core/src/test/java/com/holonplatform/vaadin/flow/test/TestAccordion.java
+ M core/src/test/java/com/holonplatform/vaadin/flow/test/TestBeanListing.java
+ M core/src/test/java/com/holonplatform/vaadin/flow/test/TestBooleanInput.java
+ M core/src/test/java/com/holonplatform/vaadin/flow/test/TestButton.java
+D  core/src/test/java/com/holonplatform/vaadin/flow/test/TestCardBuilder.java
+ M core/src/test/java/com/holonplatform/vaadin/flow/test/TestDateInput.java
+ M core/src/test/java/com/holonplatform/vaadin/flow/test/TestDateTimeInput.java
+ M core/src/test/java/com/holonplatform/vaadin/flow/test/TestDefaultFormResponsiveStepBuilder.java
+ M core/src/test/java/com/holonplatform/vaadin/flow/test/TestDeleteOperation.java
+ M core/src/test/java/com/holonplatform/vaadin/flow/test/TestFilterableSingleSelectInput.java
+ M core/src/test/java/com/holonplatform/vaadin/flow/test/TestIyenView.java
+ M core/src/test/java/com/holonplatform/vaadin/flow/test/TestListMultiSelectInput.java
+ M core/src/test/java/com/holonplatform/vaadin/flow/test/TestListSingleSelectInput.java
+ M core/src/test/java/com/holonplatform/vaadin/flow/test/TestLocalDateInput.java
+ M core/src/test/java/com/holonplatform/vaadin/flow/test/TestLocalDateTimeInput.java
+ M core/src/test/java/com/holonplatform/vaadin/flow/test/TestLocalTimeInput.java
+ M core/src/test/java/com/holonplatform/vaadin/flow/test/TestNumberInput.java
+ M core/src/test/java/com/holonplatform/vaadin/flow/test/TestOptionsMultiSelectInput.java
+ M core/src/test/java/com/holonplatform/vaadin/flow/test/TestOptionsSingleSelectInput.java
+ M core/src/test/java/com/holonplatform/vaadin/flow/test/TestPasswordInput.java
+ M core/src/test/java/com/holonplatform/vaadin/flow/test/TestPropertyInputForm.java
+ M core/src/test/java/com/holonplatform/vaadin/flow/test/TestPropertyListing.java
+ M core/src/test/java/com/holonplatform/vaadin/flow/test/TestSingleSelectInput.java
+ M core/src/test/java/com/holonplatform/vaadin/flow/test/TestStringAreaInput.java
+ M core/src/test/java/com/holonplatform/vaadin/flow/test/TestStringInput.java
+ M core/src/test/java/com/holonplatform/vaadin/flow/test/TestTabsBuilder.java
+ M core/src/test/java/com/holonplatform/vaadin/flow/test/TestZohoView.java
+ M core/src/test/java/com/holonplatform/vaadin/flow/test/util/ComponentTestUtils.java
+ M documentation/pom.xml
+ M documentation/src/docs/asciidoc/reference/_spring.adoc
+ M documentation/src/main/java/com/holonplatform/vaadin/flow/examples/ExampleDialog.java
+ M documentation/src/main/java/com/holonplatform/vaadin/flow/examples/ExampleInput.java
+ M navigator/pom.xml
+ M navigator/src/main/java/com/holonplatform/vaadin/flow/navigator/internal/config/AbstractNavigationTargetConfigurationRegistryInitializer.java
+ M navigator/src/main/java/com/holonplatform/vaadin/flow/navigator/internal/config/DefaultNavigationTargetConfiguration.java
+ M navigator/src/main/java/com/holonplatform/vaadin/flow/navigator/internal/config/DefaultNavigationTargetConfigurationRegistry.java
+ M navigator/src/main/java/com/holonplatform/vaadin/flow/navigator/internal/config/NavigationTargetConfiguration.java
+ M navigator/src/main/java/com/holonplatform/vaadin/flow/navigator/internal/config/NavigationTargetConfigurationRegistry.java
+ M navigator/src/main/java/com/holonplatform/vaadin/flow/navigator/internal/config/NavigationTargetConfigurationRegistryInitializer.java
+ M navigator/src/main/java/com/holonplatform/vaadin/flow/navigator/internal/listeners/DefaultNavigationTargetAfterNavigationListener.java
+ M navigator/src/main/java/com/holonplatform/vaadin/flow/navigator/internal/listeners/DefaultNavigationTargetBeforeEnterListener.java
+ M navigator/src/test/java/com/holonplatform/vaadin/flow/navigator/test/AbstractNavigatorTest.java
+ M navigator/src/test/java/com/holonplatform/vaadin/flow/navigator/test/TestViewConfiguration.java
+ M pom.xml
+ M spring-boot/pom.xml
+ M spring-boot/src/main/java/com/holonplatform/vaadin/flow/spring/boot/internal/NavigatorServletContextInitializer.java
+ M spring-boot/src/main/java/com/holonplatform/vaadin/flow/spring/boot/jmix/flowui/sys/SessionHolder.java
+ M spring-boot/src/test/resources/application.yml
+ M spring/pom.xml
+ M spring/src/test/java/com/holonplatform/vaadin/flow/spring/test/AbstractVaadinSpringTest.java
+ D starter-undertow/pom.xml
+ D starter-undertow/src/main/resources/META-INF/spring.provides
+ M starter/pom.xml
+?? $null
+?? .claude/
+?? .copilot/
+?? .vscode/.copilot-plugin
+?? .vscode/launch.json
+?? AGENTS.md
+?? CLAUDE.md
+?? META-INF/
+?? calendar/
+?? chartjs/
+?? core/.mvn/
+?? core/mvnw
+?? core/mvnw.cmd
+?? core/src/main/java/com/holonplatform/vaadin/flow/components/BeanPropertyInputForm.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/components/FilterInput.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/components/FilterInputForm.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/components/FilterInputGroup.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/components/FilterInputSupport.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/components/ItemListingPageSizeSelector.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/components/ItemListingPaginationBar.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/components/KanbanBoard.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/components/ListingBundle.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/components/ListingBundleBuilder.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/components/PropertyListingBundleBuilder.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/components/builders/AlertBuilder.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/components/builders/AlertConfigurator.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/components/builders/AlertDialogBuilder.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/components/builders/AlertDialogConfigurator.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/components/builders/AlertModalBuilder.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/components/builders/AlertModalConfigurator.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/components/builders/AvatarBuilder.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/components/builders/AvatarColor.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/components/builders/AvatarConfigurator.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/components/builders/AvatarGroupBuilder.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/components/builders/AvatarGroupConfigurator.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/components/builders/BeanPropertyInputFormBuilder.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/components/builders/ButtonGroupBuilder.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/components/builders/ButtonGroupConfigurator.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/components/builders/CarouselBuilder.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/components/builders/CarouselConfigurator.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/components/builders/EmptyBuilder.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/components/builders/EmptyConfigurator.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/components/builders/FilterInputFormBuilder.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/components/builders/FilterInputGroupBuilder.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/components/builders/HighlightBuilder.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/components/builders/HighlightConfigurator.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/components/builders/IconBadgeBuilder.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/components/builders/IconBadgeConfigurator.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/components/builders/InputGroupBuilder.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/components/builders/InputGroupLayoutConfigurator.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/components/builders/InputOTPBuilder.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/components/builders/InputOTPConfigurator.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/components/builders/KanbanBoardBuilder.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/components/builders/KanbanBoardConfigurator.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/components/builders/NumberFieldInputBuilder.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/components/builders/SeparatorBuilder.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/components/builders/SeparatorConfigurator.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/components/builders/SheetBuilder.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/components/builders/SheetConfigurator.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/components/builders/SignalBindings.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/components/builders/StepperBuilder.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/components/builders/StepperConfigurator.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/components/builders/TimelineStepperBuilder.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/components/builders/TimelineStepperConfigurator.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/components/builders/ValidatableNumberFieldInputBuilder.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/components/events/FilterChangeEvent.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/components/events/FilterChangeListener.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/components/kanban/
+?? core/src/main/java/com/holonplatform/vaadin/flow/enums/ColSpan.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/internal/components/DefaultBeanPropertyInputForm.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/internal/components/DefaultFilterInput.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/internal/components/DefaultFilterInputForm.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/internal/components/DefaultFilterInputGroup.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/internal/components/DefaultKanbanBoard.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/internal/components/RangeInputField.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/AbstractAlertConfigurator.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/AbstractAlertDialogConfigurator.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/AbstractAlertModalConfigurator.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/AbstractAvatarConfigurator.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/AbstractAvatarGroupConfigurator.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/AbstractButtonGroupConfigurator.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/AbstractCarouselConfigurator.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/AbstractEmptyConfigurator.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/AbstractHighlightConfigurator.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/AbstractIconBadgeConfigurator.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/AbstractInputGroupLayoutConfigurator.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/AbstractInputOTPConfigurator.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/AbstractNumberFieldInputBuilder.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/AbstractSeparatorConfigurator.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/AbstractSheetConfigurator.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/AbstractStepperConfigurator.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/AbstractTimelineStepperConfigurator.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/DefaultAlertBuilder.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/DefaultAlertConfigurator.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/DefaultAlertDialogBuilder.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/DefaultAlertDialogConfigurator.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/DefaultAlertModalBuilder.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/DefaultAlertModalConfigurator.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/DefaultAvatarBuilder.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/DefaultAvatarConfigurator.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/DefaultAvatarGroupBuilder.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/DefaultAvatarGroupConfigurator.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/DefaultButtonGroupBuilder.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/DefaultButtonGroupConfigurator.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/DefaultCarouselBuilder.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/DefaultCarouselConfigurator.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/DefaultEmptyBuilder.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/DefaultEmptyConfigurator.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/DefaultHighlightBuilder.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/DefaultHighlightConfigurator.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/DefaultIconBadgeBuilder.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/DefaultIconBadgeConfigurator.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/DefaultInputGroupBuilder.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/DefaultInputGroupLayoutConfigurator.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/DefaultInputOTPBuilder.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/DefaultInputOTPConfigurator.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/DefaultNumberFieldInputBuilder.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/DefaultSeparatorBuilder.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/DefaultSeparatorConfigurator.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/DefaultSheetBuilder.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/DefaultSheetConfigurator.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/DefaultStepperBuilder.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/DefaultStepperConfigurator.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/DefaultTimelineStepperBuilder.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/DefaultTimelineStepperConfigurator.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/DefaultValidatableNumberFieldInputBuilder.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/internal/components/events/DefaultFilterChangeEvent.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/KeyValueItem.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/KeyValueList.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/ResponsiveDiv.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/Alert.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/AlertAction.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/AlertDescription.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/AlertDialog.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/AlertModal.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/AlertTitle.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/BreadcrumbEllipsis.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/BreadcrumbPage.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/BreadcrumbSeparator.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/ButtonGroup.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/Carousel.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/CarouselContent.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/CarouselItem.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/CarouselNext.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/CarouselPrevious.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/DynamicFilterPanel.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/Empty.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/EmptyAction.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/EmptyDescription.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/EmptyTitle.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/EntityFormPanel.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/FilterOperator.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/FlowStepper.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/IconBadge.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/InputGroup.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/InputGroupText.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/InputOTP.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/InputOTPGroup.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/InputOTPSeparator.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/InputOTPSlot.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/LineItemGrid.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/LineItemRow.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/Pagination.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/PaginationContent.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/PaginationEllipsis.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/PaginationItem.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/PaginationLink.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/PaginationNext.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/PaginationPrevious.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/PawnItemRow.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/Separator.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/Sheet.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/SheetDescription.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/SheetStack.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/SheetTitle.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/TimelineStepper.java
+?? core/src/main/java/com/iyensoft/vaadin/flow/components/MasterDetailLayout.java
+?? core/src/main/java/com/iyensoft/vaadin/flow/components/builders/MasterDetailBuilder.java
+?? core/src/main/java/com/iyensoft/vaadin/flow/internal/components/builders/AbstractSideNavConfigurator.java
+?? core/src/main/java/com/iyensoft/vaadin/flow/internal/components/builders/DefaultBaseCardConfigurator.java
+?? core/src/main/java/com/iyensoft/vaadin/flow/internal/components/builders/DefaultMasterDetailBuilder.java
+?? core/src/main/java/com/iyensoft/vaadin/flow/internal/components/builders/DefaultSideNavConfigurator.java
+?? core/src/main/java/com/iyensoft/vaadin/flow/utils/responsive/WindowSizeTracker.java
+?? core/src/main/resources/META-INF/resources/
+?? core/src/test/java/com/holonplatform/vaadin/flow/test/TestAbstractIyenView.java
+?? core/src/test/java/com/holonplatform/vaadin/flow/test/TestAbstractIyenViewModeSynchronization.java
+?? core/src/test/java/com/holonplatform/vaadin/flow/test/TestAccordionBuilder.java
+?? core/src/test/java/com/holonplatform/vaadin/flow/test/TestAlert.java
+?? core/src/test/java/com/holonplatform/vaadin/flow/test/TestAlertDialog.java
+?? core/src/test/java/com/holonplatform/vaadin/flow/test/TestAlertModal.java
+?? core/src/test/java/com/holonplatform/vaadin/flow/test/TestAppBar.java
+?? core/src/test/java/com/holonplatform/vaadin/flow/test/TestAvatarBuilder.java
+?? core/src/test/java/com/holonplatform/vaadin/flow/test/TestBadge.java
+?? core/src/test/java/com/holonplatform/vaadin/flow/test/TestBeanPropertyInputForm.java
+?? core/src/test/java/com/holonplatform/vaadin/flow/test/TestBooleanInputBuilder.java
+?? core/src/test/java/com/holonplatform/vaadin/flow/test/TestBreadcrumb.java
+?? core/src/test/java/com/holonplatform/vaadin/flow/test/TestBulkActionBuilder.java
+?? core/src/test/java/com/holonplatform/vaadin/flow/test/TestButtonBuilder.java
+?? core/src/test/java/com/holonplatform/vaadin/flow/test/TestButtonGroup.java
+?? core/src/test/java/com/holonplatform/vaadin/flow/test/TestCardBuilder.java
+?? core/src/test/java/com/holonplatform/vaadin/flow/test/TestColor.java
+?? core/src/test/java/com/holonplatform/vaadin/flow/test/TestColumnBuilder.java
+?? core/src/test/java/com/holonplatform/vaadin/flow/test/TestComponentView.java
+?? core/src/test/java/com/holonplatform/vaadin/flow/test/TestContextMenuBuilder.java
+?? core/src/test/java/com/holonplatform/vaadin/flow/test/TestDateInputBuilder.java
+?? core/src/test/java/com/holonplatform/vaadin/flow/test/TestDateTimeInputBuilder.java
+?? core/src/test/java/com/holonplatform/vaadin/flow/test/TestDetailsBuilder.java
+?? core/src/test/java/com/holonplatform/vaadin/flow/test/TestDialogBuilder.java
+?? core/src/test/java/com/holonplatform/vaadin/flow/test/TestDivBuilder.java
+?? core/src/test/java/com/holonplatform/vaadin/flow/test/TestDoubleLabel.java
+?? core/src/test/java/com/holonplatform/vaadin/flow/test/TestEmpty.java
+?? core/src/test/java/com/holonplatform/vaadin/flow/test/TestEmptyBuilder.java
+?? core/src/test/java/com/holonplatform/vaadin/flow/test/TestFilterInput.java
+?? core/src/test/java/com/holonplatform/vaadin/flow/test/TestFilterOperator.java
+?? core/src/test/java/com/holonplatform/vaadin/flow/test/TestFilterableSingleSelectInputBuilder.java
+?? core/src/test/java/com/holonplatform/vaadin/flow/test/TestFlexBoxLayoutBuilder.java
+?? core/src/test/java/com/holonplatform/vaadin/flow/test/TestFlexLayoutBuilder.java
+?? core/src/test/java/com/holonplatform/vaadin/flow/test/TestFlowStepper.java
+?? core/src/test/java/com/holonplatform/vaadin/flow/test/TestFont.java
+?? core/src/test/java/com/holonplatform/vaadin/flow/test/TestFormLayoutBuilder.java
+?? core/src/test/java/com/holonplatform/vaadin/flow/test/TestGridHeaderBuilder.java
+?? core/src/test/java/com/holonplatform/vaadin/flow/test/TestHeaderBuilder.java
+?? core/src/test/java/com/holonplatform/vaadin/flow/test/TestHeadingLevel.java
+?? core/src/test/java/com/holonplatform/vaadin/flow/test/TestHighlight.java
+?? core/src/test/java/com/holonplatform/vaadin/flow/test/TestHorizontalLayoutBuilder.java
+?? core/src/test/java/com/holonplatform/vaadin/flow/test/TestInputGroup.java
+?? core/src/test/java/com/holonplatform/vaadin/flow/test/TestInputGroupBuilder.java
+?? core/src/test/java/com/holonplatform/vaadin/flow/test/TestInputGroupText.java
+?? core/src/test/java/com/holonplatform/vaadin/flow/test/TestInputOTP.java
+?? core/src/test/java/com/holonplatform/vaadin/flow/test/TestInputOTPBuilder.java
+?? core/src/test/java/com/holonplatform/vaadin/flow/test/TestItemListingPaginationBarLazy.java
+?? core/src/test/java/com/holonplatform/vaadin/flow/test/TestItemListingPaginationBarSignal.java
+?? core/src/test/java/com/holonplatform/vaadin/flow/test/TestKanbanBoard.java
+?? core/src/test/java/com/holonplatform/vaadin/flow/test/TestKeyValuePair.java
+?? core/src/test/java/com/holonplatform/vaadin/flow/test/TestKeyValuePairs.java
+?? core/src/test/java/com/holonplatform/vaadin/flow/test/TestLabelBuilder.java
+?? core/src/test/java/com/holonplatform/vaadin/flow/test/TestLayoutBuilder.java
+?? core/src/test/java/com/holonplatform/vaadin/flow/test/TestLazyTabsBuilder.java
+?? core/src/test/java/com/holonplatform/vaadin/flow/test/TestListItem.java
+?? core/src/test/java/com/holonplatform/vaadin/flow/test/TestListMultiSelectInputBuilder.java
+?? core/src/test/java/com/holonplatform/vaadin/flow/test/TestListSingleSelectInputBuilder.java
+?? core/src/test/java/com/holonplatform/vaadin/flow/test/TestLocalDateInputBuilder.java
+?? core/src/test/java/com/holonplatform/vaadin/flow/test/TestLocalDateTimeInputBuilder.java
+?? core/src/test/java/com/holonplatform/vaadin/flow/test/TestLocalTimeInputBuilder.java
+?? core/src/test/java/com/holonplatform/vaadin/flow/test/TestMasterDetailDetailSync.java
+?? core/src/test/java/com/holonplatform/vaadin/flow/test/TestMasterDetailLayout.java
+?? core/src/test/java/com/holonplatform/vaadin/flow/test/TestMenuBarBuilder.java
+?? core/src/test/java/com/holonplatform/vaadin/flow/test/TestNativeButtonBuilder.java
+?? core/src/test/java/com/holonplatform/vaadin/flow/test/TestNotificationBuilder.java
+?? core/src/test/java/com/holonplatform/vaadin/flow/test/TestNumberFieldInput.java
+?? core/src/test/java/com/holonplatform/vaadin/flow/test/TestNumberFieldInputBuilder.java
+?? core/src/test/java/com/holonplatform/vaadin/flow/test/TestNumberInputBuilder.java
+?? core/src/test/java/com/holonplatform/vaadin/flow/test/TestOperationResult.java
+?? core/src/test/java/com/holonplatform/vaadin/flow/test/TestOptionsMultiSelectInputBuilder.java
+?? core/src/test/java/com/holonplatform/vaadin/flow/test/TestOptionsSingleSelectInputBuilder.java
+?? core/src/test/java/com/holonplatform/vaadin/flow/test/TestPagination.java
+?? core/src/test/java/com/holonplatform/vaadin/flow/test/TestPanelBuilder.java
+?? core/src/test/java/com/holonplatform/vaadin/flow/test/TestPasswordInputBuilder.java
+?? core/src/test/java/com/holonplatform/vaadin/flow/test/TestPreview.java
+?? core/src/test/java/com/holonplatform/vaadin/flow/test/TestPriceList.java
+?? core/src/test/java/com/holonplatform/vaadin/flow/test/TestRowBuilder.java
+?? core/src/test/java/com/holonplatform/vaadin/flow/test/TestScrollerBuilder.java
+?? core/src/test/java/com/holonplatform/vaadin/flow/test/TestSearchBarBuilder.java
+?? core/src/test/java/com/holonplatform/vaadin/flow/test/TestSeparator.java
+?? core/src/test/java/com/holonplatform/vaadin/flow/test/TestSeparatorBuilder.java
+?? core/src/test/java/com/holonplatform/vaadin/flow/test/TestSheet.java
+?? core/src/test/java/com/holonplatform/vaadin/flow/test/TestSheetBuilder.java
+?? core/src/test/java/com/holonplatform/vaadin/flow/test/TestSideNavBuilder.java
+?? core/src/test/java/com/holonplatform/vaadin/flow/test/TestSingleSelectInputBuilder.java
+?? core/src/test/java/com/holonplatform/vaadin/flow/test/TestSplitLayoutBuilder.java
+?? core/src/test/java/com/holonplatform/vaadin/flow/test/TestStepperBuilder.java
+?? core/src/test/java/com/holonplatform/vaadin/flow/test/TestStringAreaInputBuilder.java
+?? core/src/test/java/com/holonplatform/vaadin/flow/test/TestStringInputBuilder.java
+?? core/src/test/java/com/holonplatform/vaadin/flow/test/TestTabBuilder.java
+?? core/src/test/java/com/holonplatform/vaadin/flow/test/TestTag.java
+?? core/src/test/java/com/holonplatform/vaadin/flow/test/TestTimelineStepper.java
+?? core/src/test/java/com/holonplatform/vaadin/flow/test/TestVerticalLayoutBuilder.java
+?? core/src/test/java/com/holonplatform/vaadin/flow/test/TestWindowSizeTracker.java
+?? core/src/test/resources/test_version_grid_init.sql
+?? demo/
+?? spring-boot/src/test/java/com/holonplatform/vaadin/flow/spring/boot/test/demo/
+?? src/
+?? tasks/
+?? tsconfig.json
+?? types.d.ts
+?? vite.config.ts
+?? vite.generated.ts

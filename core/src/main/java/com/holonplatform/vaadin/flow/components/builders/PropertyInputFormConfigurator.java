@@ -31,4 +31,25 @@ import com.vaadin.flow.component.Component;
 public interface PropertyInputFormConfigurator<C extends Component, B extends PropertyInputFormConfigurator<C, B>>
 		extends PropertyFormConfigurator<C, Input<?>, PropertyInputGroup, B>, PropertyInputGroupConfigurator<B> {
 
+	/**
+	 * Set whether pressing ENTER on a form input should move focus to the next input.
+	 * <p>
+	 * By default this behavior is disabled.
+	 * </p>
+	 * @param enterMovesFocusToNext <code>true</code> to enable ENTER focus navigation, <code>false</code> otherwise
+	 * @return this
+	 */
+	B enterMovesFocusToNext(boolean enterMovesFocusToNext);
+
+	/**
+	 * Set whether pressing ENTER should validate current form value before moving focus to the next input.
+	 * <p>
+	 * This option only has effect when ENTER focus navigation is enabled through
+	 * {@link #enterMovesFocusToNext(boolean)}.
+	 * </p>
+	 * @param validateOnEnterFocusMove <code>true</code> to validate before moving focus, <code>false</code> otherwise
+	 * @return this
+	 */
+	B validateOnEnterFocusMove(boolean validateOnEnterFocusMove);
+
 }

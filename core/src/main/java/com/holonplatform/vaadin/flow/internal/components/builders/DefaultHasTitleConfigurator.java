@@ -15,15 +15,17 @@
  */
 package com.holonplatform.vaadin.flow.internal.components.builders;
 
-import java.util.function.Consumer;
-
 import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.core.internal.Logger;
 import com.holonplatform.core.internal.utils.ObjectUtils;
 import com.holonplatform.vaadin.flow.components.builders.HasDeferrableLocalization;
 import com.holonplatform.vaadin.flow.components.builders.HasTitleConfigurator;
+import com.holonplatform.vaadin.flow.components.builders.SignalBindings;
 import com.holonplatform.vaadin.flow.internal.VaadinLogger;
+import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasElement;
+
+import java.util.function.Consumer;
 
 /**
  * Default {@link HasTitleConfigurator} implementation.
@@ -31,7 +33,7 @@ import com.vaadin.flow.component.HasElement;
  * @since 5.2.0
  */
 public class DefaultHasTitleConfigurator<C extends HasElement> extends AbstractLocalizationSupportConfigurator<C>
-		implements HasTitleConfigurator<DefaultHasTitleConfigurator<C>> {
+		implements HasTitleConfigurator<DefaultHasTitleConfigurator<C>>, SignalBindings.Owner {
 
 	private static final Logger LOGGER = VaadinLogger.create();
 
@@ -70,6 +72,11 @@ public class DefaultHasTitleConfigurator<C extends HasElement> extends AbstractL
 			LOGGER.debug(() -> "Component [" + component + "] title localization was deferred");
 		}
 		return this;
+	}
+
+	@Override
+	public Component getSignalBindingOwner() {
+		return (component instanceof Component) ? (Component) component : null;
 	}
 
 }

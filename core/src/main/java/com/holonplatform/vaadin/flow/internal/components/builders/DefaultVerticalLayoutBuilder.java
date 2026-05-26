@@ -33,19 +33,11 @@ public class DefaultVerticalLayoutBuilder
 		getComponent().setSpacing(false);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.holonplatform.vaadin.flow.components.builders.ComponentBuilder#build()
-	 */
 	@Override
 	public VerticalLayout build() {
 		return getComponent();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.holonplatform.vaadin.flow.internal.components.builders.AbstractComponentConfigurator#getConfigurator()
-	 */
 	@Override
 	protected VerticalLayoutBuilder getConfigurator() {
 		return this;

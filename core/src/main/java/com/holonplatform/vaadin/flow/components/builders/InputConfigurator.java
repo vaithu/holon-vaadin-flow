@@ -19,6 +19,7 @@ import com.holonplatform.vaadin.flow.components.Input;
 import com.holonplatform.vaadin.flow.components.ValueHolder.ValueChangeEvent;
 import com.holonplatform.vaadin.flow.components.ValueHolder.ValueChangeListener;
 import com.holonplatform.vaadin.flow.components.events.ReadonlyChangeListener;
+import com.vaadin.flow.signals.Signal;
 
 import java.util.function.Function;
 
@@ -43,6 +44,18 @@ public interface InputConfigurator<T, E extends ValueChangeEvent<T>, C extends I
 	 * @return this
 	 */
 	C readOnly(boolean readOnly);
+
+	/**
+	 * Bind the input read-only state to given {@link Signal}.
+	 * @param readOnlySignal Read-only signal (not null)
+	 * @return this
+	 * @since 5.5.8
+	 */
+	@SuppressWarnings("unchecked")
+	default C bindReadOnly(Signal<? extends Boolean> readOnlySignal) {
+		SignalBindings.bind(this, readOnlySignal, this::readOnly);
+		return (C) this;
+	}
 
 	/**
 	 * Set the input component as read-only. The user can not change the value of the input.
@@ -90,6 +103,18 @@ public interface InputConfigurator<T, E extends ValueChangeEvent<T>, C extends I
 	 * @return this
 	 */
 	C required(boolean required);
+
+	/**
+	 * Bind the input required state to given {@link Signal}.
+	 * @param requiredSignal Required-state signal (not null)
+	 * @return this
+	 * @since 5.5.8
+	 */
+	@SuppressWarnings("unchecked")
+	default C bindRequired(Signal<? extends Boolean> requiredSignal) {
+		SignalBindings.bind(this, requiredSignal, this::required);
+		return (C) this;
+	}
 
 
 	/**

@@ -74,7 +74,7 @@ public class DefaultSingleSelectInputBuilder<T, ITEM>
 	protected final DefaultHasLabelConfigurator<Select<ITEM>> labelConfigurator;
 	protected final DefaultHasPlaceholderConfigurator<Select<ITEM>> placeholderConfigurator;
 
-	protected final List<SelectionListener<T>> selectionListeners = new LinkedList<>();
+	protected final List<SelectionListener<T>> selectionListeners = new ArrayList<>();
 
 	private final Class<? extends T> type;
 	private final Class<ITEM> itemType;

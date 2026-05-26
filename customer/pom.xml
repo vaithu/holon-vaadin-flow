@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.holon-platform.vaadin</groupId>
+        <artifactId>holon-vaadin-flow-root</artifactId>
+        <version>10.0.0</version>
+    </parent>
+
+    <artifactId>holon-vaadin-flow-customer</artifactId>
+    <packaging>jar</packaging>
+
+    <name>${project.groupId}:${project.artifactId}</name>
+    <description>
+        Holon Vaadin Flow – reusable Customer Info CRUD module.
+        Drop this dependency into any SaaS Spring Boot application to get a
+        production-ready Customer entity, service, and Vaadin Flow master-detail view.
+
+        Consuming app requirements:
+        1. Add @EntityScan("com.holonplatform.vaadin.flow.customer.entity") to your SpringBootApplication.
+        2. Add customer i18n keys to your messages.properties (see CustomerI18n.java).
+        3. holon-datastore-jpa-spring-boot + Spring Data JPA datasource configured.
+    </description>
+
+    <dependencies>
+
+        <!-- Core Holon Vaadin components (Layouts, Listings, Forms, MasterDetailLayout, etc.) -->
+        <dependency>
+            <groupId>com.holon-platform.vaadin</groupId>
+            <artifactId>holon-vaadin-flow</artifactId>
+        </dependency>
+
+        <!-- Spring Boot starter for web + Vaadin auto-config -->
+        <dependency>
+            <groupId>com.holon-platform.vaadin</groupId>
+            <artifactId>holon-starter-vaadin-flow</artifactId>
+            <!-- provided — consuming app brings these in -->
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- Spring Data JPA for the Customer entity -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- Jakarta Validation annotations on the entity -->
+        <dependency>
+            <groupId>jakarta.validation</groupId>
+            <artifactId>jakarta.validation-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- Holon JPA Datastore — BeanDatastoreHelper -->
+        <dependency>
+            <groupId>com.holon-platform.jpa</groupId>
+            <artifactId>holon-datastore-jpa-spring-boot</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- Spring Transaction (for @Transactional in CustomerService) -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-tx</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- Spring Context (for @Component + @Scope on view classes) -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- Logging -->
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifestEntries>
+                            <Automatic-Module-Name>com.holonplatform.vaadin.flow.customer</Automatic-Module-Name>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
+

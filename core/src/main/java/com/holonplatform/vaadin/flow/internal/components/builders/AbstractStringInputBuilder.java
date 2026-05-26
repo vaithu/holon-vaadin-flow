@@ -24,6 +24,7 @@ import com.holonplatform.vaadin.flow.components.builders.ShortcutConfigurator;
 import com.holonplatform.vaadin.flow.components.builders.StringInputConfigurator;
 import com.holonplatform.vaadin.flow.components.events.ReadonlyChangeListener;
 import com.holonplatform.vaadin.flow.components.support.InputAdaptersContainer;
+import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
 import com.holonplatform.vaadin.flow.internal.components.support.StringInputIsEmptySupplier;
 import com.holonplatform.vaadin.flow.internal.components.support.StringInputValueSupplier;
 import com.vaadin.flow.component.*;
@@ -66,6 +67,7 @@ public abstract class AbstractStringInputBuilder<C extends StringInputConfigurat
 	protected final DefaultHasLabelConfigurator<TextField> labelConfigurator;
 	protected final DefaultHasTitleConfigurator<TextField> titleConfigurator;
 	protected final DefaultHasTooltipConfigurator<TextField> tooltipConfigurator;
+	protected final DefaultHasHelperTextConfigurator<TextField> helperTextConfigurator;
 
 	protected final DefaultHasPlaceholderConfigurator<TextField> placeholderConfigurator;
 
@@ -87,7 +89,7 @@ public abstract class AbstractStringInputBuilder<C extends StringInputConfigurat
 		autocompleteConfigurator = new DefaultHasAutocompleteConfigurator(getComponent());
 		autocapitalizeConfigurator = new DefaultHasAutocapitalizeConfigurator(getComponent());
 		autocorrectConfigurator = new DefaultHasAutocorrectConfigurator(getComponent());
-		prefixAndSuffixConfigurator = new DefaultHasPrefixAndSuffixConfigurator(getComponent());
+		prefixAndSuffixConfigurator = new DefaultHasPrefixAndSuffixConfigurator(getComponent(),getComponent());
 		compositionNotifierConfigurator = new DefaultCompositionNotifierConfigurator(getComponent());
 		inputNotifierConfigurator = new DefaultInputNotifierConfigurator(getComponent());
 		keyNotifierConfigurator = new DefaultKeyNotifierConfigurator(getComponent());
@@ -102,6 +104,8 @@ public abstract class AbstractStringInputBuilder<C extends StringInputConfigurat
 		tooltipConfigurator = new DefaultHasTooltipConfigurator<>(getComponent(), title -> {
 			getComponent().setTitle(title);
 		}, this);
+		helperTextConfigurator = new DefaultHasHelperTextConfigurator<>(getComponent(), getComponent()::setHelperText,
+				this);
 		placeholderConfigurator = new DefaultHasPlaceholderConfigurator<>(getComponent(), placeholder -> {
 			getComponent().setPlaceholder(placeholder);
 		}, this);
@@ -568,6 +572,24 @@ public abstract class AbstractStringInputBuilder<C extends StringInputConfigurat
 		return getConfigurator();
 	}
 
+	@Override
+	public C helperText(Localizable helperText) {
+		helperTextConfigurator.helperText(helperText);
+		return getConfigurator();
+	}
+
+	@Override
+	public C helperText(String helperText) {
+		helperTextConfigurator.helperText(helperText);
+		return getConfigurator();
+	}
+
+	@Override
+	public C helperComponent(Component component) {
+		helperTextConfigurator.helperComponent(component);
+		return getConfigurator();
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * @see
@@ -586,6 +608,36 @@ public abstract class AbstractStringInputBuilder<C extends StringInputConfigurat
 	@Override
 	public C required() {
 		return required(true);
+	}
+
+	@Override
+	public C ariaLabel(String ariaLabel) {
+		getComponent().setAriaLabel(ariaLabel);
+		return getConfigurator();
+	}
+
+	@Override
+	public C ariaLabelledBy(String ariaLabelledBy) {
+		getComponent().setAriaLabelledBy(ariaLabelledBy);
+		return getConfigurator();
+	}
+
+	@Override
+	public C ariaLabel(Localizable ariaLabel) {
+		final String defaultAriaLabel = (ariaLabel != null && ariaLabel.getMessage() != null) ? ariaLabel.getMessage()
+				: "";
+		if (ariaLabel == null) {
+			return ariaLabel(defaultAriaLabel);
+		}
+		if (isDeferredLocalizationEnabled()) {
+			ariaLabel(defaultAriaLabel);
+			return withAttachListener(event -> {
+				if (event.isInitialAttach()) {
+					LocalizationProvider.localize(ariaLabel).ifPresent(this::ariaLabel);
+				}
+			});
+		}
+		return ariaLabel(LocalizationProvider.localize(ariaLabel).orElse(defaultAriaLabel));
 	}
 
 }

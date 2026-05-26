@@ -19,6 +19,7 @@ import com.holonplatform.vaadin.flow.components.ValueHolder.ValueChangeEvent;
 import com.holonplatform.vaadin.flow.components.ValueHolder.ValueChangeListener;
 import com.holonplatform.vaadin.flow.components.ViewComponent;
 import com.holonplatform.vaadin.flow.components.events.ClickEvent;
+import com.vaadin.flow.signals.Signal;
 
 /**
  * {@link ViewComponent} configurator.
@@ -41,11 +42,35 @@ public interface ViewComponentConfigurator<T, C extends ViewComponentConfigurato
 	C labelVisible(boolean visible);
 
 	/**
+	 * Bind whether the label is visible to given {@link Signal}.
+	 * @param visibleSignal Label visibility signal (not null)
+	 * @return this
+	 * @since 5.5.8
+	 */
+	@SuppressWarnings("unchecked")
+	default C bindLabelVisible(Signal<? extends Boolean> visibleSignal) {
+		SignalBindings.bind(this, visibleSignal, this::labelVisible);
+		return (C) this;
+	}
+
+	/**
 	 * Sets an initial value for the component.
 	 * @param value The initial value to set
 	 * @return this
 	 */
 	C withValue(T value);
+
+	/**
+	 * Bind the component value to given {@link Signal}.
+	 * @param valueSignal Value signal (not null)
+	 * @return this
+	 * @since 5.5.8
+	 */
+	@SuppressWarnings("unchecked")
+	default C bindValue(Signal<? extends T> valueSignal) {
+		SignalBindings.bind(this, valueSignal, this::withValue);
+		return (C) this;
+	}
 
 	/**
 	 * Add a {@link ValueChangeListener} to the component.

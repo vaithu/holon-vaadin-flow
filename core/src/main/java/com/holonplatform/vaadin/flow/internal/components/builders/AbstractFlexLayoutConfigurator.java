@@ -61,11 +61,6 @@ public abstract class AbstractFlexLayoutConfigurator<C extends FlexLayoutConfigu
     }
 
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.holonplatform.vaadin.flow.components.builders.HasComponentsConfigurator#add(com.vaadin.flow.component.
-	 * Component[])
-	 */
 	@Override
 	public C add(Component... components) {
 		getComponent().add(components);

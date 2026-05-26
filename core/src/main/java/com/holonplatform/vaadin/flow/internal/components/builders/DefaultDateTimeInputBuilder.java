@@ -33,38 +33,22 @@ public class DefaultDateTimeInputBuilder extends AbstractDateTimeInputBuilder<Da
 		super();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.holonplatform.vaadin.flow.internal.components.builders.AbstractDateTimeInputBuilder#getConfigurator()
-	 */
 	@Override
 	protected DateTimeInputBuilder getConfigurator() {
 		return this;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.holonplatform.vaadin.flow.components.builders.InputConfigurator#required(boolean)
-	 */
 	@Override
 	public DateTimeInputBuilder required(boolean required) {
 		getLocalDateTimeInputBuilder().required(required);
 		return getConfigurator();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.holonplatform.vaadin.flow.components.builders.InputBuilder#build()
-	 */
 	@Override
 	public Input<Date> build() {
 		return buildAsInput();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.holonplatform.vaadin.flow.components.builders.InputBuilder#validatable()
-	 */
 	@Override
 	public ValidatableDateTimeInputBuilder validatable() {
 		return new DefaultValidatableDateTimeInputBuilder(getLocalDateTimeInputBuilder(), getTimeZone(),

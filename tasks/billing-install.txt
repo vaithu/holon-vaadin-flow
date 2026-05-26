@@ -1,0 +1,104 @@
+[INFO] Scanning for projects...
+[WARNING] 
+[WARNING] Some problems were encountered while building the effective model for com.holon-platform.vaadin:holon-vaadin-flow-demo:jar:10.0.0
+[WARNING] 'build.plugins.plugin.version' for org.springframework.boot:spring-boot-maven-plugin is missing. @ line 108, column 21
+[WARNING] 
+[WARNING] It is highly recommended to fix these problems because they threaten the stability of your build.
+[WARNING] 
+[WARNING] For this reason, future Maven versions might no longer support building such malformed projects.
+[WARNING] 
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Build Order:
+[INFO] 
+[INFO] com.holon-platform.vaadin:holon-vaadin-flow-tenant-core            [jar]
+[INFO] com.holon-platform.vaadin:holon-vaadin-flow-tenant-billing         [jar]
+[INFO] 
+[INFO] ------< com.holon-platform.vaadin:holon-vaadin-flow-tenant-core >-------
+[INFO] Building com.holon-platform.vaadin:holon-vaadin-flow-tenant-core 10.0.0 [1/2]
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- jacoco:0.8.12:prepare-agent (pre-unit-test) @ holon-vaadin-flow-tenant-core ---
+[INFO] surefireArgLine set to -javaagent:C:\\Users\\sxp267\\.m2\\repository\\org\\jacoco\\org.jacoco.agent\\0.8.12\\org.jacoco.agent-0.8.12-runtime.jar=destfile=C:\\Users\\sxp267\\IdeaProjects\\holon-vaadin-flow\\tenant-core\\target\\coverage-reports\\jacoco-ut.exec
+[INFO] 
+[INFO] --- remote-resources:3.1.0:process (default) @ holon-vaadin-flow-tenant-core ---
+[INFO] Preparing remote bundle com.holon-platform:holon-shared:1.0.6
+[INFO] Copying 6 resources from 1 bundle.
+[INFO] 
+[INFO] --- resources:3.4.0:resources (default-resources) @ holon-vaadin-flow-tenant-core ---
+[INFO] Copying 1 resource from src\main\resources to target\classes
+[INFO] Copying 6 resources from target\maven-shared-archive-resources to target\classes
+[INFO] 
+[INFO] --- compiler:3.15.0:compile (default-compile) @ holon-vaadin-flow-tenant-core ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.4.0:testResources (default-testResources) @ holon-vaadin-flow-tenant-core ---
+[INFO] skip non existing resourceDirectory C:\Users\sxp267\IdeaProjects\holon-vaadin-flow\tenant-core\src\test\resources
+[INFO] Copying 6 resources from target\maven-shared-archive-resources to target\test-classes
+[INFO] 
+[INFO] --- compiler:3.15.0:testCompile (default-testCompile) @ holon-vaadin-flow-tenant-core ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- surefire:3.5.2:test (default-test) @ holon-vaadin-flow-tenant-core ---
+[INFO] Tests are skipped.
+[INFO] 
+[INFO] --- jacoco:0.8.12:report (post-unit-test) @ holon-vaadin-flow-tenant-core ---
+[INFO] Loading execution data file C:\Users\sxp267\IdeaProjects\holon-vaadin-flow\tenant-core\target\coverage-reports\jacoco-ut.exec
+[INFO] Analyzed bundle 'com.holon-platform.vaadin:holon-vaadin-flow-tenant-core' with 23 classes
+[INFO] 
+[INFO] --- jar:3.4.2:jar (default-jar) @ holon-vaadin-flow-tenant-core ---
+[INFO] 
+[INFO] --- install:3.1.4:install (default-install) @ holon-vaadin-flow-tenant-core ---
+[INFO] Installing C:\Users\sxp267\IdeaProjects\holon-vaadin-flow\tenant-core\pom.xml to C:\Users\sxp267\.m2\repository\com\holon-platform\vaadin\holon-vaadin-flow-tenant-core\10.0.0\holon-vaadin-flow-tenant-core-10.0.0.pom
+[INFO] Installing C:\Users\sxp267\IdeaProjects\holon-vaadin-flow\tenant-core\target\holon-vaadin-flow-tenant-core-10.0.0.jar to C:\Users\sxp267\.m2\repository\com\holon-platform\vaadin\holon-vaadin-flow-tenant-core\10.0.0\holon-vaadin-flow-tenant-core-10.0.0.jar
+[INFO] 
+[INFO] -----< com.holon-platform.vaadin:holon-vaadin-flow-tenant-billing >-----
+[INFO] Building com.holon-platform.vaadin:holon-vaadin-flow-tenant-billing 10.0.0 [2/2]
+[INFO]   from C:\Users\sxp267\IdeaProjects\holon-vaadin-flow\tenant-billing\pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- jacoco:0.8.12:prepare-agent (pre-unit-test) @ holon-vaadin-flow-tenant-billing ---
+[INFO] surefireArgLine set to -javaagent:C:\\Users\\sxp267\\.m2\\repository\\org\\jacoco\\org.jacoco.agent\\0.8.12\\org.jacoco.agent-0.8.12-runtime.jar=destfile=C:\\Users\\sxp267\\IdeaProjects\\holon-vaadin-flow\\tenant-billing\\target\\coverage-reports\\jacoco-ut.exec
+[INFO] 
+[INFO] --- remote-resources:3.1.0:process (default) @ holon-vaadin-flow-tenant-billing ---
+[INFO] Preparing remote bundle com.holon-platform:holon-shared:1.0.6
+[INFO] Copying 6 resources from 1 bundle.
+[INFO] 
+[INFO] --- resources:3.4.0:resources (default-resources) @ holon-vaadin-flow-tenant-billing ---
+[INFO] Copying 1 resource from src\main\resources to target\classes
+[INFO] Copying 6 resources from target\maven-shared-archive-resources to target\classes
+[INFO] 
+[INFO] --- compiler:3.15.0:compile (default-compile) @ holon-vaadin-flow-tenant-billing ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.4.0:testResources (default-testResources) @ holon-vaadin-flow-tenant-billing ---
+[INFO] skip non existing resourceDirectory C:\Users\sxp267\IdeaProjects\holon-vaadin-flow\tenant-billing\src\test\resources
+[INFO] Copying 6 resources from target\maven-shared-archive-resources to target\test-classes
+[INFO] 
+[INFO] --- compiler:3.15.0:testCompile (default-testCompile) @ holon-vaadin-flow-tenant-billing ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- surefire:3.5.2:test (default-test) @ holon-vaadin-flow-tenant-billing ---
+[INFO] Tests are skipped.
+[INFO] 
+[INFO] --- jacoco:0.8.12:report (post-unit-test) @ holon-vaadin-flow-tenant-billing ---
+[INFO] Loading execution data file C:\Users\sxp267\IdeaProjects\holon-vaadin-flow\tenant-billing\target\coverage-reports\jacoco-ut.exec
+[INFO] Analyzed bundle 'com.holon-platform.vaadin:holon-vaadin-flow-tenant-billing' with 9 classes
+[INFO] 
+[INFO] --- jar:3.4.2:jar (default-jar) @ holon-vaadin-flow-tenant-billing ---
+[INFO] Building jar: C:\Users\sxp267\IdeaProjects\holon-vaadin-flow\tenant-billing\target\holon-vaadin-flow-tenant-billing-10.0.0.jar
+[INFO] 
+[INFO] --- install:3.1.4:install (default-install) @ holon-vaadin-flow-tenant-billing ---
+[INFO] Installing C:\Users\sxp267\IdeaProjects\holon-vaadin-flow\tenant-billing\pom.xml to C:\Users\sxp267\.m2\repository\com\holon-platform\vaadin\holon-vaadin-flow-tenant-billing\10.0.0\holon-vaadin-flow-tenant-billing-10.0.0.pom
+[INFO] Installing C:\Users\sxp267\IdeaProjects\holon-vaadin-flow\tenant-billing\target\holon-vaadin-flow-tenant-billing-10.0.0.jar to C:\Users\sxp267\.m2\repository\com\holon-platform\vaadin\holon-vaadin-flow-tenant-billing\10.0.0\holon-vaadin-flow-tenant-billing-10.0.0.jar
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Summary for com.holon-platform.vaadin:holon-vaadin-flow-tenant-core 10.0.0:
+[INFO] 
+[INFO] com.holon-platform.vaadin:holon-vaadin-flow-tenant-core SUCCESS [ 22.498 s]
+[INFO] com.holon-platform.vaadin:holon-vaadin-flow-tenant-billing SUCCESS [  6.030 s]
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  29.466 s
+[INFO] Finished at: 2026-05-19T11:03:54-04:00
+[INFO] ------------------------------------------------------------------------

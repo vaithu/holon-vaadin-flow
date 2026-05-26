@@ -15,10 +15,10 @@
  */
 package com.holonplatform.vaadin.flow.internal.components;
 
-import java.util.stream.Collectors;
-
 import com.holonplatform.vaadin.flow.components.ValidationStatusHandler;
 import com.vaadin.flow.component.notification.Notification;
+
+import java.util.stream.Collectors;
 
 /**
  * A {@link ValidationStatusHandler} which uses an error {@link Notification} to notify validation errors.
@@ -51,10 +51,10 @@ public class NotificationValidationStatusHandler<S> implements ValidationStatusH
 		if (statusChangeEvent.isInvalid()) {
 
 			String error = showAllErrors
-					? statusChangeEvent.getErrorMessages().stream().collect(Collectors.joining("<br/>"))
+					? String.join("<br/>", statusChangeEvent.getErrorMessages())
 					: statusChangeEvent.getErrorMessage();
 
-			if (error == null || error.trim().equals("")) {
+			if (error == null || error.isBlank()) {
 				error = "Validation error";
 			}
 

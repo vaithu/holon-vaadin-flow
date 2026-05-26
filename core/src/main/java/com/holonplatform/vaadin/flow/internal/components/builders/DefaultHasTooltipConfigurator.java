@@ -5,7 +5,9 @@ import com.holonplatform.core.internal.Logger;
 import com.holonplatform.core.internal.utils.ObjectUtils;
 import com.holonplatform.vaadin.flow.components.builders.HasDeferrableLocalization;
 import com.holonplatform.vaadin.flow.components.builders.HasTooltipConfigurator;
+import com.holonplatform.vaadin.flow.components.builders.SignalBindings;
 import com.holonplatform.vaadin.flow.internal.VaadinLogger;
+import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.shared.HasTooltip;
 
 import java.util.function.Consumer;
@@ -16,7 +18,7 @@ import java.util.function.Consumer;
  * @since 5.2.0
  */
 public class DefaultHasTooltipConfigurator<C extends HasTooltip> extends AbstractLocalizationSupportConfigurator<C>
-        implements HasTooltipConfigurator<DefaultHasTooltipConfigurator<C>> {
+        implements HasTooltipConfigurator<DefaultHasTooltipConfigurator<C>>, SignalBindings.Owner {
 
     private static final Logger LOGGER = VaadinLogger.create();
 
@@ -63,4 +65,9 @@ public class DefaultHasTooltipConfigurator<C extends HasTooltip> extends Abstrac
         this.component.setTooltipText(text);
         return this;
     }
+
+	@Override
+	public Component getSignalBindingOwner() {
+		return (component instanceof Component) ? (Component) component : null;
+	}
 }

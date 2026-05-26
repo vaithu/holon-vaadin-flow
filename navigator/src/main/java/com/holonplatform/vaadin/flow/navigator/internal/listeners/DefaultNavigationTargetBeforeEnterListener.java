@@ -1,12 +1,12 @@
 /*
  * Copyright 2016-2018 Axioma srl.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -41,7 +41,7 @@ import java.util.Set;
 
 /**
  * A {@link BeforeEnterListener} to check navigation target authentication and authorization.
- * 
+ *
  * @since 5.2.0
  */
 @ListenerPriority(Integer.MAX_VALUE)
@@ -52,14 +52,15 @@ public class DefaultNavigationTargetBeforeEnterListener extends AbstractNavigati
 
 	/*
 	 * (non-Javadoc)
-	 * @see com.vaadin.flow.router.internal.BeforeEnterHandler#beforeEnter(com.vaadin.flow.router.BeforeEnterEvent)
+	 * @see com.vaadin.flow.router.internal.BeforeEnterHandler#beforeEnter(com.vaadin.flow.router.
+	 * BeforeEnterEvent)
 	 */
 	@Override
 	public void beforeEnter(BeforeEnterEvent event) {
 		final Class<?> navigationTarget = event.getNavigationTarget();
 		if (navigationTarget != null) {
 			final NavigationTargetConfiguration configuration = getNavigationTargetConfigurationRegistry()
-					.getConfiguration(navigationTarget);
+					.getConfiguration(navigationTarget, VaadinService.getCurrent().getContext());
 			// check authentication
 			if (checkAuthentication(event, configuration)) {
 				// check parameters
@@ -75,7 +76,7 @@ public class DefaultNavigationTargetBeforeEnterListener extends AbstractNavigati
 	 * @return <code>true</code> if the navigation should proceed, <code>false</code> otherwise
 	 */
 	private static boolean checkNavigationParameters(BeforeEnterEvent event,
-			NavigationTargetConfiguration configuration) {
+													 NavigationTargetConfiguration configuration) {
 		// query parameters
 		final Map<String, List<String>> queryParameters = event.getLocation().getQueryParameters().getParameters();
 		for (Entry<String, QueryParameterDefinition> entry : configuration.getQueryParameters().entrySet()) {
@@ -131,7 +132,7 @@ public class DefaultNavigationTargetBeforeEnterListener extends AbstractNavigati
 			}
 			// check authorization
 			final Set<String> roles = configuration.getAuthorization();
-			if (!roles.isEmpty() && !authContext.isPermittedAny(roles.toArray(new String[0]))) {
+			if (!roles.isEmpty() && !authContext.isPermittedAny(roles.toArray(new String[roles.size()]))) {
 				// redirect to error
 				event.rerouteToError(ForbiddenNavigationException.class,
 						LocalizationProvider.localize(ForbiddenNavigationException.DEFAULT_MESSAGE,
@@ -143,15 +144,15 @@ public class DefaultNavigationTargetBeforeEnterListener extends AbstractNavigati
 	}
 
 	/**
-	 * Get the current {@link Authentication} from given {@link AuthContext}, if available. The {@link Authenticate}
-	 * annotation, if available, is used to obtain the authentication schemes allowed and perform authentication using
-	 * the current request, if available.
+	 * Get the current {@link Authentication} from given {@link AuthContext}, if available. The
+	 * {@link Authenticate} annotation, if available, is used to obtain the authentication schemes
+	 * allowed and perform authentication using the current request, if available.
 	 * @param configuration Navigation target configuration
 	 * @param authContext AuthContext
 	 * @return The current {@link Authentication}, or <code>null</code> if none
 	 */
 	private static Authentication getAuthentication(NavigationTargetConfiguration configuration,
-			AuthContext authContext) {
+													AuthContext authContext) {
 		// check authentication
 		Optional<Authentication> authentication = authContext.getAuthentication();
 		if (authentication.isPresent()) {

@@ -1,46 +1,19 @@
 package com.holonplatform.vaadin.flow.internal.lumo;
 
-import com.vaadin.flow.theme.lumo.LumoUtility;
-
 public enum AlignItems {
-        BASELINE(LumoUtility.AlignItems.BASELINE),
-        CENTER(LumoUtility.AlignItems.CENTER),
-        END(LumoUtility.AlignItems.END),
-        START(LumoUtility.AlignItems.START),
-        STRETCH(LumoUtility.AlignItems.STRETCH);
+    BASELINE("items-baseline"),
+    CENTER("items-center"),
+    END("items-end"),
+    START("items-start"),
+    STRETCH("items-stretch");
 
-        private final String className;
+    private final String className;
 
-        private AlignItems(String className) {
-            this.className = className;
-        }
-
-        public String getClassName() {
-            return this.className;
-        }
+    private AlignItems(String className) {
+        this.className = className;
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    public String getClassName() {
+        return this.className;
+    }
+}

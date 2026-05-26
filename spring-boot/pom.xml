@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>com.holon-platform.vaadin</groupId>
 		<artifactId>holon-vaadin-flow-root</artifactId>
-		<version>5.5.7-SNAPSHOT</version>
+		<version>10.0.0</version>
 	</parent>
 
 	<artifactId>holon-vaadin-flow-spring-boot</artifactId>
@@ -15,35 +15,18 @@
 
 	<url>https://holon-platform.com</url>
 
-	<dependencyManagement>
-		<dependencies>
-
-			<!-- Holon platform -->
-			<dependency>
-				<groupId>com.holon-platform.core</groupId>
-				<artifactId>holon-bom-platform</artifactId>
-				<version>${holon.core.version}</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
-
-		</dependencies>
-	</dependencyManagement>
-
 	<dependencies>
 
 		<!-- Spring integration -->
 		<dependency>
 			<groupId>com.holon-platform.vaadin</groupId>
 			<artifactId>holon-vaadin-flow-spring</artifactId>
-			<version>${project.version}</version>
 		</dependency>
 
 		<!-- Holon Spring boot -->
 		<dependency>
 			<groupId>com.holon-platform.core</groupId>
 			<artifactId>holon-spring-boot</artifactId>
-			<version>${holon.core.version}</version>
 		</dependency>
 
 		<!-- Spring Boot -->
@@ -56,8 +39,12 @@
 		<dependency>
 			<groupId>jakarta.servlet</groupId>
 			<artifactId>jakarta.servlet-api</artifactId>
-			<version>${servlet.version}</version>
 			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
 		</dependency>
 
 		<!-- Test -->
@@ -78,8 +65,23 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
+			<groupId>com.holon-platform.vaadin</groupId>
+			<artifactId>holon-vaadin-flow-chartjs</artifactId>
+		</dependency>
+		<!-- Vaadin dev-mode server — required so DevModeServletContextListener can find vaadin-dev-server.
+		     Without this, Vaadin 25 throws "'vaadin-dev-server' not found" at startup in dev mode. -->
+		<dependency>
+			<groupId>com.vaadin</groupId>
+			<artifactId>vaadin-dev</artifactId>
+			<scope>test</scope>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-web</artifactId>
+			<!-- CVE-2024-38821, CVE-2025-41232, CVE-2025-41248 fixed in 6.4.10
+			     CVE-2026-22732: no patch available in any released version yet -->
+			<optional>true</optional>
 		</dependency>
 
 	</dependencies>

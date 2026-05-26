@@ -1,0 +1,164 @@
+[INFO] Scanning for projects...
+[WARNING] 
+[WARNING] Some problems were encountered while building the effective model for com.holon-platform.vaadin:holon-vaadin-flow-demo:jar:10.0.0
+[WARNING] 'build.plugins.plugin.version' for org.springframework.boot:spring-boot-maven-plugin is missing. @ line 70, column 21
+[WARNING] 
+[WARNING] It is highly recommended to fix these problems because they threaten the stability of your build.
+[WARNING] 
+[WARNING] For this reason, future Maven versions might no longer support building such malformed projects.
+[WARNING] 
+[INFO] 
+[INFO] ------------< com.holon-platform.vaadin:holon-vaadin-flow >-------------
+[INFO] Building com.holon-platform.vaadin:holon-vaadin-flow 10.0.0
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- jacoco:0.8.12:prepare-agent (pre-unit-test) @ holon-vaadin-flow ---
+[INFO] surefireArgLine set to -javaagent:C:\\Users\\sxp267\\.m2\\repository\\org\\jacoco\\org.jacoco.agent\\0.8.12\\org.jacoco.agent-0.8.12-runtime.jar=destfile=C:\\Users\\sxp267\\IdeaProjects\\holon-vaadin-flow\\core\\target\\coverage-reports\\jacoco-ut.exec
+[INFO] 
+[INFO] --- remote-resources:3.1.0:process (default) @ holon-vaadin-flow ---
+[INFO] Preparing remote bundle com.holon-platform:holon-shared:1.0.6
+[INFO] Copying 6 resources from 1 bundle.
+[INFO] 
+[INFO] --- resources:3.4.0:resources (default-resources) @ holon-vaadin-flow ---
+[INFO] Copying 53 resources from src\main\resources to target\classes
+[INFO] Copying 6 resources from target\maven-shared-archive-resources to target\classes
+[INFO] 
+[INFO] --- compiler:3.15.0:compile (default-compile) @ holon-vaadin-flow ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.4.0:testResources (default-testResources) @ holon-vaadin-flow ---
+[INFO] Copying 4 resources from src\test\resources to target\test-classes
+[INFO] Copying 6 resources from target\maven-shared-archive-resources to target\test-classes
+[INFO] 
+[INFO] --- compiler:3.15.0:testCompile (default-testCompile) @ holon-vaadin-flow ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- surefire:3.5.2:test (default-test) @ holon-vaadin-flow ---
+[INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running com.holonplatform.vaadin.flow.test.TestBeanListing
+2026-05-02 21:23:21,357 INFO [com.holonplatform.datastore.jdbc] - JdbcDatastore initialized - Using dialect [com.holonplatform.datastore.jdbc.composer.dialect.H2Dialect]
+2026-05-02 21:23:21,405 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.id AS id1_0, test_0_0.name AS name2_0 FROM test2 test_0_0]
+2026-05-02 21:23:21,527 INFO [com.holonplatform.datastore.jdbc] - JdbcDatastore initialized - Using dialect [com.holonplatform.datastore.jdbc.composer.dialect.H2Dialect]
+2026-05-02 21:23:21,584 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.id AS id1_0, test_0_0.name AS name2_0 FROM test2 test_0_0 limit 2147483647 offset 0]
+2026-05-02 21:23:21,624 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.id AS id1_0, test_0_0.name AS name2_0 FROM test2 test_0_0 WHERE LOWER(test_0_0.name) LIKE ? ESCAPE '!' limit 2147483647 offset 0]
+2026-05-02 21:23:21,691 INFO [com.holonplatform.datastore.jdbc] - JdbcDatastore initialized - Using dialect [com.holonplatform.datastore.jdbc.composer.dialect.H2Dialect]
+2026-05-02 21:23:21,720 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [INSERT INTO test_version_grid (id,name) VALUES (?,?)]
+2026-05-02 21:23:21,781 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.id AS id1_0, test_0_0.name AS name2_0, test_0_0.version AS vers3_0 FROM test_version_grid test_0_0]
+2026-05-02 21:23:21,788 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT COUNT(vers_0_0.id) AS coun1_0 FROM test_version_grid vers_0_0 WHERE vers_0_0.id=?]
+2026-05-02 21:23:21,801 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [UPDATE test_version_grid vers_0_0 SET vers_0_0.version=?,vers_0_0.id=?,vers_0_0.name=? WHERE vers_0_0.id=?]
+2026-05-02 21:23:21,808 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT vers_0_0.id AS id1_0, vers_0_0.name AS name2_0, vers_0_0.version AS vers3_0 FROM test_version_grid vers_0_0 WHERE vers_0_0.id=?]
+2026-05-02 21:23:21,818 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.id AS id1_0, test_0_0.name AS name2_0, test_0_0.version AS vers3_0 FROM test_version_grid test_0_0]
+2026-05-02 21:23:21,835 INFO [com.holonplatform.datastore.jdbc] - JdbcDatastore initialized - Using dialect [com.holonplatform.datastore.jdbc.composer.dialect.H2Dialect]
+2026-05-02 21:23:21,846 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.id AS id1_0, test_0_0.name AS name2_0 FROM test2 test_0_0 limit 2147483647 offset 0]
+2026-05-02 21:23:21,858 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.id AS id1_0, test_0_0.name AS name2_0 FROM test2 test_0_0 WHERE LOWER(test_0_0.name) LIKE ? ESCAPE '!' limit 2147483647 offset 0]
+2026-05-02 21:23:21,874 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.id AS id1_0, test_0_0.name AS name2_0 FROM test2 test_0_0 WHERE (LOWER(test_0_0.name) LIKE ? ESCAPE '!') AND (test_0_0.id=?) limit 2147483647 offset 0]
+2026-05-02 21:23:21,937 INFO [com.holonplatform.datastore.jdbc] - JdbcDatastore initialized - Using dialect [com.holonplatform.datastore.jdbc.composer.dialect.H2Dialect]
+2026-05-02 21:23:21,943 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.instant_epoch AS inst1_0 FROM test_constructor_with_instant test_0_0]
+2026-05-02 21:23:21,955 INFO [com.holonplatform.datastore.jdbc] - JdbcDatastore initialized - Using dialect [com.holonplatform.datastore.jdbc.composer.dialect.H2Dialect]
+2026-05-02 21:23:21,975 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.id AS id1_0, test_0_0.name AS name2_0 FROM test2 test_0_0 limit 2147483647 offset 0]
+2026-05-02 21:23:21,987 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.id AS id1_0, test_0_0.name AS name2_0 FROM test2 test_0_0 WHERE LOWER(test_0_0.name) LIKE ? ESCAPE '!' limit 2147483647 offset 0]
+2026-05-02 21:23:22,020 INFO [com.holonplatform.datastore.jdbc] - JdbcDatastore initialized - Using dialect [com.holonplatform.datastore.jdbc.composer.dialect.H2Dialect]
+2026-05-02 21:23:22,024 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.id AS id1_0, test_0_0.name AS name2_0 FROM test2 test_0_0 WHERE test_0_0.id=?]
+2026-05-02 21:23:22,108 INFO [com.holonplatform.datastore.jdbc] - JdbcDatastore initialized - Using dialect [com.holonplatform.datastore.jdbc.composer.dialect.H2Dialect]
+2026-05-02 21:23:22,111 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.id AS id1_0, test_0_0.name AS name2_0 FROM test2 test_0_0 limit 2147483647 offset 0]
+2026-05-02 21:23:22,121 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.id AS id1_0, test_0_0.name AS name2_0 FROM test2 test_0_0 WHERE LOWER(test_0_0.name) LIKE ? ESCAPE '!' limit 2147483647 offset 0]
+2026-05-02 21:23:22,139 INFO [com.holonplatform.datastore.jdbc] - JdbcDatastore initialized - Using dialect [com.holonplatform.datastore.jdbc.composer.dialect.H2Dialect]
+2026-05-02 21:23:22,249 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.active AS acti1_0, test_0_0.age AS age2_0, test_0_0.birth AS birt3_0, test_0_0.id AS id4_0, test_0_0.name AS name5_0 FROM test_filter_types test_0_0 limit 2147483647 offset 0]
+2026-05-02 21:23:22,254 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.active AS acti1_0, test_0_0.age AS age2_0, test_0_0.birth AS birt3_0, test_0_0.id AS id4_0, test_0_0.name AS name5_0 FROM test_filter_types test_0_0 WHERE LOWER(test_0_0.name) LIKE ? ESCAPE '!' limit 2147483647 offset 0]
+2026-05-02 21:23:22,260 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.active AS acti1_0, test_0_0.age AS age2_0, test_0_0.birth AS birt3_0, test_0_0.id AS id4_0, test_0_0.name AS name5_0 FROM test_filter_types test_0_0 WHERE test_0_0.age=? limit 2147483647 offset 0]
+2026-05-02 21:23:22,267 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.active AS acti1_0, test_0_0.age AS age2_0, test_0_0.birth AS birt3_0, test_0_0.id AS id4_0, test_0_0.name AS name5_0 FROM test_filter_types test_0_0 WHERE (test_0_0.age>=?) AND (test_0_0.age<=?) limit 2147483647 offset 0]
+2026-05-02 21:23:22,273 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.active AS acti1_0, test_0_0.age AS age2_0, test_0_0.birth AS birt3_0, test_0_0.id AS id4_0, test_0_0.name AS name5_0 FROM test_filter_types test_0_0 WHERE test_0_0.active=? limit 2147483647 offset 0]
+2026-05-02 21:23:22,279 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.active AS acti1_0, test_0_0.age AS age2_0, test_0_0.birth AS birt3_0, test_0_0.id AS id4_0, test_0_0.name AS name5_0 FROM test_filter_types test_0_0 WHERE test_0_0.birth=? limit 2147483647 offset 0]
+2026-05-02 21:23:22,326 INFO [com.holonplatform.datastore.jdbc] - JdbcDatastore initialized - Using dialect [com.holonplatform.datastore.jdbc.composer.dialect.H2Dialect]
+2026-05-02 21:23:22,331 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.instant_epoch AS inst1_0 FROM test_instant_epoch_range test_0_0 limit 2147483647 offset 0]
+2026-05-02 21:23:22,335 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.instant_epoch AS inst1_0 FROM test_instant_epoch_range test_0_0 WHERE test_0_0.instant_epoch>=? limit 2147483647 offset 0]
+2026-05-02 21:23:22,340 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.instant_epoch AS inst1_0 FROM test_instant_epoch_range test_0_0 WHERE (test_0_0.instant_epoch>=?) AND (test_0_0.instant_epoch<=?) limit 2147483647 offset 0]
+2026-05-02 21:23:22,356 INFO [com.holonplatform.datastore.jdbc] - JdbcDatastore initialized - Using dialect [com.holonplatform.datastore.jdbc.composer.dialect.H2Dialect]
+2026-05-02 21:23:22,363 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.id AS id1_0, test_0_0.name AS name2_0 FROM test2 test_0_0 WHERE test_0_0.id<=? ORDER BY test_0_0.name desc limit 1 offset 0]
+2026-05-02 21:23:22,373 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.id AS id1_0, test_0_0.name AS name2_0 FROM test2 test_0_0 WHERE test_0_0.id<=? ORDER BY test_0_0.name desc limit 1 offset 1]
+2026-05-02 21:23:22,399 INFO [com.holonplatform.datastore.jdbc] - JdbcDatastore initialized - Using dialect [com.holonplatform.datastore.jdbc.composer.dialect.H2Dialect]
+2026-05-02 21:23:22,402 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.id AS id1_0, test_0_0.name AS name2_0 FROM test2 test_0_0 limit 2147483647 offset 0]
+2026-05-02 21:23:22,411 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.id AS id1_0, test_0_0.name AS name2_0 FROM test2 test_0_0 WHERE LOWER(test_0_0.name) LIKE ? ESCAPE '!' limit 2147483647 offset 0]
+2026-05-02 21:23:22,422 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.id AS id1_0, test_0_0.name AS name2_0 FROM test2 test_0_0 WHERE (LOWER(test_0_0.name) LIKE ? ESCAPE '!') AND ((test_0_0.id>=?) AND (test_0_0.id<=?)) limit 2147483647 offset 0]
+2026-05-02 21:23:22,431 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.id AS id1_0, test_0_0.name AS name2_0 FROM test2 test_0_0 WHERE (test_0_0.id>=?) AND (test_0_0.id<=?) limit 2147483647 offset 0]
+2026-05-02 21:23:22,512 INFO [com.holonplatform.datastore.jdbc] - JdbcDatastore initialized - Using dialect [com.holonplatform.datastore.jdbc.composer.dialect.H2Dialect]
+2026-05-02 21:23:22,514 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.id AS id1_0, test_0_0.name AS name2_0 FROM test2 test_0_0]
+2026-05-02 21:23:22,523 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.id AS id1_0, test_0_0.name AS name2_0 FROM test2 test_0_0]
+2026-05-02 21:23:22,532 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.id AS id1_0, test_0_0.name AS name2_0 FROM test2 test_0_0 WHERE test_0_0.id<?]
+2026-05-02 21:23:22,546 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.id AS id1_0, test_0_0.name AS name2_0 FROM test2 test_0_0 WHERE test_0_0.id<?]
+2026-05-02 21:23:22,556 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.id AS id1_0, test_0_0.name AS name2_0 FROM test2 test_0_0 ORDER BY test_0_0.name desc]
+2026-05-02 21:23:22,564 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.id AS id1_0, test_0_0.name AS name2_0 FROM test2 test_0_0 WHERE test_0_0.id<=? ORDER BY test_0_0.name desc]
+2026-05-02 21:23:22,572 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.id AS id1_0, test_0_0.name AS name2_0 FROM test2 test_0_0 ORDER BY test_0_0.name desc]
+[INFO] Tests run: 37, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 3.205 s -- in com.holonplatform.vaadin.flow.test.TestBeanListing
+[INFO] 
+[INFO] Results:
+[INFO] 
+[INFO] Tests run: 37, Failures: 0, Errors: 0, Skipped: 0
+[INFO] 
+[INFO] 
+[INFO] --- jacoco:0.8.12:report (post-unit-test) @ holon-vaadin-flow ---
+[INFO] Loading execution data file C:\Users\sxp267\IdeaProjects\holon-vaadin-flow\core\target\coverage-reports\jacoco-ut.exec
+[INFO] Analyzed bundle 'com.holon-platform.vaadin:holon-vaadin-flow' with 1036 classes
+[WARNING] Classes in bundle 'com.holon-platform.vaadin:holon-vaadin-flow' do not match with execution data. For report generation the same class files must be used as at runtime.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/components/builders/DefaultPropertyOptionsMultiSelectInputBuilder does not match.
+[WARNING] Execution data for class com/iyensoft/vaadin/flow/internal/components/builders/AbstractLazyTabsConfigurator does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/components/builders/DefaultOptionsSingleSelectInputBuilder$DefaultDatastoreOptionsSingleSelectInputBuilder does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/components/builders/DefaultPropertyOptionsSingleSelectInputBuilder does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/components/AbstractViewComponent does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/data/DefaultItemListingLazyDataProviderAdapter does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/components/builders/DefaultListSingleSelectInputBuilder does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/components/builders/DefaultOptionsMultiSelectInputBuilder does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/components/DefaultDialog does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/components/DefaultPropertyListing$DefaultDatastorePropertyListingBuilder does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/components/builders/DefaultPropertyOptionsMultiSelectInputBuilder$DefaultDatastorePropertyOptionsMultiSelectInputBuilder does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/components/builders/DefaultPropertySingleSelectInputBuilder$DefaultDatastorePropertySingleSelectInputBuilder does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/components/builders/FlexComponentConfigurator does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/components/builders/DefaultPropertyFilterableSingleSelectInputBuilder does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/components/MultiSelectInputAdapter does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/components/builders/DefaultPropertyOptionsSingleSelectInputBuilder$DefaultDatastorePropertyOptionsSingleSelectInputBuilder does not match.
+[WARNING] Execution data for class com/iyensoft/vaadin/flow/utils/responsive/ViewMode does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/components/DefaultPropertyListing$DefaultDatastoreLazyPropertyListingBuilder does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/util/OperationResult$Status does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/components/builders/DefaultOptionsSingleSelectInputBuilder does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/components/DefaultFilterInputGroup$GroupBuilder does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/components/support/ValidationStatus does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/components/ValidationStatusHandler$ValidationStatusEvent does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/components/DefaultPropertyListing does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/components/DefaultPropertyListing$DefaultPropertyListingBuilder does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/components/GroupValidationStatusHandler$GroupElementValidationStatusEvent does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/components/builders/DefaultPropertySingleSelectInputBuilder does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/components/builders/DefaultSingleSelectInputBuilder does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/components/kanban/KanbanMoveHandler does not match.
+[WARNING] Execution data for class com/iyensoft/vaadin/flow/components/MasterDetailLayout does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/components/builders/DefaultValidatableInputConfigurator does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/components/builders/AbstractDateInputBuilder does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/components/HasComponent does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/components/AbstractValidatableInputAdapter does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/components/AbstractPropertySetGroup does not match.
+[WARNING] Execution data for class com/iyensoft/vaadin/flow/internal/components/builders/DefaultLazyTabsBuilder does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/components/DefaultViewComponent does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/components/builders/AbstractDateTimeInputBuilder does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/components/builders/DefaultListMultiSelectInputBuilder does not match.
+[WARNING] Execution data for class com/iyensoft/vaadin/flow/utils/responsive/IyenResponsiveLayout does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/components/builders/BaseTemporalInputConfigurator$CalendarLocalizationBuilder does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/components/builders/DefaultPropertyListMultiSelectInputBuilder does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/util/OperationResult does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/components/builders/DefaultOptionsSingleSelectInputBuilder$DefaultValidatableOptionsSingleSelectInputBuilder does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/lumo/Breakpoint does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/components/builders/DefaultPropertyFilterableSingleSelectInputBuilder$DefaultDatastorePropertyFilterableSingleSelectInputBuilder does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/components/builders/DefaultPropertyListSingleSelectInputBuilder does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/data/DefaultDatastoreDataProvider does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/components/support/InputValidationStatus does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/vaadinplus/components/Header does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/components/builders/DefaultPropertyListSingleSelectInputBuilder$DefaultDatastorePropertyListSingleSelectInputBuilder does not match.
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  05:01 min
+[INFO] Finished at: 2026-05-02T21:28:09-04:00
+[INFO] ------------------------------------------------------------------------

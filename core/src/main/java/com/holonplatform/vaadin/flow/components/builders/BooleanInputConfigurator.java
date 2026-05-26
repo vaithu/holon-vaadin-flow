@@ -31,7 +31,8 @@ import com.vaadin.flow.component.checkbox.Checkbox;
 public interface BooleanInputConfigurator<C extends BooleanInputConfigurator<C>>
 		extends InputValueConfigurator<Boolean, ValueChangeEvent<Boolean>, C>, HasSizeConfigurator<C>,
 		HasStyleConfigurator<C>, HasEnabledConfigurator<C>, HasAutofocusConfigurator<C>,
-		FocusableConfigurator<Component, C>, HasLabelConfigurator<C>, DeferrableLocalizationConfigurator<C>,
+		FocusableConfigurator<Component, C>, HasLabelConfigurator<C>, HasAriaLabelConfigurator<C>,
+		HasTooltipConfigurator<C>, HasHelperTextConfigurator<C>, DeferrableLocalizationConfigurator<C>,
 		ClickNotifierConfigurator<Checkbox, ClickEvent<Checkbox>, C> {
 
 }

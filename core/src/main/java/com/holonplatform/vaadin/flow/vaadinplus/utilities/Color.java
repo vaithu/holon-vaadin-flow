@@ -1,35 +1,36 @@
 package com.holonplatform.vaadin.flow.vaadinplus.utilities;
 
-import com.vaadin.flow.theme.lumo.LumoUtility;
-
 public class Color {
+
+    private Color() {}
+
     public enum Background {
-        BASE(LumoUtility.Background.BASE),
-        TRANSPARENT(LumoUtility.Background.TRANSPARENT),
-        CONTRAST(LumoUtility.Background.CONTRAST),
-        CONTRAST_90(LumoUtility.Background.CONTRAST_90),
-        CONTRAST_80(LumoUtility.Background.CONTRAST_80),
-        CONTRAST_70(LumoUtility.Background.CONTRAST_70),
-        CONTRAST_60(LumoUtility.Background.CONTRAST_60),
-        CONTRAST_50(LumoUtility.Background.CONTRAST_50),
-        CONTRAST_40(LumoUtility.Background.CONTRAST_40),
-        CONTRAST_30(LumoUtility.Background.CONTRAST_30),
-        CONTRAST_20(LumoUtility.Background.CONTRAST_20),
-        CONTRAST_10(LumoUtility.Background.CONTRAST_10),
-        CONTRAST_5(LumoUtility.Background.CONTRAST_5),
-        PRIMARY(LumoUtility.Background.PRIMARY),
-        PRIMARY_50(LumoUtility.Background.PRIMARY_50),
-        PRIMARY_10(LumoUtility.Background.PRIMARY_10),
-        ERROR(LumoUtility.Background.ERROR),
-        ERROR_50(LumoUtility.Background.ERROR_50),
-        ERROR_10(LumoUtility.Background.ERROR_10),
-        SUCCESS(LumoUtility.Background.SUCCESS),
-        SUCCESS_50(LumoUtility.Background.SUCCESS_50),
-        SUCCESS_10(LumoUtility.Background.SUCCESS_10);
+        BASE("color-bg-base"),
+        TRANSPARENT("color-bg-transparent"),
+        CONTRAST("color-bg-contrast"),
+        CONTRAST_90("color-bg-contrast-90"),
+        CONTRAST_80("color-bg-contrast-80"),
+        CONTRAST_70("color-bg-contrast-70"),
+        CONTRAST_60("color-bg-contrast-60"),
+        CONTRAST_50("color-bg-contrast-50"),
+        CONTRAST_40("color-bg-contrast-40"),
+        CONTRAST_30("color-bg-contrast-30"),
+        CONTRAST_20("color-bg-contrast-20"),
+        CONTRAST_10("color-bg-contrast-10"),
+        CONTRAST_5("color-bg-contrast-5"),
+        PRIMARY("color-bg-primary"),
+        PRIMARY_50("color-bg-primary-50"),
+        PRIMARY_10("color-bg-primary-10"),
+        ERROR("color-bg-error"),
+        ERROR_50("color-bg-error-50"),
+        ERROR_10("color-bg-error-10"),
+        SUCCESS("color-bg-success"),
+        SUCCESS_50("color-bg-success-50"),
+        SUCCESS_10("color-bg-success-10");
 
         private final String className;
 
-        private Background(String className) {
+        Background(String className) {
             this.className = className;
         }
 
@@ -39,21 +40,21 @@ public class Color {
     }
 
     public enum Text {
-        HEADER(LumoUtility.TextColor.HEADER),
-        BODY(LumoUtility.TextColor.BODY),
-        SECONDARY(LumoUtility.TextColor.SECONDARY),
-        TERTIARY(LumoUtility.TextColor.TERTIARY),
-        DISABLED(LumoUtility.TextColor.DISABLED),
-        PRIMARY(LumoUtility.TextColor.PRIMARY),
-        PRIMARY_CONTRAST(LumoUtility.TextColor.PRIMARY_CONTRAST),
-        ERROR(LumoUtility.TextColor.ERROR),
-        ERROR_CONTRAST(LumoUtility.TextColor.ERROR_CONTRAST),
-        SUCCESS(LumoUtility.TextColor.SUCCESS),
-        SUCCESS_CONTRAST(LumoUtility.TextColor.SUCCESS_CONTRAST);
+        HEADER("color-text-header"),
+        BODY("color-text-body"),
+        SECONDARY("color-text-secondary"),
+        TERTIARY("color-text-tertiary"),
+        DISABLED("color-text-disabled"),
+        PRIMARY("color-text-primary"),
+        PRIMARY_CONTRAST("color-text-primary-contrast"),
+        ERROR("color-text-error"),
+        ERROR_CONTRAST("color-text-error-contrast"),
+        SUCCESS("color-text-success"),
+        SUCCESS_CONTRAST("color-text-success-contrast");
 
         private final String className;
 
-        private Text(String className) {
+        Text(String className) {
             this.className = className;
         }
 

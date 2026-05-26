@@ -15,12 +15,6 @@
  */
 package com.holonplatform.vaadin.flow.internal.converters;
 
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
-import java.text.NumberFormat;
-import java.util.Locale;
-import java.util.Optional;
-
 import com.holonplatform.core.internal.utils.ConversionUtils;
 import com.holonplatform.core.internal.utils.ObjectUtils;
 import com.holonplatform.core.internal.utils.TypeUtils;
@@ -29,6 +23,12 @@ import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
 import com.vaadin.flow.data.binder.Result;
 import com.vaadin.flow.data.binder.ValueContext;
 import com.vaadin.flow.data.converter.Converter;
+
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.text.NumberFormat;
+import java.util.Locale;
+import java.util.Optional;
 
 /**
  * A {@link Converter}s that convert from {@link Number} types to {@link String} and back.
@@ -374,11 +374,11 @@ public class DefaultStringToNumberConverter<T extends Number> extends AbstractLo
 	 */
 	@Override
 	public Result<T> convertToModel(String stringValue, ValueContext context) {
-		if (stringValue != null && !stringValue.trim().equals("")) {
+		if (stringValue != null && !stringValue.isBlank()) {
 			String value = stringValue;
 			// check no decimal symbol at the end
 			if (!Character.isDigit(value.charAt(value.length() - 1))) {
-				value = value.substring(0, value.length());
+				value = value.substring(0, value.length() - 1);
 			}
 			try {
 				final T number = ConversionUtils

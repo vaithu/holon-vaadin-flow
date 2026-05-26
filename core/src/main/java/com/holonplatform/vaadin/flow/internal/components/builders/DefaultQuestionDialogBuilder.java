@@ -22,8 +22,8 @@ import com.holonplatform.vaadin.flow.components.builders.ButtonConfigurator;
 import com.holonplatform.vaadin.flow.components.builders.ButtonConfigurator.BaseButtonConfigurator;
 import com.holonplatform.vaadin.flow.components.builders.DialogBuilder;
 import com.holonplatform.vaadin.flow.components.builders.DialogBuilder.QuestionDialogBuilder;
+import com.vaadin.flow.component.ModalityMode;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dialog.Dialog;
 
 import java.util.function.Consumer;
@@ -42,39 +42,39 @@ public class DefaultQuestionDialogBuilder extends AbstractDialogConfigurator<Que
 	public DefaultQuestionDialogBuilder(QuestionDialogCallback questionDialogCallback) {
 		super();
 		ObjectUtils.argumentNotNull(questionDialogCallback, "Question dialog callback must be not null");
+
 		this.confirmButton = ButtonBuilder.create()
-				.text(Localizable.of("Yes", DialogBuilder.DEFAULT_CONFIRM_BUTTON_MESSAGE_CODE)).withClickListener(e -> {
-					getComponent().close();
+				.text(Localizable.of("Yes", DialogBuilder.DEFAULT_CONFIRM_BUTTON_MESSAGE_CODE))
+				.styleName("h-dialog__action-btn")
+				.withClickListener(e -> {
+					getComponent().attemptClose();
 					questionDialogCallback.onUserAnswer(true);
-				}).build();
+				})
+				.build();
+
 		this.denyButton = ButtonBuilder.create()
-				.text(Localizable.of("No", DialogBuilder.DEFAULT_DENY_BUTTON_MESSAGE_CODE)).withClickListener(e -> {
-					getComponent().close();
+				.text(Localizable.of("No", DialogBuilder.DEFAULT_DENY_BUTTON_MESSAGE_CODE))
+				.styleName("h-dialog__cancel-btn")
+				.withClickListener(e -> {
+					getComponent().attemptClose();
 					questionDialogCallback.onUserAnswer(false);
 				})
-				.withThemeVariants(ButtonVariant.LUMO_TERTIARY_INLINE)
 				.build();
 
 		getComponent().addFooterComponent(this.denyButton);
 		getComponent().addFooterComponent(this.confirmButton);
 
-		this.denyButton.getStyle().set("margin-right", "auto");
-
 		getComponent().setCloseOnEsc(false);
 		getComponent().setCloseOnOutsideClick(false);
-
 		getComponent().setDraggable(true);
 
 		// since 5.5.0: set modal by default
-		getComponent().setModal(true);
+		getComponent().setModality(ModalityMode.STRICT);
+
+		// shadcn/ui AlertDialog pattern — hide close button to force explicit choice
+		getComponent().setCloseButtonVisible(false);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.holonplatform.vaadin.flow.components.builders.DialogBuilder.
-	 * QuestionDialogBuilder#confirmButtonConfigurator( java.util.function.Consumer)
-	 */
 	@Override
 	public QuestionDialogBuilder confirmButtonConfigurator(Consumer<BaseButtonConfigurator> configurator) {
 		ObjectUtils.argumentNotNull(configurator, "Configurator must be not null");
@@ -82,37 +82,18 @@ public class DefaultQuestionDialogBuilder extends AbstractDialogConfigurator<Que
 		return getConfigurator();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.holonplatform.vaadin.flow.components.builders.DialogBuilder.
-	 * QuestionDialogBuilder#denialButtonConfigurator( java.util.function.Consumer)
-	 */
 	@Override
 	public QuestionDialogBuilder denialButtonConfigurator(Consumer<BaseButtonConfigurator> configurator) {
 		ObjectUtils.argumentNotNull(configurator, "Configurator must be not null");
 		configurator.accept(ButtonConfigurator.configure(denyButton));
-
-
 		return getConfigurator();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.holonplatform.vaadin.flow.internal.components.builders.
-	 * AbstractComponentConfigurator#getConfigurator()
-	 */
 	@Override
 	protected QuestionDialogBuilder getConfigurator() {
 		return this;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.holonplatform.vaadin.flow.components.builders.DialogBuilder#build()
-	 */
 	@Override
 	public Dialog build() {
 		return getComponent();

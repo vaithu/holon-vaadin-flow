@@ -1,0 +1,70 @@
+[INFO] Reactor Build Order:
+[INFO] Building com.holon-platform.saas:holon-saas-root 1.0.0            [1/14]
+[INFO] Building com.holon-platform.saas:holon-vaadin-flow-tenant-core 1.0.0 [2/14]
+[INFO] Tests run: 7, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.151 s -- in com.holonplatform.vaadin.flow.tenant.async.TenantAwareAsyncTest
+[INFO] Tests run: 9, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.906 s -- in com.holonplatform.vaadin.flow.tenant.config.TenantCoreAutoConfigurationTest
+16:23:54.527 [main] WARN com.holonplatform.vaadin.flow.tenant.filter.TenantContextFilter -- Tenant resolution failed for request '' ? no tenant identifier found
+[INFO] Tests run: 9, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.219 s -- in com.holonplatform.vaadin.flow.tenant.filter.TenantContextFilterTest
+[INFO] Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.016 s -- in com.holonplatform.vaadin.flow.tenant.resolver.CompositeTenantResolverTest
+[INFO] Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.009 s -- in com.holonplatform.vaadin.flow.tenant.resolver.HeaderTenantResolverTest
+[INFO] Tests run: 9, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.012 s -- in com.holonplatform.vaadin.flow.tenant.resolver.JwtClaimTenantResolverTest
+[INFO] Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.008 s -- in com.holonplatform.vaadin.flow.tenant.resolver.PathPrefixTenantResolverTest
+[INFO] Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.007 s -- in com.holonplatform.vaadin.flow.tenant.resolver.SubdomainTenantResolverTest
+[INFO] Tests run: 13, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.018 s -- in com.holonplatform.vaadin.flow.tenant.TenantContextTest
+[INFO] Tests run: 15, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.026 s -- in com.holonplatform.vaadin.flow.tenant.TenantDetailsTest
+[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.007 s -- in com.holonplatform.vaadin.flow.tenant.TenantPlanTest
+[INFO] Tests run: 100, Failures: 0, Errors: 0, Skipped: 0
+[INFO] Building com.holon-platform.saas:holon-vaadin-flow-tenant-data 1.0.0 [3/14]
+[INFO] Tests run: 12, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.829 s -- in com.holonplatform.vaadin.flow.tenant.data.config.TenantDataAutoConfigurationTest
+[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.016 s -- in com.holonplatform.vaadin.flow.tenant.data.DatabaseDialectTest
+[INFO] Tests run: 12, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.056 s -- in com.holonplatform.vaadin.flow.tenant.data.datasource.BoundedTenantDataSourceRegistryTest
+[INFO] Tests run: 7, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.786 s -- in com.holonplatform.vaadin.flow.tenant.data.datasource.TenantAwareDataSourceTest
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.030 s -- in com.holonplatform.vaadin.flow.tenant.data.migration.TenantSchemaCreatorTest
+[INFO] Tests run: 7, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.008 s -- in com.holonplatform.vaadin.flow.tenant.data.SchemaNameResolverTest
+[INFO] Tests run: 48, Failures: 0, Errors: 0, Skipped: 0
+[INFO] Building com.holon-platform.saas:holon-vaadin-flow-tenant-security 1.0.0 [4/14]
+[INFO] Tests run: 7, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.778 s -- in com.holonplatform.vaadin.flow.tenant.security.aop.TenantFeatureAspectTest
+[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.664 s -- in com.holonplatform.vaadin.flow.tenant.security.config.TenantSecurityAutoConfigurationTest
+[INFO] Tests run: 7, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.599 s -- in com.holonplatform.vaadin.flow.tenant.security.filter.TenantIsolationFilterTest
+[INFO] Tests run: 11, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.020 s -- in com.holonplatform.vaadin.flow.tenant.security.TenantSecurityContextHolderTest
+[INFO] Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.018 s -- in com.holonplatform.vaadin.flow.tenant.security.TenantUserDetailsTest
+[INFO] Tests run: 39, Failures: 0, Errors: 0, Skipped: 0
+[INFO] Building com.holon-platform.saas:holon-vaadin-flow-tenant-onboarding 1.0.0 [5/14]
+16:24:14.009 [main] INFO com.holonplatform.vaadin.flow.tenant.onboarding.internal.DefaultTenantOnboardingService -- Starting onboarding for tenant 'fail-tenant' (plan=FREE)
+16:24:14.009 [main] INFO com.holonplatform.vaadin.flow.tenant.onboarding.internal.DefaultTenantOnboardingService -- Running schema migration for tenant 'fail-tenant'
+16:24:14.012 [main] WARN com.holonplatform.vaadin.flow.tenant.onboarding.internal.DefaultTenantOnboardingService -- Tenant 'fail-tenant' marked DELETED after onboarding failure
+16:24:14.051 [main] WARN com.holonplatform.vaadin.flow.tenant.onboarding.internal.DefaultTenantOnboardingService -- Tenant 'deleted-tenant' marked DELETED after onboarding failure
+16:24:14.112 [main] INFO com.holonplatform.vaadin.flow.tenant.onboarding.internal.DefaultTenantOnboardingService -- Starting onboarding for tenant 'event-fail' (plan=FREE)
+16:24:14.112 [main] INFO com.holonplatform.vaadin.flow.tenant.onboarding.internal.DefaultTenantOnboardingService -- Running schema migration for tenant 'event-fail'
+16:24:14.113 [main] WARN com.holonplatform.vaadin.flow.tenant.onboarding.internal.DefaultTenantOnboardingService -- Tenant 'event-fail' marked DELETED after onboarding failure
+[INFO] Tests run: 20, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 2.019 s -- in com.holonplatform.vaadin.flow.tenant.onboarding.internal.DefaultTenantOnboardingServiceTest
+[INFO] Tests run: 20, Failures: 0, Errors: 0, Skipped: 0
+[INFO] Building com.holon-platform.saas:holon-vaadin-flow-tenant-audit 1.0.0 [6/14]
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 2.670 s -- in com.holonplatform.vaadin.flow.tenant.audit.AuditAspectTest
+[INFO] Tests run: 17, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.036 s -- in com.holonplatform.vaadin.flow.tenant.audit.InMemoryTenantAuditServiceTest
+[INFO] Tests run: 21, Failures: 0, Errors: 0, Skipped: 0
+[INFO] Building com.holon-platform.saas:holon-vaadin-flow-tenant-settings 1.0.0 [7/14]
+[INFO] Tests run: 15, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.251 s -- in com.holonplatform.vaadin.flow.tenant.settings.InMemoryTenantSettingsServiceTest
+[INFO] Tests run: 15, Failures: 0, Errors: 0, Skipped: 0
+[INFO] Building com.holon-platform.saas:holon-vaadin-flow-tenant-limits 1.0.0 [8/14]
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 2.961 s -- in com.holonplatform.vaadin.flow.tenant.limits.RateLimitAspectTest
+[INFO] Tests run: 12, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.133 s -- in com.holonplatform.vaadin.flow.tenant.limits.TokenBucketRateLimiterTest
+[INFO] Tests run: 17, Failures: 0, Errors: 0, Skipped: 0
+[INFO] Building com.holon-platform.saas:holon-vaadin-flow-tenant-users 1.0.0 [9/14]
+[INFO] Tests run: 19, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.324 s -- in com.holonplatform.vaadin.flow.tenant.users.InMemoryTenantUserServiceTest
+[INFO] Tests run: 19, Failures: 0, Errors: 0, Skipped: 0
+[INFO] Building com.holon-platform.saas:holon-vaadin-flow-tenant-billing 1.0.0 [10/14]
+[INFO] Tests run: 24, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.105 s -- in com.holonplatform.vaadin.flow.tenant.billing.InMemoryTenantBillingServiceTest
+[INFO] Tests run: 24, Failures: 0, Errors: 0, Skipped: 0
+[INFO] Building com.holon-platform.saas:holon-vaadin-flow-tenant-vaadin 1.0.0 [11/14]
+[INFO] Tests run: 7, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 2.034 s -- in com.holonplatform.vaadin.flow.tenant.vaadin.guard.TenantNavigationGuardTest
+[INFO] Tests run: 7, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.404 s -- in com.holonplatform.vaadin.flow.tenant.vaadin.TenantNotificationServiceTest
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.418 s -- in com.holonplatform.vaadin.flow.tenant.vaadin.TenantThemeApplicatorTest
+[INFO] Tests run: 12, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.047 s -- in com.holonplatform.vaadin.flow.tenant.vaadin.TenantUiContextTest
+[INFO] Tests run: 31, Failures: 0, Errors: 0, Skipped: 0
+[INFO] Building com.holon-platform.saas:holon-vaadin-flow-tenant-admin 1.0.0 [12/14]
+[INFO] Tests run: 33, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.201 s -- in com.holonplatform.vaadin.flow.tenant.admin.service.InMemoryTenantAdminServiceTest
+[INFO] Tests run: 33, Failures: 0, Errors: 0, Skipped: 0
+[INFO] Building com.holon-platform.saas:holon-starter-vaadin-flow-saas 1.0.0 [13/14]
+[INFO] Building com.holon-platform.saas:holon-saas-bom 1.0.0            [14/14]
+[INFO] BUILD SUCCESS

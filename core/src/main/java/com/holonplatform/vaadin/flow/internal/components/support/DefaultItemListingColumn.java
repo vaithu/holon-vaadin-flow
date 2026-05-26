@@ -84,10 +84,11 @@ public class DefaultItemListingColumn<P, T, V> implements ItemListingColumn<P, T
 
 	private String headerPartName;
 	private String footerPartName;
-	private SerializableFunction<T, String> tooltipGenerator;
+	
 	private SerializableFunction<T, String> partNameGenerator;
+	private SerializableFunction<T, String> tooltipGenerator;
 
-	private List<ValueChangeListener<V, GroupValueChangeEvent<V, P, Input<?>, EditorComponentGroup<P, T>>>> valueChangeListeners = new LinkedList<>();
+	private List<ValueChangeListener<V, GroupValueChangeEvent<V, P, Input<?>, EditorComponentGroup<P, T>>>> valueChangeListeners = new ArrayList<>();
 	private boolean frozenAtEnd;
 
 	/**
@@ -557,7 +558,7 @@ public class DefaultItemListingColumn<P, T, V> implements ItemListingColumn<P, T
 	public void addValidator(Validator<V> validator) {
 		ObjectUtils.argumentNotNull(validator, "Validator must be not null");
 		if (validators == null) {
-			validators = new LinkedList<>();
+			validators = new ArrayList<>();
 		}
 		validators.add(validator);
 	}

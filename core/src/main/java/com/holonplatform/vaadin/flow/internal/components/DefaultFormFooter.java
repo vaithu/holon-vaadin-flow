@@ -11,7 +11,6 @@ import com.vaadin.flow.component.HasSize;
 import com.vaadin.flow.component.HasStyle;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.shared.HasTooltip;
-import com.vaadin.flow.theme.lumo.LumoUtility;
 
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -29,12 +28,6 @@ public class DefaultFormFooter extends AbstractComponentConfigurator<Layout,Defa
 
     public DefaultFormFooter(Layout component) {
         super(component);
-        getComponent().setId("FormFooter");
-        getComponent().addClassNames(LumoUtility.Display.FLEX, LumoUtility.FlexDirection.COLUMN,
-                LumoUtility.FlexDirection.Breakpoint.Medium.ROW, LumoUtility.JustifyContent.BETWEEN,
-                LumoUtility.Padding.MEDIUM,
-                LumoUtility.Background.CONTRAST_5,
-                LumoUtility.AlignItems.STRETCH);
 
         saveBtn = Components.button()
                 .text("Save")
@@ -68,7 +61,7 @@ public class DefaultFormFooter extends AbstractComponentConfigurator<Layout,Defa
 
     @Override
     public DefaultFormFooter addAdditionalComponent(Component component) {
-        component.getStyle().set("margin-left", "auto");
+        component.addClassName("form-footer__additional");
         getComponent().addComponentAtIndex(getComponent().getComponentCount() , component);
         return this;
     }

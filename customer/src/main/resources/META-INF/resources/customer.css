@@ -1,0 +1,260 @@
+/* ── customer.css – Customer module styles ──────────────────────────────── */
+
+/* ── List View ────────────────────────────────────────────────────────────── */
+
+.customer-list-view {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-m, 1rem);
+  padding: var(--space-m, 1rem) var(--space-l, 1.5rem);
+  box-sizing: border-box;
+  min-height: 0;
+  flex: 1 1 auto;
+}
+
+.customer-list-view .customer-page-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-s, 0.5rem);
+  flex-wrap: wrap;
+  padding-bottom: var(--space-s, 0.5rem);
+}
+
+.customer-list-view .customer-page-title {
+  margin: 0;
+  font-size: var(--font-size-2xl, 1.5rem);
+  font-weight: 700;
+  line-height: 1.2;
+  flex: 1 1 auto;
+}
+
+.customer-list-view .customer-page-subtitle {
+  margin: 0;
+  color: var(--color-body-secondary, #6b7280);
+  font-size: var(--font-size-sm, 0.875rem);
+}
+
+.customer-list-view .customer-header-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs, 0.25rem);
+  flex-shrink: 0;
+}
+
+/* Name cell in list grid */
+.customer-list__name-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  cursor: pointer;
+}
+
+.customer-list__name-primary {
+  font-weight: 600;
+  font-size: var(--font-size-sm, 0.875rem);
+  color: var(--color-primary-600, #2563eb);
+  text-decoration: none;
+}
+
+.customer-list__name-primary:hover {
+  text-decoration: underline;
+}
+
+.customer-list__name-secondary {
+  font-size: var(--font-size-xs, 0.75rem);
+  color: var(--color-body-secondary, #6b7280);
+}
+
+/* Row action buttons layout */
+.customer-list__row-actions {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+/* ── Status badges (list and detail) ────────────────────────────────────── */
+
+.customer-status-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: 9999px;
+  font-size: var(--font-size-xs, 0.75rem);
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+.customer-status-badge--prospect  { background: #f1f5f9; color: #475569; }
+.customer-status-badge--lead      { background: #dbeafe; color: #1d4ed8; }
+.customer-status-badge--active    { background: #dcfce7; color: #15803d; }
+.customer-status-badge--inactive  { background: #fef9c3; color: #a16207; }
+.customer-status-badge--archived  { background: #f3f4f6; color: #6b7280; }
+
+/* ── Type badges ─────────────────────────────────────────────────────────── */
+
+.customer-type-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: var(--font-size-xs, 0.75rem);
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.customer-type-badge--individual { background: #ede9fe; color: #6d28d9; }
+.customer-type-badge--company    { background: #dbeafe; color: #1d4ed8; }
+.customer-type-badge--government { background: #ffedd5; color: #c2410c; }
+.customer-type-badge--non_profit { background: #fce7f3; color: #be185d; }
+
+/* ── Detail View ──────────────────────────────────────────────────────────── */
+
+.customer-detail-view {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  box-sizing: border-box;
+}
+
+.customer-detail__breadcrumb-row {
+  padding: var(--space-xs, 0.25rem) var(--space-l, 1.5rem) 0;
+  flex-shrink: 0;
+}
+
+/* Master grid row card */
+.customer-master__row-cell {
+  display: flex;
+  align-items: center;
+  gap: var(--space-s, 0.5rem);
+  padding: var(--space-xs, 0.25rem) 0;
+  cursor: pointer;
+  width: 100%;
+}
+
+.customer-master__row-info {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.customer-master__row-name {
+  font-weight: 600;
+  font-size: var(--font-size-sm, 0.875rem);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.customer-master__row-sub {
+  font-size: var(--font-size-xs, 0.75rem);
+  color: var(--color-body-secondary, #6b7280);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Detail tabs section labels */
+.customer-detail__section-label {
+  font-size: var(--font-size-xs, 0.75rem);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--color-body-secondary, #6b7280);
+  padding-bottom: var(--space-xs, 0.25rem);
+  border-bottom: 1px solid var(--color-border, #e5e7eb);
+  margin-bottom: var(--space-s, 0.5rem);
+  display: block;
+}
+
+/* Detail pane content scrollable area */
+.customer-detail__tab-content {
+  padding: var(--space-m, 1rem);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-m, 1rem);
+  overflow-y: auto;
+}
+
+/* Avatar initials circle */
+.customer-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 14px;
+  color: #fff;
+  flex-shrink: 0;
+  text-transform: uppercase;
+}
+
+.customer-avatar--0 { background: #6366f1; }
+.customer-avatar--1 { background: #8b5cf6; }
+.customer-avatar--2 { background: #ec4899; }
+.customer-avatar--3 { background: #f59e0b; }
+.customer-avatar--4 { background: #10b981; }
+.customer-avatar--5 { background: #3b82f6; }
+
+/* ── Form Dialog ──────────────────────────────────────────────────────────── */
+
+.customer-form-dialog {
+  --vaadin-dialog-content-padding: 0;
+}
+
+.customer-form-dialog .customer-form__tab-content {
+  padding: var(--space-m, 1rem) var(--space-l, 1.5rem);
+  overflow-y: auto;
+  max-height: 60vh;
+}
+
+.customer-form-dialog .customer-form__section-title {
+  font-weight: 600;
+  font-size: var(--font-size-sm, 0.875rem);
+  color: var(--color-body-secondary, #6b7280);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: var(--space-s, 0.5rem);
+  padding-bottom: var(--space-xs, 0.25rem);
+  border-bottom: 1px solid var(--color-border, #e5e7eb);
+  display: block;
+}
+
+/* Responsive form layout in dialog */
+.customer-form__layout > vaadin-form-layout {
+  width: 100%;
+}
+
+/* Empty state in detail view (no customer selected) */
+.customer-detail__empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  gap: var(--space-m, 1rem);
+  color: var(--color-body-secondary, #6b7280);
+  padding: var(--space-xl, 2rem);
+  text-align: center;
+}
+
+.customer-detail__empty-icon {
+  font-size: 3rem;
+  opacity: 0.3;
+}
+
+.customer-detail__empty-title {
+  font-weight: 600;
+  font-size: var(--font-size-lg, 1.125rem);
+}
+
+.customer-detail__empty-desc {
+  font-size: var(--font-size-sm, 0.875rem);
+}
+

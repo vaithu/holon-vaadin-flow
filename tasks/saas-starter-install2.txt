@@ -1,0 +1,54 @@
+[INFO] Scanning for projects...
+[WARNING] 
+[WARNING] Some problems were encountered while building the effective model for com.holon-platform.vaadin:holon-vaadin-flow-demo:jar:10.0.0
+[WARNING] 'build.plugins.plugin.version' for org.springframework.boot:spring-boot-maven-plugin is missing. @ line 108, column 21
+[WARNING] 
+[WARNING] It is highly recommended to fix these problems because they threaten the stability of your build.
+[WARNING] 
+[WARNING] For this reason, future Maven versions might no longer support building such malformed projects.
+[WARNING] 
+[INFO] 
+[INFO] ------< com.holon-platform.vaadin:holon-starter-vaadin-flow-saas >------
+[INFO] Building com.holon-platform.vaadin:holon-starter-vaadin-flow-saas 10.0.0
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- jacoco:0.8.12:prepare-agent (pre-unit-test) @ holon-starter-vaadin-flow-saas ---
+[INFO] surefireArgLine set to -javaagent:C:\\Users\\sxp267\\.m2\\repository\\org\\jacoco\\org.jacoco.agent\\0.8.12\\org.jacoco.agent-0.8.12-runtime.jar=destfile=C:\\Users\\sxp267\\IdeaProjects\\holon-vaadin-flow\\starter-saas\\target\\coverage-reports\\jacoco-ut.exec
+[INFO] 
+[INFO] --- remote-resources:3.1.0:process (default) @ holon-starter-vaadin-flow-saas ---
+[INFO] Preparing remote bundle com.holon-platform:holon-shared:1.0.6
+[INFO] Copying 6 resources from 1 bundle.
+[INFO] 
+[INFO] --- resources:3.4.0:resources (default-resources) @ holon-starter-vaadin-flow-saas ---
+[INFO] skip non existing resourceDirectory C:\Users\sxp267\IdeaProjects\holon-vaadin-flow\starter-saas\src\main\resources
+[INFO] Copying 6 resources from target\maven-shared-archive-resources to target\classes
+[INFO] 
+[INFO] --- compiler:3.15.0:compile (default-compile) @ holon-starter-vaadin-flow-saas ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.4.0:testResources (default-testResources) @ holon-starter-vaadin-flow-saas ---
+[INFO] skip non existing resourceDirectory C:\Users\sxp267\IdeaProjects\holon-vaadin-flow\starter-saas\src\test\resources
+[INFO] Copying 6 resources from target\maven-shared-archive-resources to target\test-classes
+[INFO] 
+[INFO] --- compiler:3.15.0:testCompile (default-testCompile) @ holon-starter-vaadin-flow-saas ---
+[INFO] No sources to compile
+[INFO] 
+[INFO] --- surefire:3.5.2:test (default-test) @ holon-starter-vaadin-flow-saas ---
+[INFO] Tests are skipped.
+[INFO] 
+[INFO] --- jacoco:0.8.12:report (post-unit-test) @ holon-starter-vaadin-flow-saas ---
+[INFO] Skipping JaCoCo execution due to missing execution data file.
+[INFO] 
+[INFO] --- jar:3.4.2:jar (default-jar) @ holon-starter-vaadin-flow-saas ---
+[INFO] Building jar: C:\Users\sxp267\IdeaProjects\holon-vaadin-flow\starter-saas\target\holon-starter-vaadin-flow-saas-10.0.0.jar
+[INFO] 
+[INFO] --- install:3.1.4:install (default-install) @ holon-starter-vaadin-flow-saas ---
+[INFO] Installing C:\Users\sxp267\IdeaProjects\holon-vaadin-flow\starter-saas\pom.xml to C:\Users\sxp267\.m2\repository\com\holon-platform\vaadin\holon-starter-vaadin-flow-saas\10.0.0\holon-starter-vaadin-flow-saas-10.0.0.pom
+[INFO] Installing C:\Users\sxp267\IdeaProjects\holon-vaadin-flow\starter-saas\target\holon-starter-vaadin-flow-saas-10.0.0.jar to C:\Users\sxp267\.m2\repository\com\holon-platform\vaadin\holon-starter-vaadin-flow-saas\10.0.0\holon-starter-vaadin-flow-saas-10.0.0.jar
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  9.711 s
+[INFO] Finished at: 2026-05-19T12:58:04-04:00
+[INFO] ------------------------------------------------------------------------

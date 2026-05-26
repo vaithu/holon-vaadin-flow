@@ -1,12 +1,12 @@
 /*
  * Copyright 2016-2018 Axioma srl.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -15,18 +15,18 @@
  */
 package com.holonplatform.vaadin.flow.navigator.internal.config;
 
-import java.io.Serializable;
-import java.util.Set;
-
-import jakarta.servlet.ServletContext;
-
 import com.holonplatform.core.internal.utils.ClassUtils;
 import com.holonplatform.core.internal.utils.ObjectUtils;
 import com.holonplatform.vaadin.flow.navigator.exceptions.NavigationTargetConfigurationException;
+import com.vaadin.flow.server.VaadinContext;
+import jakarta.servlet.ServletContext;
+
+import java.io.Serializable;
+import java.util.Set;
 
 /**
  * Registry for the {@link NavigationTargetConfiguration} bound to navigation target classes.
- * 
+ *
  * @since 5.2.0
  */
 public interface NavigationTargetConfigurationRegistry extends Serializable {
@@ -37,7 +37,7 @@ public interface NavigationTargetConfigurationRegistry extends Serializable {
 	 * @return The {@link NavigationTargetConfigurationException} for given navigation target class
 	 * @throws NavigationTargetConfigurationException If an error occurred
 	 */
-	NavigationTargetConfiguration getConfiguration(Class<?> navigationTarget)
+	NavigationTargetConfiguration getConfiguration(Class<?> navigationTarget, VaadinContext vaadinContext)
 			throws NavigationTargetConfigurationException;
 
 	/**
@@ -46,11 +46,18 @@ public interface NavigationTargetConfigurationRegistry extends Serializable {
 	 */
 	boolean isInitialized();
 
+//	/**
+//	 * Initialize the registry with the given class set.
+//	 * @param classes The initial class set
+//	 */
+//	void initialize(Set<Class<?>> classes);
+
 	/**
 	 * Initialize the registry with the given class set.
 	 * @param classes The initial class set
+	 * @param vaadinContext The Vaadin context
 	 */
-	void initialize(Set<Class<?>> classes);
+	void initialize(Set<Class<?>> classes, VaadinContext vaadinContext);
 
 	/**
 	 * Create a new {@link NavigationTargetConfigurationRegistry}.

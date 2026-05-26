@@ -175,7 +175,7 @@ public class AbstractLazyTabsConfiguratorTest {
 
         AtomicInteger called = new AtomicInteger(0);
         ComponentEventListener<Tabs.SelectedChangeEvent> listener = ev -> called.incrementAndGet();
-        testee.withSelectedChangeEvent(listener);
+        testee.withSelectedChangeListener(listener);
 
         testee.selectedIndex(0); // initial
         testee.selectedIndex(1); // should fire at least once
@@ -190,7 +190,7 @@ public class AbstractLazyTabsConfiguratorTest {
     @Test
     void setsOrientationAutoSelectAndVariants() {
         testee.orientation(Tabs.Orientation.VERTICAL)
-                .autoSelect(true)
+                .autoselect(true)
                 .withThemeVariants(TabsVariant.LUMO_MINIMAL);
 
         assertEquals(Tabs.Orientation.VERTICAL, testee.getTabs().getOrientation());
@@ -231,5 +231,38 @@ public class AbstractLazyTabsConfiguratorTest {
         testee.withLazyTab("LazyByLabel", SampleComp::new);
         int after = testee.getTabs().getTabCount();
         assertEquals(before + 1, after, "withLazyTab(String, Supplier) should add the Tab to the Tabs component");
+    }
+
+    // --------------------------------------------------------
+    // 9) i18n (Localizable) overloads — fallback to message()
+    // --------------------------------------------------------
+
+    @Test
+    void withEagerTab_localizableLabel_usesMessageAsFallback() {
+        com.holonplatform.core.i18n.Localizable label =
+                com.holonplatform.core.i18n.Localizable.builder().message("i18n-tab").build();
+        testee.withEagerTab(label, new Div("i18n content"));
+
+        int tabCount = testee.getTabs().getTabCount();
+        assertEquals(1, tabCount, "Localizable eager tab should add one Tab to the bar");
+
+        // Verify label fallback resolves to the message string
+        com.vaadin.flow.component.tabs.Tab added = testee.getTabs()
+                .getChildren()
+                .filter(c -> c instanceof com.vaadin.flow.component.tabs.Tab)
+                .map(c -> (com.vaadin.flow.component.tabs.Tab) c)
+                .findFirst().orElseThrow();
+        assertEquals("i18n-tab", added.getLabel(), "Tab label should fall back to Localizable#getMessage()");
+    }
+
+    @Test
+    void withLazyTab_localizableLabel_usesMessageAsFallback() {
+        com.holonplatform.core.i18n.Localizable label =
+                com.holonplatform.core.i18n.Localizable.builder().message("lazy-i18n").build();
+        testee.withLazyTab(label, SampleComp::new);
+
+        assertEquals(1, testee.getTabs().getTabCount());
+        testee.selectedIndex(0);
+        assertTrue(soleContent() instanceof SampleComp);
     }
 }

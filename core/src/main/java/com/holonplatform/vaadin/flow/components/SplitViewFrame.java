@@ -34,23 +34,17 @@ public class SplitViewFrame extends Composite<Div> implements HasStyle {
     }
 
     public SplitViewFrame() {
-        setClassName(CLASS_NAME);
+        addClassName(CLASS_NAME);
 
-        header = new Div();
-        header.setClassName(CLASS_NAME + "__header");
+        header = Components.div().styleName(CLASS_NAME + "__header").build();
 
         wrapper = new FlexBoxLayout();
         wrapper.setSizeFull();
-        wrapper.setClassName(CLASS_NAME + "__wrapper");
+        wrapper.addClassName(CLASS_NAME + "__wrapper");
 
-        content = new Div();
-        content.setClassName(CLASS_NAME + "__content");
-
-        details = new Div();
-        details.setClassName(CLASS_NAME + "__details");
-
-        footer = new Div();
-        footer.setClassName(CLASS_NAME + "__footer");
+        content = Components.div().styleName(CLASS_NAME + "__content").build();
+        details = Components.div().styleName(CLASS_NAME + "__details").build();
+        footer = Components.div().styleName(CLASS_NAME + "__footer").build();
 
         wrapper.add(content, details);
         getContent().add(header, wrapper, footer);

@@ -17,6 +17,7 @@ package com.holonplatform.vaadin.flow.components.builders;
 
 import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
+import com.vaadin.flow.signals.Signal;
 
 /**
  * Configurator for components which supports a title.
@@ -41,6 +42,18 @@ public interface HasTitleConfigurator<C extends HasTitleConfigurator<C>> {
 	 * @see LocalizationProvider
 	 */
 	C title(Localizable title);
+
+	/**
+	 * Bind the component title to given {@link Signal}.
+	 * @param titleSignal Title signal (not null)
+	 * @return this
+	 * @since 5.5.8
+	 */
+	@SuppressWarnings("unchecked")
+	default C bindTitle(Signal<? extends Localizable> titleSignal) {
+		SignalBindings.bind(this, titleSignal, this::title);
+		return (C) this;
+	}
 
 	/**
 	 * Sets the title text.

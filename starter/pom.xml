@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>com.holon-platform.vaadin</groupId>
 		<artifactId>holon-vaadin-flow-root</artifactId>
-		<version>5.5.7-SNAPSHOT</version>
+		<version>10.0.0</version>
 	</parent>
 
 	<artifactId>holon-starter-vaadin-flow</artifactId>
@@ -15,26 +15,12 @@
 
 	<url>https://holon-platform.com</url>
 
-	<dependencyManagement>
-		<dependencies>
-			<!-- Holon platform -->
-			<dependency>
-				<groupId>com.holon-platform.core</groupId>
-				<artifactId>holon-bom-platform</artifactId>
-				<version>${holon.core.version}</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
-		</dependencies>
-	</dependencyManagement>
-
 	<dependencies>
 
 		<!-- Holon base stater -->
 		<dependency>
 			<groupId>com.holon-platform.core</groupId>
 			<artifactId>holon-starter</artifactId>
-			<version>${holon.core.version}</version>
 		</dependency>
 
 		<!-- Spring Boot starter web -->
@@ -47,7 +33,6 @@
 		<dependency>
 			<groupId>com.holon-platform.vaadin</groupId>
 			<artifactId>holon-vaadin-flow-spring-boot</artifactId>
-			<version>${project.version}</version>
 		</dependency>
 
 

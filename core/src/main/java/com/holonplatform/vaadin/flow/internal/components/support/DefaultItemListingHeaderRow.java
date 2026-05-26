@@ -24,9 +24,9 @@ import com.vaadin.flow.component.grid.HeaderRow;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 /**
  * Default header {@link ItemListingRow} implementation.
@@ -54,7 +54,7 @@ public class DefaultItemListingHeaderRow<P> implements EditableItemListingRow<P>
 	 */
 	@Override
 	public List<ItemListingCell> getCells() {
-		return row.getCells().stream().map(cell -> new DefaultItemListingHeaderCell(cell)).collect(Collectors.toList());
+		return row.getCells().stream().<ItemListingCell>map(DefaultItemListingHeaderCell::new).toList();
 	}
 
 	/*
@@ -84,9 +84,11 @@ public class DefaultItemListingHeaderRow<P> implements EditableItemListingRow<P>
 	@Override
 	public ItemListingCell join(Collection<P> properties) {
 		ObjectUtils.argumentNotNull(properties, "Properties must be not null");
-		final List<Column<?>> columns = properties.stream().map(property -> propertyColumnProvider.apply(property))
-				.filter(column -> column != null).collect(Collectors.toList());
-		return new DefaultItemListingHeaderCell(row.join(columns.toArray(new Column<?>[0])));
+		final List<Column<?>> columns = properties.stream()
+				.map(propertyColumnProvider::apply)
+				.filter(Objects::nonNull)
+				.toList();
+		return new DefaultItemListingHeaderCell(row.join(columns.toArray(Column<?>[]::new)));
 	}
 
 }

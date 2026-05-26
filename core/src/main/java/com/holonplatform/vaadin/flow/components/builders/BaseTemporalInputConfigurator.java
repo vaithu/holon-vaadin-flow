@@ -15,17 +15,16 @@
  */
 package com.holonplatform.vaadin.flow.components.builders;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Locale;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
 import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.vaadin.flow.components.Input;
 import com.holonplatform.vaadin.flow.components.ValueHolder.ValueChangeEvent;
 import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
 import com.vaadin.flow.component.Component;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Locale;
+import java.util.Optional;
 
 /**
  * Base temporal type {@link Input} components configurator.
@@ -38,7 +37,8 @@ import com.vaadin.flow.component.Component;
 public interface BaseTemporalInputConfigurator<D, C extends BaseTemporalInputConfigurator<D, C>>
 		extends InputValueConfigurator<D, ValueChangeEvent<D>, C>, HasSizeConfigurator<C>, HasStyleConfigurator<C>,
 		HasEnabledConfigurator<C>, FocusableConfigurator<Component, C>, HasPlaceholderConfigurator<C>,
-		HasLabelConfigurator<C>, DeferrableLocalizationConfigurator<C> {
+		HasLabelConfigurator<C>, HasAriaLabelConfigurator<C>, HasTooltipConfigurator<C>,
+		HasHelperTextConfigurator<C>, DeferrableLocalizationConfigurator<C> {
 
 	/**
 	 * Set the {@link Locale} to use. The displayed date will be matched to the format used in that locale.
@@ -208,8 +208,8 @@ public interface BaseTemporalInputConfigurator<D, C extends BaseTemporalInputCon
 		 * @return this
 		 */
 		default CalendarLocalizationBuilder<D, C> monthNames(String... monthNames) {
-			return monthNames(Arrays.asList(monthNames).stream().map(n -> Localizable.builder().message(n).build())
-					.collect(Collectors.toList()));
+			return monthNames(Arrays.stream(monthNames).map(n -> Localizable.builder().message(n).build())
+					.toList());
 		}
 
 		/**
@@ -236,8 +236,8 @@ public interface BaseTemporalInputConfigurator<D, C extends BaseTemporalInputCon
 		 * @return this
 		 */
 		default CalendarLocalizationBuilder<D, C> weekDays(String... weekDays) {
-			return weekDays(Arrays.asList(weekDays).stream().map(n -> Localizable.builder().message(n).build())
-					.collect(Collectors.toList()));
+			return weekDays(Arrays.stream(weekDays).map(n -> Localizable.builder().message(n).build())
+					.toList());
 		}
 
 		/**
@@ -264,8 +264,8 @@ public interface BaseTemporalInputConfigurator<D, C extends BaseTemporalInputCon
 		 * @return this
 		 */
 		default CalendarLocalizationBuilder<D, C> weekDaysShort(String... weekDaysShort) {
-			return weekDaysShort(Arrays.asList(weekDaysShort).stream()
-					.map(n -> Localizable.builder().message(n).build()).collect(Collectors.toList()));
+			return weekDaysShort(Arrays.stream(weekDaysShort)
+					.map(n -> Localizable.builder().message(n).build()).toList());
 		}
 
 		/**

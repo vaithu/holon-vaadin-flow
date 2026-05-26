@@ -1,0 +1,50 @@
+/* ============================================================
+   typing-indicator.css  –  "User is typing..." animated label
+   Uses project design-system tokens.
+   ============================================================ */
+
+.typing-indicator {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-1, 0.25rem);
+    height: 22px;
+    padding-block: 2px;
+    color: var(--text-tertiary);
+    font-size: var(--font-size-base, 0.8125rem);
+    font-style: italic;
+    overflow: hidden;
+    transition: opacity 0.2s ease;
+}
+
+/* ---------- animated bouncing dots ---------- */
+.typing-indicator__dots {
+    display: inline-flex;
+    gap: 3px;
+    align-items: center;
+}
+
+.typing-indicator__dots span {
+    display: inline-block;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--zinc-400, #9ca3af);
+    animation: typing-bounce 1.2s infinite ease-in-out;
+}
+
+.typing-indicator__dots span:nth-child(1) { animation-delay: 0s; }
+.typing-indicator__dots span:nth-child(2) { animation-delay: 0.2s; }
+.typing-indicator__dots span:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes typing-bounce {
+    0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+    30%            { transform: translateY(-4px); opacity: 1; }
+}
+
+/* ---------- label text ---------- */
+.typing-indicator__label {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 240px;
+}

@@ -15,22 +15,6 @@
  */
 package com.holonplatform.vaadin.flow.test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.Collection;
-import java.util.Locale;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
-
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
 import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.vaadin.flow.components.Components;
 import com.holonplatform.vaadin.flow.components.Input;
@@ -44,17 +28,25 @@ import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
-import com.vaadin.flow.component.textfield.Autocapitalize;
-import com.vaadin.flow.component.textfield.Autocomplete;
-import com.vaadin.flow.component.textfield.HasAutocapitalize;
-import com.vaadin.flow.component.textfield.HasAutocomplete;
-import com.vaadin.flow.component.textfield.HasAutocorrect;
-import com.vaadin.flow.component.textfield.HasPrefixAndSuffix;
-import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.component.shared.HasPrefix;
+import com.vaadin.flow.component.shared.HasSuffix;
+import com.vaadin.flow.component.textfield.*;
 import com.vaadin.flow.data.value.HasValueChangeMode;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.dom.ElementConstants;
 import com.vaadin.flow.internal.CurrentInstance;
+import com.vaadin.flow.signals.local.ValueSignal;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import java.util.Collection;
+import java.util.Locale;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class TestStringInput {
 
@@ -139,6 +131,53 @@ public class TestStringInput {
 	}
 
 	@Test
+	public void testSignalBindings() {
+		ValueSignal<Boolean> visibleSignal = new ValueSignal<>(true);
+		ValueSignal<Boolean> enabledSignal = new ValueSignal<>(true);
+		ValueSignal<Boolean> readOnlySignal = new ValueSignal<>(false);
+		ValueSignal<Boolean> requiredSignal = new ValueSignal<>(false);
+		ValueSignal<String> valueSignal = new ValueSignal<>("initial");
+		ValueSignal<Localizable> labelSignal = new ValueSignal<>(Localizable.of("Initial label"));
+		ValueSignal<Localizable> placeholderSignal = new ValueSignal<>(Localizable.of("Initial placeholder"));
+		ValueSignal<Localizable> titleSignal = new ValueSignal<>(Localizable.of("Initial title"));
+
+		Input<String> input = Input.string().bindVisible(visibleSignal).bindEnabled(enabledSignal)
+				.bindReadOnly(readOnlySignal).bindRequired(requiredSignal).bindValue(valueSignal)
+				.bindLabel(labelSignal).bindPlaceholder(placeholderSignal).bindTitle(titleSignal).build();
+		TextField component = (TextField) input.getComponent();
+
+		assertTrue(input.isVisible());
+		assertTrue(component.isEnabled());
+		assertFalse(input.isReadOnly());
+		assertFalse(input.isRequired());
+		assertEquals("initial", input.getValue());
+		assertEquals("Initial label", ComponentTestUtils.getLabel(input));
+		assertEquals("Initial placeholder", ComponentTestUtils.getPlaceholder(input));
+		assertEquals("Initial title", ComponentTestUtils.getTitle(input));
+
+		UI.getCurrent().add(input.getComponent());
+		ComponentUtil.onComponentAttach(input.getComponent(), true);
+
+		visibleSignal.set(false);
+		enabledSignal.set(false);
+		readOnlySignal.set(true);
+		requiredSignal.set(true);
+		valueSignal.set("updated");
+		labelSignal.set(Localizable.of("Updated label"));
+		placeholderSignal.set(Localizable.of("Updated placeholder"));
+		titleSignal.set(Localizable.of("Updated title"));
+
+		assertFalse(input.isVisible());
+		assertFalse(component.isEnabled());
+		assertTrue(input.isReadOnly());
+		assertTrue(input.isRequired());
+		assertEquals("updated", input.getValue());
+		assertEquals("Updated label", ComponentTestUtils.getLabel(input));
+		assertEquals("Updated placeholder", ComponentTestUtils.getPlaceholder(input));
+		assertEquals("Updated title", ComponentTestUtils.getTitle(input));
+	}
+
+	@Test
 	public void testStyles() {
 
 		Input<String> input = Input.string().styleName("test").build();
@@ -217,9 +256,9 @@ public class TestStringInput {
 	@Test
 	public void testElementConfigurator() {
 		Input<String> input = Input.string().elementConfiguration(element -> {
-			element.getStyle().set(ElementConstants.STYLE_COLOR, "#fff");
+			element.getStyle().set("font-size", "14px");
 		}).build();
-		assertEquals("#fff", ComponentTestUtils.getStyleAttribute(input, ElementConstants.STYLE_COLOR));
+		assertEquals("14px", ComponentTestUtils.getStyleAttribute(input, "font-size"));
 	}
 
 	@Test
@@ -270,6 +309,32 @@ public class TestStringInput {
 			UI.getCurrent().add(input2.getComponent());
 			ComponentUtil.onComponentAttach(input2.getComponent(), true);
 			assertEquals("TestUS", ComponentTestUtils.getLabel(input2));
+		});
+
+	}
+
+	@Test
+	public void testAriaLabel() {
+
+		Input<String> input = Input.string().ariaLabel("String input").build();
+		assertNull(ComponentTestUtils.getElementAttribute(input.getComponent(), "aria-label"));
+
+		input = Input.string().ariaLabelledBy("string-input-label").build();
+		assertNull(ComponentTestUtils.getElementAttribute(input.getComponent(), "aria-labelledby"));
+
+		LocalizationTestUtils.withTestLocalizationContext(() -> {
+			Input<String> localized = Input.string()
+					.ariaLabel(Localizable.builder().message("test").messageCode("test.code").build()).build();
+			assertNull(ComponentTestUtils.getElementAttribute(localized.getComponent(), "aria-label"));
+		});
+
+		LocalizationTestUtils.withTestLocalizationContext(() -> {
+			Input<String> localized = Input.string().deferLocalization()
+					.ariaLabel(Localizable.builder().message("test").messageCode("test.code").build()).build();
+			assertNull(ComponentTestUtils.getElementAttribute(localized.getComponent(), "aria-label"));
+			UI.getCurrent().add(localized.getComponent());
+			ComponentUtil.onComponentAttach(localized.getComponent(), true);
+			assertNull(ComponentTestUtils.getElementAttribute(localized.getComponent(), "aria-label"));
 		});
 
 	}
@@ -470,9 +535,9 @@ public class TestStringInput {
 		final Button suffix = new Button("suffix");
 
 		Input<String> input = Input.string().prefixComponent(prefix).suffixComponent(suffix).build();
-		assertTrue(input.getComponent() instanceof HasPrefixAndSuffix);
-		assertEquals(prefix, ((HasPrefixAndSuffix) input.getComponent()).getPrefixComponent());
-		assertEquals(suffix, ((HasPrefixAndSuffix) input.getComponent()).getSuffixComponent());
+//		assertTrue(input.getComponent() instanceof HasPrefixAndSuffix);
+		assertEquals(prefix, ((HasPrefix) input.getComponent()).getPrefixComponent());
+		assertEquals(suffix, ((HasSuffix) input.getComponent()).getSuffixComponent());
 
 	}
 
@@ -577,3 +642,4 @@ public class TestStringInput {
 	}
 
 }
+

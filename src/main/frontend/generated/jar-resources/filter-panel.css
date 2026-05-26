@@ -1,0 +1,383 @@
+/* ==========================================================================
+   filter-panel.css – DynamicFilterPanel component styles.
+
+   BEM naming : .filter-panel__[element]--[modifier]
+   All visual decisions live here; no inline styles in Java code.
+   Colours use project CSS custom-property tokens (--color-*, --radius-*,
+   --space-*) so the panel inherits the active theme palette automatically.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   Root container
+   -------------------------------------------------------------------------- */
+.filter-panel {
+    display        : flex;
+    flex-direction : column;
+    gap            : var(--space-2, 0.5rem);
+    padding        : var(--space-3, 0.75rem) var(--space-4, 1rem);
+    border         : 1px solid var(--color-border, #e4e4e7);
+    border-radius  : var(--radius-md, 0.5rem);
+    width          : 100%;
+    box-sizing     : border-box;
+}
+
+/* --------------------------------------------------------------------------
+   Rows container – stacks rows vertically
+   -------------------------------------------------------------------------- */
+.filter-panel__rows {
+    display        : flex;
+    flex-direction : column;
+    gap            : 0.25rem;
+}
+
+/* --------------------------------------------------------------------------
+   Single filter row
+   DOM order: [prop-sel] [op-sel] [value-container] [connector pill] [×]
+   -------------------------------------------------------------------------- */
+.filter-panel__row {
+    display        : flex;
+    align-items    : center;
+    gap            : 0.375rem;
+    flex-wrap      : nowrap;
+    padding        : 0.125rem 0.25rem;
+    border-radius  : 0.25rem;
+    animation      : filter-row-in 0.12s ease;
+    transition     : background 0.1s;
+}
+
+@keyframes filter-row-in {
+    from { opacity: 0; transform: translateY(-4px); }
+    to   { opacity: 1; transform: translateY(0);    }
+}
+
+/* --------------------------------------------------------------------------
+   Connector ComboBox — pill at the END of each row in advanced mode.
+
+   Reads as: "[Category] [Equals] [100]  →join next via→  [And ▾]  [×]"
+   Two states:
+     default   → pill visible (advanced mode on)
+     --hidden  → display:none, takes no space (advanced mode off)
+   -------------------------------------------------------------------------- */
+.filter-panel__connector {
+    flex-shrink : 0;
+    width       : 90px;
+}
+
+/* Advanced mode off: connector takes no space */
+.filter-panel__connector--hidden {
+    display : none;
+}
+
+vaadin-combo-box.filter-panel__connector::part(input-field) {
+    background     : color-mix(in srgb,
+                         var(--color-primary, #2563eb) 8%, transparent);
+    border         : 1px solid color-mix(in srgb,
+                         var(--color-primary, #2563eb) 30%, transparent);
+    border-radius  : 9999px;
+    padding-inline : 0.625rem 0.125rem;
+    min-height     : 1.75rem;
+    gap            : 0;
+    cursor         : pointer;
+}
+
+vaadin-combo-box.filter-panel__connector::part(input-field):hover {
+    background : color-mix(in srgb,
+                     var(--color-primary, #2563eb) 14%, transparent);
+}
+
+vaadin-combo-box.filter-panel__connector::part(value) {
+    font-size      : var(--font-size-sm, 0.75rem);
+    font-weight    : 700;
+    padding-inline : 0;
+}
+
+vaadin-combo-box.filter-panel__connector::part(toggle-button) {
+    width    : 1.25rem;
+    padding  : 0;
+}
+
+/* --------------------------------------------------------------------------
+   Data section: property selector, operator selector
+   -------------------------------------------------------------------------- */
+
+.filter-panel__prop-sel {
+    flex-shrink : 0;
+    min-width   : 150px;
+}
+
+/* Operator selector: width pinned to the longest possible label
+   ("Greater Or Equals" / "On Or After" / "Is Not Empty" ≈ 10.5rem).
+   --vaadin-field-default-width overrides Vaadin's built-in 12em default
+   so the ComboBox does not use more horizontal space than its content needs. */
+vaadin-combo-box.filter-panel__op-sel {
+    --vaadin-field-default-width : 10.5rem;
+    flex-shrink                  : 0;
+    width                        : 10.5rem;
+}
+
+vaadin-combo-box.filter-panel__op-sel::part(value) {
+    font-size  : var(--font-size-base, 0.8125rem);
+}
+
+.filter-panel__value-container {
+    display     : flex;
+    align-items : center;
+    gap         : 0.25rem;
+    flex        : 1 1 auto;
+    min-width   : 0;
+}
+
+.filter-panel__value-input {
+    flex      : 1 1 auto;
+    min-width : 110px;
+    animation : filter-value-in 0.15s ease;
+}
+
+.filter-panel__value-multi-select {
+    flex      : 1 1 auto;
+    min-width : 180px;
+    animation : filter-value-in 0.15s ease;
+}
+
+@keyframes filter-value-in {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+vaadin-text-field.filter-panel__value-placeholder::part(input-field) {
+    pointer-events : none;
+    cursor         : default;
+}
+
+vaadin-text-field.filter-panel__value-placeholder::part(value) {
+    pointer-events : none;
+    cursor         : default;
+    user-select    : none;
+}
+
+.filter-panel__between-sep {
+    flex-shrink : 0;
+    padding     : 0 0.125rem;
+    font-size   : var(--font-size-md, 0.875rem);
+    line-height : 1;
+}
+
+.filter-panel__remove {
+    flex-shrink : 0;
+}
+
+vaadin-button.filter-panel__remove::part(button) {
+    border           : none;
+    box-shadow       : none;
+    padding-inline   : 0.25rem;
+    min-height       : 2rem;
+    min-width        : 2rem;
+    transition       : color 0.12s, background-color 0.12s;
+}
+
+vaadin-button.filter-panel__remove:not([disabled])::part(button):hover {
+    background-color : rgb(220 38 38 / 0.08);
+    color            : var(--color-error, #dc2626);
+}
+
+/* Focus ring via [focus-ring] host attribute (keyboard-only, like :focus-visible).
+   !important beats Vaadin's internal shadow-DOM theme box-shadow. */
+vaadin-button.filter-panel__remove[focus-ring] {
+    box-shadow: 0 0 0 2px var(--surface-0, #ffffff),
+                0 0 0 4px var(--brand-500, #3b82f6) !important;
+    outline: none !important;
+}
+
+/* --------------------------------------------------------------------------
+   Actions bar:  [+ Add filter]  · · ·  [Clear all]  [Apply filter]
+   -------------------------------------------------------------------------- */
+.filter-panel__actions {
+    display      : flex;
+    align-items  : center;
+    gap          : var(--space-2, 0.5rem);
+    padding-top  : var(--space-2, 0.5rem);
+    border-top   : 1px solid var(--color-border, #e4e4e7);
+    margin-top   : 0.125rem;
+}
+
+.filter-panel__add {
+    margin-right : auto;
+}
+
+vaadin-button.filter-panel__add::part(button) {
+    border           : 1px solid var(--color-border, #e4e4e7);
+    border-radius    : var(--radius-sm, 0.375rem);
+    font-size        : var(--font-size-base, 0.8125rem);
+    padding          : 0.25rem 0.75rem;
+    min-height       : 2rem;
+    transition       : background-color 0.12s, border-color 0.12s;
+}
+
+vaadin-button.filter-panel__add:not([disabled])::part(button):hover {
+    background-color : rgb(0 0 0 / 0.04);
+    border-color     : var(--color-muted-foreground, #71717a);
+}
+
+vaadin-button.filter-panel__clear::part(button) {
+    border           : 1px solid var(--color-border, #e4e4e7);
+    border-radius    : var(--radius-sm, 0.375rem);
+    font-size        : var(--font-size-base, 0.8125rem);
+    padding          : 0.25rem 0.75rem;
+    min-height       : 2rem;
+    transition       : background-color 0.12s, border-color 0.12s;
+}
+
+vaadin-button.filter-panel__clear:not([disabled])::part(button):hover {
+    background-color : rgb(0 0 0 / 0.04);
+    border-color     : var(--color-muted-foreground, #71717a);
+}
+
+vaadin-button.filter-panel__apply::part(button) {
+    background       : var(--color-primary, #2563eb);
+    color            : #ffffff;
+    border           : 1px solid var(--color-primary, #2563eb);
+    border-radius    : var(--radius-sm, 0.375rem);
+    font-size        : var(--font-size-base, 0.8125rem);
+    font-weight      : 600;
+    padding          : 0.25rem 0.75rem;
+    min-height       : 2rem;
+    transition       : background-color 0.12s, border-color 0.12s;
+}
+
+vaadin-button.filter-panel__apply:not([disabled])::part(button):hover {
+    background   : color-mix(in srgb, var(--color-primary, #2563eb) 85%, #000000);
+    border-color : color-mix(in srgb, var(--color-primary, #2563eb) 85%, #000000);
+}
+
+/* Focus rings — [focus-ring] is keyboard-only (never fires on mouse click).
+   Universal rule in vaadin-shell-theme.css section 4b already handles all
+   vaadin-button[focus-ring]; explicit rules here for documentation clarity. */
+vaadin-button.filter-panel__add[focus-ring],
+vaadin-button.filter-panel__clear[focus-ring],
+vaadin-button.filter-panel__apply[focus-ring] {
+    box-shadow: 0 0 0 2px var(--surface-0, #ffffff),
+                0 0 0 4px var(--brand-500, #3b82f6) !important;
+    outline: none !important;
+}
+
+/* --------------------------------------------------------------------------
+   Validation — shown when Apply is clicked with no complete filter criteria
+   -------------------------------------------------------------------------- */
+
+/* Row-level error: red left border + subtle red tint background */
+.filter-panel__row--error {
+    border-left    : 3px solid var(--color-error, #dc2626);
+    border-radius  : calc(var(--radius-md, 0.5rem) - 2px);
+    background     : color-mix(in srgb,
+                         var(--color-error, #dc2626) 6%, transparent);
+    padding-left   : var(--space-2, 0.5rem);
+}
+
+/* Panel-level validation message */
+.filter-panel__validation-error {
+    display        : none;
+    align-items    : center;
+    gap            : 0.375rem;
+    padding        : 0.375rem 0.625rem;
+    border-radius  : calc(var(--radius-md, 0.5rem) - 2px);
+    background     : color-mix(in srgb,
+                         var(--color-error, #dc2626) 8%, transparent);
+    border         : 1px solid color-mix(in srgb,
+                         var(--color-error, #dc2626) 30%, transparent);
+    font-size      : var(--font-size-base, 0.8125rem);
+    font-weight    : 500;
+    line-height    : 1.4;
+}
+
+.filter-panel__validation-error--visible {
+    display : flex;
+}
+
+.filter-panel__validation-error-icon {
+    width        : 1rem;
+    height       : 1rem;
+    flex-shrink  : 0;
+    --vaadin-icon-size: 1rem;
+}
+
+/* ==========================================================================
+   RESPONSIVE — mobile  (< 560 px)
+
+   Each row switches from a single horizontal flex line to a 2-column CSS Grid:
+     col 1 (1fr)  → property selector / operator / value / connector
+     col 2 (auto) → remove button pinned to the top-right
+
+   Grid-area map:
+     ┌──────────────────┬──────┐
+     │   prop           │  ×   │
+     ├──────────────────┴──────┤
+     │   op                    │
+     ├─────────────────────────┤
+     │   value                 │
+     ├─────────────────────────┤
+     │   connector (adv.mode)  │
+     └─────────────────────────┘
+   ========================================================================== */
+@media (max-width: 559px) {
+
+    .filter-panel {
+        padding : var(--space-3, 0.75rem) var(--space-2, 0.5rem);
+    }
+
+    /* Row → CSS Grid */
+    .filter-panel__row {
+        display               : grid;
+        grid-template-columns : 1fr auto;
+        grid-template-areas   :
+            "prop      remove"
+            "op        op"
+            "value     value"
+            "connector connector";
+        align-items           : start;
+        gap                   : 0.25rem;
+    }
+
+    .filter-panel__prop-sel {
+        grid-area : prop;
+        width     : 100%;
+        min-width : 0;
+    }
+
+    vaadin-combo-box.filter-panel__op-sel {
+        grid-area                    : op;
+        width                        : 100%;
+        --vaadin-field-default-width : 100%;
+    }
+
+    .filter-panel__value-container {
+        grid-area : value;
+        width     : 100%;
+    }
+
+    .filter-panel__connector {
+        grid-area : connector;
+        width     : 100%;
+    }
+
+    .filter-panel__remove {
+        grid-area  : remove;
+        align-self : start;
+    }
+
+    /* Actions bar: "+ Add filter" takes full width on its own line;
+       Clear + Apply share the line below it. */
+    .filter-panel__actions {
+        flex-wrap : wrap;
+    }
+
+    .filter-panel__add {
+        flex         : 1 1 100%;
+        margin-right : 0;
+    }
+
+    vaadin-button.filter-panel__clear::part(button),
+    vaadin-button.filter-panel__apply::part(button) {
+        flex : 1 1 auto;
+    }
+}
+

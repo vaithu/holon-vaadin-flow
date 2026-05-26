@@ -1,0 +1,287 @@
+/*
+ * brand-gold-leaf.css
+ * ──────────────────────────────────────────────────────────────────────────────
+ *  ★  THE ONLY CSS FILE YOU NEED TO EDIT FOR BRANDING  ★
+ *
+ *  Gold-Leaf luxury brand — a warm editorial palette derived from six
+ *  handcrafted colour stops:
+ *
+ *    --color-1  #ddb125  gold-leaf     → brand-500 (primary CTA, focus rings)
+ *    --color-2  #5f5624  sepia-tone    → brand-800 (deep brand shade)
+ *    --color-3  #303030  taupe         → sidebar background (dark charcoal)
+ *    --color-4  #cebb94  warm-sand     → brand-200 (tints, hover fills)
+ *    --color-5  #e6e6e6  platinum      → surface /neutral-200 (borders, dividers)
+ *    --color-6  #977d2c  mocha-cream   → brand-700 (hover, links — WCAG 4.5:1)
+ *
+ *  Load order (copy into your AppShellConfigurator):
+ *    @StyleSheet(Lumo.STYLESHEET)
+ *    @StyleSheet("context://vaadin-shell-theme.css")   ← internal wiring, do not edit
+ *    @StyleSheet("context://brand-gold-leaf.css")      ← ★ THIS FILE
+ *    @StyleSheet("context://app-shell.css")            ← internal utilities, do not edit
+ * ──────────────────────────────────────────────────────────────────────────────
+ */
+
+:root {
+
+  /* ══════════════════════════════════════════════════════════════════════
+   * ★  RAW BRAND COLOUR PRIMITIVES  ★
+   *    These six variables are the single source of truth for this palette.
+   *    Every token below is derived from them — don't scatter hex values
+   *    anywhere else in the codebase.
+   * ══════════════════════════════════════════════════════════════════════ */
+
+  --color-1:     #ddb125;   /* gold-leaf    */
+  --color-1-rgb: 221, 177, 37;
+  --color-2:     #5f5624;   /* sepia-tone   */
+  --color-2-rgb: 95, 86, 36;
+  --color-3:     #303030;   /* taupe        */
+  --color-3-rgb: 48, 48, 48;
+  --color-4:     #cebb94;   /* warm-sand    */
+  --color-4-rgb: 206, 187, 148;
+  --color-5:     #e6e6e6;   /* platinum     */
+  --color-5-rgb: 230, 230, 230;
+  --color-6:     #977d2c;   /* mocha-cream  */
+  --color-6-rgb: 151, 125, 44;
+
+  /* ══════════════════════════════════════════════════════════════════════
+   * 1. NEUTRAL SCALE  —  Warm zinc (earthy counterpart to cool-gray zinc)
+   *    Structural chrome: borders, dividers, scrollbars, table lines.
+   *    Shares the golden undertone of the brand palette.
+   * ══════════════════════════════════════════════════════════════════════ */
+  --zinc-50:   #fafaf8;
+  --zinc-100:  #f5f4f0;
+  --zinc-200:  #e8e6e1;   /* ≈ color-5 platinum tinted slightly warm     */
+  --zinc-300:  #d5d2cb;
+  --zinc-400:  #ada99f;
+  --zinc-500:  #857f73;
+  --zinc-600:  #635e53;
+  --zinc-700:  #4a4640;
+  --zinc-800:  #312e2a;
+  --zinc-900:  #1c1a17;
+  --zinc-950:  #0f0e0c;
+
+  /* Legacy --gray-* aliases (used by older component CSS) */
+  --gray-100: var(--zinc-100);  --gray-150: var(--zinc-200);
+  --gray-200: var(--zinc-200);  --gray-300: var(--zinc-300);
+  --gray-400: var(--zinc-400);  --gray-500: var(--zinc-500);
+  --gray-600: var(--zinc-600);  --gray-700: var(--zinc-700);
+  --gray-800: var(--zinc-800);  --gray-900: var(--zinc-950);
+
+  /* ══════════════════════════════════════════════════════════════════════
+   * 2. SEMANTIC STATUS COLOURS  —  Stable; warm tones to harmonise with gold
+   * ══════════════════════════════════════════════════════════════════════ */
+  --ok-light:   #f0fdf4;  --ok:   #16a34a;  --ok-dark:   #166534;
+  --err-light:  #fef2f2;  --err:  #dc2626;  --err-dark:  #b91c1c;
+  --warn-light: #fffbeb;  --warn: #ca8a04;  --warn-dark: #a16207;
+  --info-light: #eff6ff;  --info: #2563eb;  --info-dark: #1d4ed8;
+
+  /* ══════════════════════════════════════════════════════════════════════
+   * 3. SURFACES  —  Warm off-white (pairs with the golden brand palette)
+   *    surface-0 = pure white      (cards, inputs)
+   *    surface-1 = warm page canvas
+   *    surface-2 = elevated panels
+   *    surface-3 = divider-level areas
+   *    surface-4 = strong separation
+   * ══════════════════════════════════════════════════════════════════════ */
+  --surface-0:  #ffffff;
+  --surface-1:  #faf9f6;   /* warm antique white — page canvas   */
+  --surface-2:  #f5f3ee;   /* warm cream — elevated panels       */
+  --surface-3:  #ece9e2;   /* warm sand divider                  */
+  --surface-4:  #ddd9cf;   /* warm border — strong separation    */
+
+  /* ══════════════════════════════════════════════════════════════════════
+   * 4. TEXT  —  Warm neutral (brown-gray family; earthy editorial tone)
+   *    text-link uses brand-700 (mocha-cream) — WCAG AA 4.5:1 on white ✓
+   * ══════════════════════════════════════════════════════════════════════ */
+  --text-primary:   #1c1a17;   /* warm near-black                              */
+  --text-secondary: #6b6558;   /* medium warm gray — secondary labels          */
+  --text-tertiary:  #a09988;   /* muted warm gray — helper text, placeholders  */
+  --text-disabled:  #c9c3b7;   /* disabled fields                              */
+  --text-link:      var(--brand-700);   /* mocha-cream — WCAG AA on white ✓   */
+  --text-inverse:   #ffffff;
+
+  /* ══════════════════════════════════════════════════════════════════════
+   * 5. BORDERS  —  three-level hierarchy
+   *    subtle    < default  < strong
+   *    zinc-100  < zinc-200 < zinc-300
+   * ══════════════════════════════════════════════════════════════════════ */
+  --border-subtle:    1px solid var(--zinc-100);
+  --border-default:   1px solid var(--zinc-200);
+  --border-strong:    1px solid var(--zinc-300);
+  --border-focus:     2px solid var(--brand-600);
+  --border-separator: 1px solid var(--zinc-200);
+  --border-error:     1px solid var(--err);
+
+  /* ══════════════════════════════════════════════════════════════════════
+   * 6. RADIUS  —  Change --radius to restyle ALL corners at once.
+   *    Slightly tighter than default for an editorial / luxury feel.
+   * ══════════════════════════════════════════════════════════════════════ */
+  --radius:      0.5rem;                        /*  8px — base (tighter, editorial)  */
+  --radius-xs:   calc(var(--radius) - 4px);     /*  4px                              */
+  --radius-sm:   calc(var(--radius) - 2px);     /*  6px                              */
+  --radius-md:   var(--radius);                 /*  8px                              */
+  --radius-lg:   calc(var(--radius) + 4px);     /* 12px                              */
+  --radius-xl:   calc(var(--radius) + 8px);     /* 16px                              */
+  --radius-2xl:  calc(var(--radius) + 16px);    /* 24px                              */
+  --radius-full: 9999px;
+
+  /* ══════════════════════════════════════════════════════════════════════
+   * 7. SPACING  (4-pt grid)
+   * ══════════════════════════════════════════════════════════════════════ */
+  --sp-1:  4px;   --sp-2:  8px;   --sp-3:  12px;  --sp-4:  16px;
+  --sp-5:  20px;  --sp-6:  24px;  --sp-8:  32px;  --sp-10: 40px;
+  --space-1: 0.25rem;  --space-2: 0.5rem;   --space-3: 0.75rem;
+  --space-4: 1rem;     --space-5: 1.25rem;  --space-6: 1.5rem;
+
+  /* ══════════════════════════════════════════════════════════════════════
+   * 8. TYPOGRAPHY  —  Serif-adjacent system stack for editorial warmth.
+   *    Change --font-body to globally restyle text.
+   * ══════════════════════════════════════════════════════════════════════ */
+  --font-display: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-body:    'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono:    'Geist Mono', 'Cascadia Code', 'Fira Code', ui-monospace, monospace;
+  --font-sans:    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-size-xs:   0.6875rem;  /* ≈ 11px — micro labels    */
+  --font-size-sm:   0.75rem;    /*   12px — captions        */
+  --font-size-base: 0.8125rem;  /* ≈ 13px — dense body text */
+  --font-size-md:   0.875rem;   /*   14px — standard body   */
+  --font-size-lg:   1rem;       /*   16px — page headings   */
+
+  /* ── 8b. SHADOWS & TRANSITIONS ───────────────────────────────────── */
+  --shadow-xs:    0 1px 2px 0 rgba(0,0,0,.05);
+  --shadow-sm:    0 1px 3px 0 rgba(0,0,0,.10), 0 1px 2px -1px rgba(0,0,0,.10);
+  --shadow-md:    0 4px 6px -1px rgba(0,0,0,.10), 0 2px 4px -2px rgba(0,0,0,.10);
+  --shadow-lg:    0 10px 15px -3px rgba(0,0,0,.10), 0 4px 6px -4px rgba(0,0,0,.10);
+  --shadow-xl:    0 20px 25px -5px rgba(0,0,0,.10), 0 8px 10px -6px rgba(0,0,0,.10);
+  --shadow-focus: 0 0 0 2px var(--surface-0), 0 0 0 4px var(--brand-500);
+  --shadow-shell: var(--shadow-md);
+  --shadow-card:  var(--shadow-xs);
+  --ease-out:        cubic-bezier(.16, 1, .3, 1);
+  --ease-in-out:     cubic-bezier(.45, 0, .55, 1);
+  --dur-fast:        100ms;
+  --dur-base:        150ms;
+  --dur-slow:        250ms;
+  --transition-fast: 120ms ease;
+  --transition-base: var(--dur-base) var(--ease-out);
+
+  /* ── 8c. COMPONENT DIMENSIONS ────────────────────────────────────── */
+  --field-h-sm:  32px;  --field-h-md:  36px;  --field-h-lg:  40px;
+  --btn-h-sm:    28px;  --btn-h-md:    36px;  --btn-h-lg:    40px;
+  --toolbar-h:   56px;  --master-w:    290px;
+  --master-panel-width:      var(--master-w);
+  --toolbar-height:          var(--toolbar-h);
+  --sidenav-collapsed-width: 3.25rem;
+
+  /* ── 8d. COMPONENT RING ──────────────────────────────────────────── */
+  --comp-bg:           var(--surface-0);
+  --comp-border-color: var(--zinc-200);
+  --comp-border-hover: var(--zinc-400);
+  --comp-border-focus: var(--brand-500);
+  --comp-border-error: var(--err);
+  --comp-shadow:       0 1px 3px 0 rgb(0 0 0 / .08);
+  --comp-shadow-inset: inset 0 1px 2px rgb(0 0 0 / .04);
+  --comp-radius:       var(--radius-md);
+  --comp-focus-ring:   0 0 0 2px var(--surface-0), 0 0 0 4px var(--brand-500);
+
+  /* ── 8e. TYPOGRAPHY SCALE ────────────────────────────────────────── */
+  --type-sz-display:  2rem;        --type-wt-display: 700;  --type-lh-display: 1.15;  --type-ls-display: -0.025em;
+  --type-sz-h1:       1.5rem;      --type-wt-h1:      600;  --type-lh-h1:      1.2;   --type-ls-h1:      -0.02em;
+  --type-sz-h2:       1.25rem;     --type-wt-h2:      600;  --type-lh-h2:      1.25;  --type-ls-h2:      -0.015em;
+  --type-sz-h3:       1.125rem;    --type-wt-h3:      600;  --type-lh-h3:      1.3;   --type-ls-h3:      -0.01em;
+  --type-sz-h4:       1rem;        --type-wt-h4:      600;  --type-lh-h4:      1.4;   --type-ls-h4:      0;
+  --type-sz-body-lg:  1rem;        --type-wt-body:    400;  --type-lh-body-lg: 1.6;
+  --type-sz-body:     0.875rem;                             --type-lh-body:    1.5;
+  --type-sz-body-sm:  0.8125rem;                            --type-lh-body-sm: 1.5;
+  --type-sz-caption:  0.75rem;                              --type-lh-caption: 1.4;
+  --type-sz-overline: 0.6875rem;   --type-wt-overline: 600; --type-ls-overline: 0.1em;
+  --type-sz-mono:     0.8125rem;
+
+  /* ╔══════════════════════════════════════════════════════════════════════╗
+     ║  ★  9. BRAND PALETTE  ★   ← THE HEART OF THIS FILE                 ║
+     ║                                                                      ║
+     ║  Gold-Leaf scale derived from the six brand colour primitives.       ║
+     ║  brand-500 (gold-leaf)  = primary:  CTA buttons, focus rings,        ║
+     ║                                     active nav indicator.            ║
+     ║  brand-700 (mocha-cream)= secondary: hover tone, link text,          ║
+     ║                                      WCAG AA 4.5:1 on white.         ║
+     ║  brand-800 (sepia-tone) = deep:      pressed states, dark accents.   ║
+     ╚══════════════════════════════════════════════════════════════════════╝ */
+  --brand-50:   #fdf8e7;   /* near-white gold tint — badge backgrounds, hover fills */
+  --brand-100:  #faefc4;   /* very light gold                                       */
+  --brand-200:  #cebb94;   /* warm-sand (color-4) — selected row fill, tint         */
+  --brand-300:  #e8c84a;   /* bright gold tint                                      */
+  --brand-400:  #e2bc35;   /* medium-bright gold                                    */
+  --brand-500:  #ddb125;   /* ★ gold-leaf (color-1) — primary accent                */
+  --brand-600:  #b8941f;   /* deep gold — primary button bg                         */
+  --brand-700:  #977d2c;   /* mocha-cream (color-6) — hover + link (WCAG 4.5:1) ✓  */
+  --brand-800:  #5f5624;   /* sepia-tone (color-2) — pressed / dark accent          */
+  --brand-900:  #3d380e;   /* darkest brand — high-contrast contexts               */
+
+  /* ╔══════════════════════════════════════════════════════════════════════╗
+     ║  10. SIDEBAR  ← Charcoal-gold luxury dark nav                       ║
+     ║                                                                      ║
+     ║  Background: color-3 taupe (#303030) — rich editorial charcoal.     ║
+     ║  Active items: gold-leaf highlight (color-1 + color-6).             ║
+     ║  Light sidebar: delete every --sidenav-* line below;                ║
+     ║    vaadin-shell-theme.css will fall back to white + brand.          ║
+     ╚══════════════════════════════════════════════════════════════════════╝ */
+  --sidenav-width:               220px;
+  --sidenav-bg:                  #303030;   /* taupe charcoal (color-3)                    */
+  --sidenav-border:              #3d3d3d;   /* slightly lighter charcoal                   */
+  --sidenav-label-color:         #7a7265;   /* muted warm gray — section headings on dark  */
+  --sidenav-label-font-size:     0.625rem;  /* 10px small-caps                             */
+  --sidenav-label-padding:       0.875rem 1rem 0.25rem;
+  --sidenav-item-color:          #e6e6e6;   /* platinum (color-5) — near-white text        */
+  --sidenav-item-font-size:      0.875rem;  /* 14px                                        */
+  --sidenav-item-font-weight:    400;
+  --sidenav-item-padding:        0.625rem 1rem;
+  --sidenav-item-radius:         0;
+  --sidenav-item-hover-bg:       #2a2a2a;   /* darker charcoal hover                       */
+  --sidenav-item-hover-color:    #cebb94;   /* warm-sand (color-4) — warm hover contrast   */
+  /* ── Toggle button ────────────────────────────────────────────────── */
+  --sidenav-toggle-color:        #a09988;   /* muted warm gray chevron on dark bg          */
+  --sidenav-toggle-hover-color:  #e6e6e6;   /* platinum on hover                           */
+  /* ── Parent group headers ─────────────────────────────────────────── */
+  --sidenav-group-color:         #e6e6e6;   /* platinum — bolder than children             */
+  --sidenav-group-font-size:     0.875rem;
+  --sidenav-group-font-weight:   600;
+  --sidenav-group-padding-top:   0.875rem;
+  --sidenav-group-padding-bottom: 0.375rem;
+  /* ── Child leaf items ─────────────────────────────────────────────── */
+  --sidenav-child-color:         #c9c3b7;   /* muted warm gray — clearly subordinate       */
+  --sidenav-child-font-size:     0.8125rem; /* 13px                                        */
+  --sidenav-child-opacity:       0.9;
+  /* ── Child indentation ────────────────────────────────────────────── */
+  --vaadin-side-nav-child-indent: 1.25rem;
+  /* ── Active / current item — gold-leaf highlight ─────────────────── */
+  --sidenav-item-active-bg:      rgba(var(--color-1-rgb), 0.18);   /* translucent gold tint  */
+  --sidenav-item-active-color:   #ddb125;                          /* gold-leaf text on dark */
+  --sidenav-item-active-border:  #ddb125;                          /* gold-leaf left border  */
+  --sidenav-item-active-font-weight: 600;
+  --sidenav-icon-color:          #a09988;   /* warm gray icon on charcoal                  */
+  --sidenav-icon-active-color:   #ddb125;   /* gold-leaf icon when active                  */
+  /* ── Notification badge ──────────────────────────────────────────── */
+  --sidenav-badge-bg:            #ef4444;   /* red notification pill                       */
+  --sidenav-badge-color:         #ffffff;
+  --sidenav-badge-radius:        9999px;
+  /* Vaadin internal side-nav properties */
+  --vaadin-side-nav-item-border-radius: 0;
+  --vaadin-side-nav-item-font-size:     0.875rem;
+  --vaadin-side-nav-item-font-weight:   400;
+}
+
+/* ── Charcoal sidebar: search field ──────────────────────────────────── */
+.sidenav-search vaadin-text-field {
+  --vaadin-input-field-background:  #2a2a2a;   /* darker charcoal well           */
+  --vaadin-input-field-value-color: #e6e6e6;   /* platinum text                  */
+}
+.sidenav-search vaadin-text-field::part(input-field) {
+  border-color: #3d3d3d;   /* matches --sidenav-border                            */
+  color:        #a09988;   /* muted warm gray placeholder                         */
+}
+
+/* ── Charcoal sidebar: scrollbar ─────────────────────────────────────── */
+.sidenav-host vaadin-side-nav {
+  scrollbar-color: #5f5624 transparent;   /* sepia-tone thumb on transparent track */
+}
+

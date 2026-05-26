@@ -15,16 +15,15 @@
  */
 package com.holonplatform.vaadin.flow.internal.components.support;
 
-import java.util.List;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
 import com.holonplatform.core.internal.utils.ObjectUtils;
 import com.holonplatform.vaadin.flow.components.ItemListing.ItemListingSection;
 import com.holonplatform.vaadin.flow.components.builders.ItemListingConfigurator.EditableItemListingRow;
 import com.holonplatform.vaadin.flow.components.builders.ItemListingConfigurator.EditableItemListingSection;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.Grid.Column;
+
+import java.util.List;
+import java.util.function.Function;
 
 /**
  * Default footer {@link ItemListingSection} implementation.
@@ -39,7 +38,6 @@ public class DefaultItemListingFooterSection<P> implements EditableItemListingSe
 	private final Function<P, Column<?>> propertyColumnProvider;
 
 	public DefaultItemListingFooterSection(Grid<?> grid, Function<P, Column<?>> propertyColumnProvider) {
-		super();
 		ObjectUtils.argumentNotNull(grid, "Grid must be not null");
 		ObjectUtils.argumentNotNull(propertyColumnProvider, "Property column provider must be not null");
 		this.grid = grid;
@@ -52,8 +50,9 @@ public class DefaultItemListingFooterSection<P> implements EditableItemListingSe
 	 */
 	@Override
 	public List<EditableItemListingRow<P>> getRows() {
-		return grid.getFooterRows().stream().map(row -> new DefaultItemListingFooterRow<>(row, propertyColumnProvider))
-				.collect(Collectors.toList());
+		return grid.getFooterRows().stream()
+				.<EditableItemListingRow<P>>map(row -> new DefaultItemListingFooterRow<>(row, propertyColumnProvider))
+				.toList();
 	}
 
 	/*

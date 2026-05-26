@@ -17,6 +17,8 @@ package com.holonplatform.vaadin.flow.components.builders;
 
 import com.holonplatform.core.internal.utils.ObjectUtils;
 import com.holonplatform.vaadin.flow.components.BeanListing;
+import com.holonplatform.vaadin.flow.components.FilterInputGroup;
+import com.holonplatform.vaadin.flow.components.FilterInputSupport;
 import com.holonplatform.vaadin.flow.components.Input;
 import com.holonplatform.vaadin.flow.components.ItemListing.EditorComponentGroup;
 import com.holonplatform.vaadin.flow.components.builders.InputGroupConfigurator.BeanInputGroupConfigurator;
@@ -34,6 +36,50 @@ import com.vaadin.flow.component.HasValue;
 public interface BeanListingConfigurator<T, C extends BeanListingConfigurator<T, C>>
 		extends ItemListingConfigurator<T, String, BeanListing<T>, C>,
 		BeanInputGroupConfigurator<T, EditorComponentGroup<String, T>, C> {
+
+	/**
+	 * Set listing items using a callback that receives the active filter from given group.
+	 * @param filterGroup filter group to resolve combined filter from (not null)
+	 * @param fetchCallback callback receiving query metadata and active filter (not null)
+	 * @return this
+	 * @since 10.0.0
+	 */
+	C setItems(FilterInputGroup filterGroup, FilterInputSupport.FilteredFetchCallback<T> fetchCallback);
+
+	/**
+	 * Refresh listing items whenever any filter in given group changes.
+	 * @param filterGroup filter group to observe (not null)
+	 * @return this
+	 * @since 10.0.0
+	 */
+	C refreshOnFilterChange(FilterInputGroup filterGroup);
+
+	/**
+	 * Refresh listing items whenever the combined filter signal in given group changes.
+	 * @param filterGroup filter group to observe (not null)
+	 * @return this
+	 * @since 10.0.1
+	 */
+	C refreshOnFilterSignal(FilterInputGroup filterGroup);
+
+	/**
+	 * Convenience method to set filtered items and register automatic refresh on filter changes.
+	 * @param filterGroup filter group to observe and resolve combined filter from (not null)
+	 * @param fetchCallback callback receiving query metadata and active filter (not null)
+	 * @return this
+	 * @since 10.0.0
+	 */
+	C bindFilters(FilterInputGroup filterGroup, FilterInputSupport.FilteredFetchCallback<T> fetchCallback);
+
+	/**
+	 * Convenience method to set filtered items and register signal-based automatic
+	 * refresh on filter changes.
+	 * @param filterGroup filter group to observe and resolve combined filter from (not null)
+	 * @param fetchCallback callback receiving query metadata and active filter (not null)
+	 * @return this
+	 * @since 10.0.1
+	 */
+	C bindFiltersSignal(FilterInputGroup filterGroup, FilterInputSupport.FilteredFetchCallback<T> fetchCallback);
 
 	/**
 	 * Set the {@link Input} to use as given <code>property</code> column editor, when a listing row is in edit mode.

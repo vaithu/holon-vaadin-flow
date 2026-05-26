@@ -1,0 +1,63 @@
+/*
+ * grid-header.css
+ *
+ * Mobile-first styles for GridHeader — extends Header with a selection-aware
+ * highlight state.
+ *
+ * BEM namespace: .grid-header
+ *
+ * States:
+ *   .grid-header                   — default (no rows selected)
+ *   .grid-header--selected         — one or more rows selected (subtle tint)
+ *
+ * Label modifier classes (applied via labelBuilder.styleNames()):
+ *   .grid-header__label--default   — large / semibold heading
+ *   .grid-header__label--selected  — medium / normal heading (n items selected)
+ */
+
+/* -----------------------------------------------------------------------
+ * Base
+ * ----------------------------------------------------------------------- */
+
+.grid-header {
+    /* Inherits all .iyen-header layout from header.css */
+    transition: background-color 150ms ease;
+}
+
+/* -----------------------------------------------------------------------
+ * Heading label — default (no selection)
+ * ----------------------------------------------------------------------- */
+
+.grid-header__label--default {
+    font-size: 1.125rem;
+    font-weight: 600;
+    line-height: 1.4;
+}
+
+@media (min-width: 640px) {
+    .grid-header__label--default {
+        font-size: 1.25rem;
+    }
+}
+
+/* -----------------------------------------------------------------------
+ * Heading label — selected (n items selected)
+ * ----------------------------------------------------------------------- */
+
+.grid-header__label--selected {
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.4;
+}
+
+/* -----------------------------------------------------------------------
+ * Row end-padding modifier
+ * Applied by AbstractIyenCommonConfigurator when a GridHeader is used
+ * inside a content area — adds a small right-side gap between the
+ * header row and the scroll edge.
+ * ----------------------------------------------------------------------- */
+
+.grid-header__row--end-padded {
+    padding-inline-end: 0.5rem;
+}
+

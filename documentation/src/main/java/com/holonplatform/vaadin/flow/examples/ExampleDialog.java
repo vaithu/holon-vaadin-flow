@@ -24,9 +24,9 @@ public class ExampleDialog {
 
 	public void dialog1() {
 		// tag::dialog1[]
-		Dialog dialog = Components.dialog.message().text("Message").build(); // <1>
+		Dialog dialog = Components.dialog.message().withContent("Message").build(); // <1>
 
-		Components.dialog.message().text("Default text", "message.code").open(); // <2>
+		Components.dialog.message().withContent("Default text", "message.code").open(); // <2>
 
 		Components.dialog.showMessage("Default text", "message.code"); // <3>
 		// end::dialog1[]
@@ -35,7 +35,7 @@ public class ExampleDialog {
 	public void dialog2() {
 		// tag::dialog2[]
 		Components.dialog.confirm() // <1>
-				.text("Default text", "message.code") // <2>
+				.withContent("Default text", "message.code") // <2>
 				.okButtonConfigurator(button -> { // <3>
 					button.text("My text").icon(VaadinIcon.CHECK);
 				}).open(); // <4>
@@ -48,7 +48,7 @@ public class ExampleDialog {
 		// tag::dialog3[]
 		Components.dialog.question(confirm -> { // <1>
 			// handle user response (true/false)
-		}).text("Default text", "message.code") // <2>
+		}).withContent("Default text", "message.code") // <2>
 				.confirmButtonConfigurator(button -> { // <3>
 					// confirm button configuration
 				}).denialButtonConfigurator(button -> { // <4>
@@ -62,7 +62,7 @@ public class ExampleDialog {
 
 	public void dialog4() {
 		// tag::dialog4[]
-		Components.dialog.message().text("Default text", "message.code") //
+		Components.dialog.message().withContent("Default text", "message.code") //
 				.width("200px") // <1>
 				.height("200px") // <2>
 				.styleName("my-style") // <3>
@@ -76,9 +76,9 @@ public class ExampleDialog {
 
 	public void dialog5() {
 		// tag::dialog5[]
-		Components.dialog.message().text("Default text", "message.code") //
+		Components.dialog.message().withContent("Default text", "message.code") //
 				.withComponent(Components.label().text("My label").build()) // <1>
-				.withToolbarComponent(Components.button().text("My button").build()) // <2>
+				.withFooter(Components.button().text("My button").build()) // <2>
 				.open();
 		// end::dialog5[]
 	}

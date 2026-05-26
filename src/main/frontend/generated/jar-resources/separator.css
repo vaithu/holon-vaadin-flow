@@ -1,0 +1,60 @@
+/*
+ * separator.css
+ *
+ * All visual styling for the Separator component.
+ * Follows shadcn/ui Separator design — no inline styles, no Lumo tokens.
+ *
+ * BEM blocks:
+ *   .separator                  — root element
+ *   .separator--horizontal      — orientation modifier
+ *   .separator--vertical        — orientation modifier
+ *   .separator--decorative      — decorative (no ARIA role) modifier
+ */
+
+/* -----------------------------------------------------------------------
+   Base
+   ----------------------------------------------------------------------- */
+
+.separator {
+    display: block;
+    flex-shrink: 0;
+}
+
+/* -----------------------------------------------------------------------
+   Orientation
+   ----------------------------------------------------------------------- */
+
+.separator--horizontal {
+    height: var(--separator-thickness, 1px);
+    width: 100%;
+}
+
+.separator--vertical {
+    /* stretch inside flex/grid rows; min-height ensures visibility in block contexts */
+    align-self: stretch;
+    height: 100%;
+    min-height: var(--separator-min-size, 1em);
+    width: var(--separator-thickness, 1px);
+}
+
+/* -----------------------------------------------------------------------
+   Thickness modifiers
+   Each class overrides the --separator-thickness custom property used by
+   both orientation rules above, so one set of modifiers works for both
+   horizontal and vertical separators.
+   ----------------------------------------------------------------------- */
+
+.separator--thickness-thin   { --separator-thickness: 1px; }
+.separator--thickness-medium { --separator-thickness: 2px; }
+.separator--thickness-thick  { --separator-thickness: 4px; }
+
+/* -----------------------------------------------------------------------
+   Decorative variant — no extra visual change, modifier is a hook for CSS
+   overrides and selector-based customisation only
+   ----------------------------------------------------------------------- */
+
+.separator--decorative {
+    /* intentionally empty — visual appearance is identical to a meaningful
+       separator; this class exists solely as a CSS hook */
+}
+

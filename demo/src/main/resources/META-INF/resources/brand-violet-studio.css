@@ -1,0 +1,361 @@
+/*
+ * brand-violet-studio.css  —  "Violet Studio" theme
+ * ──────────────────────────────────────────────────────────────────────────────
+ *  ★  READY-TO-USE BRAND FILE  (replaces brand-override-example.css)  ★
+ *
+ *  Rich violet brand on warm stone neutrals. Warm graphite sidebar.
+ *  Inspired by Figma, Craft, and modern creative-tool dashboards.
+ *
+ *  The Stone (warm gray) palette gives the application a subtly warmer,
+ *  more inviting feel than the default Zinc/Slate (cool gray) palette.
+ *  Combined with a deep violet accent and a graphite sidebar with
+ *  lavender active highlights, this is a theme that feels crafted, not
+ *  corporate — premium, focused, and visually memorable.
+ *
+ *  ┌─────────────────────────────────────────────────────────────────┐
+ *  │  WHAT CHANGED vs brand-override-example.css (Amber / Navy)      │
+ *  │                                                                 │
+ *  │  §1   NEUTRAL SCALE: Tailwind Stone (warm)  ← was Zinc (cool)   │
+ *  │  §3   SURFACES: Stone-warm whites           ← was Slate-cool    │
+ *  │  §4   TEXT: Stone foreground scale          ← was Slate         │
+ *  │  §5   BORDERS: Stone borders                ← was Zinc          │
+ *  │  §6   RADIUS: 0.75rem (12px)                ← was 0.625rem (10px)│
+ *  │  §8b  SHADOWS: warm-tinted (stone-900 base) ← was pure black    │
+ *  │  §9   BRAND PALETTE: Violet                 ← was Amber / Gold  │
+ *  │  §10  SIDEBAR: Warm Graphite (stone-800)    ← was deep navy     │
+ *  └─────────────────────────────────────────────────────────────────┘
+ *
+ *  HOW TO ACTIVATE — swap one line in your AppShellConfigurator:
+ *    @StyleSheet(Lumo.STYLESHEET)
+ *    @StyleSheet("context://vaadin-shell-theme.css")
+ *    @StyleSheet("context://brand-violet-studio.css")     ← this line
+ *    @StyleSheet("context://app-shell.css")
+ */
+:root {
+  /* ════════════════════════════════════════════════════════════════
+     1. NEUTRAL SCALE  — Tailwind Stone (warm gray, not cool zinc)
+        Stone has a subtle earthy undertone vs Zinc's cool cast.
+        Side-by-side: zinc-200 #e4e4e7 feels blue-cool;
+                      stone-200 #e7e5e4 feels warm-neutral.
+        This single swap transforms the entire application's feeling.
+     ════════════════════════════════════════════════════════════════ */
+  --zinc-50:   #fafaf9;   /* stone-50  — warm off-white                */
+  --zinc-100:  #f5f5f4;   /* stone-100 — warm subtle background        */
+  --zinc-200:  #e7e5e4;   /* stone-200 — warm border                   */
+  --zinc-300:  #d6d3d1;   /* stone-300                                 */
+  --zinc-400:  #a8a29e;   /* stone-400                                 */
+  --zinc-500:  #78716c;   /* stone-500 — muted warm text               */
+  --zinc-600:  #57534e;   /* stone-600                                 */
+  --zinc-700:  #44403c;   /* stone-700 — graphite hover bg             */
+  --zinc-800:  #292524;   /* stone-800 — main graphite sidebar bg      */
+  --zinc-900:  #1c1917;   /* stone-900 — near-black warm               */
+  --zinc-950:  #0c0a09;   /* stone-950                                 */
+  /* Legacy --gray-* aliases (used by older component CSS) */
+  --gray-100: var(--zinc-100);  --gray-150: var(--zinc-200);
+  --gray-200: var(--zinc-200);  --gray-300: var(--zinc-300);
+  --gray-400: var(--zinc-400);  --gray-500: var(--zinc-500);
+  --gray-600: var(--zinc-600);  --gray-700: var(--zinc-700);
+  --gray-800: var(--zinc-800);  --gray-900: var(--zinc-950);
+
+  /* ════════════════════════════════════════════════════════════════
+     2. SEMANTIC STATUS COLOURS  — Unchanged
+     ════════════════════════════════════════════════════════════════ */
+  --ok-light:   #f0fdf4;  --ok:   #16a34a;  --ok-dark:   #166534;
+  --err-light:  #fef2f2;  --err:  #dc2626;  --err-dark:  #b91c1c;
+  --warn-light: #fefce8;  --warn: #ca8a04;  --warn-dark: #a16207;
+  --info-light: #eff6ff;  --info: #2563eb;  --info-dark: #1d4ed8;
+
+  /* ════════════════════════════════════════════════════════════════
+     3. SURFACES  — Warm stone whites (pairs with stone text/borders)
+        surface-0 = pure white     (cards, inputs)
+        surface-1 = warm canvas    (stone-50  #fafaf9)
+        surface-2 = warm panel     (stone-100 #f5f5f4)
+        surface-3 = warm rule      (stone-200 #e7e5e4)
+        surface-4 = separation     (stone-300 #d6d3d1)
+
+        vs default Slate: surface-1 = #f8fafc (cool blue-white)
+        Stone surface-1   = #fafaf9 (warm off-white) — the difference
+        is subtle but cumulative across the entire layout.
+     ════════════════════════════════════════════════════════════════ */
+  --surface-0:  #ffffff;
+  --surface-1:  #fafaf9;   /* stone-50  */
+  --surface-2:  #f5f5f4;   /* stone-100 */
+  --surface-3:  #e7e5e4;   /* stone-200 */
+  --surface-4:  #d6d3d1;   /* stone-300 */
+
+  /* ════════════════════════════════════════════════════════════════
+     4. TEXT  — Stone foreground scale (warm undertone, not blue-cold)
+        text-link = violet-700 (#6d28d9) on white = 7.0:1 WCAG AAA ✓
+     ════════════════════════════════════════════════════════════════ */
+  --text-primary:   #1c1917;   /* stone-900 */
+  --text-secondary: #57534e;   /* stone-600 */
+  --text-tertiary:  #a8a29e;   /* stone-400 */
+  --text-disabled:  #d6d3d1;   /* stone-300 */
+  --text-link:      var(--brand-700);   /* violet-700 = WCAG AAA 7.0:1 on white ✓ */
+  --text-inverse:   #ffffff;
+
+  /* ════════════════════════════════════════════════════════════════
+     5. BORDERS  — Stone (warm gray overtones vs cool zinc)
+     ════════════════════════════════════════════════════════════════ */
+  --border-subtle:    1px solid var(--zinc-100);
+  --border-default:   1px solid var(--zinc-200);
+  --border-strong:    1px solid var(--zinc-300);
+  --border-focus:     2px solid var(--brand-600);
+  --border-separator: 1px solid var(--zinc-200);
+  --border-error:     1px solid var(--err);
+
+  /* ════════════════════════════════════════════════════════════════
+     6. RADIUS  — 0.75rem (12px) ← more rounded than default 10px
+        A larger radius suits the creative/studio aesthetic:
+        friendlier, more contemporary, less enterprise-rigid.
+        All derived values update automatically.
+     ════════════════════════════════════════════════════════════════ */
+  --radius:      0.75rem;                       /* 12px base            */
+  --radius-xs:   calc(var(--radius) - 8px);     /*  4px — tiny chips    */
+  --radius-sm:   calc(var(--radius) - 6px);     /*  6px — small badges  */
+  --radius-md:   calc(var(--radius) - 4px);     /*  8px — inputs/fields */
+  --radius-lg:   var(--radius);                 /* 12px — cards/panels  */
+  --radius-xl:   calc(var(--radius) + 4px);     /* 16px — dialogs       */
+  --radius-2xl:  calc(var(--radius) + 8px);     /* 20px — sheets        */
+  --radius-full: 9999px;
+
+  /* ════════════════════════════════════════════════════════════════
+     7. SPACING  — Unchanged
+     ════════════════════════════════════════════════════════════════ */
+  --sp-1:  4px;   --sp-2:  8px;  --sp-3:  12px;  --sp-4:  16px;
+  --sp-5: 20px;   --sp-6: 24px;  --sp-8:  32px;  --sp-10: 40px;
+  --space-1: 0.25rem;  --space-2: 0.5rem;   --space-3: 0.75rem;
+  --space-4: 1rem;     --space-5: 1.25rem;  --space-6: 1.5rem;
+
+  /* ════════════════════════════════════════════════════════════════
+     8. TYPOGRAPHY  — Unchanged
+     ════════════════════════════════════════════════════════════════ */
+  --font-display: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-body:    'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono:    'Geist Mono', 'Cascadia Code', 'Fira Code', ui-monospace, monospace;
+  --font-sans:    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-size-xs:   0.6875rem;
+  --font-size-sm:   0.75rem;
+  --font-size-base: 0.8125rem;
+  --font-size-md:   0.875rem;
+  --font-size-lg:   1rem;
+
+  /* ════════════════════════════════════════════════════════════════
+     8b. SHADOWS & TRANSITIONS
+         Shadows use stone-900 (rgb 28 25 23) instead of pure black.
+         The warm tint means card shadows feel "grounded" on warm
+         stone surfaces rather than harsh and clinical.
+     ════════════════════════════════════════════════════════════════ */
+  --shadow-xs:    0 1px 2px 0 rgba(28,25,23,.06);
+  --shadow-sm:    0 1px 3px 0 rgba(28,25,23,.12), 0 1px 2px -1px rgba(28,25,23,.08);
+  --shadow-md:    0 4px 6px -1px rgba(28,25,23,.10), 0 2px 4px -2px rgba(28,25,23,.08);
+  --shadow-lg:    0 10px 15px -3px rgba(28,25,23,.10), 0 4px 6px -4px rgba(28,25,23,.08);
+  --shadow-xl:    0 20px 25px -5px rgba(28,25,23,.10), 0 8px 10px -6px rgba(28,25,23,.08);
+  --shadow-focus: 0 0 0 2px var(--surface-0), 0 0 0 4px var(--brand-500);
+  --shadow-shell: var(--shadow-md);
+  --shadow-card:  var(--shadow-xs);
+  --ease-out:        cubic-bezier(.16, 1, .3, 1);
+  --ease-in-out:     cubic-bezier(.45, 0, .55, 1);
+  --dur-fast:        100ms;
+  --dur-base:        150ms;
+  --dur-slow:        250ms;
+  --transition-fast: 120ms ease;
+  --transition-base: var(--dur-base) var(--ease-out);
+
+  /* ════════════════════════════════════════════════════════════════
+     8c. COMPONENT DIMENSIONS  — Unchanged
+     ════════════════════════════════════════════════════════════════ */
+  --field-h-sm:  32px;  --field-h-md:  36px;  --field-h-lg:  40px;
+  --btn-h-sm:    28px;  --btn-h-md:    36px;  --btn-h-lg:    40px;
+  --toolbar-h:   56px;  --master-w:    290px;
+  --master-panel-width:      var(--master-w);
+  --toolbar-height:          var(--toolbar-h);
+  --sidenav-collapsed-width: 3.25rem;
+
+  /* ════════════════════════════════════════════════════════════════
+     8d. COMPONENT RING
+         Focus ring uses violet-500 — clear, identifiable accent.
+         Hover border uses stone-400 (warm neutral darkening).
+     ════════════════════════════════════════════════════════════════ */
+  --comp-bg:           var(--surface-0);
+  --comp-border-color: var(--zinc-200);         /* stone-200 warm rest   */
+  --comp-border-hover: var(--zinc-400);         /* stone-400 warm hover  */
+  --comp-border-focus: var(--brand-500);        /* violet-500 focus      */
+  --comp-border-error: var(--err);
+  --comp-shadow:       0 1px 3px 0 rgba(28, 25, 23, 0.08);
+  --comp-shadow-inset: inset 0 1px 2px rgba(28, 25, 23, 0.04);
+  --comp-radius:       var(--radius-md);        /* 8px — tighter than card */
+  --comp-focus-ring:   0 0 0 2px var(--surface-0), 0 0 0 4px var(--brand-500);
+
+  /* ════════════════════════════════════════════════════════════════
+     8e. TYPOGRAPHY SCALE  — Unchanged
+     ════════════════════════════════════════════════════════════════ */
+  --type-sz-display:  2rem;        --type-wt-display: 700;  --type-lh-display: 1.15;  --type-ls-display: -0.025em;
+  --type-sz-h1:       1.5rem;      --type-wt-h1:      600;  --type-lh-h1:      1.2;   --type-ls-h1:      -0.02em;
+  --type-sz-h2:       1.25rem;     --type-wt-h2:      600;  --type-lh-h2:      1.25;  --type-ls-h2:      -0.015em;
+  --type-sz-h3:       1.125rem;    --type-wt-h3:      600;  --type-lh-h3:      1.3;   --type-ls-h3:      -0.01em;
+  --type-sz-h4:       1rem;        --type-wt-h4:      600;  --type-lh-h4:      1.4;   --type-ls-h4:      0;
+  --type-sz-body-lg:  1rem;        --type-wt-body:    400;  --type-lh-body-lg: 1.6;
+  --type-sz-body:     0.875rem;                             --type-lh-body:    1.5;
+  --type-sz-body-sm:  0.8125rem;                            --type-lh-body-sm: 1.5;
+  --type-sz-caption:  0.75rem;                              --type-lh-caption: 1.4;
+  --type-sz-overline: 0.6875rem;   --type-wt-overline: 600; --type-ls-overline: 0.1em;
+  --type-sz-mono:     0.8125rem;
+
+  /* ╔══════════════════════════════════════════════════════════════════╗
+     ║  ★  9. BRAND PALETTE  ★   Violet — creative, precise, premium   ║
+     ║                                                                  ║
+     ║  Tailwind Violet — richly saturated, deep, WCAG compliant.      ║
+     ║  violet-700 (#6d28d9) on white = 7.0:1 (WCAG AAA ✓✓)           ║
+     ║                                                                  ║
+     ║  Why Violet?                                                     ║
+     ║    • Unique in this theme set (no other theme is violet)         ║
+     ║    • Pairs exceptionally with warm stone neutrals: cool-warm     ║
+     ║      contrast is more interesting than monochromatic palettes    ║
+     ║    • Has the saturation depth needed for dark sidebar accents    ║
+     ║    • violet-300 as sidebar active highlight on graphite is ✨    ║
+     ╚══════════════════════════════════════════════════════════════════╝ */
+  --brand-50:   #f5f3ff;   /* violet-50  — lightest tint                   */
+  --brand-100:  #ede9fe;   /* violet-100                                   */
+  --brand-200:  #ddd6fe;   /* violet-200                                   */
+  --brand-300:  #c4b5fd;   /* violet-300 — lavender (sidebar active bg)    */
+  --brand-400:  #a78bfa;   /* violet-400                                   */
+  --brand-500:  #8b5cf6;   /* violet-500 ← focus rings, active nav tint    */
+  --brand-600:  #7c3aed;   /* violet-600 ← primary button background       */
+  --brand-700:  #6d28d9;   /* violet-700 ← hover + link WCAG AAA 7.0:1 ✓  */
+  --brand-800:  #5b21b6;   /* violet-800                                   */
+  --brand-900:  #4c1d95;   /* violet-900                                   */
+
+  /* ╔══════════════════════════════════════════════════════════════════╗
+     ║  10. SIDEBAR  ←  Warm Graphite  (stone-800 base)                 ║
+     ║                                                                  ║
+     ║  Design rationale:                                               ║
+     ║    • NOT cold navy (brand-override-example.css)                  ║
+     ║    • NOT deep ocean (brand-teal-ocean.css)                       ║
+     ║    • Stone-800 (#292524) has a subtle warm undertone vs the      ║
+     ║      cool blue-black of standard dark sidebars. On screen, the  ║
+     ║      difference feels like "design tool" vs "enterprise app".   ║
+     ║                                                                  ║
+     ║  Signature detail — active highlight:                           ║
+     ║    violet-300 (#c4b5fd) lavender on stone-800 graphite          ║
+     ║    This combination has exceptional visual pop without using     ║
+     ║    harsh white or neon tones. It's the most distinctive         ║
+     ║    element of this theme.                                        ║
+     ╚══════════════════════════════════════════════════════════════════╝ */
+  --sidenav-width:               220px;
+  --sidenav-bg:                  #292524;   /* stone-800 — warm dark graphite         */
+  --sidenav-border:              #3c3836;   /* between stone-700/800 — subtle seam    */
+  --sidenav-label-color:         #6b5f5a;   /* warm muted earthy — section labels     */
+  --sidenav-label-font-size:     0.625rem;
+  --sidenav-label-padding:       0.875rem 1rem 0.25rem;
+
+  /* Items: warm readable text on graphite */
+  --sidenav-item-color:          #d6d3d1;   /* stone-300 — warm off-white              */
+  --sidenav-item-font-size:      0.875rem;
+  --sidenav-item-font-weight:    400;
+  --sidenav-item-padding:        0.625rem 1rem;
+  --sidenav-item-radius:         0;          /* full-width rectangular highlight       */
+  --sidenav-item-hover-bg:       #44403c;   /* stone-700 — slightly lighter graphite  */
+  --sidenav-item-hover-color:    #fafaf9;   /* stone-50 — near-white warm             */
+
+  /* Toggle chevron (expand/collapse) */
+  --sidenav-toggle-color:        #6b5f5a;   /* muted warm stone on dark bg            */
+  --sidenav-toggle-hover-color:  #fafaf9;   /* bright on hover                        */
+
+  /* Group collapsible parent headers */
+  --sidenav-group-color:          #fafaf9;   /* near-white — bolder than leaf items   */
+  --sidenav-group-font-size:      0.875rem;
+  --sidenav-group-font-weight:    600;
+  --sidenav-group-padding-top:    0.875rem;
+  --sidenav-group-padding-bottom: 0.375rem;
+
+  /* Child / leaf items (one level below group headers) */
+  --sidenav-child-color:      #a8a29e;   /* stone-400 — clearly subordinate          */
+  --sidenav-child-font-size:  0.8125rem;
+  --sidenav-child-opacity:    0.9;
+
+  /* ── ACTIVE STATE  ───────────────────────────────────────────────────
+     violet-300 (#c4b5fd) lavender on stone-800 graphite:
+       • saturated enough to be unambiguously "selected"
+       • soft enough to avoid neon / harsh contrast
+       • stone-900 text (#1c1917) on lavender = WCAG 10.5:1 AAA ✓
+     This is the signature visual identity of the Violet Studio theme. */
+  --sidenav-item-active-bg:           #c4b5fd;   /* violet-300 lavender highlight    */
+  --sidenav-item-active-color:        #1c1917;   /* stone-900 dark — WCAG AAA ✓      */
+  --sidenav-item-active-border:       #c4b5fd;   /* matches bg — seamless pill edge  */
+  --sidenav-item-active-font-weight:  600;
+
+  /* Child indent */
+  --vaadin-side-nav-child-indent: 1.25rem;
+
+  /* Vaadin internal nav properties */
+  --vaadin-side-nav-item-border-radius: 0;
+  --vaadin-side-nav-item-font-size:     0.875rem;
+  --vaadin-side-nav-item-font-weight:   400;
+
+  /* Icons */
+  --sidenav-icon-color:        #6b5f5a;   /* warm earthy muted at rest              */
+  --sidenav-icon-active-color: #1c1917;   /* stone-900 on lavender active highlight */
+
+  /* Badge / notification pill */
+  --sidenav-badge-bg:     #7c3aed;   /* violet-600 — branded notification pill      */
+  --sidenav-badge-color:  #ffffff;
+  --sidenav-badge-radius: 9999px;
+}
+
+
+/* ══════════════════════════════════════════════════════════════
+   PRIMARY BUTTON  — violet glow on hover (creative tool feel)
+   ──────────────────────────────────────────────────────────────
+   vaadin-shell-theme.css already wires primary button to
+   --brand-600 / --brand-700. This section adds the violet-tinted
+   box-shadow that makes the button "glow" on hover — a detail
+   that distinguishes premium UI from generic.
+   ══════════════════════════════════════════════════════════════ */
+vaadin-button[theme~="primary"] {
+  --vaadin-button-background:   var(--brand-600);   /* violet-600 */
+  --vaadin-button-border-color: var(--brand-600);
+  --vaadin-button-text-color:   #ffffff;
+  --vaadin-button-font-weight:  500;
+  --vaadin-button-shadow:
+    0 1px 3px 0   color-mix(in srgb, var(--brand-600, #7c3aed) 45%, transparent),
+    0 1px 2px -1px rgba(0, 0, 0, 0.10);
+  box-shadow:
+    0 1px 3px 0   color-mix(in srgb, var(--brand-600, #7c3aed) 45%, transparent),
+    0 1px 2px -1px rgba(0, 0, 0, 0.10);
+}
+
+vaadin-button[theme~="primary"]:not([disabled]):hover {
+  --vaadin-button-background:   var(--brand-700);   /* violet-700 */
+  --vaadin-button-border-color: var(--brand-700);
+  /* Violet glow lifts on hover — characteristic of creative tool UIs */
+  --vaadin-button-shadow:
+    0 4px 12px 0  color-mix(in srgb, var(--brand-600, #7c3aed) 55%, transparent),
+    0 2px 4px -1px rgba(0, 0, 0, 0.12);
+  box-shadow:
+    0 4px 12px 0  color-mix(in srgb, var(--brand-600, #7c3aed) 55%, transparent),
+    0 2px 4px -1px rgba(0, 0, 0, 0.12);
+}
+
+
+/* ══════════════════════════════════════════════════════════════
+   GRAPHITE SIDEBAR: search input override
+   ── Darker field bg to sit below the sidebar surface.
+   ══════════════════════════════════════════════════════════════ */
+.sidenav-search vaadin-text-field {
+  --vaadin-input-field-background:  #1c1917;   /* stone-900 — below graphite surface */
+  --vaadin-input-field-value-color: #d6d3d1;   /* stone-300 — warm readable text     */
+}
+.sidenav-search vaadin-text-field::part(input-field) {
+  border-color: #3c3836;   /* matches --sidenav-border — invisible seam              */
+  color:        #6b5f5a;   /* warm muted placeholder tone                            */
+}
+
+
+/* ══════════════════════════════════════════════════════════════
+   GRAPHITE SIDEBAR: scrollbar
+   ══════════════════════════════════════════════════════════════ */
+.sidenav-host vaadin-side-nav {
+  scrollbar-color: #44403c transparent;   /* stone-700 thumb on transparent track */
+}
+

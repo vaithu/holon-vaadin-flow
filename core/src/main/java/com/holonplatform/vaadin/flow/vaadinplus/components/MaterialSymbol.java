@@ -1,5 +1,6 @@
 package com.holonplatform.vaadin.flow.vaadinplus.components;
 
+import com.holonplatform.vaadin.flow.components.builders.LabelBuilder;
 import com.vaadin.flow.component.html.Span;
 
 public enum MaterialSymbol {
@@ -3876,7 +3877,7 @@ public enum MaterialSymbol {
     public static final String MATERIAL_ICONS = "material-symbols";
 
     public Span create(String... classNames) {
-        Span icon = new Span((this.name().startsWith("_") ? this.name().substring(1) : this.name()).toLowerCase());
+        Span icon = LabelBuilder.span().text((this.name().startsWith("_") ? this.name().substring(1) : this.name()).toLowerCase()).build();
         icon.addClassNames(MATERIAL_ICONS);
         icon.addClassNames(classNames);
         icon.getElement().setAttribute("aria-hidden", true);

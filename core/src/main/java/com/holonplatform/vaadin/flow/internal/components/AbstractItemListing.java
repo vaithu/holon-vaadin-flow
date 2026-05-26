@@ -34,8 +34,8 @@ import com.holonplatform.vaadin.flow.components.builders.ItemListingConfigurator
 import com.holonplatform.vaadin.flow.components.builders.ItemListingConfigurator.*;
 import com.holonplatform.vaadin.flow.components.builders.ShortcutConfigurator;
 import com.holonplatform.vaadin.flow.components.css.CSSUtility;
-import com.holonplatform.vaadin.flow.components.events.ItemClickEvent;
 import com.holonplatform.vaadin.flow.components.events.*;
+import com.holonplatform.vaadin.flow.components.events.ItemClickEvent;
 import com.holonplatform.vaadin.flow.components.utils.UIUtils;
 import com.holonplatform.vaadin.flow.data.ItemListingDataProviderAdapter;
 import com.holonplatform.vaadin.flow.data.ItemListingLazyDataProviderAdapter;
@@ -71,7 +71,6 @@ import com.vaadin.flow.data.renderer.NumberRenderer;
 import com.vaadin.flow.data.renderer.Renderer;
 import com.vaadin.flow.function.SerializableFunction;
 import com.vaadin.flow.function.ValueProvider;
-import com.vaadin.flow.theme.lumo.LumoUtility;
 
 import java.io.Serial;
 import java.text.NumberFormat;
@@ -81,7 +80,6 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -110,7 +108,7 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
     /**
      * Optional hidden columns
      */
-    private final transient List<P> hiddenColumns = Collections.emptyList();
+    private final transient List<P> hiddenColumns = new ArrayList<>();
 
     /**
      * Optional visible columns
@@ -128,15 +126,10 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
     private ItemListingDataProviderAdapter<T, ?> dataProvider;
 
     /**
-     * BackendData provider
-     */
-    private ItemListingLazyDataProviderAdapter<T, ?> lazyDataProvider;
-
-    /**
      * A list of the item properties which correspond to a listing column, in the
      * display order
      */
-    private final transient LinkedList<P> properties = new LinkedList<>();
+    private final transient ArrayList<P> properties = new ArrayList<>();
 
     /**
      * Optional {@link PropertyRendererRegistry} to use
@@ -147,6 +140,18 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
      * Item property column definitions
      */
     private final transient Map<P, ItemListingColumn<P, T, ?>> propertyColumns = new HashMap<>();
+
+    /**
+     * Reverse lookup: column key → property, kept in sync with {@code propertyColumns}.
+     * Enables O(1) reverse lookup in {@link #getProperty(String)} instead of an O(n) stream scan.
+     */
+    private final transient Map<String, P> columnKeyToProperty = new HashMap<>();
+
+    /**
+     * Set of all column keys currently in use; used for O(1) uniqueness check in
+     * {@link #ensureUniqueColumnKey} instead of an O(n) stream scan.
+     */
+    private final transient Set<String> usedColumnKeys = new HashSet<>();
 
     /**
      * Column headers.
@@ -171,7 +176,7 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
     /**
      * Listing columns post processors
      */
-    private final transient List<ColumnPostProcessor<P>> columnPostProcessors = new LinkedList<>();
+    private final transient List<ColumnPostProcessor<P>> columnPostProcessors = new ArrayList<>();
 
     /**
      * Whether the listing is editable
@@ -187,17 +192,17 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
     /**
      * Property editor post-processors
      */
-    private final transient List<BiConsumer<P, Input<?>>> postProcessors = new LinkedList<>();
+    private final transient List<BiConsumer<P, Input<?>>> postProcessors = new ArrayList<>();
 
     /**
      * Value change listeners
      */
-    private final List<ValueChangeListener<T, GroupValueChangeEvent<T, P, Input<?>, EditorComponentGroup<P, T>>>> valueChangeListeners = new LinkedList<>();
+    private final List<ValueChangeListener<T, GroupValueChangeEvent<T, P, Input<?>, EditorComponentGroup<P, T>>>> valueChangeListeners = new ArrayList<>();
 
     /**
      * Item validators
      */
-    private final List<Validator<T>> validators = new LinkedList<>();
+    private final List<Validator<T>> validators = new ArrayList<>();
 
     /**
      * Group validation status handler
@@ -220,9 +225,15 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
     private transient T oldEditorValue;
 
     /**
+     * Reusable editor value holder — cached once to avoid anonymous class allocation on every
+     * editor-save event.
+     */
+    private final EditorValueHolder editorValueHolder = new EditorValueHolder();
+
+    /**
      * Selection listeners
      */
-    private final List<SelectionListener<T>> selectionListeners = new LinkedList<>();
+    private final List<SelectionListener<T>> selectionListeners = new ArrayList<>();
 
     /**
      * Selection listener registrations
@@ -233,19 +244,19 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
     /**
      * Editor open listeners
      */
-    private final List<EditorOpenListener<T, P>> editorOpenListeners = new LinkedList<>();
+    private final List<EditorOpenListener<T, P>> editorOpenListeners = new ArrayList<>();
     /**
      * Editor open listeners
      */
-    private final List<EditorCloseListener<T, P>> editorCloseListeners = new LinkedList<>();
+    private final List<EditorCloseListener<T, P>> editorCloseListeners = new ArrayList<>();
     /**
      * Editor open listeners
      */
-    private final List<EditorSaveListener<T, P>> editorSaveListeners = new LinkedList<>();
+    private final List<EditorSaveListener<T, P>> editorSaveListeners = new ArrayList<>();
     /**
      * Editor open listeners
      */
-    private final List<EditorCancelListener<T, P>> editorCancelListeners = new LinkedList<>();
+    private final List<EditorCancelListener<T, P>> editorCancelListeners = new ArrayList<>();
 
     /**
      * Whether the listing was built
@@ -253,6 +264,12 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
     private boolean built = false;
     private ItemListingLazyDataProviderAdapter<T, ?> backEndDataProvider;
     private Column<T> mobileColumn;
+
+    /**
+     * Cached header / footer section wrappers — created once on first access, never re-created.
+     */
+    private transient EditableItemListingSection<P> cachedHeaderSection;
+    private transient EditableItemListingSection<P> cachedFooterSection;
 //    private boolean autoCreateColumns = true;
 //    private final MobileColumn mobileColumn  = new MobileColumn();
 
@@ -355,35 +372,32 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
         return getGrid().setItems(fetchCallback);
     }
 
+    public GridLazyDataView<T> setItems(CallbackDataProvider.FetchCallback<T, Void> fetchCallback,
+                                        CallbackDataProvider.CountCallback<T, Void> countCallback) {
+        return getGrid().setItems(fetchCallback, countCallback);
+    }
+
     @Override
     public Optional<T> getItemAtIndex(int index) {
-        return Optional.ofNullable(getGrid().getLazyDataView().getItem(index));
+        // Fetch once — getLazyDataView().getItem() may trigger a backend page fetch
+        T item = getGrid().getLazyDataView().getItem(index);
+        return Optional.ofNullable(item);
     }
 
-    @Override
     public void compact() {
-        getGrid().addThemeVariants(GridVariant.LUMO_COMPACT);
+        // CSS: vaadin-grid.grid--compact::part(row) in utilities.css
+        getGrid().addClassName("grid--compact");
     }
 
-    @Override
     public void stretch() {
-        getGrid().addClassName(LumoUtility.AlignSelf.STRETCH);
+        getGrid().addClassName(com.holonplatform.vaadin.flow.internal.lumo.AlignSelf.STRETCH.getClassName());
     }
 
     @Override
     public void wrapCellContent() {
-        getGrid().addThemeVariants(GridVariant.LUMO_WRAP_CELL_CONTENT);
+        // CSS: vaadin-grid.grid--wrap-cell-content::part(cell) in utilities.css
+        getGrid().addClassName("grid--wrap-cell-content");
     }
-
-    /*  @Override
-    public GridLazyDataView<T> getLazyDataView() {
-        return getGrid().getLazyDataView();
-    }
-
-    @Override
-    public GridLazyDataView<T> setItems(BackEndDataProvider<T, Void> backEndDataProvider) {
-        return getGrid().setItems(backEndDataProvider);
-    }*/
 
     /*
      * (non-Javadoc)
@@ -392,10 +406,9 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
      */
     @Override
     public List<QuerySortOrder> getColumnSorts() {
-        List<QuerySortOrder> sortProperties = new LinkedList<>();
-        getGrid().getSortOrder().stream().map(order -> order.getSorted().getSortOrder(order.getDirection()))
-                .forEach(s -> s.forEach(sortProperties::add));
-        return sortProperties;
+        return getGrid().getSortOrder().stream()
+                .flatMap(order -> order.getSorted().getSortOrder(order.getDirection()))
+                .toList();
     }
 
     /**
@@ -495,7 +508,11 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
      * @return the header section handler
      */
     protected EditableItemListingSection<P> getHeaderSection() {
-        return new DefaultItemListingHeaderSection<>(getGrid(), property -> getColumn(property).orElse(null));
+        if (cachedHeaderSection == null) {
+            cachedHeaderSection = new DefaultItemListingHeaderSection<>(getGrid(),
+                    property -> getColumn(property).orElse(null));
+        }
+        return cachedHeaderSection;
     }
 
     /**
@@ -504,7 +521,11 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
      * @return the footer section handler
      */
     protected EditableItemListingSection<P> getFooterSection() {
-        return new DefaultItemListingFooterSection<>(getGrid(), property -> getColumn(property).orElse(null));
+        if (cachedFooterSection == null) {
+            cachedFooterSection = new DefaultItemListingFooterSection<>(getGrid(),
+                    property -> getColumn(property).orElse(null));
+        }
+        return cachedFooterSection;
     }
 
     /*
@@ -554,15 +575,10 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
      * @return The property column configuration (never null)
      */
     public ItemListingColumn<P, T, ?> getColumnConfiguration(P property) {
-        /*propertyColumns.forEach((p, ptItemListingColumn) -> {
-            log.info("propertyColumns size {} Column Key : {}, Readonly: {}", propertyColumns.size(),
-                    ptItemListingColumn.getColumnKey(), ptItemListingColumn.isReadOnly());
-        });*/
-        return propertyColumns.computeIfAbsent(property, p ->
-
-        {
-            return new DefaultItemListingColumn<>(property,
-                    ensureUniqueColumnKey(generateColumnKey(p)), isReadOnlyByDefault(p));
+        return propertyColumns.computeIfAbsent(property, p -> {
+            String key = ensureUniqueColumnKey(generateColumnKey(p));
+            columnKeyToProperty.put(key, property);
+            return new DefaultItemListingColumn<>(property, key, isReadOnlyByDefault(p));
         });
     }
 
@@ -599,10 +615,12 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
      * @return The unique column key
      */
     protected String ensureUniqueColumnKey(String key) {
-        if (propertyColumns.values().stream().map(ItemListingColumn::getColumnKey)
-                .anyMatch(columnKey -> columnKey.equals(key))) {
-            return key + "_" + columnKeySuffix.incrementAndGet();
+        if (usedColumnKeys.contains(key)) {
+            String uniqueKey = key + "_" + columnKeySuffix.incrementAndGet();
+            usedColumnKeys.add(uniqueKey);
+            return uniqueKey;
         }
+        usedColumnKeys.add(key);
         return key;
     }
 
@@ -637,8 +655,8 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
         if (columnKey == null) {
             return Optional.empty();
         }
-        return propertyColumns.entrySet().stream().filter(entry -> columnKey.equals(entry.getValue().getColumnKey()))
-                .map(Map.Entry::getKey).findFirst();
+        // O(1) reverse lookup via the columnKeyToProperty map (was: O(n) stream scan)
+        return Optional.ofNullable(columnKeyToProperty.get(columnKey));
     }
 
     /**
@@ -661,7 +679,7 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
     public List<P> getVisibleColumns() {
         return getVisibleColumnProperties().stream()
                 .filter(property -> getColumn(property).map(Component::isVisible).orElse(false))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     /*
@@ -673,7 +691,7 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
     public List<P> getHiddenColumns() {
         return getHiddenColumnProperties().stream()
                 .filter(property -> getColumn(property).map(column -> !column.isVisible()).orElse(true))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     /*
@@ -719,15 +737,15 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
     public void addHoverEffect(AttachEvent attachEvent, SerializableFunction<T, String> partNameGenerator) {
 
         // Add the hover effect only for desktop browsers
-        attachEvent.getUI().getPage().retrieveExtendedClientDetails(details -> {
+        @SuppressWarnings("deprecation")
+        com.vaadin.flow.component.page.Page.ExtendedClientDetailsReceiver receiver = details -> {
             if (!details.isTouchDevice()) {
                 getGrid().addClassNames(CSSUtility.Transform.Hover.SCALE_102,
                         CSSUtility.Transition.TRANSITION);
             }
-
             getGrid().setPartNameGenerator(partNameGenerator);
-
-        });
+        };
+        attachEvent.getUI().getPage().retrieveExtendedClientDetails(receiver);
 
 
     }
@@ -748,16 +766,15 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
         List<Column<T>> columns = getGrid().getColumns();
         ArrayList<Column<T>> modifiableColumns = new ArrayList<>(columns);
         modifiableColumns.remove(rowIndex);
-        modifiableColumns.add(0, rowIndex);
+        modifiableColumns.addFirst(rowIndex);
         setColumnOrder(modifiableColumns);
     }
 
     private void executeIndexColumnJs(Column<T> column) {
-        getGrid().addAttachListener(event -> {
+        getGrid().addAttachListener(event ->
             column.getElement().executeJs(
                     "this.renderer = function(root, column, rowData) {root.textContent = rowData.index + 1}"
-            );
-        });
+            ));
     }
 
     @Override
@@ -825,7 +842,7 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
         if (mobileColumn != null) {
             mobileColumn.setHeader(header);
         } else {
-            getGrid().getColumns().get(0).setHeader(header);
+            getGrid().getColumns().getFirst().setHeader(header);
         }
     }
 
@@ -838,7 +855,7 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
                     .filter(tColumn -> !tColumn.equals(mobileColumn))
                     .forEach(tColumn -> tColumn.setVisible(mobile));
         } else {
-            Column<T> tColumn = getGrid().getColumns().get(0);
+            Column<T> tColumn = getGrid().getColumns().getFirst();
             tColumn.setVisible(mobile);
 
             for (int i = 1; i < allColumns.size(); i++) {
@@ -852,7 +869,7 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
         if (mobileColumn != null) {
             return mobileColumn.isVisible();
         } else {
-            return getGrid().getColumns().get(0).isVisible();
+            return getGrid().getColumns().getFirst().isVisible();
         }
     }
 
@@ -887,111 +904,6 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
         getGrid().setPartNameGenerator(partNameGenerator);
     }
 
-/*
-
-    class MobileColumn {
-        private P MOBILE_COLUMN_PROPERTY;
-        private Optional<Column<T>> mobileColumn;
-
-        private final String MOBILE_COLUMN_KEY = "mobileColumn";
-
-        public MobileColumn(P property) {
-            this.MOBILE_COLUMN_PROPERTY = property;
-        }
-
-        public MobileColumn() {
-        }
-
-        private void getMobileColumn() {
-            mobileColumn = Optional.ofNullable(getGrid().getColumnByKey(MOBILE_COLUMN_KEY));
-            if (mobileColumn.isEmpty()) {
-                mobileColumn = getColumn(MOBILE_COLUMN_PROPERTY);
-            }
-        }
-
-        private boolean isMobileColumn() {
-            return mobileColumn.isPresent();
-        }
-
-        public void hideMobileColumn() {
-
-            getMobileColumn();
-
-            mobileColumn.ifPresentOrElse(tColumn -> {
-                tColumn.setVisible(false);
-            },() -> {
-                throw new IllegalArgumentException("Mobile Column is null");
-            });
-
-        }
-
-        private void removeMobileColumn() {
-            getMobileColumn();
-            mobileColumn.ifPresent(tColumn -> getGrid().removeColumn(tColumn));
-        }
-
-        public void setMobileColumn(Renderer<T> renderer) {
-            removeMobileColumn();
-
-            Column<T> column = getGrid().getColumnByKey(addPropertyColumnAsFirst(MOBILE_COLUMN_PROPERTY).getColumnKey());
-
-            mobileColumn = Optional.ofNullable(column == null ? getGrid().getColumnByKey(MOBILE_COLUMN_KEY) : column);
-
-//            mobileColumn = mobileColumn.orElse(getGrid().getColumnByKey(MOBILE_COLUMN_KEY));
-//        hideMobileColumn();
-        }
-
-        public void setMobileHeader(String header) {
-            getMobileColumn();
-
-            mobileColumn.ifPresentOrElse(tColumn -> {
-                tColumn.setHeader(header)
-                        .setKey(MOBILE_COLUMN_KEY);
-            },() -> {
-                throw new IllegalArgumentException("Mobile Column is null");
-            });
-        }
-
-        public void setMobileColumn(ValueProvider<T, Component> component) {
-
-            removeMobileColumn();
-
-            mobileColumn = Optional.ofNullable(getGrid().addComponentColumn(component));
-            mobileColumn.ifPresentOrElse(tColumn -> {
-                tColumn
-                        .setKey(MOBILE_COLUMN_KEY);
-            },() -> {
-                throw new IllegalArgumentException("Mobile Column is null");
-            });
-
-
-//        hideMobileColumn();
-        }
-
-        public boolean isMobileColumnVisible() {
-            if (mobileColumn.isPresent()) {
-                return mobileColumn.get().isVisible();
-            }
-            return false;
-        }
-
-
-        public void showMobileColumn(boolean visible) {
-            getMobileColumn();
-            ObjectUtils.argumentNotNull(mobileColumn, "Mobile column is null. You need to set it using " +
-                    "setMobileColumn() method before you show it");
-//        mobileColumn.setVisible(visible);
-            if (visible) {
-                hideAllVisibleColumns();
-            } else {
-                showAllHiddenColumns();
-            }
-            mobileColumn.ifPresent(tColumn -> tColumn.setVisible(visible));
-        }
-
-    }
-
-*/
 
 
     private void showAllHiddenColumns() {
@@ -1016,34 +928,30 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
         // when arrow keys are used, and (2) to inform the server of the
         // selection.
         getGrid().addAttachListener(
-                a -> {
-                    getGrid()
-                            .getElement()
-                            .executeJs(
-                                    "this.addEventListener('keyup', function(e) {" +
-                                            // ignore Space as it can still be used to
-                                            // (de)select items
-                                            "if (e.keyCode == 32) return;" +
-                                            "let grid = $0;" +
-                                            "if (grid.selectedItems){" +
-                                            "grid.activeItem=this.getEventContext(e).item;" +
-                                            "grid.selectedItems=[this.getEventContext(e).item];" +
-                                            "grid.$server.select(this.getEventContext(e).item.key);}} )",
-                                    getGrid().getElement()
-                            );
-                }
+                a -> getGrid()
+                        .getElement()
+                        .executeJs(
+                                "this.addEventListener('keyup', function(e) {" +
+                                        // ignore Space as it can still be used to
+                                        // (de)select items
+                                        "if (e.keyCode == 32) return;" +
+                                        "let grid = $0;" +
+                                        "if (grid.selectedItems){" +
+                                        "grid.activeItem=this.getEventContext(e).item;" +
+                                        "grid.selectedItems=[this.getEventContext(e).item];" +
+                                        "grid.$server.select(this.getEventContext(e).item.key);}} )",
+                                getGrid().getElement()
+                        )
         );
     }
 
     @Override
     public void setToggleableColumns() {
         final Map<Column<?>, String> toggleableColumns = new HashMap<>();
-        getAllColumns().forEach(tColumn -> {
-            toggleableColumns.put(tColumn, tColumn.getHeaderText());
-        });
+        getAllColumns().forEach(tColumn -> toggleableColumns.put(tColumn, tColumn.getHeaderText()));
         if (!toggleableColumns.isEmpty()) {
             Column<T> settingColumn = getGrid().addColumn(box -> "").setWidth("auto").setFlexGrow(0);
-            getGrid().getHeaderRows().get(0).getCell(settingColumn)
+            getGrid().getHeaderRows().getFirst().getCell(settingColumn)
                     .setComponent(UIUtils.createMenuToggle(toggleableColumns));
         } else {
             throw new IllegalArgumentException("No columns added to toggleableColumns map");
@@ -1053,24 +961,17 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
     @Override
     public void hideAllColumnsExcept(P columnToShow) {
         getColumn(columnToShow)
-                .ifPresentOrElse(tColumn -> {
-                    getGrid().getColumns().forEach(column -> {
-                        if (!column.equals(tColumn)) {
-                            column.setVisible(false);
-                        }
-                    });
-                }, () -> {
-                    propertyNotFoundException(columnToShow);
-                });
+                .ifPresentOrElse(tColumn -> getGrid().getColumns().forEach(column -> {
+                    if (!column.equals(tColumn)) {
+                        column.setVisible(false);
+                    }
+                }), () -> propertyNotFoundException(columnToShow));
     }
 
     @Override
     public void setFrozenToEnd(P property, boolean frozen) {
-        getColumn(property).ifPresentOrElse(tColumn -> {
-            tColumn.setFrozenToEnd(frozen);
-        }, () -> {
-            propertyNotFoundException(property);
-        });
+        getColumn(property).ifPresentOrElse(tColumn -> tColumn.setFrozenToEnd(frozen),
+                () -> propertyNotFoundException(property));
 
     }
 
@@ -1370,16 +1271,16 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
         // create the column
         column.setKey(configuration.getColumnKey());
         // header
-        getColumnHeader(configuration).flatMap(t -> LocalizationProvider.localize(t)).ifPresent(h -> {
+        getColumnHeader(configuration).flatMap(LocalizationProvider::localize).ifPresent(h -> {
             column.setHeader(h);
             columnsHeaders.put(property, h);
         });
-        configuration.getHeaderComponent().ifPresent(c -> column.setHeader(c));
+        configuration.getHeaderComponent().ifPresent(column::setHeader);
         configuration.getHeaderPartName().ifPresent(c -> column.setHeaderPartName(c));
         // footer
-        configuration.getFooterText().flatMap(t -> LocalizationProvider.localize(t))
-                .ifPresent(f -> column.setFooter(f));
-        configuration.getFooterComponent().ifPresent(c -> column.setFooter(c));
+        configuration.getFooterText().flatMap(LocalizationProvider::localize)
+                .ifPresent(column::setFooter);
+        configuration.getFooterComponent().ifPresent(column::setFooter);
         configuration.getFooterPartName().ifPresent(c -> column.setFooterPartName(c));
         // visible
         column.setVisible(configuration.isVisible());
@@ -1388,8 +1289,8 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
         // frozen
         column.setFrozen(configuration.isFrozen());
         // width
-        configuration.getWidth().ifPresent(w -> column.setWidth(w));
-        if (!configuration.getWidth().isPresent() && (configuration.isAutoWidth() || isColumnsAutoWidth())) {
+        configuration.getWidth().ifPresent(column::setWidth);
+        if (configuration.getWidth().isEmpty() && (configuration.isAutoWidth() || isColumnsAutoWidth())) {
             column.setAutoWidth(true);
         }
         // flex grow
@@ -1403,13 +1304,13 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
             column.setFlexGrow(configuration.getFlexGrow());
         }
         // style class name
-        configuration.getStyleNameGenerator().ifPresent(g -> column.setPartNameGenerator(item -> g.apply(item)));
+        configuration.getStyleNameGenerator().ifPresent(g -> column.setPartNameGenerator(g::apply));
         // alignment
         configuration.getAlignment().ifPresent(a -> column.setTextAlign(asColumnTextAlign(a)));
         // sort
         if (configuration.getSortMode() == SortMode.ENABLED) {
             column.setSortable(true);
-            configuration.getComparator().ifPresent(c -> column.setComparator(c));
+            configuration.getComparator().ifPresent(column::setComparator);
             if (configuration.getSortOrderProvider().isPresent()) {
                 column.setSortOrderProvider(configuration.getSortOrderProvider().get());
             } else {
@@ -1417,7 +1318,7 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
                 if (!configuration.getSortProperties().isEmpty()) {
                     final List<String> sorts = configuration.getSortProperties().stream()
                             .map(p -> getSortPropertyName(property).orElse(null)).filter(p -> p != null)
-                            .collect(Collectors.toList());
+                            .toList();
                     column.setSortOrderProvider(
                             direction -> sorts.stream().map(sort -> new QuerySortOrder(sort, direction)));
                 }
@@ -1430,9 +1331,7 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
         // post processors
         final String columnHeader = columnsHeaders.getOrDefault(property, "");
         final ColumnConfigurator columnConfigurator = new DefaultColumnConfigurator<>(column);
-        getColumnPostProcessors().forEach(cpp -> {
-            cpp.configureColumn(property, columnHeader, columnConfigurator);
-        });
+        getColumnPostProcessors().forEach(cpp -> cpp.configureColumn(property, columnHeader, columnConfigurator));
         // return the column key
         return configuration.getColumnKey();
     }
@@ -1588,14 +1487,14 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
      */
     @Override
     public void sort(List<ItemSort<P>> sorts) {
-        List<GridSortOrder<T>> orders = new LinkedList<>();
+        final List<GridSortOrder<T>> orders = (sorts != null)
+                ? new ArrayList<>(sorts.size())
+                : Collections.emptyList();
         if (sorts != null) {
-            sorts.stream().forEach(sort -> {
-                getColumn(sort.getProperty())
-                        .map(c -> new GridSortOrder<>(c,
-                                sort.isAscending() ? SortDirection.ASCENDING : SortDirection.DESCENDING))
-                        .ifPresent(o -> orders.add(o));
-            });
+            sorts.forEach(sort -> getColumn(sort.getProperty())
+                    .map(c -> new GridSortOrder<>(c,
+                            sort.isAscending() ? SortDirection.ASCENDING : SortDirection.DESCENDING))
+                    .ifPresent(orders::add));
         }
         getGrid().sort(orders);
     }
@@ -1627,9 +1526,7 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
             cancelEditing();
         }
         // check frozen
-        getItemListingDataProvider().ifPresent(p -> {
-            p.setFrozen(false);
-        });
+        getItemListingDataProvider().ifPresent(p -> p.setFrozen(false));
         // refresh
         getGrid().getDataProvider().refreshAll();
     }
@@ -1679,7 +1576,7 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
      */
     @Override
     public boolean isFrozen() {
-        return getItemListingDataProvider().map(p -> p.isFrozen()).orElse(false);
+        return getItemListingDataProvider().map(ItemListingDataProviderAdapter::isFrozen).orElse(false);
     }
 
     /*
@@ -1876,9 +1773,7 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
      */
     @Override
     public void selectAll() {
-        if (getGrid().getSelectionModel() instanceof GridMultiSelectionModel) {
-
-            GridMultiSelectionModel<T> multiSelectionModel = (GridMultiSelectionModel<T>) getGrid().getSelectionModel();
+        if (getGrid().getSelectionModel() instanceof GridMultiSelectionModel<T> multiSelectionModel) {
             multiSelectionModel.selectAll();
         } else {
             throw new IllegalArgumentException("Grid is not set for MultiSelection");
@@ -1920,9 +1815,8 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
         });
         this.selectionListenerRegistrations.clear();
         if (isSelectableSelectionModel()) {
-            this.selectionListeners.forEach(selectionListener -> {
-                addAndRegisterSelectionListener(selectionListener);
-            });
+            this.selectionListeners.forEach(selectionListener ->
+                addAndRegisterSelectionListener(selectionListener));
         }
     }
 
@@ -1935,10 +1829,7 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
      */
     private boolean isSelectableSelectionModel() {
         final GridSelectionModel<T> selectionModel = getGrid().getSelectionModel();
-        if (selectionModel != null && !(selectionModel instanceof GridNoneSelectionModel)) {
-            return true;
-        }
-        return false;
+        return selectionModel != null && !(selectionModel instanceof GridNoneSelectionModel);
     }
 
     /**
@@ -1947,9 +1838,8 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
      * @param selectionListener The selection listener to add
      */
     private void addAndRegisterSelectionListener(SelectionListener<T> selectionListener) {
-        final com.vaadin.flow.shared.Registration registration = getGrid().addSelectionListener(e -> {
-            selectionListener.onSelectionChange(new DefaultSelectionEvent<>(e.getAllSelectedItems(), e.isFromClient()));
-        });
+        final com.vaadin.flow.shared.Registration registration = getGrid().addSelectionListener(e ->
+                selectionListener.onSelectionChange(new DefaultSelectionEvent<>(e.getAllSelectedItems(), e.isFromClient())));
         this.selectionListenerRegistrations.put(selectionListener, registration);
     }
 
@@ -2236,9 +2126,8 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
         // binder
         final Binder<T> binder = new DefaultItemListingBinder<>(new ItemListingPropertySet<>(definitions));
         // validation status handler
-        binder.setValidationStatusHandler(e -> {
-            getGroupValidationStatusHandler().orElse(this).validationStatusChange(asGroupValidationStatus(e));
-        });
+        binder.setValidationStatusHandler(e ->
+                getGroupValidationStatusHandler().orElse(this).validationStatusChange(asGroupValidationStatus(e)));
         // item validators
         validators.forEach(validator -> binder.withValidator(Validatable.adapt(validator)));
         // property editors
@@ -2250,14 +2139,13 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
             if (!configuration.isReadOnly()) {
                 // editor component
                 if (configuration.getEditorComponent().isPresent()) {
-                    getColumn(property).ifPresent(column -> {
-                        // set the column editor
-                        column.setEditorComponent(i -> configuration.getEditorComponent().get().apply(i));
-                    });
+                    getColumn(property).ifPresent(column ->
+                            // set the column editor
+                            column.setEditorComponent(i -> configuration.getEditorComponent().get().apply(i)));
                 } else {
                     // editor input
-                    getColumn(property).ifPresent(column -> {
-                        buildPropertyEditor(configuration).ifPresent(editor -> {
+                    getColumn(property).ifPresent(column ->
+                            buildPropertyEditor(configuration).ifPresent(editor -> {
                             editors.put(property, editor);
                             // remove label
                             editor.hasLabel().ifPresent(l -> l.setLabel(""));
@@ -2265,8 +2153,7 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
                             column.setEditorComponent(editor.getComponent());
                             // create and bind
                             editorBindings.put(configureAndBind(binder, configuration, editor), property);
-                        });
-                    });
+                        }));
                 }
             }
         }
@@ -2380,15 +2267,14 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
     public void validationStatusChange(
             GroupValidationStatusEvent<EditorComponentGroup<P, T>, P, Input<?>> statusChangeEvent) {
         // group elements
-        statusChangeEvent.getInputsValidationStatus().forEach(s -> {
-            getColumnConfiguration(s.getProperty()).getValidationStatusHandler()
-                    .orElseGet(() -> ValidationStatusHandler.getDefault(ValidationStatusHandler.dialog()))
-                    .validationStatusChange(
-                            ValidationStatusEvent.create((Input) s.getElement(), s.getStatus(), s.getErrors()));
-        });
+        statusChangeEvent.getInputsValidationStatus().forEach(s ->
+                getColumnConfiguration(s.getProperty()).getValidationStatusHandler()
+                        .orElseGet(() -> ValidationStatusHandler.getDefault(ValidationStatusHandler.dialog()))
+                        .validationStatusChange(
+                                ValidationStatusEvent.create((Input) s.getElement(), s.getStatus(), s.getErrors())));
         // group
         final ValidationStatusHandler<EditorComponentGroup<P, T>> groupHandler = getValidationStatusHandler()
-                .orElseGet(() -> ValidationStatusHandler.dialog());
+                .orElseGet(ValidationStatusHandler::dialog);
         switch (statusChangeEvent.getGroupStatus()) {
             case INVALID:
                 groupHandler.validationStatusChange(
@@ -2419,9 +2305,11 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
         final List<Localizable> errors;
         if (!binderStatus.getBeanValidationErrors().isEmpty()) {
             groupStatus = Status.INVALID;
-            errors = binderStatus.getBeanValidationErrors().stream().map(r -> r.getErrorMessage())
-                    .filter(m -> m != null && !m.trim().equals("")).map(m -> Localizable.of(m))
-                    .collect(Collectors.toList());
+            errors = binderStatus.getBeanValidationErrors().stream()
+                    .map(ValidationResult::getErrorMessage)
+                    .filter(m -> m != null && !m.isBlank())
+                    .map(Localizable::of)
+                    .toList();
         } else {
             errors = Collections.emptyList();
             // check unresolved
@@ -2433,32 +2321,39 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
             }
         }
 
-        // inputs
-        final List<GroupElementValidationStatusEvent<EditorComponentGroup<P, T>, P, Input<?>>> inputsValidationStatus = binderStatus
-                .getFieldValidationStatuses().stream()
-                //I added this filter condition to show the component column when editing is enabled
-                // but not showing up the component. It is because the property is not found in the
-                // editorBindings which I don't know why - Babu
-                .filter(vs -> editorBindings.containsKey(vs.getBinding()))
-                .map(vs -> {
-                    final P property = editorBindings.get(vs.getBinding());
-                    final Input<?> input = editors.get(property);
-                    switch (vs.getStatus()) {
-                        case ERROR:
-                            return GroupElementValidationStatusEvent.<EditorComponentGroup<P, T>, P, Input<?>>invalid(
+        // inputs — pre-sized for-loop avoids stream overhead in this frequently-called validation path
+        final var fieldStatuses = binderStatus.getFieldValidationStatuses();
+        final List<GroupElementValidationStatusEvent<EditorComponentGroup<P, T>, P, Input<?>>> inputsValidationStatus =
+                new ArrayList<>(fieldStatuses.size());
+        for (var vs : fieldStatuses) {
+            // Single map lookup — avoids redundant containsKey + get double traversal
+            final P property = editorBindings.get(vs.getBinding());
+            if (property == null) continue;
+            final Input<?> input = editors.get(property);
+            switch (vs.getStatus()) {
+                case ERROR:
+                    inputsValidationStatus.add(
+                            GroupElementValidationStatusEvent.invalid(
                                     getEditorComponentGroup(), property, input,
-                                    vs.getValidationResults().stream().filter(ValidationResult::isError)
-                                            .map(r -> r.getErrorMessage()).filter(m -> m != null && !m.trim().equals(""))
-                                            .map(m -> Localizable.of(m)).collect(Collectors.toList()));
-                        case OK:
-                            return GroupElementValidationStatusEvent.<EditorComponentGroup<P, T>, P, Input<?>>valid(
-                                    getEditorComponentGroup(), property, input);
-                        case UNRESOLVED:
-                        default:
-                            return GroupElementValidationStatusEvent.<EditorComponentGroup<P, T>, P, Input<?>>unresolved(
-                                    getEditorComponentGroup(), property, input);
-                    }
-                }).collect(Collectors.toList());
+                                    vs.getValidationResults().stream()
+                                            .filter(ValidationResult::isError)
+                                            .map(ValidationResult::getErrorMessage)
+                                            .filter(m -> m != null && !m.isBlank())
+                                            .map(Localizable::of)
+                                            .toList()));
+                    break;
+                case OK:
+                    inputsValidationStatus.add(
+                            GroupElementValidationStatusEvent.valid(
+                                    getEditorComponentGroup(), property, input));
+                    break;
+                case UNRESOLVED:
+                default:
+                    inputsValidationStatus.add(
+                            GroupElementValidationStatusEvent.unresolved(
+                                    getEditorComponentGroup(), property, input));
+            }
+        }
 
         return new DefaultGroupValidationStatusEvent<>(this, groupStatus, errors, inputsValidationStatus);
     }
@@ -2469,27 +2364,9 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
      * @param value The new value
      */
     protected void fireValueChangeListeners(T value) {
-        @SuppressWarnings("serial") final ValueHolder<T, GroupValueChangeEvent<T, P, Input<?>, EditorComponentGroup<P, T>>> vh = new ValueHolder<T, GroupValueChangeEvent<T, P, Input<?>, EditorComponentGroup<P, T>>>() {
-
-            @Override
-            public void setValue(T value) {
-                editItem(value);
-            }
-
-            @Override
-            public T getValue() {
-                return isEditing().orElse(null);
-            }
-
-            @Override
-            public Registration addValueChangeListener(
-                    ValueChangeListener<T, GroupValueChangeEvent<T, P, Input<?>, EditorComponentGroup<P, T>>> listener) {
-                return AbstractItemListing.this.addValueChangeListener(listener);
-            }
-
-        };
+        // Use the pre-allocated EditorValueHolder — no anonymous class allocation per save
         final GroupValueChangeEvent<T, P, Input<?>, EditorComponentGroup<P, T>> event = new DefaultGroupValueChangeEvent<>(
-                this, vh, oldEditorValue, value, true);
+                this, editorValueHolder, oldEditorValue, value, true);
         valueChangeListeners.forEach(l -> l.valueChange(event));
     }
 
@@ -2645,6 +2522,30 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
     }
 
     // ------- support classes
+
+    /**
+     * Named inner class that replaces the anonymous {@link ValueHolder} previously created on
+     * every editor-save event. A single instance is cached in {@link #editorValueHolder}.
+     */
+    private final class EditorValueHolder
+            implements ValueHolder<T, GroupValueChangeEvent<T, P, Input<?>, EditorComponentGroup<P, T>>> {
+
+        @Override
+        public void setValue(T value) {
+            editItem(value);
+        }
+
+        @Override
+        public T getValue() {
+            return isEditing().orElse(null);
+        }
+
+        @Override
+        public Registration addValueChangeListener(
+                ValueChangeListener<T, GroupValueChangeEvent<T, P, Input<?>, EditorComponentGroup<P, T>>> listener) {
+            return AbstractItemListing.this.addValueChangeListener(listener);
+        }
+    }
 
     /**
      * ItemListing {@link PropertySet}.
@@ -2833,7 +2734,7 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
 
         protected Set<T> items = new LinkedHashSet<>();
 
-        private final List<ItemEventListener<L, T, ItemEvent<L, T>>> refreshListeners = new LinkedList<>();
+        private final List<ItemEventListener<L, T, ItemEvent<L, T>>> refreshListeners = new ArrayList<>();
 
         private boolean editable;
         private boolean editorBuffered;
@@ -2908,11 +2809,11 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
             }
 
             // refresh listeners
-            if (instance.getGrid().getDataProvider() != null) {
-                refreshListeners.forEach(l -> instance.getGrid().getDataProvider().addDataProviderListener(e -> {
-                    l.onItemEvent(new DefaultItemEvent<>(getItemListing(),
-                            () -> (e instanceof DataRefreshEvent) ? ((DataRefreshEvent<T>) e).getItem() : null));
-                }));
+            final DataProvider<T, ?> gridDp = instance.getGrid().getDataProvider();
+            if (gridDp != null) {
+                refreshListeners.forEach(l -> gridDp.addDataProviderListener(e -> l.onItemEvent(
+                        new DefaultItemEvent<>(getItemListing(),
+                                () -> (e instanceof DataRefreshEvent) ? ((DataRefreshEvent<T>) e).getItem() : null))));
             }
 
             // frozen columns
@@ -4288,7 +4189,7 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
                 if (columns != null) {
                     listener.onColumnReorderEvent(new DefaultColumnReorderEvent<>(instance, event.isFromClient(),
                             columns.stream().map(c -> instance.getProperty(c).orElse(null)).filter(c -> c != null)
-                                    .collect(Collectors.toList())));
+                                    .toList()));
                 }
             });
             return getConfigurator();
@@ -4325,7 +4226,7 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
 
         @Override
         protected Optional<HasEnabled> hasEnabled() {
-            return Optional.of(getComponent());
+            return Optional.empty();
         }
 
         @Override
@@ -4603,7 +4504,7 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
     private static class ContextMenuItemListenerHandler<T, P>
             implements ComponentEventListener<GridContextMenuItemClickEvent<T>> {
 
-        private final List<ItemEventListener<GridMenuItem<T>, T, ItemListingItemEvent<GridMenuItem<T>, T, P>>> listeners = new LinkedList<>();
+        private final List<ItemEventListener<GridMenuItem<T>, T, ItemListingItemEvent<GridMenuItem<T>, T, P>>> listeners = new ArrayList<>();
         private final ItemListing<T, P> itemListing;
 
         public ContextMenuItemListenerHandler(ItemListing<T, P> itemListing) {

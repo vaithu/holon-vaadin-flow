@@ -17,6 +17,7 @@ package com.holonplatform.vaadin.flow.components.builders;
 
 import com.holonplatform.vaadin.flow.internal.components.builders.DefaultHasEnabledConfigurator;
 import com.vaadin.flow.component.HasEnabled;
+import com.vaadin.flow.signals.Signal;
 
 /**
  * Configurator for {@link HasEnabled} type components.
@@ -34,6 +35,18 @@ public interface HasEnabledConfigurator<C extends HasEnabledConfigurator<C>> {
 	 * @return this
 	 */
 	C enabled(boolean enabled);
+
+	/**
+	 * Bind the component enabled state to given {@link Signal}.
+	 * @param enabledSignal Enabled state signal (not null)
+	 * @return this
+	 * @since 5.5.8
+	 */
+	@SuppressWarnings("unchecked")
+	default C bindEnabled(Signal<Boolean> enabledSignal) {
+		SignalBindings.bind(this, enabledSignal, this::enabled);
+		return (C) this;
+	}
 
 	/**
 	 * Set the component as not enabled.

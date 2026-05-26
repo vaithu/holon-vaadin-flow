@@ -32,19 +32,11 @@ public class DefaultHorizontalLayoutBuilder
 		getComponent().setSpacing(false);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.holonplatform.vaadin.flow.components.builders.ComponentBuilder#build()
-	 */
 	@Override
 	public HorizontalLayout build() {
 		return getComponent();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.holonplatform.vaadin.flow.internal.components.builders.AbstractComponentConfigurator#getConfigurator()
-	 */
 	@Override
 	protected HorizontalLayoutBuilder getConfigurator() {
 		return this;

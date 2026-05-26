@@ -15,10 +15,10 @@
  */
 package com.holonplatform.vaadin.flow.internal.components.builders;
 
-import com.holonplatform.core.internal.utils.ObjectUtils;
 import com.holonplatform.vaadin.flow.components.builders.HasPrefixAndSuffixConfigurator;
 import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.textfield.HasPrefixAndSuffix;
+import com.vaadin.flow.component.shared.HasPrefix;
+import com.vaadin.flow.component.shared.HasSuffix;
 
 /**
  * Default {@link HasPrefixAndSuffixConfigurator} implementation.
@@ -28,16 +28,17 @@ import com.vaadin.flow.component.textfield.HasPrefixAndSuffix;
 public class DefaultHasPrefixAndSuffixConfigurator
 		implements HasPrefixAndSuffixConfigurator<DefaultHasPrefixAndSuffixConfigurator> {
 
-	private final HasPrefixAndSuffix component;
+	private final HasPrefix prefix;
+	private final HasSuffix suffix;
 
 	/**
 	 * Constructor.
-	 * @param component Component to create (not null)
+	 * @param prefix Component to create (not null)
 	 */
-	public DefaultHasPrefixAndSuffixConfigurator(HasPrefixAndSuffix component) {
+	public DefaultHasPrefixAndSuffixConfigurator(HasPrefix prefix, HasSuffix suffix) {
 		super();
-		ObjectUtils.argumentNotNull(component, "The component to create must be not null");
-		this.component = component;
+        this.suffix = suffix;
+		this.prefix = prefix;
 	}
 
 	/*
@@ -48,7 +49,7 @@ public class DefaultHasPrefixAndSuffixConfigurator
 	 */
 	@Override
 	public DefaultHasPrefixAndSuffixConfigurator prefixComponent(Component component) {
-		this.component.setPrefixComponent(component);
+		this.prefix.setPrefixComponent(component);
 		return this;
 	}
 
@@ -60,7 +61,7 @@ public class DefaultHasPrefixAndSuffixConfigurator
 	 */
 	@Override
 	public DefaultHasPrefixAndSuffixConfigurator suffixComponent(Component component) {
-		this.component.setSuffixComponent(component);
+		this.suffix.setSuffixComponent(component);
 		return this;
 	}
 

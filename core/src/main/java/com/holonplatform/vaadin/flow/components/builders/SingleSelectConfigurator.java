@@ -15,9 +15,6 @@
  */
 package com.holonplatform.vaadin.flow.components.builders;
 
-import java.util.Optional;
-import java.util.function.Function;
-
 import com.holonplatform.core.datastore.DataTarget;
 import com.holonplatform.core.datastore.Datastore;
 import com.holonplatform.core.i18n.Localizable;
@@ -36,6 +33,9 @@ import com.holonplatform.vaadin.flow.internal.components.builders.DefaultSingleS
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
+
+import java.util.Optional;
+import java.util.function.Function;
 
 /**
  * {@link SingleSelect} input builder using a {@link Select} as input component.

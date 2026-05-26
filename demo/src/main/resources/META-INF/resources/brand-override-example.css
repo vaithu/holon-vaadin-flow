@@ -1,0 +1,273 @@
+﻿/*
+ * brand-override-example.css  (copy and rename to my-brand.css in your project)
+ * ──────────────────────────────────────────────────────────────────────────────
+ *  ★  THE ONLY CSS FILE YOU NEED TO EDIT  ★
+ *
+ *  Every design token lives here.  vaadin-shell-theme.css and app-shell.css
+ *  reference these via var() but define none of their own — so all visual
+ *  decisions are made from this single file.
+ *
+ *  Quick-start guide:
+ *    1. Change section ★ 9. BRAND PALETTE ★  — 9 colour stops.  Everything follows.
+ *    2. Change section  10. SIDEBAR          — dark/light nav style.
+ *    3. Leave everything else as-is.
+ *
+ *  Load order (AppShellConfigurator) — copy as-is into your app:
+ *    @StyleSheet(Lumo.STYLESHEET)
+ *    @StyleSheet("context://vaadin-shell-theme.css")      ← internal wiring, do not edit
+ *    @StyleSheet("context://my-brand.css")                ← ★ THIS FILE
+ *    @StyleSheet("context://app-shell.css")               ← internal utilities, do not edit
+ * ──────────────────────────────────────────────────────────────────────────────
+ */
+:root {
+  /* ════════════════════════════════════════════════════════════════
+     1. NEUTRAL SCALE  —  Two-scale strategy (enterprise standard)
+        Zinc  → structural chrome: borders, dividers, scrollbars
+        Slate → content layer:     text, surfaces, nav chrome
+        Both are cool-gray families; they coexist naturally.
+        Tip: swap both sets to a single Slate or single Zinc scale
+             if you prefer a one-palette system.
+     ════════════════════════════════════════════════════════════════ */
+  --zinc-50:   #fafafa;
+  --zinc-100:  #f4f4f5;
+  --zinc-200:  #e4e4e7;
+  --zinc-300:  #d4d4d8;
+  --zinc-400:  #a1a1aa;
+  --zinc-500:  #71717a;
+  --zinc-600:  #52525b;
+  --zinc-700:  #3f3f46;
+  --zinc-800:  #27272a;
+  --zinc-900:  #18181b;
+  --zinc-950:  #09090b;
+  /* Legacy --gray-* aliases (used by older component CSS) */
+  --gray-100: var(--zinc-100);  --gray-150: var(--zinc-200);
+  --gray-200: var(--zinc-200);  --gray-300: var(--zinc-300);
+  --gray-400: var(--zinc-400);  --gray-500: var(--zinc-500);
+  --gray-600: var(--zinc-600);  --gray-700: var(--zinc-700);
+  --gray-800: var(--zinc-800);  --gray-900: var(--zinc-950);
+  /* ════════════════════════════════════════════════════════════════
+     2. SEMANTIC STATUS COLOURS
+        Alert, badge, tag, notification fills.  Stable — rarely change.
+     ════════════════════════════════════════════════════════════════ */
+  --ok-light:   #f0fdf4;  --ok:   #16a34a;  --ok-dark:   #166534;
+  --err-light:  #fef2f2;  --err:  #dc2626;  --err-dark:  #b91c1c;
+  --warn-light: #fefce8;  --warn: #ca8a04;  --warn-dark: #a16207;
+  --info-light: #eff6ff;  --info: #2563eb;  --info-dark: #1d4ed8;
+  /* ════════════════════════════════════════════════════════════════
+     3. SURFACES  —  Tailwind Slate (pairs with the slate text palette)
+        surface-0 = pure white (cards, inputs)
+        surface-1 = page canvas          (slate-50  #f8fafc)
+        surface-2 = elevated panels      (slate-100 #f1f5f9)
+        surface-3 = divider-level areas  (slate-200 #e2e8f0)
+        surface-4 = strong separation    (slate-300 #cbd5e1)
+     ════════════════════════════════════════════════════════════════ */
+  --surface-0:  #ffffff;
+  --surface-1:  #f8fafc;   /* slate-50  */
+  --surface-2:  #f1f5f9;   /* slate-100 */
+  --surface-3:  #e2e8f0;   /* slate-200 */
+  --surface-4:  #cbd5e1;   /* slate-300 */
+  /* ════════════════════════════════════════════════════════════════
+     4. TEXT  —  Tailwind Slate (intentionally blue-gray: pairs with
+        slate surfaces and the navy sidebar for a coherent cool tone)
+        text-link uses brand-700 — not brand-600 — to meet WCAG AA
+        4.5:1 contrast on white (#b45309 ≈ 4.8:1 vs #d97706 ≈ 3.2:1).
+     ════════════════════════════════════════════════════════════════ */
+  --text-primary:   #0f172a;   /* slate-900 */
+  --text-secondary: #475569;   /* slate-600 */
+  --text-tertiary:  #94a3b8;   /* slate-400 */
+  --text-disabled:  #cbd5e1;   /* slate-300 */
+  --text-link:      var(--brand-700);   /* brand-700 = WCAG AA on white ✓ */
+  --text-inverse:   #ffffff;
+  /* ════════════════════════════════════════════════════════════════
+     5. BORDERS  —  three-level hierarchy (Zinc – structural scale)
+        subtle    < default < strong
+        zinc-100  < zinc-200 < zinc-300
+     ════════════════════════════════════════════════════════════════ */
+  --border-subtle:    1px solid var(--zinc-100);   /* ghost: section dividers, table rows  */
+  --border-default:   1px solid var(--zinc-200);   /* standard: cards, inputs, panels      */
+  --border-strong:    1px solid var(--zinc-300);   /* emphasis: popovers, modal frames     */
+  --border-focus:     2px solid var(--brand-600);  /* keyboard focus ring                  */
+  --border-separator: 1px solid var(--zinc-200);   /* hairline rules (same as default)     */
+  --border-error:     1px solid var(--err);
+  /* ════════════════════════════════════════════════════════════════
+     6. RADIUS  —  Change --radius to restyle ALL corners at once.
+     ════════════════════════════════════════════════════════════════ */
+  --radius:      0.625rem;                      /* 10px — base */
+  --radius-xs:   calc(var(--radius) - 6px);     /* 4px  */
+  --radius-sm:   calc(var(--radius) - 4px);     /* 6px  */
+  --radius-md:   calc(var(--radius) - 2px);     /* 8px  */
+  --radius-lg:   var(--radius);                 /* 10px */
+  --radius-xl:   calc(var(--radius) + 4px);     /* 14px */
+  --radius-2xl:  calc(var(--radius) + 8px);     /* 18px */
+  --radius-full: 9999px;
+  /* ════════════════════════════════════════════════════════════════
+     7. SPACING  (4-pt grid)
+     ════════════════════════════════════════════════════════════════ */
+  --sp-1:  4px;   --sp-2:  8px;   --sp-3:  12px;  --sp-4:  16px;
+  --sp-5:  20px;  --sp-6:  24px;  --sp-8:  32px;  --sp-10: 40px;
+  --space-1: 0.25rem;  --space-2: 0.5rem;   --space-3: 0.75rem;
+  --space-4: 1rem;     --space-5: 1.25rem;  --space-6: 1.5rem;
+  /* ════════════════════════════════════════════════════════════════
+     8. TYPOGRAPHY  —  Change --font-body to globally restyle text.
+     ════════════════════════════════════════════════════════════════ */
+  --font-display: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-body:    'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono:    'Geist Mono', 'Cascadia Code', 'Fira Code', ui-monospace, monospace;
+  --font-sans:    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-size-xs:   0.6875rem;  /* ≈ 11px — micro labels     */
+  --font-size-sm:   0.75rem;    /*   12px — captions         */
+  --font-size-base: 0.8125rem;  /* ≈ 13px — dense body text  */
+  --font-size-md:   0.875rem;   /*   14px — standard body    */
+  --font-size-lg:   1rem;       /*   16px — page headings    */
+  /* ════════════════════════════════════════════════════════════════
+     8b. SHADOWS & TRANSITIONS  —  Stable. Rarely change.
+     ════════════════════════════════════════════════════════════════ */
+  --shadow-xs:    0 1px 2px 0 rgba(0,0,0,.05);
+  --shadow-sm:    0 1px 3px 0 rgba(0,0,0,.10), 0 1px 2px -1px rgba(0,0,0,.10);
+  --shadow-md:    0 4px 6px -1px rgba(0,0,0,.10), 0 2px 4px -2px rgba(0,0,0,.10);
+  --shadow-lg:    0 10px 15px -3px rgba(0,0,0,.10), 0 4px 6px -4px rgba(0,0,0,.10);
+  --shadow-xl:    0 20px 25px -5px rgba(0,0,0,.10), 0 8px 10px -6px rgba(0,0,0,.10);
+  --shadow-focus: 0 0 0 2px var(--surface-0), 0 0 0 4px var(--brand-500);
+  --shadow-shell: var(--shadow-md);
+  --shadow-card:  var(--shadow-xs);
+  --ease-out:        cubic-bezier(.16, 1, .3, 1);
+  --ease-in-out:     cubic-bezier(.45, 0, .55, 1);
+  --dur-fast:        100ms;
+  --dur-base:        150ms;
+  --dur-slow:        250ms;
+  --transition-fast: 120ms ease;
+  --transition-base: var(--dur-base) var(--ease-out);
+  /* ════════════════════════════════════════════════════════════════
+     8c. COMPONENT DIMENSIONS  —  Stable. Rarely change.
+     ════════════════════════════════════════════════════════════════ */
+  --field-h-sm:  32px;  --field-h-md:  36px;  --field-h-lg:  40px;
+  --btn-h-sm:    28px;  --btn-h-md:    36px;  --btn-h-lg:    40px;
+  --toolbar-h:   56px;  --master-w:    290px;
+  --master-panel-width:      var(--master-w);
+  --toolbar-height:          var(--toolbar-h);
+  --sidenav-collapsed-width: 3.25rem;
+  /* ════════════════════════════════════════════════════════════════
+     8d. COMPONENT RING  —  single source for ALL interactive widgets
+         Change these once → every input, button, select, combo, etc.
+         updates automatically.
+         ──────────────────────────────────────────────────────────
+         The "shadow-as-border" pattern (0 0 0 1px color) is used
+         instead of a real CSS border so it never shifts layout and
+         composes cleanly with other box-shadow layers.
+     ════════════════════════════════════════════════════════════════ */
+  --comp-bg:           var(--surface-0);          /* fill inside every widget          */
+  --comp-border-color: var(--zinc-200);            /* ring at rest                      */
+  --comp-border-hover: var(--zinc-400);            /* ring on hover — neutral darkening (NOT brand; brand belongs on focus only) */
+  --comp-border-focus: var(--brand-500);           /* ring on focus — full accent       */
+  --comp-border-error: var(--err);                 /* ring in invalid state             */
+  --comp-shadow:       0 1px 3px 0 rgb(0 0 0 / .08);        /* micro lift — visible on white */
+  --comp-shadow-inset: inset 0 1px 2px rgb(0 0 0 / .04);    /* inner depth for fields        */
+  --comp-radius:       var(--radius-md);           /* corner radius (inherits from §6)  */
+  --comp-focus-ring:   0 0 0 2px var(--surface-0), 0 0 0 4px var(--brand-500);
+  /* ════════════════════════════════════════════════════════════════
+     8e. TYPOGRAPHY SCALE  —  semantic step names
+         Extend: add a --type-* token here, add a .type-* utility class
+         in vaadin-shell-theme.css §7.  That's the only change needed.
+         ──────────────────────────────────────────────────────────
+         Naming: --type-sz-*, --type-wt-*, --type-lh-*, --type-ls-*
+                 (size / weight / line-height / letter-spacing)
+     ════════════════════════════════════════════════════════════════ */
+  --type-sz-display:  2rem;        --type-wt-display: 700;  --type-lh-display: 1.15;  --type-ls-display: -0.025em;
+  --type-sz-h1:       1.5rem;      --type-wt-h1:      600;  --type-lh-h1:      1.2;   --type-ls-h1:      -0.02em;
+  --type-sz-h2:       1.25rem;     --type-wt-h2:      600;  --type-lh-h2:      1.25;  --type-ls-h2:      -0.015em;
+  --type-sz-h3:       1.125rem;    --type-wt-h3:      600;  --type-lh-h3:      1.3;   --type-ls-h3:      -0.01em;
+  --type-sz-h4:       1rem;        --type-wt-h4:      600;  --type-lh-h4:      1.4;   --type-ls-h4:      0;
+  --type-sz-body-lg:  1rem;        --type-wt-body:    400;  --type-lh-body-lg: 1.6;
+  --type-sz-body:     0.875rem;                             --type-lh-body:    1.5;
+  --type-sz-body-sm:  0.8125rem;                            --type-lh-body-sm: 1.5;
+  --type-sz-caption:  0.75rem;                              --type-lh-caption: 1.4;
+  --type-sz-overline: 0.6875rem;   --type-wt-overline: 600; --type-ls-overline: 0.1em;
+  --type-sz-mono:     0.8125rem;
+  /* ╔══════════════════════════════════════════════════════════════╗
+     ║  ★  9. BRAND PALETTE  ★   ← EDIT THIS TO REBRAND           ║
+     ║                                                              ║
+     ║  Replace these 9 colour stops.  All buttons, focus rings,   ║
+     ║  active nav items, selected grid rows and badges follow.     ║
+     ║                                                              ║
+     ║  Current brand:  Altezza Travel  —  Amber / Gold            ║
+     ╚══════════════════════════════════════════════════════════════╝ */
+  --brand-50:   #fffbeb;
+  --brand-100:  #fef3c7;
+  --brand-200:  #fde68a;
+  --brand-300:  #fcd34d;
+  --brand-400:  #fbbf24;
+  --brand-500:  #f59e0b;   /* ← primary: CTA buttons, focus rings, active nav */
+  --brand-600:  #d97706;   /* ← primary button background                     */
+  --brand-700:  #b45309;   /* ← primary button hover + link text (WCAG 4.8:1) */
+  --brand-800:  #92400e;
+  --brand-900:  #78350f;
+  /* ────────────────────────────────────── other brand presets (swap any in):
+     Blue    (default): #eff6ff … #3b82f6 … #1d4ed8 … #1e3a8a
+     Purple  (Nexus):   #EEEDFE … #7F77DD … #3C3489 … #1a163d
+     Green   (Emerald): #ecfdf5 … #10b981 … #047857 … #064e3b
+     Red     (Rose):    #fff1f2 … #f43f5e … #be123c … #881337
+     ──────────────────────────────────────────────────────────── */
+  /* ╔══════════════════════════════════════════════════════════════╗
+     ║  10. SIDEBAR  ← EDIT TO SWITCH DARK / LIGHT NAV            ║
+     ║                                                              ║
+     ║  Current: deep navy  (Altezza Travel — navy + amber)        ║
+     ║  All sidebar values share the same navy hue family:         ║
+     ║    bg, border, label, hover, search are all blue-dominant.  ║
+     ║  Light sidebar: delete every --sidenav-* line below;        ║
+     ║    vaadin-shell-theme.css will fall back to white + brand.  ║
+     ╚══════════════════════════════════════════════════════════════╝ */
+  --sidenav-width:               220px;
+  --sidenav-bg:                  #1e2a3a;   /* deep navy (R30 G42 B58)                */
+  --sidenav-border:              #2a3347;   /* navy border — slightly lighter          */
+  --sidenav-label-color:         #4a6080;   /* muted blue — section headings on navy  */
+  --sidenav-label-font-size:     0.625rem;  /* 10px small-caps                        */
+  --sidenav-label-padding:       0.875rem 1rem 0.25rem;
+  --sidenav-item-color:          var(--zinc-50);   /* inactive item text — near white  */
+  --sidenav-item-font-size:      0.875rem;  /* 14px                                   */
+  --sidenav-item-font-weight:    400;
+  --sidenav-item-padding:        0.625rem 1rem;  /* 10px 16px — item height            */
+  --sidenav-item-radius:         0;
+  --sidenav-item-hover-bg:       #1a2333;   /* darker navy hover                      */
+  --sidenav-item-hover-color:    #e2e8f0;   /* slate-200 — readable on navy           */
+  /* ── Toggle button (expand/collapse chevron) ───────────────────────────── */
+  --sidenav-toggle-color:        var(--zinc-400);   /* visible grey chevron on dark bg  */
+  --sidenav-toggle-hover-color:  var(--zinc-50);    /* bright white on hover            */
+  /* ── Parent group headers (items without a route) ──────────────────────── */
+  --sidenav-group-color:         var(--zinc-50);    /* white — bolder than children     */
+  --sidenav-group-font-size:     0.875rem;          /* 14px — same as item base size    */
+  --sidenav-group-font-weight:   600;               /* noticeably heavier than children */
+  --sidenav-group-padding-top:   0.875rem;          /* visual breathing room per section*/
+  --sidenav-group-padding-bottom: 0.375rem;
+  /* ── Child leaf items ───────────────────────────────────────────────────── */
+  --sidenav-child-color:         var(--zinc-300);   /* muted — clearly subordinate      */
+  --sidenav-child-font-size:     0.8125rem;         /* 13px — one step below parent     */
+  --sidenav-child-opacity:       0.9;
+  /* ── Child indentation (Aura native property) ──────────────────────────── */
+  --vaadin-side-nav-child-indent: 1.25rem;
+  --sidenav-item-active-bg:      var(--brand-300);  /* full-width amber highlight      */
+  --sidenav-item-active-color:   #1c1917;           /* dark text on amber              */
+  --sidenav-item-active-border:  var(--brand-300);  /* matches bg — seamless           */
+  --sidenav-item-active-font-weight: 600;
+  --sidenav-icon-color:          var(--zinc-50);    /* near-white icon on navy         */
+  --sidenav-icon-active-color:   #1c1917;   /* dark icon on amber highlight           */
+  --sidenav-badge-bg:            #ef4444;   /* red notification pill                  */
+  --sidenav-badge-color:         #ffffff;
+  --sidenav-badge-radius:        9999px;
+  /* Vaadin's internal side-nav CSS custom properties (read by menu.css) */
+  --vaadin-side-nav-item-border-radius: 0;         /* 0 = full-width rectangular highlight */
+  --vaadin-side-nav-item-font-size:     0.875rem;
+  --vaadin-side-nav-item-font-weight:   400;
+}
+/* ── Navy sidebar: search field ──────────────────────────────────── */
+.sidenav-search vaadin-text-field {
+  --vaadin-input-field-background:  #1a2335;   /* slightly darker navy                */
+  --vaadin-input-field-value-color: #e2e8f0;   /* slate-200                           */
+}
+.sidenav-search vaadin-text-field::part(input-field) {
+  border-color: #2a3347;   /* matches --sidenav-border                               */
+  color:        #8a9ab5;
+}
+/* ── Navy sidebar: scrollbar ─────────────────────────────────────── */
+.sidenav-host vaadin-side-nav {
+  scrollbar-color: var(--zinc-50) transparent;
+}

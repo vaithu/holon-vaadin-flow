@@ -336,6 +336,18 @@ public class TestLocalDateInput {
 	}
 
 	@Test
+	public void testAriaLabel() {
+		Input<LocalDate> input = Input.localDate().ariaLabel("Date input").build();
+		assertNull(ComponentTestUtils.getElementAttribute(input.getComponent(), "aria-label"));
+
+		input = Input.localDate().ariaLabelledBy("date-input-label").build();
+		assertNull(ComponentTestUtils.getElementAttribute(input.getComponent(), "aria-labelledby"));
+
+		input = Input.localDate().ariaLabel(Localizable.builder().message("Localized date").build()).build();
+		assertNull(ComponentTestUtils.getElementAttribute(input.getComponent(), "aria-label"));
+	}
+
+	@Test
 	public void testConfiguration() {
 
 		Input<LocalDate> input = Input.localDate().locale(Locale.ITALIAN).build();

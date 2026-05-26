@@ -1,6 +1,8 @@
 package com.holonplatform.vaadin.flow.internal.components.builders;
 
+import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.vaadin.flow.components.builders.*;
+import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasEnabled;
 import com.vaadin.flow.component.HasSize;
@@ -8,11 +10,9 @@ import com.vaadin.flow.component.HasStyle;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.menubar.MenuBar;
-import com.vaadin.flow.component.menubar.MenuBarVariant;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.shared.HasTooltip;
-import com.vaadin.flow.theme.lumo.LumoUtility;
 
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -21,32 +21,17 @@ public abstract class AbstractBulkActionConfigurator<C extends BulkActionConfigu
         extends AbstractComponentConfigurator<HorizontalLayout, C>
         implements BulkActionConfigurator<C> {
 
-    //    private final Div contentDiv;
     private DefaultCloseButtonBuilder closeButtonBuilder;
-    private DefaultShowAndHideColumns<?> defaultShowAndHideColumns;
-    /**
-     * Constructor.
-     *
-     * @param component The component instance (not getConfigurator())
-     */
+
     public AbstractBulkActionConfigurator(HorizontalLayout component) {
         super(component);
         getComponent().setWidthFull();
         getComponent().setAlignItems(FlexComponent.Alignment.BASELINE);
-
-      /*  contentDiv = Components.div()
-                .styleNames(LumoUtility.Display.FLEX, LumoUtility.FlexDirection.ROW)
-                .styleName(LumoUtility.Margin.Left.AUTO)
-                .build();
-
-        getComponent().add(contentDiv);*/
-
-
     }
 
     @Override
     public C optionsMenuBar(MenuBar menuBar) {
-        menuBar.addThemeVariants(MenuBarVariant.LUMO_TERTIARY_INLINE, MenuBarVariant.LUMO_END_ALIGNED);
+        menuBar.addClassName("bulk-action__options-menu");
         getComponent().add(menuBar);
         return getConfigurator();
     }
@@ -89,8 +74,15 @@ public abstract class AbstractBulkActionConfigurator<C extends BulkActionConfigu
     }
 
     @Override
-    public C bulkAction(MenuBar menuBar) {
+    public C selected(Localizable selectedText) {
+        String resolved = LocalizationProvider.localize(selectedText)
+                .orElseGet(() -> selectedText.getMessage() != null ? selectedText.getMessage() : "");
+        return selected(resolved);
+    }
 
+    @Override
+    public C bulkAction(MenuBar menuBar) {
+        menuBar.addClassName("btn--push-end");
         getComponent().add(menuBar);
         return getConfigurator();
     }
@@ -104,7 +96,6 @@ public abstract class AbstractBulkActionConfigurator<C extends BulkActionConfigu
 
     @Override
     public C selectAll(BooleanInputBuilder builder) {
-        builder.styleName(LumoUtility.Margin.Right.AUTO);
         getComponent().addComponentAsFirst(builder.build().getComponent());
         return getConfigurator();
     }
@@ -121,41 +112,21 @@ public abstract class AbstractBulkActionConfigurator<C extends BulkActionConfigu
         return getConfigurator();
     }
 
-    /**
-     * If the component supports {@link HasSize}, return the component as {@link HasSize}.
-     *
-     * @return Optional component as {@link HasSize}, if supported
-     */
     @Override
     protected Optional<HasSize> hasSize() {
         return Optional.of(getComponent());
     }
 
-    /**
-     * If the component supports {@link HasStyle}, return the component as {@link HasStyle}.
-     *
-     * @return Optional component as {@link HasStyle}, if supported
-     */
     @Override
     protected Optional<HasStyle> hasStyle() {
         return Optional.of(getComponent());
     }
 
-    /**
-     * If the component supports {@link HasEnabled}, return the component as {@link HasEnabled}.
-     *
-     * @return Optional component as {@link HasEnabled}, if supported
-     */
     @Override
     protected Optional<HasEnabled> hasEnabled() {
         return Optional.of(getComponent());
     }
 
-    /**
-     * If the component supports {@link HasTooltip}, return the component as {@link HasTooltip}.
-     *
-     * @return Optional component as {@link HasTooltip}, if supported
-     */
     @Override
     protected Optional<HasTooltip> hasTooltip() {
         return Optional.empty();
@@ -175,14 +146,14 @@ public abstract class AbstractBulkActionConfigurator<C extends BulkActionConfigu
 
     @Override
     public C addComponentAtIndex(int index, Component component) {
-        getComponent().addComponentAtIndex(getComponent().getComponentCount(),component);
+        getComponent().addComponentAtIndex(index, component);
         return getConfigurator();
     }
 
     @Override
     public C add(String text) {
-        getComponent().add(text);
+        getComponent().add(new com.vaadin.flow.component.Text(text));
         return getConfigurator();
     }
-    
+
 }

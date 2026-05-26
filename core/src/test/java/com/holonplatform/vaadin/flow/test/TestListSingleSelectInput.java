@@ -15,30 +15,10 @@
  */
 package com.holonplatform.vaadin.flow.test;
 
-import static com.holonplatform.vaadin.flow.test.util.DatastoreTestUtils.CODE;
-import static com.holonplatform.vaadin.flow.test.util.DatastoreTestUtils.DESCRIPTION;
-import static com.holonplatform.vaadin.flow.test.util.DatastoreTestUtils.TARGET1;
-import static com.holonplatform.vaadin.flow.test.util.DatastoreTestUtils.TEST1;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Optional;
-import java.util.Set;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.stream.Collectors;
-
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-
 import com.holonplatform.core.Validator;
 import com.holonplatform.core.Validator.ValidationException;
 import com.holonplatform.core.datastore.Datastore;
+import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.core.property.Property;
 import com.holonplatform.core.property.PropertyBox;
 import com.holonplatform.core.property.StringProperty;
@@ -50,6 +30,7 @@ import com.holonplatform.vaadin.flow.components.Input;
 import com.holonplatform.vaadin.flow.components.Selectable.SelectionMode;
 import com.holonplatform.vaadin.flow.components.SingleSelect;
 import com.holonplatform.vaadin.flow.components.ValidatableSingleSelect;
+import com.holonplatform.vaadin.flow.components.builders.ItemSetConfigurator.ItemCaptionGenerator;
 import com.holonplatform.vaadin.flow.components.builders.ListSingleSelectConfigurator;
 import com.holonplatform.vaadin.flow.components.builders.ListSingleSelectConfigurator.ListSingleSelectInputBuilder;
 import com.holonplatform.vaadin.flow.components.builders.ListSingleSelectConfigurator.PropertyListSingleSelectInputBuilder;
@@ -57,11 +38,27 @@ import com.holonplatform.vaadin.flow.components.support.Unit;
 import com.holonplatform.vaadin.flow.data.ItemConverter;
 import com.holonplatform.vaadin.flow.test.util.BeanTest1;
 import com.holonplatform.vaadin.flow.test.util.ComponentTestUtils;
+import com.holonplatform.vaadin.flow.test.util.LocalizationTestUtils;
 import com.holonplatform.vaadin.flow.test.util.TestAdapter;
+import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ComponentUtil;
 import com.vaadin.flow.component.listbox.ListBox;
 import com.vaadin.flow.data.provider.DataProvider;
 import com.vaadin.flow.data.provider.Query;
+import com.vaadin.flow.data.renderer.ComponentRenderer;
+import com.vaadin.flow.data.renderer.TextRenderer;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Optional;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Collectors;
+
+import static com.holonplatform.vaadin.flow.test.util.DatastoreTestUtils.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class TestListSingleSelectInput {
 
@@ -255,6 +252,67 @@ public class TestListSingleSelectInput {
 
 		input = Input.singleListSelect(String.class).readOnly().build();
 		assertTrue(input.isReadOnly());
+
+	}
+
+	@Test
+	public void testAriaLabel() {
+
+		Input<String> input = Input.singleListSelect(String.class).ariaLabel("List single select").build();
+		assertEquals("List single select", input.getComponent().getElement().getAttribute("aria-label"));
+
+		input = Input.singleListSelect(String.class).ariaLabelledBy("list-single-select-label").build();
+		assertEquals("list-single-select-label", input.getComponent().getElement().getAttribute("aria-labelledby"));
+
+		LocalizationTestUtils.withTestLocalizationContext(() -> {
+			Input<String> localized = Input.singleListSelect(String.class)
+					.ariaLabel(Localizable.builder().message("test").messageCode("test.code").build()).build();
+			assertEquals("TestUS", localized.getComponent().getElement().getAttribute("aria-label"));
+		});
+
+		LocalizationTestUtils.withTestLocalizationContext(() -> {
+			Input<String> localized = Input.singleListSelect(String.class).deferLocalization()
+					.ariaLabel(Localizable.builder().message("test").messageCode("test.code").build()).build();
+			assertEquals("test", localized.getComponent().getElement().getAttribute("aria-label"));
+			ComponentUtil.onComponentAttach(localized.getComponent(), true);
+			assertEquals("TestUS", localized.getComponent().getElement().getAttribute("aria-label"));
+		});
+
+	}
+
+	@Test
+	public void testItemCaptions() {
+
+		final ItemCaptionGenerator<String> icg = value -> "X";
+
+		Input<String> input = Input.singleListSelect(String.class).itemCaptionGenerator(icg).build();
+		assertTrue(input.getComponent() instanceof ListBox<?>);
+		assertEquals("X", getLabel(input, "aaa"));
+
+		final java.util.List<Integer> ints = Arrays.asList(1, 2, 3);
+
+		Input<Integer> input2 = Input.singleListSelect(Integer.class).items(ints).itemCaption(1, "N.1")
+				.itemCaption(2, "N.2").itemCaption(3, "N.3").build();
+		assertEquals("N.1", getLabel(input2, ints.get(0)));
+		assertEquals("N.2", getLabel(input2, ints.get(1)));
+		assertEquals("N.3", getLabel(input2, ints.get(2)));
+
+		LocalizationTestUtils.withTestLocalizationContext(() -> {
+			Input<Integer> input3 = Input.singleListSelect(Integer.class).items(ints)
+					.itemCaption(2, Localizable.builder().message("test").messageCode("test.code").build()).build();
+			assertEquals("1", getLabel(input3, ints.get(0)));
+			assertEquals("TestUS", getLabel(input3, ints.get(1)));
+			assertEquals("3", getLabel(input3, ints.get(2)));
+		});
+
+		LocalizationTestUtils.withTestLocalizationContext(() -> {
+			Input<Integer> input3 = Input.singleListSelect(Integer.class).items(ints).deferLocalization()
+					.itemCaption(2, "test", "test.code").build();
+			assertEquals("1", getLabel(input3, ints.get(0)));
+			assertEquals("test", getLabel(input3, ints.get(1)));
+			ComponentUtil.onComponentAttach(input3.getComponent(), true);
+			assertEquals("TestUS", getLabel(input3, ints.get(1)));
+		});
 
 	}
 
@@ -473,12 +531,78 @@ public class TestListSingleSelectInput {
 
 		assertEquals(3, dp.size(new Query<>()));
 
-		items = dp.fetch(new Query<>()).collect(Collectors.toSet());
-		assertEquals(3, items.size());
-		assertTrue(items.contains("a"));
-		assertTrue(items.contains("b"));
-		assertTrue(items.contains("c"));
+		Set<String> items2 = dp.fetch(new Query<>()).collect(Collectors.toSet());
+		assertEquals(3, items2.size());
+		assertTrue(items2.contains("a"));
+		assertTrue(items2.contains("b"));
+		assertTrue(items2.contains("c"));
 
+	}
+
+	@Test
+	public void testValidatable() {
+
+		ValidatableSingleSelect<String> input = Input.singleListSelect(String.class).validatable()
+				.withValidator(Validator.notNull()).id("testid").addItem("a").addItem("b").build();
+
+		assertTrue(input.getComponent().getId().isPresent());
+		assertEquals("testid", input.getComponent().getId().get());
+
+		Assertions.assertThrows(ValidationException.class, () -> input.validate());
+
+		ValidatableSingleSelect<String> input2 = Input.singleListSelect(String.class).validatable().required()
+				.addItem("a").addItem("b").build();
+
+		Assertions.assertThrows(ValidationException.class, () -> input2.validate());
+
+		input2.setValue("a");
+		Assertions.assertDoesNotThrow(() -> input2.validate());
+
+		input2.clear();
+		Assertions.assertThrows(ValidationException.class, () -> input2.validate());
+
+		input2.select("b");
+		Assertions.assertDoesNotThrow(() -> input2.validate());
+
+		input2.clear();
+		Assertions.assertThrows(ValidationException.class, () -> input2.validate());
+	}
+
+	@Test
+	public void testAdapters() {
+
+		Input<String> input = Input.singleListSelect(String.class)
+				.withAdapter(TestAdapter.class, i -> TestAdapter.create(i, 789)).build();
+
+		assertTrue(input.as(TestAdapter.class).isPresent());
+		assertEquals(Integer.valueOf(789), input.as(TestAdapter.class).map(a -> a.getId()).orElse(0));
+
+		assertFalse(input.as(Collection.class).isPresent());
+
+		input = Input.singleListSelect(String.class).validatable()
+				.withAdapter(TestAdapter.class, i -> TestAdapter.create(i, 789)).build();
+
+		assertTrue(input.as(TestAdapter.class).isPresent());
+		assertEquals(Integer.valueOf(789), input.as(TestAdapter.class).map(a -> a.getId()).orElse(0));
+
+	}
+
+	private class StringValue {
+		String value;
+	}
+
+	@SuppressWarnings("unchecked")
+	private static <ITEM> String getLabel(Input<?> input, ITEM item) {
+		assertTrue(input.getComponent() instanceof ListBox<?>);
+		ComponentRenderer<?, ?> renderer = ((ListBox<?>) input.getComponent()).getItemRenderer();
+		if (renderer instanceof TextRenderer) {
+			TextRenderer<ITEM> textRenderer = (TextRenderer<ITEM>) renderer;
+			Component component = textRenderer.createComponent(item);
+			if (component != null) {
+				return component.getElement().getText();
+			}
+		}
+		return null;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -487,8 +611,8 @@ public class TestListSingleSelectInput {
 
 		final Datastore datastore = JdbcDatastore.builder()
 				.dataSource(
-						BasicDataSource.builder().url("jdbc:h2:mem:test;INIT=RUNSCRIPT FROM 'classpath:test_init.sql'")
-								.username("sa").driverClassName(DatabasePlatform.H2.getDriverClassName()).build())
+						com.holonplatform.jdbc.BasicDataSource.builder().url("jdbc:h2:mem:test;INIT=RUNSCRIPT FROM 'classpath:test_init.sql'")
+								.username("sa").driverClassName(com.holonplatform.jdbc.DatabasePlatform.H2.getDriverClassName()).build())
 				.traceEnabled(true).build();
 
 		SingleSelect<BeanTest1> input1 = Input.singleListSelect(BeanTest1.class).dataSource(datastore, TARGET1).build();
@@ -611,56 +735,5 @@ public class TestListSingleSelectInput {
 
 	}
 
-	@Test
-	public void testValidatable() {
-
-		ValidatableSingleSelect<String> input = Input.singleListSelect(String.class).validatable()
-				.withValidator(Validator.notNull()).id("testid").addItem("a").addItem("b").build();
-
-		assertTrue(input.getComponent().getId().isPresent());
-		assertEquals("testid", input.getComponent().getId().get());
-
-		Assertions.assertThrows(ValidationException.class, () -> input.validate());
-
-		ValidatableSingleSelect<String> input2 = Input.singleListSelect(String.class).validatable().required()
-				.addItem("a").addItem("b").build();
-
-		Assertions.assertThrows(ValidationException.class, () -> input2.validate());
-
-		input2.setValue("a");
-		Assertions.assertDoesNotThrow(() -> input2.validate());
-
-		input2.clear();
-		Assertions.assertThrows(ValidationException.class, () -> input2.validate());
-
-		input2.select("b");
-		Assertions.assertDoesNotThrow(() -> input2.validate());
-
-		input2.clear();
-		Assertions.assertThrows(ValidationException.class, () -> input2.validate());
-	}
-
-	@Test
-	public void testAdapters() {
-
-		Input<String> input = Input.singleListSelect(String.class)
-				.withAdapter(TestAdapter.class, i -> TestAdapter.create(i, 789)).build();
-
-		assertTrue(input.as(TestAdapter.class).isPresent());
-		assertEquals(Integer.valueOf(789), input.as(TestAdapter.class).map(a -> a.getId()).orElse(0));
-
-		assertFalse(input.as(Collection.class).isPresent());
-
-		input = Input.singleListSelect(String.class).validatable()
-				.withAdapter(TestAdapter.class, i -> TestAdapter.create(i, 789)).build();
-
-		assertTrue(input.as(TestAdapter.class).isPresent());
-		assertEquals(Integer.valueOf(789), input.as(TestAdapter.class).map(a -> a.getId()).orElse(0));
-
-	}
-
-	private class StringValue {
-		String value;
-	}
 
 }

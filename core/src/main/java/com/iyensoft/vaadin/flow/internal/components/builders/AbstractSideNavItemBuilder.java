@@ -1,5 +1,7 @@
 package com.iyensoft.vaadin.flow.internal.components.builders;
 
+import com.holonplatform.core.i18n.Localizable;
+import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
 import com.iyensoft.vaadin.flow.components.builders.SideNavConfigurator;
 import com.iyensoft.vaadin.flow.components.builders.SideNavItemBuilder;
 import com.vaadin.flow.component.Component;
@@ -35,6 +37,11 @@ abstract class AbstractSideNavItemBuilder implements SideNavItemBuilder {
     public SideNavItemBuilder label(String label) {
         item.setLabel(label);
         return this;
+    }
+
+    @Override
+    public SideNavItemBuilder label(Localizable label) {
+        return label(resolve(label));
     }
 
     @Override
@@ -174,7 +181,54 @@ abstract class AbstractSideNavItemBuilder implements SideNavItemBuilder {
         return this;
     }
 
+    // ── Localizable withSubNavItem overloads ──────────────────────────────────
+
+    @Override
+    public SideNavItemBuilder withSubNavItem(Localizable label) {
+        return withSubNavItem(resolve(label));
+    }
+
+    @Override
+    public SideNavItemBuilder withSubNavItem(Localizable label, Class<? extends Component> view) {
+        return withSubNavItem(resolve(label), view);
+    }
+
+    @Override
+    public SideNavItemBuilder withSubNavItem(Localizable label, Class<? extends Component> view, Component prefixComponent) {
+        return withSubNavItem(resolve(label), view, prefixComponent);
+    }
+
+    @Override
+    public SideNavItemBuilder withSubNavItem(Localizable label, Class<? extends Component> view, RouteParameters params) {
+        return withSubNavItem(resolve(label), view, params);
+    }
+
+    @Override
+    public SideNavItemBuilder withSubNavItem(
+            Localizable label,
+            Class<? extends Component> view,
+            RouteParameters params,
+            Component prefixComponent
+    ) {
+        return withSubNavItem(resolve(label), view, params, prefixComponent);
+    }
+
+    @Override
+    public SideNavItemBuilder withSubNavItem(Localizable label, String path) {
+        return withSubNavItem(resolve(label), path);
+    }
+
+    @Override
+    public SideNavItemBuilder withSubNavItem(Localizable label, String path, Component prefixComponent) {
+        return withSubNavItem(resolve(label), path, prefixComponent);
+    }
+
     /* ---------- Read ---------- */
+
+    private static String resolve(Localizable l) {
+        return LocalizationProvider.localize(l)
+                .orElseGet(() -> l.getMessage() != null ? l.getMessage() : "");
+    }
 
     @Override
     public List<SideNavItem> getItems() {
@@ -184,7 +238,7 @@ abstract class AbstractSideNavItemBuilder implements SideNavItemBuilder {
     /* ---------- Finalize ---------- */
     @Override
     public SideNavConfigurator<?> add() {
-        parent.addItem(item);
+        parent.withItem(item);
         return parent;
     }
 

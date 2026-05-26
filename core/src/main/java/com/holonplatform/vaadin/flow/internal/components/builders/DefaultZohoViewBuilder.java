@@ -1,10 +1,7 @@
 package com.holonplatform.vaadin.flow.internal.components.builders;
 
-import com.holonplatform.vaadin.flow.components.Components;
 import com.holonplatform.vaadin.flow.components.builders.ZohoViewBuilder;
-import com.holonplatform.vaadin.flow.components.css.CSSUtility;
 import com.holonplatform.vaadin.flow.components.utils.UIUtils;
-import com.holonplatform.vaadin.flow.internal.lumo.Background;
 import com.holonplatform.vaadin.flow.internal.lumo.SeparatorColor;
 import com.holonplatform.vaadin.flow.vaadinplus.Layout;
 

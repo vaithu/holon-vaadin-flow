@@ -226,11 +226,12 @@ public abstract class AbstractComposablePropertyForm<C extends Component, E exte
 				if (hiddenPropertyCaptions.contains(property)) {
 					hasLabel.setLabel(null);
 				} else {
-					if (propertyCaptions.containsKey(property)) {
-						LocalizationProvider.localize(propertyCaptions.get(property))
+					final Localizable caption = propertyCaptions.get(property);
+					if (caption != null) {
+						LocalizationProvider.localize(caption)
 								.ifPresent(message -> hasLabel.setLabel(message));
 					} else {
-						if (hasLabel.getLabel() == null || hasLabel.getLabel().trim().equals("")) {
+						if (hasLabel.getLabel() == null || hasLabel.getLabel().isBlank()) {
 							// default behaviour
 							hasLabel.setLabel(
 									LocalizationProvider.localize(property).orElseGet(() -> property.getName()));

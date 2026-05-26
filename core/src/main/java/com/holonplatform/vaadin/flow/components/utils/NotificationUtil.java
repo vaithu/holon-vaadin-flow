@@ -1,9 +1,8 @@
 package com.holonplatform.vaadin.flow.components.utils;
 
-import com.vaadin.flow.component.HasLabel;
+import com.holonplatform.vaadin.flow.components.Components;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
@@ -17,57 +16,61 @@ import com.vaadin.flow.data.binder.ValidationException;
  * @created 27/01/2024  - 11:10
  */
 public final class NotificationUtil {
-    private NotificationUtil() {
-    }
+
+    private NotificationUtil() {}
 
     public static void notificationError(String msg) {
-        final Notification notification = new Notification();
-        notification.addThemeVariants(NotificationVariant.LUMO_ERROR);
-
-        notification(notification, msg);
+        Notification notification = Components.notification()
+                .withThemeVariants(NotificationVariant.LUMO_ERROR)
+                .duration(3000)
+                .topEnd()
+                .build();
+        notification.getElement().getThemeList().add("n-error");
+        addContentAndOpen(notification, msg);
     }
 
     public static void notificationSuccess(String msg) {
-        final Notification notification = new Notification();
-        notification.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
-
-        notification(notification, msg);
+        Notification notification = Components.notification()
+                .withThemeVariants(NotificationVariant.LUMO_SUCCESS)
+                .duration(3000)
+                .topEnd()
+                .build();
+        notification.getElement().getThemeList().add("n-success");
+        addContentAndOpen(notification, msg);
     }
 
     public static void notificationWarning(String msg) {
-        final Notification notification = new Notification();
-        notification.addThemeVariants(NotificationVariant.LUMO_WARNING);
-
-        notification(notification, msg);
+        Notification notification = Components.notification()
+                .duration(3000)
+                .topEnd()
+                .build();
+        notification.getElement().getThemeList().add("n-warning");
+        addContentAndOpen(notification, msg);
     }
 
-    private static void notification(Notification notification, String msg) {
-        notification.setDuration(3000);
-        notification.setPosition(Notification.Position.TOP_END);
-
+    private static void addContentAndOpen(Notification notification, String msg) {
         Icon icon = VaadinIcon.CHECK_CIRCLE.create();
+        Button closeButton = Components.button()
+                .icon("lumo", "cross")
+                .styleName("notification__close-btn")
+                .withClickListener(e -> notification.close())
+                .build();
 
-        final Button closeButton = new Button(new Icon("lumo", "cross"), event -> notification.close());
-        closeButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY_INLINE);
-        closeButton.getElement().setAttribute("aria-label", "Close");
-        closeButton.getStyle().setMargin("0 0 0 var(--lumo-space-l)");
-
-        final HorizontalLayout layout = new HorizontalLayout(icon, new Text(msg), closeButton);
-        layout.setAlignItems(FlexComponent.Alignment.CENTER);
+        HorizontalLayout layout = Components.hl()
+                .add(icon, new Text(msg), closeButton)
+                .alignItems(FlexComponent.Alignment.CENTER)
+                .build();
 
         notification.add(layout);
         notification.open();
     }
 
-    public static void notificationError(ValidationException validationException) {
-        final Notification notification = new Notification();
-        notification.addThemeVariants(NotificationVariant.LUMO_ERROR);
-
-        validationException.getFieldValidationErrors().forEach(err -> err.getMessage().ifPresent(msg2 -> {
-            String label = ((HasLabel) err.getBinding().getField()).getLabel();
-
-            notificationError(label != null ? label + " -> " + msg2 : msg2);
-        }));
-
+    public static void notificationError(ValidationException ex) {
+        // ValidationResult in Vaadin 25 no longer exposes the binding; collect error messages only
+        String msg = ex.getValidationErrors().stream()
+                .map(err -> err.getErrorMessage())
+                .filter(m -> m != null && !m.isEmpty())
+                .reduce("", (a, b) -> a.isEmpty() ? b : a + ", " + b);
+        notificationError(msg.isEmpty() ? "Validation failed" : msg);
     }
 }

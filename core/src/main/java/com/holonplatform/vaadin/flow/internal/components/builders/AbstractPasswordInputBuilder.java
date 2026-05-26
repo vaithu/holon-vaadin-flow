@@ -24,6 +24,7 @@ import com.holonplatform.vaadin.flow.components.builders.PasswordInputConfigurat
 import com.holonplatform.vaadin.flow.components.builders.ShortcutConfigurator;
 import com.holonplatform.vaadin.flow.components.events.ReadonlyChangeListener;
 import com.holonplatform.vaadin.flow.components.support.InputAdaptersContainer;
+import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
 import com.holonplatform.vaadin.flow.internal.components.support.StringInputIsEmptySupplier;
 import com.holonplatform.vaadin.flow.internal.components.support.StringInputValueSupplier;
 import com.vaadin.flow.component.*;
@@ -65,6 +66,8 @@ public abstract class AbstractPasswordInputBuilder<C extends PasswordInputConfig
 	protected final DefaultHasValueChangeModeConfigurator valueChangeModeConfigurator;
 	protected final DefaultHasLabelConfigurator<PasswordField> labelConfigurator;
 	protected final DefaultHasTitleConfigurator<PasswordField> titleConfigurator;
+	protected final DefaultHasTooltipConfigurator<PasswordField> tooltipConfigurator;
+	protected final DefaultHasHelperTextConfigurator<PasswordField> helperTextConfigurator;
 	protected final DefaultHasPlaceholderConfigurator<PasswordField> placeholderConfigurator;
 
 	public AbstractPasswordInputBuilder() {
@@ -87,7 +90,7 @@ public abstract class AbstractPasswordInputBuilder<C extends PasswordInputConfig
 		autocompleteConfigurator = new DefaultHasAutocompleteConfigurator(getComponent());
 		autocapitalizeConfigurator = new DefaultHasAutocapitalizeConfigurator(getComponent());
 		autocorrectConfigurator = new DefaultHasAutocorrectConfigurator(getComponent());
-		prefixAndSuffixConfigurator = new DefaultHasPrefixAndSuffixConfigurator(getComponent());
+		prefixAndSuffixConfigurator = new DefaultHasPrefixAndSuffixConfigurator(getComponent(),getComponent());
 		compositionNotifierConfigurator = new DefaultCompositionNotifierConfigurator(getComponent());
 		inputNotifierConfigurator = new DefaultInputNotifierConfigurator(getComponent());
 		keyNotifierConfigurator = new DefaultKeyNotifierConfigurator(getComponent());
@@ -99,6 +102,9 @@ public abstract class AbstractPasswordInputBuilder<C extends PasswordInputConfig
 		titleConfigurator = new DefaultHasTitleConfigurator<>(getComponent(), title -> {
 			getComponent().setTitle(title);
 		}, this);
+		tooltipConfigurator = new DefaultHasTooltipConfigurator<>(getComponent(), getComponent()::setTooltipText, this);
+		helperTextConfigurator = new DefaultHasHelperTextConfigurator<>(getComponent(), getComponent()::setHelperText,
+				this);
 		placeholderConfigurator = new DefaultHasPlaceholderConfigurator<>(getComponent(), placeholder -> {
 			getComponent().setPlaceholder(placeholder);
 		}, this);
@@ -546,6 +552,36 @@ public abstract class AbstractPasswordInputBuilder<C extends PasswordInputConfig
 		return getConfigurator();
 	}
 
+	@Override
+	public C tooltip(Localizable tooltip) {
+		tooltipConfigurator.tooltip(tooltip);
+		return getConfigurator();
+	}
+
+	@Override
+	public C tooltipText(String text) {
+		tooltipConfigurator.tooltipText(text);
+		return getConfigurator();
+	}
+
+	@Override
+	public C helperText(Localizable helperText) {
+		helperTextConfigurator.helperText(helperText);
+		return getConfigurator();
+	}
+
+	@Override
+	public C helperText(String helperText) {
+		helperTextConfigurator.helperText(helperText);
+		return getConfigurator();
+	}
+
+	@Override
+	public C helperComponent(Component component) {
+		helperTextConfigurator.helperComponent(component);
+		return getConfigurator();
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * @see
@@ -574,6 +610,36 @@ public abstract class AbstractPasswordInputBuilder<C extends PasswordInputConfig
 	@Override
 	public C required() {
 		return required(true);
+	}
+
+	@Override
+	public C ariaLabel(String ariaLabel) {
+		getComponent().setAriaLabel(ariaLabel);
+		return getConfigurator();
+	}
+
+	@Override
+	public C ariaLabelledBy(String ariaLabelledBy) {
+		getComponent().setAriaLabelledBy(ariaLabelledBy);
+		return getConfigurator();
+	}
+
+	@Override
+	public C ariaLabel(Localizable ariaLabel) {
+		final String defaultAriaLabel = (ariaLabel != null && ariaLabel.getMessage() != null) ? ariaLabel.getMessage()
+				: "";
+		if (ariaLabel == null) {
+			return ariaLabel(defaultAriaLabel);
+		}
+		if (isDeferredLocalizationEnabled()) {
+			ariaLabel(defaultAriaLabel);
+			return withAttachListener(event -> {
+				if (event.isInitialAttach()) {
+					LocalizationProvider.localize(ariaLabel).ifPresent(this::ariaLabel);
+				}
+			});
+		}
+		return ariaLabel(LocalizationProvider.localize(ariaLabel).orElse(defaultAriaLabel));
 	}
 
 }

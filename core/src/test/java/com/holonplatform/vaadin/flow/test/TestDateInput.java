@@ -15,28 +15,6 @@
  */
 package com.holonplatform.vaadin.flow.test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Date;
-import java.util.Locale;
-import java.util.TimeZone;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
-
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
 import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.vaadin.flow.components.Components;
 import com.holonplatform.vaadin.flow.components.Input;
@@ -49,6 +27,19 @@ import com.vaadin.flow.component.ComponentUtil;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.internal.CurrentInstance;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class TestDateInput {
 
@@ -353,6 +344,18 @@ public class TestDateInput {
 			assertEquals("TestUS", ComponentTestUtils.getPlaceholder(input2));
 		});
 
+	}
+
+	@Test
+	public void testAriaLabel() {
+		Input<Date> input = Input.date().ariaLabel("Date input").build();
+		assertNull(ComponentTestUtils.getElementAttribute(input.getComponent(), "aria-label"));
+
+		input = Input.date().ariaLabelledBy("date-input-label").build();
+		assertNull(ComponentTestUtils.getElementAttribute(input.getComponent(), "aria-labelledby"));
+
+		input = Input.date().ariaLabel(Localizable.builder().message("Localized date").build()).build();
+		assertNull(ComponentTestUtils.getElementAttribute(input.getComponent(), "aria-label"));
 	}
 
 	@Test

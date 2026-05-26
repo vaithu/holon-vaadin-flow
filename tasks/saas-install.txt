@@ -1,0 +1,54 @@
+[INFO] Reactor Build Order:
+[INFO] Building com.holon-platform.saas:holon-saas-root 1.0.0            [1/14]
+[INFO] Installing C:\Users\sxp267\IdeaProjects\holon-saas\pom.xml to C:\Users\sxp267\.m2\repository\com\holon-platform\saas\holon-saas-root\1.0.0\holon-saas-root-1.0.0.pom
+[INFO] Building com.holon-platform.saas:holon-vaadin-flow-tenant-core 1.0.0 [2/14]
+[INFO] Building jar: C:\Users\sxp267\IdeaProjects\holon-saas\tenant-core\target\holon-vaadin-flow-tenant-core-1.0.0.jar
+[INFO] Installing C:\Users\sxp267\IdeaProjects\holon-saas\tenant-core\pom.xml to C:\Users\sxp267\.m2\repository\com\holon-platform\saas\holon-vaadin-flow-tenant-core\1.0.0\holon-vaadin-flow-tenant-core-1.0.0.pom
+[INFO] Installing C:\Users\sxp267\IdeaProjects\holon-saas\tenant-core\target\holon-vaadin-flow-tenant-core-1.0.0.jar to C:\Users\sxp267\.m2\repository\com\holon-platform\saas\holon-vaadin-flow-tenant-core\1.0.0\holon-vaadin-flow-tenant-core-1.0.0.jar
+[INFO] Building com.holon-platform.saas:holon-vaadin-flow-tenant-data 1.0.0 [3/14]
+[INFO] Building jar: C:\Users\sxp267\IdeaProjects\holon-saas\tenant-data\target\holon-vaadin-flow-tenant-data-1.0.0.jar
+[INFO] Installing C:\Users\sxp267\IdeaProjects\holon-saas\tenant-data\pom.xml to C:\Users\sxp267\.m2\repository\com\holon-platform\saas\holon-vaadin-flow-tenant-data\1.0.0\holon-vaadin-flow-tenant-data-1.0.0.pom
+[INFO] Installing C:\Users\sxp267\IdeaProjects\holon-saas\tenant-data\target\holon-vaadin-flow-tenant-data-1.0.0.jar to C:\Users\sxp267\.m2\repository\com\holon-platform\saas\holon-vaadin-flow-tenant-data\1.0.0\holon-vaadin-flow-tenant-data-1.0.0.jar
+[INFO] Building com.holon-platform.saas:holon-vaadin-flow-tenant-security 1.0.0 [4/14]
+[INFO] Building jar: C:\Users\sxp267\IdeaProjects\holon-saas\tenant-security\target\holon-vaadin-flow-tenant-security-1.0.0.jar
+[INFO] Installing C:\Users\sxp267\IdeaProjects\holon-saas\tenant-security\pom.xml to C:\Users\sxp267\.m2\repository\com\holon-platform\saas\holon-vaadin-flow-tenant-security\1.0.0\holon-vaadin-flow-tenant-security-1.0.0.pom
+[INFO] Installing C:\Users\sxp267\IdeaProjects\holon-saas\tenant-security\target\holon-vaadin-flow-tenant-security-1.0.0.jar to C:\Users\sxp267\.m2\repository\com\holon-platform\saas\holon-vaadin-flow-tenant-security\1.0.0\holon-vaadin-flow-tenant-security-1.0.0.jar
+[INFO] Building com.holon-platform.saas:holon-vaadin-flow-tenant-onboarding 1.0.0 [5/14]
+[INFO] Building jar: C:\Users\sxp267\IdeaProjects\holon-saas\tenant-onboarding\target\holon-vaadin-flow-tenant-onboarding-1.0.0.jar
+[INFO] Installing C:\Users\sxp267\IdeaProjects\holon-saas\tenant-onboarding\pom.xml to C:\Users\sxp267\.m2\repository\com\holon-platform\saas\holon-vaadin-flow-tenant-onboarding\1.0.0\holon-vaadin-flow-tenant-onboarding-1.0.0.pom
+[INFO] Installing C:\Users\sxp267\IdeaProjects\holon-saas\tenant-onboarding\target\holon-vaadin-flow-tenant-onboarding-1.0.0.jar to C:\Users\sxp267\.m2\repository\com\holon-platform\saas\holon-vaadin-flow-tenant-onboarding\1.0.0\holon-vaadin-flow-tenant-onboarding-1.0.0.jar
+[INFO] Building com.holon-platform.saas:holon-vaadin-flow-tenant-audit 1.0.0 [6/14]
+[INFO] Building jar: C:\Users\sxp267\IdeaProjects\holon-saas\tenant-audit\target\holon-vaadin-flow-tenant-audit-1.0.0.jar
+[INFO] Installing C:\Users\sxp267\IdeaProjects\holon-saas\tenant-audit\pom.xml to C:\Users\sxp267\.m2\repository\com\holon-platform\saas\holon-vaadin-flow-tenant-audit\1.0.0\holon-vaadin-flow-tenant-audit-1.0.0.pom
+[INFO] Installing C:\Users\sxp267\IdeaProjects\holon-saas\tenant-audit\target\holon-vaadin-flow-tenant-audit-1.0.0.jar to C:\Users\sxp267\.m2\repository\com\holon-platform\saas\holon-vaadin-flow-tenant-audit\1.0.0\holon-vaadin-flow-tenant-audit-1.0.0.jar
+[INFO] Building com.holon-platform.saas:holon-vaadin-flow-tenant-settings 1.0.0 [7/14]
+[INFO] Building jar: C:\Users\sxp267\IdeaProjects\holon-saas\tenant-settings\target\holon-vaadin-flow-tenant-settings-1.0.0.jar
+[INFO] Installing C:\Users\sxp267\IdeaProjects\holon-saas\tenant-settings\pom.xml to C:\Users\sxp267\.m2\repository\com\holon-platform\saas\holon-vaadin-flow-tenant-settings\1.0.0\holon-vaadin-flow-tenant-settings-1.0.0.pom
+[INFO] Installing C:\Users\sxp267\IdeaProjects\holon-saas\tenant-settings\target\holon-vaadin-flow-tenant-settings-1.0.0.jar to C:\Users\sxp267\.m2\repository\com\holon-platform\saas\holon-vaadin-flow-tenant-settings\1.0.0\holon-vaadin-flow-tenant-settings-1.0.0.jar
+[INFO] Building com.holon-platform.saas:holon-vaadin-flow-tenant-limits 1.0.0 [8/14]
+[INFO] Building jar: C:\Users\sxp267\IdeaProjects\holon-saas\tenant-limits\target\holon-vaadin-flow-tenant-limits-1.0.0.jar
+[INFO] Installing C:\Users\sxp267\IdeaProjects\holon-saas\tenant-limits\pom.xml to C:\Users\sxp267\.m2\repository\com\holon-platform\saas\holon-vaadin-flow-tenant-limits\1.0.0\holon-vaadin-flow-tenant-limits-1.0.0.pom
+[INFO] Installing C:\Users\sxp267\IdeaProjects\holon-saas\tenant-limits\target\holon-vaadin-flow-tenant-limits-1.0.0.jar to C:\Users\sxp267\.m2\repository\com\holon-platform\saas\holon-vaadin-flow-tenant-limits\1.0.0\holon-vaadin-flow-tenant-limits-1.0.0.jar
+[INFO] Building com.holon-platform.saas:holon-vaadin-flow-tenant-users 1.0.0 [9/14]
+[INFO] Building jar: C:\Users\sxp267\IdeaProjects\holon-saas\tenant-users\target\holon-vaadin-flow-tenant-users-1.0.0.jar
+[INFO] Installing C:\Users\sxp267\IdeaProjects\holon-saas\tenant-users\pom.xml to C:\Users\sxp267\.m2\repository\com\holon-platform\saas\holon-vaadin-flow-tenant-users\1.0.0\holon-vaadin-flow-tenant-users-1.0.0.pom
+[INFO] Installing C:\Users\sxp267\IdeaProjects\holon-saas\tenant-users\target\holon-vaadin-flow-tenant-users-1.0.0.jar to C:\Users\sxp267\.m2\repository\com\holon-platform\saas\holon-vaadin-flow-tenant-users\1.0.0\holon-vaadin-flow-tenant-users-1.0.0.jar
+[INFO] Building com.holon-platform.saas:holon-vaadin-flow-tenant-billing 1.0.0 [10/14]
+[INFO] Building jar: C:\Users\sxp267\IdeaProjects\holon-saas\tenant-billing\target\holon-vaadin-flow-tenant-billing-1.0.0.jar
+[INFO] Installing C:\Users\sxp267\IdeaProjects\holon-saas\tenant-billing\pom.xml to C:\Users\sxp267\.m2\repository\com\holon-platform\saas\holon-vaadin-flow-tenant-billing\1.0.0\holon-vaadin-flow-tenant-billing-1.0.0.pom
+[INFO] Installing C:\Users\sxp267\IdeaProjects\holon-saas\tenant-billing\target\holon-vaadin-flow-tenant-billing-1.0.0.jar to C:\Users\sxp267\.m2\repository\com\holon-platform\saas\holon-vaadin-flow-tenant-billing\1.0.0\holon-vaadin-flow-tenant-billing-1.0.0.jar
+[INFO] Building com.holon-platform.saas:holon-vaadin-flow-tenant-vaadin 1.0.0 [11/14]
+[INFO] Building jar: C:\Users\sxp267\IdeaProjects\holon-saas\tenant-vaadin\target\holon-vaadin-flow-tenant-vaadin-1.0.0.jar
+[INFO] Installing C:\Users\sxp267\IdeaProjects\holon-saas\tenant-vaadin\pom.xml to C:\Users\sxp267\.m2\repository\com\holon-platform\saas\holon-vaadin-flow-tenant-vaadin\1.0.0\holon-vaadin-flow-tenant-vaadin-1.0.0.pom
+[INFO] Installing C:\Users\sxp267\IdeaProjects\holon-saas\tenant-vaadin\target\holon-vaadin-flow-tenant-vaadin-1.0.0.jar to C:\Users\sxp267\.m2\repository\com\holon-platform\saas\holon-vaadin-flow-tenant-vaadin\1.0.0\holon-vaadin-flow-tenant-vaadin-1.0.0.jar
+[INFO] Building com.holon-platform.saas:holon-vaadin-flow-tenant-admin 1.0.0 [12/14]
+[INFO] Building jar: C:\Users\sxp267\IdeaProjects\holon-saas\tenant-admin\target\holon-vaadin-flow-tenant-admin-1.0.0.jar
+[INFO] Installing C:\Users\sxp267\IdeaProjects\holon-saas\tenant-admin\pom.xml to C:\Users\sxp267\.m2\repository\com\holon-platform\saas\holon-vaadin-flow-tenant-admin\1.0.0\holon-vaadin-flow-tenant-admin-1.0.0.pom
+[INFO] Installing C:\Users\sxp267\IdeaProjects\holon-saas\tenant-admin\target\holon-vaadin-flow-tenant-admin-1.0.0.jar to C:\Users\sxp267\.m2\repository\com\holon-platform\saas\holon-vaadin-flow-tenant-admin\1.0.0\holon-vaadin-flow-tenant-admin-1.0.0.jar
+[INFO] Building com.holon-platform.saas:holon-starter-vaadin-flow-saas 1.0.0 [13/14]
+[INFO] Building jar: C:\Users\sxp267\IdeaProjects\holon-saas\starter-saas\target\holon-starter-vaadin-flow-saas-1.0.0.jar
+[INFO] Installing C:\Users\sxp267\IdeaProjects\holon-saas\starter-saas\pom.xml to C:\Users\sxp267\.m2\repository\com\holon-platform\saas\holon-starter-vaadin-flow-saas\1.0.0\holon-starter-vaadin-flow-saas-1.0.0.pom
+[INFO] Installing C:\Users\sxp267\IdeaProjects\holon-saas\starter-saas\target\holon-starter-vaadin-flow-saas-1.0.0.jar to C:\Users\sxp267\.m2\repository\com\holon-platform\saas\holon-starter-vaadin-flow-saas\1.0.0\holon-starter-vaadin-flow-saas-1.0.0.jar
+[INFO] Building com.holon-platform.saas:holon-saas-bom 1.0.0            [14/14]
+[INFO] Installing C:\Users\sxp267\IdeaProjects\holon-saas\bom\pom.xml to C:\Users\sxp267\.m2\repository\com\holon-platform\saas\holon-saas-bom\1.0.0\holon-saas-bom-1.0.0.pom
+[INFO] BUILD SUCCESS

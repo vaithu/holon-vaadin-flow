@@ -11,10 +11,6 @@ import com.vaadin.flow.component.Component;
 public interface FlexBoxLayoutConfigurator<C extends FlexBoxLayoutConfigurator<C>> extends HasComponentsConfigurator<C>,
         HasStyleConfigurator<C>, HasSizeConfigurator<C>, ComponentConfigurator<C> {
 
-    C backgroundColor(String value);
-
-    C backgroundColor(String value, String theme);
-
     C borderRadius(BorderRadius radius);
 
     C boxSizing(BoxSizing sizing);

@@ -1,0 +1,529 @@
+/*
+ * h-dialog.css
+ *
+ * Amalgamation of three dialog design systems:
+ *
+ *   1. Vaadin Dialog (25.1)  — server-side overlay, slot API, ::part() theme attribute
+ *   2. shadcn/ui Dialog      — three-slot model, DialogTrigger, DialogClose,
+ *                              ARIA, conditional close guard, size variants
+ *   3. Tailwind Plus modal   — mobile bottom-sheet, desktop centred modal,
+ *                              icon header, size max-width tiers, scale animation
+ *
+ * TWO LAYERS OF STYLING
+ * ─────────────────────
+ *   1. Overlay-level  vaadin-dialog-overlay[theme~="h-dialog"]::part(*)
+ *      Controls overlay box position, size, backdrop, and slot containers.
+ *
+ *   2. Content-level  .h-dialog__*  BEM classes (light DOM)
+ *      Controls header-text wrapper, close button, title, description, body,
+ *      footer buttons, and trigger.
+ *
+ * RESPONSIVE BEHAVIOUR
+ * ────────────────────
+ *   Mobile  (< 640 px) — full-width bottom sheet, slide-up animation,
+ *                         safe-area-aware, vertically stacked buttons.
+ *   Desktop (≥ 640 px) — centred modal (default 32 rem), subtle border,
+ *                         fade + scale entrance, horizontal footer.
+ *
+ * HOW THE THEME ATTRIBUTE WORKS
+ * ─────────────────────────────
+ *   DefaultDialog calls getElement().getThemeList().add("h-dialog").
+ *   Vaadin Flow mirrors the theme attribute from <vaadin-dialog>
+ *   to <vaadin-dialog-overlay>, so
+ *       vaadin-dialog-overlay[theme~="h-dialog"]
+ *   targets only dialogs created via DefaultDialog / DialogBuilder.
+ */
+
+/* ==========================================================================
+   SECTION 1 — OVERLAY-LEVEL (shadow DOM ::part() selectors)
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+ * Backdrop
+ * -------------------------------------------------------------------------- */
+
+vaadin-dialog-overlay[theme~="h-dialog"]::part(backdrop) {
+    transition: opacity 200ms ease;
+}
+
+/* --------------------------------------------------------------------------
+ * Overlay box
+ *
+ * vaadin-dialog-overlay has position: fixed; inset: 0 (full-screen host).
+ * Setting position: absolute on ::part(overlay) positions it relative to
+ * that fixed container so we can anchor it to the bottom on mobile.
+ * -------------------------------------------------------------------------- */
+
+vaadin-dialog-overlay[theme~="h-dialog"]::part(overlay) {
+    /* Mobile: pin to bottom, stretch to full width */
+    position: absolute;
+    inset-block-end: 0;
+    inset-inline: 0;
+    width: 100%;
+
+    max-height: 90dvh;
+    max-height: 90vh;           /* dvh fallback for older browsers */
+
+    border-radius: 1rem 1rem 0 0;
+    box-shadow: 0 -4px 32px rgba(0, 0, 0, 0.15);
+
+    margin: 0;
+    padding: 0;
+    padding-block-end: env(safe-area-inset-bottom, 0);
+
+    overflow: hidden;
+
+    /* Slide-up entrance animation */
+    animation: h-dialog-slide-up 280ms cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+@keyframes h-dialog-slide-up {
+    from { transform: translateY(100%); }
+    to   { transform: translateY(0);   }
+}
+
+/* --------------------------------------------------------------------------
+ * Header slot
+ *
+ * Flex row: [optional icon] [.h-dialog__header-text]
+ * The close button is NO LONGER in the header — it is positioned absolute
+ * at the overlay root. Header padding-inline-end leaves space for it.
+ * -------------------------------------------------------------------------- */
+
+vaadin-dialog-overlay[theme~="h-dialog"]::part(header) {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 1rem 3.5rem 0.5rem 1.25rem;  /* right padding reserves space under the close btn */
+}
+
+/* --------------------------------------------------------------------------
+ * Content slot
+ * -------------------------------------------------------------------------- */
+
+vaadin-dialog-overlay[theme~="h-dialog"]::part(content) {
+    padding: 0.75rem 1.25rem;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+}
+
+/* --------------------------------------------------------------------------
+ * Footer slot — mobile: buttons stacked vertically (primary on top)
+ *
+ * column-reverse renders the DOM order [cancel, action] as action-on-top,
+ * which is the expected mobile UX (primary CTA closest to thumb).
+ * -------------------------------------------------------------------------- */
+
+vaadin-dialog-overlay[theme~="h-dialog"]::part(footer) {
+    display: flex;
+    flex-direction: column-reverse;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    padding-block-end: max(0.5rem, env(safe-area-inset-bottom, 0.5rem));
+    border-block-start: 1px solid var(--color-border, #e4e4e7);
+}
+
+/* ==========================================================================
+   SECTION 2 — DESKTOP OVERRIDES  (≥ 640 px)
+   Vaadin 25.1 CSS custom property --vaadin-dialog-overlay-width controls the
+   width of the ::part(overlay) box when it is in its normal (non-absolute)
+   flow position.
+   ========================================================================== */
+
+/* Scale-in entrance animation — shadcn/ui zoom-in-95 / Tailwind scale-in */
+@keyframes h-dialog-scale-in {
+    from { opacity: 0; transform: scale(0.95); }
+    to   { opacity: 1; transform: scale(1);    }
+}
+
+@media (min-width: 640px) {
+
+    /* Control dialog width via the Vaadin 25.1 standard custom property */
+    vaadin-dialog-overlay[theme~="h-dialog"] {
+        --vaadin-dialog-overlay-width: min(90vw, 32rem);
+    }
+
+    vaadin-dialog-overlay[theme~="h-dialog"]::part(overlay) {
+        /* Revert to normal centred positioning (parent is flex, centred) */
+        position: relative;
+        inset-block-end: auto;
+        inset-inline: auto;
+        width: var(--vaadin-dialog-overlay-width, min(90vw, 32rem));
+
+        max-height: 85dvh;
+        max-height: 85vh;
+
+        border-radius: 0.75rem;
+        box-shadow: 0 8px 40px rgba(0, 0, 0, 0.18);
+
+        /* Subtle border — shadcn/ui ring-1 ring-black/5 equivalent */
+        border: 1px solid var(--color-border, #e4e4e7);
+
+        padding-block-end: 0;
+
+        /* Fade + scale-in entrance — shadcn/ui animate-in zoom-in-95 */
+        animation: h-dialog-scale-in 180ms cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    vaadin-dialog-overlay[theme~="h-dialog"]::part(header) {
+        padding: 1.25rem 3.5rem 0.5rem 1.5rem;  /* right padding reserves space under the close btn */
+    }
+
+    vaadin-dialog-overlay[theme~="h-dialog"]::part(content) {
+        padding: 0.75rem 1.5rem;
+    }
+
+    /* Footer — horizontal row: cancel floats left, action stays right */
+    vaadin-dialog-overlay[theme~="h-dialog"]::part(footer) {
+        flex-direction: row;
+        align-items: center;
+        padding: 0.5rem 1.25rem;
+    }
+}
+
+/* ==========================================================================
+   SECTION 3 — CONTENT-LEVEL (light DOM BEM classes)
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+ * Header text wrapper  (mirrors shadcn/ui DialogHeader)
+ *
+ * Groups .h-dialog__title and .h-dialog__description in a column.
+ * Placed between the optional icon container and the close button.
+ * flex-shrink + min-width prevent long titles from overflowing.
+ * -------------------------------------------------------------------------- */
+
+.h-dialog__header-text {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;       /* 2 px between title and description */
+    flex-shrink: 1;
+    min-width: 0;
+    max-width: 100%;
+}
+
+/* --------------------------------------------------------------------------
+ * Close button
+ *
+ * Lives in the dialog CONTENT slot (not the header slot) so it does not
+ * affect the header's flex layout. Absolutely positioned relative to
+ * ::part(overlay) — which is the dialog box root — mirroring the
+ * shadcn/ui DialogClose pattern.
+ *
+ * ::part(overlay) is always a positioned element (position: absolute on
+ * mobile, position: relative on desktop), so it is the containing block
+ * for the button's absolute positioning.
+ * -------------------------------------------------------------------------- */
+
+.h-dialog__close-btn {
+    --vaadin-button-border-width:  0;
+    --vaadin-button-border-radius: 0.375rem;
+    --vaadin-button-padding:       0.25rem;
+    --vaadin-button-shadow:        none;
+    --vaadin-button-margin:        0;
+
+    position: absolute;
+    top:   0.75rem;
+    right: 0.75rem;
+    z-index: 1;
+
+    min-width:  2rem;
+    min-height: 2rem;
+    box-sizing: border-box;
+}
+
+/* Size the Vaadin icon inside the close button */
+.h-dialog__close-btn vaadin-icon,
+.h-dialog__close-btn svg {
+    width:  1rem;
+    height: 1rem;
+}
+
+/* --------------------------------------------------------------------------
+ * Structured header — title + description
+ * -------------------------------------------------------------------------- */
+
+.h-dialog__title {
+    margin: 0 0 0.125rem;
+    font-size: 1.0625rem;
+    font-weight: 600;
+    line-height: 1.4;
+}
+
+.h-dialog__description {
+    margin: 0;
+    font-size: 0.875rem;
+    line-height: 1.5;
+}
+
+/* --------------------------------------------------------------------------
+ * Body
+ * -------------------------------------------------------------------------- */
+
+.h-dialog__body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    padding: 0;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* --------------------------------------------------------------------------
+ * Plain text paragraph
+ * -------------------------------------------------------------------------- */
+
+.h-dialog__text {
+    margin: 0;
+    font-size: 0.9375rem;
+    line-height: 1.6;
+}
+
+/* --------------------------------------------------------------------------
+ * Footer buttons
+ *
+ * Styled via Vaadin Aura CSS custom properties so the text colour is
+ * driven by --vaadin-button-text-color (read inside vaadin-button's shadow
+ * DOM) rather than the host-level `color` property which vaadin-button ignores.
+ *
+ * Mobile default: full-width, 44 px touch target.
+ * Desktop (≥ 640 px): auto-width; cancel uses margin-right: auto to float
+ * to the left within the horizontal flex row.
+ * -------------------------------------------------------------------------- */
+
+.h-dialog__cancel-btn,
+.h-dialog__action-btn {
+    --vaadin-button-font-size:     0.875rem;
+    --vaadin-button-font-weight:   500;
+    --vaadin-button-border-radius: 0.375rem;
+    --vaadin-button-padding:       0.375rem 0.875rem;
+    --vaadin-button-height:        2.25rem;   /* 36 px — compact but accessible */
+    --vaadin-button-shadow:        none;
+    --vaadin-button-margin:        0;
+
+    width: 100%;          /* full-width on mobile */
+    box-sizing: border-box;
+}
+
+.h-dialog__cancel-btn {
+    --vaadin-button-border-width:  1px;
+
+    margin-right: 0;   /* no margin on mobile (column layout) */
+}
+
+.h-dialog__action-btn {
+    --vaadin-button-border-width:  0;
+}
+
+.h-dialog__action-btn:hover {
+    opacity: 0.88;
+}
+
+.h-dialog__action-btn--destructive:hover {
+    opacity: 1;
+}
+
+.h-dialog__action-btn--warning:hover {
+    opacity: 1;
+}
+
+.h-dialog__action-btn--success:hover {
+    opacity: 1;
+}
+
+.h-dialog__action-btn--info:hover {
+    opacity: 1;
+}
+
+/* -----------------------------------------------------------------------
+ * Trigger button (DialogTrigger equivalent)
+ *
+ * Default outlined button style — matches the reference image.
+ * Override via the withTrigger(Consumer<>) configurator for custom styling.
+ * ----------------------------------------------------------------------- */
+
+.h-dialog__trigger {
+    --vaadin-button-border-width:  1px;
+    --vaadin-button-border-radius: 0.5rem;
+    --vaadin-button-font-size:     0.875rem;
+    --vaadin-button-font-weight:   500;
+    --vaadin-button-padding:       0.5rem 1rem;
+    --vaadin-button-height:        2.5rem;
+    --vaadin-button-shadow:        none;
+}
+
+/* Desktop: auto-width; cancel floats left */
+@media (min-width: 640px) {
+
+    .h-dialog__cancel-btn,
+    .h-dialog__action-btn {
+        width: auto;
+        min-width: 5rem;
+    }
+
+    .h-dialog__cancel-btn {
+        margin-right: auto;     /* float cancel to the left in flex row */
+    }
+}
+
+/* ==========================================================================
+   SECTION 4 — HEADER ICON  (Tailwind Plus "with icon" modal pattern)
+   ==========================================================================
+   A circular container placed at the top of the header, above the title,
+   that wraps a vaadin-icon, svg, or span glyph.  The container is
+   3 rem (48 px) — matching Tailwind Plus h-12 w-12 rounded-full.
+
+   Usage in Java:
+     DialogBuilder.delete(cb)
+         .withHeaderIcon(new Icon(VaadinIcon.WARNING), IconVariant.DESTRUCTIVE)
+         .withTitle("Are you absolutely sure?")
+         ...
+
+   Semantic colour variants map to the same semantic tokens already used
+   throughout the dialog stylesheet so the colour system is consistent.
+   ========================================================================== */
+
+.h-dialog__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width:  3rem;       /* 48 px — Tailwind h-12 w-12 */
+    height: 3rem;
+    border-radius: 9999px;
+    /* margin-block-end only applied in centered mode (see Section 5) */
+}
+
+/* Icon / glyph sizing inside the circle */
+.h-dialog__icon vaadin-icon,
+.h-dialog__icon svg {
+    width:  1.5rem;   /* 24 px */
+    height: 1.5rem;
+    display: block;
+    flex-shrink: 0;
+}
+
+/* Span-based glyphs (e.g. Material Symbols text span) */
+.h-dialog__icon span {
+    font-size: 1.5rem;
+    line-height: 1;
+    display: block;
+}
+
+/* ==========================================================================
+   SECTION 5 — CENTERED VARIANT  (Tailwind Plus "centred modal" pattern)
+   ==========================================================================
+   Activated by adding the "h-dialog--centered" theme modifier to the dialog:
+     getElement().getThemeList().add("h-dialog--centered")
+   or via the builder fluent API:
+     DialogBuilder.delete(cb).centered()
+
+   The centered variant:
+     • Stacks header children vertically and centres them (icon → header-text).
+     • Hides the close button (setCentered(true) calls setCloseButtonVisible(false)).
+     • text-align: center inherited into .h-dialog__header-text children.
+     • On desktop the footer buttons are centred and have a minimum width.
+     • On mobile the footer stays full-width stacked (same as non-centred).
+   ========================================================================== */
+
+/* ─── Mobile base (< 640 px) ─────────────────────────────────────────────── */
+
+vaadin-dialog-overlay[theme~="h-dialog"][theme~="h-dialog--centered"]::part(header) {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 1.75rem 1.5rem 0.5rem;
+    gap: 0.5rem;
+}
+
+vaadin-dialog-overlay[theme~="h-dialog"][theme~="h-dialog--centered"]::part(content) {
+    text-align: center;
+}
+
+/* Footer stays column on mobile — same behaviour as the base; no override needed. */
+
+/* ─── Desktop (≥ 640 px) ──────────────────────────────────────────────────── */
+
+@media (min-width: 640px) {
+
+    vaadin-dialog-overlay[theme~="h-dialog"][theme~="h-dialog--centered"]::part(header) {
+        padding: 2rem 1.5rem 0.5rem;
+    }
+
+    vaadin-dialog-overlay[theme~="h-dialog"][theme~="h-dialog--centered"]::part(footer) {
+        flex-direction: row;
+        justify-content: center;
+        gap: 0.75rem;
+        padding: 0.75rem 1.5rem 1.5rem;
+    }
+
+    /*
+     * In centred mode the cancel button must NOT float to the left.
+     * Override the .h-dialog__cancel-btn { margin-right: auto } rule
+     * with a more-specific selector.
+     */
+    vaadin-dialog-overlay[theme~="h-dialog"][theme~="h-dialog--centered"] .h-dialog__cancel-btn {
+        margin-right: 0;
+        min-width: 7rem;
+    }
+
+    vaadin-dialog-overlay[theme~="h-dialog"][theme~="h-dialog--centered"] .h-dialog__action-btn {
+        min-width: 7rem;
+    }
+
+    /* Header-text wrapper must not stretch vertically in column layout */
+    vaadin-dialog-overlay[theme~="h-dialog"][theme~="h-dialog--centered"] .h-dialog__header-text {
+        flex: 0 1 auto;
+        align-items: center;
+    }
+
+    /* Icon bottom gap before the text group */
+    vaadin-dialog-overlay[theme~="h-dialog"][theme~="h-dialog--centered"] .h-dialog__icon {
+        margin-block-end: 0.25rem;
+    }
+}
+
+/* ==========================================================================
+   SECTION 6 — SIZE VARIANTS  (shadcn/ui size prop + Tailwind Plus max-w-*)
+   ==========================================================================
+   Overrides --vaadin-dialog-overlay-width at the desktop breakpoint (≥ 640 px).
+   On mobile the dialog always fills the full viewport width as a bottom sheet —
+   size variants have no effect there.
+
+   Java API:
+     DialogBuilder.message()
+         .withSize(DialogConfigurator.DialogSize.LG)
+         .withTitle("Edit record")
+         .open();
+
+   SM   = min(90vw, 24 rem)  384 px — compact alerts & simple info dialogs
+   MD   = min(90vw, 32 rem)  512 px — same as the unsized baseline (explicit)
+   LG   = min(90vw, 42 rem)  672 px — form dialogs with several input fields
+   XL   = min(90vw, 56 rem)  896 px — wide content, data tables, multi-column forms
+   FULL = 95 vw              —       nearly full-screen complex layouts
+   ========================================================================== */
+
+@media (min-width: 640px) {
+
+    vaadin-dialog-overlay[theme~="h-dialog"][theme~="h-dialog--sm"] {
+        --vaadin-dialog-overlay-width: min(90vw, 24rem);
+    }
+
+    vaadin-dialog-overlay[theme~="h-dialog"][theme~="h-dialog--md"] {
+        --vaadin-dialog-overlay-width: min(90vw, 32rem);
+    }
+
+    vaadin-dialog-overlay[theme~="h-dialog"][theme~="h-dialog--lg"] {
+        --vaadin-dialog-overlay-width: min(90vw, 42rem);
+    }
+
+    vaadin-dialog-overlay[theme~="h-dialog"][theme~="h-dialog--xl"] {
+        --vaadin-dialog-overlay-width: min(90vw, 56rem);
+    }
+
+    vaadin-dialog-overlay[theme~="h-dialog"][theme~="h-dialog--full"] {
+        --vaadin-dialog-overlay-width: 95vw;
+    }
+}

@@ -1,17 +1,17 @@
 package com.iyensoft.vaadin.flow.internal.components.builders;
 
+import com.holonplatform.vaadin.flow.internal.lumo.FlexDirection;
+import com.holonplatform.vaadin.flow.components.utils.UIUtils;
 import com.holonplatform.vaadin.flow.internal.components.builders.AbstractComponentConfigurator;
+import com.holonplatform.vaadin.flow.internal.lumo.SeparatorColor;
+import com.holonplatform.vaadin.flow.vaadinplus.Layout;
 import com.iyensoft.vaadin.flow.components.builders.IyenDetailBuilder;
 import com.iyensoft.vaadin.flow.components.builders.IyenMasterBuilder;
 import com.iyensoft.vaadin.flow.components.builders.IyenViewConfigurator;
-import com.holonplatform.vaadin.flow.components.utils.UIUtils;
-import com.holonplatform.vaadin.flow.internal.lumo.SeparatorColor;
-import com.holonplatform.vaadin.flow.vaadinplus.Layout;
 import com.vaadin.flow.component.HasEnabled;
 import com.vaadin.flow.component.HasSize;
 import com.vaadin.flow.component.HasStyle;
 import com.vaadin.flow.component.shared.HasTooltip;
-import com.vaadin.flow.theme.lumo.LumoUtility;
 
 import java.util.Optional;
 
@@ -34,9 +34,11 @@ public abstract class AbstractIyenViewConfigurator<C extends IyenViewConfigurato
     }
 
     private void configureLayout() {
-        getComponent().setId("Root Layout");
-        getComponent().setSizeFull();
-        getComponent().addClassNames(LumoUtility.Padding.SMALL, LumoUtility.FlexDirection.ROW);
+        // Use custom CSS classes instead of forbidden LumoUtility tokens
+        getComponent().addClassName("flex-row");
+        getComponent().addClassName("padding-small");
+        getComponent().setFlexDirection(FlexDirection.ROW);
+        getComponent().addClassName("iven-view-root");
     }
 
     @Override
@@ -58,13 +60,12 @@ public abstract class AbstractIyenViewConfigurator<C extends IyenViewConfigurato
     }
 
     @Override
-    public C separator(SeparatorColor  separatorColor) {
+    public C separator(SeparatorColor separatorColor) {
         if (getComponent().getComponentCount() > 2) {
-            getComponent().addComponentAtIndex(1,UIUtils.separator(separatorColor));
+            getComponent().addComponentAtIndex(1, UIUtils.separator(separatorColor));
         } else {
             getComponent().add(UIUtils.separator(separatorColor));
         }
-
         return getConfigurator();
     }
 

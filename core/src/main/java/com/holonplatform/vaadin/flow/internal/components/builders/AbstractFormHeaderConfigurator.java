@@ -15,7 +15,6 @@ import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.FlexLayout;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.shared.HasTooltip;
-import com.vaadin.flow.theme.lumo.LumoUtility;
 
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -27,8 +26,6 @@ public abstract class AbstractFormHeaderConfigurator<C extends FormHeaderConfigu
     private LabelBuilder<?> title;
     private final FlexLayout rightSide = new FlexLayout();
 
-
-    
     /**
      * Constructor.
      *
@@ -36,14 +33,12 @@ public abstract class AbstractFormHeaderConfigurator<C extends FormHeaderConfigu
      */
     public AbstractFormHeaderConfigurator(HorizontalLayout component) {
         super(component);
-        rightSide.addClassNames(LumoUtility.FlexDirection.ROW, LumoUtility.Overflow.HIDDEN, LumoUtility.Gap.LARGE, LumoUtility.AlignItems.BASELINE);
-
+        rightSide.addClassNames("form-header__right-side");
         Components.configure(getComponent())
                 .spacing()
                 .alignItems(FlexComponent.Alignment.BASELINE)
                 .fullWidth()
                 .add(rightSide)
-
                 .justifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
     }
 
@@ -56,7 +51,6 @@ public abstract class AbstractFormHeaderConfigurator<C extends FormHeaderConfigu
     @Override
     public C title(LabelBuilder<?> title) {
         this.title = title;
-//        this.title.styleNames( LumoUtility.Padding.SMALL);
         getComponent().addComponentAsFirst(this.title.build());
         return getConfigurator();
     }
@@ -84,8 +78,7 @@ public abstract class AbstractFormHeaderConfigurator<C extends FormHeaderConfigu
         if (configurator != null) {
             Button button = Components.button()
                     .icon("lumo", "cross")
-                    .tooltip("Close")
-                    .styleNames(LumoUtility.Margin.Left.AUTO)
+                    .styleNames("btn--push-start")
                     .tertiaryInline()
                     .build();
             configurator.accept(ButtonConfigurator.configure(button));
@@ -116,7 +109,12 @@ public abstract class AbstractFormHeaderConfigurator<C extends FormHeaderConfigu
 
     @Override
     public C horizontalRule() {
-        getComponent().addClassNames(LumoUtility.Border.BOTTOM, LumoUtility.BorderColor.CONTRAST_10);
+        getComponent().addClassName("form-header--bordered");
+        return getConfigurator();
+    }
+
+    public C bordered() {
+        getComponent().addClassNames("form-header--bordered");
         return getConfigurator();
     }
 
@@ -125,8 +123,6 @@ public abstract class AbstractFormHeaderConfigurator<C extends FormHeaderConfigu
         getComponent().addComponentAsFirst(component);
         return getConfigurator();
     }
-
-
 
     /**
      * If the component supports {@link HasSize}, return the component as {@link HasSize}.
@@ -168,5 +164,5 @@ public abstract class AbstractFormHeaderConfigurator<C extends FormHeaderConfigu
         return Optional.empty();
     }
 
-    
+
 }

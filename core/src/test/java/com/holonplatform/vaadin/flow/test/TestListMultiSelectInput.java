@@ -15,30 +15,10 @@
  */
 package com.holonplatform.vaadin.flow.test;
 
-import static com.holonplatform.vaadin.flow.test.util.DatastoreTestUtils.CODE;
-import static com.holonplatform.vaadin.flow.test.util.DatastoreTestUtils.DESCRIPTION;
-import static com.holonplatform.vaadin.flow.test.util.DatastoreTestUtils.TARGET1;
-import static com.holonplatform.vaadin.flow.test.util.DatastoreTestUtils.TEST1;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.stream.Collectors;
-
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-
 import com.holonplatform.core.Validator;
 import com.holonplatform.core.Validator.ValidationException;
 import com.holonplatform.core.datastore.Datastore;
+import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.core.property.Property;
 import com.holonplatform.core.property.PropertyBox;
 import com.holonplatform.core.property.StringProperty;
@@ -50,17 +30,31 @@ import com.holonplatform.vaadin.flow.components.Input;
 import com.holonplatform.vaadin.flow.components.MultiSelect;
 import com.holonplatform.vaadin.flow.components.Selectable.SelectionMode;
 import com.holonplatform.vaadin.flow.components.ValidatableMultiSelect;
+import com.holonplatform.vaadin.flow.components.builders.ItemSetConfigurator.ItemCaptionGenerator;
 import com.holonplatform.vaadin.flow.components.builders.ListMultiSelectConfigurator;
 import com.holonplatform.vaadin.flow.components.builders.ListMultiSelectConfigurator.ListMultiSelectInputBuilder;
 import com.holonplatform.vaadin.flow.components.builders.ListMultiSelectConfigurator.PropertyListMultiSelectInputBuilder;
 import com.holonplatform.vaadin.flow.data.ItemConverter;
 import com.holonplatform.vaadin.flow.test.util.BeanTest1;
 import com.holonplatform.vaadin.flow.test.util.ComponentTestUtils;
+import com.holonplatform.vaadin.flow.test.util.LocalizationTestUtils;
 import com.holonplatform.vaadin.flow.test.util.TestAdapter;
+import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ComponentUtil;
 import com.vaadin.flow.component.listbox.MultiSelectListBox;
 import com.vaadin.flow.data.provider.DataProvider;
 import com.vaadin.flow.data.provider.Query;
+import com.vaadin.flow.data.renderer.ComponentRenderer;
+import com.vaadin.flow.data.renderer.TextRenderer;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+
+import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Collectors;
+
+import static com.holonplatform.vaadin.flow.test.util.DatastoreTestUtils.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class TestListMultiSelectInput {
 
@@ -207,6 +201,67 @@ public class TestListMultiSelectInput {
 
 		input = Input.multiListSelect(String.class).readOnly().build();
 		assertTrue(input.isReadOnly());
+
+	}
+
+	@Test
+	public void testAriaLabel() {
+
+		Input<Set<String>> input = Input.multiListSelect(String.class).ariaLabel("List multi select").build();
+		assertEquals("List multi select", input.getComponent().getElement().getAttribute("aria-label"));
+
+		input = Input.multiListSelect(String.class).ariaLabelledBy("list-multi-select-label").build();
+		assertEquals("list-multi-select-label", input.getComponent().getElement().getAttribute("aria-labelledby"));
+
+		LocalizationTestUtils.withTestLocalizationContext(() -> {
+			Input<Set<String>> localized = Input.multiListSelect(String.class)
+					.ariaLabel(Localizable.builder().message("test").messageCode("test.code").build()).build();
+			assertEquals("TestUS", localized.getComponent().getElement().getAttribute("aria-label"));
+		});
+
+		LocalizationTestUtils.withTestLocalizationContext(() -> {
+			Input<Set<String>> localized = Input.multiListSelect(String.class).deferLocalization()
+					.ariaLabel(Localizable.builder().message("test").messageCode("test.code").build()).build();
+			assertEquals("test", localized.getComponent().getElement().getAttribute("aria-label"));
+			ComponentUtil.onComponentAttach(localized.getComponent(), true);
+			assertEquals("TestUS", localized.getComponent().getElement().getAttribute("aria-label"));
+		});
+
+	}
+
+	@Test
+	public void testItemCaptions() {
+
+		final ItemCaptionGenerator<String> icg = value -> "X";
+
+		Input<Set<String>> input = Input.multiListSelect(String.class).itemCaptionGenerator(icg).build();
+		assertTrue(input.getComponent() instanceof MultiSelectListBox<?>);
+		assertEquals("X", getLabel(input, "aaa"));
+
+		final java.util.List<Integer> ints = Arrays.asList(1, 2, 3);
+
+		Input<Set<Integer>> input2 = Input.multiListSelect(Integer.class).items(ints).itemCaption(1, "N.1")
+				.itemCaption(2, "N.2").itemCaption(3, "N.3").build();
+		assertEquals("N.1", getLabel(input2, ints.get(0)));
+		assertEquals("N.2", getLabel(input2, ints.get(1)));
+		assertEquals("N.3", getLabel(input2, ints.get(2)));
+
+		LocalizationTestUtils.withTestLocalizationContext(() -> {
+			Input<Set<Integer>> input3 = Input.multiListSelect(Integer.class).items(ints)
+					.itemCaption(2, Localizable.builder().message("test").messageCode("test.code").build()).build();
+			assertEquals("1", getLabel(input3, ints.get(0)));
+			assertEquals("TestUS", getLabel(input3, ints.get(1)));
+			assertEquals("3", getLabel(input3, ints.get(2)));
+		});
+
+		LocalizationTestUtils.withTestLocalizationContext(() -> {
+			Input<Set<Integer>> input3 = Input.multiListSelect(Integer.class).items(ints).deferLocalization()
+					.itemCaption(2, "test", "test.code").build();
+			assertEquals("1", getLabel(input3, ints.get(0)));
+			assertEquals("test", getLabel(input3, ints.get(1)));
+			ComponentUtil.onComponentAttach(input3.getComponent(), true);
+			assertEquals("TestUS", getLabel(input3, ints.get(1)));
+		});
 
 	}
 
@@ -614,6 +669,20 @@ public class TestListMultiSelectInput {
 
 	private class SetValue {
 		Set<String> value = new HashSet<>();
+	}
+
+	@SuppressWarnings("unchecked")
+	private static <ITEM> String getLabel(Input<?> input, ITEM item) {
+		assertTrue(input.getComponent() instanceof MultiSelectListBox<?>);
+		ComponentRenderer<?, ?> renderer = ((MultiSelectListBox<?>) input.getComponent()).getItemRenderer();
+		if (renderer instanceof TextRenderer) {
+			TextRenderer<ITEM> textRenderer = (TextRenderer<ITEM>) renderer;
+			Component component = textRenderer.createComponent(item);
+			if (component != null) {
+				return component.getElement().getText();
+			}
+		}
+		return null;
 	}
 
 }

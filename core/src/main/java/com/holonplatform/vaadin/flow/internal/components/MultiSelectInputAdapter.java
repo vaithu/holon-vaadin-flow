@@ -21,7 +21,6 @@ import com.holonplatform.core.internal.utils.ObjectUtils;
 import com.holonplatform.vaadin.flow.components.HasLabel;
 import com.holonplatform.vaadin.flow.components.HasPlaceholder;
 import com.holonplatform.vaadin.flow.components.*;
-import com.holonplatform.vaadin.flow.components.builders.KeyNotifierConfigurator;
 import com.holonplatform.vaadin.flow.components.events.InvalidChangeEventNotifier;
 import com.holonplatform.vaadin.flow.components.events.ReadonlyChangeListener;
 import com.holonplatform.vaadin.flow.components.support.InputAdaptersContainer;
@@ -51,7 +50,7 @@ public class MultiSelectInputAdapter<T, ITEM, C extends Component> implements Mu
 
 	private static final long serialVersionUID = -238233555416654435L;
 
-	private final List<SelectionListener<T>> selectionListeners = new LinkedList<>();
+	private final List<SelectionListener<T>> selectionListeners = new ArrayList<>();
 
 	private final Input<Set<ITEM>> input;
 
@@ -105,7 +104,8 @@ public class MultiSelectInputAdapter<T, ITEM, C extends Component> implements Mu
 		if (values == null) {
 			return Collections.emptySet();
 		}
-		return values.stream().map(v -> itemConverter.getItem(v).orElse(null)).filter(i -> i != null)
+		return values.stream()
+				.flatMap(v -> itemConverter.getItem(v).stream())
 				.collect(Collectors.toSet());
 	}
 

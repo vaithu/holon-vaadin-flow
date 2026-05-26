@@ -15,11 +15,10 @@
  */
 package com.holonplatform.vaadin.flow.internal.components.builders;
 
-import java.util.function.Consumer;
-
 import com.holonplatform.core.internal.utils.ObjectUtils;
 import com.holonplatform.vaadin.flow.components.builders.ComponentConfigurator;
 import com.holonplatform.vaadin.flow.components.builders.ComponentConfigurator.BaseComponentConfigurator;
+import com.holonplatform.vaadin.flow.components.builders.SignalBindings;
 import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ComponentEventListener;
@@ -27,12 +26,14 @@ import com.vaadin.flow.component.DetachEvent;
 import com.vaadin.flow.dom.DomEventListener;
 import com.vaadin.flow.dom.Element;
 
+import java.util.function.Consumer;
+
 /**
  * Default {@link ComponentConfigurator} implementation.
  *
  * @since 5.2.0
  */
-public class DefaultComponentConfigurator implements BaseComponentConfigurator {
+public class DefaultComponentConfigurator implements BaseComponentConfigurator, SignalBindings.Owner {
 
 	private final Component component;
 
@@ -99,6 +100,11 @@ public class DefaultComponentConfigurator implements BaseComponentConfigurator {
 	public DefaultComponentConfigurator withDetachListener(ComponentEventListener<DetachEvent> listener) {
 		component.addDetachListener(listener);
 		return this;
+	}
+
+	@Override
+	public Component getSignalBindingOwner() {
+		return component;
 	}
 
 	/*

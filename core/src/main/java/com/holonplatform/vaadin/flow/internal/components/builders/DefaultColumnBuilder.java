@@ -1,8 +1,10 @@
 package com.holonplatform.vaadin.flow.internal.components.builders;
 
+import com.holonplatform.vaadin.flow.components.Components;
 import com.holonplatform.vaadin.flow.components.builders.ColumnBuilder;
-import com.holonplatform.vaadin.flow.enums.ColumnSize;
+import com.holonplatform.vaadin.flow.enums.ColSpan;
 import com.holonplatform.vaadin.flow.internal.components.DefaultXPanel;
+import com.iyensoft.vaadin.flow.utils.responsive.ViewMode;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.dom.Element;
@@ -10,10 +12,14 @@ import com.vaadin.flow.dom.Element;
 public class DefaultColumnBuilder implements ColumnBuilder {
 
     private final Div columnDiv;
-    
+
     public DefaultColumnBuilder() {
-        columnDiv = new Div();
+        columnDiv = Components.div().build();
     }
+
+    // -------------------------------------------------------------------------
+    // Content
+    // -------------------------------------------------------------------------
 
     @Override
     public ColumnBuilder column(String... styleNames) {
@@ -28,82 +34,56 @@ public class DefaultColumnBuilder implements ColumnBuilder {
     }
 
     @Override
-    public Div build() {
-        return columnDiv;
-    }
-
-    @Override
     public ColumnBuilder add(Component... components) {
         columnDiv.add(components);
         return this;
     }
 
-    private String calcColumnSize(int column) {
-        return String.valueOf(12 / column);
+    @Override
+    public Div build() {
+        return columnDiv;
     }
 
+    // -------------------------------------------------------------------------
+    // Tailwind-style responsive span
+    // -------------------------------------------------------------------------
+
     @Override
-    public ColumnBuilder small(int column) {
-        columnDiv.addClassName("col-sm-" + calcColumnSize(column));
+    public ColumnBuilder span(int span) {
+        columnDiv.addClassName("col-span-" + span);
         return this;
     }
 
+    /** Equal-division: N items per row → span = 12 / itemsPerRow. */
     @Override
-    public ColumnBuilder medium(int column) {
-        columnDiv.addClassName("col-md-" + calcColumnSize(column));
+    public ColumnBuilder at(ViewMode mode, int itemsPerRow) {
+        columnDiv.addClassName(mode.toCssClass("col-span-" + (12 / itemsPerRow)));
         return this;
     }
 
+    /** Asymmetric: explicit ColSpan constant → uses raw gridSpan directly. */
     @Override
-    public ColumnBuilder large(int column) {
-        columnDiv.addClassName("col-lg-" + calcColumnSize(column));
+    public ColumnBuilder at(ViewMode mode, ColSpan colSpan) {
+        columnDiv.addClassName(mode.toCssClass("col-span-" + colSpan.getGridSpan()));
         return this;
     }
 
-    @Override
-    public ColumnBuilder xLarge(int column) {
-        columnDiv.addClassName("col-xl-" + calcColumnSize(column));
-        return this;
-    }
+    // -------------------------------------------------------------------------
+    // HasStyleConfigurator / HasComponent
+    // -------------------------------------------------------------------------
 
-    @Override
-    public ColumnBuilder xxLarge(int column) {
-        columnDiv.addClassName("col-xxl-" + calcColumnSize(column));
-        return this;
-    }
-
-    /**
-     * Adds one or more CSS style class names to this component.
-     *
-     * @param styleNames The CSS style class names to be added to the component
-     * @return this
-     */
     @Override
     public ColumnBuilder styleNames(String... styleNames) {
         columnDiv.addClassNames(styleNames);
         return this;
     }
 
-    /**
-     * Adds a CSS style class names to this component.
-     * <p>
-     * Multiple styles can be specified as a space-separated list of style names.
-     * </p>
-     *
-     * @param styleName The CSS style class name to be added to the component
-     * @return this
-     */
     @Override
     public ColumnBuilder styleName(String styleName) {
         columnDiv.addClassName(styleName);
         return this;
     }
 
-    /**
-     * Get the UI {@link Component} which represents this object.
-     *
-     * @return the UI component (not null)
-     */
     @Override
     public Component getComponent() {
         return columnDiv;
@@ -114,28 +94,4 @@ public class DefaultColumnBuilder implements ColumnBuilder {
         return columnDiv.getElement();
     }
 
-    @Override
-    public ColumnBuilder small(ColumnSize column) {
-        return small(column.getSize());
-    }
-
-    @Override
-    public ColumnBuilder medium(ColumnSize column) {
-        return medium(column.getSize());
-    }
-
-    @Override
-    public ColumnBuilder large(ColumnSize column) {
-        return large(column.getSize());
-    }
-
-    @Override
-    public ColumnBuilder xLarge(ColumnSize column) {
-        return xLarge(column.getSize());
-    }
-
-    @Override
-    public ColumnBuilder xxLarge(ColumnSize column) {
-        return xxLarge(column.getSize());
-    }
 }

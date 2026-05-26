@@ -308,6 +308,82 @@ public interface ItemListing<T, P> extends ItemSet, Selectable<T>, HasComponent 
 
     GridLazyDataView<T> setItems(CallbackDataProvider.FetchCallback<T, Void> fetchCallback);
 
+    /**
+     * Sets listing items using a fetch callback that also receives the current
+     * combined filter from the provided {@link FilterInputGroup}.
+     * <p>
+     * This is a convenience overload equivalent to:
+     * </p>
+     * <pre>{@code
+     * setItems(FilterInputSupport.fetchCallback(filterGroup, fetchCallback));
+     * }</pre>
+     *
+     * @param filterGroup filter group to resolve the active combined filter from
+     * @param fetchCallback callback that receives query metadata and current filter
+     * @return lazy data view bound to the listing data provider
+     * @since 10.0.0
+     */
+    default GridLazyDataView<T> setItems(
+            FilterInputGroup filterGroup,
+            FilterInputSupport.FilteredFetchCallback<T> fetchCallback) {
+        return setItems(FilterInputSupport.fetchCallback(filterGroup, fetchCallback));
+    }
+
+    /**
+     * Registers a listener to refresh this listing whenever any filter in the
+     * provided group changes.
+     *
+     * @param filterGroup filter group to observe
+     * @return registration to remove the listener
+     * @since 10.0.0
+     */
+    default com.holonplatform.core.Registration refreshOnFilterChange(FilterInputGroup filterGroup) {
+        return FilterInputSupport.refreshOnFilterChange(filterGroup, this);
+    }
+
+    /**
+     * Registers a signal-based refresh effect that reacts to filter signal changes.
+     *
+     * @param filterGroup filter group to observe
+     * @return registration to remove the signal effect
+     * @since 10.0.1
+     */
+    default com.holonplatform.core.Registration refreshOnFilterSignal(FilterInputGroup filterGroup) {
+        return FilterInputSupport.refreshOnFilterSignal(filterGroup, this);
+    }
+
+    /**
+     * Convenience method that sets filtered items and registers auto-refresh on
+     * filter changes in one call.
+     *
+     * @param filterGroup filter group to observe and resolve filters from
+     * @param fetchCallback callback that receives query metadata and current filter
+     * @return registration to remove the auto-refresh listener
+     * @since 10.0.0
+     */
+    default com.holonplatform.core.Registration bindFilters(
+            FilterInputGroup filterGroup,
+            FilterInputSupport.FilteredFetchCallback<T> fetchCallback) {
+        setItems(filterGroup, fetchCallback);
+        return refreshOnFilterChange(filterGroup);
+    }
+
+    /**
+     * Convenience method that sets filtered items and registers signal-based
+     * auto-refresh on filter changes in one call.
+     *
+     * @param filterGroup filter group to observe and resolve filters from
+     * @param fetchCallback callback that receives query metadata and current filter
+     * @return registration to remove the signal-based auto-refresh effect
+     * @since 10.0.1
+     */
+    default com.holonplatform.core.Registration bindFiltersSignal(
+            FilterInputGroup filterGroup,
+            FilterInputSupport.FilteredFetchCallback<T> fetchCallback) {
+        setItems(filterGroup, fetchCallback);
+        return refreshOnFilterSignal(filterGroup);
+    }
+
     default Optional<T> getFirstItem() {
         return getItemAtIndex(0);
     }
@@ -469,7 +545,7 @@ public interface ItemListing<T, P> extends ItemSet, Selectable<T>, HasComponent 
      * @param <P> Item property type
      * @param <R> Section row type
      */
-    public interface ItemListingSection<P, R extends ItemListingRow<P>> {
+    interface ItemListingSection<P, R extends ItemListingRow<P>> {
 
         /**
          * Get all the section rows, in order from top to bottom.

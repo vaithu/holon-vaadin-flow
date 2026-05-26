@@ -1,0 +1,883 @@
+[INFO] Scanning for projects...
+[WARNING] 
+[WARNING] Some problems were encountered while building the effective model for com.holon-platform.vaadin:holon-vaadin-flow-demo:jar:10.0.0
+[WARNING] 'build.plugins.plugin.version' for org.springframework.boot:spring-boot-maven-plugin is missing. @ line 70, column 21
+[WARNING] 
+[WARNING] It is highly recommended to fix these problems because they threaten the stability of your build.
+[WARNING] 
+[WARNING] For this reason, future Maven versions might no longer support building such malformed projects.
+[WARNING] 
+[INFO] 
+[INFO] ------------< com.holon-platform.vaadin:holon-vaadin-flow >-------------
+[INFO] Building com.holon-platform.vaadin:holon-vaadin-flow 10.0.0
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- jacoco:0.8.12:prepare-agent (pre-unit-test) @ holon-vaadin-flow ---
+[INFO] surefireArgLine set to -javaagent:C:\\Users\\sxp267\\.m2\\repository\\org\\jacoco\\org.jacoco.agent\\0.8.12\\org.jacoco.agent-0.8.12-runtime.jar=destfile=C:\\Users\\sxp267\\IdeaProjects\\holon-vaadin-flow\\core\\target\\coverage-reports\\jacoco-ut.exec
+[INFO] 
+[INFO] --- remote-resources:3.1.0:process (default) @ holon-vaadin-flow ---
+[INFO] Preparing remote bundle com.holon-platform:holon-shared:1.0.6
+[INFO] Copying 6 resources from 1 bundle.
+[INFO] 
+[INFO] --- resources:3.4.0:resources (default-resources) @ holon-vaadin-flow ---
+[INFO] Copying 53 resources from src\main\resources to target\classes
+[INFO] Copying 6 resources from target\maven-shared-archive-resources to target\classes
+[INFO] 
+[INFO] --- compiler:3.15.0:compile (default-compile) @ holon-vaadin-flow ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.4.0:testResources (default-testResources) @ holon-vaadin-flow ---
+[INFO] Copying 4 resources from src\test\resources to target\test-classes
+[INFO] Copying 6 resources from target\maven-shared-archive-resources to target\test-classes
+[INFO] 
+[INFO] --- compiler:3.15.0:testCompile (default-testCompile) @ holon-vaadin-flow ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- surefire:3.5.2:test (default-test) @ holon-vaadin-flow ---
+[INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running com.holonplatform.vaadin.flow.test.AbstractLazyTabsConfiguratorTest
+[INFO] Tests run: 10, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.010 s -- in com.holonplatform.vaadin.flow.test.AbstractLazyTabsConfiguratorTest
+[INFO] Running com.holonplatform.vaadin.flow.test.TestAbstractIyenView
+OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+[INFO] Tests run: 17, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.087 s -- in com.holonplatform.vaadin.flow.test.TestAbstractIyenView
+[INFO] Running com.holonplatform.vaadin.flow.test.TestAbstractIyenViewModeSynchronization
+WARNING: A Java agent has been loaded dynamically (C:\Users\sxp267\.m2\repository\net\bytebuddy\byte-buddy-agent\1.17.8\byte-buddy-agent-1.17.8.jar)
+WARNING: If a serviceability tool is in use, please run with -XX:+EnableDynamicAgentLoading to hide this warning
+WARNING: If a serviceability tool is not in use, please run with -Djdk.instrument.traceUsage for more information
+WARNING: Dynamic loading of agents will be disallowed by default in a future release
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 2.023 s -- in com.holonplatform.vaadin.flow.test.TestAbstractIyenViewModeSynchronization
+[INFO] Running com.holonplatform.vaadin.flow.test.TestAccordion
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.041 s -- in com.holonplatform.vaadin.flow.test.TestAccordion
+[INFO] Running com.holonplatform.vaadin.flow.test.TestAccordionBuilder
+[INFO] Tests run: 32, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.161 s -- in com.holonplatform.vaadin.flow.test.TestAccordionBuilder
+[INFO] Running com.holonplatform.vaadin.flow.test.TestAlert
+[INFO] Tests run: 42, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.254 s -- in com.holonplatform.vaadin.flow.test.TestAlert
+[INFO] Running com.holonplatform.vaadin.flow.test.TestAlertDialog
+[INFO] Tests run: 107, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.533 s -- in com.holonplatform.vaadin.flow.test.TestAlertDialog
+[INFO] Running com.holonplatform.vaadin.flow.test.TestAlertModal
+[INFO] Tests run: 20, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.063 s -- in com.holonplatform.vaadin.flow.test.TestAlertModal
+[INFO] Running com.holonplatform.vaadin.flow.test.TestAppBar
+[INFO] Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.017 s -- in com.holonplatform.vaadin.flow.test.TestAppBar
+[INFO] Running com.holonplatform.vaadin.flow.test.TestAvatarBuilder
+[INFO] Tests run: 37, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.056 s -- in com.holonplatform.vaadin.flow.test.TestAvatarBuilder
+[INFO] Running com.holonplatform.vaadin.flow.test.TestBadge
+[INFO] Tests run: 7, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.007 s -- in com.holonplatform.vaadin.flow.test.TestBadge
+[INFO] Running com.holonplatform.vaadin.flow.test.TestBeanListing
+2026-05-02 21:36:21,611 INFO [com.holonplatform.datastore.jdbc] - JdbcDatastore initialized - Using dialect [com.holonplatform.datastore.jdbc.composer.dialect.H2Dialect]
+2026-05-02 21:36:21,655 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.id AS id1_0, test_0_0.name AS name2_0 FROM test2 test_0_0]
+2026-05-02 21:36:21,754 INFO [com.holonplatform.datastore.jdbc] - JdbcDatastore initialized - Using dialect [com.holonplatform.datastore.jdbc.composer.dialect.H2Dialect]
+2026-05-02 21:36:21,789 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.id AS id1_0, test_0_0.name AS name2_0 FROM test2 test_0_0 limit 2147483647 offset 0]
+2026-05-02 21:36:21,830 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.id AS id1_0, test_0_0.name AS name2_0 FROM test2 test_0_0 WHERE LOWER(test_0_0.name) LIKE ? ESCAPE '!' limit 2147483647 offset 0]
+2026-05-02 21:36:21,872 INFO [com.holonplatform.datastore.jdbc] - JdbcDatastore initialized - Using dialect [com.holonplatform.datastore.jdbc.composer.dialect.H2Dialect]
+2026-05-02 21:36:21,907 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [INSERT INTO test_version_grid (id,name) VALUES (?,?)]
+2026-05-02 21:36:21,952 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.id AS id1_0, test_0_0.name AS name2_0, test_0_0.version AS vers3_0 FROM test_version_grid test_0_0]
+2026-05-02 21:36:21,963 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT COUNT(vers_0_0.id) AS coun1_0 FROM test_version_grid vers_0_0 WHERE vers_0_0.id=?]
+2026-05-02 21:36:21,974 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [UPDATE test_version_grid vers_0_0 SET vers_0_0.id=?,vers_0_0.version=?,vers_0_0.name=? WHERE vers_0_0.id=?]
+2026-05-02 21:36:21,984 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT vers_0_0.id AS id1_0, vers_0_0.name AS name2_0, vers_0_0.version AS vers3_0 FROM test_version_grid vers_0_0 WHERE vers_0_0.id=?]
+2026-05-02 21:36:21,988 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.id AS id1_0, test_0_0.name AS name2_0, test_0_0.version AS vers3_0 FROM test_version_grid test_0_0]
+2026-05-02 21:36:22,002 INFO [com.holonplatform.datastore.jdbc] - JdbcDatastore initialized - Using dialect [com.holonplatform.datastore.jdbc.composer.dialect.H2Dialect]
+2026-05-02 21:36:22,010 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.id AS id1_0, test_0_0.name AS name2_0 FROM test2 test_0_0 limit 2147483647 offset 0]
+2026-05-02 21:36:22,019 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.id AS id1_0, test_0_0.name AS name2_0 FROM test2 test_0_0 WHERE LOWER(test_0_0.name) LIKE ? ESCAPE '!' limit 2147483647 offset 0]
+2026-05-02 21:36:22,034 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.id AS id1_0, test_0_0.name AS name2_0 FROM test2 test_0_0 WHERE (LOWER(test_0_0.name) LIKE ? ESCAPE '!') AND (test_0_0.id=?) limit 2147483647 offset 0]
+2026-05-02 21:36:22,070 INFO [com.holonplatform.datastore.jdbc] - JdbcDatastore initialized - Using dialect [com.holonplatform.datastore.jdbc.composer.dialect.H2Dialect]
+2026-05-02 21:36:22,076 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.instant_epoch AS inst1_0 FROM test_constructor_with_instant test_0_0]
+2026-05-02 21:36:22,087 INFO [com.holonplatform.datastore.jdbc] - JdbcDatastore initialized - Using dialect [com.holonplatform.datastore.jdbc.composer.dialect.H2Dialect]
+2026-05-02 21:36:22,104 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.id AS id1_0, test_0_0.name AS name2_0 FROM test2 test_0_0 limit 2147483647 offset 0]
+2026-05-02 21:36:22,113 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.id AS id1_0, test_0_0.name AS name2_0 FROM test2 test_0_0 WHERE LOWER(test_0_0.name) LIKE ? ESCAPE '!' limit 2147483647 offset 0]
+2026-05-02 21:36:22,136 INFO [com.holonplatform.datastore.jdbc] - JdbcDatastore initialized - Using dialect [com.holonplatform.datastore.jdbc.composer.dialect.H2Dialect]
+2026-05-02 21:36:22,140 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.id AS id1_0, test_0_0.name AS name2_0 FROM test2 test_0_0 WHERE test_0_0.id=?]
+2026-05-02 21:36:22,180 INFO [com.holonplatform.datastore.jdbc] - JdbcDatastore initialized - Using dialect [com.holonplatform.datastore.jdbc.composer.dialect.H2Dialect]
+2026-05-02 21:36:22,183 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.id AS id1_0, test_0_0.name AS name2_0 FROM test2 test_0_0 limit 2147483647 offset 0]
+2026-05-02 21:36:22,192 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.id AS id1_0, test_0_0.name AS name2_0 FROM test2 test_0_0 WHERE LOWER(test_0_0.name) LIKE ? ESCAPE '!' limit 2147483647 offset 0]
+2026-05-02 21:36:22,209 INFO [com.holonplatform.datastore.jdbc] - JdbcDatastore initialized - Using dialect [com.holonplatform.datastore.jdbc.composer.dialect.H2Dialect]
+2026-05-02 21:36:22,285 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.active AS acti1_0, test_0_0.age AS age2_0, test_0_0.birth AS birt3_0, test_0_0.id AS id4_0, test_0_0.name AS name5_0 FROM test_filter_types test_0_0 limit 2147483647 offset 0]
+2026-05-02 21:36:22,291 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.active AS acti1_0, test_0_0.age AS age2_0, test_0_0.birth AS birt3_0, test_0_0.id AS id4_0, test_0_0.name AS name5_0 FROM test_filter_types test_0_0 WHERE LOWER(test_0_0.name) LIKE ? ESCAPE '!' limit 2147483647 offset 0]
+2026-05-02 21:36:22,295 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.active AS acti1_0, test_0_0.age AS age2_0, test_0_0.birth AS birt3_0, test_0_0.id AS id4_0, test_0_0.name AS name5_0 FROM test_filter_types test_0_0 WHERE test_0_0.age=? limit 2147483647 offset 0]
+2026-05-02 21:36:22,302 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.active AS acti1_0, test_0_0.age AS age2_0, test_0_0.birth AS birt3_0, test_0_0.id AS id4_0, test_0_0.name AS name5_0 FROM test_filter_types test_0_0 WHERE (test_0_0.age>=?) AND (test_0_0.age<=?) limit 2147483647 offset 0]
+2026-05-02 21:36:22,308 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.active AS acti1_0, test_0_0.age AS age2_0, test_0_0.birth AS birt3_0, test_0_0.id AS id4_0, test_0_0.name AS name5_0 FROM test_filter_types test_0_0 WHERE test_0_0.active=? limit 2147483647 offset 0]
+2026-05-02 21:36:22,313 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.active AS acti1_0, test_0_0.age AS age2_0, test_0_0.birth AS birt3_0, test_0_0.id AS id4_0, test_0_0.name AS name5_0 FROM test_filter_types test_0_0 WHERE test_0_0.birth=? limit 2147483647 offset 0]
+2026-05-02 21:36:22,336 INFO [com.holonplatform.datastore.jdbc] - JdbcDatastore initialized - Using dialect [com.holonplatform.datastore.jdbc.composer.dialect.H2Dialect]
+2026-05-02 21:36:22,341 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.instant_epoch AS inst1_0 FROM test_instant_epoch_range test_0_0 limit 2147483647 offset 0]
+2026-05-02 21:36:22,344 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.instant_epoch AS inst1_0 FROM test_instant_epoch_range test_0_0 WHERE test_0_0.instant_epoch>=? limit 2147483647 offset 0]
+2026-05-02 21:36:22,347 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.instant_epoch AS inst1_0 FROM test_instant_epoch_range test_0_0 WHERE (test_0_0.instant_epoch>=?) AND (test_0_0.instant_epoch<=?) limit 2147483647 offset 0]
+2026-05-02 21:36:22,362 INFO [com.holonplatform.datastore.jdbc] - JdbcDatastore initialized - Using dialect [com.holonplatform.datastore.jdbc.composer.dialect.H2Dialect]
+2026-05-02 21:36:22,367 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.id AS id1_0, test_0_0.name AS name2_0 FROM test2 test_0_0 WHERE test_0_0.id<=? ORDER BY test_0_0.name desc limit 1 offset 0]
+2026-05-02 21:36:22,379 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.id AS id1_0, test_0_0.name AS name2_0 FROM test2 test_0_0 WHERE test_0_0.id<=? ORDER BY test_0_0.name desc limit 1 offset 1]
+2026-05-02 21:36:22,399 INFO [com.holonplatform.datastore.jdbc] - JdbcDatastore initialized - Using dialect [com.holonplatform.datastore.jdbc.composer.dialect.H2Dialect]
+2026-05-02 21:36:22,402 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.id AS id1_0, test_0_0.name AS name2_0 FROM test2 test_0_0 limit 2147483647 offset 0]
+2026-05-02 21:36:22,409 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.id AS id1_0, test_0_0.name AS name2_0 FROM test2 test_0_0 WHERE LOWER(test_0_0.name) LIKE ? ESCAPE '!' limit 2147483647 offset 0]
+2026-05-02 21:36:22,417 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.id AS id1_0, test_0_0.name AS name2_0 FROM test2 test_0_0 WHERE (LOWER(test_0_0.name) LIKE ? ESCAPE '!') AND ((test_0_0.id>=?) AND (test_0_0.id<=?)) limit 2147483647 offset 0]
+2026-05-02 21:36:22,425 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.id AS id1_0, test_0_0.name AS name2_0 FROM test2 test_0_0 WHERE (test_0_0.id>=?) AND (test_0_0.id<=?) limit 2147483647 offset 0]
+2026-05-02 21:36:22,479 INFO [com.holonplatform.datastore.jdbc] - JdbcDatastore initialized - Using dialect [com.holonplatform.datastore.jdbc.composer.dialect.H2Dialect]
+2026-05-02 21:36:22,481 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.id AS id1_0, test_0_0.name AS name2_0 FROM test2 test_0_0]
+2026-05-02 21:36:22,490 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.id AS id1_0, test_0_0.name AS name2_0 FROM test2 test_0_0]
+2026-05-02 21:36:22,500 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.id AS id1_0, test_0_0.name AS name2_0 FROM test2 test_0_0 WHERE test_0_0.id<?]
+2026-05-02 21:36:22,512 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.id AS id1_0, test_0_0.name AS name2_0 FROM test2 test_0_0 WHERE test_0_0.id<?]
+2026-05-02 21:36:22,525 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.id AS id1_0, test_0_0.name AS name2_0 FROM test2 test_0_0 ORDER BY test_0_0.name desc]
+2026-05-02 21:36:22,535 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.id AS id1_0, test_0_0.name AS name2_0 FROM test2 test_0_0 WHERE test_0_0.id<=? ORDER BY test_0_0.name desc]
+2026-05-02 21:36:22,544 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.id AS id1_0, test_0_0.name AS name2_0 FROM test2 test_0_0 ORDER BY test_0_0.name desc]
+[INFO] Tests run: 37, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.845 s -- in com.holonplatform.vaadin.flow.test.TestBeanListing
+[INFO] Running com.holonplatform.vaadin.flow.test.TestBeanPropertyInputForm
+2026-05-02 21:36:22,635 INFO [com.holonplatform.datastore.jdbc] - JdbcDatastore initialized - Using dialect [com.holonplatform.datastore.jdbc.composer.dialect.H2Dialect]
+2026-05-02 21:36:22,638 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [INSERT INTO test_form_db (name,id) VALUES (?,?)]
+2026-05-02 21:36:22,640 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT dbbe_0_0.id AS id1_0, dbbe_0_0.name AS name2_0, dbbe_0_0.version AS vers3_0 FROM test_form_db dbbe_0_0 WHERE dbbe_0_0.id=?]
+2026-05-02 21:36:22,661 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT COUNT(dbbe_0_0.id) AS coun1_0 FROM test_form_db dbbe_0_0 WHERE dbbe_0_0.id=?]
+2026-05-02 21:36:22,662 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [UPDATE test_form_db dbbe_0_0 SET dbbe_0_0.name=?,dbbe_0_0.id=?,dbbe_0_0.version=? WHERE dbbe_0_0.id=?]
+2026-05-02 21:36:22,663 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT dbbe_0_0.id AS id1_0, dbbe_0_0.name AS name2_0, dbbe_0_0.version AS vers3_0 FROM test_form_db dbbe_0_0 WHERE dbbe_0_0.id=?]
+[INFO] Tests run: 18, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.138 s -- in com.holonplatform.vaadin.flow.test.TestBeanPropertyInputForm
+[INFO] Running com.holonplatform.vaadin.flow.test.TestBeanUtils
+PropertyBox - PROPERTIES: ["age":int],["firstName":java.lang.String],["lastName":java.lang.String] - VALUES: ("age"=0)
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.005 s -- in com.holonplatform.vaadin.flow.test.TestBeanUtils
+[INFO] Running com.holonplatform.vaadin.flow.test.TestBooleanInput
+[INFO] Tests run: 14, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.040 s -- in com.holonplatform.vaadin.flow.test.TestBooleanInput
+[INFO] Running com.holonplatform.vaadin.flow.test.TestBooleanInputBuilder
+[INFO] Tests run: 11, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.008 s -- in com.holonplatform.vaadin.flow.test.TestBooleanInputBuilder
+[INFO] Running com.holonplatform.vaadin.flow.test.TestBreadcrumb
+[INFO] Tests run: 55, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.177 s -- in com.holonplatform.vaadin.flow.test.TestBreadcrumb
+[INFO] Running com.holonplatform.vaadin.flow.test.TestBulkActionBuilder
+[INFO] Tests run: 12, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.029 s -- in com.holonplatform.vaadin.flow.test.TestBulkActionBuilder
+[INFO] Running com.holonplatform.vaadin.flow.test.TestButton
+[INFO] Tests run: 11, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.020 s -- in com.holonplatform.vaadin.flow.test.TestButton
+[INFO] Running com.holonplatform.vaadin.flow.test.TestButtonBuilder
+[INFO] Running com.holonplatform.vaadin.flow.test.TestButtonBuilder$BorderTests
+[INFO] Tests run: 23, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.008 s -- in com.holonplatform.vaadin.flow.test.TestButtonBuilder$BorderTests
+[INFO] Running com.holonplatform.vaadin.flow.test.TestButtonBuilder$VariantTests
+[INFO] Tests run: 10, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.013 s -- in com.holonplatform.vaadin.flow.test.TestButtonBuilder$VariantTests
+[INFO] Tests run: 0, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.035 s -- in com.holonplatform.vaadin.flow.test.TestButtonBuilder
+[INFO] Running com.holonplatform.vaadin.flow.test.TestButtonGroup
+[INFO] Tests run: 22, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.027 s -- in com.holonplatform.vaadin.flow.test.TestButtonGroup
+[INFO] Running com.holonplatform.vaadin.flow.test.TestCardBuilder
+[INFO] Tests run: 10, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.014 s -- in com.holonplatform.vaadin.flow.test.TestCardBuilder
+[INFO] Running com.holonplatform.vaadin.flow.test.TestColor
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.011 s -- in com.holonplatform.vaadin.flow.test.TestColor
+[INFO] Running com.holonplatform.vaadin.flow.test.TestColumnBuilder
+[INFO] Tests run: 29, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.015 s -- in com.holonplatform.vaadin.flow.test.TestColumnBuilder
+[INFO] Running com.holonplatform.vaadin.flow.test.TestComponentView
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.008 s -- in com.holonplatform.vaadin.flow.test.TestComponentView
+[INFO] Running com.holonplatform.vaadin.flow.test.TestContextMenu
+[INFO] Tests run: 7, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.019 s -- in com.holonplatform.vaadin.flow.test.TestContextMenu
+[INFO] Running com.holonplatform.vaadin.flow.test.TestContextMenuBuilder
+[INFO] Tests run: 7, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.008 s -- in com.holonplatform.vaadin.flow.test.TestContextMenuBuilder
+[INFO] Running com.holonplatform.vaadin.flow.test.TestDateInput
+[INFO] Tests run: 15, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.082 s -- in com.holonplatform.vaadin.flow.test.TestDateInput
+[INFO] Running com.holonplatform.vaadin.flow.test.TestDateInputBuilder
+[INFO] Tests run: 9, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.006 s -- in com.holonplatform.vaadin.flow.test.TestDateInputBuilder
+[INFO] Running com.holonplatform.vaadin.flow.test.TestDateTimeInput
+[INFO] Tests run: 15, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.077 s -- in com.holonplatform.vaadin.flow.test.TestDateTimeInput
+[INFO] Running com.holonplatform.vaadin.flow.test.TestDateTimeInputBuilder
+[INFO] Tests run: 9, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.007 s -- in com.holonplatform.vaadin.flow.test.TestDateTimeInputBuilder
+[INFO] Running com.holonplatform.vaadin.flow.test.TestDefaultFormHeaderConfigurator
+[INFO] Tests run: 18, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.150 s -- in com.holonplatform.vaadin.flow.test.TestDefaultFormHeaderConfigurator
+[INFO] Running com.holonplatform.vaadin.flow.test.TestDefaultFormResponsiveStepBuilder
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.048 s -- in com.holonplatform.vaadin.flow.test.TestDefaultFormResponsiveStepBuilder
+[INFO] Running com.holonplatform.vaadin.flow.test.TestDefaultMobileGridColumnBuilder
+[INFO] Tests run: 20, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.064 s -- in com.holonplatform.vaadin.flow.test.TestDefaultMobileGridColumnBuilder
+[INFO] Running com.holonplatform.vaadin.flow.test.TestDeleteOperation
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.001 s -- in com.holonplatform.vaadin.flow.test.TestDeleteOperation
+[INFO] Running com.holonplatform.vaadin.flow.test.TestDetailsBuilder
+[INFO] Tests run: 19, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.031 s -- in com.holonplatform.vaadin.flow.test.TestDetailsBuilder
+[INFO] Running com.holonplatform.vaadin.flow.test.TestDialogBuilder
+[INFO] Running com.holonplatform.vaadin.flow.test.TestDialogBuilder$QuestionDialogTests
+[INFO] Tests run: 9, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.034 s -- in com.holonplatform.vaadin.flow.test.TestDialogBuilder$QuestionDialogTests
+[INFO] Running com.holonplatform.vaadin.flow.test.TestDialogBuilder$MessageCodeTests
+[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.001 s -- in com.holonplatform.vaadin.flow.test.TestDialogBuilder$MessageCodeTests
+[INFO] Running com.holonplatform.vaadin.flow.test.TestDialogBuilder$SaveDialogTests
+[INFO] Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.017 s -- in com.holonplatform.vaadin.flow.test.TestDialogBuilder$SaveDialogTests
+[INFO] Running com.holonplatform.vaadin.flow.test.TestDialogBuilder$SaveAndNewDialogTests
+[INFO] Tests run: 7, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.009 s -- in com.holonplatform.vaadin.flow.test.TestDialogBuilder$SaveAndNewDialogTests
+[INFO] Running com.holonplatform.vaadin.flow.test.TestDialogBuilder$EnumTests
+[INFO] Tests run: 11, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.005 s -- in com.holonplatform.vaadin.flow.test.TestDialogBuilder$EnumTests
+[INFO] Running com.holonplatform.vaadin.flow.test.TestDialogBuilder$MessageDialogTests
+[INFO] Tests run: 30, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.028 s -- in com.holonplatform.vaadin.flow.test.TestDialogBuilder$MessageDialogTests
+[INFO] Running com.holonplatform.vaadin.flow.test.TestDialogBuilder$ConfirmDialogTests
+[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.012 s -- in com.holonplatform.vaadin.flow.test.TestDialogBuilder$ConfirmDialogTests
+[INFO] Running com.holonplatform.vaadin.flow.test.TestDialogBuilder$DeleteDialogTests
+[INFO] Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.020 s -- in com.holonplatform.vaadin.flow.test.TestDialogBuilder$DeleteDialogTests
+[INFO] Running com.holonplatform.vaadin.flow.test.TestDialogBuilder$LifecycleCallbackTests
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.002 s -- in com.holonplatform.vaadin.flow.test.TestDialogBuilder$LifecycleCallbackTests
+[INFO] Tests run: 0, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.130 s -- in com.holonplatform.vaadin.flow.test.TestDialogBuilder
+[INFO] Running com.holonplatform.vaadin.flow.test.TestDivBuilder
+[INFO] Tests run: 25, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.025 s -- in com.holonplatform.vaadin.flow.test.TestDivBuilder
+[INFO] Running com.holonplatform.vaadin.flow.test.TestDoubleLabel
+[INFO] Tests run: 10, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.004 s -- in com.holonplatform.vaadin.flow.test.TestDoubleLabel
+[INFO] Running com.holonplatform.vaadin.flow.test.TestEmpty
+[INFO] Tests run: 35, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.021 s -- in com.holonplatform.vaadin.flow.test.TestEmpty
+[INFO] Running com.holonplatform.vaadin.flow.test.TestEmptyBuilder
+[INFO] Running com.holonplatform.vaadin.flow.test.TestEmptyBuilder$DescriptionTests
+[INFO] Tests run: 7, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.002 s -- in com.holonplatform.vaadin.flow.test.TestEmptyBuilder$DescriptionTests
+[INFO] Running com.holonplatform.vaadin.flow.test.TestEmptyBuilder$TitleTests
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.001 s -- in com.holonplatform.vaadin.flow.test.TestEmptyBuilder$TitleTests
+[INFO] Running com.holonplatform.vaadin.flow.test.TestEmptyBuilder$ActionTests
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.002 s -- in com.holonplatform.vaadin.flow.test.TestEmptyBuilder$ActionTests
+[INFO] Running com.holonplatform.vaadin.flow.test.TestEmptyBuilder$IconTests
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.002 s -- in com.holonplatform.vaadin.flow.test.TestEmptyBuilder$IconTests
+[INFO] Tests run: 0, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.010 s -- in com.holonplatform.vaadin.flow.test.TestEmptyBuilder
+[INFO] Running com.holonplatform.vaadin.flow.test.TestFilterableSingleSelectInput
+2026-05-02 21:36:23,820 INFO [com.holonplatform.datastore.jdbc] - JdbcDatastore initialized - Using dialect [com.holonplatform.datastore.jdbc.composer.dialect.H2Dialect]
+2026-05-02 21:36:23,832 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT COUNT(*) AS coun1_0 FROM test1 test_0_0]
+2026-05-02 21:36:23,838 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.code AS code1_0, test_0_0.description AS desc2_0 FROM test1 test_0_0]
+2026-05-02 21:36:23,845 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT COUNT(*) AS coun1_0 FROM test1 test_0_0]
+2026-05-02 21:36:23,850 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.code AS code1_0, test_0_0.description AS desc2_0 FROM test1 test_0_0]
+2026-05-02 21:36:23,855 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.code AS code1_0, test_0_0.description AS desc2_0 FROM test1 test_0_0 WHERE test_0_0.code LIKE ? ESCAPE '!']
+2026-05-02 21:36:23,861 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT COUNT(*) AS coun1_0 FROM test1 test_0_0]
+2026-05-02 21:36:23,867 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.code AS code1_0, test_0_0.description AS desc2_0 FROM test1 test_0_0]
+2026-05-02 21:36:23,878 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT COUNT(*) AS coun1_0 FROM test1 test_0_0]
+2026-05-02 21:36:23,883 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.code AS code1_0, test_0_0.description AS desc2_0 FROM test1 test_0_0]
+2026-05-02 21:36:23,889 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.code AS code1_0, test_0_0.description AS desc2_0 FROM test1 test_0_0 WHERE LOWER(test_0_0.code) LIKE ? ESCAPE '!']
+2026-05-02 21:36:23,895 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT COUNT(*) AS coun1_0 FROM test1 test_0_0]
+2026-05-02 21:36:23,900 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.code AS code1_0, test_0_0.description AS desc2_0 FROM test1 test_0_0]
+2026-05-02 21:36:23,907 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT COUNT(*) AS coun1_0 FROM test1 test_0_0 WHERE test_0_0.code=?]
+2026-05-02 21:36:23,913 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.code AS code1_0, test_0_0.description AS desc2_0 FROM test1 test_0_0 WHERE test_0_0.code=?]
+2026-05-02 21:36:23,922 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT COUNT(*) AS coun1_0 FROM test1 test_0_0 WHERE test_0_0.code IS NOT NULL]
+2026-05-02 21:36:23,927 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.code AS code1_0, test_0_0.description AS desc2_0 FROM test1 test_0_0 WHERE test_0_0.code IS NOT NULL ORDER BY test_0_0.description desc]
+2026-05-02 21:36:23,934 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT COUNT(*) AS coun1_0 FROM test1 test_0_0]
+2026-05-02 21:36:23,940 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.code AS code1_0, test_0_0.description AS desc2_0 FROM test1 test_0_0 WHERE test_0_0.description LIKE ? ESCAPE '!']
+2026-05-02 21:36:23,951 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT COUNT(*) AS coun1_0 FROM test1 test_0_0]
+2026-05-02 21:36:23,958 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.code AS code1_0, test_0_0.description AS desc2_0 FROM test1 test_0_0 WHERE test_0_0.description LIKE ? ESCAPE '!']
+2026-05-02 21:36:23,965 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT COUNT(*) AS coun1_0 FROM test1 test_0_0]
+2026-05-02 21:36:23,971 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.code AS code1_0, test_0_0.description AS desc2_0 FROM test1 test_0_0 WHERE test_0_0.description LIKE ? ESCAPE '!']
+2026-05-02 21:36:23,985 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT COUNT(*) AS coun1_0 FROM test1 test_0_0 WHERE test_0_0.code=?]
+2026-05-02 21:36:23,991 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.code AS code1_0, test_0_0.description AS desc2_0 FROM test1 test_0_0 WHERE (test_0_0.description LIKE ? ESCAPE '!') AND (test_0_0.code=?)]
+2026-05-02 21:36:23,997 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT COUNT(*) AS coun1_0 FROM test1 test_0_0]
+2026-05-02 21:36:24,006 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.code AS code1_0 FROM test1 test_0_0]
+[INFO] Tests run: 24, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.275 s -- in com.holonplatform.vaadin.flow.test.TestFilterableSingleSelectInput
+[INFO] Running com.holonplatform.vaadin.flow.test.TestFilterableSingleSelectInputBuilder
+[INFO] Tests run: 12, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.006 s -- in com.holonplatform.vaadin.flow.test.TestFilterableSingleSelectInputBuilder
+[INFO] Running com.holonplatform.vaadin.flow.test.TestFilterInput
+[INFO] Tests run: 66, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.065 s -- in com.holonplatform.vaadin.flow.test.TestFilterInput
+[INFO] Running com.holonplatform.vaadin.flow.test.TestFilterOperator
+[INFO] Tests run: 15, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.006 s -- in com.holonplatform.vaadin.flow.test.TestFilterOperator
+[INFO] Running com.holonplatform.vaadin.flow.test.TestFlexBoxLayoutBuilder
+[INFO] Running com.holonplatform.vaadin.flow.test.TestFlexBoxLayoutBuilder$AddTests
+[INFO] Tests run: 9, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.002 s -- in com.holonplatform.vaadin.flow.test.TestFlexBoxLayoutBuilder$AddTests
+[INFO] Running com.holonplatform.vaadin.flow.test.TestFlexBoxLayoutBuilder$StylingTests
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.001 s -- in com.holonplatform.vaadin.flow.test.TestFlexBoxLayoutBuilder$StylingTests
+[INFO] Running com.holonplatform.vaadin.flow.test.TestFlexBoxLayoutBuilder$FlexTests
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.002 s -- in com.holonplatform.vaadin.flow.test.TestFlexBoxLayoutBuilder$FlexTests
+[INFO] Tests run: 0, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.037 s -- in com.holonplatform.vaadin.flow.test.TestFlexBoxLayoutBuilder
+[INFO] Running com.holonplatform.vaadin.flow.test.TestFlexLayoutBuilder
+[INFO] Running com.holonplatform.vaadin.flow.test.TestFlexLayoutBuilder$AddTests
+[INFO] Tests run: 12, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.002 s -- in com.holonplatform.vaadin.flow.test.TestFlexLayoutBuilder$AddTests
+[INFO] Running com.holonplatform.vaadin.flow.test.TestFlexLayoutBuilder$FlexTests
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.002 s -- in com.holonplatform.vaadin.flow.test.TestFlexLayoutBuilder$FlexTests
+[INFO] Tests run: 0, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.009 s -- in com.holonplatform.vaadin.flow.test.TestFlexLayoutBuilder
+[INFO] Running com.holonplatform.vaadin.flow.test.TestFlowStepper
+[INFO] Tests run: 70, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.047 s -- in com.holonplatform.vaadin.flow.test.TestFlowStepper
+[INFO] Running com.holonplatform.vaadin.flow.test.TestFont
+[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.002 s -- in com.holonplatform.vaadin.flow.test.TestFont
+[INFO] Running com.holonplatform.vaadin.flow.test.TestFormHeaderConfigurator
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.003 s -- in com.holonplatform.vaadin.flow.test.TestFormHeaderConfigurator
+[INFO] Running com.holonplatform.vaadin.flow.test.TestFormLayoutBuilder
+[INFO] Running com.holonplatform.vaadin.flow.test.TestFormLayoutBuilder$AddTests
+[INFO] Tests run: 18, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.002 s -- in com.holonplatform.vaadin.flow.test.TestFormLayoutBuilder$AddTests
+[INFO] Tests run: 0, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.014 s -- in com.holonplatform.vaadin.flow.test.TestFormLayoutBuilder
+[INFO] Running com.holonplatform.vaadin.flow.test.TestFormLayoutResponsiveSteps
+{"minWidth":"576px","columns":3,"labelsPosition":"top"}
+{"minWidth":"768px","columns":4,"labelsPosition":"top"}
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.005 s -- in com.holonplatform.vaadin.flow.test.TestFormLayoutResponsiveSteps
+[INFO] Running com.holonplatform.vaadin.flow.test.TestGridHeaderBuilder
+[INFO] Running com.holonplatform.vaadin.flow.test.TestGridHeaderBuilder$DefaultActionTests
+[INFO] Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.001 s -- in com.holonplatform.vaadin.flow.test.TestGridHeaderBuilder$DefaultActionTests
+[INFO] Tests run: 0, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.012 s -- in com.holonplatform.vaadin.flow.test.TestGridHeaderBuilder
+[INFO] Running com.holonplatform.vaadin.flow.test.TestHeader
+[INFO] Tests run: 11, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.008 s -- in com.holonplatform.vaadin.flow.test.TestHeader
+[INFO] Running com.holonplatform.vaadin.flow.test.TestHeaderBuilder
+[INFO] Running com.holonplatform.vaadin.flow.test.TestHeaderBuilder$TabTests
+[INFO] Tests run: 11, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.002 s -- in com.holonplatform.vaadin.flow.test.TestHeaderBuilder$TabTests
+[INFO] Running com.holonplatform.vaadin.flow.test.TestHeaderBuilder$PrefixTests
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.002 s -- in com.holonplatform.vaadin.flow.test.TestHeaderBuilder$PrefixTests
+[INFO] Running com.holonplatform.vaadin.flow.test.TestHeaderBuilder$ActionTests
+[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.005 s -- in com.holonplatform.vaadin.flow.test.TestHeaderBuilder$ActionTests
+[INFO] Tests run: 0, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.020 s -- in com.holonplatform.vaadin.flow.test.TestHeaderBuilder
+[INFO] Running com.holonplatform.vaadin.flow.test.TestHeadingLevel
+[INFO] Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.002 s -- in com.holonplatform.vaadin.flow.test.TestHeadingLevel
+[INFO] Running com.holonplatform.vaadin.flow.test.TestHighlight
+[INFO] Tests run: 12, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.017 s -- in com.holonplatform.vaadin.flow.test.TestHighlight
+[INFO] Running com.holonplatform.vaadin.flow.test.TestHorizontalLayoutBuilder
+[INFO] Tests run: 9, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.004 s -- in com.holonplatform.vaadin.flow.test.TestHorizontalLayoutBuilder
+[INFO] Running com.holonplatform.vaadin.flow.test.TestInput
+[INFO] Tests run: 7, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.020 s -- in com.holonplatform.vaadin.flow.test.TestInput
+[INFO] Running com.holonplatform.vaadin.flow.test.TestInputGroup
+[INFO] Tests run: 42, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.302 s -- in com.holonplatform.vaadin.flow.test.TestInputGroup
+[INFO] Running com.holonplatform.vaadin.flow.test.TestInputGroupBuilder
+[INFO] Tests run: 41, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.025 s -- in com.holonplatform.vaadin.flow.test.TestInputGroupBuilder
+[INFO] Running com.holonplatform.vaadin.flow.test.TestInputGroupText
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.008 s -- in com.holonplatform.vaadin.flow.test.TestInputGroupText
+[INFO] Running com.holonplatform.vaadin.flow.test.TestInputOTP
+[INFO] Tests run: 64, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.057 s -- in com.holonplatform.vaadin.flow.test.TestInputOTP
+[INFO] Running com.holonplatform.vaadin.flow.test.TestInputOTPBuilder
+[INFO] Running com.holonplatform.vaadin.flow.test.TestInputOTPBuilder$GroupTests
+[INFO] Tests run: 12, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.003 s -- in com.holonplatform.vaadin.flow.test.TestInputOTPBuilder$GroupTests
+[INFO] Tests run: 0, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.009 s -- in com.holonplatform.vaadin.flow.test.TestInputOTPBuilder
+[INFO] Running com.holonplatform.vaadin.flow.test.TestInputRenderer
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.022 s -- in com.holonplatform.vaadin.flow.test.TestInputRenderer
+[INFO] Running com.holonplatform.vaadin.flow.test.TestItemListingPaginationBarLazy
+[INFO] Tests run: 36, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.133 s -- in com.holonplatform.vaadin.flow.test.TestItemListingPaginationBarLazy
+[INFO] Running com.holonplatform.vaadin.flow.test.TestItemListingPaginationBarSignal
+[INFO] Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.589 s -- in com.holonplatform.vaadin.flow.test.TestItemListingPaginationBarSignal
+[INFO] Running com.holonplatform.vaadin.flow.test.TestIyenView
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.005 s -- in com.holonplatform.vaadin.flow.test.TestIyenView
+[INFO] Running com.holonplatform.vaadin.flow.test.TestKanbanBoard
+[INFO] Tests run: 15, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.179 s -- in com.holonplatform.vaadin.flow.test.TestKanbanBoard
+[INFO] Running com.holonplatform.vaadin.flow.test.TestKeyValuePair
+[INFO] Tests run: 11, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.016 s -- in com.holonplatform.vaadin.flow.test.TestKeyValuePair
+[INFO] Running com.holonplatform.vaadin.flow.test.TestKeyValuePairs
+[INFO] Tests run: 14, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.012 s -- in com.holonplatform.vaadin.flow.test.TestKeyValuePairs
+[INFO] Running com.holonplatform.vaadin.flow.test.TestLabel
+[INFO] Tests run: 9, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.034 s -- in com.holonplatform.vaadin.flow.test.TestLabel
+[INFO] Running com.holonplatform.vaadin.flow.test.TestLabelBuilder
+[INFO] Running com.holonplatform.vaadin.flow.test.TestLabelBuilder$BuildTests
+[INFO] Tests run: 21, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.002 s -- in com.holonplatform.vaadin.flow.test.TestLabelBuilder$BuildTests
+[INFO] Tests run: 0, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.007 s -- in com.holonplatform.vaadin.flow.test.TestLabelBuilder
+[INFO] Running com.holonplatform.vaadin.flow.test.TestLayoutBuilder
+[INFO] Running com.holonplatform.vaadin.flow.test.TestLayoutBuilder$AddTests
+[INFO] Tests run: 23, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.002 s -- in com.holonplatform.vaadin.flow.test.TestLayoutBuilder$AddTests
+[INFO] Tests run: 0, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.006 s -- in com.holonplatform.vaadin.flow.test.TestLayoutBuilder
+[INFO] Running com.holonplatform.vaadin.flow.test.TestLazyTabsBuilder
+[INFO] Tests run: 10, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.016 s -- in com.holonplatform.vaadin.flow.test.TestLazyTabsBuilder
+[INFO] Running com.holonplatform.vaadin.flow.test.TestListItem
+[INFO] Tests run: 10, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.017 s -- in com.holonplatform.vaadin.flow.test.TestListItem
+[INFO] Running com.holonplatform.vaadin.flow.test.TestListMultiSelectInput
+2026-05-02 21:36:25,826 WARN [com.holonplatform.vaadin] - Cannot notify validation error [Value is required and must not be empty] on component [com.holonplatform.vaadin.flow.internal.components.ValidatableMultiSelectAdapter@56a7a9b]: the component does not implement com.vaadin.flow.component.HasValidation. Provide a suitable ValidationStatusHandler to handle the validation error notification.
+2026-05-02 21:36:25,830 WARN [com.holonplatform.vaadin] - Cannot notify validation error [Value is required] on component [com.holonplatform.vaadin.flow.internal.components.ValidatableMultiSelectAdapter@4190689d]: the component does not implement com.vaadin.flow.component.HasValidation. Provide a suitable ValidationStatusHandler to handle the validation error notification.
+2026-05-02 21:36:25,836 WARN [com.holonplatform.vaadin] - Cannot notify validation error [Value is required] on component [com.holonplatform.vaadin.flow.internal.components.ValidatableMultiSelectAdapter@4190689d]: the component does not implement com.vaadin.flow.component.HasValidation. Provide a suitable ValidationStatusHandler to handle the validation error notification.
+2026-05-02 21:36:25,838 WARN [com.holonplatform.vaadin] - Cannot notify validation error [Value is required] on component [com.holonplatform.vaadin.flow.internal.components.ValidatableMultiSelectAdapter@4190689d]: the component does not implement com.vaadin.flow.component.HasValidation. Provide a suitable ValidationStatusHandler to handle the validation error notification.
+2026-05-02 21:36:25,862 INFO [com.holonplatform.datastore.jdbc] - JdbcDatastore initialized - Using dialect [com.holonplatform.datastore.jdbc.composer.dialect.H2Dialect]
+2026-05-02 21:36:25,863 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.code AS code1_0, test_0_0.description AS desc2_0 FROM test1 test_0_0]
+2026-05-02 21:36:25,875 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT COUNT(*) AS coun1_0 FROM test1 test_0_0]
+2026-05-02 21:36:25,881 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.code AS code1_0, test_0_0.description AS desc2_0 FROM test1 test_0_0]
+2026-05-02 21:36:25,888 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.code AS code1_0, test_0_0.description AS desc2_0 FROM test1 test_0_0]
+2026-05-02 21:36:25,896 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT COUNT(*) AS coun1_0 FROM test1 test_0_0]
+2026-05-02 21:36:25,903 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.code AS code1_0, test_0_0.description AS desc2_0 FROM test1 test_0_0]
+2026-05-02 21:36:25,910 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.code AS code1_0, test_0_0.description AS desc2_0 FROM test1 test_0_0]
+2026-05-02 21:36:25,928 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT COUNT(*) AS coun1_0 FROM test1 test_0_0]
+2026-05-02 21:36:25,932 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.code AS code1_0, test_0_0.description AS desc2_0 FROM test1 test_0_0]
+2026-05-02 21:36:25,939 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.code AS code1_0, test_0_0.description AS desc2_0 FROM test1 test_0_0]
+2026-05-02 21:36:25,945 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT COUNT(*) AS coun1_0 FROM test1 test_0_0]
+2026-05-02 21:36:25,951 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.code AS code1_0, test_0_0.description AS desc2_0 FROM test1 test_0_0]
+2026-05-02 21:36:25,957 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.code AS code1_0, test_0_0.description AS desc2_0 FROM test1 test_0_0]
+2026-05-02 21:36:25,963 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT COUNT(*) AS coun1_0 FROM test1 test_0_0 WHERE test_0_0.code=?]
+2026-05-02 21:36:25,971 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.code AS code1_0, test_0_0.description AS desc2_0 FROM test1 test_0_0 WHERE test_0_0.code=?]
+2026-05-02 21:36:25,980 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.code AS code1_0, test_0_0.description AS desc2_0 FROM test1 test_0_0]
+2026-05-02 21:36:25,988 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT COUNT(*) AS coun1_0 FROM test1 test_0_0 WHERE test_0_0.code IS NOT NULL]
+2026-05-02 21:36:25,995 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.code AS code1_0, test_0_0.description AS desc2_0 FROM test1 test_0_0 WHERE test_0_0.code IS NOT NULL ORDER BY test_0_0.description desc]
+2026-05-02 21:36:26,002 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.code AS code1_0 FROM test1 test_0_0]
+2026-05-02 21:36:26,009 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT COUNT(*) AS coun1_0 FROM test1 test_0_0]
+2026-05-02 21:36:26,016 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.code AS code1_0 FROM test1 test_0_0]
+[INFO] Tests run: 14, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.260 s -- in com.holonplatform.vaadin.flow.test.TestListMultiSelectInput
+[INFO] Running com.holonplatform.vaadin.flow.test.TestListMultiSelectInputBuilder
+[INFO] Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.006 s -- in com.holonplatform.vaadin.flow.test.TestListMultiSelectInputBuilder
+[INFO] Running com.holonplatform.vaadin.flow.test.TestListSingleSelectInput
+2026-05-02 21:36:26,078 WARN [com.holonplatform.vaadin] - Cannot notify validation error [Value is required] on component [com.holonplatform.vaadin.flow.internal.components.ValidatableSingleSelectAdapter@20117fad]: the component does not implement com.vaadin.flow.component.HasValidation. Provide a suitable ValidationStatusHandler to handle the validation error notification.
+2026-05-02 21:36:26,079 WARN [com.holonplatform.vaadin] - Cannot notify validation error [Value is required] on component [com.holonplatform.vaadin.flow.internal.components.ValidatableSingleSelectAdapter@5154b936]: the component does not implement com.vaadin.flow.component.HasValidation. Provide a suitable ValidationStatusHandler to handle the validation error notification.
+2026-05-02 21:36:26,081 WARN [com.holonplatform.vaadin] - Cannot notify validation error [Value is required] on component [com.holonplatform.vaadin.flow.internal.components.ValidatableSingleSelectAdapter@5154b936]: the component does not implement com.vaadin.flow.component.HasValidation. Provide a suitable ValidationStatusHandler to handle the validation error notification.
+2026-05-02 21:36:26,083 WARN [com.holonplatform.vaadin] - Cannot notify validation error [Value is required] on component [com.holonplatform.vaadin.flow.internal.components.ValidatableSingleSelectAdapter@5154b936]: the component does not implement com.vaadin.flow.component.HasValidation. Provide a suitable ValidationStatusHandler to handle the validation error notification.
+2026-05-02 21:36:26,103 INFO [com.holonplatform.datastore.jdbc] - JdbcDatastore initialized - Using dialect [com.holonplatform.datastore.jdbc.composer.dialect.H2Dialect]
+2026-05-02 21:36:26,104 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.code AS code1_0, test_0_0.description AS desc2_0 FROM test1 test_0_0]
+2026-05-02 21:36:26,117 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT COUNT(*) AS coun1_0 FROM test1 test_0_0]
+2026-05-02 21:36:26,124 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.code AS code1_0, test_0_0.description AS desc2_0 FROM test1 test_0_0]
+2026-05-02 21:36:26,133 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.code AS code1_0, test_0_0.description AS desc2_0 FROM test1 test_0_0]
+2026-05-02 21:36:26,142 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT COUNT(*) AS coun1_0 FROM test1 test_0_0]
+2026-05-02 21:36:26,149 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.code AS code1_0, test_0_0.description AS desc2_0 FROM test1 test_0_0]
+2026-05-02 21:36:26,155 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.code AS code1_0, test_0_0.description AS desc2_0 FROM test1 test_0_0]
+2026-05-02 21:36:26,162 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT COUNT(*) AS coun1_0 FROM test1 test_0_0]
+2026-05-02 21:36:26,169 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.code AS code1_0, test_0_0.description AS desc2_0 FROM test1 test_0_0]
+2026-05-02 21:36:26,176 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.code AS code1_0, test_0_0.description AS desc2_0 FROM test1 test_0_0]
+2026-05-02 21:36:26,193 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT COUNT(*) AS coun1_0 FROM test1 test_0_0]
+2026-05-02 21:36:26,202 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.code AS code1_0, test_0_0.description AS desc2_0 FROM test1 test_0_0]
+2026-05-02 21:36:26,211 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.code AS code1_0, test_0_0.description AS desc2_0 FROM test1 test_0_0 WHERE LOWER(test_0_0.code) LIKE ? ESCAPE '!']
+2026-05-02 21:36:26,219 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.code AS code1_0, test_0_0.description AS desc2_0 FROM test1 test_0_0]
+2026-05-02 21:36:26,226 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT COUNT(*) AS coun1_0 FROM test1 test_0_0]
+2026-05-02 21:36:26,232 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.code AS code1_0, test_0_0.description AS desc2_0 FROM test1 test_0_0]
+2026-05-02 21:36:26,242 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.code AS code1_0, test_0_0.description AS desc2_0 FROM test1 test_0_0]
+2026-05-02 21:36:26,248 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT COUNT(*) AS coun1_0 FROM test1 test_0_0 WHERE test_0_0.code=?]
+2026-05-02 21:36:26,254 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.code AS code1_0, test_0_0.description AS desc2_0 FROM test1 test_0_0 WHERE test_0_0.code=?]
+2026-05-02 21:36:26,262 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.code AS code1_0, test_0_0.description AS desc2_0 FROM test1 test_0_0]
+2026-05-02 21:36:26,268 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT COUNT(*) AS coun1_0 FROM test1 test_0_0 WHERE test_0_0.code IS NOT NULL]
+2026-05-02 21:36:26,274 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.code AS code1_0, test_0_0.description AS desc2_0 FROM test1 test_0_0 WHERE test_0_0.code IS NOT NULL ORDER BY test_0_0.description desc]
+2026-05-02 21:36:26,281 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.code AS code1_0 FROM test1 test_0_0]
+2026-05-02 21:36:26,290 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT COUNT(*) AS coun1_0 FROM test1 test_0_0]
+2026-05-02 21:36:26,297 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.code AS code1_0 FROM test1 test_0_0]
+[INFO] Tests run: 16, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.277 s -- in com.holonplatform.vaadin.flow.test.TestListSingleSelectInput
+[INFO] Running com.holonplatform.vaadin.flow.test.TestListSingleSelectInputBuilder
+[INFO] Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.006 s -- in com.holonplatform.vaadin.flow.test.TestListSingleSelectInputBuilder
+[INFO] Running com.holonplatform.vaadin.flow.test.TestLocalDateInput
+[INFO] Tests run: 15, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.046 s -- in com.holonplatform.vaadin.flow.test.TestLocalDateInput
+[INFO] Running com.holonplatform.vaadin.flow.test.TestLocalDateInputBuilder
+[INFO] Tests run: 13, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.009 s -- in com.holonplatform.vaadin.flow.test.TestLocalDateInputBuilder
+[INFO] Running com.holonplatform.vaadin.flow.test.TestLocalDateTimeInput
+[INFO] Tests run: 15, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.056 s -- in com.holonplatform.vaadin.flow.test.TestLocalDateTimeInput
+[INFO] Running com.holonplatform.vaadin.flow.test.TestLocalDateTimeInputBuilder
+[INFO] Tests run: 9, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.008 s -- in com.holonplatform.vaadin.flow.test.TestLocalDateTimeInputBuilder
+[INFO] Running com.holonplatform.vaadin.flow.test.TestLocalizationProvider
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.076 s -- in com.holonplatform.vaadin.flow.test.TestLocalizationProvider
+[INFO] Running com.holonplatform.vaadin.flow.test.TestLocalTimeInput
+[INFO] Tests run: 14, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.021 s -- in com.holonplatform.vaadin.flow.test.TestLocalTimeInput
+[INFO] Running com.holonplatform.vaadin.flow.test.TestLocalTimeInputBuilder
+[INFO] Tests run: 9, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.004 s -- in com.holonplatform.vaadin.flow.test.TestLocalTimeInputBuilder
+[INFO] Running com.holonplatform.vaadin.flow.test.TestMasterDetailDetailSync
+[INFO] Tests run: 18, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.196 s -- in com.holonplatform.vaadin.flow.test.TestMasterDetailDetailSync
+[INFO] Running com.holonplatform.vaadin.flow.test.TestMasterDetailLayout
+2026-05-02 21:36:26,777 WARN [com.iyensoft.vaadin.flow.components.MasterDetailLayout] - DataChanged listener threw an exception
+java.lang.RuntimeException: simulated error
+	at com.holonplatform.vaadin.flow.test.TestMasterDetailLayout.lambda$notifyDataChanged_listenerThrows_doesNotPropagateException$14(TestMasterDetailLayout.java:213)
+	at com.iyensoft.vaadin.flow.components.MasterDetailLayout.lambda$notifyDataChanged$1(MasterDetailLayout.java:399)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at com.iyensoft.vaadin.flow.components.MasterDetailLayout.notifyDataChanged(MasterDetailLayout.java:397)
+	at org.junit.jupiter.api.AssertDoesNotThrow.assertDoesNotThrow(AssertDoesNotThrow.java:52)
+	at org.junit.jupiter.api.AssertDoesNotThrow.assertDoesNotThrow(AssertDoesNotThrow.java:43)
+	at org.junit.jupiter.api.Assertions.assertDoesNotThrow(Assertions.java:3314)
+	at com.holonplatform.vaadin.flow.test.TestMasterDetailLayout.notifyDataChanged_listenerThrows_doesNotPropagateException(TestMasterDetailLayout.java:217)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:701)
+	at org.junit.platform.commons.support.ReflectionSupport.invokeMethod(ReflectionSupport.java:502)
+	at org.junit.jupiter.engine.support.MethodReflectionUtils.invoke(MethodReflectionUtils.java:45)
+	at org.junit.jupiter.engine.execution.MethodInvocation.proceed(MethodInvocation.java:61)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain$ValidatingInvocation.proceed(InvocationInterceptorChain.java:124)
+	at org.junit.jupiter.engine.extension.TimeoutExtension.intercept(TimeoutExtension.java:163)
+	at org.junit.jupiter.engine.extension.TimeoutExtension.interceptTestableMethod(TimeoutExtension.java:148)
+	at org.junit.jupiter.engine.extension.TimeoutExtension.interceptTestMethod(TimeoutExtension.java:86)
+	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker$ReflectiveInterceptorCall.lambda$ofVoidMethod$0(InterceptingExecutableInvoker.java:123)
+	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker.lambda$invoke$0(InterceptingExecutableInvoker.java:105)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain$InterceptedInvocation.proceed(InvocationInterceptorChain.java:99)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain.proceed(InvocationInterceptorChain.java:66)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain.chainAndInvoke(InvocationInterceptorChain.java:47)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain.invoke(InvocationInterceptorChain.java:39)
+	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker.invoke(InterceptingExecutableInvoker.java:104)
+	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker.invoke(InterceptingExecutableInvoker.java:98)
+	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker.invokeVoid(InterceptingExecutableInvoker.java:71)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.lambda$invokeTestMethod$0(TestMethodTestDescriptor.java:219)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:74)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.invokeTestMethod(TestMethodTestDescriptor.java:215)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.execute(TestMethodTestDescriptor.java:157)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.execute(TestMethodTestDescriptor.java:70)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$2(NodeTestTask.java:176)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:74)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$1(NodeTestTask.java:166)
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:138)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$0(NodeTestTask.java:164)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:74)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:163)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:116)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.invokeAll(SameThreadHierarchicalTestExecutorService.java:42)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$2(NodeTestTask.java:180)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:74)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$1(NodeTestTask.java:166)
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:138)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$0(NodeTestTask.java:164)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:74)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:163)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:116)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.invokeAll(SameThreadHierarchicalTestExecutorService.java:42)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$2(NodeTestTask.java:180)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:74)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$1(NodeTestTask.java:166)
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:138)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$0(NodeTestTask.java:164)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:74)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:163)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:116)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.submit(SameThreadHierarchicalTestExecutorService.java:36)
+	at org.junit.platform.engine.support.hierarchical.HierarchicalTestExecutor.execute(HierarchicalTestExecutor.java:52)
+	at org.junit.platform.engine.support.hierarchical.HierarchicalTestEngine.execute(HierarchicalTestEngine.java:58)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.executeEngine(EngineExecutionOrchestrator.java:246)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.failOrExecuteEngine(EngineExecutionOrchestrator.java:218)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:179)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:108)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.lambda$execute$0(EngineExecutionOrchestrator.java:66)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.withInterceptedStreams(EngineExecutionOrchestrator.java:157)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:65)
+	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:125)
+	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:114)
+	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:93)
+	at org.junit.platform.launcher.core.DelegatingLauncher.execute(DelegatingLauncher.java:48)
+	at org.junit.platform.launcher.core.InterceptingLauncher.lambda$execute$0(InterceptingLauncher.java:41)
+	at org.junit.platform.launcher.core.ClasspathAlignmentCheckingLauncherInterceptor.intercept(ClasspathAlignmentCheckingLauncherInterceptor.java:25)
+	at org.junit.platform.launcher.core.InterceptingLauncher.execute(InterceptingLauncher.java:40)
+	at org.junit.platform.launcher.core.DelegatingLauncher.execute(DelegatingLauncher.java:48)
+	at org.apache.maven.surefire.junitplatform.LazyLauncher.execute(LazyLauncher.java:56)
+	at org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.execute(JUnitPlatformProvider.java:184)
+	at org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.invokeAllTests(JUnitPlatformProvider.java:148)
+	at org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.invoke(JUnitPlatformProvider.java:122)
+	at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:385)
+	at org.apache.maven.surefire.booter.ForkedBooter.execute(ForkedBooter.java:162)
+	at org.apache.maven.surefire.booter.ForkedBooter.run(ForkedBooter.java:507)
+	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:495)
+[INFO] Tests run: 16, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.052 s -- in com.holonplatform.vaadin.flow.test.TestMasterDetailLayout
+[INFO] Running com.holonplatform.vaadin.flow.test.TestMenuBar
+2026-05-02 21:36:26,837 INFO [com.holonplatform.vaadin.flow.internal.components.builders.AbstractMenuItemConfigurator] - Creating new menu item
+2026-05-02 21:36:26,838 INFO [com.holonplatform.vaadin.flow.internal.components.builders.AbstractMenuItemConfigurator] - Creating new menu item
+2026-05-02 21:36:26,838 INFO [com.holonplatform.vaadin.flow.internal.components.builders.AbstractMenuItemConfigurator] - Creating new menu item
+[INFO] Tests run: 7, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.028 s -- in com.holonplatform.vaadin.flow.test.TestMenuBar
+[INFO] Running com.holonplatform.vaadin.flow.test.TestMenuBarBuilder
+[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.011 s -- in com.holonplatform.vaadin.flow.test.TestMenuBarBuilder
+[INFO] Running com.holonplatform.vaadin.flow.test.TestMobileGridTemplate
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.002 s -- in com.holonplatform.vaadin.flow.test.TestMobileGridTemplate
+[INFO] Running com.holonplatform.vaadin.flow.test.TestNativeButton
+[INFO] Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.029 s -- in com.holonplatform.vaadin.flow.test.TestNativeButton
+[INFO] Running com.holonplatform.vaadin.flow.test.TestNativeButtonBuilder
+[INFO] Tests run: 9, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.004 s -- in com.holonplatform.vaadin.flow.test.TestNativeButtonBuilder
+[INFO] Running com.holonplatform.vaadin.flow.test.TestNotificationBuilder
+[INFO] Running com.holonplatform.vaadin.flow.test.TestNotificationBuilder$VariantTests
+[INFO] Tests run: 16, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.003 s -- in com.holonplatform.vaadin.flow.test.TestNotificationBuilder$VariantTests
+[INFO] Running com.holonplatform.vaadin.flow.test.TestNotificationBuilder$PositionTests
+[INFO] Tests run: 9, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.004 s -- in com.holonplatform.vaadin.flow.test.TestNotificationBuilder$PositionTests
+[INFO] Tests run: 0, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.031 s -- in com.holonplatform.vaadin.flow.test.TestNotificationBuilder
+[INFO] Running com.holonplatform.vaadin.flow.test.TestNumberFieldInput
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.025 s -- in com.holonplatform.vaadin.flow.test.TestNumberFieldInput
+[INFO] Running com.holonplatform.vaadin.flow.test.TestNumberFieldInputBuilder
+[INFO] Tests run: 9, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.010 s -- in com.holonplatform.vaadin.flow.test.TestNumberFieldInputBuilder
+[INFO] Running com.holonplatform.vaadin.flow.test.TestNumberInput
+[INFO] Tests run: 20, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.078 s -- in com.holonplatform.vaadin.flow.test.TestNumberInput
+[INFO] Running com.holonplatform.vaadin.flow.test.TestNumberInputBuilder
+[INFO] Running com.holonplatform.vaadin.flow.test.TestNumberInputBuilder$ConfigTests
+[INFO] Tests run: 11, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.002 s -- in com.holonplatform.vaadin.flow.test.TestNumberInputBuilder$ConfigTests
+[INFO] Tests run: 0, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.007 s -- in com.holonplatform.vaadin.flow.test.TestNumberInputBuilder
+[INFO] Running com.holonplatform.vaadin.flow.test.TestOperationResult
+[INFO] Tests run: 11, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.008 s -- in com.holonplatform.vaadin.flow.test.TestOperationResult
+[INFO] Running com.holonplatform.vaadin.flow.test.TestOptionsMultiSelectInput
+2026-05-02 21:36:27,112 INFO [com.holonplatform.datastore.jdbc] - JdbcDatastore initialized - Using dialect [com.holonplatform.datastore.jdbc.composer.dialect.H2Dialect]
+2026-05-02 21:36:27,113 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.code AS code1_0, test_0_0.description AS desc2_0 FROM test1 test_0_0]
+2026-05-02 21:36:27,128 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT COUNT(*) AS coun1_0 FROM test1 test_0_0]
+2026-05-02 21:36:27,139 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.code AS code1_0, test_0_0.description AS desc2_0 FROM test1 test_0_0]
+2026-05-02 21:36:27,153 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.code AS code1_0, test_0_0.description AS desc2_0 FROM test1 test_0_0]
+2026-05-02 21:36:27,166 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT COUNT(*) AS coun1_0 FROM test1 test_0_0]
+2026-05-02 21:36:27,175 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.code AS code1_0, test_0_0.description AS desc2_0 FROM test1 test_0_0]
+2026-05-02 21:36:27,185 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.code AS code1_0, test_0_0.description AS desc2_0 FROM test1 test_0_0]
+2026-05-02 21:36:27,206 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT COUNT(*) AS coun1_0 FROM test1 test_0_0]
+2026-05-02 21:36:27,213 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.code AS code1_0, test_0_0.description AS desc2_0 FROM test1 test_0_0]
+2026-05-02 21:36:27,221 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.code AS code1_0, test_0_0.description AS desc2_0 FROM test1 test_0_0]
+2026-05-02 21:36:27,228 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT COUNT(*) AS coun1_0 FROM test1 test_0_0]
+2026-05-02 21:36:27,235 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.code AS code1_0, test_0_0.description AS desc2_0 FROM test1 test_0_0]
+2026-05-02 21:36:27,240 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.code AS code1_0, test_0_0.description AS desc2_0 FROM test1 test_0_0]
+2026-05-02 21:36:27,246 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT COUNT(*) AS coun1_0 FROM test1 test_0_0 WHERE test_0_0.code=?]
+2026-05-02 21:36:27,253 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.code AS code1_0, test_0_0.description AS desc2_0 FROM test1 test_0_0 WHERE test_0_0.code=?]
+2026-05-02 21:36:27,261 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.code AS code1_0, test_0_0.description AS desc2_0 FROM test1 test_0_0]
+2026-05-02 21:36:27,270 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT COUNT(*) AS coun1_0 FROM test1 test_0_0 WHERE test_0_0.code IS NOT NULL]
+2026-05-02 21:36:27,276 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.code AS code1_0, test_0_0.description AS desc2_0 FROM test1 test_0_0 WHERE test_0_0.code IS NOT NULL ORDER BY test_0_0.description desc]
+2026-05-02 21:36:27,283 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.code AS code1_0 FROM test1 test_0_0]
+2026-05-02 21:36:27,290 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT COUNT(*) AS coun1_0 FROM test1 test_0_0]
+2026-05-02 21:36:27,295 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.code AS code1_0 FROM test1 test_0_0]
+[INFO] Tests run: 18, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.288 s -- in com.holonplatform.vaadin.flow.test.TestOptionsMultiSelectInput
+[INFO] Running com.holonplatform.vaadin.flow.test.TestOptionsMultiSelectInputBuilder
+[INFO] Tests run: 10, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.005 s -- in com.holonplatform.vaadin.flow.test.TestOptionsMultiSelectInputBuilder
+[INFO] Running com.holonplatform.vaadin.flow.test.TestOptionsSingleSelectInput
+2026-05-02 21:36:27,385 INFO [com.holonplatform.datastore.jdbc] - JdbcDatastore initialized - Using dialect [com.holonplatform.datastore.jdbc.composer.dialect.H2Dialect]
+2026-05-02 21:36:27,387 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.code AS code1_0, test_0_0.description AS desc2_0 FROM test1 test_0_0]
+2026-05-02 21:36:27,400 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT COUNT(*) AS coun1_0 FROM test1 test_0_0]
+2026-05-02 21:36:27,405 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.code AS code1_0, test_0_0.description AS desc2_0 FROM test1 test_0_0]
+2026-05-02 21:36:27,410 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.code AS code1_0, test_0_0.description AS desc2_0 FROM test1 test_0_0]
+2026-05-02 21:36:27,416 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT COUNT(*) AS coun1_0 FROM test1 test_0_0]
+2026-05-02 21:36:27,423 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.code AS code1_0, test_0_0.description AS desc2_0 FROM test1 test_0_0]
+2026-05-02 21:36:27,430 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.code AS code1_0, test_0_0.description AS desc2_0 FROM test1 test_0_0]
+2026-05-02 21:36:27,441 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT COUNT(*) AS coun1_0 FROM test1 test_0_0]
+2026-05-02 21:36:27,446 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.code AS code1_0, test_0_0.description AS desc2_0 FROM test1 test_0_0]
+2026-05-02 21:36:27,451 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.code AS code1_0, test_0_0.description AS desc2_0 FROM test1 test_0_0]
+2026-05-02 21:36:27,458 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT COUNT(*) AS coun1_0 FROM test1 test_0_0]
+2026-05-02 21:36:27,463 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.code AS code1_0, test_0_0.description AS desc2_0 FROM test1 test_0_0]
+2026-05-02 21:36:27,470 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.code AS code1_0, test_0_0.description AS desc2_0 FROM test1 test_0_0]
+2026-05-02 21:36:27,476 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT COUNT(*) AS coun1_0 FROM test1 test_0_0 WHERE test_0_0.code=?]
+2026-05-02 21:36:27,483 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.code AS code1_0, test_0_0.description AS desc2_0 FROM test1 test_0_0 WHERE test_0_0.code=?]
+2026-05-02 21:36:27,491 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.code AS code1_0, test_0_0.description AS desc2_0 FROM test1 test_0_0]
+2026-05-02 21:36:27,500 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT COUNT(*) AS coun1_0 FROM test1 test_0_0 WHERE test_0_0.code IS NOT NULL]
+2026-05-02 21:36:27,505 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.code AS code1_0, test_0_0.description AS desc2_0 FROM test1 test_0_0 WHERE test_0_0.code IS NOT NULL ORDER BY test_0_0.description desc]
+2026-05-02 21:36:27,510 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.code AS code1_0 FROM test1 test_0_0]
+2026-05-02 21:36:27,516 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT COUNT(*) AS coun1_0 FROM test1 test_0_0]
+2026-05-02 21:36:27,522 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.code AS code1_0 FROM test1 test_0_0]
+[INFO] Tests run: 18, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.228 s -- in com.holonplatform.vaadin.flow.test.TestOptionsSingleSelectInput
+[INFO] Running com.holonplatform.vaadin.flow.test.TestOptionsSingleSelectInputBuilder
+[INFO] Tests run: 10, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.006 s -- in com.holonplatform.vaadin.flow.test.TestOptionsSingleSelectInputBuilder
+[INFO] Running com.holonplatform.vaadin.flow.test.TestPagination
+[INFO] Tests run: 47, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.015 s -- in com.holonplatform.vaadin.flow.test.TestPagination
+[INFO] Running com.holonplatform.vaadin.flow.test.TestPanelBuilder
+[INFO] Tests run: 7, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.008 s -- in com.holonplatform.vaadin.flow.test.TestPanelBuilder
+[INFO] Running com.holonplatform.vaadin.flow.test.TestPasswordInput
+[INFO] Tests run: 20, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.046 s -- in com.holonplatform.vaadin.flow.test.TestPasswordInput
+[INFO] Running com.holonplatform.vaadin.flow.test.TestPasswordInputBuilder
+[INFO] Tests run: 13, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.007 s -- in com.holonplatform.vaadin.flow.test.TestPasswordInputBuilder
+[INFO] Running com.holonplatform.vaadin.flow.test.TestPreview
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.001 s -- in com.holonplatform.vaadin.flow.test.TestPreview
+[INFO] Running com.holonplatform.vaadin.flow.test.TestPriceList
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.005 s -- in com.holonplatform.vaadin.flow.test.TestPriceList
+[INFO] Running com.holonplatform.vaadin.flow.test.TestPropertyInputForm
+[INFO] Tests run: 12, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.068 s -- in com.holonplatform.vaadin.flow.test.TestPropertyInputForm
+[INFO] Running com.holonplatform.vaadin.flow.test.TestPropertyInputGroup
+[INFO] Tests run: 15, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.043 s -- in com.holonplatform.vaadin.flow.test.TestPropertyInputGroup
+[INFO] Running com.holonplatform.vaadin.flow.test.TestPropertyListing
+2026-05-02 21:36:27,787 INFO [com.holonplatform.datastore.jdbc] - JdbcDatastore initialized - Using dialect [com.holonplatform.datastore.jdbc.composer.dialect.H2Dialect]
+2026-05-02 21:36:27,804 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.id AS id1_0, test_0_0.name AS name2_0, test_0_0.age AS age3_0, test_0_0.active AS acti4_0, test_0_0.birth AS birt5_0 FROM test_filter_types test_0_0 limit 2147483647 offset 0]
+2026-05-02 21:36:27,805 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.id AS id1_0, test_0_0.name AS name2_0, test_0_0.age AS age3_0, test_0_0.active AS acti4_0, test_0_0.birth AS birt5_0 FROM test_filter_types test_0_0 WHERE LOWER(test_0_0.name) LIKE ? ESCAPE '!' limit 2147483647 offset 0]
+2026-05-02 21:36:27,807 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.id AS id1_0, test_0_0.name AS name2_0, test_0_0.age AS age3_0, test_0_0.active AS acti4_0, test_0_0.birth AS birt5_0 FROM test_filter_types test_0_0 WHERE test_0_0.age=? limit 2147483647 offset 0]
+2026-05-02 21:36:27,808 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.id AS id1_0, test_0_0.name AS name2_0, test_0_0.age AS age3_0, test_0_0.active AS acti4_0, test_0_0.birth AS birt5_0 FROM test_filter_types test_0_0 WHERE (test_0_0.age>=?) AND (test_0_0.age<=?) limit 2147483647 offset 0]
+2026-05-02 21:36:27,810 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.id AS id1_0, test_0_0.name AS name2_0, test_0_0.age AS age3_0, test_0_0.active AS acti4_0, test_0_0.birth AS birt5_0 FROM test_filter_types test_0_0 WHERE test_0_0.active=? limit 2147483647 offset 0]
+2026-05-02 21:36:27,811 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.id AS id1_0, test_0_0.name AS name2_0, test_0_0.age AS age3_0, test_0_0.active AS acti4_0, test_0_0.birth AS birt5_0 FROM test_filter_types test_0_0 WHERE test_0_0.birth=? limit 2147483647 offset 0]
+2026-05-02 21:36:27,874 INFO [com.holonplatform.datastore.jdbc] - JdbcDatastore initialized - Using dialect [com.holonplatform.datastore.jdbc.composer.dialect.H2Dialect]
+2026-05-02 21:36:27,881 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.id AS id1_0, test_0_0.name AS name2_0 FROM test2 test_0_0 WHERE test_0_0.id=?]
+2026-05-02 21:36:27,898 INFO [com.holonplatform.datastore.jdbc] - JdbcDatastore initialized - Using dialect [com.holonplatform.datastore.jdbc.composer.dialect.H2Dialect]
+2026-05-02 21:36:27,900 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.id AS id1_0, test_0_0.name AS name2_0 FROM test2 test_0_0 limit 2147483647 offset 0]
+2026-05-02 21:36:27,904 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.id AS id1_0, test_0_0.name AS name2_0 FROM test2 test_0_0 WHERE LOWER(test_0_0.name) LIKE ? ESCAPE '!' limit 2147483647 offset 0]
+2026-05-02 21:36:27,910 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.id AS id1_0, test_0_0.name AS name2_0 FROM test2 test_0_0 WHERE (LOWER(test_0_0.name) LIKE ? ESCAPE '!') AND ((test_0_0.id>=?) AND (test_0_0.id<=?)) limit 2147483647 offset 0]
+2026-05-02 21:36:27,914 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.id AS id1_0, test_0_0.name AS name2_0 FROM test2 test_0_0 WHERE (test_0_0.id>=?) AND (test_0_0.id<=?) limit 2147483647 offset 0]
+2026-05-02 21:36:27,962 INFO [com.holonplatform.datastore.jdbc] - JdbcDatastore initialized - Using dialect [com.holonplatform.datastore.jdbc.composer.dialect.H2Dialect]
+2026-05-02 21:36:27,963 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.id AS id1_0, test_0_0.name AS name2_0 FROM test2 test_0_0]
+2026-05-02 21:36:27,968 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.id AS id1_0, test_0_0.name AS name2_0 FROM test2 test_0_0]
+2026-05-02 21:36:27,975 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.id AS id1_0, test_0_0.name AS name2_0 FROM test2 test_0_0 WHERE test_0_0.id<?]
+2026-05-02 21:36:27,982 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.id AS id1_0, test_0_0.name AS name2_0 FROM test2 test_0_0 WHERE test_0_0.id<?]
+2026-05-02 21:36:27,989 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.id AS id1_0, test_0_0.name AS name2_0 FROM test2 test_0_0 ORDER BY test_0_0.name desc]
+2026-05-02 21:36:27,998 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.id AS id1_0, test_0_0.name AS name2_0 FROM test2 test_0_0 WHERE test_0_0.id<=? ORDER BY test_0_0.name desc]
+2026-05-02 21:36:28,003 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.id AS id1_0, test_0_0.name AS name2_0 FROM test2 test_0_0 ORDER BY test_0_0.name desc]
+2026-05-02 21:36:28,018 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.id AS id1_0, test_0_0.name AS name2_0 FROM test2 test_0_0 WHERE test_0_0.id<=? ORDER BY test_0_0.name desc]
+[INFO] Tests run: 25, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.241 s -- in com.holonplatform.vaadin.flow.test.TestPropertyListing
+[INFO] Running com.holonplatform.vaadin.flow.test.TestPropertyViewForm
+[INFO] Tests run: 7, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.091 s -- in com.holonplatform.vaadin.flow.test.TestPropertyViewForm
+[INFO] Running com.holonplatform.vaadin.flow.test.TestPropertyViewGroup
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.007 s -- in com.holonplatform.vaadin.flow.test.TestPropertyViewGroup
+[INFO] Running com.holonplatform.vaadin.flow.test.TestRowBuilder
+[INFO] Tests run: 13, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 46.24 s -- in com.holonplatform.vaadin.flow.test.TestRowBuilder
+[INFO] Running com.holonplatform.vaadin.flow.test.TestScroller
+[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.006 s -- in com.holonplatform.vaadin.flow.test.TestScroller
+[INFO] Running com.holonplatform.vaadin.flow.test.TestScrollerBuilder
+[INFO] Tests run: 11, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.002 s -- in com.holonplatform.vaadin.flow.test.TestScrollerBuilder
+[INFO] Running com.holonplatform.vaadin.flow.test.TestSearchBarBuilder
+[INFO] Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.016 s -- in com.holonplatform.vaadin.flow.test.TestSearchBarBuilder
+[INFO] Running com.holonplatform.vaadin.flow.test.TestSeparator
+[INFO] Tests run: 45, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.010 s -- in com.holonplatform.vaadin.flow.test.TestSeparator
+[INFO] Running com.holonplatform.vaadin.flow.test.TestSeparatorBuilder
+[INFO] Running com.holonplatform.vaadin.flow.test.TestSeparatorBuilder$OrientationTests
+[INFO] Tests run: 11, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0 s -- in com.holonplatform.vaadin.flow.test.TestSeparatorBuilder$OrientationTests
+[INFO] Running com.holonplatform.vaadin.flow.test.TestSeparatorBuilder$DecorativeTests
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.001 s -- in com.holonplatform.vaadin.flow.test.TestSeparatorBuilder$DecorativeTests
+[INFO] Running com.holonplatform.vaadin.flow.test.TestSeparatorBuilder$ThicknessTests
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.001 s -- in com.holonplatform.vaadin.flow.test.TestSeparatorBuilder$ThicknessTests
+[INFO] Tests run: 0, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.004 s -- in com.holonplatform.vaadin.flow.test.TestSeparatorBuilder
+[INFO] Running com.holonplatform.vaadin.flow.test.TestSheet
+[INFO] Tests run: 75, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.049 s -- in com.holonplatform.vaadin.flow.test.TestSheet
+[INFO] Running com.holonplatform.vaadin.flow.test.TestSheetBuilder
+[INFO] Running com.holonplatform.vaadin.flow.test.TestSheetBuilder$TitleTests
+[INFO] Tests run: 18, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.001 s -- in com.holonplatform.vaadin.flow.test.TestSheetBuilder$TitleTests
+[INFO] Tests run: 0, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.011 s -- in com.holonplatform.vaadin.flow.test.TestSheetBuilder
+[INFO] Running com.holonplatform.vaadin.flow.test.TestSideNavBuilder
+[INFO] Tests run: 14, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.015 s -- in com.holonplatform.vaadin.flow.test.TestSideNavBuilder
+[INFO] Running com.holonplatform.vaadin.flow.test.TestSingleSelectInput
+2026-05-02 21:37:14,513 INFO [com.holonplatform.datastore.jdbc] - JdbcDatastore initialized - Using dialect [com.holonplatform.datastore.jdbc.composer.dialect.H2Dialect]
+2026-05-02 21:37:14,514 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.code AS code1_0, test_0_0.description AS desc2_0 FROM test1 test_0_0]
+2026-05-02 21:37:14,520 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT COUNT(*) AS coun1_0 FROM test1 test_0_0]
+2026-05-02 21:37:14,524 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.code AS code1_0, test_0_0.description AS desc2_0 FROM test1 test_0_0]
+2026-05-02 21:37:14,528 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.code AS code1_0, test_0_0.description AS desc2_0 FROM test1 test_0_0]
+2026-05-02 21:37:14,532 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT COUNT(*) AS coun1_0 FROM test1 test_0_0]
+2026-05-02 21:37:14,536 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.code AS code1_0, test_0_0.description AS desc2_0 FROM test1 test_0_0]
+2026-05-02 21:37:14,540 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.code AS code1_0, test_0_0.description AS desc2_0 FROM test1 test_0_0]
+2026-05-02 21:37:14,545 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT COUNT(*) AS coun1_0 FROM test1 test_0_0]
+2026-05-02 21:37:14,549 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.code AS code1_0, test_0_0.description AS desc2_0 FROM test1 test_0_0]
+2026-05-02 21:37:14,554 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.code AS code1_0, test_0_0.description AS desc2_0 FROM test1 test_0_0]
+2026-05-02 21:37:14,560 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT COUNT(*) AS coun1_0 FROM test1 test_0_0]
+2026-05-02 21:37:14,571 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.code AS code1_0, test_0_0.description AS desc2_0 FROM test1 test_0_0]
+2026-05-02 21:37:14,575 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.code AS code1_0, test_0_0.description AS desc2_0 FROM test1 test_0_0 WHERE LOWER(test_0_0.code) LIKE ? ESCAPE '!']
+2026-05-02 21:37:14,579 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.code AS code1_0, test_0_0.description AS desc2_0 FROM test1 test_0_0]
+2026-05-02 21:37:14,583 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT COUNT(*) AS coun1_0 FROM test1 test_0_0]
+2026-05-02 21:37:14,587 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.code AS code1_0, test_0_0.description AS desc2_0 FROM test1 test_0_0]
+2026-05-02 21:37:14,592 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.code AS code1_0, test_0_0.description AS desc2_0 FROM test1 test_0_0]
+2026-05-02 21:37:14,597 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT COUNT(*) AS coun1_0 FROM test1 test_0_0 WHERE test_0_0.code=?]
+2026-05-02 21:37:14,601 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.code AS code1_0, test_0_0.description AS desc2_0 FROM test1 test_0_0 WHERE test_0_0.code=?]
+2026-05-02 21:37:14,606 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.code AS code1_0, test_0_0.description AS desc2_0 FROM test1 test_0_0]
+2026-05-02 21:37:14,611 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT COUNT(*) AS coun1_0 FROM test1 test_0_0 WHERE test_0_0.code IS NOT NULL]
+2026-05-02 21:37:14,616 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.code AS code1_0, test_0_0.description AS desc2_0 FROM test1 test_0_0 WHERE test_0_0.code IS NOT NULL ORDER BY test_0_0.description desc]
+2026-05-02 21:37:14,620 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.code AS code1_0 FROM test1 test_0_0]
+2026-05-02 21:37:14,625 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT COUNT(*) AS coun1_0 FROM test1 test_0_0]
+2026-05-02 21:37:14,629 INFO [com.holonplatform.datastore.jdbc] - (TRACE) SQL: [SELECT test_0_0.code AS code1_0 FROM test1 test_0_0]
+[INFO] Tests run: 20, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.171 s -- in com.holonplatform.vaadin.flow.test.TestSingleSelectInput
+[INFO] Running com.holonplatform.vaadin.flow.test.TestSingleSelectInputBuilder
+[INFO] Tests run: 13, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.004 s -- in com.holonplatform.vaadin.flow.test.TestSingleSelectInputBuilder
+[INFO] Running com.holonplatform.vaadin.flow.test.TestSplitLayoutBuilder
+[INFO] Running com.holonplatform.vaadin.flow.test.TestSplitLayoutBuilder$ComponentTests
+[INFO] Tests run: 13, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.001 s -- in com.holonplatform.vaadin.flow.test.TestSplitLayoutBuilder$ComponentTests
+[INFO] Tests run: 0, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.009 s -- in com.holonplatform.vaadin.flow.test.TestSplitLayoutBuilder
+[INFO] Running com.holonplatform.vaadin.flow.test.TestStepperBuilder
+[INFO] Running com.holonplatform.vaadin.flow.test.TestStepperBuilder$VariantTests
+[INFO] Tests run: 14, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.001 s -- in com.holonplatform.vaadin.flow.test.TestStepperBuilder$VariantTests
+[INFO] Running com.holonplatform.vaadin.flow.test.TestStepperBuilder$ClickNavigationTests
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.001 s -- in com.holonplatform.vaadin.flow.test.TestStepperBuilder$ClickNavigationTests
+[INFO] Running com.holonplatform.vaadin.flow.test.TestStepperBuilder$StepsTests
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0 s -- in com.holonplatform.vaadin.flow.test.TestStepperBuilder$StepsTests
+[INFO] Tests run: 0, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.004 s -- in com.holonplatform.vaadin.flow.test.TestStepperBuilder
+[INFO] Running com.holonplatform.vaadin.flow.test.TestStringAreaInput
+[INFO] Tests run: 18, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.023 s -- in com.holonplatform.vaadin.flow.test.TestStringAreaInput
+[INFO] Running com.holonplatform.vaadin.flow.test.TestStringAreaInputBuilder
+[INFO] Tests run: 13, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.005 s -- in com.holonplatform.vaadin.flow.test.TestStringAreaInputBuilder
+[INFO] Running com.holonplatform.vaadin.flow.test.TestStringInput
+[INFO] Tests run: 23, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.028 s -- in com.holonplatform.vaadin.flow.test.TestStringInput
+[INFO] Running com.holonplatform.vaadin.flow.test.TestStringInputBuilder
+[INFO] Tests run: 15, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.004 s -- in com.holonplatform.vaadin.flow.test.TestStringInputBuilder
+[INFO] Running com.holonplatform.vaadin.flow.test.TestStringToNumberConverter
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.004 s -- in com.holonplatform.vaadin.flow.test.TestStringToNumberConverter
+[INFO] Running com.holonplatform.vaadin.flow.test.TestTabBuilder
+[INFO] Tests run: 13, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.008 s -- in com.holonplatform.vaadin.flow.test.TestTabBuilder
+[INFO] Running com.holonplatform.vaadin.flow.test.TestTabsBuilder
+[INFO] Tests run: 13, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.008 s -- in com.holonplatform.vaadin.flow.test.TestTabsBuilder
+[INFO] Running com.holonplatform.vaadin.flow.test.TestTag
+java.lang.instrument.IllegalClassFormatException: Error while instrumenting com/holonplatform/vaadin/flow/vaadinplus/components/MaterialSymbol with JaCoCo 0.8.12.202403310830/dbfb6f2.
+	at org.jacoco.agent.rt.internal_aeaf9ab.CoverageTransformer.transform(CoverageTransformer.java:94)
+	at java.instrument/java.lang.instrument.ClassFileTransformer.transform(ClassFileTransformer.java:244)
+	at java.instrument/sun.instrument.TransformerManager.transform(TransformerManager.java:188)
+	at java.instrument/sun.instrument.InstrumentationImpl.transform(InstrumentationImpl.java:610)
+	at java.base/java.lang.ClassLoader.defineClass1(Native Method)
+	at java.base/java.lang.ClassLoader.defineClass(ClassLoader.java:1027)
+	at java.base/java.security.SecureClassLoader.defineClass(SecureClassLoader.java:150)
+	at java.base/jdk.internal.loader.BuiltinClassLoader.defineClass(BuiltinClassLoader.java:867)
+	at java.base/jdk.internal.loader.BuiltinClassLoader.findClassOnClassPathOrNull(BuiltinClassLoader.java:764)
+	at java.base/jdk.internal.loader.BuiltinClassLoader.loadClassOrNull(BuiltinClassLoader.java:682)
+	at java.base/jdk.internal.loader.BuiltinClassLoader.loadClass(BuiltinClassLoader.java:640)
+	at java.base/jdk.internal.loader.ClassLoaders$AppClassLoader.loadClass(ClassLoaders.java:188)
+	at java.base/java.lang.ClassLoader.loadClass(ClassLoader.java:526)
+	at java.base/java.lang.Class.getDeclaredMethods0(Native Method)
+	at java.base/java.lang.Class.privateGetDeclaredMethods(Class.java:3580)
+	at java.base/java.lang.Class.getDeclaredMethods(Class.java:2678)
+	at com.vaadin.flow.internal.nodefeature.AbstractServerHandlers.collectHandlerMethods(AbstractServerHandlers.java:158)
+	at com.vaadin.flow.internal.nodefeature.AbstractServerHandlers.collectHandlerMethods(AbstractServerHandlers.java:123)
+	at com.vaadin.flow.internal.nodefeature.AbstractServerHandlers.componentSet(AbstractServerHandlers.java:84)
+	at com.vaadin.flow.internal.nodefeature.ComponentMapping.setComponent(ComponentMapping.java:65)
+	at com.vaadin.flow.dom.ElementStateProvider.setComponent(ElementStateProvider.java:375)
+	at com.vaadin.flow.dom.ElementUtil.setComponent(ElementUtil.java:208)
+	at com.vaadin.flow.component.Component.setElement(Component.java:269)
+	at com.vaadin.flow.component.Component.setElement(Component.java:290)
+	at com.vaadin.flow.component.Component.<init>(Component.java:134)
+	at com.vaadin.flow.component.HtmlComponent.<init>(HtmlComponent.java:39)
+	at com.vaadin.flow.component.HtmlContainer.<init>(HtmlContainer.java:32)
+	at com.vaadin.flow.component.html.Span.<init>(Span.java:39)
+	at com.holonplatform.vaadin.flow.vaadinplus.components.Tag.<init>(Tag.java:18)
+	at com.holonplatform.vaadin.flow.vaadinplus.components.Tag.<init>(Tag.java:41)
+	at com.holonplatform.vaadin.flow.test.TestTag.testSetTextColorNull(TestTag.java:52)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:701)
+	at org.junit.platform.commons.support.ReflectionSupport.invokeMethod(ReflectionSupport.java:502)
+	at org.junit.jupiter.engine.support.MethodReflectionUtils.invoke(MethodReflectionUtils.java:45)
+	at org.junit.jupiter.engine.execution.MethodInvocation.proceed(MethodInvocation.java:61)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain$ValidatingInvocation.proceed(InvocationInterceptorChain.java:124)
+	at org.junit.jupiter.engine.extension.TimeoutExtension.intercept(TimeoutExtension.java:163)
+	at org.junit.jupiter.engine.extension.TimeoutExtension.interceptTestableMethod(TimeoutExtension.java:148)
+	at org.junit.jupiter.engine.extension.TimeoutExtension.interceptTestMethod(TimeoutExtension.java:86)
+	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker$ReflectiveInterceptorCall.lambda$ofVoidMethod$0(InterceptingExecutableInvoker.java:123)
+	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker.lambda$invoke$0(InterceptingExecutableInvoker.java:105)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain$InterceptedInvocation.proceed(InvocationInterceptorChain.java:99)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain.proceed(InvocationInterceptorChain.java:66)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain.chainAndInvoke(InvocationInterceptorChain.java:47)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain.invoke(InvocationInterceptorChain.java:39)
+	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker.invoke(InterceptingExecutableInvoker.java:104)
+	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker.invoke(InterceptingExecutableInvoker.java:98)
+	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker.invokeVoid(InterceptingExecutableInvoker.java:71)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.lambda$invokeTestMethod$0(TestMethodTestDescriptor.java:219)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:74)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.invokeTestMethod(TestMethodTestDescriptor.java:215)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.execute(TestMethodTestDescriptor.java:157)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.execute(TestMethodTestDescriptor.java:70)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$2(NodeTestTask.java:176)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:74)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$1(NodeTestTask.java:166)
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:138)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$0(NodeTestTask.java:164)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:74)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:163)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:116)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.invokeAll(SameThreadHierarchicalTestExecutorService.java:42)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$2(NodeTestTask.java:180)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:74)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$1(NodeTestTask.java:166)
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:138)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$0(NodeTestTask.java:164)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:74)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:163)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:116)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.invokeAll(SameThreadHierarchicalTestExecutorService.java:42)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$2(NodeTestTask.java:180)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:74)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$1(NodeTestTask.java:166)
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:138)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$0(NodeTestTask.java:164)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:74)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:163)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:116)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.submit(SameThreadHierarchicalTestExecutorService.java:36)
+	at org.junit.platform.engine.support.hierarchical.HierarchicalTestExecutor.execute(HierarchicalTestExecutor.java:52)
+	at org.junit.platform.engine.support.hierarchical.HierarchicalTestEngine.execute(HierarchicalTestEngine.java:58)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.executeEngine(EngineExecutionOrchestrator.java:246)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.failOrExecuteEngine(EngineExecutionOrchestrator.java:218)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:179)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:108)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.lambda$execute$0(EngineExecutionOrchestrator.java:66)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.withInterceptedStreams(EngineExecutionOrchestrator.java:157)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:65)
+	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:125)
+	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:114)
+	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:93)
+	at org.junit.platform.launcher.core.DelegatingLauncher.execute(DelegatingLauncher.java:48)
+	at org.junit.platform.launcher.core.InterceptingLauncher.lambda$execute$0(InterceptingLauncher.java:41)
+	at org.junit.platform.launcher.core.ClasspathAlignmentCheckingLauncherInterceptor.intercept(ClasspathAlignmentCheckingLauncherInterceptor.java:25)
+	at org.junit.platform.launcher.core.InterceptingLauncher.execute(InterceptingLauncher.java:40)
+	at org.junit.platform.launcher.core.DelegatingLauncher.execute(DelegatingLauncher.java:48)
+	at org.apache.maven.surefire.junitplatform.LazyLauncher.execute(LazyLauncher.java:56)
+	at org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.execute(JUnitPlatformProvider.java:184)
+	at org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.invokeAllTests(JUnitPlatformProvider.java:148)
+	at org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.invoke(JUnitPlatformProvider.java:122)
+	at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:385)
+	at org.apache.maven.surefire.booter.ForkedBooter.execute(ForkedBooter.java:162)
+	at org.apache.maven.surefire.booter.ForkedBooter.run(ForkedBooter.java:507)
+	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:495)
+Caused by: java.io.IOException: Error while instrumenting com/holonplatform/vaadin/flow/vaadinplus/components/MaterialSymbol with JaCoCo 0.8.12.202403310830/dbfb6f2.
+	at org.jacoco.agent.rt.internal_aeaf9ab.core.instr.Instrumenter.instrumentError(Instrumenter.java:161)
+	at org.jacoco.agent.rt.internal_aeaf9ab.core.instr.Instrumenter.instrument(Instrumenter.java:111)
+	at org.jacoco.agent.rt.internal_aeaf9ab.CoverageTransformer.transform(CoverageTransformer.java:92)
+	... 108 more
+Caused by: org.jacoco.agent.rt.internal_aeaf9ab.asm.MethodTooLargeException: Method too large: com/holonplatform/vaadin/flow/vaadinplus/components/MaterialSymbol.<clinit> ()V
+	at org.jacoco.agent.rt.internal_aeaf9ab.asm.MethodWriter.computeMethodInfoSize(MethodWriter.java:2088)
+	at org.jacoco.agent.rt.internal_aeaf9ab.asm.ClassWriter.toByteArray(ClassWriter.java:512)
+	at org.jacoco.agent.rt.internal_aeaf9ab.core.instr.Instrumenter.instrument(Instrumenter.java:92)
+	at org.jacoco.agent.rt.internal_aeaf9ab.core.instr.Instrumenter.instrument(Instrumenter.java:109)
+	... 109 more
+[INFO] Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.018 s -- in com.holonplatform.vaadin.flow.test.TestTag
+[INFO] Running com.holonplatform.vaadin.flow.test.TestTimelineStepper
+[INFO] Tests run: 59, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.020 s -- in com.holonplatform.vaadin.flow.test.TestTimelineStepper
+[INFO] Running com.holonplatform.vaadin.flow.test.TestVaadinPlusLayout
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.001 s -- in com.holonplatform.vaadin.flow.test.TestVaadinPlusLayout
+[INFO] Running com.holonplatform.vaadin.flow.test.TestValidatableInput
+[INFO] Tests run: 7, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.018 s -- in com.holonplatform.vaadin.flow.test.TestValidatableInput
+[INFO] Running com.holonplatform.vaadin.flow.test.TestValidatableInputRenderer
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.003 s -- in com.holonplatform.vaadin.flow.test.TestValidatableInputRenderer
+[INFO] Running com.holonplatform.vaadin.flow.test.TestVerticalLayoutBuilder
+[INFO] Tests run: 10, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.002 s -- in com.holonplatform.vaadin.flow.test.TestVerticalLayoutBuilder
+[INFO] Running com.holonplatform.vaadin.flow.test.TestViewComponent
+[INFO] Tests run: 12, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.026 s -- in com.holonplatform.vaadin.flow.test.TestViewComponent
+[INFO] Running com.holonplatform.vaadin.flow.test.TestWindowSizeTracker
+[INFO] Tests run: 7, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.004 s -- in com.holonplatform.vaadin.flow.test.TestWindowSizeTracker
+[INFO] Running com.holonplatform.vaadin.flow.test.TestZohoView
+Displaying children of component of Layout id 
+Children: Header
+Children: Layout
+Displaying children of component of Layout id Root Layout
+Children: Layout
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.012 s -- in com.holonplatform.vaadin.flow.test.TestZohoView
+[INFO] 
+[INFO] Results:
+[INFO] 
+[INFO] Tests run: 2443, Failures: 0, Errors: 0, Skipped: 0
+[INFO] 
+[INFO] 
+[INFO] --- jacoco:0.8.12:report (post-unit-test) @ holon-vaadin-flow ---
+[INFO] Loading execution data file C:\Users\sxp267\IdeaProjects\holon-vaadin-flow\core\target\coverage-reports\jacoco-ut.exec
+[INFO] Analyzed bundle 'com.holon-platform.vaadin:holon-vaadin-flow' with 1036 classes
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  04:49 min
+[INFO] Finished at: 2026-05-02T21:40:54-04:00
+[INFO] ------------------------------------------------------------------------

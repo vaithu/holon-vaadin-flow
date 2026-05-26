@@ -52,8 +52,9 @@ public class DefaultItemListingHeaderSection<P> implements EditableItemListingSe
 	 */
 	@Override
 	public List<EditableItemListingRow<P>> getRows() {
-		return grid.getHeaderRows().stream().map(row -> new DefaultItemListingHeaderRow<>(row, propertyColumnProvider))
-				.collect(Collectors.toList());
+		return grid.getHeaderRows().stream()
+				.<EditableItemListingRow<P>>map(row -> new DefaultItemListingHeaderRow<>(row, propertyColumnProvider))
+				.toList();
 	}
 
 	/*

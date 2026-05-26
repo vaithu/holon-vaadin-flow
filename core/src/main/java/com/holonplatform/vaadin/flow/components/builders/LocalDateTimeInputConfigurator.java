@@ -25,9 +25,7 @@ import java.time.LocalDateTime;
  * @param <C> Concrete configurator type
  * @since 5.2.2
  */
-@SuppressWarnings("deprecation")
 public interface LocalDateTimeInputConfigurator<C extends LocalDateTimeInputConfigurator<C>>
-        extends BaseTemporalInputConfigurator<LocalDateTime, C>,
-        HasTooltipConfigurator<C> {
+        extends BaseTemporalInputConfigurator<LocalDateTime, C> {
 
 }

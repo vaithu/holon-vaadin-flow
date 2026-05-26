@@ -1,0 +1,141 @@
+[INFO] Scanning for projects...
+[WARNING] 
+[WARNING] Some problems were encountered while building the effective model for com.holon-platform.vaadin:holon-vaadin-flow-demo:jar:10.0.0
+[WARNING] 'build.plugins.plugin.version' for org.springframework.boot:spring-boot-maven-plugin is missing. @ line 108, column 21
+[WARNING] 
+[WARNING] It is highly recommended to fix these problems because they threaten the stability of your build.
+[WARNING] 
+[WARNING] For this reason, future Maven versions might no longer support building such malformed projects.
+[WARNING] 
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Build Order:
+[INFO] 
+[INFO] com.holon-platform.vaadin:holon-vaadin-flow-tenant-core            [jar]
+[INFO] com.holon-platform.vaadin:holon-vaadin-flow-tenant-billing         [jar]
+[INFO] 
+[INFO] ------< com.holon-platform.vaadin:holon-vaadin-flow-tenant-core >-------
+[INFO] Building com.holon-platform.vaadin:holon-vaadin-flow-tenant-core 10.0.0 [1/2]
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- jacoco:0.8.12:prepare-agent (pre-unit-test) @ holon-vaadin-flow-tenant-core ---
+[INFO] surefireArgLine set to -javaagent:C:\\Users\\sxp267\\.m2\\repository\\org\\jacoco\\org.jacoco.agent\\0.8.12\\org.jacoco.agent-0.8.12-runtime.jar=destfile=C:\\Users\\sxp267\\IdeaProjects\\holon-vaadin-flow\\tenant-core\\target\\coverage-reports\\jacoco-ut.exec
+[INFO] 
+[INFO] --- remote-resources:3.1.0:process (default) @ holon-vaadin-flow-tenant-core ---
+[INFO] Preparing remote bundle com.holon-platform:holon-shared:1.0.6
+[INFO] Copying 6 resources from 1 bundle.
+[INFO] 
+[INFO] --- resources:3.4.0:resources (default-resources) @ holon-vaadin-flow-tenant-core ---
+[INFO] Copying 1 resource from src\main\resources to target\classes
+[INFO] Copying 6 resources from target\maven-shared-archive-resources to target\classes
+[INFO] 
+[INFO] --- compiler:3.15.0:compile (default-compile) @ holon-vaadin-flow-tenant-core ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.4.0:testResources (default-testResources) @ holon-vaadin-flow-tenant-core ---
+[INFO] skip non existing resourceDirectory C:\Users\sxp267\IdeaProjects\holon-vaadin-flow\tenant-core\src\test\resources
+[INFO] Copying 6 resources from target\maven-shared-archive-resources to target\test-classes
+[INFO] 
+[INFO] --- compiler:3.15.0:testCompile (default-testCompile) @ holon-vaadin-flow-tenant-core ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- surefire:3.5.2:test (default-test) @ holon-vaadin-flow-tenant-core ---
+[INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running com.holonplatform.vaadin.flow.tenant.async.TenantAwareAsyncTest
+[INFO] Tests run: 7, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.203 s -- in com.holonplatform.vaadin.flow.tenant.async.TenantAwareAsyncTest
+[INFO] Running com.holonplatform.vaadin.flow.tenant.config.TenantCoreAutoConfigurationTest
+[INFO] Tests run: 9, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.158 s -- in com.holonplatform.vaadin.flow.tenant.config.TenantCoreAutoConfigurationTest
+[INFO] Running com.holonplatform.vaadin.flow.tenant.filter.TenantContextFilterTest
+WARNING: A Java agent has been loaded dynamically (C:\Users\sxp267\.m2\repository\net\bytebuddy\byte-buddy-agent\1.17.8\byte-buddy-agent-1.17.8.jar)
+WARNING: If a serviceability tool is in use, please run with -XX:+EnableDynamicAgentLoading to hide this warning
+WARNING: If a serviceability tool is not in use, please run with -Djdk.instrument.traceUsage for more information
+WARNING: Dynamic loading of agents will be disallowed by default in a future release
+OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+11:01:03.625 [main] WARN com.holonplatform.vaadin.flow.tenant.filter.TenantContextFilter -- Tenant 'unknown-tenant' not found
+11:01:03.767 [main] WARN com.holonplatform.vaadin.flow.tenant.filter.TenantContextFilter -- Tenant resolution failed for request '' — no tenant identifier found
+11:01:03.791 [main] WARN com.holonplatform.vaadin.flow.tenant.filter.TenantContextFilter -- Tenant 'acme' access denied — status: SUSPENDED
+[INFO] Tests run: 9, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 2.903 s -- in com.holonplatform.vaadin.flow.tenant.filter.TenantContextFilterTest
+[INFO] Running com.holonplatform.vaadin.flow.tenant.resolver.CompositeTenantResolverTest
+[INFO] Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.067 s -- in com.holonplatform.vaadin.flow.tenant.resolver.CompositeTenantResolverTest
+[INFO] Running com.holonplatform.vaadin.flow.tenant.resolver.HeaderTenantResolverTest
+[INFO] Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.038 s -- in com.holonplatform.vaadin.flow.tenant.resolver.HeaderTenantResolverTest
+[INFO] Running com.holonplatform.vaadin.flow.tenant.resolver.JwtClaimTenantResolverTest
+[INFO] Tests run: 9, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.033 s -- in com.holonplatform.vaadin.flow.tenant.resolver.JwtClaimTenantResolverTest
+[INFO] Running com.holonplatform.vaadin.flow.tenant.resolver.PathPrefixTenantResolverTest
+[INFO] Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.020 s -- in com.holonplatform.vaadin.flow.tenant.resolver.PathPrefixTenantResolverTest
+[INFO] Running com.holonplatform.vaadin.flow.tenant.resolver.SubdomainTenantResolverTest
+[INFO] Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.030 s -- in com.holonplatform.vaadin.flow.tenant.resolver.SubdomainTenantResolverTest
+[INFO] Running com.holonplatform.vaadin.flow.tenant.TenantContextTest
+[INFO] Tests run: 13, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.061 s -- in com.holonplatform.vaadin.flow.tenant.TenantContextTest
+[INFO] Running com.holonplatform.vaadin.flow.tenant.TenantDetailsTest
+[INFO] Tests run: 15, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.076 s -- in com.holonplatform.vaadin.flow.tenant.TenantDetailsTest
+[INFO] Running com.holonplatform.vaadin.flow.tenant.TenantPlanTest
+[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.015 s -- in com.holonplatform.vaadin.flow.tenant.TenantPlanTest
+[INFO] 
+[INFO] Results:
+[INFO] 
+[INFO] Tests run: 100, Failures: 0, Errors: 0, Skipped: 0
+[INFO] 
+[INFO] 
+[INFO] --- jacoco:0.8.12:report (post-unit-test) @ holon-vaadin-flow-tenant-core ---
+[INFO] Loading execution data file C:\Users\sxp267\IdeaProjects\holon-vaadin-flow\tenant-core\target\coverage-reports\jacoco-ut.exec
+[INFO] Analyzed bundle 'com.holon-platform.vaadin:holon-vaadin-flow-tenant-core' with 23 classes
+[INFO] 
+[INFO] -----< com.holon-platform.vaadin:holon-vaadin-flow-tenant-billing >-----
+[INFO] Building com.holon-platform.vaadin:holon-vaadin-flow-tenant-billing 10.0.0 [2/2]
+[INFO]   from C:\Users\sxp267\IdeaProjects\holon-vaadin-flow\tenant-billing\pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- jacoco:0.8.12:prepare-agent (pre-unit-test) @ holon-vaadin-flow-tenant-billing ---
+[INFO] surefireArgLine set to -javaagent:C:\\Users\\sxp267\\.m2\\repository\\org\\jacoco\\org.jacoco.agent\\0.8.12\\org.jacoco.agent-0.8.12-runtime.jar=destfile=C:\\Users\\sxp267\\IdeaProjects\\holon-vaadin-flow\\tenant-billing\\target\\coverage-reports\\jacoco-ut.exec
+[INFO] 
+[INFO] --- remote-resources:3.1.0:process (default) @ holon-vaadin-flow-tenant-billing ---
+[INFO] Preparing remote bundle com.holon-platform:holon-shared:1.0.6
+[INFO] Copying 6 resources from 1 bundle.
+[INFO] 
+[INFO] --- resources:3.4.0:resources (default-resources) @ holon-vaadin-flow-tenant-billing ---
+[INFO] Copying 1 resource from src\main\resources to target\classes
+[INFO] Copying 6 resources from target\maven-shared-archive-resources to target\classes
+[INFO] 
+[INFO] --- compiler:3.15.0:compile (default-compile) @ holon-vaadin-flow-tenant-billing ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.4.0:testResources (default-testResources) @ holon-vaadin-flow-tenant-billing ---
+[INFO] skip non existing resourceDirectory C:\Users\sxp267\IdeaProjects\holon-vaadin-flow\tenant-billing\src\test\resources
+[INFO] Copying 6 resources from target\maven-shared-archive-resources to target\test-classes
+[INFO] 
+[INFO] --- compiler:3.15.0:testCompile (default-testCompile) @ holon-vaadin-flow-tenant-billing ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- surefire:3.5.2:test (default-test) @ holon-vaadin-flow-tenant-billing ---
+[INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running com.holonplatform.vaadin.flow.tenant.billing.InMemoryTenantBillingServiceTest
+[INFO] Tests run: 24, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.127 s -- in com.holonplatform.vaadin.flow.tenant.billing.InMemoryTenantBillingServiceTest
+[INFO] 
+[INFO] Results:
+[INFO] 
+[INFO] Tests run: 24, Failures: 0, Errors: 0, Skipped: 0
+[INFO] 
+[INFO] 
+[INFO] --- jacoco:0.8.12:report (post-unit-test) @ holon-vaadin-flow-tenant-billing ---
+[INFO] Loading execution data file C:\Users\sxp267\IdeaProjects\holon-vaadin-flow\tenant-billing\target\coverage-reports\jacoco-ut.exec
+[INFO] Analyzed bundle 'com.holon-platform.vaadin:holon-vaadin-flow-tenant-billing' with 9 classes
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Summary for com.holon-platform.vaadin:holon-vaadin-flow-tenant-core 10.0.0:
+[INFO] 
+[INFO] com.holon-platform.vaadin:holon-vaadin-flow-tenant-core SUCCESS [ 32.922 s]
+[INFO] com.holon-platform.vaadin:holon-vaadin-flow-tenant-billing SUCCESS [  7.872 s]
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  41.700 s
+[INFO] Finished at: 2026-05-19T11:01:25-04:00
+[INFO] ------------------------------------------------------------------------

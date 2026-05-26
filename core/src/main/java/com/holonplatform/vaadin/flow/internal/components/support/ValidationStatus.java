@@ -15,14 +15,12 @@
  */
 package com.holonplatform.vaadin.flow.internal.components.support;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import com.holonplatform.core.Validator.ValidationException;
 import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.vaadin.flow.components.ValidationStatusHandler.Status;
+
+import java.util.Collection;
+import java.util.List;
 
 /**
  * Validation status.
@@ -57,7 +55,7 @@ public interface ValidationStatus {
 	 */
 	default List<Localizable> getErrors() {
 		return getValidationExceptions().stream().map(v -> v.getValidationMessages()).flatMap(Collection::stream)
-				.collect(Collectors.toList());
+				.toList();
 	}
 
 	/**
@@ -65,7 +63,7 @@ public interface ValidationStatus {
 	 * @return A new {@link ValidationStatus}
 	 */
 	static ValidationStatus unresolved() {
-		return new DefaultValidationStatus(Status.UNRESOLVED, Collections.emptyList());
+		return new DefaultValidationStatus(Status.UNRESOLVED, List.of());
 	}
 
 	/**
@@ -73,7 +71,7 @@ public interface ValidationStatus {
 	 * @return A new {@link ValidationStatus}
 	 */
 	static ValidationStatus valid() {
-		return new DefaultValidationStatus(Status.VALID, Collections.emptyList());
+		return new DefaultValidationStatus(Status.VALID, List.of());
 	}
 
 	/**
@@ -85,7 +83,7 @@ public interface ValidationStatus {
 		if (validationException == null) {
 			throw new IllegalArgumentException("Validation exception must be not null");
 		}
-		return new DefaultValidationStatus(Status.INVALID, Collections.singletonList(validationException));
+		return new DefaultValidationStatus(Status.INVALID, List.of(validationException));
 	}
 
 	/**

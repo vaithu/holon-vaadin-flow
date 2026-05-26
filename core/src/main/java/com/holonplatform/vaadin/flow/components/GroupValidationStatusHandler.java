@@ -16,7 +16,6 @@
 package com.holonplatform.vaadin.flow.components;
 
 import java.io.Serializable;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -196,7 +195,7 @@ public interface GroupValidationStatusHandler<S, P, E extends HasComponent> exte
 		static <S, P, E extends HasComponent> GroupElementValidationStatusEvent<S, P, E> unresolved(S source,
 				P property, E element) {
 			return new DefaultGroupElementValidationStatusEvent<>(source, property, element, Status.UNRESOLVED,
-					Collections.emptyList());
+					List.of());
 		}
 
 		/**
@@ -212,7 +211,7 @@ public interface GroupValidationStatusHandler<S, P, E extends HasComponent> exte
 		static <S, P, E extends HasComponent> GroupElementValidationStatusEvent<S, P, E> valid(S source, P property,
 				E element) {
 			return new DefaultGroupElementValidationStatusEvent<>(source, property, element, Status.VALID,
-					Collections.emptyList());
+					List.of());
 		}
 
 		/**
@@ -245,7 +244,7 @@ public interface GroupValidationStatusHandler<S, P, E extends HasComponent> exte
 		static <S, P, E extends HasComponent> GroupElementValidationStatusEvent<S, P, E> invalid(S source, P property,
 				E element, Localizable error) {
 			return new DefaultGroupElementValidationStatusEvent<>(source, property, element, Status.INVALID,
-					(error != null) ? Collections.singletonList(error) : Collections.emptyList());
+					(error != null) ? List.of(error) : List.of());
 		}
 
 	}

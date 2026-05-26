@@ -20,7 +20,6 @@ import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.menubar.MenuBar;
 import com.vaadin.flow.component.shared.HasTooltip;
 import com.vaadin.flow.component.textfield.TextField;
-import com.vaadin.flow.theme.lumo.LumoUtility;
 
 import java.util.Optional;
 
@@ -81,11 +80,11 @@ public abstract class AbstractIyenCommonConfigurator<C extends IyenCommonConfigu
     public C header(Header header) {
         header.setHeadingFontSize(Font.Size.XXLARGE);
 
-        // Remove the default padding
-        header.getRowLayout().removeClassName(LumoUtility.Padding.MEDIUM);
+        // Remove the default row padding when used inside a master-view layout
+        header.getRowLayout().removeClassName("iyen-header__row--padded");
 
-        // Position the tabs along the edge with negative margins
-        header.getTabs().ifPresent(tabs -> tabs.addClassName(LumoUtility.Margin.Minus.Horizontal.LARGE));
+        // Position the tabs flush with the container edges (negative margin)
+        header.getTabs().ifPresent(tabs -> tabs.addClassName("iyen-header__tabs--edge-aligned"));
         container.add(header);
         return getConfigurator();
     }
@@ -102,7 +101,7 @@ public abstract class AbstractIyenCommonConfigurator<C extends IyenCommonConfigu
         Layout toolbar = new Layout(menuBar);
         toolbar.setDisplay(Display.FLEX);
         toolbar.setFlexDirection(FlexDirection.ROW);
-        toolbar.addClassNames(LumoUtility.Background.CONTRAST_5, LumoUtility.Border.ALL);
+        toolbar.addClassName("toolbar--filled");
         this.container.add(toolbar);
         return getConfigurator();
     }
@@ -120,7 +119,7 @@ public abstract class AbstractIyenCommonConfigurator<C extends IyenCommonConfigu
         if (buttons != null && buttons.length > 0) {
 
             for (Button button : buttons) {
-                button.addClassNames(LumoUtility.MaxWidth.SCREEN_SMALL);
+                button.addClassName("toolbar__btn--constrained");
             }
 
             Layout buttonLayout = new Layout(buttons);
@@ -173,12 +172,12 @@ public abstract class AbstractIyenCommonConfigurator<C extends IyenCommonConfigu
     }
 
     private C addContent(GridHeader gridHeader, Component contentComponent) {
-        gridHeader.getRowLayout().addClassNames(LumoUtility.Padding.End.SMALL);
+        gridHeader.getRowLayout().addClassName("grid-header__row--end-padded");
 //        gridHeader.getRowLayout().setAlignItems(AlignItems.BASELINE);
         gridHeader.setHeadingFontSize(Font.Size.LARGE);
         content = new Layout(gridHeader, contentComponent);
         content.addClassName("master-content");
-        content.addClassNames(LumoUtility.Border.ALL, LumoUtility.BorderRadius.LARGE);
+        content.addClassName("master-content--card");
         content.setFlexGrow(contentComponent);
         this.container.add(content);
         return getConfigurator();

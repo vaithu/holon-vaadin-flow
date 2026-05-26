@@ -1,0 +1,69 @@
+/*
+ * key-value-pair.css
+ *
+ * Mobile-first styles for KeyValuePair and KeyValuePairs components —
+ * a description-list based key/value display.
+ *
+ * BEM namespace: .key-value-pair, .key-value-pairs
+ *
+ * Structure (KeyValuePair):
+ *   .key-value-pair                  — root <dl> item layout (Layout wrapper)
+ *   .key-value-pair--no-h-padding    — modifier: removes horizontal padding
+ *   .key-value-pair__key             — <dt> term element
+ *   .key-value-pair__key--grow       — modifier: key stretches to fill width
+ *   .key-value-pair__value           — <dd> description element
+ *
+ * Structure (KeyValuePairs):
+ *   .key-value-pairs                 — root <dl> grid container
+ *
+ * Mobile  (< 640 px) — full padding, single column.
+ * Desktop (≥ 640 px) — standard spacing.
+ */
+
+/* -----------------------------------------------------------------------
+ * KeyValuePair — row item
+ * ----------------------------------------------------------------------- */
+
+.key-value-pair {
+    padding: 0.5rem 1rem;
+    box-sizing: border-box;
+}
+
+.key-value-pair--no-h-padding {
+    padding-left: 0;
+    padding-right: 0;
+}
+
+/* -----------------------------------------------------------------------
+ * Key (term)
+ * ----------------------------------------------------------------------- */
+
+.key-value-pair__key {
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.key-value-pair__key--grow {
+    flex-grow: 1;
+    min-width: unset;
+}
+
+/* -----------------------------------------------------------------------
+ * Value (description)
+ * ----------------------------------------------------------------------- */
+
+.key-value-pair__value {
+    margin-inline-start: 0;
+}
+
+/* -----------------------------------------------------------------------
+ * KeyValuePairs — grid container
+ * ----------------------------------------------------------------------- */
+
+.key-value-pairs {
+    display: grid;
+    margin-top: 0;
+    margin-bottom: 0;
+    padding: 0;
+}
+

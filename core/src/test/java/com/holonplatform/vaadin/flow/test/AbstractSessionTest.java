@@ -15,32 +15,24 @@
  */
 package com.holonplatform.vaadin.flow.test;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
-import java.util.Collections;
-import java.util.Locale;
-import java.util.Properties;
-
-import com.vaadin.flow.server.startup.ApplicationConfiguration;
+import com.vaadin.flow.component.UI;
+import com.vaadin.flow.di.DefaultInstantiator;
+import com.vaadin.flow.function.DeploymentConfiguration;
+import com.vaadin.flow.internal.CurrentInstance;
+import com.vaadin.flow.server.*;
 import jakarta.servlet.http.HttpServletRequest;
-
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 
-import com.vaadin.flow.component.UI;
-import com.vaadin.flow.di.DefaultInstantiator;
-import com.vaadin.flow.internal.CurrentInstance;
-import com.vaadin.flow.server.DefaultDeploymentConfiguration;
-import com.vaadin.flow.server.InitParameters;
-import com.vaadin.flow.server.VaadinRequest;
-import com.vaadin.flow.server.VaadinService;
-import com.vaadin.flow.server.VaadinServletRequest;
-import com.vaadin.flow.server.VaadinServletService;
-import com.vaadin.flow.server.VaadinSession;
-import com.vaadin.flow.server.VaadinSessionState;
-import com.vaadin.flow.server.WrappedSession;
+import java.util.Collections;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Properties;
+import java.util.concurrent.ConcurrentHashMap;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
 
 public abstract class AbstractSessionTest {
 
@@ -63,8 +55,10 @@ public abstract class AbstractSessionTest {
 		CurrentInstance.set(VaadinRequest.class, request);
 
 		ui = new UI();
+		// Session must be set BEFORE doInit — UIInternals.addComponentDependencies
+		// reads this.session during doInit (Vaadin 25 changed the call order).
 		ui.getInternals().setSession(vaadinSession);
-		ui.doInit(request, TEST_UIID);
+		ui.doInit(request, TEST_UIID, "TestSession");
 
 		CurrentInstance.setCurrent(ui);
 	}
@@ -78,9 +72,17 @@ public abstract class AbstractSessionTest {
 
 	protected VaadinService createVaadinService() throws Exception {
 		VaadinServletService vaadinService = mock(VaadinServletService.class);
-		when(vaadinService.getDeploymentConfiguration())
-				.thenReturn(new DefaultDeploymentConfiguration(ApplicationConfiguration.get(vaadinService.getContext()),
-						VaadinServletService.class, getDeploymentProperties()));
+
+		// Mock com.vaadin.flow.function.DeploymentConfiguration (the interface used by
+		// VaadinSession.getConfiguration() and VaadinService.getDeploymentConfiguration()).
+		// Avoids DefaultDeploymentConfiguration constructor calling FeatureFlags.get().
+		DeploymentConfiguration deployConfig = mock(DeploymentConfiguration.class);
+		when(deployConfig.isProductionMode()).thenReturn(true);
+		when(deployConfig.getHeartbeatInterval()).thenReturn(300);
+		when(deployConfig.isCloseIdleSessions()).thenReturn(false);
+		when(deployConfig.getMaxMessageSuspendTimeout()).thenReturn(5000);
+		when(vaadinService.getDeploymentConfiguration()).thenReturn(deployConfig);
+
 		when(vaadinService.getMainDivId(any(VaadinSession.class), any(VaadinRequest.class)))
 				.thenReturn("test-main-div-id");
 		when(vaadinService.getInstantiator()).thenReturn(new DefaultInstantiator(vaadinService));
@@ -96,7 +98,29 @@ public abstract class AbstractSessionTest {
 		when(session.getSession().getId()).thenReturn(TEST_SESSION_ID);
 		when(session.hasLock()).thenReturn(true);
 		when(session.getLocale()).thenReturn(locale != null ? locale : Locale.US);
-		when(session.getAttribute(any(String.class))).thenReturn("test-attribute");
+
+		// Use a real HashMap for session attributes so that:
+		//   a) Vaadin internals that store/read attributes work correctly, and
+		//   b) Holon's DefaultVaadinSessionScope.get() receives null for unregistered
+		//      resources (e.g. BeanIntrospector), causing it to return Optional.empty()
+		//      and fall through to the application scope where BeanIntrospector lives.
+		// Returning a blanket "test-attribute" String would cause TypeMismatchException
+		// whenever Holon looks up any typed resource from the session scope.
+		Map<String, Object> sessionAttributes = new ConcurrentHashMap<>();
+		doAnswer(inv -> sessionAttributes.get((String) inv.getArgument(0)))
+				.when(session).getAttribute(any(String.class));
+		doAnswer(inv -> {
+			String key = inv.getArgument(0);
+			Object val = inv.getArgument(1);
+			if (val == null) sessionAttributes.remove(key);
+			else sessionAttributes.put(key, val);
+			return null;
+		}).when(session).setAttribute(any(String.class), any());
+
+		// UIInternals.triggerChunkLoading calls session.getConfiguration().isProductionMode().
+		// Pre-resolve outside the when() chain to avoid nested mock interaction.
+		DeploymentConfiguration sessionConfig = service.getDeploymentConfiguration();
+		when(session.getConfiguration()).thenReturn(sessionConfig);
 		return session;
 	}
 

@@ -1,0 +1,321 @@
+/*
+ * mdl-demo.css
+ *
+ * Styles for MasterDetailLayoutDemoView (Team Directory demo).
+ * Loaded via @StyleSheet("context://mdl-demo.css") on the view class.
+ *
+ * BEM namespace:  .mdl-demo
+ *
+ * The core layout, separator, selected-row highlight, panel backgrounds,
+ * row separators, and empty-state are all handled by master-detail-layout.css.
+ * This file only adds DEMO-SPECIFIC styling: avatars, badges, forms, footer.
+ *
+ * Any MasterDetailLayout token can be overridden here by re-declaring it
+ * under .mdl-demo (which is an ancestor of .mdl-root):
+ *   .mdl-demo { --mdl-primary: #your-brand; }
+ */
+
+/* -----------------------------------------------------------------------
+ * 1) Root view — fills the main layout content area
+ * ----------------------------------------------------------------------- */
+
+.mdl-demo {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    min-height: 0;
+    height: 100%;
+    overflow: hidden;
+}
+
+/* -----------------------------------------------------------------------
+ * 2) Grid — hide column header row (single-column list, no label needed)
+ * ----------------------------------------------------------------------- */
+
+.mdl-demo__grid::part(header-row) {
+    display: none;
+    height: 0;
+}
+
+/* -----------------------------------------------------------------------
+ * 3) Grid row cell: [Avatar] [Name / Dept · Location] [Status badge]
+ * ----------------------------------------------------------------------- */
+
+.mdl-demo__row-cell {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 9px 0;
+    min-width: 0;
+}
+
+.mdl-demo__row-info {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    flex: 1 1 auto;
+    overflow: hidden;
+}
+
+.mdl-demo__row-name {
+    font-size: 13px;
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* "Department · Location" subtitle beneath the name */
+.mdl-demo__row-sub {
+    font-size: 11px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-top: 2px;
+}
+
+/* -----------------------------------------------------------------------
+ * 4) Avatar (vaadin-avatar component — grid rows + detail header prefix slot)
+ *    Styled via CSS custom properties exposed by vaadin-avatar:
+ *      --vaadin-avatar-size        controls overall diameter
+ *      --vaadin-avatar-background  background fill
+ *      --vaadin-avatar-color       abbreviation / icon colour
+ *    Palette mirrors the icon-badge variants in utilities.css:
+ *      soft pastel background + deeper same-hue foreground.
+ * ----------------------------------------------------------------------- */
+
+.mdl-demo__avatar {
+    --vaadin-avatar-size: 34px;
+    flex-shrink: 0;
+}
+
+/* Large variant — detail header prefix slot */
+.mdl-demo__avatar--lg {
+    --vaadin-avatar-size: 44px;
+}
+
+/* Six-colour pastel palette — index is contact.id % 6.
+   Mirrors icon-badge--* variants from utilities.css. */
+.mdl-demo__avatar--c0 { --vaadin-avatar-background: #eff6ff; --vaadin-avatar-color: #2563eb; }
+.mdl-demo__avatar--c1 { --vaadin-avatar-background: #f0fdf4; --vaadin-avatar-color: #16a34a; }
+.mdl-demo__avatar--c2 { --vaadin-avatar-background: #fef2f2; --vaadin-avatar-color: #dc2626; }
+.mdl-demo__avatar--c3 { --vaadin-avatar-background: #f5f3ff; --vaadin-avatar-color: #7c3aed; }
+.mdl-demo__avatar--c4 { --vaadin-avatar-background: #fffbeb; --vaadin-avatar-color: #d97706; }
+.mdl-demo__avatar--c5 { --vaadin-avatar-background: #ecfdf5; --vaadin-avatar-color: #059669; }
+
+/* -----------------------------------------------------------------------
+ * 5) Status badges and pills
+ * ----------------------------------------------------------------------- */
+
+/* Compact badge in list rows */
+.mdl-demo__status-badge {
+    font-size: 11px;
+    font-weight: 500;
+    line-height: 1;
+    padding: 3px 8px;
+    border-radius: 9999px;
+    flex-shrink: 0;
+    white-space: nowrap;
+}
+
+/* Pill with dot indicator — used in detail header details slot */
+.mdl-demo__status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    font-weight: 500;
+    padding: 3px 10px 3px 6px;
+    border-radius: 9999px;
+    flex-shrink: 0;
+}
+
+/* Coloured indicator dot — inherits text colour */
+.mdl-demo__status-pill::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+/* Colour variants — applied to both .status-badge and .status-pill */
+.mdl-demo__status--active { background: #dcfce7; color: #166534; }
+.mdl-demo__status--idle   { background: #f3f4f6; color: #4b5563; }
+.mdl-demo__status--new    { background: #ede9fe; color: #5b21b6; }
+
+/* -----------------------------------------------------------------------
+ * 6) Detail header metadata
+ * ----------------------------------------------------------------------- */
+
+/* "Role · Department" meta text in Header details slot */
+.mdl-demo__profile-meta {
+    font-size: 12px;
+}
+
+/* Count badge inside master GridHeader details slot */
+.mdl-demo__master-count {
+    display: inline-flex;
+    align-items: center;
+    font-size: 11px;
+    font-weight: 500;
+    padding: 2px 8px;
+    border-radius: 9999px;
+}
+
+/* -----------------------------------------------------------------------
+ * 7) Master panel — spacing overrides
+ *    Scoped to .mdl-demo__master-detail so they don't affect other uses.
+ * ----------------------------------------------------------------------- */
+
+/* Master header: padding inside the GridHeader row */
+.mdl-demo__master-detail .iyen-master-header {
+    padding: 0;
+    border-bottom: 1px solid #e8eaed;
+}
+
+.mdl-demo__master-detail .iyen-master-header .iyen-header__row {
+    padding: 14px 16px 12px;
+}
+
+/* Heading size to match "All customers" style in reference */
+.mdl-demo__master-detail .iyen-master-header .iyen-header__row h2,
+.mdl-demo__master-detail .iyen-master-header .iyen-header__row h3 {
+    font-size: 13px;
+    font-weight: 600;
+}
+
+/* Search toolbar */
+.mdl-demo__master-detail .toolbar {
+    padding: 12px 16px;
+    border-bottom: 1px solid #e8eaed;
+    box-sizing: border-box;
+}
+
+.mdl-demo__master-detail .toolbar vaadin-text-field {
+    flex: 1;
+    width: 100%;
+}
+
+.mdl-demo__master-detail .toolbar vaadin-text-field::part(input-field) {
+    border: 1px solid #e8eaed;
+    border-radius: 8px;
+    min-height: 36px;
+}
+
+/* -----------------------------------------------------------------------
+ * 8) Detail panel — spacing overrides
+ * ----------------------------------------------------------------------- */
+
+/* Detail header: padding inside the Header row */
+.mdl-demo__master-detail .iyen-detail-header {
+    padding: 0;
+    border-bottom: 1px solid #e8eaed;
+}
+
+.mdl-demo__master-detail .iyen-detail-header .iyen-header__row {
+    padding: 14px 24px;
+    gap: 14px;
+    align-items: center;
+}
+
+/* Name heading in detail */
+.mdl-demo__master-detail .iyen-detail-header .iyen-header__row h3 {
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+}
+
+/* Meta + status row beneath name */
+.mdl-demo__master-detail .iyen-detail-header .iyen-header__details {
+    font-size: 12px;
+    margin-top: 3px;
+    gap: 8px;
+    align-items: center;
+}
+
+/* Scrollable content: padding + no gap (sections handle their own spacing) */
+.mdl-demo__master-detail .iyen-detail-scroll {
+    padding: 18px 24px 0;
+    gap: 0;
+}
+
+/* -----------------------------------------------------------------------
+ * 9) Form body and card sections
+ * ----------------------------------------------------------------------- */
+
+.mdl-demo__form-body {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    gap: 14px;
+    padding-bottom: 14px;
+}
+
+/* Card: white bg, 1px border, 10px radius — matches reference .detail-section */
+.mdl-demo__form-section {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 16px 18px;
+    border: 1px solid #e8eaed;
+    border-radius: 10px;
+    min-width: 0;
+    box-sizing: border-box;
+    overflow: hidden;      /* clip any child that bleeds past the card edge */
+}
+
+/*
+ * Vaadin web components inside form sections need explicit width constraints.
+ * vaadin-form-layout defaults to content-fit width (can exceed container).
+ * vaadin-text-field / vaadin-email-field have a ~12em minimum-width in shadow DOM.
+ * Both must be told to fill the available column width instead.
+ */
+.mdl-demo__form-section vaadin-form-layout {
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+}
+
+.mdl-demo__form-section vaadin-text-field,
+.mdl-demo__form-section vaadin-email-field {
+    width: 100%;
+    min-width: 0;
+}
+
+/* Section label — ALLCAPS tiny tertiary text */
+.mdl-demo__section-label {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    margin-bottom: 12px;
+}
+
+/* -----------------------------------------------------------------------
+ * 10) Sticky detail footer
+ *     position: sticky; bottom: 0 ensures it is always visible at the
+ *     bottom of the detail panel, even when the form is short.
+ * ----------------------------------------------------------------------- */
+
+.mdl-demo__detail-footer {
+    position: sticky;
+    bottom: 0;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
+    border-top: 1px solid #e8eaed;
+    width: 100%;
+    box-sizing: border-box;
+    min-width: 0;
+}
+
+/* "Record ID · 1" — meta text occupies the left side */
+.mdl-demo__footer-meta {
+    flex: 1;
+    font-size: 11.5px;
+}

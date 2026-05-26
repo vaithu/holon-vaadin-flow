@@ -16,7 +16,6 @@
 package com.holonplatform.vaadin.flow.components;
 
 import java.io.Serializable;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -279,7 +278,7 @@ public interface ValidationStatusHandler<S> extends Serializable {
 		 * @return A new {@link ValidationStatusEvent}
 		 */
 		static <S> ValidationStatusEvent<S> create(S source, Status status, Localizable error) {
-			return create(source, status, (error != null) ? Collections.singletonList(error) : Collections.emptyList());
+			return create(source, status, (error != null) ? List.of(error) : List.of());
 		}
 
 		// ------- builders by status
@@ -291,7 +290,7 @@ public interface ValidationStatusHandler<S> extends Serializable {
 		 * @return A new {@link ValidationStatusEvent}
 		 */
 		static <S> ValidationStatusEvent<S> unresolved(S source) {
-			return new DefaultValidationStatusEvent<>(source, Status.UNRESOLVED, Collections.emptyList());
+			return new DefaultValidationStatusEvent<>(source, Status.UNRESOLVED, List.of());
 		}
 
 		/**
@@ -301,7 +300,7 @@ public interface ValidationStatusHandler<S> extends Serializable {
 		 * @return A new {@link ValidationStatusEvent}
 		 */
 		static <S> ValidationStatusEvent<S> valid(S source) {
-			return new DefaultValidationStatusEvent<>(source, Status.VALID, Collections.emptyList());
+			return new DefaultValidationStatusEvent<>(source, Status.VALID, List.of());
 		}
 
 		/**
@@ -324,7 +323,7 @@ public interface ValidationStatusHandler<S> extends Serializable {
 		 */
 		static <S> ValidationStatusEvent<S> invalid(S source, Localizable error) {
 			return new DefaultValidationStatusEvent<>(source, Status.INVALID,
-					(error != null) ? Collections.singletonList(error) : Collections.emptyList());
+					(error != null) ? List.of(error) : List.of());
 		}
 
 	}

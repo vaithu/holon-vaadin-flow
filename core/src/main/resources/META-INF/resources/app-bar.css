@@ -1,0 +1,192 @@
+/*
+ * app-bar.css
+ *
+ * Mobile-first styles for AppBar — a sticky top navigation bar.
+ *
+ * BEM: .app-bar / .app-bar__start / .app-bar__middle / .app-bar__end
+ *
+ * Mobile  (< 640 px) — compact height (3 rem), tight padding.
+ * Desktop (≥ 640 px) — standard height (3.5 rem), generous padding.
+ */
+
+/* -----------------------------------------------------------------------
+ * Root — sticky full-width header bar
+ * ----------------------------------------------------------------------- */
+
+.app-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    width: 100%;
+    height: 3rem;                /* compact on mobile */
+    box-sizing: border-box;
+    border-block-end: 1px solid var(--color-border, #e4e4e7);
+    padding-inline: 0.75rem;
+    /* Respect iOS status bar / Dynamic Island */
+    padding-block-start: env(safe-area-inset-top, 0);
+    /* NOTE: do NOT use position:sticky here — AppLayout's navbar slot is
+       already sticky/fixed; sticky inside a shadow-DOM slot has no effect
+       and can break stacking context. */
+}
+
+@media (min-width: 640px) {
+    .app-bar {
+        height: 3.5rem;
+        padding-inline: 1rem;
+        gap: 1.5rem;
+    }
+}
+
+/* -----------------------------------------------------------------------
+ * Start slot — logo, back button, nav hamburger
+ * ----------------------------------------------------------------------- */
+
+.app-bar__start {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    overflow: hidden;
+    flex-shrink: 1;
+    min-width: 0;
+}
+
+/* -----------------------------------------------------------------------
+ * Middle slot — page title, search bar
+ * ----------------------------------------------------------------------- */
+
+.app-bar__middle {
+    display: flex;
+    align-items: center;
+    flex-grow: 1;
+    justify-content: center;
+    min-width: 0;
+    overflow: hidden;
+}
+
+/* -----------------------------------------------------------------------
+ * End slot — icon buttons (notifications, avatar, overflow menu)
+ * ----------------------------------------------------------------------- */
+
+.app-bar__end {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    flex-shrink: 0;
+}
+
+/* -----------------------------------------------------------------------
+ * Action icon buttons — end slot (notifications, lang, theme, etc.)
+ *
+ * SaaS reference pattern (Linear · GitHub · Vercel · Raycast):
+ *   · 32 × 32 px square — icon-only, no label
+ *   · 4 % black tint at rest — "clickable affordance" without being a box
+ *   · 8 % fill + icon-to-primary on hover
+ *   · Icon scales 1.1× for micro-interaction feedback
+ *   · Red badge via [data-badge] attribute — no JS needed
+ *   · 2 px focus ring on keyboard nav (accessibility)
+ * ----------------------------------------------------------------------- */
+
+.app-bar__action-btn {
+    --vaadin-button-background:    rgb(0 0 0 / 0.04);  /* barely-there resting tint  */
+    --vaadin-button-border-color:  transparent;
+    --vaadin-button-border-width:  0;
+    --vaadin-button-shadow:        none;
+    --vaadin-button-height:        2rem;
+    min-width:     2rem;
+    border-radius: var(--radius-md, 8px);
+    transition:    background var(--transition-fast, 120ms ease);
+    box-shadow:    none;
+}
+
+/* Type+class wins over the :not() chain in vaadin-shell-theme.css */
+vaadin-button.app-bar__action-btn {
+    width:    2rem;
+    height:   2rem;
+    min-width: 2rem;
+    box-shadow: none;
+    position: relative;   /* anchor for ::after badge           */
+    overflow: visible;    /* allow ::after to extend outside bounds */
+    z-index:  0;          /* establish stacking context for badge  */
+}
+
+/* Icon — secondary tone at rest, primary on hover, subtle scale feedback */
+.app-bar__action-btn vaadin-icon {
+    width:  1.25rem;
+    height: 1.25rem;
+    color:  var(--text-secondary, #475569);
+    transition:
+        color     var(--transition-fast, 120ms ease),
+        transform var(--transition-fast, 120ms ease);
+    flex-shrink: 0;
+}
+
+/* Hover: deeper fill + brighter icon + scale nudge */
+vaadin-button.app-bar__action-btn:not([disabled]):hover {
+    --vaadin-button-background: rgb(0 0 0 / 0.08);
+    box-shadow: none;
+}
+
+vaadin-button.app-bar__action-btn:not([disabled]):hover vaadin-icon {
+    color:     var(--text-primary, #0f172a);
+    transform: scale(1.1);
+}
+
+/* Focus ring — keyboard accessibility.
+   [focus-ring] is set by Vaadin JS during Tab navigation only.
+   Universal rule in vaadin-shell-theme.css section 4b also handles this;
+   explicit rule here ensures no override from app-bar's own box-shadow reset. */
+vaadin-button.app-bar__action-btn[focus-ring] {
+    box-shadow:
+        0 0 0 2px var(--surface-0, #ffffff),
+        0 0 0 4px var(--brand-500, #3b82f6) !important;
+    outline: none !important;
+}
+
+/* ── Notification badge ────────────────────────────────────────────
+ * Usage in Java:  notifBtn.getElement().setAttribute("data-badge", "3");
+ * Remove badge:   notifBtn.getElement().removeAttribute("data-badge");
+ * Zero/empty:     badge hidden via [data-badge=""] rule below.
+ * ─────────────────────────────────────────────────────────────────── */
+vaadin-button.app-bar__action-btn[data-badge]:not([data-badge=""])::after {
+    content:        attr(data-badge);
+    position:       absolute;
+    top:            -4px;
+    right:          -4px;
+    min-width:      16px;
+    height:         16px;
+    padding:        0 4px;
+    border-radius:  9999px;
+    background:     var(--err, #dc2626);
+    color:          #ffffff;
+    font-size:      0.5625rem;   /* 9px — tight, readable at small size */
+    font-weight:    700;
+    line-height:    16px;
+    text-align:     center;
+    box-sizing:     border-box;
+    pointer-events: none;
+    /* White halo separates badge ring from icon background */
+    box-shadow:     0 0 0 2px var(--surface-0, #ffffff);
+}
+
+/* Touch targets (WCAG 2.5.8 — 44 px) */
+.app-bar__start > vaadin-button,
+.app-bar__start > button,
+.app-bar__end > vaadin-button,
+.app-bar__end > button {
+    min-height: 2.75rem;
+    min-width: 2.75rem;
+}
+
+/* -----------------------------------------------------------------------
+ * Global search — fills the middle slot up to a comfortable reading width
+ * clamp: min 200px · preferred 40% of viewport · max 520px
+ * ----------------------------------------------------------------------- */
+
+.app-bar__search {
+    width: clamp(200px, 40vw, 520px);
+}
+
+.app-bar__search::part(input-field) {
+    border-radius: var(--radius-full, 9999px);  /* pill shape — visually distinct from form inputs */
+}
+

@@ -4,6 +4,8 @@ spring:
     
 vaadin:
    compatibilityMode: true
+   copilot:
+     enabled: false
 
 ---
 spring:

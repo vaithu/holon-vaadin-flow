@@ -3,7 +3,6 @@ package com.holonplatform.vaadin.flow.components.builders;
 import com.holonplatform.vaadin.flow.components.BeanListing;
 import com.holonplatform.vaadin.flow.components.Input;
 import com.holonplatform.vaadin.flow.components.PropertyListing;
-import com.holonplatform.vaadin.flow.internal.lumo.Background;
 import com.holonplatform.vaadin.flow.internal.lumo.SeparatorColor;
 import com.holonplatform.vaadin.flow.vaadinplus.Layout;
 import com.holonplatform.vaadin.flow.vaadinplus.components.GridHeader;

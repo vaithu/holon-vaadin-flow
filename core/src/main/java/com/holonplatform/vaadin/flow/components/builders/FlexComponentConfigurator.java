@@ -22,11 +22,10 @@ import com.vaadin.flow.component.HasElement;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment;
 import com.vaadin.flow.component.orderedlayout.FlexComponent.JustifyContentMode;
-import com.vaadin.flow.theme.lumo.LumoUtility;
 
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
 
 /**
  * Configurator for {@link FlexComponent} type components.
@@ -177,8 +176,8 @@ public interface FlexComponentConfigurator<C extends FlexComponentConfigurator<C
 	 * @return this
 	 */
 	default C expand(HasComponent... componentsToExpand) {
-		return expand(Arrays.asList(componentsToExpand).stream().filter(c -> c != null).map(c -> c.getComponent())
-				.collect(Collectors.toList()).toArray(new Component[0]));
+		return expand(Arrays.stream(componentsToExpand).filter(Objects::nonNull).map(HasComponent::getComponent)
+				.toArray(Component[]::new));
 	}
 
 	/**
@@ -209,11 +208,11 @@ public interface FlexComponentConfigurator<C extends FlexComponentConfigurator<C
 	}
 
 	default C redBorder() {
-		return borderColor(LumoUtility.BorderColor.ERROR);
+		return borderColor("border-color-error-50");
 	}
 
 	default C borderColor(String color) {
-		return styleNames(LumoUtility.Border.ALL,color);
+		return styleNames("border-all", color);
 	}
 
 	C withPostProcessor(Consumer<FlexComponentConfigurator<C>> postProcessor);

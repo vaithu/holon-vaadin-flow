@@ -15,9 +15,11 @@
  */
 package com.holonplatform.vaadin.flow.components.builders;
 
+import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.vaadin.flow.components.Selectable;
 import com.holonplatform.vaadin.flow.components.Selectable.SelectionListener;
 import com.holonplatform.vaadin.flow.components.ValueHolder.ValueChangeEvent;
+import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
 
 /**
  * Configurator for {@link Selectable} input components.
@@ -30,7 +32,34 @@ import com.holonplatform.vaadin.flow.components.ValueHolder.ValueChangeEvent;
  */
 public interface SelectableInputConfigurator<T, S, C extends SelectableInputConfigurator<T, S, C>>
 		extends InputConfigurator<T, ValueChangeEvent<T>, C>, HasStyleConfigurator<C>, HasEnabledConfigurator<C>,
-		DeferrableLocalizationConfigurator<C> {
+		DeferrableLocalizationConfigurator<C>, HasAriaLabelConfigurator<C> {
+
+	@Override
+	default C ariaLabel(String ariaLabel) {
+		return elementConfiguration(element -> element.setAttribute("aria-label", ariaLabel));
+	}
+
+	@Override
+	default C ariaLabelledBy(String ariaLabelledBy) {
+		return elementConfiguration(element -> element.setAttribute("aria-labelledby", ariaLabelledBy));
+	}
+
+	@Override
+	default C ariaLabel(Localizable ariaLabel) {
+		final String defaultAriaLabel = (ariaLabel != null && ariaLabel.getMessage() != null) ? ariaLabel.getMessage() : "";
+		if (ariaLabel == null) {
+			return ariaLabel(defaultAriaLabel);
+		}
+		if (isDeferredLocalizationEnabled()) {
+			ariaLabel(defaultAriaLabel);
+			return withAttachListener(event -> {
+				if (event.isInitialAttach()) {
+					LocalizationProvider.localize(ariaLabel).ifPresent(this::ariaLabel);
+				}
+			});
+		}
+		return ariaLabel(LocalizationProvider.localize(ariaLabel).orElse(defaultAriaLabel));
+	}
 
 	/**
 	 * Adds a {@link SelectionListener} to listen to selection changes.

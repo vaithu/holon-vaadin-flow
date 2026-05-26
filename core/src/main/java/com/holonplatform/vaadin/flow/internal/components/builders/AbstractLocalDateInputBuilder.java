@@ -54,6 +54,7 @@ public abstract class AbstractLocalDateInputBuilder<C extends LocalDateInputConf
 
 	protected final DefaultHasLabelConfigurator<DatePicker> labelConfigurator;
 	protected final DefaultHasTooltipConfigurator<DatePicker> tooltipConfigurator;
+	protected final DefaultHasHelperTextConfigurator<DatePicker> helperTextConfigurator;
 	protected final DefaultHasPlaceholderConfigurator<DatePicker> placeholderConfigurator;
 
 	private Registration contextLocaleOnAttachRegistration;
@@ -83,6 +84,8 @@ public abstract class AbstractLocalDateInputBuilder<C extends LocalDateInputConf
 		tooltipConfigurator = new DefaultHasTooltipConfigurator<>(getComponent(), tooltip -> {
 			getComponent().setTooltipText(tooltip);
 		}, this);
+		helperTextConfigurator = new DefaultHasHelperTextConfigurator<>(getComponent(), getComponent()::setHelperText,
+				this);
 
 		getComponent().setClearButtonVisible(true);
 	}
@@ -289,6 +292,54 @@ public abstract class AbstractLocalDateInputBuilder<C extends LocalDateInputConf
 	}
 
 	@Override
+	public C helperText(Localizable helperText) {
+		helperTextConfigurator.helperText(helperText);
+		return getConfigurator();
+	}
+
+	@Override
+	public C helperText(String helperText) {
+		helperTextConfigurator.helperText(helperText);
+		return getConfigurator();
+	}
+
+	@Override
+	public C helperComponent(Component component) {
+		helperTextConfigurator.helperComponent(component);
+		return getConfigurator();
+	}
+
+	@Override
+	public C ariaLabel(String ariaLabel) {
+		getComponent().setAriaLabel(ariaLabel);
+		return getConfigurator();
+	}
+
+	@Override
+	public C ariaLabelledBy(String ariaLabelledBy) {
+		getComponent().setAriaLabelledBy(ariaLabelledBy);
+		return getConfigurator();
+	}
+
+	@Override
+	public C ariaLabel(Localizable ariaLabel) {
+		final String defaultAriaLabel = (ariaLabel != null && ariaLabel.getMessage() != null) ? ariaLabel.getMessage()
+				: "";
+		if (ariaLabel == null) {
+			return ariaLabel(defaultAriaLabel);
+		}
+		if (isDeferredLocalizationEnabled()) {
+			ariaLabel(defaultAriaLabel);
+			return withAttachListener(event -> {
+				if (event.isInitialAttach()) {
+					LocalizationProvider.localize(ariaLabel).ifPresent(this::ariaLabel);
+				}
+			});
+		}
+		return ariaLabel(LocalizationProvider.localize(ariaLabel).orElse(defaultAriaLabel));
+	}
+
+	@Override
 	public C clearButtonVisible(boolean clearButtonVisible) {
 		getComponent().setClearButtonVisible(clearButtonVisible);
 		return getConfigurator();
@@ -392,15 +443,15 @@ public abstract class AbstractLocalDateInputBuilder<C extends LocalDateInputConf
 		DatePickerI18n dpi = new DatePickerI18n();
 		if (!localization.getMonthNames().isEmpty()) {
 			dpi.setMonthNames(localization.getMonthNames().stream()
-					.map(m -> LocalizationProvider.localize(m).orElse("")).collect(Collectors.toList()));
+					.map(m -> LocalizationProvider.localize(m).orElse("")).toList());
 		}
 		if (!localization.getWeekdays().isEmpty()) {
 			dpi.setWeekdays(localization.getWeekdays().stream().map(m -> LocalizationProvider.localize(m).orElse(""))
-					.collect(Collectors.toList()));
+					.toList());
 		}
 		if (!localization.getWeekdaysShort().isEmpty()) {
 			dpi.setWeekdaysShort(localization.getWeekdaysShort().stream()
-					.map(m -> LocalizationProvider.localize(m).orElse("")).collect(Collectors.toList()));
+					.map(m -> LocalizationProvider.localize(m).orElse("")).toList());
 		}
 		if (localization.getFirstDayOfWeek() != null) {
 			dpi.setFirstDayOfWeek(localization.getFirstDayOfWeek().intValue());
@@ -674,3 +725,7 @@ public abstract class AbstractLocalDateInputBuilder<C extends LocalDateInputConf
 	}
 
 }
+
+
+
+

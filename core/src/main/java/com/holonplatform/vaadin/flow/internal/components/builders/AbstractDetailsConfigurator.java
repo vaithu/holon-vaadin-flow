@@ -14,21 +14,10 @@ import java.util.Optional;
 public abstract class AbstractDetailsConfigurator<C extends HasDetailsConfigurator<C>>
         extends AbstractLocalizableComponentConfigurator<Details, C> implements HasDetailsConfigurator<C> {
 
-    /**
-     * Constructor.
-     *
-     * @param component The component instance (not null)
-     */
     public AbstractDetailsConfigurator(Details component) {
         super(component);
     }
 
-    /**
-     * Adds the given components as children of this component.
-     *
-     * @param components The components to add
-     * @return this
-     */
     @Override
     public C add(Component... components) {
         getComponent().add(components);
@@ -71,53 +60,27 @@ public abstract class AbstractDetailsConfigurator<C extends HasDetailsConfigurat
         return getConfigurator();
     }
 
-    /**
-     * Add given theme variants to the component.
-     *
-     * @param variants The theme variants to add
-     * @return this
-     */
     @Override
     public C withThemeVariants(DetailsVariant... variants) {
         getComponent().addThemeVariants(variants);
         return getConfigurator();
     }
 
-    /**
-     * If the component supports {@link HasSize}, return the component as {@link HasSize}.
-     *
-     * @return Optional component as {@link HasSize}, if supported
-     */
     @Override
     protected Optional<HasSize> hasSize() {
         return Optional.of(getComponent());
     }
 
-    /**
-     * If the component supports {@link HasStyle}, return the component as {@link HasStyle}.
-     *
-     * @return Optional component as {@link HasStyle}, if supported
-     */
     @Override
     protected Optional<HasStyle> hasStyle() {
         return Optional.of(getComponent());
     }
 
-    /**
-     * If the component supports {@link HasEnabled}, return the component as {@link HasEnabled}.
-     *
-     * @return Optional component as {@link HasEnabled}, if supported
-     */
     @Override
     protected Optional<HasEnabled> hasEnabled() {
         return Optional.of(getComponent());
     }
 
-    /**
-     * If the component supports {@link HasTooltip}, return the component as {@link HasTooltip}.
-     *
-     * @return Optional component as {@link HasTooltip}, if supported
-     */
     @Override
     protected Optional<HasTooltip> hasTooltip() {
         return Optional.of(getComponent());

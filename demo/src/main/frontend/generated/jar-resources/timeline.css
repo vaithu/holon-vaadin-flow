@@ -1,0 +1,149 @@
+/*
+ * timeline.css
+ *
+ * External stylesheet for <timeline-stepper>.
+ *
+ * Styles the HOST element from outside the Shadow DOM boundary.
+ * Override CSS custom properties defined inside the web component here
+ * to theme it without touching the JS source.
+ */
+
+/* ── Host layout ─────────────────────────────────────────────────────────── */
+
+timeline-stepper {
+    display: block;
+    width: 100%;
+}
+
+/* ── Width constraint variants ───────────────────────────────────────────── */
+
+timeline-stepper.timeline--narrow {
+    max-width: 540px;
+}
+
+timeline-stepper.timeline--wide {
+    max-width: 900px;
+}
+
+/* ── Activity feed list ───────────────────────────────────────────────── */
+
+/*
+ * .activity-list — vertical stack of activity rows.
+ * Maps to: VerticalLayout / UnorderedList with dividers.
+ *
+ * Structure:
+ *   .activity-list
+ *     .activity-row
+ *       .activity-icon          — coloured circle icon
+ *       div
+ *         .activity-text        — description text
+ *         .activity-time        — timestamp
+ */
+
+.activity-list {
+    display: flex;
+    flex-direction: column;
+}
+
+.activity-row {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-3, 0.75rem);
+    padding: 0.5625rem 0;    /* ≈9px */
+    border-bottom: 1px solid var(--color-surface-100, #f3f4f6);
+}
+
+.activity-row:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+/* Icon circle preceding each activity entry — px size intentional (icon target) */
+.activity-icon {
+    width: 1.75rem;    /* ≈28px */
+    height: 1.75rem;
+    border-radius: var(--radius-full, 9999px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 0.0625rem;
+}
+
+/* Colour variants — assign one modifier via Java addClassName() */
+.activity-icon--success { background: var(--color-active-bg,  #dcfce7); }
+.activity-icon--primary { background: var(--color-bg-primary-10, rgb(37 99 235 / 0.10)); }
+.activity-icon--warning { background: var(--color-warning-bg, #fef3c7); }
+.activity-icon--danger  { background: var(--color-danger-bg,  #fff5f5); }
+.activity-icon--neutral { background: var(--color-surface-100, #f3f4f6); }
+
+.activity-text {
+    font-size: var(--font-size-sm, 0.75rem);    /* slightly above xs for readability */
+    line-height: 1.5;
+}
+
+.activity-time {
+    font-size: var(--font-size-xs, 0.6875rem);
+    line-height: 1.4;
+    margin-top: 0.125rem;
+}
+
+/*
+ * .activity-list — vertical stack of activity rows.
+ * Maps to: VerticalLayout / UnorderedList with dividers.
+ *
+ * Structure:
+ *   .activity-list
+ *     .activity-row
+ *       .activity-icon          — coloured circle icon
+ *       div
+ *         .activity-text        — description text
+ *         .activity-time        — timestamp
+ */
+
+.activity-list {
+    display: flex;
+    flex-direction: column;
+}
+
+.activity-row {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-3, 12px);
+    padding: 9px 0;
+    border-bottom: 1px solid var(--color-surface-100, #f3f4f6);
+}
+
+.activity-row:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+/* Icon circle preceding each activity entry */
+.activity-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: var(--radius-full, 9999px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+}
+
+/* Colour variants — assign one modifier via Java addClassName() */
+.activity-icon--success { background: var(--color-active-bg,  #dcfce7); }
+.activity-icon--primary { background: var(--color-bg-primary-10, rgb(37 99 235 / 0.10)); }
+.activity-icon--warning { background: var(--color-warning-bg, #fef3c7); }
+.activity-icon--danger  { background: var(--color-danger-bg,  #fff5f5); }
+.activity-icon--neutral { background: var(--color-surface-100, #f3f4f6); }
+
+.activity-text {
+    font-size: 12.5px;
+    line-height: 1.5;
+}
+
+.activity-time {
+    font-size: var(--font-size-xs, 11px);
+    margin-top: 2px;
+}

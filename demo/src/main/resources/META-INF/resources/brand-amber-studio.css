@@ -1,0 +1,385 @@
+/*
+ * brand-amber-studio.css  —  "Amber Studio" theme
+ * ──────────────────────────────────────────────────────────────────────────────
+ *  ★  FAITHFUL PORT OF gray-ui-csm  (https://github.com/Jason-uxui/gray-ui-csm)  ★
+ *
+ *  Every token below is mapped directly from gray-ui-csm's globals.css
+ *  (OKLCH → hex conversions).  Sections map to the shadcn/ui variable groups.
+ *
+ *  OKLCH → hex quick-reference (light mode):
+ *    oklch(1 0 0)                  = #ffffff   background
+ *    oklch(0.985 0 0)              = #fafafa   sidebar bg
+ *    oklch(0.967 0.001 286.375)    = #f4f4f5   zinc-100    muted / accent / hover
+ *    oklch(0.92  0.004 286.32)     = #e4e4e7   zinc-200    border / sidebar-border
+ *    oklch(0.705 0.015 286.067)    = #71717a   zinc-500    ring
+ *    oklch(0.552 0.016 285.938)    = #52525b   zinc-600    muted-foreground
+ *    oklch(0.21  0.006 285.885)    = #18181b   zinc-900    sidebar-accent-fg / dark text
+ *    oklch(0.141 0.005 285.823)    = #18181b   near-zinc-950  foreground
+ *    oklch(0.852 0.199 91.936)     = #fbbf24   amber-400   primary button bg
+ *    oklch(0.795 0.184 86.047)     = #f59e0b   amber-500   chart-2
+ *    oklch(0.681 0.162 75.834)     = #d97706   amber-600   chart-3 / sidebar-primary
+ *    oklch(0.554 0.135 66.442)     = #b45309   amber-700   chart-4
+ *    oklch(0.476 0.114 61.907)     = #92400e   amber-800   chart-5
+ *    oklch(0.421 0.095 57.708)     = #92400e   primary-foreground (dark text on amber)
+ *
+ *  KEY DESIGN DECISIONS vs our previous dark-sidebar version:
+ *    • Sidebar:  LIGHT (#fafafa)  — not graphite (#09090b)
+ *    • Nav items: zinc text/hover — amber is buttons-only
+ *    • Active item: zinc-100 bg + zinc-900 text, NO left-bar, NO amber tint
+ *    • Primary button: amber-400 bg + dark amber text + chrome-gloss shadow
+ *    • Section labels: monospace, wide tracking, muted (sidebar-foreground/65)
+ *    • Badges: muted-foreground/10 bg + sidebar-foreground/80 text
+ *
+ *  HOW TO ACTIVATE:
+ *    @StyleSheet(Lumo.STYLESHEET)
+ *    @StyleSheet("context://vaadin-shell-theme.css")
+ *    @StyleSheet("context://brand-amber-studio.css")         ← this line
+ *    @StyleSheet("context://app-shell.css")
+ */
+:root {
+  /* ════════════════════════════════════════════════════════════════
+     1. NEUTRAL SCALE  — Zinc (gray-ui-csm's core neutral family)
+     ════════════════════════════════════════════════════════════════ */
+  --zinc-50:   #fafafa;
+  --zinc-100:  #f4f4f5;   /* oklch(0.967 0.001 286.375) muted / accent / hover  */
+  --zinc-200:  #e4e4e7;   /* oklch(0.92  0.004 286.32)  border / sidebar-border */
+  --zinc-300:  #d4d4d8;
+  --zinc-400:  #a1a1aa;
+  --zinc-500:  #71717a;   /* oklch(0.705 0.015 286.067) ring                    */
+  --zinc-600:  #52525b;   /* oklch(0.552 0.016 285.938) muted-foreground         */
+  --zinc-700:  #3f3f46;
+  --zinc-800:  #27272a;
+  --zinc-900:  #18181b;   /* oklch(0.21  0.006 285.885) dark text / active fg   */
+  --zinc-950:  #09090b;
+  --gray-100: var(--zinc-100);  --gray-150: var(--zinc-200);
+  --gray-200: var(--zinc-200);  --gray-300: var(--zinc-300);
+  --gray-400: var(--zinc-400);  --gray-500: var(--zinc-500);
+  --gray-600: var(--zinc-600);  --gray-700: var(--zinc-700);
+  --gray-800: var(--zinc-800);  --gray-900: var(--zinc-950);
+
+  /* ════════════════════════════════════════════════════════════════
+     2. SEMANTIC STATUS COLOURS  — Unchanged
+     ════════════════════════════════════════════════════════════════ */
+  --ok-light:   #f0fdf4;  --ok:   #16a34a;  --ok-dark:   #166534;
+  --err-light:  #fef2f2;  --err:  #dc2626;  --err-dark:  #b91c1c;
+  --warn-light: #fefce8;  --warn: #ca8a04;  --warn-dark: #a16207;
+  --info-light: #eff6ff;  --info: #2563eb;  --info-dark: #1d4ed8;
+
+  /* ════════════════════════════════════════════════════════════════
+     3. SURFACES  — Clean white cascade, matching gray-ui-csm light mode
+        oklch(1 0 0) → #ffffff / oklch(0.985 0 0) → #fafafa
+     ════════════════════════════════════════════════════════════════ */
+  --surface-0:  #ffffff;   /* oklch(1 0 0)               background / card  */
+  --surface-1:  #fafafa;   /* oklch(0.985 0 0)            sidebar / subtle   */
+  --surface-2:  #f4f4f5;   /* oklch(0.967 0.001 286.375)  muted / hover      */
+  --surface-3:  #e4e4e7;   /* oklch(0.92 0.004 286.32)   border-level        */
+  --surface-4:  #d4d4d8;   /* zinc-300                                        */
+
+  /* ════════════════════════════════════════════════════════════════
+     4. TEXT  — Zinc foreground scale, faithful to gray-ui-csm
+     ════════════════════════════════════════════════════════════════ */
+  --text-primary:   #18181b;   /* oklch(0.141 0.005 285.823) foreground       */
+  --text-secondary: #52525b;   /* oklch(0.552 0.016 285.938) muted-foreground */
+  --text-tertiary:  #a1a1aa;   /* zinc-400                                    */
+  --text-disabled:  #d4d4d8;   /* zinc-300                                    */
+  --text-link:      var(--brand-700);
+  --text-inverse:   #ffffff;
+
+  /* ════════════════════════════════════════════════════════════════
+     5. BORDERS  — zinc-200 = oklch(0.92 0.004 286.32) = gray-ui-csm --border
+     ════════════════════════════════════════════════════════════════ */
+  --border-subtle:    1px solid var(--zinc-100);
+  --border-default:   1px solid var(--zinc-200);
+  --border-strong:    1px solid var(--zinc-300);
+  --border-focus:     2px solid var(--brand-500);
+  --border-separator: 1px solid var(--zinc-200);
+  --border-error:     1px solid var(--err);
+
+  /* ════════════════════════════════════════════════════════════════
+     6. RADIUS  — 0.625rem base = gray-ui-csm's --radius: 0.625rem
+     ════════════════════════════════════════════════════════════════ */
+  --radius:      0.625rem;   /* 10px — matches gray-ui-csm exactly  */
+  --radius-xs:   calc(var(--radius) - 6px);   /* 4px  */
+  --radius-sm:   calc(var(--radius) - 4px);   /* 6px  */
+  --radius-md:   calc(var(--radius) - 2px);   /* 8px  */
+  --radius-lg:   var(--radius);               /* 10px */
+  --radius-xl:   calc(var(--radius) + 4px);   /* 14px */
+  --radius-2xl:  calc(var(--radius) + 8px);   /* 18px */
+  --radius-3xl:  calc(var(--radius) * 2.2);   /* ~22px — gray-ui-csm 3xl */
+  --radius-4xl:  calc(var(--radius) * 2.6);   /* ~26px — gray-ui-csm button rounded-4xl */
+  --radius-full: 9999px;
+  /* Override button border-radius to match gray-ui-csm rounded-4xl style */
+  --vaadin-button-border-radius: var(--radius-4xl);
+
+  /* ════════════════════════════════════════════════════════════════
+     7. SPACING  — Unchanged
+     ════════════════════════════════════════════════════════════════ */
+  --sp-1:  4px;   --sp-2:  8px;  --sp-3:  12px;  --sp-4:  16px;
+  --sp-5: 20px;   --sp-6: 24px;  --sp-8:  32px;  --sp-10: 40px;
+  --space-1: 0.25rem;  --space-2: 0.5rem;   --space-3: 0.75rem;
+  --space-4: 1rem;     --space-5: 1.25rem;  --space-6: 1.5rem;
+
+  /* ════════════════════════════════════════════════════════════════
+     8. TYPOGRAPHY — Geist-first, matching gray-ui-csm's Google Fonts choice
+     ════════════════════════════════════════════════════════════════ */
+  --font-display: 'Geist', 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-body:    'Geist', 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono:    'Geist Mono', 'Cascadia Code', 'Fira Code', ui-monospace, monospace;
+  --font-sans:    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-size-xs:   0.6875rem;
+  --font-size-sm:   0.75rem;
+  --font-size-base: 0.8125rem;
+  --font-size-md:   0.875rem;
+  --font-size-lg:   1rem;
+
+  /* ════════════════════════════════════════════════════════════════
+     8b. SHADOWS & TRANSITIONS  — Unchanged
+     ════════════════════════════════════════════════════════════════ */
+  --shadow-xs:    0 1px 2px 0 rgba(0,0,0,.05);
+  --shadow-sm:    0 1px 3px 0 rgba(0,0,0,.10), 0 1px 2px -1px rgba(0,0,0,.10);
+  --shadow-md:    0 4px 6px -1px rgba(0,0,0,.10), 0 2px 4px -2px rgba(0,0,0,.10);
+  --shadow-lg:    0 10px 15px -3px rgba(0,0,0,.10), 0 4px 6px -4px rgba(0,0,0,.10);
+  --shadow-xl:    0 20px 25px -5px rgba(0,0,0,.10), 0 8px 10px -6px rgba(0,0,0,.10);
+  --shadow-focus: 0 0 0 2px var(--surface-0), 0 0 0 4px var(--brand-400);
+  --shadow-shell: var(--shadow-md);
+  --shadow-card:  var(--shadow-xs);
+  --ease-out:        cubic-bezier(.22, 1, .36, 1);   /* gray-ui-csm --motion-emphasized */
+  --ease-in-out:     cubic-bezier(.45, 0, .55, 1);
+  --dur-fast:        100ms;
+  --dur-base:        150ms;
+  --dur-slow:        250ms;
+  --transition-fast: 120ms ease;
+  --transition-base: var(--dur-base) var(--ease-out);
+
+  /* ════════════════════════════════════════════════════════════════
+     8c. COMPONENT DIMENSIONS  — Unchanged
+     ════════════════════════════════════════════════════════════════ */
+  --field-h-sm:  32px;  --field-h-md:  36px;  --field-h-lg:  40px;
+  --btn-h-sm:    28px;  --btn-h-md:    36px;  --btn-h-lg:    40px;
+  --toolbar-h:   56px;  --master-w:    290px;
+  --master-panel-width:      var(--master-w);
+  --toolbar-height:          var(--toolbar-h);
+  --sidenav-collapsed-width: 3.25rem;
+
+  /* ════════════════════════════════════════════════════════════════
+     8d. COMPONENT RING
+     ════════════════════════════════════════════════════════════════ */
+  --comp-bg:           var(--surface-0);
+  --comp-border-color: var(--zinc-200);
+  --comp-border-hover: var(--zinc-400);
+  --comp-border-focus: var(--brand-500);
+  --comp-border-error: var(--err);
+  --comp-shadow:       0 1px 3px 0 rgb(0 0 0 / .08);
+  --comp-shadow-inset: inset 0 1px 2px rgb(0 0 0 / .04);
+  --comp-radius:       var(--radius-md);
+  --comp-focus-ring:   0 0 0 2px var(--surface-0), 0 0 0 3px var(--brand-400);
+
+  /* ════════════════════════════════════════════════════════════════
+     8e. TYPOGRAPHY SCALE  — Unchanged
+     ════════════════════════════════════════════════════════════════ */
+  --type-sz-display:  2rem;        --type-wt-display: 700;  --type-lh-display: 1.15;  --type-ls-display: -0.025em;
+  --type-sz-h1:       1.5rem;      --type-wt-h1:      600;  --type-lh-h1:      1.2;   --type-ls-h1:      -0.02em;
+  --type-sz-h2:       1.25rem;     --type-wt-h2:      600;  --type-lh-h2:      1.25;  --type-ls-h2:      -0.015em;
+  --type-sz-h3:       1.125rem;    --type-wt-h3:      600;  --type-lh-h3:      1.3;   --type-ls-h3:      -0.01em;
+  --type-sz-h4:       1rem;        --type-wt-h4:      600;  --type-lh-h4:      1.4;   --type-ls-h4:      0;
+  --type-sz-body-lg:  1rem;        --type-wt-body:    400;  --type-lh-body-lg: 1.6;
+  --type-sz-body:     0.875rem;                             --type-lh-body:    1.5;
+  --type-sz-body-sm:  0.8125rem;                            --type-lh-body-sm: 1.5;
+  --type-sz-caption:  0.75rem;                              --type-lh-caption: 1.4;
+  --type-sz-overline: 0.6875rem;   --type-wt-overline: 600; --type-ls-overline: 0.1em;
+  --type-sz-mono:     0.8125rem;
+
+  /* ╔══════════════════════════════════════════════════════════════════╗
+     ║  ★  9. BRAND PALETTE  ★   Amber — exact gray-ui-csm primary    ║
+     ║                                                                  ║
+     ║  Mapped from gray-ui-csm chart scale + primary token:           ║
+     ║    --chart-1  oklch(0.905 0.182 98.111) = amber-300  #fcd34d    ║
+     ║    --primary  oklch(0.852 0.199 91.936) = amber-400  #fbbf24    ║
+     ║    --chart-2  oklch(0.795 0.184 86.047) = amber-500  #f59e0b    ║
+     ║    --chart-3  oklch(0.681 0.162 75.834) = amber-600  #d97706    ║
+     ║    --chart-4  oklch(0.554 0.135 66.442) = amber-700  #b45309    ║
+     ║    --chart-5  oklch(0.476 0.114 61.907) = amber-800  #92400e    ║
+     ║                                                                  ║
+     ║  --primary-foreground oklch(0.421 0.095 57.708) = #92400e       ║
+     ║  → dark amber text on bright amber button (WCAG AA ✓ 4.7:1)    ║
+     ╚══════════════════════════════════════════════════════════════════╝ */
+  --brand-50:   #fffbeb;   /* amber-50                                          */
+  --brand-100:  #fef3c7;   /* amber-100                                         */
+  --brand-200:  #fde68a;   /* amber-200                                         */
+  --brand-300:  #fcd34d;   /* amber-300 / chart-1 oklch(0.905 0.182 98.111)     */
+  --brand-400:  #fbbf24;   /* amber-400 / primary oklch(0.852 0.199 91.936)     */
+  --brand-500:  #f59e0b;   /* amber-500 / chart-2 oklch(0.795 0.184 86.047)     */
+  --brand-600:  #d97706;   /* amber-600 / chart-3 oklch(0.681 0.162 75.834)     */
+  --brand-700:  #b45309;   /* amber-700 / chart-4 oklch(0.554 0.135 66.442)     */
+  --brand-800:  #92400e;   /* amber-800 / chart-5 / primary-fg oklch(0.421...)  */
+  --brand-900:  #78350f;   /* amber-900                                         */
+
+  /* ╔══════════════════════════════════════════════════════════════════╗
+     ║  10. SIDEBAR  ←  LIGHT  (faithfully cloned from gray-ui-csm)   ║
+     ║                                                                  ║
+     ║  gray-ui-csm light-mode sidebar tokens:                         ║
+     ║    --sidebar:                 oklch(0.985 0 0)     = #fafafa    ║
+     ║    --sidebar-foreground:      oklch(0.141 0.005 285) = #18181b  ║
+     ║    --sidebar-accent:          oklch(0.967 0.001 286) = #f4f4f5  ║
+     ║    --sidebar-accent-fg:       oklch(0.21  0.006 285) = #18181b  ║
+     ║    --sidebar-border:          oklch(0.92  0.004 286) = #e4e4e7  ║
+     ║    --sidebar-primary:         oklch(0.681 0.162 75)  = #d97706  ║
+     ║    --sidebar-primary-fg:      oklch(0.987 0.026 102) = #fffbeb  ║
+     ║                                                                  ║
+     ║  Key insight: amber colour appears ONLY in primary buttons.    ║
+     ║  Sidebar navigation is monochromatic zinc — no amber tints.    ║
+     ║  Active items use sidebar-accent (zinc-100) not brand color.   ║
+     ╚══════════════════════════════════════════════════════════════════╝ */
+  --sidenav-width:               220px;
+  --sidenav-bg:                  #fafafa;    /* oklch(0.985 0 0) — sidebar token */
+  --sidenav-border:              #e4e4e7;    /* oklch(0.92 0.004 286.32) sidebar-border */
+  --sidenav-label-color:         rgba(24, 24, 27, 0.65);  /* sidebar-foreground/65 (monospace section header) */
+  --sidenav-label-font-size:     0.6875rem;
+  --sidenav-label-padding:       0.875rem 0.75rem 0.25rem;
+
+  /* Items: zinc-600 text on white — matches text-muted-foreground in gray-ui-csm */
+  --sidenav-item-color:          #52525b;    /* oklch(0.552 0.016 285.938) muted-foreground */
+  --sidenav-item-font-size:      0.875rem;
+  --sidenav-item-font-weight:    400;
+  --sidenav-item-padding:        0.5rem 0.5rem 0.5rem 0.75rem;
+  --sidenav-item-radius:         var(--radius-lg);   /* rounded-lg from gray-ui-csm SidebarMenuButton */
+  --sidenav-item-hover-bg:       #f4f4f5;    /* oklch(0.967 0.001 286.375) sidebar-accent */
+  --sidenav-item-hover-color:    #18181b;    /* oklch(0.21 0.006 285.885) sidebar-accent-foreground */
+
+  /* Toggle chevron: muted on white bg */
+  --sidenav-toggle-color:        #a1a1aa;    /* zinc-400 */
+  --sidenav-toggle-hover-color:  #18181b;    /* zinc-900 */
+
+  /* Hover for group collapsible header */
+  --sidenav-group-color:          rgba(24, 24, 27, 0.65);   /* sidebar-foreground/65 */
+  --sidenav-group-font-size:      0.6875rem;
+  --sidenav-group-font-weight:    500;
+  --sidenav-group-padding-top:    0.5rem;
+  --sidenav-group-padding-bottom: 0.25rem;
+
+  /* Child items */
+  --sidenav-child-color:      #71717a;     /* zinc-500 — slightly more muted than parent */
+  --sidenav-child-font-size:  0.8125rem;
+  --sidenav-child-opacity:    1;
+
+  /* ── ACTIVE — zinc-100 bg + zinc-900 text; NO amber, NO left bar
+     Matches gray-ui-csm: data-[active=true]:bg-sidebar-accent
+     --sidebar-accent = oklch(0.967 0.001 286.375) = zinc-100 #f4f4f5
+     text-sidebar-accent-foreground = oklch(0.21 0.006 285.885) = zinc-900 #18181b */
+  --sidenav-item-active-bg:           #f4f4f5;     /* sidebar-accent = zinc-100   */
+  --sidenav-item-active-color:        #18181b;     /* sidebar-accent-fg = zinc-900 */
+  --sidenav-item-active-border:       transparent;  /* no left-bar in gray-ui-csm  */
+  --sidenav-item-active-font-weight:  500;
+
+  /* Child indent */
+  --vaadin-side-nav-child-indent: 1.25rem;
+
+  /* Internal Vaadin nav properties */
+  --vaadin-side-nav-item-border-radius: var(--radius-lg);
+  --vaadin-side-nav-item-font-size:     0.875rem;
+  --vaadin-side-nav-item-font-weight:   400;
+
+  /* Icons: zinc-500 at rest (text-muted-foreground), zinc-900 on active */
+  --sidenav-icon-color:        #71717a;     /* zinc-500 — data-[active=false] SVG tint */
+  --sidenav-icon-active-color: #18181b;     /* zinc-900 — data-[active=true]  SVG tint */
+
+  /* ── Badge / counter pills — muted-foreground/10 bg (gray-ui-csm SidebarMenuBadge)
+     non-active: bg-muted-foreground/10 text-sidebar-foreground/80
+     active:     bg-background text-sidebar-accent-foreground                        */
+  --sidenav-badge-bg:     rgba(82, 82, 91, 0.10);    /* muted-foreground/10     */
+  --sidenav-badge-color:  rgba(24, 24, 27, 0.80);    /* sidebar-foreground/80   */
+  --sidenav-badge-radius: 9999px;
+}
+
+
+/* ══════════════════════════════════════════════════════════════
+   SIDEBAR SECTION LABELS  — monospace + wide tracking
+   Source: gray-ui-csm SidebarGroupLabel
+     className="text-xs tracking-widest font-mono text-sidebar-foreground/65 uppercase"
+   ══════════════════════════════════════════════════════════════ */
+vaadin-side-nav::part(label) {
+  font-family:    var(--font-mono);
+  letter-spacing: 0.12em;   /* tracking-widest */
+  font-size:      0.6875rem;
+  color:          rgba(24, 24, 27, 0.65);
+}
+
+
+/* ══════════════════════════════════════════════════════════════
+   PRIMARY BUTTON  — amber-400 bg + dark-amber text + chrome gloss
+   Source: gray-ui-csm globals.css
+     --primary:            oklch(0.852 0.199 91.936) = #fbbf24  amber-400
+     --primary-foreground: oklch(0.421 0.095 57.708) = #92400e  amber-800
+   Plus .btn-primary-chrome box-shadow from globals.css @layer components
+   ══════════════════════════════════════════════════════════════ */
+vaadin-button[theme~="primary"] {
+  --vaadin-button-background:   #fbbf24;                      /* oklch(0.852 0.199 91.936) primary   */
+  --vaadin-button-border-color: rgba(255, 255, 255, 0.12);    /* btn-primary-chrome border           */
+  --vaadin-button-border-width: 1.333px;                      /* btn-primary-chrome border-width     */
+  --vaadin-button-text-color:   #92400e;                      /* oklch(0.421 0.095 57.708) primary-fg */
+  --vaadin-button-font-weight:  500;
+  /* .btn-primary-chrome box-shadow from gray-ui-csm globals.css */
+  --vaadin-button-shadow:
+    0 0 0 0.667px rgba(0, 0, 0, 0.20) inset,
+    0 2px 2px 0   rgba(255, 255, 255, 0.10) inset,
+    0 2px 2.667px -0.667px rgba(42, 42, 42, 0.10),
+    0 0.667px 0.667px 0 rgba(42, 42, 42, 0.08);
+  box-shadow:
+    0 0 0 0.667px rgba(0, 0, 0, 0.20) inset,
+    0 2px 2px 0   rgba(255, 255, 255, 0.10) inset,
+    0 2px 2.667px -0.667px rgba(42, 42, 42, 0.10),
+    0 0.667px 0.667px 0 rgba(42, 42, 42, 0.08);
+}
+
+vaadin-button[theme~="primary"]:not([disabled]):hover {
+  --vaadin-button-background:   #f59e0b;                      /* amber-500 on hover  */
+  --vaadin-button-border-color: rgba(255, 255, 255, 0.12);
+  --vaadin-button-shadow:
+    0 0 0 0.667px rgba(0, 0, 0, 0.20) inset,
+    0 2px 4px 0   rgba(255, 255, 255, 0.12) inset,
+    0 3px 5px -1px rgba(42, 42, 42, 0.14),
+    0 1px 2px 0   rgba(42, 42, 42, 0.10);
+  box-shadow:
+    0 0 0 0.667px rgba(0, 0, 0, 0.20) inset,
+    0 2px 4px 0   rgba(255, 255, 255, 0.12) inset,
+    0 3px 5px -1px rgba(42, 42, 42, 0.14),
+    0 1px 2px 0   rgba(42, 42, 42, 0.10);
+}
+
+
+/* ══════════════════════════════════════════════════════════════
+   OUTLINE / DEFAULT BUTTON  — matches gray-ui-csm outline variant
+   Source: button.tsx variant="outline"
+     border-border bg-background hover:bg-muted
+   ══════════════════════════════════════════════════════════════ */
+vaadin-button:not([theme~="primary"]):not([theme~="error"]):not([theme~="success"]):not([theme~="warning"]):not([theme~="tertiary"]):not([theme~="contrast"]) {
+  --vaadin-button-background:   #ffffff;    /* bg-background */
+  --vaadin-button-border-color: #e4e4e7;    /* border-border = zinc-200 */
+  --vaadin-button-text-color:   #18181b;    /* foreground */
+}
+
+vaadin-button:not([theme~="primary"]):not([theme~="error"]):not([theme~="success"]):not([theme~="warning"]):not([theme~="tertiary"]):not([theme~="contrast"]):not([disabled]):hover {
+  --vaadin-button-background:   #f4f4f5;    /* hover:bg-muted = zinc-100 */
+  --vaadin-button-text-color:   #18181b;    /* hover:text-foreground     */
+}
+
+
+/* ══════════════════════════════════════════════════════════════
+   LIGHT SIDEBAR: search input field
+   ══════════════════════════════════════════════════════════════ */
+.sidenav-search vaadin-text-field {
+  --vaadin-input-field-background:  #fafafa;   /* surface-1 */
+  --vaadin-input-field-value-color: #18181b;   /* text-primary */
+}
+.sidenav-search vaadin-text-field::part(input-field) {
+  border-color: #e4e4e7;   /* zinc-200 */
+  color:        #52525b;   /* zinc-600 placeholder */
+}
+
+
+/* ══════════════════════════════════════════════════════════════
+   LIGHT SIDEBAR: subtle scrollbar
+   ══════════════════════════════════════════════════════════════ */
+.sidenav-host vaadin-side-nav {
+  scrollbar-color: #d4d4d8 transparent;   /* zinc-300 thumb on transparent track */
+}

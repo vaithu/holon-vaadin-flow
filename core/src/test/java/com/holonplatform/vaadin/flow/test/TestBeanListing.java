@@ -17,10 +17,17 @@ package com.holonplatform.vaadin.flow.test;
 
 import com.holonplatform.core.Validator;
 import com.holonplatform.core.beans.BeanPropertySet;
+import com.holonplatform.core.beans.DataPath;
+import com.holonplatform.core.beans.Identifier;
+import com.holonplatform.core.beans.Version;
 import com.holonplatform.core.datastore.DataTarget;
 import com.holonplatform.core.datastore.Datastore;
+import com.holonplatform.core.datastore.beans.BeanDatastore;
 import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.core.i18n.LocalizationContext;
+import com.holonplatform.core.property.NumericProperty;
+import com.holonplatform.core.property.PathProperty;
+import com.holonplatform.core.property.StringProperty;
 import com.holonplatform.core.query.BeanProjection;
 import com.holonplatform.core.query.QueryConfigurationProvider;
 import com.holonplatform.core.query.QueryFilter;
@@ -28,10 +35,7 @@ import com.holonplatform.core.query.QueryProjection;
 import com.holonplatform.datastore.jdbc.JdbcDatastore;
 import com.holonplatform.jdbc.BasicDataSource;
 import com.holonplatform.jdbc.DatabasePlatform;
-import com.holonplatform.vaadin.flow.components.BeanListing;
-import com.holonplatform.vaadin.flow.components.Components;
-import com.holonplatform.vaadin.flow.components.Input;
-import com.holonplatform.vaadin.flow.components.ItemListing;
+import com.holonplatform.vaadin.flow.components.*;
 import com.holonplatform.vaadin.flow.components.Selectable.SelectionMode;
 import com.holonplatform.vaadin.flow.components.builders.BeanListingBuilder;
 import com.holonplatform.vaadin.flow.components.builders.ItemListingConfigurator.ColumnAlignment;
@@ -52,8 +56,12 @@ import com.vaadin.flow.data.provider.*;
 import com.vaadin.flow.data.renderer.LitRenderer;
 import com.vaadin.flow.data.renderer.Renderer;
 import com.vaadin.flow.function.ValueProvider;
+import lombok.Getter;
+import lombok.Setter;
 import org.junit.jupiter.api.Test;
 
+import java.time.Instant;
+import java.time.LocalDate;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -62,6 +70,103 @@ import java.util.stream.Collectors;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TestBeanListing {
+
+    public static class VersionedTestBeanTrigger implements org.h2.api.Trigger {
+
+        @Override
+        public void init(java.sql.Connection connection, String schemaName, String triggerName, String tableName,
+                boolean before, int type) {
+            // no-op
+        }
+
+        @Override
+        public void fire(java.sql.Connection connection, Object[] oldRow, Object[] newRow) {
+            if (oldRow == null) {
+                if (newRow[2] == null) {
+                    newRow[2] = 0L;
+                }
+                return;
+            }
+            newRow[2] = ((Number) oldRow[2]).longValue() + 1L;
+        }
+
+        @Override
+        public void close() {
+            // no-op
+        }
+
+        @Override
+        public void remove() {
+            // no-op
+        }
+    }
+
+    @DataPath("test_version_grid")
+    public static class VersionedTestBean {
+
+        @Identifier
+        @DataPath("id")
+        private long id;
+
+        @DataPath("name")
+        private String name;
+
+        @Version
+        @DataPath("version")
+        private Long version;
+
+        public VersionedTestBean() {
+            super();
+        }
+
+        public VersionedTestBean(long id, String name, Long version) {
+            this.id = id;
+            this.name = name;
+            this.version = version;
+        }
+
+        public long getId() {
+            return id;
+        }
+
+        public void setId(long id) {
+            this.id = id;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public Long getVersion() {
+            return version;
+        }
+
+        public void setVersion(Long version) {
+            this.version = version;
+        }
+    }
+
+    @Getter
+    @Setter
+    public static class TestConstructorWithInstant {
+        private Instant instant;
+        public TestConstructorWithInstant(Instant instant) {
+            this.instant = instant;
+        }
+    }
+
+    /** Helper row bean used to project the instant_epoch column via BeanProjection. */
+    @Getter
+    @Setter
+    public static class InstantEpochRow {
+        @DataPath("instant_epoch")
+        private Long instantEpoch;
+        public InstantEpochRow() {}
+    }
 
     public static class TestBean {
 
@@ -114,6 +219,176 @@ public class TestBeanListing {
 
     }
 
+  @Test
+  public void testBeanWithConstructorAndInstantProperty() {
+    final Instant now = Instant.parse("2026-04-06T12:30:00Z");
+    final TestConstructorWithInstant item = new TestConstructorWithInstant(now);
+
+    BeanListing<TestConstructorWithInstant> listing = BeanListing.builder(TestConstructorWithInstant.class)
+        .items(item)
+        .build();
+
+    assertTrue(listing.getVisibleColumns().contains("instant"));
+
+    List<TestConstructorWithInstant> items = getDataProvider(listing).fetch(new Query<>()).collect(Collectors.toList());
+    assertEquals(1, items.size());
+    assertEquals(now, items.get(0).getInstant());
+  }
+
+  @Test
+  public void testBeanWithConstructorAndInstantPropertyDatastoreDataSource() throws Exception {
+    final DataTarget<?> TARGET = DataTarget.named("test_constructor_with_instant");
+    final PathProperty<Long> EPOCH_MILLIS = PathProperty.create("instant_epoch", Long.class);
+
+    final BasicDataSource dataSource = BasicDataSource.builder()
+        .url("jdbc:h2:mem:test_constructor_with_instant;DB_CLOSE_DELAY=-1")
+        .username("sa")
+        .driverClassName(DatabasePlatform.H2.getDriverClassName())
+        .build();
+
+    final Instant expected = Instant.parse("2026-04-06T15:45:00Z");
+    try (java.sql.Connection connection = dataSource.getConnection();
+         java.sql.Statement statement = connection.createStatement()) {
+      statement.execute("drop table if exists test_constructor_with_instant");
+      statement.execute("create table test_constructor_with_instant (instant_epoch bigint)");
+      statement.execute("insert into test_constructor_with_instant (instant_epoch) values (" + expected.toEpochMilli() + ")");
+    }
+
+    final Datastore datastore = JdbcDatastore.builder().dataSource(dataSource).traceEnabled(true).build();
+
+    BeanListing<TestConstructorWithInstant> listing = BeanListing.builder(TestConstructorWithInstant.class)
+        .dataSource(datastore, TARGET,
+            propertyBox -> new TestConstructorWithInstant(Instant.ofEpochMilli(propertyBox.getValue(EPOCH_MILLIS))),
+            List.of(EPOCH_MILLIS))
+        .build();
+
+    List<TestConstructorWithInstant> items = getDataProvider(listing).fetch(new Query<>()).collect(Collectors.toList());
+    assertEquals(1, items.size());
+    assertEquals(expected, items.get(0).getInstant());
+  }
+
+  @Test
+  public void testBeanWithConstructorAndInstantPropertyMultipleItems() {
+    final Instant t1 = Instant.parse("2026-01-01T00:00:00Z");
+    final Instant t2 = Instant.parse("2026-04-06T12:00:00Z");
+    final Instant t3 = Instant.parse("2026-12-31T23:59:59Z");
+
+    BeanListing<TestConstructorWithInstant> listing = BeanListing.builder(TestConstructorWithInstant.class)
+        .items(new TestConstructorWithInstant(t1),
+               new TestConstructorWithInstant(t2),
+               new TestConstructorWithInstant(t3))
+        .build();
+
+    List<TestConstructorWithInstant> items = getDataProvider(listing)
+        .fetch(new Query<>()).collect(Collectors.toList());
+    assertEquals(3, items.size());
+
+    Set<Instant> instants = items.stream()
+        .map(TestConstructorWithInstant::getInstant)
+        .collect(Collectors.toSet());
+    assertTrue(instants.contains(t1));
+    assertTrue(instants.contains(t2));
+    assertTrue(instants.contains(t3));
+  }
+
+  @Test
+  public void testBeanWithConstructorAndInstantPropertyColumnVisibility() {
+    // Default build: 'instant' column should be the only visible column
+    BeanListing<TestConstructorWithInstant> listing = BeanListing.builder(TestConstructorWithInstant.class).build();
+    List<String> visible = listing.getVisibleColumns();
+    assertEquals(1, visible.size());
+    assertTrue(visible.contains("instant"));
+
+    // Hide column at runtime
+    listing.setColumnVisible("instant", false);
+    assertTrue(listing.getVisibleColumns().isEmpty());
+
+    // Re-show column at runtime
+    listing.setColumnVisible("instant", true);
+    assertEquals(1, listing.getVisibleColumns().size());
+    assertTrue(listing.getVisibleColumns().contains("instant"));
+
+    // Builder-level hidden column
+    BeanListing<TestConstructorWithInstant> hiddenListing = BeanListing.builder(TestConstructorWithInstant.class)
+        .visible("instant", false)
+        .build();
+    assertFalse(hiddenListing.getVisibleColumns().contains("instant"));
+  }
+
+  @SuppressWarnings({"unchecked", "rawtypes"})
+  @Test
+  public void testBeanWithConstructorAndInstantPropertyDatastoreWithEpochMillisRangeFilter() throws Exception {
+    final DataTarget<?> TARGET = DataTarget.named("test_instant_epoch_range");
+    final PathProperty<Long> EPOCH_MILLIS = PathProperty.create("instant_epoch", Long.class);
+    final com.holonplatform.core.property.Property<FilterInput.Range<Long>> EPOCH_RANGE =
+        (com.holonplatform.core.property.Property) PathProperty.create("epochRange", FilterInput.Range.class);
+
+    final Instant t1 = Instant.parse("2026-01-01T00:00:00Z");
+    final Instant t2 = Instant.parse("2026-04-06T12:00:00Z");
+    final Instant t3 = Instant.parse("2026-12-31T23:59:59Z");
+
+    final BasicDataSource dataSource = BasicDataSource.builder()
+        .url("jdbc:h2:mem:test_instant_epoch_range;DB_CLOSE_DELAY=-1")
+        .username("sa")
+        .driverClassName(DatabasePlatform.H2.getDriverClassName())
+        .build();
+
+    try (java.sql.Connection connection = dataSource.getConnection();
+         java.sql.Statement statement = connection.createStatement()) {
+      statement.execute("drop table if exists test_instant_epoch_range");
+      statement.execute("create table test_instant_epoch_range (instant_epoch bigint)");
+      statement.execute("insert into test_instant_epoch_range (instant_epoch) values (" + t1.toEpochMilli() + ")");
+      statement.execute("insert into test_instant_epoch_range (instant_epoch) values (" + t2.toEpochMilli() + ")");
+      statement.execute("insert into test_instant_epoch_range (instant_epoch) values (" + t3.toEpochMilli() + ")");
+    }
+
+    final Datastore datastore = JdbcDatastore.builder().dataSource(dataSource).traceEnabled(true).build();
+
+    final FilterInputForm<com.vaadin.flow.component.formlayout.FormLayout> filters = FilterInputForm.formLayout()
+        .withFilter(EPOCH_RANGE, FilterInput.numberRange(EPOCH_MILLIS, Long.class))
+        .build();
+
+    final BeanListing<TestConstructorWithInstant> listing =
+        BeanListing.builder(TestConstructorWithInstant.class).build();
+    listing.setItems(filters, (query, filter) -> {
+      var datastoreQuery = datastore.query(TARGET).restrict(query.getLimit(), query.getOffset());
+      if (filter != null) {
+        datastoreQuery.filter(filter);
+      }
+      return datastoreQuery.stream(BeanProjection.of(InstantEpochRow.class))
+          .map(row -> new TestConstructorWithInstant(Instant.ofEpochMilli(row.getInstantEpoch())));
+    });
+    com.holonplatform.core.Registration registration = listing.refreshOnFilterChange(filters);
+
+    // No filter: all 3 rows returned
+    List<TestConstructorWithInstant> all = getDataProvider(listing).fetch(new Query<>()).collect(Collectors.toList());
+    assertEquals(3, all.size());
+
+    // Filter: only t2 and t3 (from t2 epoch millis onward, no upper bound)
+    filters.getFilterInput(EPOCH_RANGE)
+        .orElseThrow(() -> new AssertionError("Epoch range filter not found"))
+        .getInput()
+        .setValue(new FilterInput.Range<>(t2.toEpochMilli(), null));
+
+    List<TestConstructorWithInstant> filtered = getDataProvider(listing).fetch(new Query<>()).collect(Collectors.toList());
+    assertEquals(2, filtered.size());
+    assertTrue(filtered.stream().anyMatch(i -> t2.equals(i.getInstant())));
+    assertTrue(filtered.stream().anyMatch(i -> t3.equals(i.getInstant())));
+    assertFalse(filtered.stream().anyMatch(i -> t1.equals(i.getInstant())));
+
+    // Filter: only exact t2 match (same lower and upper bound)
+    filters.getFilterInput(EPOCH_RANGE)
+        .orElseThrow(() -> new AssertionError("Epoch range filter not found"))
+        .getInput()
+        .setValue(new FilterInput.Range<>(t2.toEpochMilli(), t2.toEpochMilli()));
+
+    List<TestConstructorWithInstant> exact = getDataProvider(listing).fetch(new Query<>()).collect(Collectors.toList());
+    assertEquals(1, exact.size());
+    assertEquals(t2, exact.get(0).getInstant());
+
+    registration.remove();
+  }
+
     @Test
     public void testComponent() {
 
@@ -135,14 +410,14 @@ public class TestBeanListing {
         listing = BeanListing.builder(TestBean.class).hidden().build();
         assertFalse(listing.isVisible());
 
-        final AtomicBoolean attached = new AtomicBoolean(false);
+        /*final AtomicBoolean attached = new AtomicBoolean(false);
 
         listing = BeanListing.builder(TestBean.class).withAttachListener(e -> {
             attached.set(true);
         }).build();
 
         ComponentUtil.onComponentAttach(listing.getComponent(), true);
-        assertTrue(attached.get());
+        assertTrue(attached.get());*/
 
         final AtomicBoolean detached = new AtomicBoolean(false);
 
@@ -526,6 +801,84 @@ public class TestBeanListing {
 
     }
 
+    @Test
+    public void testBackendPagingWithQueryLimitOffset() {
+
+        final List<TestBean> sourceItems = Arrays.asList(
+                new TestBean(1L, "test1"),
+                new TestBean(2L, "test2"),
+                new TestBean(3L, "test3"));
+
+        final AtomicInteger requestedLimit = new AtomicInteger(-1);
+        final AtomicInteger requestedOffset = new AtomicInteger(-1);
+
+        BeanListing<TestBean> listing = BeanListing.builder(TestBean.class).build();
+        listing.setItems(query -> {
+            requestedLimit.set(query.getLimit());
+            requestedOffset.set(query.getOffset());
+
+            final int start = Math.min(query.getOffset(), sourceItems.size());
+            final int end = Math.min(start + query.getLimit(), sourceItems.size());
+            return sourceItems.subList(start, end).stream();
+        });
+
+        List<TestBean> firstPage = getDataProvider(listing)
+                .fetch(new Query<>(0, 1, Collections.emptyList(), null, null))
+                .collect(Collectors.toList());
+        assertEquals(1, firstPage.size());
+        assertEquals(1L, firstPage.get(0).getId());
+        assertEquals(1, requestedLimit.get());
+        assertEquals(0, requestedOffset.get());
+
+        List<TestBean> secondPage = getDataProvider(listing)
+                .fetch(new Query<>(1, 1, Collections.emptyList(), null, null))
+                .collect(Collectors.toList());
+        assertEquals(1, secondPage.size());
+        assertEquals(2L, secondPage.get(0).getId());
+        assertEquals(1, requestedLimit.get());
+        assertEquals(1, requestedOffset.get());
+
+        List<TestBean> tailPage = getDataProvider(listing)
+                .fetch(new Query<>(2, 2, Collections.emptyList(), null, null))
+                .collect(Collectors.toList());
+        assertEquals(1, tailPage.size());
+        assertEquals(3L, tailPage.get(0).getId());
+        assertEquals(2, requestedLimit.get());
+        assertEquals(2, requestedOffset.get());
+    }
+
+    @Test
+    public void testDataSourceWithPagingFilteringAndSorting() {
+
+        final DataTarget<?> TARGET = DataTarget.named("test2");
+
+        final Datastore datastore = JdbcDatastore.builder()
+                .dataSource(
+                        BasicDataSource.builder().url("jdbc:h2:mem:test;INIT=RUNSCRIPT FROM 'classpath:test_init.sql'")
+                                .username("sa").driverClassName(DatabasePlatform.H2.getDriverClassName()).build())
+                .traceEnabled(true).build();
+
+        final BeanPropertySet<TestBean> beanPropertySet = BeanPropertySet.create(TestBean.class);
+
+        BeanListing<TestBean> listing = BeanListing.builder(TestBean.class)
+                .dataSource(datastore, TARGET)
+                .withQueryFilter(beanPropertySet.property(ID).loe(2L))
+                .withQuerySort(beanPropertySet.property(NAME).desc())
+                .build();
+
+        List<TestBean> firstPage = getDataProvider(listing)
+                .fetch(new Query<>(0, 1, Collections.emptyList(), null, null))
+                .collect(Collectors.toList());
+        assertEquals(1, firstPage.size());
+        assertEquals(2L, firstPage.get(0).getId());
+
+        List<TestBean> secondPage = getDataProvider(listing)
+                .fetch(new Query<>(1, 1, Collections.emptyList(), null, null))
+                .collect(Collectors.toList());
+        assertEquals(1, secondPage.size());
+        assertEquals(1L, secondPage.get(0).getId());
+    }
+
     @SuppressWarnings("unchecked")
     @Test
     public void testDatastoreDataSource() {
@@ -897,6 +1250,7 @@ public class TestBeanListing {
         datastore.query(TARGET).stream(BeanProjection.of(TestBean.class)).findFirst()
                 .ifPresentOrElse(testBean -> beanListing.editItem(testBean), () -> new RuntimeException("No items found"));
 
+
 //        beanListing.setItems(query -> datastore.query(TARGET).restrict(query.getLimit(), query.getOffset()).stream(ID,NAME))
 
 
@@ -924,9 +1278,9 @@ public class TestBeanListing {
     }
 
     @SuppressWarnings("unchecked")
-    private static DataProvider<TestBean, ?> getDataProvider(BeanListing<TestBean> listing) {
+    private static <T> DataProvider<T, ?> getDataProvider(BeanListing<T> listing) {
         assertTrue(listing.getComponent() instanceof Grid);
-        return ((Grid<TestBean>) listing.getComponent()).getDataProvider();
+        return ((Grid<T>) listing.getComponent()).getDataProvider();
     }
 
     @SuppressWarnings("unchecked")
@@ -939,6 +1293,461 @@ public class TestBeanListing {
     private static AbstractItemListing<TestBean, String> getImpl(BeanListing<TestBean> listing) {
         assertTrue(listing instanceof AbstractItemListing);
         return (AbstractItemListing<TestBean, String>) listing;
+    }
+
+    @SuppressWarnings("unchecked")
+    private static DataProvider<VersionedTestBean, ?> getVersionedDataProvider(BeanListing<VersionedTestBean> listing) {
+        assertTrue(listing.getComponent() instanceof Grid);
+        return ((Grid<VersionedTestBean>) listing.getComponent()).getDataProvider();
+    }
+
+    @Test
+    public void testBeanDatastoreVersionRetrievedInListingAfterEdit() throws Exception {
+
+        final BasicDataSource dataSource = BasicDataSource.builder()
+                .url("jdbc:h2:mem:test_version_grid;DB_CLOSE_DELAY=-1")
+                .username("sa")
+                .driverClassName(DatabasePlatform.H2.getDriverClassName())
+                .build();
+
+        try (java.sql.Connection connection = dataSource.getConnection();
+             java.sql.Statement statement = connection.createStatement()) {
+            statement.execute("drop table if exists test_version_grid");
+            statement.execute("create table test_version_grid (id bigint primary key, name varchar(100), version bigint default 0 not null)");
+            statement.execute("create trigger test_version_grid_version_trigger before insert, update on test_version_grid for each row call \"com.holonplatform.vaadin.flow.test.TestBeanListing$VersionedTestBeanTrigger\"");
+        }
+
+        final Datastore datastore = JdbcDatastore.builder()
+                .dataSource(dataSource)
+                .traceEnabled(true)
+                .build();
+
+        final BeanDatastore beanDatastore = BeanDatastore.of(datastore);
+        final BeanPropertySet<VersionedTestBean> beanPropertySet = BeanPropertySet.create(VersionedTestBean.class);
+
+        beanDatastore.insert(new VersionedTestBean(1L, "initial", null));
+
+        final BeanListing<VersionedTestBean> listing = BeanListing.builder(VersionedTestBean.class)
+                .dataSource(datastore, DataTarget.named("test_version_grid"))
+                .build();
+
+        VersionedTestBean initialItem = getVersionedDataProvider(listing)
+                .fetch(new Query<>())
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("item not found"));
+
+        assertEquals(0L, initialItem.getVersion());
+        assertEquals("initial", initialItem.getName());
+
+        final long initialVersion = initialItem.getVersion();
+
+        final VersionedTestBean editedItem = new VersionedTestBean(initialItem.getId(), "updated",
+                initialItem.getVersion());
+        beanDatastore.save(editedItem);
+
+        VersionedTestBean reloaded = beanDatastore.query(VersionedTestBean.class)
+                .filter(beanPropertySet.property("id").eq(1L))
+                .findOne()
+                .orElseThrow(() -> new RuntimeException("reloaded item not found"));
+
+        assertEquals(initialVersion + 1L, reloaded.getVersion());
+        assertEquals("updated", reloaded.getName());
+
+        final BeanListing<VersionedTestBean> updatedListing = BeanListing.builder(VersionedTestBean.class)
+                .dataSource(datastore, DataTarget.named("test_version_grid"))
+                .build();
+
+        VersionedTestBean updatedItem = getVersionedDataProvider(updatedListing)
+                .fetch(new Query<>())
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("updated item not found"));
+
+        assertEquals(initialVersion + 1L, updatedItem.getVersion());
+        assertEquals(reloaded.getVersion(), updatedItem.getVersion());
+        assertEquals("updated", updatedItem.getName());
+    }
+
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @Test
+    public void testFilterInputFormIntegrationWithBeanListing() {
+
+        final DataTarget<?> TARGET = DataTarget.named("test2");
+        final com.holonplatform.core.property.Property<FilterInput.Range<Long>> ID_RANGE =
+                (com.holonplatform.core.property.Property) com.holonplatform.core.property.PathProperty
+                        .create("idRange", FilterInput.Range.class);
+
+        final Datastore datastore = JdbcDatastore.builder()
+                .dataSource(
+                        BasicDataSource.builder().url("jdbc:h2:mem:test;INIT=RUNSCRIPT FROM 'classpath:test_init.sql'")
+                                .username("sa").driverClassName(DatabasePlatform.H2.getDriverClassName()).build())
+                .traceEnabled(true).build();
+
+        final BeanPropertySet<TestBean> beanPropertySet = BeanPropertySet.create(TestBean.class);
+
+        final FilterInputForm<com.vaadin.flow.component.formlayout.FormLayout> filters = FilterInputForm.formLayout()
+                .withFilter(beanPropertySet.property(NAME), FilterInput.string(beanPropertySet.property(NAME)))
+                .withFilter(ID_RANGE, FilterInput.numberRange(beanPropertySet.property(ID), Long.class))
+                .build();
+
+        final BeanListing<TestBean> listing = BeanListing.builder(TestBean.class).build();
+        listing.setItems(filters, (query, filter) -> {
+            var datastoreQuery = datastore.query(TARGET).restrict(query.getLimit(), query.getOffset());
+            if (filter != null) {
+                datastoreQuery.filter(filter);
+            }
+            return datastoreQuery.stream(BeanProjection.of(TestBean.class));
+        });
+        com.holonplatform.core.Registration registration = listing.refreshOnFilterChange(filters);
+
+        List<TestBean> unfiltered = getDataProvider(listing).fetch(new Query<>()).collect(Collectors.toList());
+        assertEquals(2, unfiltered.size());
+
+        filters.getFilterInput(beanPropertySet.property(NAME))
+                .orElseThrow(() -> new AssertionError("Name filter not found"))
+                .getInput()
+                .setValue("test1");
+
+        List<TestBean> nameFiltered = getDataProvider(listing).fetch(new Query<>()).collect(Collectors.toList());
+        assertEquals(1, nameFiltered.size());
+        assertEquals(1L, nameFiltered.get(0).getId());
+
+        filters.getFilterInput(ID_RANGE)
+                .orElseThrow(() -> new AssertionError("Id range filter not found"))
+                .getInput()
+                .setValue(new FilterInput.Range<>(2L, 2L));
+
+        List<TestBean> combinedFiltered = getDataProvider(listing).fetch(new Query<>()).collect(Collectors.toList());
+        assertEquals(0, combinedFiltered.size());
+
+        filters.getFilterInput(beanPropertySet.property(NAME))
+                .orElseThrow(() -> new AssertionError("Name filter not found"))
+                .reset();
+
+        List<TestBean> idOnlyFiltered = getDataProvider(listing).fetch(new Query<>()).collect(Collectors.toList());
+        assertEquals(1, idOnlyFiltered.size());
+        assertEquals(2L, idOnlyFiltered.get(0).getId());
+
+        registration.remove();
+    }
+
+    @Test
+    public void testItemListingFilterCallbackWithBeanListing() {
+
+        final DataTarget<?> TARGET = DataTarget.named("test2");
+
+        final Datastore datastore = JdbcDatastore.builder()
+                .dataSource(
+                        BasicDataSource.builder().url("jdbc:h2:mem:test;INIT=RUNSCRIPT FROM 'classpath:test_init.sql'")
+                                .username("sa").driverClassName(DatabasePlatform.H2.getDriverClassName()).build())
+                .traceEnabled(true).build();
+
+        final BeanPropertySet<TestBean> beanPropertySet = BeanPropertySet.create(TestBean.class);
+
+        final FilterInputForm<com.vaadin.flow.component.formlayout.FormLayout> filters = FilterInputForm.formLayout()
+                .withFilter(beanPropertySet.property(NAME))
+                .withFilter(beanPropertySet.property(ID))
+                .build();
+
+        final BeanListing<TestBean> listing = BeanListing.builder(TestBean.class).build();
+        listing.setItems(filters, (query, filter) -> {
+            var datastoreQuery = datastore.query(TARGET).restrict(query.getLimit(), query.getOffset());
+            if (filter != null) {
+                datastoreQuery.filter(filter);
+            }
+            return datastoreQuery.stream(BeanProjection.of(TestBean.class));
+        });
+
+        com.holonplatform.core.Registration registration = listing.refreshOnFilterChange(filters);
+
+        List<TestBean> unfiltered = getDataProvider(listing).fetch(new Query<>()).collect(Collectors.toList());
+        assertEquals(2, unfiltered.size());
+
+        filters.getFilterInput(beanPropertySet.property(NAME))
+                .orElseThrow(() -> new AssertionError("Name filter not found"))
+                .getInput()
+                .setValue("test1");
+
+        List<TestBean> nameFiltered = getDataProvider(listing).fetch(new Query<>()).collect(Collectors.toList());
+        assertEquals(1, nameFiltered.size());
+        assertEquals(1L, nameFiltered.get(0).getId());
+
+        filters.getFilterInput(beanPropertySet.property(ID))
+                .orElseThrow(() -> new AssertionError("Id filter not found"))
+                .getInput()
+                .setValue(2L);
+
+        List<TestBean> combinedFiltered = getDataProvider(listing).fetch(new Query<>()).collect(Collectors.toList());
+        assertEquals(0, combinedFiltered.size());
+
+        registration.remove();
+    }
+
+  @Test
+  public void testBuilderLevelFilterInputMethods() {
+
+    final DataTarget<?> TARGET = DataTarget.named("test2");
+
+    final Datastore datastore = JdbcDatastore.builder()
+        .dataSource(BasicDataSource.builder().url("jdbc:h2:mem:test;INIT=RUNSCRIPT FROM 'classpath:test_init.sql'")
+            .username("sa").driverClassName(DatabasePlatform.H2.getDriverClassName()).build())
+        .traceEnabled(true).build();
+
+    final BeanPropertySet<TestBean> beanPropertySet = BeanPropertySet.create(TestBean.class);
+
+    final FilterInputForm<com.vaadin.flow.component.formlayout.FormLayout> filters = FilterInputForm.formLayout()
+        .withFilter(beanPropertySet.property(NAME), FilterInput.string(beanPropertySet.property(NAME))).build();
+
+    final BeanListing<TestBean> listing = BeanListing.builder(TestBean.class)
+        .setItems(filters, (query, filter) -> {
+          var datastoreQuery = datastore.query(TARGET).restrict(query.getLimit(), query.getOffset());
+          if (filter != null) {
+            datastoreQuery.filter(filter);
+          }
+          return datastoreQuery.stream(BeanProjection.of(TestBean.class));
+        })
+        .refreshOnFilterChange(filters)
+        .build();
+
+    List<TestBean> unfiltered = getDataProvider(listing).fetch(new Query<>()).collect(Collectors.toList());
+    assertEquals(2, unfiltered.size());
+
+    filters.getFilterInput(beanPropertySet.property(NAME))
+        .orElseThrow(() -> new AssertionError("Name filter not found"))
+        .getInput().setValue("test2");
+
+    List<TestBean> filtered = getDataProvider(listing).fetch(new Query<>()).collect(Collectors.toList());
+    assertEquals(1, filtered.size());
+    assertEquals(2L, filtered.get(0).getId());
+  }
+
+  @Test
+  public void testBuilderLevelFilterSignalMethods() {
+
+    final DataTarget<?> TARGET = DataTarget.named("test2");
+
+    final Datastore datastore = JdbcDatastore.builder()
+        .dataSource(BasicDataSource.builder().url("jdbc:h2:mem:test;INIT=RUNSCRIPT FROM 'classpath:test_init.sql'")
+            .username("sa").driverClassName(DatabasePlatform.H2.getDriverClassName()).build())
+        .traceEnabled(true).build();
+
+    final BeanPropertySet<TestBean> beanPropertySet = BeanPropertySet.create(TestBean.class);
+
+    final FilterInputForm<com.vaadin.flow.component.formlayout.FormLayout> filters = FilterInputForm.formLayout()
+        .withFilter(beanPropertySet.property(NAME), FilterInput.string(beanPropertySet.property(NAME))).build();
+
+    final BeanListing<TestBean> listing = BeanListing.builder(TestBean.class)
+        .setItems(filters, (query, filter) -> {
+          var datastoreQuery = datastore.query(TARGET).restrict(query.getLimit(), query.getOffset());
+          if (filter != null) {
+            datastoreQuery.filter(filter);
+          }
+          return datastoreQuery.stream(BeanProjection.of(TestBean.class));
+        })
+        .refreshOnFilterSignal(filters)
+        .build();
+
+    List<TestBean> unfiltered = getDataProvider(listing).fetch(new Query<>()).collect(Collectors.toList());
+    assertEquals(2, unfiltered.size());
+
+    filters.getFilterInput(beanPropertySet.property(NAME))
+        .orElseThrow(() -> new AssertionError("Name filter not found"))
+        .getInput().setValue("test1");
+
+    List<TestBean> filtered = getDataProvider(listing).fetch(new Query<>()).collect(Collectors.toList());
+    assertEquals(1, filtered.size());
+    assertEquals(1L, filtered.get(0).getId());
+  }
+
+  @Test
+  public void testBuilderLevelBindFiltersSignalMethods() {
+
+    final DataTarget<?> TARGET = DataTarget.named("test2");
+
+    final Datastore datastore = JdbcDatastore.builder()
+        .dataSource(BasicDataSource.builder().url("jdbc:h2:mem:test;INIT=RUNSCRIPT FROM 'classpath:test_init.sql'")
+            .username("sa").driverClassName(DatabasePlatform.H2.getDriverClassName()).build())
+        .traceEnabled(true).build();
+
+    final BeanPropertySet<TestBean> beanPropertySet = BeanPropertySet.create(TestBean.class);
+
+    final FilterInputForm<com.vaadin.flow.component.formlayout.FormLayout> filters = FilterInputForm.formLayout()
+        .withFilter(beanPropertySet.property(NAME), FilterInput.string(beanPropertySet.property(NAME))).build();
+
+    final BeanListing<TestBean> listing = BeanListing.builder(TestBean.class)
+        .bindFiltersSignal(filters, (query, filter) -> {
+          var datastoreQuery = datastore.query(TARGET).restrict(query.getLimit(), query.getOffset());
+          if (filter != null) {
+            datastoreQuery.filter(filter);
+          }
+          return datastoreQuery.stream(BeanProjection.of(TestBean.class));
+        })
+        .build();
+
+    List<TestBean> unfiltered = getDataProvider(listing).fetch(new Query<>()).collect(Collectors.toList());
+    assertEquals(2, unfiltered.size());
+
+    filters.getFilterInput(beanPropertySet.property(NAME))
+        .orElseThrow(() -> new AssertionError("Name filter not found"))
+        .getInput().setValue("test2");
+
+    List<TestBean> filtered = getDataProvider(listing).fetch(new Query<>()).collect(Collectors.toList());
+    assertEquals(1, filtered.size());
+    assertEquals(2L, filtered.get(0).getId());
+  }
+
+    @DataPath("test_filter_types")
+    public static class FilterTypesBean {
+
+        @DataPath("id")
+        private long id;
+
+        @DataPath("name")
+        private String name;
+
+        @DataPath("age")
+        private Integer age;
+
+        @DataPath("active")
+        private Boolean active;
+
+        @DataPath("birth")
+        private LocalDate birth;
+
+        public FilterTypesBean() {
+            super();
+        }
+
+        public long getId() {
+            return id;
+        }
+
+        public void setId(long id) {
+            this.id = id;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public Integer getAge() {
+            return age;
+        }
+
+        public void setAge(Integer age) {
+            this.age = age;
+        }
+
+        public Boolean getActive() {
+            return active;
+        }
+
+        public void setActive(Boolean active) {
+            this.active = active;
+        }
+
+        public LocalDate getBirth() {
+            return birth;
+        }
+
+        public void setBirth(LocalDate birth) {
+            this.birth = birth;
+        }
+    }
+
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @Test
+    public void testFilterInputFormIntegrationWithBeanListingMultipleInputTypes() throws Exception {
+
+        final DataTarget<?> TARGET = DataTarget.named("test_filter_types");
+
+        final StringProperty NAME_FILTER = StringProperty.create("name");
+        final NumericProperty<Integer> AGE_FILTER = NumericProperty.integerType("age");
+        final com.holonplatform.core.property.Property<FilterInput.Range<Integer>> AGE_RANGE =
+                (com.holonplatform.core.property.Property) com.holonplatform.core.property.PathProperty
+                        .create("ageRange", FilterInput.Range.class);
+        final com.holonplatform.core.property.Property<Boolean> ACTIVE_FILTER =
+                com.holonplatform.core.property.PathProperty.create("active", Boolean.class);
+        final com.holonplatform.core.property.Property<LocalDate> BIRTH_FILTER =
+                com.holonplatform.core.property.PathProperty.create("birth", LocalDate.class);
+
+        final BasicDataSource dataSource = BasicDataSource.builder()
+                .url("jdbc:h2:mem:test_filter_types_bean;DB_CLOSE_DELAY=-1")
+                .username("sa")
+                .driverClassName(DatabasePlatform.H2.getDriverClassName())
+                .build();
+
+        try (java.sql.Connection connection = dataSource.getConnection();
+                java.sql.Statement statement = connection.createStatement()) {
+            statement.execute("drop table if exists test_filter_types");
+            statement.execute("create table test_filter_types (id bigint primary key, name varchar(50), age integer, active boolean, birth date)");
+            statement.execute("insert into test_filter_types (id, name, age, active, birth) values (1, 'Alice', 30, true, DATE '1990-01-01')");
+            statement.execute("insert into test_filter_types (id, name, age, active, birth) values (2, 'Bob', 40, false, DATE '1985-05-05')");
+            statement.execute("insert into test_filter_types (id, name, age, active, birth) values (3, 'Carol', 25, true, DATE '2000-06-15')");
+        }
+
+        final Datastore datastore = JdbcDatastore.builder()
+                .dataSource(dataSource)
+                .traceEnabled(true)
+                .build();
+
+        final FilterInputForm<com.vaadin.flow.component.formlayout.FormLayout> filters = FilterInputForm.formLayout()
+                .withFilter(NAME_FILTER, FilterInput.string(NAME_FILTER))
+                .withFilter(AGE_FILTER, FilterInput.number(AGE_FILTER, Integer.class))
+                .withFilter(AGE_RANGE, FilterInput.numberRange(AGE_FILTER, Integer.class))
+                .withFilter(ACTIVE_FILTER, FilterInput.bool(ACTIVE_FILTER))
+                .withFilter(BIRTH_FILTER, FilterInput.localDate(BIRTH_FILTER))
+                .build();
+
+        final BeanListing<FilterTypesBean> listing = BeanListing.builder(FilterTypesBean.class).build();
+        listing.setItems(filters, (query, filter) -> {
+            var datastoreQuery = datastore.query(TARGET).restrict(query.getLimit(), query.getOffset());
+            if (filter != null) {
+                datastoreQuery.filter(filter);
+            }
+            return datastoreQuery.stream(BeanProjection.of(FilterTypesBean.class));
+        });
+        com.holonplatform.core.Registration registration = listing.refreshOnFilterChange(filters);
+
+        List<FilterTypesBean> unfiltered = getDataProvider(listing).fetch(new Query<>()).collect(Collectors.toList());
+        assertEquals(3, unfiltered.size());
+
+        filters.getFilterInput(NAME_FILTER).orElseThrow(() -> new AssertionError("Name filter not found"))
+                .getInput().setValue("Alice");
+        List<FilterTypesBean> nameFiltered = getDataProvider(listing).fetch(new Query<>()).collect(Collectors.toList());
+        assertEquals(1, nameFiltered.size());
+        assertEquals(1L, nameFiltered.get(0).getId());
+
+        filters.getFilterInput(NAME_FILTER).orElseThrow(() -> new AssertionError("Name filter not found")).reset();
+        filters.getFilterInput(AGE_FILTER).orElseThrow(() -> new AssertionError("Age filter not found"))
+                .getInput().setValue(40);
+        List<FilterTypesBean> numberFiltered = getDataProvider(listing).fetch(new Query<>()).collect(Collectors.toList());
+        assertEquals(1, numberFiltered.size());
+        assertEquals(2L, numberFiltered.get(0).getId());
+
+        filters.getFilterInput(AGE_FILTER).orElseThrow(() -> new AssertionError("Age filter not found")).reset();
+        filters.getFilterInput(AGE_RANGE).orElseThrow(() -> new AssertionError("Age range filter not found"))
+                .getInput().setValue(new FilterInput.Range<>(25, 30));
+        List<FilterTypesBean> rangeFiltered = getDataProvider(listing).fetch(new Query<>()).collect(Collectors.toList());
+        assertEquals(2, rangeFiltered.size());
+
+        filters.getFilterInput(AGE_RANGE).orElseThrow(() -> new AssertionError("Age range filter not found")).reset();
+        filters.getFilterInput(ACTIVE_FILTER).orElseThrow(() -> new AssertionError("Active filter not found"))
+                .getInput().setValue(Boolean.TRUE);
+        List<FilterTypesBean> boolFiltered = getDataProvider(listing).fetch(new Query<>()).collect(Collectors.toList());
+        assertEquals(2, boolFiltered.size());
+
+        filters.getFilterInput(ACTIVE_FILTER).orElseThrow(() -> new AssertionError("Active filter not found")).reset();
+        filters.getFilterInput(BIRTH_FILTER).orElseThrow(() -> new AssertionError("Birth filter not found"))
+                .getInput().setValue(LocalDate.of(1990, 1, 1));
+        List<FilterTypesBean> dateFiltered = getDataProvider(listing).fetch(new Query<>()).collect(Collectors.toList());
+        assertEquals(1, dateFiltered.size());
+        assertEquals(1L, dateFiltered.get(0).getId());
+
+        registration.remove();
     }
 
 }

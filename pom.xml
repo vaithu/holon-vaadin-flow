@@ -4,12 +4,12 @@
 	<parent>
 		<groupId>com.holon-platform</groupId>
 		<artifactId>parent</artifactId>
-		<version>1.1.6</version>
+		<version>1.1.7</version>
 	</parent>
 
 	<groupId>com.holon-platform.vaadin</groupId>
 	<artifactId>holon-vaadin-flow-root</artifactId>
-	<version>5.5.7-SNAPSHOT</version>
+	<version>10.0.0</version>
 
 	<packaging>pom</packaging>
 
@@ -55,33 +55,258 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
+		<java.version>21</java.version>
+
 		<!-- Holon core -->
-		<holon.core.version>5.5.1-SNAPSHOT</holon.core.version>
+		<holon.core.version>10.0.0</holon.core.version>
 
 		<!-- Vaadin -->
-		<vaadin.version>24.5.3</vaadin.version>
-		<vaadin.spring.version>24.5.3</vaadin.spring.version>
-		<vaadin.flow.version>24.5.3</vaadin.flow.version>
+		<vaadin.version>25.1.0</vaadin.version>
+		<spring-boot.version>4.0.4</spring-boot.version>
 
-		<!-- Servlet API -->
-		<servlet.version>6.0.0</servlet.version>
+		<!-- Servlet API – must match what vaadin flow-server 25.1.0 declares (6.1.0 / Jakarta EE 11).
+		     Using 6.0.0 (Jakarta EE 10) would leave us compiling against an older API than Vaadin. -->
+		<servlet.version>6.1.0</servlet.version>
 
-		<!-- Test JDBC Datastore -->
-		<holon.jdbc.datastore.version>5.5.1-SNAPSHOT</holon.jdbc.datastore.version>
+		<holon.jdbc.datastore.version>10.0.0</holon.jdbc.datastore.version>
+		<holon.jpa.datastore.version>10.0.0</holon.jpa.datastore.version>
+
+		<!-- line-awesome (latest; built against Vaadin 24.2.0 but used as pure CSS/font static assets – no Java API coupling) -->
+		<line-awesome.version>2.1.0</line-awesome.version>
+
 		<!-- Mockito (test) -->
 		<mockito.version>5.11.0</mockito.version>
+		<lombok.version>1.18.38</lombok.version>
+		<jetbrains.annotations.version>26.0.2</jetbrains.annotations.version>
+		<guava.version>33.5.0-jre</guava.version>
+
+		<!-- CVE-patched dependency versions -->
+		<!-- h2: fixes CVE-2021-23463, CVE-2021-42392, CVE-2022-23221, CVE-2022-45868 -->
+		<h2.version>2.3.232</h2.version>
+		<!-- assertj: fixes CVE-2026-24400 (XXE in isXmlEqualTo) -->
+		<assertj.version>3.27.7</assertj.version>
+		<!-- spring-security: fixes CVE-2024-38821, CVE-2025-41232, CVE-2025-41248
+		     NOTE: CVE-2026-22732 (CRITICAL – HTTP headers not written) affects ALL released versions
+		     including 6.4.0-6.4.14 and 6.5.0-6.5.8; no patched version is available yet.
+		     Expected fix: spring-security 6.5.9 (not yet released as of 2026-03-31). -->
+		<spring-security.version>6.4.10</spring-security.version>
+		<!-- logback: 1.5.20 is the latest available; CVE-2026-1225 is flagged as 'Insufficient
+		     Information' (GHSA-qqpg-mvqg-649v) with no confirmed fix in any 1.5.x release yet.
+		     Using latest to minimize exposure. Monitor for a patched release. -->
+		<logback.version>1.5.32</logback.version>
+		<!-- snakeyaml: fixes CVE-2022-1471 (Constructor RCE) -->
+		<snakeyaml.version>2.3</snakeyaml.version>
+		<!-- commons-lang3: fixes CVE-2025-48924 -->
+		<commons-lang3.version>3.18.0</commons-lang3.version>
 
 	</properties>
 
+	<dependencyManagement>
+		<dependencies>
+			<!-- Spring Boot dependency versions -->
+			<dependency>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-dependencies</artifactId>
+				<version>${spring-boot.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+
+			<!-- Vaadin dependency versions -->
+			<dependency>
+				<groupId>com.vaadin</groupId>
+				<artifactId>vaadin-bom</artifactId>
+				<version>${vaadin.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+
+			<!-- Holon modules -->
+			<dependency>
+				<groupId>com.holon-platform.core</groupId>
+				<artifactId>holon-core</artifactId>
+				<version>${holon.core.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.holon-platform.core</groupId>
+				<artifactId>holon-auth</artifactId>
+				<version>${holon.core.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.holon-platform.core</groupId>
+				<artifactId>holon-spring</artifactId>
+				<version>${holon.core.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.holon-platform.core</groupId>
+				<artifactId>holon-spring-boot</artifactId>
+				<version>${holon.core.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.holon-platform.core</groupId>
+				<artifactId>holon-starter</artifactId>
+				<version>${holon.core.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.holon-platform.jdbc</groupId>
+				<artifactId>holon-datastore-jdbc</artifactId>
+				<version>${holon.jdbc.datastore.version}</version>
+			</dependency>
+
+			<!-- Holon JPA Datastore — used via DefaultBeanCrud for CRUD -->
+			<dependency>
+				<groupId>com.holon-platform.jpa</groupId>
+				<artifactId>holon-datastore-jpa-spring-boot</artifactId>
+				<version>${holon.jpa.datastore.version}</version>
+			</dependency>
+
+			<!-- This project modules -->
+			<dependency>
+				<groupId>com.holon-platform.vaadin</groupId>
+				<artifactId>holon-vaadin-flow</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.holon-platform.vaadin</groupId>
+				<artifactId>holon-vaadin-flow-navigator</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.holon-platform.vaadin</groupId>
+				<artifactId>holon-vaadin-flow-chat</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.holon-platform.vaadin</groupId>
+				<artifactId>holon-vaadin-flow-customer</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.holon-platform.vaadin</groupId>
+				<artifactId>holon-vaadin-flow-spring</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.holon-platform.vaadin</groupId>
+				<artifactId>holon-vaadin-flow-spring-boot</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.holon-platform.vaadin</groupId>
+				<artifactId>holon-vaadin-flow-chartjs</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.holon-platform.vaadin</groupId>
+				<artifactId>holon-vaadin-flow-calendar</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.holon-platform.vaadin</groupId>
+				<artifactId>holon-starter-vaadin-flow</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+
+			<!-- Explicit versions not always provided by parent BOMs -->
+			<dependency>
+				<groupId>org.springframework.security</groupId>
+				<artifactId>spring-security-core</artifactId>
+				<version>${spring-security.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework.security</groupId>
+				<artifactId>spring-security-web</artifactId>
+				<version>${spring-security.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.jetbrains</groupId>
+				<artifactId>annotations</artifactId>
+				<version>${jetbrains.annotations.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.projectlombok</groupId>
+				<artifactId>lombok</artifactId>
+				<version>${lombok.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.mockito</groupId>
+				<artifactId>mockito-core</artifactId>
+				<version>${mockito.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.google.guava</groupId>
+				<artifactId>guava</artifactId>
+				<version>${guava.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.h2database</groupId>
+				<artifactId>h2</artifactId>
+				<version>${h2.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.assertj</groupId>
+				<artifactId>assertj-core</artifactId>
+				<version>${assertj.version}</version>
+			</dependency>
+
+			<!-- Transitive CVE overrides – force safe versions regardless of what upstream BOMs resolve -->
+
+			<!-- Servlet API – lock to 6.1.0 (Jakarta EE 11) to match vaadin flow-server 25.1.0 -->
+			<dependency>
+				<groupId>jakarta.servlet</groupId>
+				<artifactId>jakarta.servlet-api</artifactId>
+				<version>${servlet.version}</version>
+				<scope>provided</scope>
+			</dependency>
+
+			<!-- CVE-2022-1471: SnakeYAML Constructor deserialization RCE, fixed in 2.x -->
+			<dependency>
+				<groupId>org.yaml</groupId>
+				<artifactId>snakeyaml</artifactId>
+				<version>${snakeyaml.version}</version>
+			</dependency>
+
+			<!-- CVE-2026-1225: logback malicious-config class instantiation, fixed in 1.5.20 -->
+			<dependency>
+				<groupId>ch.qos.logback</groupId>
+				<artifactId>logback-core</artifactId>
+				<version>${logback.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>ch.qos.logback</groupId>
+				<artifactId>logback-classic</artifactId>
+				<version>${logback.version}</version>
+			</dependency>
+
+			<!-- CVE-2025-48924: commons-lang3, fixed in 3.18.0 -->
+			<dependency>
+				<groupId>org.apache.commons</groupId>
+				<artifactId>commons-lang3</artifactId>
+				<version>${commons-lang3.version}</version>
+			</dependency>
+
+			<!-- Line Awesome icon font – static CSS/font assets only, no Java API coupling -->
+			<dependency>
+				<groupId>org.parttio</groupId>
+				<artifactId>line-awesome</artifactId>
+				<version>${line-awesome.version}</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
 	<modules>
 		<module>core</module>
+		<module>chartjs</module>
+		<module>calendar</module>
 		<module>navigator</module>
 		<module>spring</module>
 		<module>spring-boot</module>
 		<module>starter</module>
-		<module>starter-undertow</module>
+		<module>chat</module>
+		<module>customer</module>
 		<module>bom</module>
 		<module>documentation</module>
+		<module>demo</module>
 	</modules>
 
 	<dependencies>
@@ -96,60 +321,8 @@
 			<artifactId>junit-jupiter-engine</artifactId>
 			<scope>test</scope>
 		</dependency>
-<!--
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-parent</artifactId>
-			<version>3.3.5</version>
-			<type>pom</type>
-		</dependency>-->
 
 	</dependencies>
 
-	<build>
-		<plugins>
-			<!-- Aggregate javadocs -->
-			<!--<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>aggregate-javadocs</id>
-						<phase>package</phase>
-						<inherited>false</inherited>
-						<goals>
-							<goal>aggregate-no-fork</goal>
-						</goals>
-						<configuration>
-							<show>public</show>
-							<excludePackageNames>*.internal.*;*.examples.*</excludePackageNames>
-							<quiet>true</quiet>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>-->
-			<!--&lt;!&ndash; Assembly apidocs &ndash;&gt;
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-assembly-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>apidocs-assembly</id>
-						<phase>package</phase>
-						<inherited>false</inherited>
-						<configuration>
-							<appendAssemblyId>true</appendAssemblyId>
-							<descriptorRefs>
-								<descriptorRef>apidocs</descriptorRef>
-							</descriptorRefs>
-						</configuration>
-						<goals>
-							<goal>single</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>-->
-		</plugins>
-	</build>
 
 </project>

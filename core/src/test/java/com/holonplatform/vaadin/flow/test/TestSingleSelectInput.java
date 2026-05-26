@@ -15,26 +15,6 @@
  */
 package com.holonplatform.vaadin.flow.test;
 
-import static com.holonplatform.vaadin.flow.test.util.DatastoreTestUtils.CODE;
-import static com.holonplatform.vaadin.flow.test.util.DatastoreTestUtils.DESCRIPTION;
-import static com.holonplatform.vaadin.flow.test.util.DatastoreTestUtils.TARGET1;
-import static com.holonplatform.vaadin.flow.test.util.DatastoreTestUtils.TEST1;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Optional;
-import java.util.Set;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.stream.Collectors;
-
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-
 import com.holonplatform.core.Validator;
 import com.holonplatform.core.Validator.ValidationException;
 import com.holonplatform.core.datastore.Datastore;
@@ -64,6 +44,18 @@ import com.vaadin.flow.component.Focusable;
 import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.data.provider.DataProvider;
 import com.vaadin.flow.data.provider.Query;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Optional;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Collectors;
+
+import static com.holonplatform.vaadin.flow.test.util.DatastoreTestUtils.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class TestSingleSelectInput {
 
@@ -381,6 +373,19 @@ public class TestSingleSelectInput {
 			assertEquals("TestUS", ComponentTestUtils.getPlaceholder(input2));
 		});
 
+	}
+
+	@Test
+	public void testAriaLabel() {
+		Input<String> input = Input.singleSimpleSelect(String.class).ariaLabel("Single select").build();
+		assertEquals("Single select", input.getComponent().getElement().getAttribute("aria-label"));
+
+		input = Input.singleSimpleSelect(String.class).ariaLabelledBy("single-select-label").build();
+		assertEquals("single-select-label", input.getComponent().getElement().getAttribute("aria-labelledby"));
+
+		input = Input.singleSimpleSelect(String.class)
+				.ariaLabel(Localizable.builder().message("Localized single select").build()).build();
+		assertEquals("Localized single select", input.getComponent().getElement().getAttribute("aria-label"));
 	}
 
 	@Test

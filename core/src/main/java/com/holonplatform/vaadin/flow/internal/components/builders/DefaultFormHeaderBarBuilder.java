@@ -9,21 +9,11 @@ public class DefaultFormHeaderBarBuilder<B extends ZohoConfigurator<B>>
 
     private final B parentBuilder;
 
-    /**
-     * Constructor.
-     *
-     * @param component The component instance (not null)
-     */
-    public DefaultFormHeaderBarBuilder(B parentBuilder,HorizontalLayout component) {
+    public DefaultFormHeaderBarBuilder(B parentBuilder, HorizontalLayout component) {
         super(component);
         this.parentBuilder = parentBuilder;
     }
 
-    /**
-     * Get the actual configurator.
-     *
-     * @return the actual configurator
-     */
     @Override
     protected ZohoConfigurator.FormHeaderBarBuilder<B> getConfigurator() {
         return this;

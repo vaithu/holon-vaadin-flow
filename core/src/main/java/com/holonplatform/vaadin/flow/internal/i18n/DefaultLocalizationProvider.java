@@ -15,10 +15,6 @@
  */
 package com.holonplatform.vaadin.flow.internal.i18n;
 
-import java.util.List;
-import java.util.Locale;
-import java.util.Optional;
-
 import com.holonplatform.core.Context;
 import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.core.i18n.LocalizationContext;
@@ -27,6 +23,10 @@ import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.i18n.I18NProvider;
 import com.vaadin.flow.server.VaadinService;
+
+import java.util.List;
+import java.util.Locale;
+import java.util.Optional;
 
 /**
  * Default {@link LocalizationProvider} implementation.
@@ -113,19 +113,24 @@ public class DefaultLocalizationProvider implements LocalizationProvider {
 	public Optional<String> getMessage(Locale locale, Localizable localizable) {
 		ObjectUtils.argumentNotNull(locale, "Locale must be not null");
 		ObjectUtils.argumentNotNull(localizable, "Localizable must be not null");
+		// cache repeated accessor calls
+		final String messageCode = localizable.getMessageCode();
+		final Object[] messageArgs = localizable.getMessageArguments();
 		// check message code
-		if (localizable.getMessageCode() == null) {
+		if (messageCode == null) {
 			return Optional.ofNullable(localizable.getMessage());
 		}
-		// check I18nProvider
-		if (getI18nProvider().isPresent()) {
-			return Optional.ofNullable(getI18nProvider()
-					.map(p -> p.getTranslation(localizable.getMessageCode(), locale, localizable.getMessageArguments()))
+		// check I18nProvider — cache to avoid double Optional allocation
+		final Optional<I18NProvider> provider = getI18nProvider();
+		if (provider.isPresent()) {
+			return Optional.ofNullable(provider
+					.map(p -> p.getTranslation(messageCode, locale, messageArgs))
 					.orElseGet(() -> localizable.getMessage()));
 		}
 		// check LocalizationContext
-		return Optional.ofNullable(getLocalizationContext().flatMap(l -> l.asMessageResolver().getMessage(locale,
-				localizable.getMessageCode(), localizable.getMessageArguments())).orElse(localizable.getMessage()));
+		return Optional.ofNullable(getLocalizationContext()
+				.flatMap(l -> l.asMessageResolver().getMessage(locale, messageCode, messageArgs))
+				.orElse(localizable.getMessage()));
 	}
 
 	/**
@@ -135,7 +140,7 @@ public class DefaultLocalizationProvider implements LocalizationProvider {
 	private static Optional<I18NProvider> getCurrentI18nProvider() {
 		final VaadinService service = VaadinService.getCurrent();
 		if (service != null) {
-			return Optional.ofNullable(VaadinService.getCurrent().getInstantiator().getI18NProvider());
+			return Optional.ofNullable(service.getInstantiator().getI18NProvider());
 		}
 		return Optional.empty();
 	}
@@ -194,22 +199,24 @@ public class DefaultLocalizationProvider implements LocalizationProvider {
 	public static Optional<String> getLocalization(Locale locale, Localizable localizable) {
 		ObjectUtils.argumentNotNull(locale, "Locale must be not null");
 		ObjectUtils.argumentNotNull(localizable, "Localizable must be not null");
+		// cache repeated accessor calls
+		final String messageCode = localizable.getMessageCode();
+		final Object[] messageArgs = localizable.getMessageArguments();
 		// check message code
-		if (localizable.getMessageCode() == null) {
+		if (messageCode == null) {
 			return Optional.ofNullable(localizable.getMessage());
 		}
-		// check I18nProvider
-		if (getCurrentI18nProvider().isPresent()) {
-			return Optional.ofNullable(getCurrentI18nProvider()
-					.map(p -> p.getTranslation(localizable.getMessageCode(), locale, localizable.getMessageArguments()))
+		// check I18nProvider — cache to avoid double ThreadLocal lookup + Optional allocation
+		final Optional<I18NProvider> provider = getCurrentI18nProvider();
+		if (provider.isPresent()) {
+			return Optional.ofNullable(provider
+					.map(p -> p.getTranslation(messageCode, locale, messageArgs))
 					.orElseGet(() -> localizable.getMessage()));
 		}
 		// check LocalizationContext
-		return Optional
-				.ofNullable(LocalizationContext
-						.getCurrent().flatMap(l -> l.asMessageResolver().getMessage(locale,
-								localizable.getMessageCode(), localizable.getMessageArguments()))
-						.orElse(localizable.getMessage()));
+		return Optional.ofNullable(LocalizationContext.getCurrent()
+				.flatMap(l -> l.asMessageResolver().getMessage(locale, messageCode, messageArgs))
+				.orElse(localizable.getMessage()));
 	}
 
 	/**
@@ -231,17 +238,21 @@ public class DefaultLocalizationProvider implements LocalizationProvider {
 	 */
 	public static Optional<String> localize(Localizable localizable) {
 		ObjectUtils.argumentNotNull(localizable, "Localizable must be not null");
+		// cache repeated accessor calls
+		final String messageCode = localizable.getMessageCode();
 		// check message code
-		if (localizable.getMessageCode() == null) {
+		if (messageCode == null) {
 			return Optional.ofNullable(localizable.getMessage());
 		}
-		// check I18nProvider
+		// check I18nProvider — cache to avoid double ThreadLocal lookup + Optional allocation
 		final Locale currentLocale = getCurrentLocale().orElse(null);
-		if (currentLocale != null && getCurrentI18nProvider().isPresent()) {
-			return Optional.ofNullable(getCurrentI18nProvider()
-					.map(p -> p.getTranslation(localizable.getMessageCode(), currentLocale,
-							localizable.getMessageArguments()))
-					.orElseGet(() -> LocalizationContext.translate(localizable, true)));
+		if (currentLocale != null) {
+			final Optional<I18NProvider> provider = getCurrentI18nProvider();
+			if (provider.isPresent()) {
+				return Optional.ofNullable(provider
+						.map(p -> p.getTranslation(messageCode, currentLocale, localizable.getMessageArguments()))
+						.orElseGet(() -> LocalizationContext.translate(localizable, true)));
+			}
 		}
 		// check LocalizationContext
 		return Optional.ofNullable(LocalizationContext.translate(localizable, true));

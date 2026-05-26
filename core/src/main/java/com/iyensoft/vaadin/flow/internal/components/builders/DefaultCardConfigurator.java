@@ -8,11 +8,6 @@ implements CardBuilder
 {
 
 
-    /**
-     * Constructor.
-     *
-     * @param component The component instance (not null)
-     */
     public DefaultCardConfigurator(Card component) {
         super(component);
     }

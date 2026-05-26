@@ -1,21 +1,19 @@
 package com.holonplatform.vaadin.flow.internal.lumo;
 
-import com.vaadin.flow.theme.lumo.LumoUtility;
-
 public enum Position {
-        ABSOLUTE(LumoUtility.Position.ABSOLUTE),
-        FIXED(LumoUtility.Position.FIXED),
-        RELATIVE(LumoUtility.Position.RELATIVE),
-        STATIC(LumoUtility.Position.STATIC),
-        STICKY(LumoUtility.Position.STICKY);
+    ABSOLUTE("absolute"),
+    FIXED("fixed"),
+    RELATIVE("relative"),
+    STATIC("static"),
+    STICKY("sticky");
 
-        private final String className;
+    private final String className;
 
-        private Position(String className) {
-            this.className = className;
-        }
-
-        public String getClassName() {
-            return this.className;
-        }
+    private Position(String className) {
+        this.className = className;
     }
+
+    public String getClassName() {
+        return this.className;
+    }
+}

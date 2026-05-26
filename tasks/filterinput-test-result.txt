@@ -1,0 +1,127 @@
+[INFO] Scanning for projects...
+[WARNING] 
+[WARNING] Some problems were encountered while building the effective model for com.holon-platform.vaadin:holon-vaadin-flow-demo:jar:10.0.0
+[WARNING] 'build.plugins.plugin.version' for org.springframework.boot:spring-boot-maven-plugin is missing. @ line 70, column 21
+[WARNING] 
+[WARNING] It is highly recommended to fix these problems because they threaten the stability of your build.
+[WARNING] 
+[WARNING] For this reason, future Maven versions might no longer support building such malformed projects.
+[WARNING] 
+[INFO] 
+[INFO] ------------< com.holon-platform.vaadin:holon-vaadin-flow >-------------
+[INFO] Building com.holon-platform.vaadin:holon-vaadin-flow 10.0.0
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- jacoco:0.8.12:prepare-agent (pre-unit-test) @ holon-vaadin-flow ---
+[INFO] surefireArgLine set to -javaagent:C:\\Users\\sxp267\\.m2\\repository\\org\\jacoco\\org.jacoco.agent\\0.8.12\\org.jacoco.agent-0.8.12-runtime.jar=destfile=C:\\Users\\sxp267\\IdeaProjects\\holon-vaadin-flow\\core\\target\\coverage-reports\\jacoco-ut.exec
+[INFO] 
+[INFO] --- remote-resources:3.1.0:process (default) @ holon-vaadin-flow ---
+[INFO] Preparing remote bundle com.holon-platform:holon-shared:1.0.6
+[INFO] Copying 6 resources from 1 bundle.
+[INFO] 
+[INFO] --- resources:3.4.0:resources (default-resources) @ holon-vaadin-flow ---
+[INFO] Copying 53 resources from src\main\resources to target\classes
+[INFO] Copying 6 resources from target\maven-shared-archive-resources to target\classes
+[INFO] 
+[INFO] --- compiler:3.15.0:compile (default-compile) @ holon-vaadin-flow ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.4.0:testResources (default-testResources) @ holon-vaadin-flow ---
+[INFO] Copying 4 resources from src\test\resources to target\test-classes
+[INFO] Copying 6 resources from target\maven-shared-archive-resources to target\test-classes
+[INFO] 
+[INFO] --- compiler:3.15.0:testCompile (default-testCompile) @ holon-vaadin-flow ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- surefire:3.5.2:test (default-test) @ holon-vaadin-flow ---
+[INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running com.holonplatform.vaadin.flow.test.TestFilterInput
+[INFO] Tests run: 66, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 2.598 s -- in com.holonplatform.vaadin.flow.test.TestFilterInput
+[INFO] 
+[INFO] Results:
+[INFO] 
+[INFO] Tests run: 66, Failures: 0, Errors: 0, Skipped: 0
+[INFO] 
+[INFO] 
+[INFO] --- jacoco:0.8.12:report (post-unit-test) @ holon-vaadin-flow ---
+[INFO] Loading execution data file C:\Users\sxp267\IdeaProjects\holon-vaadin-flow\core\target\coverage-reports\jacoco-ut.exec
+[INFO] Analyzed bundle 'com.holon-platform.vaadin:holon-vaadin-flow' with 1036 classes
+[WARNING] Classes in bundle 'com.holon-platform.vaadin:holon-vaadin-flow' do not match with execution data. For report generation the same class files must be used as at runtime.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/components/AbstractItemListing does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/components/builders/DefaultPropertyOptionsMultiSelectInputBuilder does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/data/DefaultDatastoreLazyDataProvider does not match.
+[WARNING] Execution data for class com/iyensoft/vaadin/flow/internal/components/builders/AbstractLazyTabsConfigurator does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/components/builders/DefaultOptionsSingleSelectInputBuilder$DefaultDatastoreOptionsSingleSelectInputBuilder does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/components/builders/DefaultPropertyOptionsSingleSelectInputBuilder does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/components/AbstractViewComponent does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/components/AbstractItemListing$DefaultItemListingBinder does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/data/DefaultItemListingLazyDataProviderAdapter does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/components/builders/DefaultListSingleSelectInputBuilder does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/components/builders/DefaultOptionsMultiSelectInputBuilder does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/components/DefaultDialog does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/components/AbstractItemListing$EditorValueHolder does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/components/DefaultPropertyListing$DefaultDatastorePropertyListingBuilder does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/components/builders/DefaultPropertyOptionsMultiSelectInputBuilder$DefaultDatastorePropertyOptionsMultiSelectInputBuilder does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/components/builders/DefaultPropertySingleSelectInputBuilder$DefaultDatastorePropertySingleSelectInputBuilder does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/components/builders/FlexComponentConfigurator does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/components/AbstractItemListing$ItemListingPropertySet does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/components/builders/DefaultPropertyFilterableSingleSelectInputBuilder does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/components/DefaultBeanListing does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/components/MultiSelectInputAdapter does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/data/DefaultItemListingDataProviderAdapter does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/components/builders/DefaultPropertyOptionsSingleSelectInputBuilder$DefaultDatastorePropertyOptionsSingleSelectInputBuilder does not match.
+[WARNING] Execution data for class com/iyensoft/vaadin/flow/utils/responsive/ViewMode does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/components/support/DefaultItemListingFooterSection does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/components/DefaultBeanListing$DefaultDatastoreBeanListingBuilder does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/components/support/DefaultItemListingHeaderRow does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/components/DefaultPropertyListing$DefaultDatastoreLazyPropertyListingBuilder does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/util/OperationResult$Status does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/components/builders/DefaultOptionsSingleSelectInputBuilder does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/components/support/DefaultItemListingFooterRow does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/components/support/ValidationStatus does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/components/ValidationStatusHandler$ValidationStatusEvent does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/components/DefaultPropertyListing does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/components/AbstractItemListing$DefaultColumnConfigurator does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/components/DefaultPropertyListing$DefaultPropertyListingBuilder does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/components/GroupValidationStatusHandler$GroupElementValidationStatusEvent does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/components/builders/DefaultPropertySingleSelectInputBuilder does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/components/builders/DefaultSingleSelectInputBuilder does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/components/AbstractItemListing$AbstractItemListingConfigurator does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/components/builders/DefaultValidatableInputConfigurator does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/components/builders/AbstractDateInputBuilder does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/components/HasComponent does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/components/AbstractValidatableInputAdapter does not match.
+[WARNING] Execution data for class com/iyensoft/vaadin/flow/internal/components/builders/DefaultLazyTabsBuilder does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/components/DefaultViewComponent does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/components/builders/AbstractDateTimeInputBuilder does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/components/builders/DefaultListMultiSelectInputBuilder does not match.
+[WARNING] Execution data for class com/iyensoft/vaadin/flow/utils/responsive/IyenResponsiveLayout does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/components/builders/BaseTemporalInputConfigurator$CalendarLocalizationBuilder does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/components/support/DefaultItemListingHeaderSection does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/components/builders/DefaultPropertyListMultiSelectInputBuilder does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/components/AbstractItemListing$ItemListingPropertyDefinition does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/util/OperationResult does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/components/builders/DefaultOptionsSingleSelectInputBuilder$DefaultValidatableOptionsSingleSelectInputBuilder does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/lumo/Breakpoint does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/components/builders/DefaultPropertyFilterableSingleSelectInputBuilder$DefaultDatastorePropertyFilterableSingleSelectInputBuilder does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/components/support/DefaultItemListingColumn does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/components/builders/DefaultPropertyListSingleSelectInputBuilder does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/components/AbstractItemListing$DefaultItemListingColumnBuilder does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/components/DefaultBeanListing$DefaultDatastoreBeanListingBuilder$2 does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/data/DefaultDatastoreDataProvider does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/components/support/InputValidationStatus does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/components/DefaultBeanListing$DefaultBeanListingBuilder does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/vaadinplus/components/Header does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/components/ValidationStatusHandler$Status does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/components/builders/DefaultPropertyListSingleSelectInputBuilder$DefaultDatastorePropertyListSingleSelectInputBuilder does not match.
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  05:01 min
+[INFO] Finished at: 2026-05-02T19:03:19-04:00
+[INFO] ------------------------------------------------------------------------

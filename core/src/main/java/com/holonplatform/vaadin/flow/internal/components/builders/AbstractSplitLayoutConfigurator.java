@@ -13,21 +13,10 @@ import java.util.Optional;
 
 public abstract class AbstractSplitLayoutConfigurator<C extends SplitLayoutConfigurator<C>>
         extends AbstractComponentConfigurator<SplitLayout, C> implements SplitLayoutConfigurator<C> {
-    /**
-     * Constructor.
-     *
-     * @param component The component instance (not null)
-     */
     public AbstractSplitLayoutConfigurator(SplitLayout component) {
         super(component);
     }
 
-    /**
-     * Add given theme variants to the component.
-     *
-     * @param variants The theme variants to add
-     * @return this
-     */
     @Override
     public C withThemeVariants(SplitLayoutVariant... variants) {
         getComponent().addThemeVariants(variants);
@@ -96,41 +85,21 @@ public abstract class AbstractSplitLayoutConfigurator<C extends SplitLayoutConfi
         return getConfigurator();
     }
 
-    /**
-     * If the component supports {@link HasSize}, return the component as {@link HasSize}.
-     *
-     * @return Optional component as {@link HasSize}, if supported
-     */
     @Override
     protected Optional<HasSize> hasSize() {
         return Optional.of(getComponent());
     }
 
-    /**
-     * If the component supports {@link HasStyle}, return the component as {@link HasStyle}.
-     *
-     * @return Optional component as {@link HasStyle}, if supported
-     */
     @Override
     protected Optional<HasStyle> hasStyle() {
         return Optional.of(getComponent());
     }
 
-    /**
-     * If the component supports {@link HasEnabled}, return the component as {@link HasEnabled}.
-     *
-     * @return Optional component as {@link HasEnabled}, if supported
-     */
     @Override
     protected Optional<HasEnabled> hasEnabled() {
         return Optional.empty();
     }
 
-    /**
-     * If the component supports {@link HasTooltip}, return the component as {@link HasTooltip}.
-     *
-     * @return Optional component as {@link HasTooltip}, if supported
-     */
     @Override
     protected Optional<HasTooltip> hasTooltip() {
         return Optional.empty();

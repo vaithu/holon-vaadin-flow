@@ -20,6 +20,7 @@ import com.holonplatform.vaadin.flow.components.HasLabel;
 import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
 import com.holonplatform.vaadin.flow.internal.components.builders.DefaultHasLabelConfigurator;
 import com.vaadin.flow.component.HasElement;
+import com.vaadin.flow.signals.Signal;
 
 import java.util.function.Consumer;
 
@@ -45,6 +46,18 @@ public interface HasLabelConfigurator<C extends HasLabelConfigurator<C>> {
 	 * @see LocalizationProvider
 	 */
 	C label(Localizable label);
+
+	/**
+	 * Bind the component label to given {@link Signal}.
+	 * @param labelSignal Label signal (not null)
+	 * @return this
+	 * @since 5.5.8
+	 */
+	@SuppressWarnings("unchecked")
+	default C bindLabel(Signal<? extends Localizable> labelSignal) {
+		SignalBindings.bind(this, labelSignal, this::label);
+		return (C) this;
+	}
 
 	/**
 	 * Sets the label text, replacing any previous content.

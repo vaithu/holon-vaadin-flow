@@ -36,18 +36,20 @@ import com.holonplatform.vaadin.flow.data.DatastoreLazyDataProvider;
 import com.holonplatform.vaadin.flow.internal.components.support.ItemListingColumn;
 import com.holonplatform.vaadin.flow.internal.components.support.ItemListingColumn.SortMode;
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.Grid.Column;
 import com.vaadin.flow.data.binder.Setter;
 import com.vaadin.flow.data.provider.QuerySortOrder;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.function.ValueProvider;
 
+import java.io.Serial;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 /**
  * Default {@link PropertyListing} implementation.
@@ -56,6 +58,7 @@ import java.util.stream.Collectors;
  */
 public class DefaultPropertyListing extends AbstractItemListing<PropertyBox, Property<?>> implements PropertyListing {
 
+	@Serial
 	private static final long serialVersionUID = -1099573388730286182L;
 
 	/**
@@ -79,6 +82,7 @@ public class DefaultPropertyListing extends AbstractItemListing<PropertyBox, Pro
 		}
 	}
 //this is not fully implemented
+	@SuppressWarnings("unused")
 	public <P extends Property<?>> DefaultPropertyListing(boolean defaultIndex,Iterable<P> properties) {
 		super();
 		ObjectUtils.argumentNotNull(properties, "Property set must be not null");
@@ -104,7 +108,9 @@ public class DefaultPropertyListing extends AbstractItemListing<PropertyBox, Pro
 	 */
 	@Override
 	public Collection<Property<?>> getProperties() {
-		return getPropertySet().stream().map(p -> (Property<?>) p).collect(Collectors.toList());
+		List<Property<?>> result = new ArrayList<>();
+		getPropertySet().forEach(result::add);
+		return result;
 	}
 
 	/**
@@ -176,7 +182,7 @@ public class DefaultPropertyListing extends AbstractItemListing<PropertyBox, Pro
 		// sort
 		if (Path.class.isAssignableFrom(configuration.getProperty().getClass())) {
 			if (configuration.getSortProperties().isEmpty()) {
-				configuration.setSortProperties(Collections.singletonList(configuration.getProperty()));
+				configuration.setSortProperties(List.of(configuration.getProperty()));
 			}
 			if (configuration.getSortMode() == SortMode.DEFAULT) {
 				configuration.setSortMode(SortMode.ENABLED);
@@ -313,11 +319,8 @@ public class DefaultPropertyListing extends AbstractItemListing<PropertyBox, Pro
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	protected void refreshVirtualProperties() {
-		isEditing().ifPresent(value -> {
-			getBindings().filter(b -> b.getProperty() instanceof VirtualProperty).forEach(b -> {
-				((Input) b.getElement()).setValue((value != null) ? value.getValue(b.getProperty()) : null);
-			});
-		});
+		isEditing().ifPresent(value -> getBindings().filter(b -> b.getProperty() instanceof VirtualProperty)
+				.forEach(b -> ((Input) b.getElement()).setValue(value.getValue(b.getProperty()))));
 	}
 
 	@Override
@@ -344,6 +347,40 @@ public class DefaultPropertyListing extends AbstractItemListing<PropertyBox, Pro
 		@Override
 		public PropertyListingBuilder includeVirtualColumns(boolean yes) {
 			throw new RuntimeException("Not Implemented for PropertyListing");
+		}
+
+		@Override
+		public PropertyListingBuilder tooltipMarkdownEnabled(boolean markdownEnabled) {
+			getInstance().getGrid().setTooltipMarkdownEnabled(markdownEnabled);
+			return getConfigurator();
+		}
+
+		@Override
+		public PropertyListingBuilder scrollToColumn(int columnIndex) {
+			getInstance().getGrid().scrollToColumn(columnIndex);
+			return getConfigurator();
+		}
+
+		@Override
+		public PropertyListingBuilder scrollToColumn(Grid.Column<PropertyBox> column) {
+			getInstance().getGrid().scrollToColumn(column);
+			return getConfigurator();
+		}
+
+		@Override
+		@SuppressWarnings("unchecked")
+		public PropertyListingBuilder itemsPageable(Grid.SpringData.FetchCallback<?, PropertyBox> fetchCallback) {
+			getInstance().getGrid().setItemsPageable((Grid.SpringData.FetchCallback) fetchCallback);
+			return getConfigurator();
+		}
+
+		@Override
+		@SuppressWarnings("unchecked")
+		public PropertyListingBuilder itemsPageable(Grid.SpringData.FetchCallback<?, PropertyBox> fetchCallback,
+				Grid.SpringData.CountCallback<?> countCallback) {
+			getInstance().getGrid().setItemsPageable((Grid.SpringData.FetchCallback) fetchCallback,
+					(Grid.SpringData.CountCallback) countCallback);
+			return getConfigurator();
 		}
 
 		/*
@@ -379,7 +416,7 @@ public class DefaultPropertyListing extends AbstractItemListing<PropertyBox, Pro
 		public <X> ItemListingColumnBuilder<PropertyBox, Property<?>, PropertyListing, PropertyListingBuilder> withColumn(
 				ValueProvider<PropertyBox, X> valueProvider) {
 			ObjectUtils.argumentNotNull(valueProvider, "ValueProvider must be not null");
-			return withColumn(VirtualProperty.create(Object.class, item -> valueProvider.apply(item)));
+			return withColumn(VirtualProperty.create(Object.class, valueProvider::apply));
 		}
 
 		/*
@@ -408,7 +445,7 @@ public class DefaultPropertyListing extends AbstractItemListing<PropertyBox, Pro
 		public ItemListingColumnBuilder<PropertyBox, Property<?>, PropertyListing, PropertyListingBuilder> withComponentColumn(
 				ValueProvider<PropertyBox, Component> valueProvider) {
 			ObjectUtils.argumentNotNull(valueProvider, "ValueProvider must be not null");
-			return withComponentColumn(VirtualProperty.create(Component.class, item -> valueProvider.apply(item)));
+			return withComponentColumn(VirtualProperty.create(Component.class, valueProvider::apply));
 		}
 
 
@@ -680,6 +717,7 @@ public class DefaultPropertyListing extends AbstractItemListing<PropertyBox, Pro
 
 	static class VirtualPropertyValueProvider<T> implements ValueProvider<PropertyBox, String> {
 
+		@Serial
 		private static final long serialVersionUID = 582674628237265592L;
 
 		private final VirtualProperty<T> property;

@@ -5,7 +5,6 @@ import com.holonplatform.vaadin.flow.internal.lumo.*;
 import com.holonplatform.vaadin.flow.vaadinplus.Layout;
 import com.iyensoft.vaadin.flow.utils.responsive.ViewMode;
 import com.vaadin.flow.component.Component;
-import com.vaadin.flow.theme.lumo.LumoUtility;
 
 public interface LayoutConfigurator<C extends LayoutConfigurator<C>> extends ComponentConfigurator<C>,
         HasSizeConfigurator<C>, HasStyleConfigurator<C>, HasEnabledConfigurator<C>, HasComponentsConfigurator<C>  {
@@ -89,7 +88,7 @@ public interface LayoutConfigurator<C extends LayoutConfigurator<C>> extends Com
     }
 
     default C padding() {
-        return styleName(LumoUtility.Padding.MEDIUM);
+        return styleName("padding-medium");
     }
 
     default C addAndExpand(Component component) {
@@ -104,6 +103,53 @@ public interface LayoutConfigurator<C extends LayoutConfigurator<C>> extends Com
         return flexDirection(FlexDirection.COLUMN);
     }
 
+    /**
+     * Centers all children along both axes — shorthand for
+     * {@code alignItems(AlignItems.CENTER).justifyContent(JustifyContent.CENTER)}.
+     * <p>
+     * Common use cases: hero sections, empty states, loading spinners, icon + label pairs.
+     */
+    default C center() {
+        return alignItems(AlignItems.CENTER).justifyContent(JustifyContent.CENTER);
+    }
+
+    /**
+     * Enables automatic scrolling when content overflows — shorthand for {@code overflow(Overflow.AUTO)}.
+     * <p>
+     * Pair with {@link #maxHeight(String)} or {@link #height(String)} to define the scroll boundary.
+     * Common use cases: scrollable sidebars, data panels, dialog bodies.
+     */
+    default C scrollable() {
+        return overflow(Overflow.AUTO);
+    }
+
+    /**
+     * Wrapping horizontal flex row — shorthand for {@code horizontal().flexWrap(FlexWrap.WRAP)}.
+     * <p>
+     * Common use cases: tag clouds, filter chip rows, badge lists, technology stacks.
+     */
+    default C wrap() {
+        return horizontal().flexWrap(FlexWrap.WRAP);
+    }
+
+    /**
+     * Applies a semantic background colour from the Aura theme token system.
+     * The class name resolves via the active theme so colours update automatically on theme change.
+     *
+     * @param background the background colour to apply (not null)
+     */
+    default C background(com.holonplatform.vaadin.flow.vaadinplus.utilities.Color.Background background) {
+        return styleName(background.getClassName());
+    }
+
+    /**
+     * Applies a semantic text colour from the Aura theme token system.
+     *
+     * @param color the text colour to apply (not null)
+     */
+    default C textColor(com.holonplatform.vaadin.flow.vaadinplus.utilities.Color.Text color) {
+        return styleName(color.getClassName());
+    }
 
     /**
      * Get a new {@link LayoutConfigurator} for given component.

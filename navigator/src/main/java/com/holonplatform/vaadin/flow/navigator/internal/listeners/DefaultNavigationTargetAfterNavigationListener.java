@@ -1,12 +1,12 @@
 /*
  * Copyright 2016-2018 Axioma srl.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -14,14 +14,6 @@
  * the License.
  */
 package com.holonplatform.vaadin.flow.navigator.internal.listeners;
-
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
-import org.apache.commons.lang3.reflect.FieldUtils;
 
 import com.holonplatform.core.internal.utils.TypeUtils;
 import com.holonplatform.vaadin.flow.navigator.NavigationParameterMapper;
@@ -37,11 +29,15 @@ import com.vaadin.flow.router.AfterNavigationEvent;
 import com.vaadin.flow.router.AfterNavigationListener;
 import com.vaadin.flow.router.ListenerPriority;
 import com.vaadin.flow.router.Location;
+import com.vaadin.flow.server.VaadinService;
+import org.apache.commons.lang3.reflect.FieldUtils;
+
+import java.util.*;
 
 /**
- * An {@link AfterNavigationListener} to process navigation targets, setting {@link QueryParameter} values and firing
- * {@link OnShow} annotated methods.
- * 
+ * An {@link AfterNavigationListener} to process navigation targets, setting {@link QueryParameter}
+ * values and firing {@link OnShow} annotated methods.
+ *
  * @since 5.2.0
  */
 @ListenerPriority(Integer.MAX_VALUE)
@@ -52,7 +48,8 @@ public class DefaultNavigationTargetAfterNavigationListener extends AbstractNavi
 
 	/*
 	 * (non-Javadoc)
-	 * @see com.vaadin.flow.router.internal.AfterNavigationHandler#afterNavigation(com.vaadin.flow.router.
+	 * @see
+	 * com.vaadin.flow.router.internal.AfterNavigationHandler#afterNavigation(com.vaadin.flow.router.
 	 * AfterNavigationEvent)
 	 */
 	@Override
@@ -65,7 +62,7 @@ public class DefaultNavigationTargetAfterNavigationListener extends AbstractNavi
 						+ "] after navigation");
 				// configuration
 				final NavigationTargetConfiguration configuration = getNavigationTargetConfigurationRegistry()
-						.getConfiguration(navigationTarget.getClass());
+						.getConfiguration(navigationTarget.getClass(), VaadinService.getCurrent().getContext());
 				// set query parameters
 				setQueryParameterValues(navigationTarget, configuration, event.getLocation());
 				// fire OnShow methods
@@ -85,7 +82,7 @@ public class DefaultNavigationTargetAfterNavigationListener extends AbstractNavi
 	 * @param location The current URL location
 	 */
 	private static void setQueryParameterValues(HasElement navigationTargetInstance,
-			NavigationTargetConfiguration configuration, Location location) {
+												NavigationTargetConfiguration configuration, Location location) {
 		// get and decode query paremeters
 		final Map<String, List<String>> queryParameters = NavigationParameterUtils
 				.decodeParameters(location.getQueryParameters().getParameters());
@@ -109,19 +106,19 @@ public class DefaultNavigationTargetAfterNavigationListener extends AbstractNavi
 			} else {
 				// check container type
 				switch (definition.getParameterContainerType()) {
-				case OPTIONAL:
-					setParameterValue(navigationTargetInstance, definition, Optional.ofNullable(values.get(0)));
-					break;
-				case LIST:
-					setParameterValue(navigationTargetInstance, definition, values);
-					break;
-				case SET:
-					setParameterValue(navigationTargetInstance, definition, new HashSet<>(values));
-					break;
-				case NONE:
-				default:
-					setParameterValue(navigationTargetInstance, definition, values.get(0));
-					break;
+					case OPTIONAL:
+						setParameterValue(navigationTargetInstance, definition, Optional.ofNullable(values.get(0)));
+						break;
+					case LIST:
+						setParameterValue(navigationTargetInstance, definition, values);
+						break;
+					case SET:
+						setParameterValue(navigationTargetInstance, definition, new HashSet<>(values));
+						break;
+					case NONE:
+					default:
+						setParameterValue(navigationTargetInstance, definition, values.get(0));
+						break;
 				}
 			}
 		});
@@ -143,14 +140,15 @@ public class DefaultNavigationTargetAfterNavigationListener extends AbstractNavi
 	}
 
 	/**
-	 * Set the parameter value which corresponds to given definition on the provided navigation target instance.
+	 * Set the parameter value which corresponds to given definition on the provided navigation target
+	 * instance.
 	 * @param navigationTarget The navigation target instance
 	 * @param definition The parameter definition
 	 * @param value The parameter value
 	 * @throws InvalidNavigationParameterException If an error occurred
 	 */
 	private static void setParameterValue(Object navigationTarget, NavigationParameterDefinition definition,
-			Object value) throws InvalidNavigationParameterException {
+										  Object value) throws InvalidNavigationParameterException {
 		if (definition.getWriteMethod().isPresent()) {
 			// use write method
 			try {

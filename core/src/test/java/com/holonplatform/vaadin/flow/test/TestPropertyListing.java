@@ -28,6 +28,8 @@ import com.holonplatform.datastore.jdbc.JdbcDatastore;
 import com.holonplatform.jdbc.BasicDataSource;
 import com.holonplatform.jdbc.DatabasePlatform;
 import com.holonplatform.vaadin.flow.components.Components;
+import com.holonplatform.vaadin.flow.components.FilterInput;
+import com.holonplatform.vaadin.flow.components.FilterInputForm;
 import com.holonplatform.vaadin.flow.components.Input;
 import com.holonplatform.vaadin.flow.components.PropertyListing;
 import com.holonplatform.vaadin.flow.components.Selectable.SelectionMode;
@@ -52,6 +54,7 @@ import com.vaadin.flow.data.renderer.Renderer;
 import com.vaadin.flow.function.ValueProvider;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDate;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -109,7 +112,7 @@ public class TestPropertyListing {
         listing = PropertyListing.builder(SET).hidden().build();
         assertFalse(listing.isVisible());
 
-        final AtomicBoolean attached = new AtomicBoolean(false);
+        /*final AtomicBoolean attached = new AtomicBoolean(false);
 
         listing = PropertyListing.builder(SET).withAttachListener(e -> {
             attached.set(true);
@@ -117,7 +120,7 @@ public class TestPropertyListing {
 
         ComponentUtil.onComponentAttach(listing.getComponent(), true);
         assertTrue(attached.get());
-
+*/
         final AtomicBoolean detached = new AtomicBoolean(false);
 
         listing = PropertyListing.builder(SET).withDetachListener(e -> {
@@ -915,6 +918,158 @@ listing.hideMobileColumn();
 
         listing.setMobileColumn(propertyBox -> new Button("sdkfjhsdfj"));
 //        listing.getAllColumns().forEach(propertyBoxColumn -> System.out.println(propertyBoxColumn.getKey()));
+    }
+
+    @Test
+    public void testFilterInputFormIntegrationWithPropertyListing() {
+
+        final DataTarget<?> TARGET = DataTarget.named("test2");
+        final Property<FilterInput.Range<Long>> ID_RANGE = (Property) PathProperty.create("idRange",
+                FilterInput.Range.class);
+
+        final Datastore datastore = JdbcDatastore.builder()
+                .dataSource(
+                        BasicDataSource.builder().url("jdbc:h2:mem:test;INIT=RUNSCRIPT FROM 'classpath:test_init.sql'")
+                                .username("sa").driverClassName(DatabasePlatform.H2.getDriverClassName()).build())
+                .traceEnabled(true).build();
+
+        final FilterInputForm<com.vaadin.flow.component.formlayout.FormLayout> filters = FilterInputForm.formLayout()
+                .withFilter(NAME, FilterInput.string(NAME))
+                .withFilter(ID_RANGE, FilterInput.numberRange(ID, Long.class))
+                .build();
+
+        final PropertyListing listing = PropertyListing.builder(SET).build();
+        listing.setItems(filters, (query, filter) -> {
+            var datastoreQuery = datastore.query(TARGET).restrict(query.getLimit(), query.getOffset());
+            if (filter != null) {
+                datastoreQuery.filter(filter);
+            }
+            return datastoreQuery.stream(SET);
+        });
+        com.holonplatform.core.Registration registration = listing.refreshOnFilterChange(filters);
+
+        List<PropertyBox> unfiltered = getDataProvider(listing).fetch(new Query<>()).collect(Collectors.toList());
+        assertEquals(2, unfiltered.size());
+
+        filters.getFilterInput(NAME)
+                .orElseThrow(() -> new AssertionError("Name filter not found"))
+                .getInput()
+                .setValue("test2");
+
+        List<PropertyBox> nameFiltered = getDataProvider(listing).fetch(new Query<>()).collect(Collectors.toList());
+        assertEquals(1, nameFiltered.size());
+        assertEquals(Long.valueOf(2L), nameFiltered.get(0).getValue(ID));
+
+        filters.getFilterInput(ID_RANGE)
+                .orElseThrow(() -> new AssertionError("Id range filter not found"))
+                .getInput()
+                .setValue(new FilterInput.Range<>(1L, 1L));
+
+        List<PropertyBox> combinedFiltered = getDataProvider(listing).fetch(new Query<>()).collect(Collectors.toList());
+        assertEquals(0, combinedFiltered.size());
+
+        filters.getFilterInput(NAME)
+                .orElseThrow(() -> new AssertionError("Name filter not found"))
+                .reset();
+
+        List<PropertyBox> idOnlyFiltered = getDataProvider(listing).fetch(new Query<>()).collect(Collectors.toList());
+        assertEquals(1, idOnlyFiltered.size());
+        assertEquals(Long.valueOf(1L), idOnlyFiltered.get(0).getValue(ID));
+
+        registration.remove();
+    }
+
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @Test
+    public void testFilterInputFormIntegrationWithPropertyListingMultipleInputTypes() throws Exception {
+
+        final DataTarget<?> TARGET = DataTarget.named("test_filter_types");
+
+        final NumericProperty<Long> ID_FILTER = NumericProperty.longType("id");
+        final StringProperty NAME_FILTER = StringProperty.create("name");
+        final NumericProperty<Integer> AGE_FILTER = NumericProperty.integerType("age");
+        final Property<Boolean> ACTIVE_FILTER = PathProperty.create("active", Boolean.class);
+        final Property<LocalDate> BIRTH_FILTER = PathProperty.create("birth", LocalDate.class);
+        final Property<FilterInput.Range<Integer>> AGE_RANGE = (Property) PathProperty.create("ageRange",
+                FilterInput.Range.class);
+
+        final PropertySet<?> FILTER_SET = PropertySet.of(ID_FILTER, NAME_FILTER, AGE_FILTER, ACTIVE_FILTER,
+                BIRTH_FILTER);
+
+        final BasicDataSource dataSource = BasicDataSource.builder()
+                .url("jdbc:h2:mem:test_filter_types_property;DB_CLOSE_DELAY=-1")
+                .username("sa")
+                .driverClassName(DatabasePlatform.H2.getDriverClassName())
+                .build();
+
+        try (java.sql.Connection connection = dataSource.getConnection();
+                java.sql.Statement statement = connection.createStatement()) {
+            statement.execute("drop table if exists test_filter_types");
+            statement.execute("create table test_filter_types (id bigint primary key, name varchar(50), age integer, active boolean, birth date)");
+            statement.execute("insert into test_filter_types (id, name, age, active, birth) values (1, 'Alice', 30, true, DATE '1990-01-01')");
+            statement.execute("insert into test_filter_types (id, name, age, active, birth) values (2, 'Bob', 40, false, DATE '1985-05-05')");
+            statement.execute("insert into test_filter_types (id, name, age, active, birth) values (3, 'Carol', 25, true, DATE '2000-06-15')");
+        }
+
+        final Datastore datastore = JdbcDatastore.builder()
+                .dataSource(dataSource)
+                .traceEnabled(true)
+                .build();
+
+        final FilterInputForm<com.vaadin.flow.component.formlayout.FormLayout> filters = FilterInputForm.formLayout()
+                .withFilter(NAME_FILTER, FilterInput.string(NAME_FILTER))
+                .withFilter(AGE_FILTER, FilterInput.number(AGE_FILTER, Integer.class))
+                .withFilter(AGE_RANGE, FilterInput.numberRange(AGE_FILTER, Integer.class))
+                .withFilter(ACTIVE_FILTER, FilterInput.bool(ACTIVE_FILTER))
+                .withFilter(BIRTH_FILTER, FilterInput.localDate(BIRTH_FILTER))
+                .build();
+
+        final PropertyListing listing = PropertyListing.builder(FILTER_SET).build();
+        listing.setItems(filters, (query, filter) -> {
+            var datastoreQuery = datastore.query(TARGET).restrict(query.getLimit(), query.getOffset());
+            if (filter != null) {
+                datastoreQuery.filter(filter);
+            }
+            return datastoreQuery.stream(FILTER_SET);
+        });
+        com.holonplatform.core.Registration registration = listing.refreshOnFilterChange(filters);
+
+        List<PropertyBox> unfiltered = getDataProvider(listing).fetch(new Query<>()).collect(Collectors.toList());
+        assertEquals(3, unfiltered.size());
+
+        filters.getFilterInput(NAME_FILTER).orElseThrow(() -> new AssertionError("Name filter not found"))
+                .getInput().setValue("Alice");
+        List<PropertyBox> nameFiltered = getDataProvider(listing).fetch(new Query<>()).collect(Collectors.toList());
+        assertEquals(1, nameFiltered.size());
+        assertEquals(Long.valueOf(1L), nameFiltered.get(0).getValue(ID_FILTER));
+
+        filters.getFilterInput(NAME_FILTER).orElseThrow(() -> new AssertionError("Name filter not found")).reset();
+        filters.getFilterInput(AGE_FILTER).orElseThrow(() -> new AssertionError("Age filter not found"))
+                .getInput().setValue(40);
+        List<PropertyBox> numberFiltered = getDataProvider(listing).fetch(new Query<>()).collect(Collectors.toList());
+        assertEquals(1, numberFiltered.size());
+        assertEquals(Long.valueOf(2L), numberFiltered.get(0).getValue(ID_FILTER));
+
+        filters.getFilterInput(AGE_FILTER).orElseThrow(() -> new AssertionError("Age filter not found")).reset();
+        filters.getFilterInput(AGE_RANGE).orElseThrow(() -> new AssertionError("Age range filter not found"))
+                .getInput().setValue(new FilterInput.Range<>(25, 30));
+        List<PropertyBox> rangeFiltered = getDataProvider(listing).fetch(new Query<>()).collect(Collectors.toList());
+        assertEquals(2, rangeFiltered.size());
+
+        filters.getFilterInput(AGE_RANGE).orElseThrow(() -> new AssertionError("Age range filter not found")).reset();
+        filters.getFilterInput(ACTIVE_FILTER).orElseThrow(() -> new AssertionError("Active filter not found"))
+                .getInput().setValue(Boolean.TRUE);
+        List<PropertyBox> boolFiltered = getDataProvider(listing).fetch(new Query<>()).collect(Collectors.toList());
+        assertEquals(2, boolFiltered.size());
+
+        filters.getFilterInput(ACTIVE_FILTER).orElseThrow(() -> new AssertionError("Active filter not found")).reset();
+        filters.getFilterInput(BIRTH_FILTER).orElseThrow(() -> new AssertionError("Birth filter not found"))
+                .getInput().setValue(LocalDate.of(1990, 1, 1));
+        List<PropertyBox> dateFiltered = getDataProvider(listing).fetch(new Query<>()).collect(Collectors.toList());
+        assertEquals(1, dateFiltered.size());
+        assertEquals(Long.valueOf(1L), dateFiltered.get(0).getValue(ID_FILTER));
+
+        registration.remove();
     }
 
     @SuppressWarnings("unchecked")

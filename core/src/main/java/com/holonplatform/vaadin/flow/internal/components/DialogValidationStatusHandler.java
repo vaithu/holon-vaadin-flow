@@ -15,12 +15,13 @@
  */
 package com.holonplatform.vaadin.flow.internal.components;
 
-import java.util.List;
-
 import com.holonplatform.vaadin.flow.components.Components;
 import com.holonplatform.vaadin.flow.components.ValidationStatusHandler;
 import com.holonplatform.vaadin.flow.components.builders.DialogBuilder.ConfirmDialogBuilder;
 import com.vaadin.flow.component.html.Div;
+
+import java.io.Serial;
+import java.util.List;
 
 /**
  * A {@link ValidationStatusHandler} which opens a dialog when validation fails.
@@ -31,6 +32,7 @@ import com.vaadin.flow.component.html.Div;
  */
 public class DialogValidationStatusHandler<S> implements ValidationStatusHandler<S> {
 
+	@Serial
 	private static final long serialVersionUID = 4676321742147773517L;
 
 	/*
@@ -50,12 +52,11 @@ public class DialogValidationStatusHandler<S> implements ValidationStatusHandler
 			if (messages.isEmpty()) {
 				builder.text("Validation failed");
 			} else {
-				builder.text(messages.get(0));
+				builder.text(messages.getFirst());
 				if (messages.size() > 1) {
 					for (int i = 1; i < messages.size(); i++) {
 						final String text = messages.get(i);
-						final Div message = new Div();
-						message.addClassName("message");
+						final Div message = Components.div().styleName("message").build();
 						message.setText((text != null) ? text : "");
 						builder.withComponent(message);
 					}

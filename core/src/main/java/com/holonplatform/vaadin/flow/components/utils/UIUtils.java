@@ -1,6 +1,5 @@
 package com.holonplatform.vaadin.flow.components.utils;
 
-import com.github.javaparser.quality.NotNull;
 import com.holonplatform.core.property.PropertyBox;
 import com.holonplatform.core.property.PropertySet;
 import com.holonplatform.vaadin.flow.HasOptionsBar;
@@ -13,6 +12,7 @@ import com.holonplatform.vaadin.flow.internal.lumo.SeparatorColor;
 import com.holonplatform.vaadin.flow.vaadinplus.KeyValuePair;
 import com.holonplatform.vaadin.flow.vaadinplus.KeyValuePairs;
 import com.holonplatform.vaadin.flow.vaadinplus.Layout;
+import com.holonplatform.vaadin.flow.vaadinplus.components.Separator;
 import com.iyensoft.vaadin.flow.utils.responsive.ViewMode;
 import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.button.Button;
@@ -63,22 +63,19 @@ import com.vaadin.flow.function.ValueProvider;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeLeaveEvent;
 import com.vaadin.flow.router.RouteConfiguration;
-import com.vaadin.flow.router.RouterLink;
 import com.vaadin.flow.server.ServiceInitEvent;
 import com.vaadin.flow.server.VaadinService;
 import com.vaadin.flow.server.VaadinServletRequest;
-import com.vaadin.flow.server.VaadinSession;
 import com.vaadin.flow.shared.communication.PushMode;
 import com.vaadin.flow.theme.lumo.LumoIcon;
-import com.vaadin.flow.theme.lumo.LumoUtility;
-import elemental.json.JsonObject;
-import elemental.json.JsonValue;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import tools.jackson.databind.JsonNode;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
@@ -92,7 +89,6 @@ import java.util.concurrent.Future;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static com.holonplatform.vaadin.flow.internal.components.support.BreakPoint.*;
@@ -105,10 +101,8 @@ public class UIUtils {
     public static final String MARGIN_RIGHT = "margin-right";
     public static final String AUTO = "auto";
     public static final int MIN_DESKTOP_COLUMNS = 4;
-    public static final FormLayout.ResponsiveStep.LabelsPosition DEFAULT_POS = FormLayout.ResponsiveStep.LabelsPosition.TOP;
-    public static final int DEFAULT_COL_SPAN = 2;
-    public static final String LEFT_SMALL_PADDING = LumoUtility.Padding.Horizontal.SMALL;
-    public static final String RIGHT_SMALL_PADDING = LumoUtility.Padding.Right.SMALL;
+    public static final String LEFT_SMALL_PADDING = "padding-h-small";
+    public static final String RIGHT_SMALL_PADDING = "padding-end-small";
     public static final String CARD = "card";
     public static final String CONTAINER = "container";
 
@@ -131,26 +125,6 @@ public class UIUtils {
 
     private static NumberFormat currencyFormat = NumberFormat.getCurrencyInstance();
 
-
-    public static H2 bigTitle(String text) {
-        final var day = new H2(text);
-        day.addClassNames(
-                LumoUtility.Background.BASE,
-                LumoUtility.Border.BOTTOM,
-                LumoUtility.BorderColor.CONTRAST_10,
-                LumoUtility.FontSize.XXLARGE,
-//                Layout.TOP_0,
-                LumoUtility.Margin.Bottom.NONE,
-                LumoUtility.Margin.Horizontal.AUTO,
-                LumoUtility.Margin.Top.MEDIUM,
-                LumoUtility.MaxWidth.SCREEN_SMALL,
-                LumoUtility.Padding.SMALL,
-                LumoUtility.Position.STICKY
-//                Layout.Z_10
-        );
-        return day;
-    }
-
     public static Button addNewItemButton() {
         return Components.button()
                 .icon(VaadinIcon.PLUS)
@@ -167,32 +141,27 @@ public class UIUtils {
                 .clearButtonVisible(true)
                 .blankValuesAsNull(true)
                 .emptyValuesAsNull(true)
-                .placeholder("Search", "search.code")
-                .prefixComponent(VaadinIcon.SEARCH.create())
-                .withFocusShortcutKey(Key.KEY_F, KeyModifier.CONTROL)
                 .build();
     }
 
     public static String[] getTitleStyles() {
-        return new String[]{LumoUtility.TextColor.PRIMARY, LumoUtility.Padding.SMALL,
-                LumoUtility.Border.BOTTOM,
-                LumoUtility.BorderColor.CONTRAST_10};
+        return new String[]{"color-text-primary", "padding-small",
+                "border-bottom",
+                "border-color-contrast-10"};
     }
 
     public static Component[] toComponents(HasComponent[] components) {
-        return Arrays.asList(components).stream().map(c -> c.getComponent()).collect(Collectors.toList())
-                .toArray(new Component[0]);
+        return Arrays.stream(components).map(HasComponent::getComponent).toArray(Component[]::new);
     }
 
     public static Component createTextFieldFilterHeader(String labelText,
                                                         Consumer<String> filterChangeConsumer) {
         NativeLabel label = new NativeLabel(labelText);
-        label.getStyle().set("padding-top", "var(--lumo-space-m)")
-                .set("font-size", "var(--lumo-font-size-xs)");
+        label.addClassNames("filter-header__label");
 
         TextField textField = textFieldFilter(filterChangeConsumer);
-        VerticalLayout layout = new VerticalLayout(label, textField);
-        layout.getThemeList().clear();
+        VerticalLayout layout = Components.vl().add(label, textField).build();
+        textField.addThemeVariants(TextFieldVariant.LUMO_SMALL);
         layout.getThemeList().add("spacing-xs");
 
         return layout;
@@ -202,73 +171,62 @@ public class UIUtils {
         TextField textField = new TextField();
         textField.setValueChangeMode(ValueChangeMode.EAGER);
         textField.setClearButtonVisible(true);
-        textField.addThemeVariants(TextFieldVariant.LUMO_SMALL);
+        textField.addClassName("filter-header__field");
         textField.setWidthFull();
-        textField.getStyle().set("max-width", "100%");
-        textField.addValueChangeListener(
-                e -> filterChangeConsumer.accept(e.getValue()));
-
+        textField.addValueChangeListener(e -> filterChangeConsumer.accept(e.getValue()));
         return textField;
     }
 
     public static LabelBuilder<H4> createH4(String title) {
         return LabelBuilder.h4()
                 .text(title)
-//                .fullWidth()
                 .title(title)
                 .styleNames(titleStyles());
     }
 
     public static String[] titleStyles() {
-        return new String[]{LumoUtility.TextColor.PRIMARY, LumoUtility.Padding.SMALL};
+        return new String[]{"color-text-primary", "padding-small"};
     }
 
     public static String[] borderStyles() {
-        return new String[]{LumoUtility.Border.BOTTOM, LumoUtility.BorderColor.CONTRAST_10};
+        return new String[]{"border-bottom", "border-color-contrast-10"};
     }
 
     public static Span createDaySpan() {
-        final var daySpan = new Span();
-        daySpan.addClassNames(LumoUtility.Display.FLEX, LumoUtility.JustifyContent.CENTER, LumoUtility.Padding.MEDIUM, LumoUtility.Background.BASE);
-        daySpan.addClassNames(LumoUtility.TextColor.SECONDARY, LumoUtility.FontSize.SMALL, LumoUtility.Border.BOTTOM, LumoUtility.BorderColor.CONTRAST_10); //, "sticky-date"
+        Span daySpan = Components.span().styleName("day-span").build();
         return daySpan;
     }
 
     public static Button createChangeLanguageButton(AttachEvent attachEvent) {
-        var changeLanguage = new Button();
-        changeLanguage.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
+        final Locale locale = attachEvent.getUI().getLocale();
+        Button changeLanguage = Components.button()
+                .styleName("btn-change-language")
+                .withClickListener(e ->
+                        VaadinService.getCurrentResponse().addCookie(new Cookie("locale", locale.toLanguageTag())))
+                .build();
         updateChangeLanguageButtonIcon(attachEvent.getUI(), changeLanguage);
-        Locale locale = attachEvent.getUI().getLocale();
-        changeLanguage.addClickListener(e -> {
-            VaadinService.getCurrentResponse().addCookie(new Cookie("locale", locale.toLanguageTag()));
-            updateChangeLanguageButtonIcon(attachEvent.getUI(), changeLanguage);
-            attachEvent.getUI().getPage().reload();
-        });
         return changeLanguage;
     }
 
-    public static void updateChangeLanguageButtonIcon(UI ui, Button changeLanguage) {
+    private static void updateChangeLanguageButtonIcon(UI ui, Button changeLanguage) {
         Image image;
-        if (ui.getLocale() != null) { //fiLocale.equals(ui.getLocale())
-            // TODO: Translation
+        if (ui.getLocale() != null) {
             image = new Image("icons/finnish.png", "Finnish");
             changeLanguage.setAriaLabel("Switch to English");
         } else {
-            // TODO: Translation
             image = new Image("icons/english.png", "English");
             changeLanguage.setAriaLabel("Switch to Finnish");
         }
         image.setHeightFull();
-
-        // Wrapper; circle
-        Span icon = new Span(image);
+        final Span icon = Components.span().build();
+        icon.add(image);
         icon.addClassNames(
-                LumoUtility.AlignItems.CENTER,
-                LumoUtility.BorderRadius.LARGE,
-                LumoUtility.Display.FLEX,
-                LumoUtility.IconSize.MEDIUM,
-                LumoUtility.JustifyContent.CENTER,
-                LumoUtility.Overflow.HIDDEN
+                "align-items-center",
+                "border-radius-large",
+                "display-flex",
+                "icon-size-medium",
+                "justify-content-center",
+                "overflow-hidden"
         );
         changeLanguage.setIcon(icon);
     }
@@ -349,9 +307,10 @@ public class UIUtils {
                 .add(UIUtils.createNoRecordsFoundImage());
     }
 
-    public static Span separator(SeparatorColor color) {
-        return Components.utils.divider()
-                .verticalSeparator()
+    public static Separator separator(SeparatorColor color) {
+        return Separator.builder()
+                .orientation(Separator.Orientation.VERTICAL)
+                .decorative(true)
                 .styleNames(color.getClassName(), CSSUtility.Bootstrap.D_NONE, CSSUtility.Bootstrap.D_SM_FLEX)
                 .build();
     }
@@ -400,8 +359,7 @@ public class UIUtils {
             1, new FormLayout.ResponsiveStep(BREAKPOINT_XL.getSize(), 1),
             2, new FormLayout.ResponsiveStep(BREAKPOINT_XL.getSize(), 2),
             3, new FormLayout.ResponsiveStep(BREAKPOINT_XL.getSize(), 3),
-            4, new FormLayout.ResponsiveStep(BREAKPOINT_XL.getSize(), 4),
-            5, new FormLayout.ResponsiveStep(BREAKPOINT_XL.getSize(), 5)
+            4, new FormLayout.ResponsiveStep(BREAKPOINT_XL.getSize(), 4)
     );
 
     public static final List<FormLayout.ResponsiveStep> FLEXIBLE_COLUMNS = List.of(
@@ -419,8 +377,8 @@ public class UIUtils {
                 .set("margin-block-start", "1em")
                 .set("margin-block-end", "1em");
 
-        anchor.addClassNames(LumoUtility.LineHeight.SMALL, LumoUtility.Margin.Bottom.NONE, LumoUtility.Display.BLOCK);
-        anchor.addClassNames(LumoUtility.FontWeight.SEMIBOLD);
+        anchor.addClassNames("line-height-small", "margin-bottom-none", "display-block");
+        anchor.addClassNames("font-weight-semibold");
 
         return anchor;
     }
@@ -459,7 +417,7 @@ public class UIUtils {
     }
 
     public static void enable(List<PropertyInputForm> inputForms, boolean enabled) {
-        inputForms.forEach(propertyInputForm -> propertyInputForm.setEnabled(enabled));
+        inputForms.forEach(form -> form.setEnabled(enabled));
     }
 
     // Size
@@ -499,7 +457,7 @@ public class UIUtils {
 
     public static H3 createUnitsLabel(int units) {
         H3 label = new H3(formatUnits(units));
-        label.addClassName(LumoUtility.FontWeight.THIN);
+        label.addClassName("font-weight-thin");
 //        CSSUtils.FontFamily.MONOSPACE
         return label;
     }
@@ -566,22 +524,10 @@ public class UIUtils {
         }
     }
 
-
-    public static void setTheme(String theme, Component... components) {
-        for (Component component : components) {
-            component.getElement().setAttribute("theme", theme);
-        }
-    }
-
     public static void setTooltip(String tooltip, Component... components) {
         for (Component component : components) {
-            component.getElement().setProperty("title", tooltip);
+            Tooltip.forComponent(component).withText(tooltip);
         }
-    }
-
-    public static Anchor createLogoutLink(String contextPath) {
-        final Anchor a = populateLink(new Anchor(), VaadinIcon.ARROW_RIGHT, "Logout");
-        return a;
     }
 
     public static <T extends HasComponents> T populateLink(T a, VaadinIcon icon, String title) {
@@ -591,18 +537,14 @@ public class UIUtils {
     }
 
     public static Div createWrapper() {
-        final var wrapper = new Div();
-        wrapper.addClassNames(LumoUtility.Margin.Horizontal.AUTO);
+        final var wrapper = Components.div().styleName("margin-h-auto").build();
         wrapper.setWidthFull();
         wrapper.setMaxWidth(1024, Unit.PIXELS);
         return wrapper;
     }
 
     public static Div createCard(Component... components) {
-        final var div = new Div(components);
-        div.addClassNames(LumoUtility.FlexDirection.COLUMN, LumoUtility.Display.FLEX, LumoUtility.Padding.MEDIUM, LumoUtility.Margin.MEDIUM, LumoUtility.BoxShadow.MEDIUM);
-        div.addClassNames("bg-yellow-200", LumoUtility.BorderRadius.LARGE);
-        div.addClassNames(LumoUtility.AlignItems.CENTER);
+        final var div = Components.div().add(components).styleName("card").build();
         return div;
     }
 
@@ -618,7 +560,7 @@ public class UIUtils {
         FlexLayout layout = new FlexLayout();
         layout.setFlexDirection(FlexLayout.FlexDirection.COLUMN);
         layout.addClassName("card");
-        layout.addClassName(LumoUtility.Gap.MEDIUM);
+        layout.addClassName("gap-m");
         if (!heading.isEmpty()) {
             layout.add(new H3(heading));
         }
@@ -643,7 +585,6 @@ public class UIUtils {
         MenuItem menuItem = menu.addItem(item, clickListener);
         menuItem.setCheckable(true);
         menuItem.setChecked(checked);
-
         return menuItem;
     }
 
@@ -656,15 +597,8 @@ public class UIUtils {
     public static void setWhiteSpace(WhiteSpace whiteSpace,
                                      Component... components) {
         for (Component component : components) {
-            component.getElement().setProperty("white-space",
-                    whiteSpace.getValue());
+            component.getElement().getStyle().set("white-space", whiteSpace.getValue());
         }
-    }
-
-    public Span createSpan(String title) {
-        final var span = new Span(title);
-        span.addClassNames(LumoUtility.FontSize.XXXLARGE, LumoUtility.FontWeight.BOLD);
-        return span;
     }
 
     public static void setEnabled(boolean isEnabled, HasEnabled... hasEnableds) {
@@ -678,14 +612,14 @@ public class UIUtils {
     }
 
     public static Div createWrapDiv(Component... components) {
-        final var wrapDiv = new Div(components);
-        wrapDiv.addClassNames(LumoUtility.Display.FLEX, LumoUtility.FlexWrap.WRAP, LumoUtility.Margin.Top.MEDIUM, LumoUtility.Padding.Left.SMALL);
+        Div wrapDiv = Components.div().add(components).build();
+        wrapDiv.addClassNames("flex", "flex-wrap", "margin-top-medium", "padding-start-small");
         return wrapDiv;
     }
 
     public static Component createSectionHeader(String title) {
-        final var header = new H2(title);
-        header.addClassNames(LumoUtility.FontSize.MEDIUM, LumoUtility.Margin.NONE);
+        H2 header = Components.h2().text(title).build();
+        header.addClassNames("font-size-medium", "margin-none");
         return header;
     }
 
@@ -752,9 +686,8 @@ public class UIUtils {
 
 
     public static Div addDummyDiv(String size) {
-        Div dummyDiv = new Div();
+        Div dummyDiv = Components.div().build();
         dummyDiv.setHeight(size);
-
         return dummyDiv;
     }
 
@@ -802,7 +735,7 @@ public class UIUtils {
     public static Component viewPropertyBox(PropertyBox propertyBox) {
         FlexLayout layout = new FlexLayout();
         layout.setFlexDirection(FlexLayout.FlexDirection.COLUMN);
-        layout.addClassNames(LumoUtility.Gap.SMALL);
+        layout.addClassNames("gap-s");
         propertyBox.forEach(property -> {
             layout.add(
                     Components.hl()
@@ -817,21 +750,10 @@ public class UIUtils {
     }
 
     public static void primaryNotification(String text) {
-        notification(text, NotificationVariant.LUMO_PRIMARY);
-    }
-
-    private static void notification(String text, NotificationVariant variant) {
         Notification notification = new Notification(text);
         notification.setDuration(3000);
-        notification.addThemeVariants(variant);
+        notification.setPosition(Notification.Position.TOP_END);
         notification.open();
-    }
-
-
-    public static boolean hasLink(Component tab, String currentRoute) {
-        return tab.getChildren().filter(RouterLink.class::isInstance)
-                .map(RouterLink.class::cast).map(RouterLink::getHref)
-                .anyMatch(currentRoute::equals);
     }
 
     public static void singleColumn(FormLayout form) {
@@ -841,16 +763,16 @@ public class UIUtils {
 
 
     public static void createReadOnlyTextArea(TextArea textArea) {
-        textArea.addClassNames(LumoUtility.TextColor.DISABLED, LumoUtility.BorderColor.CONTRAST_10,
-                LumoUtility.Background.CONTRAST_5);
+        textArea.addClassNames("color-text-disabled", "border-color-contrast-10",
+                "color-bg-contrast-5");
         textArea.setSizeFull();
     }
 
     public static TextArea createReadOnlyTextArea() {
         TextArea textArea = new TextArea();
         textArea.setWidthFull();
-        textArea.addClassNames(LumoUtility.TextColor.DISABLED, LumoUtility.BorderColor.CONTRAST_10,
-                LumoUtility.Background.CONTRAST_5);
+        textArea.addClassNames("color-text-disabled", "border-color-contrast-10",
+                "color-bg-contrast-5");
         return textArea;
     }
 
@@ -946,7 +868,8 @@ public class UIUtils {
     public static MenuBar createMenuToggle(Map<Grid.Column<?>, String> toggleableColumns) {
         MenuBar menuBar = new MenuBar();
         menuBar.addThemeVariants(MenuBarVariant.LUMO_TERTIARY_INLINE);
-        MenuItem menuItem = menuBar.addItem(VaadinIcon.GRID_H.create());
+        MenuItem menuItem = menuBar.addItem(VaadinIcon.GRID_H.create(),
+                (ComponentEventListener<ClickEvent<MenuItem>>) null);
         SubMenu subMenu = menuItem.getSubMenu();
 
         toggleableColumns.forEach(
@@ -954,7 +877,7 @@ public class UIUtils {
                     Checkbox checkbox = new Checkbox(header);
                     checkbox.setValue(column.isVisible());
                     checkbox.addValueChangeListener(e -> column.setVisible(e.getValue()));
-                    subMenu.addItem(checkbox);
+                    subMenu.addItem(checkbox, null);
                 }
         );
 
@@ -980,9 +903,9 @@ public class UIUtils {
         DataProvider<?, ?> dataProvider = grid.getDataProvider();
         DataProviderListener<?> listener = dataChangeEvent -> {
             if (dataProvider.size(new Query<>()) == 0) {
-                noDataWarningMsg.addClassName(LumoUtility.Display.HIDDEN);
+                noDataWarningMsg.addClassName("hidden");
             } else {
-                noDataWarningMsg.removeClassName(LumoUtility.Display.HIDDEN);
+                noDataWarningMsg.removeClassName("hidden");
             }
         };
 
@@ -1057,21 +980,14 @@ public class UIUtils {
     }
 
     public static Button saveBtnShortcut(Button save) {
-        save.addClickShortcut(Key.KEY_S, KeyModifier.CONTROL);
+        save.addClickShortcut(Key.ENTER);
         return save;
-    }
-
-    public static Locale[] getAvailableLocales() {
-        Locale[] availableLocales = Locale.getAvailableLocales();
-        Arrays.sort(availableLocales, Comparator.comparing(Locale::getDisplayName));
-        return availableLocales;
     }
 
     public static void useLocale(Grid<?> grid, Locale locale) {
         grid.removeAllColumns();
         grid.addColumn(value -> value).setHeader("Unformatted number");
-        grid
-                .addColumn(new NumberRenderer<>(value -> (Number) value, NumberFormat.getInstance(locale)))
+        grid.addColumn(new NumberRenderer<>(item -> (Number) item, NumberFormat.getNumberInstance(locale)))
                 .setHeader("Formatted number");
     }
 
@@ -1080,30 +996,26 @@ public class UIUtils {
         String prefix = " ";
         String theme = "badge";
 
+        H2 welcomeText = Components.h2().text(title).build();
+        welcomeText.addClassNames("font-weight-normal", "margin-none",
+                "color-text-secondary", "font-size-medium");
+
+        Span accountBalanceSpan = Components.span().text("Account Balance").build();
 
         if (accountBalance > 0) {
-            theme += " success";
-        } else if (accountBalance < 0) {
-            theme += " error";
+            prefix = "+";
         }
 
-        H2 welcomeText = new H2(title);
-        welcomeText.addClassNames(LumoUtility.FontWeight.NORMAL, LumoUtility.Margin.NONE,
-                LumoUtility.TextColor.SECONDARY, LumoUtility.FontSize.MEDIUM);
-
-        Span accountBalanceSpan = new Span("Account Balance");
-        accountBalanceSpan.addClassNames(LumoUtility.FontWeight.SEMIBOLD, LumoUtility.FontSize.LARGE);
-
         Icon i = icon.create();
-        i.addClassNames(LumoUtility.BoxSizing.BORDER, LumoUtility.Padding.XSMALL);
+        i.addClassNames("box-border", "padding-xsmall");
 
         String balance = currencyFormat.format(accountBalance);
-        Span badge = new Span(i, new Span(prefix + balance));
+        Span badge = Components.span().build();
+        badge.add(i, Components.span().text(prefix + balance).build());
         badge.getElement().getThemeList().add(theme);
-        badge.addClassNames(LumoUtility.FontSize.LARGE);
 
-        VerticalLayout layout = new VerticalLayout(welcomeText, accountBalanceSpan, badge);
-        layout.addClassName(LumoUtility.Padding.LARGE);
+        VerticalLayout layout = Components.vl().add(welcomeText, accountBalanceSpan, badge).build();
+        layout.addClassName("padding-large");
         layout.setPadding(false);
         layout.setSpacing(false);
         return layout;
@@ -1111,37 +1023,37 @@ public class UIUtils {
 
     public static Component createWidget(String title, String value, Integer year) {
 
-        H2 titleText = new H2(title);
-        titleText.addClassNames(LumoUtility.FontWeight.NORMAL, LumoUtility.Margin.NONE,
-                LumoUtility.TextColor.SECONDARY, LumoUtility.FontSize.MEDIUM);
+        H2 titleText = Components.h2().text(title).build();
+        titleText.addClassNames("font-weight-normal", "margin-none",
+                "color-text-secondary", "font-size-medium");
 
-        Span valueSpan = new Span(value);
-        valueSpan.addClassNames(LumoUtility.FontWeight.SEMIBOLD, LumoUtility.FontSize.XXXLARGE);
+        Span valueSpan = Components.span().text(value).build();
+        valueSpan.addClassNames("font-weight-semibold", "font-size-xxxlarge");
 
         String theme = "badge";
-        Span badge = new Span(year.toString());
+        Span badge = Components.span().text(year.toString()).build();
         badge.getElement().getThemeList().add(theme);
 
-        VerticalLayout layout = new VerticalLayout(titleText, valueSpan, badge);
-        layout.addClassName(LumoUtility.Padding.LARGE);
+        VerticalLayout layout = Components.vl().add(titleText, valueSpan, badge).build();
+        layout.addClassName("padding-large");
         layout.setPadding(false);
         layout.setSpacing(false);
         return layout;
     }
 
     public static HorizontalLayout createHeader(String title, String subtitle) {
-        H2 h2 = new H2(title);
-        h2.addClassNames(LumoUtility.FontSize.XLARGE, LumoUtility.Margin.NONE);
+        H2 h2 = Components.h2().text(title).build();
+        h2.addClassNames("font-size-xlarge", "margin-none");
 
-        Span span = new Span(subtitle);
-        span.addClassNames(LumoUtility.TextColor.SECONDARY, LumoUtility.FontSize.XSMALL);
+        Span span = Components.span().text(subtitle).build();
+        span.addClassNames("color-text-secondary", "font-size-xsmall");
         span.getElement().getThemeList().add("badge");
 
-        VerticalLayout column = new VerticalLayout(h2, span);
+        VerticalLayout column = Components.vl().add(h2, span).build();
         column.setPadding(false);
         column.setSpacing(false);
 
-        HorizontalLayout header = new HorizontalLayout(column);
+        HorizontalLayout header = Components.hl().add(column).build();
         header.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
         header.setSpacing(false);
         header.setWidthFull();
@@ -1290,8 +1202,8 @@ public class UIUtils {
                 .addEventListener(
                         "click",
                         e -> {
-                            JsonValue detail = e.getEventData().get("event.detail");
-                            if (detail.asNumber() > 1) {
+                            JsonNode detail = e.getEventData().get("event.detail");
+                            if (detail.asInt() > 1) {
                                 // double click, ignore
                             } else {
                                 action.get();
@@ -1334,13 +1246,12 @@ public class UIUtils {
         ConfirmDialog dialog = new ConfirmDialog();
 
         Icon errorIcon = new Icon(VaadinIcon.EXCLAMATION_CIRCLE_O);
-        errorIcon.setColor("#ff7745");
         errorIcon.setSize("2.5em");
 
-        H2 headerMessage = new H2("Creation failed");
+        H2 headerMessage = Components.h2().text("Creation failed").build();
         headerMessage.getStyle().set("font-family", "system-ui").set("font-weight", "900");
 
-        HorizontalLayout headerLayout = new HorizontalLayout(errorIcon, headerMessage);
+        HorizontalLayout headerLayout = Components.hl().add(errorIcon, headerMessage).build();
         headerLayout.setDefaultVerticalComponentAlignment(FlexComponent.Alignment.CENTER);
 
         dialog.setHeader(headerLayout);
@@ -1359,20 +1270,17 @@ public class UIUtils {
         final var resultTextArea = new TextArea();
         resultTextArea.setReadOnly(true);
         resultTextArea.setWidth("100%");
-        resultTextArea.setValue(value);
-        resultTextArea.setMaxHeight("120px");
+        resultTextArea.setValue(value != null ? value : "");
         return resultTextArea;
     }
 
-    public static void showNotification(Notification.Position position, String whatToShow, NotificationVariant notificationVariant) {
+    private static void notification(String whatToShow, NotificationVariant notificationVariant) {
+        Notification.Position position = Notification.Position.TOP_END;
         Notification notification = Notification.show(whatToShow, 3000, position);
         notification.addThemeVariants(notificationVariant);
     }
 
     /**
-     * Provides exclusive access to this UI from outside a request handling thread.
-     *
-     * @param ui   The UI (not null)
      * @param task The task to execute
      * @return A future that can be used to check for task completion and to cancel
      * the task
@@ -1393,11 +1301,11 @@ public class UIUtils {
         UnorderedList unorderedList = new UnorderedList();
         unorderedList.addClassNames(
 //                FontFamily.MONO,
-                LumoUtility.ListStyleType.NONE,
-                LumoUtility.Margin.Horizontal.AUTO,
-                LumoUtility.Margin.Vertical.NONE,
-                LumoUtility.MaxWidth.SCREEN_SMALL,
-                LumoUtility.Padding.NONE
+                "list-style-none",
+                "margin-h-auto",
+                "margin-y-none",
+                "max-width-screen-sm",
+                "padding-none"
         );
 
         return unorderedList;
@@ -1407,10 +1315,10 @@ public class UIUtils {
     public static ListItem listItem(Span timeSpan, Span priceSpan) {
         ListItem listItem = new ListItem(timeSpan, priceSpan);
         listItem.addClassNames(
-                LumoUtility.Border.BOTTOM,
-                LumoUtility.Display.FLEX,
-                LumoUtility.JustifyContent.BETWEEN,
-                LumoUtility.Padding.SMALL
+                "border-bottom",
+                "flex",
+                "justify-between",
+                "padding-small"
         );
 
         return listItem;
@@ -1453,12 +1361,7 @@ public class UIUtils {
                 return ui.getInternals().getExtendedClientDetails().isTouchDevice();
             }
         }
-        final VaadinSession session = VaadinSession.getCurrent();
-        if (session != null) {
-            return session.getBrowser().isAndroid() || session.getBrowser().isIPhone()
-                    || session.getBrowser().isWindowsPhone();
-
-        }
+        
         return false;
     }
 
@@ -1604,9 +1507,10 @@ public class UIUtils {
         List<FormLayout.ResponsiveStep> updatedList = new ArrayList<>();
 
         for (FormLayout.ResponsiveStep step : steps) {
-            final JsonObject jsonObject = step.toJson();
-            if (jsonObject.hasKey("columns")) {
-                double columns = jsonObject.getNumber("columns");
+            final tools.jackson.databind.node.ObjectNode jsonObject = step.toJson();
+            if (jsonObject.has("columns")) {
+
+                double columns = jsonObject.get("columns").asDouble();
                 if (columns < sumOfAllColumnsSize) {
                     jsonObject.put("columns", sumOfAllColumnsSize);
                 }
@@ -1788,15 +1692,14 @@ public class UIUtils {
         }
 
         public static Button createButton(String text, ButtonVariant... variants) {
-            Button button = new Button(text);
+            Button button = Components.button().text(text).ariaLabel(text).build();
             button.addThemeVariants(variants);
-            button.getElement().setAttribute("aria-label", text);
             return button;
         }
 
         public static Button createButton(VaadinIcon icon,
                                               ButtonVariant... variants) {
-            Button button = new Button(new Icon(icon));
+            Button button = Components.button().icon(icon).build();
             button.addThemeVariants(variants);
             return button;
         }
@@ -1804,9 +1707,8 @@ public class UIUtils {
         public static Button createButton(String text, VaadinIcon icon,
                                               ButtonVariant... variants) {
             Icon i = new Icon(icon);
-            i.addClassName(LumoUtility.IconSize.SMALL);
-    //        i.getElement().setAttribute("slot", "prefix");
-            Button button = new Button(text);
+            i.addClassName("icon-size-small");
+            Button button = Components.button().text(text).build();
             button.setPrefixComponent(i);
             button.addThemeVariants(variants);
             return button;
@@ -1819,24 +1721,27 @@ public class UIUtils {
         }
 
         public static Button createCloseBtn(Notification notification) {
-            Button closeBtn = new Button(VaadinIcon.CLOSE_SMALL.create(),
-                    clickEvent -> notification.close());
-            closeBtn.addThemeVariants(LUMO_TERTIARY_INLINE);
-
+            Button closeBtn = Components.button()
+                    .icon(VaadinIcon.CLOSE_SMALL)
+                    .tertiaryInline()
+                    .withClickListener(e -> notification.close())
+                    .build();
             return closeBtn;
         }
 
         public static Button createButton(String text, LumoIcon lumoIcon, ButtonVariant... variants) {
-            Button button = new Button(text);
+            Button button = Components.button().text(text).build();
             button.setPrefixComponent(lumoIcon.create());
             button.addThemeVariants(variants);
             return button;
         }
 
         public static Button createCloseButton() {
-            var closeBtn = new Button(Icons.createCloseIcon());
-            closeBtn.addThemeVariants(LUMO_TERTIARY_INLINE, ButtonVariant.LUMO_ICON);
-    //        closeBtn.setThemeName("icon");
+            Button closeBtn = Components.button()
+                    .icon(Icons.createCloseIcon())
+                    .tertiaryInline()
+                    .build();
+            closeBtn.addThemeVariants(ButtonVariant.LUMO_ICON);
             return closeBtn;
         }
 
@@ -2038,7 +1943,7 @@ public class UIUtils {
         }
 
         public static Span createBadge(int value) {
-            Span badge = new Span(String.valueOf(value));
+            Span badge = Components.span().text(String.valueOf(value)).build();
             badge.getElement().getThemeList().add("badge small contrast");
             badge.getStyle().set("margin-inline-start", "var(--lumo-space-xs)");
             return badge;
@@ -2058,85 +1963,82 @@ public class UIUtils {
         }
 
         public static MenuItemComponent createIconItem(MenuBar menu, LumoIcon iconName, String label, String ariaLabel) {
-            return createIconItem(menu, iconName.create(), label, ariaLabel, false);
+            Icon i = new Icon("lumo", iconName.toString().toLowerCase());
+            return createIconItem(menu, i, label, ariaLabel, false);
         }
 
         private static MenuItemComponent createIconItem(HasMenuItems menu, String iconName, String label) {
-
-            return createIconItem(menu, createIcon(iconName), label, null, true);
+            Icon icon = new Icon("vaadin", iconName);
+            return createIconItem(menu, icon, label, null, false);
         }
 
-        public static MenuItemComponent createIconItem(HasMenuItems menu, Component component, String label, String ariaLabel, boolean isChild) {
+        private static MenuItemComponent createIconItem(HasMenuItems menu, Icon component, String label, String ariaLabel, boolean isChild) {
             if (isChild) {
-                component.getStyle().set("margin-right", "var(--lumo-space-m)");
+                component.addClassName("margin-right-medium");
             }
-
-            MenuItem item = menu.addItem(component, e -> {
-            });
-
+            MenuItem item = menu.addItem(component, e -> {});
             if (ariaLabel != null) {
                 item.setAriaLabel(ariaLabel);
             }
-
-            Text text = new Text(label);
+            Text text = new Text(label != null ? label : "");
             if (label != null) {
                 item.add(text);
             }
-
             return new MenuItemComponent(item, text);
         }
 
         private static Component createIcon(String name) {
-            Image image = new Image("images/%s.png".formatted(name), "");
+            Image image = new Image("icons/" + name + ".png", name);
             image.setMaxWidth("25px");
             return image;
         }
 
         public static Icon createPrimaryIcon(VaadinIcon icon) {
             Icon i = new Icon(icon);
-            setTextColor(LumoUtility.TextColor.PRIMARY, i);
+            i.addClassName("icon-size-small");
             return i;
         }
 
         public static Icon createSecondaryIcon(VaadinIcon icon) {
             Icon i = new Icon(icon);
-            setTextColor(LumoUtility.TextColor.SECONDARY, i);
+            i.addClassName("icon-size-large");
+            setTextColor("color-text-secondary", i);
             return i;
         }
 
         public static Icon createTertiaryIcon(VaadinIcon icon) {
             Icon i = new Icon(icon);
-            setTextColor(LumoUtility.TextColor.TERTIARY, i);
+            setTextColor("color-text-tertiary", i);
             return i;
         }
 
         public static Icon createDisabledIcon(VaadinIcon icon) {
             Icon i = new Icon(icon);
-            setTextColor(LumoUtility.TextColor.DISABLED, i);
+            setTextColor("color-text-disabled", i);
             return i;
         }
 
         public static Icon createSuccessIcon(VaadinIcon icon) {
             Icon i = new Icon(icon);
-            setTextColor(LumoUtility.TextColor.SUCCESS, i);
+            setTextColor("color-text-success", i);
             return i;
         }
 
         public static Icon createErrorIcon(VaadinIcon icon) {
             Icon i = new Icon(icon);
-            setTextColor(LumoUtility.TextColor.ERROR, i);
+            setTextColor("color-text-error", i);
             return i;
         }
 
         public static Icon createSmallIcon(VaadinIcon icon) {
             Icon i = new Icon(icon);
-            i.addClassName(LumoUtility.IconSize.SMALL);
+            i.addClassName("icon-size-small");
             return i;
         }
 
         public static Icon createLargeIcon(VaadinIcon icon) {
             Icon i = new Icon(icon);
-            i.addClassName(LumoUtility.IconSize.LARGE);
+            i.addClassName("icon-size-large");
             return i;
         }
 
@@ -2149,27 +2051,21 @@ public class UIUtils {
         }
 
         public static MenuItem createIconItem(HasMenuItems menu, LumoIcon iconName, String label, String ariaLabel,
-                                                  ComponentEventListener<ClickEvent<MenuItem>> clickListener) {
+                                              boolean isChild) {
             Icon icon = new Icon("lumo", iconName.toString().toLowerCase());
-
-            MenuItem item = menu.addItem(icon, clickListener);
+            MenuItem item = menu.addItem(icon, null);
             item.setAriaLabel(ariaLabel);
 
             if (label != null) {
                 item.add(new Text(label));
             }
-
             return item;
         }
 
         public static MenuItem createIconItem(HasMenuItems menu, VaadinIcon iconName, String label, String ariaLabel,
-                                                  ComponentEventListener<ClickEvent<MenuItem>> clickListener) {
+                                              ComponentEventListener<ClickEvent<MenuItem>> clickListener) {
             Icon icon = new Icon(iconName);
-
-            icon.getStyle().set("width", "var(--lumo-icon-size-s)");
-            icon.getStyle().set("height", "var(--lumo-icon-size-s)");
-            icon.getStyle().set("marginRight", "var(--lumo-space-s)");
-
+            icon.addClassName("icon-size-small");
             MenuItem item = menu.addItem(icon, clickListener);
             item.setAriaLabel(ariaLabel);
 
@@ -2181,22 +2077,23 @@ public class UIUtils {
         }
 
         public static Icon createTrashIcon() {
-            return createIcon(LumoUtility.IconSize.SMALL, LumoUtility.TextColor.ERROR, VaadinIcon.TRASH);
+            return createIcon("icon-size-small", "color-text-error", VaadinIcon.TRASH);
         }
 
         public static Icon createEditIcon() {
-            return createIcon(LumoUtility.IconSize.SMALL, LumoUtility.TextColor.PRIMARY, VaadinIcon.EDIT);
+            return createIcon("icon-size-small", "color-text-primary", VaadinIcon.EDIT);
         }
 
         public static Icon createCloseIcon() {
             final Icon closeIcon = VaadinIcon.CLOSE_SMALL.create();
-            closeIcon.addClassName(LumoUtility.IconSize.SMALL);
+            closeIcon.addClassName("icon-size-small");
+            closeIcon.addClassName("color-text-primary");
             return closeIcon;
         }
 
         private static Icon createIconBadge(VaadinIcon vaadinIcon, String ariaLabel, String theme) {
             Icon icon = vaadinIcon.create();
-            icon.getStyle().set("padding", "var(--lumo-space-xs");
+            icon.addClassName("padding-xsmall");
             // Accessible label
             icon.getElement().setAttribute("aria-label", ariaLabel);
             // Tooltip
@@ -2215,16 +2112,13 @@ public class UIUtils {
                 icon = VaadinIcon.CLOSE_SMALL.create();
                 icon.getElement().getThemeList().add("badge error");
             }
-            icon.getStyle().set("padding", "var(--lumo-space-xs");
+            icon.addClassName("padding-xsmall");
             return icon;
         }
 
         public static Icon createIcon(VaadinIcon vaadinIcon) {
             Icon icon = vaadinIcon.create();
-           /* icon.getStyle().set("color", "var(--lumo-primary-text-color)")
-                    .set("margin-inline-end", "var(--lumo-space-s")
-                    .set("padding", "var(--lumo-space-xs");*/
-            icon.addClassName(LumoUtility.TextColor.PRIMARY);
+            icon.addClassName("color-text-primary");
             icon.setSize("20px");
             return icon;
         }
@@ -2232,7 +2126,7 @@ public class UIUtils {
         public static HorizontalLayout createIconMenuItem(VaadinIcon vaadinIcon, String text) {
 
             Icon icon = new Icon(vaadinIcon);
-            icon.addClassName(LumoUtility.TextColor.PRIMARY);
+            icon.addClassName("color-text-primary");
             icon.setSize("15px");
 
             return Components.hl()

@@ -154,7 +154,7 @@ public class DefaultVaadinHttpRequest extends AbstractHttpRequest implements Vaa
 			while (names.hasMoreElements()) {
 				String name = names.nextElement();
 				String value = request.getHeader(name);
-				if (value == null || value.trim().equals("")) {
+				if (value == null || value.isBlank()) {
 					headers.put(name, Collections.emptyList());
 				} else {
 					if (value.indexOf(',') > -1) {

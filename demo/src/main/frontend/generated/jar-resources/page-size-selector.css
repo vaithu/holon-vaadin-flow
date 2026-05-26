@@ -1,0 +1,46 @@
+/* ============================================================
+   page-size-selector — "Show N entries" row
+   ============================================================ */
+
+.page-size-selector {
+    display     : inline-flex;
+    align-items : center;
+    gap         : var(--space-xs, 0.375rem);
+    flex-shrink : 0;
+}
+
+/* prefix / suffix text ("Show" / "entries") */
+.page-size-selector__label {
+    font-size   : var(--font-size-s, 0.8125rem);
+    color       : var(--text-secondary, #6b7280);
+    white-space : nowrap;
+}
+
+/* ComboBox — keep it compact */
+.page-size-selector__select {
+    min-width : 0;
+    width     : var(--page-size-selector-select-width, 5.5rem);
+}
+
+.page-size-selector__select::part(input-field) {
+    height         : var(--page-size-selector-field-height, 2rem);
+    padding-inline : var(--space-xs, 0.5rem);
+    font-size      : var(--font-size-s, 0.8125rem);
+}
+
+/* hide the label gap that ComboBox reserves by default */
+.page-size-selector__select::part(label) {
+    display: none;
+}
+
+/* ── Mobile ≤ 600 px ──────────────────────────────────────────────────────
+   Hide "Show" and "entries" text — the ComboBox value is self-explanatory.
+   This recovers horizontal space for the search field on narrow screens.  */
+@media (max-width: 600px) {
+    .page-size-selector__label {
+        display : none;
+    }
+    .page-size-selector__select {
+        width : 4.5rem;
+    }
+}
