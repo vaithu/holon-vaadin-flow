@@ -16,9 +16,9 @@ import java.io.Serial;
  * <pre>{@code
  * board.setCardRenderer(task -> {
  *     Div card = new Div();
- *     card.add(new Span(task.getTitle()));
- *     card.add(KanbanStatusBadge.of(task.getPriority()));   // enum → variant
- *     card.add(KanbanStatusBadge.warning("In Review"));
+ *     card.content(new Span(task.getTitle()));
+ *     card.content(KanbanStatusBadge.of(task.getPriority()));   // enum → variant
+ *     card.content(KanbanStatusBadge.warning("In Review"));
  *     return card;
  * });
  * }</pre>

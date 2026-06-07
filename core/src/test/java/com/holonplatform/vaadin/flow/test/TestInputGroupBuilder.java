@@ -36,7 +36,7 @@ import static org.mockito.Mockito.mock;
  * {@link InputGroupBuilder} and {@link InputGroupLayoutConfigurator}.
  *
  * <p>These tests focus on the <em>builder behaviour</em>; the underlying
- * component behaviour (add / remove / class names) is already covered by
+ * component behaviour (content / remove / class names) is already covered by
  * {@link TestInputGroup}.</p>
  */
 class TestInputGroupBuilder {
@@ -89,7 +89,7 @@ class TestInputGroupBuilder {
     }
 
     // =========================================================================
-    // add(Component...) — fluent add
+    // content(Component...) — fluent content
     // =========================================================================
 
     @Test
@@ -134,7 +134,7 @@ class TestInputGroupBuilder {
     }
 
     // =========================================================================
-    // add(HasComponent...) — Holon wrapper unwrapping
+    // content(HasComponent...) — Holon wrapper unwrapping
     // =========================================================================
 
     @Test
@@ -170,7 +170,7 @@ class TestInputGroupBuilder {
     }
 
     // =========================================================================
-    // add(Input<?>...) — Holon Input unwrapping
+    // content(Input<?>...) — Holon Input unwrapping
     // =========================================================================
 
     @Test
@@ -220,7 +220,7 @@ class TestInputGroupBuilder {
                 .build();
 
         assertTrue(result.getClassNames().contains("input-group--responsive"),
-                "responsive() must add 'input-group--responsive' class");
+                "responsive() must content 'input-group--responsive' class");
     }
 
     @Test
@@ -239,7 +239,7 @@ class TestInputGroupBuilder {
                 .build();
 
         assertFalse(result.getClassNames().contains("input-group--responsive"),
-                "responsive(false) must not add the modifier class");
+                "responsive(false) must not content the modifier class");
     }
 
     @Test
@@ -420,7 +420,7 @@ class TestInputGroupBuilder {
         InputGroupBuilder b2 = b1.responsive(false);
         InputGroupBuilder b3 = b2.id("chain-test");
 
-        assertSame(builder, b1, "add() must return the same builder");
+        assertSame(builder, b1, "content() must return the same builder");
         assertSame(builder, b2, "responsive() must return the same builder");
         assertSame(builder, b3, "id() must return the same builder");
     }

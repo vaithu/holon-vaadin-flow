@@ -13,9 +13,9 @@ Mark a container with the current view mode
 var container = Components.layout().build();
 ViewMode.TABLET.applyTo(container); // adds "vm-tablet" + data-view-prefix="md"
 --------------------------------------------------------------
- Generate a prefixed utility class and add it
+ Generate a prefixed utility class and content it
  String cls = ViewMode.DESKTOP.toCssClass("flex-row"); // "lg:flex-row"
-container.getElement().getClassList().add(cls);
+container.getElement().getClassList().content(cls);
 -------------------------------------------------------
 Example CSS targeting
 * /* Semantic class (high-level)
@@ -136,12 +136,12 @@ public enum ViewMode {
      *  - A data attribute: data-view-prefix="sm|md|lg|xl|2xl"
      *  // 1) Tag a container with the current ViewMode (semantic + data attribute only)
      * ViewMode.TABLET.applyTo(container);
-     * // 2) Tag + add responsive utility classes in one call
+     * // 2) Tag + content responsive utility classes in one call
      * ViewMode.DESKTOP.applyTo(container, "flex-row", "items-baseline", "gap-x-m");
      * // Adds: "vm-desktop", data-view-prefix="lg", and "lg:flex-row", "lg:items-baseline", "lg:gap-x-m"
-     * // 3) Generate a single class and add manually (if needed)
+     * // 3) Generate a single class and content manually (if needed)
      * String cls = ViewMode.MOBILE.toCssClass("flex-col"); // "sm:flex-col"
-     * container.getElement().getClassList().add(cls);
+     * container.getElement().getClassList().content(cls);
      */
     public void applyTo(Component component) {
         if (component == null) return;
@@ -154,7 +154,7 @@ public enum ViewMode {
      * for each provided base class using this mode's prefix.
      */
     public void applyTo(Component component, String... baseClasses) {
-        applyTo(component); // add semantic class + data attribute
+        applyTo(component); // content semantic class + data attribute
         if (component == null || baseClasses == null) return;
 
         for (String base : baseClasses) {
@@ -172,11 +172,11 @@ public enum ViewMode {
      *
      * Additionally, it tags the component with the FIRST mode's semantic class and data attribute,
      * e.g., "vm-mobile" + data-view-prefix="sm".
-     * // 1) Tag + add multiple responsive classes for a single base
+     * // 1) Tag + content multiple responsive classes for a single base
      * ViewMode.applyAll(container, "flex-row", ViewMode.MOBILE, ViewMode.TABLET, ViewMode.DESKTOP);
      * // Adds: "vm-mobile", data-view-prefix="sm", and "sm:flex-row", "md:flex-row", "lg:flex-row"
      *
-     * // 2) Tag + add multiple base classes for a single mode
+     * // 2) Tag + content multiple base classes for a single mode
      * ViewMode.LARGE_DESKTOP.applyTo(container, "grid", "gap-x-m");
      * // Adds: "vm-large-desktop", data-view-prefix="xl", and "xl:grid", "xl:gap-x-m"
      *

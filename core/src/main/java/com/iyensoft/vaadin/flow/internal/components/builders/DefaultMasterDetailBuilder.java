@@ -3,14 +3,19 @@ package com.iyensoft.vaadin.flow.internal.components.builders;
 import com.holonplatform.vaadin.flow.components.Components;
 import com.holonplatform.vaadin.flow.components.BeanListing;
 import com.holonplatform.vaadin.flow.components.ItemListing;
+import com.holonplatform.vaadin.flow.components.ListingBundle;
 import com.holonplatform.vaadin.flow.components.PropertyListing;
 import com.holonplatform.vaadin.flow.vaadinplus.Layout;
+import com.holonplatform.vaadin.flow.vaadinplus.components.Breadcrumb;
+import com.holonplatform.vaadin.flow.vaadinplus.components.Header;
 import com.iyensoft.vaadin.flow.components.MasterDetailLayout;
 import com.iyensoft.vaadin.flow.components.builders.IyenMasterBuilder;
 import com.iyensoft.vaadin.flow.components.builders.MasterDetailBuilder;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.menubar.MenuBar;
+import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.component.textfield.TextField;
 
 import java.util.ArrayList;
@@ -35,7 +40,9 @@ public class DefaultMasterDetailBuilder<T> implements MasterDetailBuilder<T> {
     // -------------------------------------------------------------------------
     // Master configuration
     // -------------------------------------------------------------------------
-    private Component masterHeaderComponent;
+    private Header masterHeaderComponent;
+    private Component masterToolbarComponent;
+    private Component masterFooterComponent;
     private TextField masterSearchField;
     private Button[] masterSearchActions = new Button[0];
     private Grid<T> masterGrid;
@@ -43,9 +50,12 @@ public class DefaultMasterDetailBuilder<T> implements MasterDetailBuilder<T> {
     // -------------------------------------------------------------------------
     // Detail configuration
     // -------------------------------------------------------------------------
-    private Component detailHeaderComponent;
-    private Component detailMenuComponent;
+    private Header detailHeaderComponent;
+    private Breadcrumb detailBreadcrumbsComponent;
+    private Tabs detailMenuTabs;
+    private MenuBar detailMenuMenuBar;
     private Function<T, Component[]> detailContentProvider;
+    private Component[] detailFooterComponents = new Component[0];
 
     // -------------------------------------------------------------------------
     // URL sync
@@ -79,15 +89,20 @@ public class DefaultMasterDetailBuilder<T> implements MasterDetailBuilder<T> {
     // -------------------------------------------------------------------------
 
     @Override
-    public MasterDetailBuilder<T> masterHeader(Component header) {
-        this.masterHeaderComponent = header;
+    public MasterDetailBuilder<T> masterHeader(Header header) {
+        if (header != null) this.masterHeaderComponent = header;
         return this;
     }
 
     @Override
-    public MasterDetailBuilder<T> masterSearch(TextField searchField, Button... actions) {
-        this.masterSearchField = searchField;
-        this.masterSearchActions = actions != null ? actions : new Button[0];
+    public MasterDetailBuilder<T> masterToolbar(Component toolbar) {
+        if (toolbar != null) this.masterToolbarComponent = toolbar;
+        return this;
+    }
+
+    @Override
+    public MasterDetailBuilder<T> masterFooter(Component footer) {
+        if (footer != null) this.masterFooterComponent = footer;
         return this;
     }
 
@@ -119,20 +134,64 @@ public class DefaultMasterDetailBuilder<T> implements MasterDetailBuilder<T> {
     }
 
     @Override
-    public MasterDetailBuilder<T> detailHeader(Component header) {
+    public MasterDetailBuilder<T> masterGrid(ListingBundle<T> bundle) {
+        Objects.requireNonNull(bundle, "bundle must not be null");
+        // ── 1. Grid-header / toolbar slot (above the grid, inside content) ───
+        // The bundle exposes EITHER a GridHeader (when built with gridHeader(title))
+        // OR a legacy toolbar Div — never both: if a gridHeader is configured the
+        // bundle returns a hidden empty toolbar. We do NOT route the bundle's
+        // GridHeader into the panel-level masterHeader slot, so any previously
+        // configured masterHeader(...) is preserved and BOTH render together.
+        Header gridHeader = bundle.header();
+        if (gridHeader != null) {
+            masterToolbar(gridHeader);
+        } else {
+            com.vaadin.flow.component.html.Div toolbar = bundle.toolbar();
+            if (toolbar.isVisible()) {
+                masterToolbar(toolbar);
+            }
+        }
+        // ── 2. Footer (pagination bar) ───────────────────────────────────
+        // Cached inside the bundle. Hidden by default; auto-shows when the
+        // user switches to paginated mode via the bundle's options menu.
+        masterFooter(bundle.footer());
+        // ── 3. Listing → grid (mandatory) ────────────────────────────────
+        return masterGrid(bundle.listing());
+    }
+
+    @Override
+    public MasterDetailBuilder<T> detailHeader(Header header) {
         this.detailHeaderComponent = header;
         return this;
     }
 
     @Override
-    public MasterDetailBuilder<T> detailMenu(Component menuOrTabs) {
-        this.detailMenuComponent = menuOrTabs;
+    public MasterDetailBuilder<T> detailBreadcrumbs(Breadcrumb breadcrumbs) {
+        this.detailBreadcrumbsComponent = breadcrumbs;
+        return this;
+    }
+
+    @Override
+    public MasterDetailBuilder<T> detailMenu(Tabs tabs) {
+        this.detailMenuTabs = tabs;
+        return this;
+    }
+
+    @Override
+    public MasterDetailBuilder<T> detailMenu(MenuBar menuBar) {
+        this.detailMenuMenuBar = menuBar;
         return this;
     }
 
     @Override
     public MasterDetailBuilder<T> detailContent(Function<T, Component[]> contentProvider) {
         this.detailContentProvider = contentProvider;
+        return this;
+    }
+
+    @Override
+    public MasterDetailBuilder<T> detailFooter(Component... footer) {
+        this.detailFooterComponents = footer != null ? footer : new Component[0];
         return this;
     }
 
@@ -183,6 +242,13 @@ public class DefaultMasterDetailBuilder<T> implements MasterDetailBuilder<T> {
         Layout detailContainer = buildDetailContainer();
         Layout dynamicContentSlot = buildDynamicSlot(detailContainer);
 
+        // Static footer — appended after the scrollable slot so it stays pinned at bottom
+        if (detailFooterComponents.length > 0) {
+            Layout footer = new Layout(detailFooterComponents);
+            footer.addClassName("iyen-detail-footer");
+            detailContainer.add(footer);
+        }
+
         MasterDetailLayout<T> layout = MasterDetailLayout.create(
                 masterBuilder,
                 detailContainer,
@@ -207,10 +273,23 @@ public class DefaultMasterDetailBuilder<T> implements MasterDetailBuilder<T> {
 
     /**
      * Builds the master panel as an {@link IyenMasterBuilder} containing
-     * the optional header, optional search toolbar, and the mandatory grid.
-     * Uses CSS class names from {@code master-details.css}:
-     * {@code iyen-master}, {@code iyen-master-header}, {@code iyen-master-content},
-     * {@code toolbar}, {@code mdl-master-grid}.
+     * the optional header, optional toolbar (page-size selector + search +
+     * filter options when wired from a {@link ListingBundle}), the mandatory
+     * grid, and an optional footer (pagination bar).
+     *
+     * <p>Uses CSS class names from {@code master-details.css}:
+     * {@code iyen-master}, {@code iyen-master-header}, {@code iyen-master-toolbar},
+     * {@code iyen-master-content}, {@code iyen-master-footer}, {@code mdl-master-grid}.</p>
+     *
+     * <p>Layout structure produced:</p>
+     * <pre>
+     * .iyen-master
+     * ├── .iyen-master-header   (optional)
+     * ├── .iyen-master-content
+     * │   ├── .iyen-master-toolbar  (optional — bundle.toolbar() OR search field wrap)
+     * │   └── .mdl-master-grid      (mandatory)
+     * └── .iyen-master-footer   (optional — bundle.footer())
+     * </pre>
      *
      * <p>The toolbar (if any) and the grid are wrapped in a single
      * {@code iyen-master-content} container. On desktop the layout switches to
@@ -219,10 +298,10 @@ public class DefaultMasterDetailBuilder<T> implements MasterDetailBuilder<T> {
      * header bottom-borders horizontally aligned.</p>
      */
     private IyenMasterBuilder buildMaster() {
-        Layout masterLayout = Components.layout().styleName("iyen-master").build();
+        Layout masterLayout = new Layout();
 
         if (masterHeaderComponent != null) {
-            masterHeaderComponent.addClassName("iyen-master-header");
+            // masterHeaderComponent.addClassName("iyen-master-header");
             masterLayout.add(masterHeaderComponent);
         }
 
@@ -230,9 +309,16 @@ public class DefaultMasterDetailBuilder<T> implements MasterDetailBuilder<T> {
         // two children (header + content) — required for CSS subgrid row alignment.
         Layout contentArea = Components.layout().styleName("iyen-master-content").build();
 
-        if (masterSearchField != null) {
+        // Toolbar precedence:
+        //   1. masterToolbarComponent (typically wired from a ListingBundle)
+        //   2. masterSearchField wrap (legacy programmatic search)
+        if (masterToolbarComponent != null) {
+            masterToolbarComponent.addClassName("iyen-master-toolbar");
+            contentArea.add(masterToolbarComponent);
+        } else if (masterSearchField != null) {
             Layout toolbar = new Layout(masterSearchField);
             toolbar.addClassName("toolbar");
+            toolbar.addClassName("iyen-master-toolbar");
             if (masterSearchActions.length > 0) {
                 for (Button btn : masterSearchActions) {
                     btn.addClassName("toolbar__btn--constrained");
@@ -247,6 +333,19 @@ public class DefaultMasterDetailBuilder<T> implements MasterDetailBuilder<T> {
         masterGrid.addClassName("mdl-master-grid");
         contentArea.add(masterGrid);
         contentArea.setFlexGrow(masterGrid);
+
+        // Footer (pagination bar) — placed INSIDE the master content area, below
+        // the grid. It must live here (not as a third sibling of .iyen-master)
+        // because the master panel uses CSS `grid-template-rows: subgrid` at
+        // ≥768px, which inherits exactly two rows from .iyen-md-row (auto + 1fr).
+        // A third sibling would have no track to land in. As an in-content child
+        // it pins naturally at the bottom of the column-flex content area; the
+        // grid above it (flex:1 1 auto, min-height:0) absorbs all remaining
+        // height, so the footer is always visible at the bottom of the panel.
+        if (masterFooterComponent != null) {
+            masterFooterComponent.addClassName("iyen-master-footer");
+            contentArea.add(masterFooterComponent);
+        }
 
         masterLayout.add(contentArea);
         masterLayout.setFlexGrow(contentArea);
@@ -270,9 +369,18 @@ public class DefaultMasterDetailBuilder<T> implements MasterDetailBuilder<T> {
             detailContainer.add(detailHeaderComponent);
         }
 
-        if (detailMenuComponent != null) {
-            detailMenuComponent.addClassName("iyen-detail-tabs");
-            detailContainer.add(detailMenuComponent);
+        if (detailBreadcrumbsComponent != null && detailHeaderComponent != null) {
+            detailHeaderComponent.setBreadcrumb(detailBreadcrumbsComponent);
+        }
+
+        if (detailMenuTabs != null && detailHeaderComponent != null) {
+            detailMenuTabs.addClassName("iyen-detail-tabs");
+            detailHeaderComponent.setTabs(detailMenuTabs);
+        }
+
+        if (detailMenuMenuBar != null) {
+            detailMenuMenuBar.addClassName("iyen-detail-menu-bar");
+            detailContainer.add(detailMenuMenuBar);
         }
 
         return detailContainer;

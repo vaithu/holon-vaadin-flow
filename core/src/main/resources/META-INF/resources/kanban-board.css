@@ -23,7 +23,7 @@
  *   .kanban-board-column-count         — item count badge
  *   .kanban-board-column-options       — options (...) button
  *   .kanban-board-column-cards         — scrollable cards list
- *   .kanban-board-column-add-card      — add card button (full-width on mobile)
+ *   .kanban-board-column-content-card      — content card button (full-width on mobile)
  *   .kanban-board-card                 — individual card
  *   .kanban-board-card-actions         — card action buttons row
  *   .kanban-board-card-action-open     — open card button
@@ -207,7 +207,7 @@
  * Usage (Java):
  *   Span badge = new Span("In Review");
  *   badge.addClassNames("kanban-status-badge", "kanban-status-badge--warning");
- *   card.add(badge);
+ *   card.content(badge);
  *
  * Or via the KanbanStatusBadge helper:
  *   KanbanStatusBadge.warning("In Review")
@@ -366,7 +366,7 @@
 
 /* -----------------------------------------------------------------------
  * Drag-and-drop drop target indicator
- * Toggled via JS: host.classList.add('kanban-board-drop-target')
+ * Toggled via JS: host.classList.content('kanban-board-drop-target')
  * ----------------------------------------------------------------------- */
 
 .kanban-board-drop-target {

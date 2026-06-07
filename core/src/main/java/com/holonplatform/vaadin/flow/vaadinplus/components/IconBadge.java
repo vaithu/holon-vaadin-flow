@@ -2,8 +2,6 @@ package com.holonplatform.vaadin.flow.vaadinplus.components;
 
 import com.holonplatform.vaadin.flow.components.builders.IconBadgeBuilder;
 import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.HasSize;
-import com.vaadin.flow.component.HasStyle;
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.icon.Icon;
@@ -39,7 +37,7 @@ import com.vaadin.flow.component.icon.VaadinIcon;
  * }</pre>
  */
 @StyleSheet("context://utilities.css")
-public class IconBadge extends Div implements HasSize, HasStyle {
+public class IconBadge extends Div {
 
     private static final long serialVersionUID = 1L;
 

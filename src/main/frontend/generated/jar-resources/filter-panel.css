@@ -50,6 +50,18 @@
     to   { opacity: 1; transform: translateY(0);    }
 }
 
+/* Row hover — subtle tinted surface so the user can tell which row they're on */
+.filter-panel__row:hover {
+    background : color-mix(in srgb,
+                     var(--color-muted-foreground, #71717a) 5%, transparent);
+}
+
+/* Keep the red-error tint dominant even on hover */
+.filter-panel__row--error:hover {
+    background : color-mix(in srgb,
+                     var(--color-error, #dc2626) 8%, transparent);
+}
+
 /* --------------------------------------------------------------------------
    Connector ComboBox — pill at the END of each row in advanced mode.
 
@@ -166,7 +178,7 @@ vaadin-text-field.filter-panel__value-placeholder::part(value) {
     flex-shrink : 0;
 }
 
-vaadin-button.filter-panel__remove::part(button) {
+vaadin-button.filter-panel__remove{
     border           : none;
     box-shadow       : none;
     padding-inline   : 0.25rem;
@@ -175,7 +187,7 @@ vaadin-button.filter-panel__remove::part(button) {
     transition       : color 0.12s, background-color 0.12s;
 }
 
-vaadin-button.filter-panel__remove:not([disabled])::part(button):hover {
+vaadin-button.filter-panel__remove:not([disabled]):hover {
     background-color : rgb(220 38 38 / 0.08);
     color            : var(--color-error, #dc2626);
 }
@@ -301,6 +313,31 @@ vaadin-button.filter-panel__apply[focus-ring] {
 }
 
 /* ==========================================================================
+   ADVANCED SEARCH DIALOG context
+   .listing-filter-dialog__body wraps the panel inside ListingBundle's dialog
+   so these rules only apply there — standalone usage is unaffected.
+   ========================================================================== */
+
+/* Remove the outer card chrome — the Dialog already provides the frame */
+.listing-filter-dialog__body .filter-panel {
+    border        : none;
+    border-radius : 0;
+    padding       : 0 0 var(--space-2, 0.5rem);
+    background    : transparent;
+}
+
+/* Give the rows a slightly larger gap when there's more breathing room */
+.listing-filter-dialog__body .filter-panel__rows {
+    gap : 0.375rem;
+}
+
+/* Ensure the body fills the dialog content width */
+.listing-filter-dialog__body {
+    width      : 100%;
+    box-sizing : border-box;
+}
+
+/* ==========================================================================
    RESPONSIVE — mobile  (< 560 px)
 
    Each row switches from a single horizontal flex line to a 2-column CSS Grid:
@@ -378,6 +415,28 @@ vaadin-button.filter-panel__apply[focus-ring] {
     vaadin-button.filter-panel__clear::part(button),
     vaadin-button.filter-panel__apply::part(button) {
         flex : 1 1 auto;
+    }
+
+    /* ── Dialog context on mobile ── */
+
+    /* Cap the scrollable area so the dialog never overflows the viewport */
+    .listing-filter-dialog__body {
+        max-height : 65dvh;
+        overflow-y : auto;
+        overflow-x : hidden;
+        padding: 1%;
+    }
+
+    /* Restore horizontal breathing room — the dialog overlay gives a small gutter
+       but the panel's zero-padding from the desktop dialog context looks raw here */
+    .listing-filter-dialog__body .filter-panel {
+        padding : var(--space-2, 0.5rem) 0 var(--space-3, 0.75rem);
+    }
+
+    /* Clear all + Apply filter fill equal width below the + Add row */
+    .listing-filter-dialog__body vaadin-button.filter-panel__clear,
+    .listing-filter-dialog__body vaadin-button.filter-panel__apply {
+        flex : 1;
     }
 }
 

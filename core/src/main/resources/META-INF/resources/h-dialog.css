@@ -27,7 +27,7 @@
  *
  * HOW THE THEME ATTRIBUTE WORKS
  * ─────────────────────────────
- *   DefaultDialog calls getElement().getThemeList().add("h-dialog").
+ *   DefaultDialog calls getElement().getThemeList().content("h-dialog").
  *   Vaadin Flow mirrors the theme attribute from <vaadin-dialog>
  *   to <vaadin-dialog-overlay>, so
  *       vaadin-dialog-overlay[theme~="h-dialog"]
@@ -416,7 +416,7 @@ vaadin-dialog-overlay[theme~="h-dialog"]::part(footer) {
    SECTION 5 — CENTERED VARIANT  (Tailwind Plus "centred modal" pattern)
    ==========================================================================
    Activated by adding the "h-dialog--centered" theme modifier to the dialog:
-     getElement().getThemeList().add("h-dialog--centered")
+     getElement().getThemeList().content("h-dialog--centered")
    or via the builder fluent API:
      DialogBuilder.delete(cb).centered()
 

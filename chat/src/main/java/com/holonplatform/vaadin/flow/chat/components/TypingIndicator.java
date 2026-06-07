@@ -57,7 +57,7 @@ import java.util.concurrent.TimeUnit;
  * TypingIndicator indicator = new TypingIndicator(userInfo, "room-id");
  * messageInput.addKeyPressListener(e -> indicator.startTyping());
  * sendButton.addClickListener(e -> indicator.stopTyping());
- * add(indicator);
+ * content(indicator);
  * }</pre>
  *
  * <p>All visual styling is in {@code typing-indicator.css}.

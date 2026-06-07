@@ -146,6 +146,7 @@ public abstract class AbstractButtonConfigurator<C extends ButtonConfigurator<C>
 	}
 
 	@Override
+	@SuppressWarnings({"unchecked", "rawtypes"})
 	public IconConfigurator<C> iconConfigurator(Icon icon) {
 		return new DefaultIconConfigurator(this, icon);
 	}

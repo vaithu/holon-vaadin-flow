@@ -77,7 +77,7 @@ class TestInputGroup {
     }
 
     // =========================================================================
-    // InputGroup — add(Component...)
+    // InputGroup — content(Component...)
     // =========================================================================
 
     @Test
@@ -119,7 +119,7 @@ class TestInputGroup {
     }
 
     // =========================================================================
-    // InputGroup — add(HasComponent...)
+    // InputGroup — content(HasComponent...)
     // =========================================================================
 
     @Test
@@ -180,7 +180,7 @@ class TestInputGroup {
     }
 
     // =========================================================================
-    // InputGroup — add(Input<?>...)
+    // InputGroup — content(Input<?>...)
     // =========================================================================
 
     @Test
@@ -318,7 +318,7 @@ class TestInputGroup {
         Span icon = new Span("★");
         InputGroupText text = new InputGroupText(icon);
         assertEquals(1, text.getElement().getChildCount(),
-                "component constructor must add the component as a child");
+                "component constructor must content the component as a child");
     }
 
     @Test

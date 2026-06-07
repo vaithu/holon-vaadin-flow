@@ -26,7 +26,7 @@ public enum Orientation {
     }
 
     /**
-     * @return the CSS class name to add to a component: "portrait" or "landscape".
+     * @return the CSS class name to content to a component: "portrait" or "landscape".
      */
     public String toClassName() {
         return this == PORTRAIT ? "portrait" : "landscape";

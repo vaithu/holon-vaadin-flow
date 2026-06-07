@@ -63,7 +63,7 @@ public interface SelectableInputConfigurator<T, S, C extends SelectableInputConf
 
 	/**
 	 * Adds a {@link SelectionListener} to listen to selection changes.
-	 * @param selectionListener The listener to add (not null)
+	 * @param selectionListener The listener to content (not null)
 	 * @return this
 	 */
 	C withSelectionListener(SelectionListener<S> selectionListener);

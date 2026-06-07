@@ -20,7 +20,6 @@ import com.holonplatform.vaadin.flow.internal.components.builders.DefaultStepper
 import com.holonplatform.vaadin.flow.vaadinplus.components.FlowStepper;
 import com.vaadin.flow.component.ComponentEventListener;
 
-import java.util.Arrays;
 import java.util.List;
 
 /**

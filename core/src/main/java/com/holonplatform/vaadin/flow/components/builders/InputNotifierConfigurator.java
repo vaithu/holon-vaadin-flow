@@ -30,7 +30,7 @@ public interface InputNotifierConfigurator<C extends InputNotifierConfigurator<C
 
 	/**
 	 * Adds an input listener to this component.
-	 * @param listener the listener to add, not <code>null</code>
+	 * @param listener the listener to content, not <code>null</code>
 	 * @return this
 	 */
 	C withInputListener(ComponentEventListener<InputEvent> listener);

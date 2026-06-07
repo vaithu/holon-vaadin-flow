@@ -28,7 +28,6 @@ import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 
-import java.util.Optional;
 /**
  * A {@link PropertyInputGroup} which provides an UI component to display the group elements, which can be composed
  * using a {@link Composer}.

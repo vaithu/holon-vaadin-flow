@@ -168,7 +168,8 @@ public final class DemoMainLayout extends AppLayout {
                         new SideNavItem("ListingBundle",  ListingBundleDemoView.class,   VaadinIcon.DATABASE.create()),
                         new SideNavItem("BulkAction",     BulkActionDemoView.class,      VaadinIcon.CHECK_SQUARE.create()),
                         new SideNavItem("FilterPanel",    FilterPanelDemoView.class,     VaadinIcon.FILTER.create()),
-                        new SideNavItem("SearchBar",      SearchBarDemoView.class,       VaadinIcon.SEARCH.create())
+                        new SideNavItem("SearchBar",      SearchBarDemoView.class,       VaadinIcon.SEARCH.create()),
+                        new SideNavItem("Chart of Accounts", ChartOfAccountsDemoView.class, VaadinIcon.BOOK.create())
                 )
                 .add();
 
@@ -284,6 +285,7 @@ public final class DemoMainLayout extends AppLayout {
                 .withItems(
                         new SideNavItem("ZohoView",           ZohoViewDemoView.class,           VaadinIcon.VIEWPORT.create()),
                         new SideNavItem("MasterDetailLayout", MasterDetailLayoutDemoView.class, VaadinIcon.SPLIT.create()),
+                        new SideNavItem("IyenView", IyenView.class, VaadinIcon.COFFEE.create()),
                         new SideNavItem("ViewComponent",      ViewComponentDemoView.class,      VaadinIcon.SITEMAP.create()),
                         new SideNavItem("Signals",            SignalsDemoView.class,            VaadinIcon.BOLT.create())
                 )

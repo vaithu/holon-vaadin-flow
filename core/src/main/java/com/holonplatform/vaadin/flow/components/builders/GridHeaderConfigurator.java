@@ -2,6 +2,8 @@ package com.holonplatform.vaadin.flow.components.builders;
 
 import com.holonplatform.vaadin.flow.components.BeanListing;
 import com.holonplatform.vaadin.flow.components.PropertyListing;
+import com.holonplatform.vaadin.flow.vaadinplus.utilities.HeadingLevel;
+import com.holonplatform.vaadin.flow.vaadinplus.utilities.Font;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.grid.Grid;
 
@@ -13,6 +15,22 @@ import com.vaadin.flow.component.grid.Grid;
 public interface GridHeaderConfigurator<C extends GridHeaderConfigurator<C>> extends ComponentConfigurator<C>,
         HasSizeConfigurator<C>, HasStyleConfigurator<C>, HasEnabledConfigurator<C> {
 
+
+    default C heading(Component component) {
+        return heading(component, HeadingLevel.NONE);
+    }
+
+    C heading(Component component, HeadingLevel headingLevel);
+
+    default C heading(String title) {
+        return heading(title, HeadingLevel.H2);
+    }
+
+    C heading(String title, HeadingLevel headingLevel);
+
+    C withSize(Font.Size size);
+
+    C withoutBorder();
 
     C grid(Grid<?> grid);
 

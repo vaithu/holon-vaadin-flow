@@ -234,9 +234,10 @@
 }
 
 /* ==========================================================================
-   ListingToolbar — selector LEFT · search-field RIGHT
-   A layout helper for views that compose:
-     ItemListingPageSizeSelector (left) + TextField search (right)
+   ListingToolbar — selector LEFT · [search + filter-button] RIGHT
+   The selector sits naturally on the left. The right group (.listing-toolbar__right)
+   uses margin-inline-start:auto to push itself to the far right in all cases,
+   whether or not a selector is present.
    Usage in Java: container.addClassName("listing-toolbar")
    ========================================================================== */
 
@@ -244,32 +245,221 @@
     display         : flex;
     flex-direction  : row;
     align-items     : center;
-    justify-content : space-between;
     gap             : 0.75rem;
-    padding-block   : 0.5rem;
+    padding-block   : 0.5rem 0.625rem;
+    width           : 100%;
+    border-bottom   : 1px solid var(--zinc-200, #e4e4e7);
+    margin-bottom   : 0.25rem;
 }
 
-/* Search field: fixed max-width, shrinks gracefully */
+/* Right-aligned group: search field + options menu button */
+.listing-toolbar__right {
+    display              : flex;
+    flex-direction       : row;
+    align-items          : center;
+    gap                  : 0.375rem;
+    margin-inline-start  : auto;   /* always push to far right */
+}
+
+/* Search field: grows to fill available space on desktop */
 .listing-toolbar__search {
-    flex      : 0 1 280px;
-    min-width : 0;
+    flex      : 1 1 280px;
+    min-width : 180px;
+    max-width : 500px;
 }
 
 /* Footer / pagination row: centered */
 .listing-footer {
     display         : flex;
-    justify-content : center;
-    padding-top     : 0.5rem;
+    align-items     : center;
+    justify-content : space-between;
+    padding-top     : 0.625rem;
+    gap             : 1rem;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════════
+   Integrated filter options button
+   ============================================================================
+   .listing-toolbar__options — the MenuBar containing the filter icon button.
+   ========================================================================== */
+
+/* Prevent the icon button from growing */
+.listing-toolbar__options {
+    flex-shrink : 0;
+}
+
+/* Menu item icons */
+.listing-menu-icon {
+    width    : 1rem;
+    height   : 1rem;
+    color    : var(--text-secondary, #6b7280);
+}
+
+/* Menu separator (disabled empty item styled as a thin line) */
+.listing-menu-separator {
+    min-height     : 0 !important;
+    height         : 1px !important;
+    padding        : 0 !important;
+    margin-block   : 0.25rem !important;
+    background     : var(--zinc-200, #e4e4e7);
+    pointer-events : none;
+}
+
+/* ==========================================================================
+   Listing Page wrapper — prevents overflow on all screen sizes
+   ========================================================================== */
+.listing-page {
+    display        : flex;
+    flex-direction : column;
+    width          : 100%;
+    max-width      : 100%;
+    min-width      : 0;
+    overflow-x     : hidden;
+    gap            : 0;
+}
+
+/* ==========================================================================
+   Listing Header — applied to GridHeader when gridHeader(String) is configured.
+   The GridHeader extends Header (Layout) with structure:
+     .iyen-header > .iyen-header__row > [heading column] + .iyen-header__actions
+   We style the actions area to align search + filter + menu horizontally.
+   ========================================================================== */
+.listing-header {
+    width          : 100%;
+    min-width      : 0;
+    border-bottom  : 1px solid var(--zinc-200, #e4e4e7);
+    padding-block  : 0.25rem;
+}
+
+/* withoutBorder() — Header.setBordered(false) adds .header--no-border.
+   Two-class specificity overrides the single-class .listing-header rule. */
+.listing-header.header--no-border {
+    border-bottom : none;
+}
+
+/* Actions slot inside the header — search + filter + menu inline */
+.listing-header .iyen-header__actions {
+    display     : flex;
+    flex-wrap   : nowrap;
+    align-items : center;
+    gap         : 0.375rem;
+    min-width   : 0;
+}
+
+/* Search field inside actions */
+.listing-header__search {
+    flex      : 1 1 200px;
+    min-width : 120px;
+    max-width : 400px;
+}
+
+.listing-header__filter-btn {
+    flex-shrink : 0;
 }
 
 /* ── Responsive: mobile ≤ 600 px ── */
 @media (max-width: 600px) {
+    .listing-header .iyen-header__row {
+        flex-wrap : wrap;
+        gap       : 0.375rem;
+    }
+    .listing-header .iyen-header__actions {
+        width     : 100%;
+        flex-wrap : wrap;
+    }
+    .listing-header__search {
+        flex      : 1 1 auto;
+        min-width : 0;
+        max-width : 100%;
+    }
+
     .listing-toolbar {
-        flex-direction : column;
-        align-items    : stretch;
+        flex-direction  : column;
+        align-items     : stretch;
+        gap             : 0.5rem;
+        padding-block   : 0.5rem;
+    }
+    .listing-toolbar__right {
+        flex-direction      : row;
+        margin-inline-start : 0;
+        width               : 100%;
     }
     .listing-toolbar__search {
         flex      : 1 1 auto;
         max-width : 100%;
     }
 }
+
+/* ── Responsive: tablet ≤ 900 px ── */
+@media (max-width: 900px) and (min-width: 601px) {
+    .listing-header__search {
+        flex      : 1 1 160px;
+        max-width : 280px;
+    }
+}
+
+/* ==========================================================================
+   Listing grid — card wrapper + fill behaviour
+   Class added by ListingBundle on every managed grid so consumers don't need
+   to set width / flex manually in their view layouts.
+   ========================================================================== */
+.listing-bundle-grid {
+    width            : 100%;
+    flex             : 1 1 auto;
+    align-self       : stretch;
+    min-width        : 0;
+    max-width        : 100%;
+    /* Card appearance */
+    background-color : var(--color-surface, #ffffff);
+    border           : 1px solid rgb(0 0 0 / 0.08);
+    border-radius    : var(--radius-l, 0.75rem);
+    box-shadow       : 0 1px 3px rgb(0 0 0 / 0.06),
+                       0 1px 2px rgb(0 0 0 / 0.04);
+
+    /* Clip grid rows to the card corners */
+    overflow         : hidden;
+}
+
+/* ==========================================================================
+   Clickable grid rows — pointer cursor when item click listener is registered
+   ========================================================================== */
+.listing-bundle-clickable::part(row) {
+    cursor: pointer;
+}
+.listing-bundle-clickable::part(body-cell) {
+    cursor: pointer;
+}
+
+/* ==========================================================================
+   Compact pagination — small screens (≤ 480 px)
+   Strategy: show only [Previous icon] [active page number] [Next icon].
+   All other numbered pages and ellipses are hidden.  The Previous/Next labels
+   ("Previous" / "Next" text) are also hidden leaving only the chevron icons,
+   so the three-item bar fits even on very narrow viewports.
+   ========================================================================== */
+@media (max-width: 480px) {
+
+    /* Hide numbered page items that are NOT the active page */
+    .listing-pagination-bar .pagination__item:has(
+        .pagination__link:not(.pagination__link--active)
+    ) {
+        display: none;
+    }
+
+    /* Hide ellipsis items */
+    .listing-pagination-bar .pagination__item:has(.pagination__ellipsis) {
+        display: none;
+    }
+
+    /* Strip the "Previous" / "Next" text labels — keep only the chevron icons */
+    .listing-pagination-bar .pagination__nav-label {
+        display: none;
+    }
+
+    /* Give the active page badge a touch-friendly minimum size */
+    .listing-pagination-bar .pagination__link--active {
+        min-width: 2.5rem;
+        font-size: 0.875rem;
+    }
+}
+

@@ -93,7 +93,7 @@ public class DefaultIconConfigurator<C extends HasIconConfigurator<C>> implement
 
 	/*
 	 * (non-Javadoc)
-	 * @see com.holonplatform.vaadin.flow.components.builders.HasIconConfigurator.IconConfigurator#add()
+	 * @see com.holonplatform.vaadin.flow.components.builders.HasIconConfigurator.IconConfigurator#content()
 	 */
 	@Override
 	public C add() {

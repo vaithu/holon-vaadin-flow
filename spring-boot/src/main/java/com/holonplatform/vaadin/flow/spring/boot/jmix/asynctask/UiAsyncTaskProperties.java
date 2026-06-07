@@ -24,6 +24,7 @@ import org.springframework.boot.context.properties.bind.DefaultValue;
  * Configuration properties for UI asynchronous tasks.
  */
 @ConfigurationProperties(prefix = "jmix.ui.async-task")
+@SuppressWarnings("null")
 public class UiAsyncTaskProperties {
 
     /**
@@ -44,7 +45,7 @@ public class UiAsyncTaskProperties {
     }
 
     public ExecutorServiceConfig getExecutorService() {
-        return executorService;
+        return executorService; // non-null by construction
     }
 
     public int getDefaultTimeoutSec() {

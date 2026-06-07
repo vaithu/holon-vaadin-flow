@@ -47,7 +47,7 @@ public interface HasDatastoreDataProviderConfigurator<ITEM, D extends DatastoreD
 	 * @param itemConverter The function to use to convert the Datastore {@link PropertyBox} data type into the required
 	 *        item type
 	 * @param properties The property set to use as query projection (not null)
-	 * @return An extended builder which allow further data provider configuration, for example to add fixed
+	 * @return An extended builder which allow further data provider configuration, for example to content fixed
 	 *         {@link QueryFilter} and {@link QuerySort}.
 	 * @see DatastoreDataProviderConfigurator
 	 */
@@ -65,7 +65,7 @@ public interface HasDatastoreDataProviderConfigurator<ITEM, D extends DatastoreD
 	 * @param itemConverter The function to use to convert the Datastore {@link PropertyBox} data type into the required
 	 *        item type
 	 * @param properties The property set to use as query projection (not null)
-	 * @return An extended builder which allow further data provider configuration, for example to add fixed
+	 * @return An extended builder which allow further data provider configuration, for example to content fixed
 	 *         {@link QueryFilter} and {@link QuerySort}.
 	 * @see DatastoreDataProviderConfigurator
 	 */
@@ -81,7 +81,7 @@ public interface HasDatastoreDataProviderConfigurator<ITEM, D extends DatastoreD
 	 * @param datastore The {@link Datastore} to use (not null)
 	 * @param target The {@link DataTarget} to use as query target (not null)
 	 * @param beanType The item bean type, must be compliant with the JavaBeans specifications
-	 * @return An extended builder which allow further data provider configuration, for example to add fixed
+	 * @return An extended builder which allow further data provider configuration, for example to content fixed
 	 *         {@link QueryFilter} and {@link QuerySort}.
 	 * @see DatastoreDataProviderConfigurator
 	 */

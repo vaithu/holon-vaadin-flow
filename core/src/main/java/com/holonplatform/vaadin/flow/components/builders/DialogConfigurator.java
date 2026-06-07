@@ -56,7 +56,7 @@ public interface DialogConfigurator<C extends DialogConfigurator<C>>
     /**
      * Adds a component to the dialog body (scrollable content area).
      *
-     * @param component the component to add (not null)
+     * @param component the component to content (not null)
      * @return this
      */
     C withComponent(Component component);
@@ -64,7 +64,7 @@ public interface DialogConfigurator<C extends DialogConfigurator<C>>
     /**
      * Adds a {@link HasComponent} to the dialog body.
      *
-     * @param component the component to add (not null)
+     * @param component the component to content (not null)
      * @return this
      */
     default C withComponent(HasComponent component) {
@@ -101,7 +101,7 @@ public interface DialogConfigurator<C extends DialogConfigurator<C>>
     /**
      * Adds one or more components to the dialog body.
      *
-     * @param components the components to add
+     * @param components the components to content
      * @return this
      */
     C withContent(Component... components);

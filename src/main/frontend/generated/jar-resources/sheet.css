@@ -13,15 +13,14 @@
  *   .sheet--open                  — trigger: activates backdrop + slides panel in
  *   .sheet--fullscreen-mobile     — covers full viewport on mobile (≤ 767 px)
  *
- *   .sheet__backdrop              — semi-transparent overlay behind the panel
- *   .sheet__panel                 — the actual sliding surface
+ *   .sheet__backdrop              — semi-transparent dimming overlay behind the panel
+ *   .sheet__panel                 — the actual sliding surface (opaque white/base)
  *   .sheet__handle                — drag indicator (BOTTOM only)
- *   .sheet__header                — flex-row: back button │ title area │ close button
- *   .sheet__header-back           — back navigation button (← goes to previous history entry)
- *   .sheet__header-title-area     — flex-col center: holds title + description
- *   .sheet__header-close          — close button (✕ closes sheet + pops history entry)
- *   .sheet__title                 — heading text
- *   .sheet__description           — supporting description text
+ *   .sheet__header                — iyen-header component: back btn | title+description | close btn
+ *   .sheet__btn-back              — back navigation Button (Vaadin Button + LineAwesome icon)
+ *   .sheet__btn-close             — close Button (Vaadin Button + LineAwesome icon)
+ *   .sheet__title                 — heading text (inside SheetTitle component)
+ *   .sheet__description           — supporting description (inside SheetDescription component)
  *   .sheet__content               — user-provided body content
  *
  * z-index layers:
@@ -29,6 +28,21 @@
  *   9999 — .sheet__backdrop
  *  10000 — .sheet__panel
  */
+
+/* -----------------------------------------------------------------------
+ * No-transition modifier
+ *
+ * Applied by SheetStack to child sheets (depth > 0) on close.
+ * Both "remove sheet--open" and "add sheet--no-transition" arrive at the
+ * client in the same server-response batch, so the browser never starts
+ * the slide-out transition — the panel disappears instantly, revealing
+ * the parent sheet underneath without any animation.
+ *
+ * The open animation is unaffected because the class is only added onClose.
+ * ----------------------------------------------------------------------- */
+.sheet--no-transition .sheet__panel {
+    transition: none !important;
+}
 
 /* -----------------------------------------------------------------------
  * Root host
@@ -74,13 +88,14 @@
 }
 
 /* -----------------------------------------------------------------------
- * Backdrop
+ * Backdrop — semi-transparent dimming overlay
  * ----------------------------------------------------------------------- */
 
 .sheet__backdrop {
     position: fixed;
     inset: 0;
     z-index: 9999;
+    background: rgba(0, 0, 0, 0.45);  /* ← was missing; this is why nothing dimmed */
     opacity: 0;
     pointer-events: none;
     transition: opacity 260ms ease;
@@ -89,6 +104,11 @@
 .sheet--open > .sheet__backdrop {
     opacity: 1;
     pointer-events: auto;
+}
+
+/* Developer opt-out: sheet slides in without dimming the background */
+.sheet--no-backdrop > .sheet__backdrop {
+    display: none;
 }
 
 /* -----------------------------------------------------------------------
@@ -100,10 +120,10 @@
     z-index: 10000;
     display: flex;
     flex-direction: column;
+    background: var(--lumo-base-color, #ffffff);   /* ← was missing; this is why content showed through */
     box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.12);
     transition: transform 300ms cubic-bezier(0.32, 0.72, 0, 1);
     overflow: hidden;
-    /* Prevent content from bleeding past safe areas on iOS */
     padding-bottom: env(safe-area-inset-bottom, 0);
 }
 
@@ -177,80 +197,57 @@
     width: 2.5rem;
     height: 0.25rem;
     border-radius: 9999px;
+    background: var(--color-border, #d4d4d8);
     margin: 0.75rem auto 0;
     pointer-events: none;
 }
 
 /* -----------------------------------------------------------------------
- * Header (flex-row: back | title-area | close)
+ * Header — iyen-header component wrapping nav buttons + title/description
  *
- * Shown by default because back/close buttons are always rendered in it.
- * Hidden via Vaadin setVisible(false) only when developer hides both buttons
- * and provides no title/description.
+ * The iyen-header__row handles the three-column layout internally
+ * (prefix = back btn | column = title + desc | actions = close btn).
+ * We only need to override padding and border here; the row flex is
+ * already managed by header.css.
  * ----------------------------------------------------------------------- */
 
-.sheet__header {
+.sheet__header.iyen-header {
     flex-shrink: 0;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
+    padding: 0 0.25rem;
+    border-block-end: 1px solid var(--color-border, #e4e4e7);
+}
+
+/* Tighten the iyen-header row gap to match the compact sheet header */
+.sheet__header .iyen-header__row {
     gap: 0.25rem;
-    padding: 0.5rem 0.75rem;
+    align-items: center;
     min-height: 3rem;
+    padding: 0 0.5rem;
 }
 
 /* -----------------------------------------------------------------------
- * Back / Close header action buttons
+ * Back / Close Vaadin Buttons
  *
- * Both buttons are ghost icon buttons: no border, transparent background,
- * accent fill on hover. The icon is a <vaadin-icon> sized via .sheet__header-icon.
+ * Both are ghost icon buttons (LUMO_TERTIARY_INLINE + LUMO_ICON theme).
+ * Override size so they match the compact sheet header.
  * ----------------------------------------------------------------------- */
 
-.sheet__header-back,
-.sheet__header-close {
+.sheet__btn-back,
+.sheet__btn-close {
     flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 2.25rem;
-    height: 2.25rem;
-    border-radius: 0.375rem;
-    cursor: pointer;
-    border: none;
-    outline: none;
-    transition: background-color 150ms ease, color 150ms ease;
-    user-select: none;
 }
 
-.sheet__header-back:focus-visible,
-.sheet__header-close:focus-visible {
-    outline: 2px solid var(--color-ring, #18181b);
-    outline-offset: 2px;
-}
-
-/* vaadin-icon inside header buttons — inherits currentColor so hover/focus transitions work */
-.sheet__header-icon {
+/* Make the Line Awesome SVG icons inside the buttons a consistent size */
+.sheet__btn-back svg,
+.sheet__btn-close svg {
     width: 1.25rem;
     height: 1.25rem;
-    flex-shrink: 0;
-    pointer-events: none;   /* clicks should hit the parent Div, not the icon */
 }
 
 /* -----------------------------------------------------------------------
- * Header title area (flex-col center cell)
- *
- * Takes up all remaining horizontal space between the two buttons.
- * min-width: 0 prevents overflow of long titles from expanding the row.
+ * Title / Description (rendered by SheetTitle / SheetDescription sitting
+ * in the iyen-header column as heading + details)
  * ----------------------------------------------------------------------- */
-
-.sheet__header-title-area {
-    flex: 1 1 auto;
-    min-width: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 0.125rem;
-    overflow: hidden;
-}
 
 .sheet__title {
     margin: 0;
@@ -259,7 +256,13 @@
     line-height: 1.4;
     white-space: nowrap;
     overflow: hidden;
-    text-overflow: ellipsis;
+    padding-left: 5%;
+}
+
+/* iyen-header column heading — reset Header's default XLARGE font so the
+   SheetTitle CSS class controls the size */
+.sheet__header .iyen-header__row .font-xlarge {
+    font-size: inherit;
 }
 
 .sheet__description {
@@ -269,6 +272,11 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+/* iyen-header details slot — remove top margin for compact header */
+.sheet__header .iyen-header__details {
+    margin-block-start: 0;
 }
 
 /* -----------------------------------------------------------------------
@@ -286,10 +294,6 @@
 
 /* -----------------------------------------------------------------------
  * Fullscreen on mobile (.sheet--fullscreen-mobile)
- *
- * Expands the panel to cover the full viewport on mobile-width screens
- * (≤ 767 px). On wider screens normal dimensions are preserved.
- * Applied via Sheet.setFullscreenOnMobile(true) / .fullscreenOnMobile(true).
  * ----------------------------------------------------------------------- */
 
 @media (max-width: 767px) {
@@ -340,6 +344,28 @@
     .sheet--left > .sheet__panel,
     .sheet--right > .sheet__panel {
         width: min(50vw, 28rem);
+    }
+
+    /* -----------------------------------------------------------------------
+     * below-header modifier (desktop only)
+     *
+     * When .sheet--below-header is set, the panel and backdrop start below
+     * the application header rather than covering the full viewport height.
+     * Set --vaadin-app-layout-navbar-offset-top in your app CSS to match your
+     * AppBar height (Vaadin AppLayout does this automatically; custom AppBars
+     * must set it manually, e.g. :root { --vaadin-app-layout-navbar-offset-top: 64px }).
+     *
+     * Only affects LEFT / RIGHT sheets — BOTTOM sheet is anchored to the
+     * bottom edge and is unaffected.
+     * ----------------------------------------------------------------------- */
+
+    .sheet--below-header.sheet--left > .sheet__panel,
+    .sheet--below-header.sheet--right > .sheet__panel {
+        top: var(--vaadin-app-layout-navbar-offset-top, 0px);
+    }
+
+    .sheet--below-header > .sheet__backdrop {
+        top: var(--vaadin-app-layout-navbar-offset-top, 0px);
     }
 }
 

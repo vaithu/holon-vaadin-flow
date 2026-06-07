@@ -418,7 +418,7 @@ public class AlertDialog extends Dialog {
      * <p>The body slot is hidden until the first call to this method.
      * It is independently scrollable when its content overflows.</p>
      *
-     * @param components the components to add (not null)
+     * @param components the components to content (not null)
      */
     public void addBodyContent(Component... components) {
         this.bodyEl.add(components);
@@ -872,6 +872,7 @@ public class AlertDialog extends Dialog {
                 actionButton.addClassName(cls);
                 this.currentActionVariantClass = cls;
             }
+            case DEFAULT -> { /* already handled by guard above */ }
         }
     }
 

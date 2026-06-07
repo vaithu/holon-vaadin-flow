@@ -10,7 +10,6 @@ import com.vaadin.flow.component.ScrollIntoViewOption;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
-import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.TabVariant;
 import com.vaadin.flow.component.tabs.Tabs;
@@ -78,8 +77,8 @@ public interface LazyTabsConfigurator<C extends LazyTabsConfigurator<C>>
     C withLazyTab(Localizable label, int counter, TabVariant tabVariant, Supplier<Component> factory);
     C withLazyTab(Localizable label, Icon icon, TabVariant tabVariant, Supplier<Component> factory);
 
-    /** @deprecated Use {@link #buildHorizontal()} for side-by-side layouts instead of accessing the content container directly. */
-    @Deprecated(since = "next")
+    C withContainer(Div div);
+
     Div getContentContainer();
 
     Tab getSelectedTab();
@@ -102,14 +101,14 @@ public interface LazyTabsConfigurator<C extends LazyTabsConfigurator<C>>
     HorizontalLayout buildHorizontal();
 
     /**
-     * Attaches the configurator to an existing {@link VerticalLayout} shell.
+     * Attaches the configurator to an existing {@link Tabs} shell.
      * The passed layout is used only as the outer shell when wiring tabs and content
      * manually (e.g., vertical orientation side-by-side). The content area is an
      * internally managed {@link Div}; retrieve it via {@link #getContentContainer()}.
-     * Use {@link LazyTabsBuilder#create()} when you want the builder to manage the full layout.
+     * Use {@link LazyTabsBuilder#create()} when you want the builder to manage the full tabs.
      */
-    static BaseTabsConfigurator configure(VerticalLayout layout) {
-        return new DefaultLazyTabsConfigurator(layout);
+    static BaseTabsConfigurator configure(Tabs tabs) {
+        return new DefaultLazyTabsConfigurator(tabs);
     }
 
     interface BaseTabsConfigurator extends LazyTabsConfigurator<BaseTabsConfigurator>, DeferrableLocalizationConfigurator<BaseTabsConfigurator> {

@@ -233,15 +233,23 @@ vaadin-side-nav-item::part(link) {
     transition    : background-color 0.12s ease, color 0.12s ease;
 }
 
-/* Active / current page */
+/* Active / current page — use token, not hardcoded 600; TailAdmin keeps medium (500) weight */
 vaadin-side-nav-item[current]::part(link) {
-    font-weight      : 600;
+    font-weight: var(--sidenav-item-active-font-weight, 500);
 }
 
 /* Prefix icon — default (secondary tone) */
 vaadin-side-nav-item > [slot="prefix"] {
     transition : color 0.12s ease;
     flex-shrink: 0;
+}
+
+/* Hover icon — inactive items: icon brightens to zinc-700 on hover
+   TailAdmin source: .menu-item-icon-inactive:hover { color: var(--color-gray-700) }
+   Active/current items keep their brand-500 icon (handled by the [active]/[current] rule
+   in vaadin-shell-theme.css which has the same specificity but loads before menu.css).     */
+vaadin-side-nav-item:not([active]):not([current]):hover > [slot="prefix"] {
+    color: var(--zinc-700, #344054);
 }
 
 /* --------------------------------------------------------------------------
@@ -266,21 +274,20 @@ vaadin-side-nav-item[current]::part(toggle-button) {
 /* --------------------------------------------------------------------------
    Parent group items  (vaadin-side-nav-item:not([path]))
    Group headers have no route — they collapse/expand their children.
-   Visually heavier than child items to create clear hierarchy.
+   TailAdmin treats expandable groups identically to regular .menu-item:
+   same gray-700 color, same medium (500) weight, same consistent padding.
    -------------------------------------------------------------------------- */
 vaadin-side-nav-item:not([path])::part(link) {
-    color        : var(--sidenav-group-color, var(--zinc-50));
+    color        : var(--sidenav-group-color, var(--zinc-700));
     font-size    : var(--sidenav-group-font-size, 0.875rem);
-    font-weight  : var(--sidenav-group-font-weight, 600);
-    padding-top  : var(--sidenav-group-padding-top, 0.875rem);
-    padding-bottom: var(--sidenav-group-padding-bottom, 0.5rem);
-    letter-spacing: 0.01em;
+    font-weight  : var(--sidenav-group-font-weight, 500);
+    padding-top  : var(--sidenav-group-padding-top, 0.5625rem);
+    padding-bottom: var(--sidenav-group-padding-bottom, 0.5625rem);
 }
 
-/* Group header icon mirrors the group text colour */
+/* Group header icon — same color as text; no opacity dimming (TailAdmin doesn't dim) */
 vaadin-side-nav-item:not([path]) > [slot="prefix"] {
-    color  : var(--sidenav-group-color, var(--zinc-50));
-    opacity: 0.85;
+    color: var(--sidenav-group-color, var(--zinc-700));
 }
 
 /* --------------------------------------------------------------------------
@@ -290,8 +297,8 @@ vaadin-side-nav-item:not([path]) > [slot="prefix"] {
 vaadin-side-nav-item[slot="children"]::part(link) {
     color      : var(--sidenav-child-color, var(--zinc-300));
     font-size  : var(--sidenav-child-font-size, 0.8125rem);
-    font-weight: 400;
-    opacity    : var(--sidenav-child-opacity, 0.9);
+    font-weight: var(--sidenav-child-font-weight, 500);
+    opacity    : var(--sidenav-child-opacity, 1);
 }
 
 vaadin-side-nav-item[slot="children"]:hover::part(link) {
@@ -299,8 +306,8 @@ vaadin-side-nav-item[slot="children"]:hover::part(link) {
 }
 
 vaadin-side-nav-item[slot="children"][current]::part(link) {
-    font-weight: 600;
-    color      : var(--sidenav-item-active-color, #1c1917);
+    font-weight: var(--sidenav-item-active-font-weight, 500);  /* token-based, TailAdmin = 500 */
+    color      : var(--sidenav-item-active-color, var(--brand-500));
     opacity    : 1;
 }
 

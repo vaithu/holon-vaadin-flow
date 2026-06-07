@@ -112,7 +112,7 @@ class TestSheet {
     @Test
     void close_removesOpenClass() {
         Sheet sheet = new Sheet();
-        // Manually add the open class (simulating open without a live UI)
+        // Manually content the open class (simulating open without a live UI)
         sheet.addClassName("sheet--open");
         assertTrue(sheet.isOpen());
 

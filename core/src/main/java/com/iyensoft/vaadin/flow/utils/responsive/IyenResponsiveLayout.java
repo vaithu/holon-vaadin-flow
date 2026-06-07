@@ -33,7 +33,7 @@ public class IyenResponsiveLayout extends Layout {
 
     private static final Logger log = LoggerFactory.getLogger(IyenResponsiveLayout.class);
 
-    // Built once; we add CSS hooks directly on these
+    // Built once; we content CSS hooks directly on these
     private final Component master;
     private final Component detail;
 

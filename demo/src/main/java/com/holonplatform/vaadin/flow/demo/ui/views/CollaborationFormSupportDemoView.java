@@ -146,6 +146,7 @@ public class CollaborationFormSupportDemoView extends Div {
         var roleField  = new TextField("Role");
         var ageField   = new IntegerField("Age");
 
+        @SuppressWarnings("unused") // fields read reflectively by autoBindFields
         var holder = new Object() {
             final TextField    name  = nameField;
             final EmailField   email = emailField;
@@ -410,6 +411,7 @@ public class CollaborationFormSupportDemoView extends Div {
         var roleField  = new TextField("Role");
         var ageField   = new IntegerField("Age");
 
+        @SuppressWarnings("unused") // fields read reflectively by autoBindFields
         var holder = new Object() {
             final TextField    name  = nameField;
             final EmailField   email = emailField;

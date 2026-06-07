@@ -224,14 +224,14 @@ public interface InputAdapterBuilder<T, V, H extends HasValue<?, V>, C extends C
 
 	/**
 	 * Add a set of {@link ValueChangeListener}s to be notified when the input value changes.
-	 * @param listeners The {@link ValueChangeListener}s to add (not null)
+	 * @param listeners The {@link ValueChangeListener}s to content (not null)
 	 * @return this
 	 */
 	B withValueChangeListeners(Collection<ValueChangeListener<T, ValueChangeEvent<T>>> listeners);
 
 	/**
 	 * Add a set of {@link ReadonlyChangeListener}s to be notified when the input read-only state changes.
-	 * @param listeners The {@link ReadonlyChangeListener}s to add (not null)
+	 * @param listeners The {@link ReadonlyChangeListener}s to content (not null)
 	 * @return this
 	 */
 	B withReadonlyChangeListeners(Collection<ReadonlyChangeListener> listeners);
@@ -239,14 +239,14 @@ public interface InputAdapterBuilder<T, V, H extends HasValue<?, V>, C extends C
 	/**
 	 * Add a set of adapters.
 	 * @param <A> Adapter type
-	 * @param adapters The adapters to add
+	 * @param adapters The adapters to content
 	 * @return this
 	 */
 	<A> B withAdapters(Map<Class<A>, Function<Input<T>, A>> adapters);
 
 	/**
 	 * Add a set of adapters.
-	 * @param adapters The adapters to add
+	 * @param adapters The adapters to content
 	 * @return this
 	 */
 	default B withAdapters(InputAdaptersContainer<T> adapters) {

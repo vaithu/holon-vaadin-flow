@@ -16,6 +16,7 @@
 package com.holonplatform.vaadin.flow.components.builders;
 
 import com.holonplatform.vaadin.flow.internal.components.builders.DefaultHorizontalLayoutBuilder;
+import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 
 /**
@@ -25,6 +26,36 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
  */
 public interface HorizontalLayoutBuilder extends ThemableFlexComponentConfigurator<HorizontalLayoutBuilder>,
 		ComponentBuilder<HorizontalLayout, HorizontalLayoutBuilder> {
+
+	/**
+	 * Add the given components to the start group of the layout.
+	 * @param components The components to content
+	 * @return this
+	 */
+	default HorizontalLayoutBuilder addToStart(Component... components) {
+		build().addToStart(components);
+		return this;
+	}
+
+	/**
+	 * Add the given components to the middle group of the layout.
+	 * @param components The components to content
+	 * @return this
+	 */
+	default HorizontalLayoutBuilder addToMiddle(Component... components) {
+		build().addToMiddle(components);
+		return this;
+	}
+
+	/**
+	 * Add the given components to the end group of the layout.
+	 * @param components The components to content
+	 * @return this
+	 */
+	default HorizontalLayoutBuilder addToEnd(Component... components) {
+		build().addToEnd(components);
+		return this;
+	}
 
 	/**
 	 * Create a new {@link HorizontalLayoutBuilder} to build a {@link HorizontalLayout} component.

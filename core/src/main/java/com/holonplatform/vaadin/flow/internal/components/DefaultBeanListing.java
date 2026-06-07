@@ -115,7 +115,7 @@ public class DefaultBeanListing<T> extends AbstractItemListing<T, String> implem
         this.beanType = beanType;
         this.propertySet = BeanPropertySet.create(beanType);
         if (autoCreateColumns) {
-            // add properties as columns
+            // content properties as columns
             for (PathProperty<?> property : propertySet) {
                 addPropertyColumn(property.relativeName());
             }
@@ -552,14 +552,14 @@ public class DefaultBeanListing<T> extends AbstractItemListing<T, String> implem
         }
 
         @Override
-        @SuppressWarnings("unchecked")
+        @SuppressWarnings({"unchecked", "rawtypes"})
         public BeanListingBuilder<T> itemsPageable(Grid.SpringData.FetchCallback<?, T> fetchCallback) {
             getInstance().getGrid().setItemsPageable((Grid.SpringData.FetchCallback) fetchCallback);
             return this;
         }
 
         @Override
-        @SuppressWarnings("unchecked")
+        @SuppressWarnings({"unchecked", "rawtypes"})
         public BeanListingBuilder<T> itemsPageable(Grid.SpringData.FetchCallback<?, T> fetchCallback,
                                                    Grid.SpringData.CountCallback<?> countCallback) {
             getInstance().getGrid().setItemsPageable((Grid.SpringData.FetchCallback) fetchCallback,

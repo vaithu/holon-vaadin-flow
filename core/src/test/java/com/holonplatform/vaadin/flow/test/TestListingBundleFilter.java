@@ -85,7 +85,7 @@ class TestListingBundleFilter extends AbstractSessionTest {
     void withFilterPanel_filterPanelPresent() {
         var bundle = Components.listing(Product.class)
                 .withFilterPanel()
-                .fetch((q, text, filter) -> Stream.empty())
+                .fetch((q, text, filter, sort) -> Stream.empty())
                 .build();
 
         assertNotNull(bundle.filterPanel(),
@@ -95,7 +95,7 @@ class TestListingBundleFilter extends AbstractSessionTest {
     @Test
     void withoutFilterPanel_filterPanelNull() {
         var bundle = Components.listing(Product.class)
-                .fetch((q, text) -> Stream.empty())
+                .fetch((q, text, sort) -> Stream.empty())
                 .build();
 
         assertNull(bundle.filterPanel(),
@@ -136,7 +136,7 @@ class TestListingBundleFilter extends AbstractSessionTest {
 
         var bundle = Components.listing(Product.class)
                 .withFilterPanel()
-                .fetch((q, text, filter) -> {
+                .fetch((q, text, filter, sort) -> {
                     fetchCallCount.incrementAndGet();
                     lastSeenFilter.set(filter);
                     // In production: filter the products using the QueryFilter.
@@ -193,7 +193,7 @@ class TestListingBundleFilter extends AbstractSessionTest {
         var bundle = Components.listing(Product.class)
                 .withFilterPanel()
                 // WRONG: using FetchCallback — filter will NOT be passed
-                .fetch((q, text) -> {
+                .fetch((q, text, sort) -> {
                     // This callback has NO filter parameter — it will always run unfiltered!
                     return Stream.empty();
                 })
@@ -230,7 +230,7 @@ class TestListingBundleFilter extends AbstractSessionTest {
     void resetAll_clearsFilterOnPanel() {
         var bundle = Components.listing(Product.class)
                 .withFilterPanel()
-                .fetch((q, text, filter) -> Stream.empty())
+                .fetch((q, text, filter, sort) -> Stream.empty())
                 .build();
 
         DynamicFilterPanel<Product> panel = bundle.filterPanel();
@@ -268,7 +268,7 @@ class TestListingBundleFilter extends AbstractSessionTest {
     void applyFilter_signalFires_pageResetObserved() {
         var bundle = Components.listing(Product.class)
                 .withFilterPanel()
-                .fetch((q, text, filter) -> Stream.empty())
+                .fetch((q, text, filter, sort) -> Stream.empty())
                 .build();
 
         DynamicFilterPanel<Product> panel = bundle.filterPanel();
@@ -328,7 +328,7 @@ class TestListingBundleFilter extends AbstractSessionTest {
     void getQueryFilter_isCurrentAfterApply_noTimingRace() {
         var bundle = Components.listing(Product.class)
                 .withFilterPanel()
-                .fetch((q, text, filter) -> Stream.empty())
+                .fetch((q, text, filter, sort) -> Stream.empty())
                 .build();
 
         DynamicFilterPanel<Product> panel = bundle.filterPanel();
@@ -359,7 +359,7 @@ class TestListingBundleFilter extends AbstractSessionTest {
     void filterChangeListener_firesOnApplyAndReset() {
         var bundle = Components.listing(Product.class)
                 .withFilterPanel()
-                .fetch((q, text, filter) -> Stream.empty())
+                .fetch((q, text, filter, sort) -> Stream.empty())
                 .build();
 
         DynamicFilterPanel<Product> panel = bundle.filterPanel();
@@ -386,7 +386,7 @@ class TestListingBundleFilter extends AbstractSessionTest {
     void bundle_selectorNotNull_whenFetchProvided() {
         var bundle = Components.listing(Product.class)
                 .withFilterPanel()
-                .fetch((q, text, filter) -> Stream.empty())
+                .fetch((q, text, filter, sort) -> Stream.empty())
                 .build();
 
         assertNotNull(bundle.selector(),

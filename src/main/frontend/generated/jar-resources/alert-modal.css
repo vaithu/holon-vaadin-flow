@@ -60,6 +60,9 @@ vaadin-dialog-overlay[theme~="alert-modal"]::part(overlay) {
 
     overflow: hidden;
 
+    /* Let the inner Alert's background colour show — no opaque overlay shell */
+    background: transparent;
+
     /* Slide-down entrance animation */
     animation: alert-modal-slide-down 280ms cubic-bezier(0.32, 0.72, 0, 1);
 }
@@ -106,7 +109,29 @@ vaadin-dialog-overlay[theme~="alert-modal"]::part(content) {
         box-shadow: 0 8px 32px rgba(0, 0, 0, 0.14);
 
         padding-block-start: 0;
+        background: transparent;
         animation: none;
+    }
+}
+
+/* ==========================================================================
+   INNER ALERT — border-radius sync & action button colours
+   ========================================================================== */
+
+/*
+ * The inner Alert fills the full overlay box — match its corner rounding to
+ * the overlay so there's no white gap between the Alert edge and the shadow.
+ */
+
+/* Mobile: only bottom corners rounded (matches overlay) */
+vaadin-dialog-overlay[theme~="alert-modal"]::part(content) .alert {
+    border-radius: 0 0 0.75rem 0.75rem;
+}
+
+/* Desktop: all four corners (matches overlay) */
+@media (min-width: 640px) {
+    vaadin-dialog-overlay[theme~="alert-modal"]::part(content) .alert {
+        border-radius: 0.75rem;
     }
 }
 

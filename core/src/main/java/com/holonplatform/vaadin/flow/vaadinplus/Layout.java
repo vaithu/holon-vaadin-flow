@@ -13,6 +13,7 @@ import java.util.HashMap;
 @StyleSheet("context://buttons.css")
 @StyleSheet("context://toolbar.css")
 @StyleSheet("context://menu.css")
+@StyleSheet("context://mobile-grid.css")
 public class Layout extends Div {
 
     private AlignItems alignItems;

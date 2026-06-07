@@ -21,7 +21,7 @@ import java.util.List;
  *   <li>Minimal — empty grid with a single blank row</li>
  *   <li>Pre-populated — catalog items + tax options, 3 seeded rows</li>
  *   <li>Details toggle — Description / Account / Project columns</li>
- *   <li>Bulk row add — row-count stepper + "Add Rows" button</li>
+ *   <li>Bulk row content — row-count stepper + "Add Rows" button</li>
  *   <li>Bulk items dialog — two-panel "Pick Items" dialog with search + per-item qty</li>
  *   <li>Change listener — notified on every mutation</li>
  * </ol>
@@ -60,7 +60,7 @@ public class LineItemGridDemoView extends Div {
                 "Keyboard-centric inline spreadsheet for document line items — invoices, " +
                 "purchase orders, quotes, and bills. All rows are always in the DOM " +
                 "(no virtual scrolling) so Tab and Enter navigate like Excel. " +
-                "The toolbar supports both bulk row add (stepper + button) and a two-panel " +
+                "The toolbar supports both bulk row content (stepper + button) and a two-panel " +
                 "'Pick Items' dialog for selecting multiple catalog items with per-item quantities. " +
                 "On mobile the table switches to a card list with a Sheet form per row.");
 
@@ -90,7 +90,7 @@ public class LineItemGridDemoView extends Div {
                     .withInitialRows(1)
                     .build();
 
-                add(grid.getComponent());
+                content(grid.getComponent());
 
                 // Keyboard shortcuts:
                 //  Tab / Shift+Tab → move between cells within a row
@@ -170,16 +170,16 @@ public class LineItemGridDemoView extends Div {
                 """);
     }
 
-    // ── Example 4 — Bulk row add ──────────────────────────────────────────────
+    // ── Example 4 — Bulk row content ──────────────────────────────────────────────
 
     private DemoExample bulkRowAddExample() {
         var grid = LineItemGrid.builder()
-                .title("PO Lines — bulk row add")
+                .title("PO Lines — bulk row content")
                 .withInitialRows(1)
                 .build();
 
         return new DemoExample(
-                "Bulk row add — use the row-count stepper then click 'Add Rows'",
+                "Bulk row content — use the row-count stepper then click 'Add Rows'",
                 grid.getComponent(), """
                 // The toolbar contains an IntegerField (↑↓ stepper, range 1–50) next to
                 // the 'Add Rows' button. Set the count to e.g. 5 and click — five empty
@@ -196,7 +196,7 @@ public class LineItemGridDemoView extends Div {
                 """);
     }
 
-    // ── Example 5 — Pick Items (bulk add dialog) ──────────────────────────────
+    // ── Example 5 — Pick Items (bulk content dialog) ──────────────────────────────
 
     private DemoExample bulkItemsDialogExample() {
         var grid = LineItemGrid.builder()
@@ -250,7 +250,7 @@ public class LineItemGridDemoView extends Div {
         });
 
         return new DemoExample(
-                "Change listener — notified on every cell edit, row add, row delete, or bulk import",
+                "Change listener — notified on every cell edit, row content, row delete, or bulk import",
                 grid.getComponent(), """
                 LineItemGrid grid = LineItemGrid.builder()
                     .withItemSuggestions(items)
@@ -258,7 +258,7 @@ public class LineItemGridDemoView extends Div {
                     .withInitialRows(2)
                     .build();
 
-                // Fired once per logical operation (bulk row add or bulk items import
+                // Fired once per logical operation (bulk row content or bulk items import
                 // triggers a single call, not one per row).
                 grid.setOnChangeListener(rows -> {
                     double total = rows.stream()
@@ -268,8 +268,8 @@ public class LineItemGridDemoView extends Div {
                 });
 
                 // Programmatic row manipulation:
-                grid.addRow();                          // add 1 empty row
-                grid.addRows(5);                        // add 5 empty rows (single refresh)
+                grid.addRow();                          // content 1 empty row
+                grid.addRows(5);                        // content 5 empty rows (single refresh)
                 grid.removeRow(rows.get(0));            // remove a specific row
                 grid.setRows(loadedRows);               // replace all rows at once
                 List<LineItemRow> all = grid.getRows(); // unmodifiable snapshot

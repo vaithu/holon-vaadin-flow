@@ -155,7 +155,7 @@ public class DefaultContextMenuItemBuilder<M extends ContextMenuBase<M, I, S>, I
 
 	/*
 	 * (non-Javadoc)
-	 * @see com.holonplatform.vaadin.flow.components.builders.ContextMenuConfigurator.MenuItemBuilder#add()
+	 * @see com.holonplatform.vaadin.flow.components.builders.ContextMenuConfigurator.MenuItemBuilder#content()
 	 */
 	@Override
 	public B add() {

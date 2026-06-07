@@ -51,19 +51,19 @@ import java.util.function.Supplier;
  * ResponsiveDiv hero = ResponsiveDiv.flex()
  *     .column().gapS()
  *     .desktop().row().gapL().alignCenter().end()
- *     .add(textBlock, imageBlock)
+ *     .content(textBlock, imageBlock)
  *     .build();
  *
  * // Pattern 2 — card grid: 1 → 2 → 3 columns
  * ResponsiveDiv cards = ResponsiveDiv.grid()
  *     .mobile(1).tablet(2).desktop(3).gapM()
- *     .add(card1, card2, card3)
+ *     .content(card1, card2, card3)
  *     .build();
  *
  * // Pattern 3 — asymmetric: 8-col main + 4-col sidebar
  * ResponsiveDiv layout = ResponsiveDiv.grid()
  *     .mobile(1).desktop(12)
- *     .add(
+ *     .content(
  *         GridEntry.of(mainContent).base(ColSpan.COL_12).desktop(ColSpan.COL_8),
  *         GridEntry.of(sidebar).base(ColSpan.COL_12).desktop(ColSpan.COL_4)
  *     )
@@ -703,7 +703,7 @@ public class ResponsiveDiv extends Div {
      * <pre>{@code
      * ResponsiveDiv.grid()
      *     .mobile(1).tablet(2).desktop(3).gapM()
-     *     .add(card1, card2, card3)
+     *     .content(card1, card2, card3)
      *     .build();
      * }</pre>
      */
@@ -802,7 +802,7 @@ public class ResponsiveDiv extends Div {
         public GridScopeBuilder largeDesktop() { return new GridScopeBuilder(this, ViewMode.LARGE_DESKTOP); }
         public GridScopeBuilder on(ViewMode mode) { return new GridScopeBuilder(this, mode); }
 
-        // --- Col-span–aware add ---
+        // --- Col-span–aware content ---
 
         public GridBuilder add(ColSpan colSpan, Component... components) {
             for (Component c : components) {
@@ -832,7 +832,7 @@ public class ResponsiveDiv extends Div {
      * Self-documenting column-span configuration for a single grid child.
      *
      * <pre>{@code
-     * .add(
+     * .content(
      *     GridEntry.of(mainContent).base(ColSpan.COL_12).desktop(ColSpan.COL_8),
      *     GridEntry.of(sidebar).base(ColSpan.COL_12).desktop(ColSpan.COL_4)
      * )
@@ -947,7 +947,7 @@ public class ResponsiveDiv extends Div {
      * ResponsiveDiv.flex()
      *     .column().gapS()
      *     .desktop().row().gapL().alignCenter().end()
-     *     .add(child1, child2)
+     *     .content(child1, child2)
      *     .build();
      * }</pre>
      */

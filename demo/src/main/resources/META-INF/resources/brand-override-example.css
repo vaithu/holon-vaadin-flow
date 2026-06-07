@@ -166,7 +166,7 @@
   --comp-focus-ring:   0 0 0 2px var(--surface-0), 0 0 0 4px var(--brand-500);
   /* ════════════════════════════════════════════════════════════════
      8e. TYPOGRAPHY SCALE  —  semantic step names
-         Extend: add a --type-* token here, add a .type-* utility class
+         Extend: content a --type-* token here, content a .type-* utility class
          in vaadin-shell-theme.css §7.  That's the only change needed.
          ──────────────────────────────────────────────────────────
          Naming: --type-sz-*, --type-wt-*, --type-lh-*, --type-ls-*

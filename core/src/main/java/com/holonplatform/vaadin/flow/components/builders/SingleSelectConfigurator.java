@@ -127,7 +127,7 @@ public interface SingleSelectConfigurator<T, ITEM, B extends SingleSelectConfigu
 
 	/**
 	 * Adds the given component into the <code>prefix</code> slot.
-	 * @param component The component to add (not null)
+	 * @param component The component to content (not null)
 	 * @return this
 	 * @since 5.2.13
 	 */
@@ -135,7 +135,7 @@ public interface SingleSelectConfigurator<T, ITEM, B extends SingleSelectConfigu
 
 	/**
 	 * Adds the given component into the select drop-down area.
-	 * @param component The component to add (not null)
+	 * @param component The component to content (not null)
 	 * @return this
 	 * @since 5.2.13
 	 */
@@ -143,7 +143,7 @@ public interface SingleSelectConfigurator<T, ITEM, B extends SingleSelectConfigu
 
 	/**
 	 * Adds the given component into the select drop-down area as the first child.
-	 * @param component The component to add (not null)
+	 * @param component The component to content (not null)
 	 * @return this
 	 * @since 5.2.13
 	 */
@@ -151,8 +151,8 @@ public interface SingleSelectConfigurator<T, ITEM, B extends SingleSelectConfigu
 
 	/**
 	 * Adds the given component into the select drop-down area after the given item.
-	 * @param afterItem The item to add component after (not null)
-	 * @param component The component to add (not null)
+	 * @param afterItem The item to content component after (not null)
+	 * @param component The component to content (not null)
 	 * @return this
 	 * @since 5.2.13
 	 */
@@ -160,8 +160,8 @@ public interface SingleSelectConfigurator<T, ITEM, B extends SingleSelectConfigu
 
 	/**
 	 * Adds the given component into the select drop-down area before the given item.
-	 * @param beforeItem The item to add component before (not null)
-	 * @param component The component to add (not null)
+	 * @param beforeItem The item to content component before (not null)
+	 * @param component The component to content (not null)
 	 * @return this
 	 * @since 5.2.13
 	 */
@@ -213,7 +213,7 @@ public interface SingleSelectConfigurator<T, ITEM, B extends SingleSelectConfigu
 		 * </p>
 		 * @param datastore The {@link Datastore} to use (not null)
 		 * @param target The {@link DataTarget} to use as query target (not null)
-		 * @return An extended builder which allow further data provider configuration, for example to add fixed
+		 * @return An extended builder which allow further data provider configuration, for example to content fixed
 		 *         {@link QueryFilter} and {@link QuerySort}.
 		 * @see DatastoreDataProviderConfigurator
 		 */

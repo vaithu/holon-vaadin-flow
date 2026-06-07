@@ -12,14 +12,14 @@ import com.vaadin.flow.router.Route;
  *
  * <h3>How to use in your own application:</h3>
  * <pre>{@code
- * // Full master-detail CRUD — just add the panel anywhere
- * add(new CustomerDetailPanel(customerService));
+ * // Full master-detail CRUD — just content the panel anywhere
+ * content(new CustomerDetailPanel(customerService));
  *
  * // Listing-only variant
- * add(new CustomerListPanel(customerService));
+ * content(new CustomerListPanel(customerService));
  *
  * // Pre-select a specific customer
- * add(new CustomerDetailPanel(customerService, customerId));
+ * content(new CustomerDetailPanel(customerService, customerId));
  * }</pre>
  */
 @PageTitle("Customer Module – Holon Demo")

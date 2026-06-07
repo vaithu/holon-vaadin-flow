@@ -3,6 +3,7 @@ package com.holonplatform.vaadin.flow.internal.components.builders;
 import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.vaadin.flow.components.builders.AvatarColor;
 import com.holonplatform.vaadin.flow.components.builders.AvatarConfigurator;
+import com.holonplatform.vaadin.flow.components.builders.LabelBuilder;
 import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
 import com.holonplatform.vaadin.flow.vaadinplus.components.Alert;
 import com.vaadin.flow.component.HasEnabled;
@@ -39,6 +40,11 @@ public abstract class AbstractAvatarConfigurator<C extends AvatarConfigurator<C>
     public C name(String name) {
         getComponent().setName(name);
         return getConfigurator();
+    }
+
+    @Override
+    public C name(LabelBuilder<?> label) {
+        return name(label != null ? label.build().getText() : null);
     }
 
     @Override
@@ -139,6 +145,12 @@ public abstract class AbstractAvatarConfigurator<C extends AvatarConfigurator<C>
             };
             getComponent().addClassName(cls);
         }
+        return getConfigurator();
+    }
+
+    @Override
+    public C profile() {
+        getComponent().addClassName("avatar--profile-xl");
         return getConfigurator();
     }
 

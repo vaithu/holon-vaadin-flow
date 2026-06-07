@@ -10,6 +10,8 @@ import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.avatar.AvatarVariant;
 import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
@@ -22,9 +24,8 @@ import com.holonplatform.vaadin.flow.vaadinplus.ResponsiveDiv;
  *
  * <p>Covers:
  * <ol>
- *   <li>Basic header with title</li>
+ *   <li>Mobile-friendly product header with breadcrumb, avatar, details, actions, and tabs</li>
  *   <li>Header with actions (edit, refresh, new, close)</li>
- *   <li>Header with breadcrumb and details</li>
  *   <li>Header with tabs</li>
  * </ol>
  */
@@ -38,14 +39,13 @@ public class HeaderDemoView extends Div {
         var title = new H1("Header");
 
         var desc = new Paragraph(
-                "Semantic page header with prefix, breadcrumb, details, actions, "
-                + "and tab slots — all via the Holon builder pattern.");
+                "Responsive page header with top breadcrumbs, a middle content row, "
+                + "and tabs below — all via the Holon builder pattern.");
 
         var examples = ResponsiveDiv.flex().column().gapL().build();
 
-        examples.add(basicExample());
+        examples.add(productHeaderExample());
         examples.add(actionsExample());
-        examples.add(breadcrumbExample());
         examples.add(tabsExample());
 
         add(title, desc, examples);
@@ -53,19 +53,55 @@ public class HeaderDemoView extends Div {
 
     // ── Example builders ────────────────────────────────────────────────────
 
-    private DemoExample basicExample() {
+    private DemoExample productHeaderExample() {
         var preview = new Div();
 
-        Header header = HeaderBuilder.create("Dashboard")
-                .build();
+        Header header = HeaderBuilder.create("Temperature Sensor IP67").build();
+        header.setAvatar("4A1", AvatarVariant.LUMO_LARGE);
+        header.setBreadcrumb(
+                new BreadcrumbItem(new Span("Catalog")),
+                new BreadcrumbItem(new Span("Products")),
+                new BreadcrumbItem(new Span("Sensors")),
+                new BreadcrumbItem(new Span("Temperature Sensor IP67"))
+        );
+        header.setDetails(
+                new Span("PT-SEN-T2"),
+                new Span("PrahaTech s.r.o."),
+                new Span("Sensors > Industrial")
+        );
+        header.setActions(
+                new Button("Duplicate"),
+                new Button("Export"),
+                new Button("Edit")
+        );
+        header.setTabs(new Tab("Overview"), new Tab("Specs"), new Tab("Stock"));
+        header.withoutBorder();
 
         preview.add(header);
 
-        return new DemoExample("Basic Header",
+        return new DemoExample("Mobile-friendly Product Header",
                 preview,
                 """
-                HeaderBuilder.create("Dashboard")
-                    .build();
+                Header header = HeaderBuilder.create("Temperature Sensor IP67").build();
+                header.setAvatar("4A1", AvatarVariant.LUMO_LARGE);
+                header.setBreadcrumb(
+                    new BreadcrumbItem(new Span("Catalog")),
+                    new BreadcrumbItem(new Span("Products")),
+                    new BreadcrumbItem(new Span("Sensors")),
+                    new BreadcrumbItem(new Span("Temperature Sensor IP67"))
+                );
+                header.setDetails(
+                    new Span("PT-SEN-T2"),
+                    new Span("PrahaTech s.r.o."),
+                    new Span("Sensors > Industrial")
+                );
+                header.setActions(
+                    new Button("Duplicate"),
+                    new Button("Export"),
+                    new Button("Edit")
+                );
+                header.setTabs(new Tab("Overview"), new Tab("Specs"), new Tab("Stock"));
+                header.withoutBorder();
                 """);
     }
 
@@ -91,34 +127,6 @@ public class HeaderDemoView extends Div {
                     .refresh(btn -> btn.withClickListener(e -> Notification.show("Refreshed")))
                     .edit(btn -> btn.text("Edit")
                         .withClickListener(e -> Notification.show("Edit clicked")))
-                    .build();
-                """);
-    }
-
-    private DemoExample breadcrumbExample() {
-        var preview = new Div();
-
-        Header header = HeaderBuilder.create("Order #12345")
-                .breadcrumb(
-                        new BreadcrumbItem(new Span("Home")),
-                        new BreadcrumbItem(new Span("Orders")),
-                        new BreadcrumbItem(new Span("#12345")))
-                .details(new Span("Status: Processing"), new Span("Date: 2026-04-16"))
-                .withoutBorder()
-                .build();
-
-        preview.add(header);
-
-        return new DemoExample("Breadcrumb & Details",
-                preview,
-                """
-                HeaderBuilder.create("Order #12345")
-                    .breadcrumb(
-                        new BreadcrumbItem(new Span("Home")),
-                        new BreadcrumbItem(new Span("Orders")),
-                        new BreadcrumbItem(new Span("#12345")))
-                    .details(new Span("Status: Processing"), new Span("Date: 2026-04-16"))
-                    .withoutBorder()
                     .build();
                 """);
     }

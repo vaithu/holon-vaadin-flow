@@ -16,8 +16,6 @@
 package com.holonplatform.vaadin.flow.vaadinplus.components;
 
 import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.HasSize;
-import com.vaadin.flow.component.HasStyle;
 import com.vaadin.flow.component.html.Div;
 
 /**
@@ -37,7 +35,7 @@ import com.vaadin.flow.component.html.Div;
  * @see Carousel
  * @see CarouselContent
  */
-public class CarouselItem extends Div implements HasSize, HasStyle {
+public class CarouselItem extends Div {
 
     private static final long serialVersionUID = 1L;
 

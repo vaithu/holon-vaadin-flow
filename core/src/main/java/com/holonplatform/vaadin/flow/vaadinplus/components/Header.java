@@ -1,15 +1,16 @@
 package com.holonplatform.vaadin.flow.vaadinplus.components;
 
-import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.vaadin.flow.components.Components;
 import com.holonplatform.vaadin.flow.components.builders.LabelBuilder;
-import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
+import com.holonplatform.vaadin.flow.internal.lumo.Gap;
 import com.holonplatform.vaadin.flow.vaadinplus.Layout;
 import com.holonplatform.vaadin.flow.vaadinplus.utilities.Color;
 import com.holonplatform.vaadin.flow.vaadinplus.utilities.Font;
 import com.holonplatform.vaadin.flow.vaadinplus.utilities.HeadingLevel;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasTheme;
+import com.vaadin.flow.component.avatar.Avatar;
+import com.vaadin.flow.component.avatar.AvatarVariant;
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.Tabs;
@@ -19,35 +20,38 @@ import java.util.Optional;
 @StyleSheet("context://header.css")
 public class Header extends Layout implements HasTheme {
 
-    // Layout structure
-    private final Layout row;
-    private final Layout prefix;
-    private final Layout column;
-    private final Breadcrumb breadcrumb;
-    private final Layout details;
-    private final Layout actions;
+    private static final String CLASS_HEADER = "iyen-header";
+    private static final String CLASS_HEADER_BORDERED = "iyen-header--bordered";
+    private static final String CLASS_HEADER_NO_BORDER = "header--no-border";
+    private static final String CLASS_ROW = "iyen-header__row";
+    private static final String CLASS_TOP_ROW = "iyen-header__top-row";
+    private static final String CLASS_TOP_ROW_AVATAR = "iyen-header__top-row--avatar";
+    private static final String CLASS_COLUMN = "iyen-header__column";
+    private static final String CLASS_COLUMN_LINE = "iyen-header__column-line";
+    private static final String CLASS_PREFIX = "iyen-header__prefix";
+    private static final String CLASS_PREFIX_AVATAR = "iyen-header__prefix--avatar";
+    private static final String CLASS_BREADCRUMB = "iyen-header__breadcrumb";
+    private static final String CLASS_DETAILS = "iyen-header__details";
+    private static final String CLASS_ACTIONS = "iyen-header__actions";
+    private static final String CLASS_ACTIONS_COMPACT = "iyen-header__actions--compact";
+    private static final String CLASS_TABS = "iyen-header__tabs";
 
-    // Optional tabs row
+    private final Layout row = new Layout();
+    private final Layout topRow = new Layout();
+    private final Layout column = new Layout();
+    private final Layout columnLine = new Layout();
+    private Layout prefix;
+    private Breadcrumb breadcrumb;
+    private Layout details;
+    private Layout actions;
     private Tabs tabs;
-
-    // Heading component
     private Component heading;
-
-    // Style state for heading
+    private Avatar avatar;
     private Color.Text headingTextColor;
     private Font.Size headingFontSize;
     private Font.Weight headingFontWeight;
     private Font.LineHeight headingLineHeight;
-
-    private Component[] prefixComponents;
-
-    public Component[] getPrefixComponents() {
-        return prefixComponents;
-    }
-
-    // -------------------------------------------------------------------------
-    // Constructors
-    // -------------------------------------------------------------------------
+    private Component[] prefixComponents = new Component[0];
 
     public Header(String title) {
         this(title, HeadingLevel.H2);
@@ -55,339 +59,413 @@ public class Header extends Layout implements HasTheme {
 
     public Header(LabelBuilder<?> labelBuilder) {
         this("Not set", HeadingLevel.H1);
-        setHeading(labelBuilder);
+        if (labelBuilder != null) {
+            setHeading(labelBuilder.build());
+        }
     }
 
     public Header(String title, HeadingLevel level) {
-        addClassName("iyen-header");
+        addClassName(CLASS_HEADER);
+        addClassName(CLASS_HEADER_BORDERED);
         getElement().setAttribute("role", "region");
 
-        this.prefix = new Layout();
+        getRowLayout().addClassName(CLASS_ROW);
+        getTopRowLayout().addClassName(CLASS_TOP_ROW);
+        getColumnLayout().addClassName(CLASS_COLUMN);
+        columnLine.addClassName(CLASS_COLUMN_LINE);
+        getColumnLayout().add(columnLine);
+        getTopRowLayout().add(getColumnLayout());
+        getRowLayout().add(getTopRowLayout());
+        add(getRowLayout());
 
-        this.breadcrumb = new Breadcrumb();
-        this.breadcrumb.addClassName("iyen-header__breadcrumb");
-
-        this.details = new Layout();
-        this.details.addClassName("iyen-header__details");
-
-        this.actions = new Layout();
-        this.actions.addClassName("iyen-header__actions");
-
-        this.heading = level.getComponent(title);
+        setHeading(title, level);
         setHeadingFontSize(Font.Size.XLARGE);
-
-        this.column = new Layout(this.heading);
-
-        this.row = new Layout(this.column);
-        this.row.addClassName("iyen-header__row");
-
-        add(this.row);
     }
 
-    // -------------------------------------------------------------------------
-    // Public API – Layout slots
-    // -------------------------------------------------------------------------
-
     public void setPrefix(Component... components) {
-        this.prefixComponents = components;
-        updateSlotInRow(prefix, components);
+        this.prefixComponents = components != null ? components.clone() : new Component[0];
+        if (isEmpty(components)) {
+            detachFromTopRow(prefix);
+            prefix = null;
+        } else {
+            prefix = ensureSlot(prefix, CLASS_PREFIX);
+            updatePrefixVariant(components);
+            replaceContent(prefix, components);
+        }
+        refreshRow();
+    }
+
+    public Component[] getPrefixComponents() {
+        return prefixComponents.clone();
+    }
+
+    public void setAvatar(LabelBuilder<?> labelBuilder, AvatarVariant size) {
+        var builder = Components.avatar().profile();
+        if (labelBuilder != null) {
+            builder.name(labelBuilder);
+        }
+        if (size != null) {
+            builder.withThemeVariants(size);
+        }
+        avatar = builder.build();
+        setPrefix(avatar);
+    }
+
+    public void setAvatarName(String name) {
+        if (avatar != null) {
+            avatar.setName(name);
+        } else if (name != null) {
+            setAvatar(name, AvatarVariant.LUMO_XLARGE);
+        }
+    }
+
+    public void setAvatar(String name, AvatarVariant size) {
+        var builder = Components.avatar().profile().name(name);
+        if (size != null) {
+            builder.withThemeVariants(size);
+        }
+        avatar = builder.build();
+        setPrefix(avatar);
     }
 
     public void setBreadcrumb(BreadcrumbItem... items) {
-        breadcrumb.removeAll();
-
-        int count = 0;
-        if (items != null) {
-            for (BreadcrumbItem item : items) {
-                if (item != null) {
-                    breadcrumb.add(item);
-                    count++;
-                }
+        if (isEmpty(items)) {
+            clearBreadcrumb();
+            return;
+        }
+        Breadcrumb newBreadcrumb = new Breadcrumb();
+        for (BreadcrumbItem item : items) {
+            if (item != null) {
+                newBreadcrumb.add(item);
             }
         }
+        setBreadcrumb(newBreadcrumb);
+    }
 
-        boolean hasItems = count > 0;
-
-        if (hasItems) {
-            if (breadcrumb.getParent().isEmpty()) {
-                column.getElement().insertChild(0, breadcrumb.getElement());
-            }
-            breadcrumb.setVisible(true);
-        } else {
-            if (breadcrumb.getParent().isPresent()) {
-                column.remove(breadcrumb);
-            }
-            breadcrumb.setVisible(false);
+    public void setBreadcrumb(Breadcrumb breadcrumb) {
+        if (this.breadcrumb != null && this.breadcrumb != breadcrumb) {
+            remove(this.breadcrumb);
+            this.breadcrumb.setVisible(false);
+        }
+        this.breadcrumb = breadcrumb;
+        if (this.breadcrumb != null) {
+            this.breadcrumb.addClassName(CLASS_BREADCRUMB);
+            this.breadcrumb.setVisible(true);
+            Components.configure(this).addComponentAsFirst(this.breadcrumb);
         }
     }
 
     public void setDetails(Component... components) {
-        updateSlotInColumn(details, components);
-
-        if (details.getComponentCount() > 0) {
-            this.row.addClassName("iyen-header__row--with-details");
+        if (isEmpty(components)) {
+            detachFromColumn(details);
+            details = null;
         } else {
-            this.row.removeClassName("iyen-header__row--with-details");
+            details = ensureSlot(details, CLASS_DETAILS);
+            replaceContent(details, components);
         }
-    }
-
-    public void addActions(Component... components) {
-        if (components != null) {
-            for (Component component : components) {
-                if (component != null) {
-                    this.actions.add(component);
-                }
-            }
-        }
-        updateActionsVisibilityAndAttachment();
+        refreshColumn();
     }
 
     public void setActions(Component... components) {
-        this.actions.removeAll();
+        if (isEmpty(components)) {
+            detachFromColumnLine(actions);
+            actions = null;
+        } else {
+            actions = ensureSlot(actions, CLASS_ACTIONS);
+            replaceContent(actions, components);
+            updateActionsVariant(components);
+        }
+        if (actions == null) {
+            updateActionsVariant();
+        }
+        refreshColumn();
+    }
 
-        if (components != null) {
-            for (Component component : components) {
-                if (component != null) {
-                    this.actions.add(component);
-                }
+    public void addActions(Component... components) {
+        if (isEmpty(components)) {
+            return;
+        }
+        actions = ensureSlot(actions, CLASS_ACTIONS);
+        for (Component component : components) {
+            if (component != null) {
+                actions.add(component);
             }
         }
-
-        updateActionsVisibilityAndAttachment();
+        updateActionsVariant(actions.getChildren().toArray(Component[]::new));
+        refreshColumn();
     }
 
-    public Layout getRowLayout() {
-        return this.row;
-    }
-
-    public Layout getColumnLayout() {
-        return this.column;
-    }
-
-    // -------------------------------------------------------------------------
-    // Public API – Heading
-    // -------------------------------------------------------------------------
-
-    public void setHeading(String title, HeadingLevel level) {
-        Component newHeading = level.getComponent(title);
-        applyHeadingStyles(newHeading);
-        setHeading(newHeading);
-    }
-
-    public void setHeading(Component newHeading) {
-        if (this.heading != null && this.heading.getParent().isPresent()) {
-            this.column.replace(this.heading, newHeading);
+    public void setTabs(Tabs tabs) {
+        if (this.tabs != null && this.tabs != tabs) {
+            remove(this.tabs);
+            this.tabs.setVisible(false);
         }
-        this.heading = newHeading;
-    }
-
-    public void setHeading(String title) {
-        if (this.heading != null) {
-            this.heading.getElement().setText(title);
+        this.tabs = tabs;
+        if (this.tabs != null) {
+            this.tabs.addClassName(CLASS_TABS);
+            refreshTabs();
+        } else {
+            addClassName(CLASS_HEADER_BORDERED);
         }
     }
 
-    /**
-     * Sets the heading text from a {@link Localizable} descriptor,
-     * resolved using the current {@link LocalizationProvider}.
-     *
-     * @param title localizable heading text (not null)
-     */
-    public void setHeading(Localizable title) {
-        String resolved = LocalizationProvider.localize(title)
-                .orElseGet(() -> title.getMessage() != null ? title.getMessage() : "");
-        setHeading(resolved);
+    public void setTabs(Tab... tabs) {
+        if (isEmpty(tabs)) {
+            ensureTabs();
+            this.tabs.removeAll();
+            refreshTabs();
+            return;
+        }
+
+        ensureTabs();
+        this.tabs.removeAll();
+        for (Tab tab : tabs) {
+            if (tab != null) {
+                this.tabs.add(tab);
+            }
+        }
+        refreshTabs();
     }
 
-    /**
-     * Replaces the heading element with a new one at the given level,
-     * using a {@link Localizable} for the title text.
-     *
-     * @param title localizable heading text (not null)
-     * @param level heading level (not null)
-     */
-    public void setHeading(Localizable title, HeadingLevel level) {
-        String resolved = LocalizationProvider.localize(title)
-                .orElseGet(() -> title.getMessage() != null ? title.getMessage() : "");
-        setHeading(resolved, level);
+    public Optional<Tabs> getTabs() {
+        return Optional.ofNullable(tabs);
+    }
+
+    public void setHeading(Component component) {
+        if (component == null) {
+            return;
+        }
+        heading = component;
+        heading.setVisible(true);
+        applyHeadingStyles(heading);
+        refreshColumn();
     }
 
     public void setHeading(LabelBuilder<?> labelBuilder) {
-        Component newHeading = labelBuilder.build();
-        applyHeadingStyles(newHeading);
-        setHeading(newHeading);
+        if (labelBuilder != null) {
+            setHeading(labelBuilder.build());
+        }
+    }
+
+    public void setHeading(String title) {
+        if (heading != null) {
+            heading.setVisible(true);
+            heading.getElement().setText(title != null ? title : "");
+        } else {
+            setHeading(title, HeadingLevel.H2);
+        }
+    }
+
+    public void setHeading(String newTitle, HeadingLevel headingLevel) {
+        HeadingLevel level = headingLevel != null ? headingLevel : HeadingLevel.H2;
+        heading = level.getComponent(newTitle != null ? newTitle : "");
+        heading.setVisible(true);
+        applyHeadingStyles(heading);
+        refreshColumn();
     }
 
     public void setHeadingFontSize(Font.Size fontSize) {
         if (fontSize == headingFontSize) {
             return;
         }
-        updateHeadingStyleClass(
-                headingFontSize != null ? headingFontSize.getClassName() : null,
-                fontSize != null ? fontSize.getClassName() : null
-        );
-        this.headingFontSize = fontSize;
+        updateStyleClass(heading, headingFontSize, fontSize);
+        headingFontSize = fontSize;
     }
 
     public void setHeadingFontWeight(Font.Weight fontWeight) {
         if (fontWeight == headingFontWeight) {
             return;
         }
-        updateHeadingStyleClass(
-                headingFontWeight != null ? headingFontWeight.getClassName() : null,
-                fontWeight != null ? fontWeight.getClassName() : null
-        );
-        this.headingFontWeight = fontWeight;
+        updateStyleClass(heading, headingFontWeight, fontWeight);
+        headingFontWeight = fontWeight;
     }
 
     public void setHeadingLineHeight(Font.LineHeight lineHeight) {
         if (lineHeight == headingLineHeight) {
             return;
         }
-        updateHeadingStyleClass(
-                headingLineHeight != null ? headingLineHeight.getClassName() : null,
-                lineHeight != null ? lineHeight.getClassName() : null
-        );
-        this.headingLineHeight = lineHeight;
+        updateStyleClass(heading, headingLineHeight, lineHeight);
+        headingLineHeight = lineHeight;
     }
 
     public void setHeadingTextColor(Color.Text textColor) {
         if (textColor == headingTextColor) {
             return;
         }
-        updateHeadingStyleClass(
-                headingTextColor != null ? headingTextColor.getClassName() : null,
-                textColor != null ? textColor.getClassName() : null
-        );
-        this.headingTextColor = textColor;
+        updateStyleClass(heading, headingTextColor, textColor);
+        headingTextColor = textColor;
     }
 
     public void setHeadingId(String id) {
-        if (this.heading != null) {
-            this.heading.setId(id);
+        if (heading != null) {
+            heading.setId(id);
         }
     }
 
-    // -------------------------------------------------------------------------
-    // Public API – Tabs
-    // -------------------------------------------------------------------------
-
-    public Optional<Tabs> getTabs() {
-        return Optional.ofNullable(tabs);
+    public void setHeadingVisible(boolean visible) {
+        if (heading != null) {
+            heading.setVisible(visible);
+        }
     }
 
-    public void setTabs(Tab... tabs) {
-        Tabs newTabs = Components.tabs().build();
-        if (tabs != null) {
-            for (Tab tab : tabs) {
-                if (tab != null) {
-                    newTabs.add(tab);
-                }
-            }
-        }
-        setTabs(newTabs);
-    }
-
-    public void setTabs(Tabs tabs) {
-        if (this.tabs != null && this.tabs.getParent().isPresent()) {
-            remove(this.tabs);
-        }
-        this.tabs = tabs;
-        configTabs();
-    }
-
-    // -------------------------------------------------------------------------
-    // Internal helpers
-    // -------------------------------------------------------------------------
-
-    private void updateSlotInColumn(Layout slot, Component[] components) {
-        slot.removeAll();
-
-        if (components != null) {
-            for (Component component : components) {
-                if (component != null) {
-                    slot.add(component);
-                }
-            }
-        }
-
-        boolean hasContent = slot.getComponentCount() > 0;
-
-        if (hasContent) {
-            if (slot.getParent().isEmpty()) {
-                column.add(slot);
-            }
-            slot.setVisible(true);
+    public void setBordered(boolean bordered) {
+        if (bordered) {
+            removeClassName(CLASS_HEADER_NO_BORDER);
+            addClassName(CLASS_HEADER_BORDERED);
         } else {
-            if (slot.getParent().isPresent()) {
-                column.remove(slot);
-            }
-            slot.setVisible(false);
+            removeClassName(CLASS_HEADER_BORDERED);
+            addClassName(CLASS_HEADER_NO_BORDER);
         }
     }
 
-    private void updateSlotInRow(Layout slot, Component[] components) {
-        slot.removeAll();
+    public void withoutBorder() {
+        setBordered(false);
+    }
 
-        if (components != null) {
-            for (Component component : components) {
-                if (component != null) {
-                    slot.add(component);
-                }
-            }
+    // noinspection UnusedDeclaration
+    public Layout getRowLayout() {
+        return row;
+    }
+
+    // noinspection UnusedDeclaration
+    public Layout getTopRowLayout() {
+        return topRow;
+    }
+
+    // noinspection UnusedDeclaration
+    public Layout getColumnLayout() {
+        return column;
+    }
+
+    private Layout ensureSlot(Layout slot, String className) {
+        if (slot == null) {
+            slot = new Layout();
+            slot.addClassName(className);
         }
+        return slot;
+    }
 
-        boolean hasContent = slot.getComponentCount() > 0;
-
-        if (hasContent) {
-            if (slot.getParent().isEmpty()) {
-                row.getElement().insertChild(0, slot.getElement());
-            }
-            slot.setVisible(true);
-        } else {
-            if (slot.getParent().isPresent()) {
-                row.remove(slot);
-            }
-            slot.setVisible(false);
+    private void ensureTabs() {
+        if (tabs == null) {
+            tabs = new Tabs();
+            tabs.addClassName(CLASS_TABS);
         }
     }
 
-    private void updateActionsVisibilityAndAttachment() {
-        boolean hasActions = this.actions.getComponentCount() > 0;
-        if (hasActions) {
-            if (this.actions.getParent().isEmpty()) {
-                row.add(this.actions);
-            }
-            this.actions.setVisible(true);
-        } else {
-            if (this.actions.getParent().isPresent()) {
-                row.remove(this.actions);
-            }
-            this.actions.setVisible(false);
+    private void refreshRow() {
+        getTopRowLayout().removeAll();
+        if (prefix != null) {
+            getTopRowLayout().add(prefix);
+        }
+        getTopRowLayout().add(getColumnLayout());
+        getRowLayout().removeAll();
+        getRowLayout().add(getTopRowLayout());
+    }
+
+    private void refreshColumn() {
+        columnLine.removeAll();
+        if (heading != null) {
+            columnLine.add(heading);
+        }
+        if (actions != null) {
+            columnLine.add(actions);
+        }
+        getColumnLayout().removeAll();
+        getColumnLayout().add(columnLine);
+        if (details != null) {
+            getColumnLayout().add(details);
         }
     }
 
-    private void configTabs() {
-        if (this.tabs == null) {
+    private void refreshTabs() {
+        if (tabs == null) {
+            addClassName(CLASS_HEADER_BORDERED);
             return;
         }
-
-        boolean hasTabs = this.tabs.getTabCount() > 0;
-
-        if (hasTabs) {
-            removeClassName("iyen-header--bordered");
-            this.tabs.setVisible(true);
-
-            if (this.tabs.getParent().isEmpty()) {
-                add(this.tabs);
+        if (tabs.getChildren().findFirst().isPresent()) {
+            tabs.setVisible(true);
+            removeClassName(CLASS_HEADER_BORDERED);
+            if (tabs.getParent().isEmpty()) {
+                add(tabs);
             }
-            addClassName("iyen-header--tabbed");
         } else {
-            this.tabs.setVisible(false);
-            if (this.tabs.getParent().isPresent()) {
-                remove(this.tabs);
+            tabs.setVisible(false);
+            addClassName(CLASS_HEADER_BORDERED);
+            if (tabs.getParent().isPresent()) {
+                remove(tabs);
             }
-            addClassName("iyen-header--bordered");
+        }
+    }
+
+    private void clearBreadcrumb() {
+        if (breadcrumb != null) {
+            remove(breadcrumb);
+            breadcrumb.setVisible(false);
+            breadcrumb = null;
+        }
+    }
+
+    private void detachFromTopRow(Layout slot) {
+        if (slot != null && slot.getParent().isPresent()) {
+            getTopRowLayout().remove(slot);
+        }
+    }
+
+    private void updatePrefixVariant(Component... components) {
+        if (prefix == null) {
+            return;
+        }
+        prefix.removeClassName(CLASS_PREFIX_AVATAR);
+        getTopRowLayout().removeClassName(CLASS_TOP_ROW_AVATAR);
+        if (components != null && components.length == 1 && components[0] instanceof Avatar) {
+            prefix.addClassName(CLASS_PREFIX_AVATAR);
+            getTopRowLayout().addClassName(CLASS_TOP_ROW_AVATAR);
+        }
+    }
+
+    private void detachFromColumn(Layout slot) {
+        if (slot != null && slot.getParent().isPresent()) {
+            getColumnLayout().remove(slot);
+        }
+    }
+
+    private void detachFromColumnLine(Layout slot) {
+        if (slot != null && slot.getParent().isPresent()) {
+            columnLine.remove(slot);
+        }
+    }
+
+    private void updateActionsVariant(Component... components) {
+        if (actions == null) {
+            return;
+        }
+        actions.removeClassName(CLASS_ACTIONS_COMPACT);
+        if (isCompactActions(components)) {
+            actions.addClassName(CLASS_ACTIONS_COMPACT);
+        }
+    }
+
+    private boolean isCompactActions(Component... components) {
+        if (isEmpty(components)) {
+            return false;
+        }
+        for (Component component : components) {
+            if (!(component instanceof com.vaadin.flow.component.button.Button button)) {
+                return false;
+            }
+            if (button.getText() != null && !button.getText().isBlank()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private void replaceContent(Layout layout, Component[] components) {
+        layout.removeAll();
+        for (Component component : components) {
+            if (component != null) {
+                layout.add(component);
+            }
         }
     }
 
@@ -409,16 +487,59 @@ public class Header extends Layout implements HasTheme {
         }
     }
 
-    private void updateHeadingStyleClass(String oldClassName, String newClassName) {
-        if (this.heading == null) {
+    private void updateStyleClass(Component target, Enum<?> oldValue, Enum<?> newValue) {
+        if (target == null) {
             return;
         }
-        if (oldClassName != null) {
-            this.heading.removeClassName(oldClassName);
+        if (oldValue != null) {
+            target.removeClassName(classNameOf(oldValue));
         }
-        if (newClassName != null) {
-            this.heading.addClassNames(newClassName);
+        if (newValue != null) {
+            target.addClassNames(classNameOf(newValue));
         }
     }
 
+    private String classNameOf(Enum<?> value) {
+        if (value instanceof Font.Size size) {
+            return size.getClassName();
+        }
+        if (value instanceof Font.Weight weight) {
+            return weight.getClassName();
+        }
+        if (value instanceof Font.LineHeight lineHeight) {
+            return lineHeight.getClassName();
+        }
+        if (value instanceof Color.Text textColor) {
+            return textColor.getClassName();
+        }
+        return value != null ? value.name().toLowerCase() : "";
+    }
+
+    private boolean isEmpty(Component... components) {
+        if (components == null) {
+            return true;
+        }
+        for (Component component : components) {
+            if (component != null) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private boolean isEmpty(Tab... tabs) {
+        if (tabs == null) {
+            return true;
+        }
+        for (Tab tab : tabs) {
+            if (tab != null) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public void setGap(Gap gap) {
+
+    }
 }

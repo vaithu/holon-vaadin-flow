@@ -26,8 +26,6 @@ import com.holonplatform.vaadin.flow.components.builders.BeanPropertyInputFormBu
 import com.holonplatform.vaadin.flow.components.builders.ButtonConfigurator;
 import com.holonplatform.vaadin.flow.components.builders.PropertyInputFormBuilder;
 import com.vaadin.flow.component.Focusable;
-import com.vaadin.flow.component.HasSize;
-import com.vaadin.flow.component.HasStyle;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.formlayout.FormLayout;
@@ -107,7 +105,7 @@ import java.util.function.Consumer;
  * @see PropertyBuilder
  */
 @StyleSheet("context://entity-form-panel.css")
-public class EntityFormPanel<T> extends Div implements HasSize, HasStyle {
+public class EntityFormPanel<T> extends Div {
 
     private static final long serialVersionUID = 1L;
 

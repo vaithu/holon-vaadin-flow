@@ -125,7 +125,7 @@ public class FilterPanelDemoView extends Div {
      */
     private DemoExample standaloneExample() {
         var panel = DynamicFilterPanel.of(Order.class);
-        // Pre-add one row so the panel looks like the reference design from the start.
+        // Pre-content one row so the panel looks like the reference design from the start.
         panel.addRow();
 
         return new DemoExample("Standalone Panel (one pre-added row)", panel, """

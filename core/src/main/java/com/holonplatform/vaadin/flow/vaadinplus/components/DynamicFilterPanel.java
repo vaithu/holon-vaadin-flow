@@ -25,6 +25,7 @@ import com.holonplatform.vaadin.flow.components.Components;
 import com.holonplatform.vaadin.flow.components.FilterInputGroup;
 import com.holonplatform.vaadin.flow.components.Input;
 import com.holonplatform.vaadin.flow.components.events.FilterChangeListener;
+import com.holonplatform.vaadin.flow.components.Components;
 import com.holonplatform.vaadin.flow.components.utils.BeanUtils;
 import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
 import com.holonplatform.vaadin.flow.internal.components.events.DefaultFilterChangeEvent;
@@ -38,6 +39,7 @@ import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.provider.CallbackDataProvider;
 import com.vaadin.flow.data.provider.DataProvider;
 
@@ -52,7 +54,7 @@ import java.util.stream.Stream;
  * A dynamic, row-based filter builder component that implements {@link FilterInputGroup}.
  *
  * <p>
- * The panel introspects a Java bean class at construction time and lets the user add any
+ * The panel introspects a Java bean class at construction time and lets the user content any
  * number of filter conditions at runtime. Each row presents:
  * </p>
  * <ul>
@@ -72,7 +74,7 @@ import java.util.stream.Stream;
  * <h3>Usage with Datastore (QueryFilter path)</h3>
  * <pre>{@code
  * DynamicFilterPanel<Product> panel = DynamicFilterPanel.of(Product.class);
- * add(panel);
+ * content(panel);
  *
  * listing.setItems(panel, (query, filter) -> {
  *     var q = datastore.query(TARGET).restrict(query.getLimit(), query.getOffset());
@@ -940,7 +942,7 @@ public class DynamicFilterPanel<T> extends Div implements FilterInputGroup {
         };
     }
 
-    @SuppressWarnings({"unchecked", "rawtypes"})
+    @SuppressWarnings("unchecked")
     private static int cmp(Object a, Object b) {
         if (a == null && b == null) return 0;
         if (a == null) return -1;
@@ -1252,15 +1254,32 @@ public class DynamicFilterPanel<T> extends Div implements FilterInputGroup {
          * Replaced by the appropriate typed input as soon as a property is chosen.
          */
         private void showValuePlaceholder() {
-            var ph = Input.string().placeholder("Enter a value").build();
-            ph.getComponent().addClassName("filter-panel__value-input");
-            ph.getComponent().addClassName("filter-panel__value-placeholder");
-            valueContainer.add(ph.getComponent());
+            valueContainer.add(Components.input.string()
+.placeholder("Enter a value")
+.ariaLabel("Enter a value")
+.styleNames("filter-panel__value-input","filter-panel__value-placeholder")
+.build().getComponent());
+
+
+
+
+        }
+
+        private void showNullaryPlaceholder() {
+            valueContainer.add(
+                Components.input.string()
+                .placeholder("No value needed")
+                .disabled()
+                .styleNames("filter-panel__value-input","filter-panel__value-placeholder")
+                .build().getComponent()
+            );
         }
 
         private void rebuildValueInput() {
             if (selectedOp.isNullaryCheck()) {
-                // IS_EMPTY / IS_NOT_EMPTY: placeholder stays for layout continuity
+                // IS_EMPTY / IS_NOT_EMPTY: show a disabled value slot so the row reads correctly.
+                valueContainer.removeAll();
+                showNullaryPlaceholder();
                 filterSupplier = () -> buildFilter(selectedProp, selectedOp, null, null);
                 return;
             }
@@ -1281,6 +1300,23 @@ public class DynamicFilterPanel<T> extends Div implements FilterInputGroup {
                     valueProvided = !e.getValue().isEmpty();
                     onStateChange.run();
                 });
+                if (TypeUtils.isString(type) && !multiSelectDataProviders.containsKey(selectedProp.name())) {
+                    msb.setAllowCustomValue(true);
+                    msb.addCustomValueSetListener(e -> {
+                        String custom = e.getDetail() != null ? e.getDetail().trim() : "";
+                        if (custom.isEmpty()) {
+                            return;
+                        }
+                        if (!msb.getListDataView().getItems().anyMatch(custom::equals)) {
+                            var items = new ArrayList<>(msb.getListDataView().getItems().toList());
+                            items.add(custom);
+                            msb.setItems(items);
+                        }
+                        msb.select(custom);
+                        valueProvided = !msb.getValue().isEmpty();
+                        onStateChange.run();
+                    });
+                }
             } else if (selectedOp.isBetween()) {
                 Input<?> from = createInput(type);
                 Input<?> to   = createInput(type);

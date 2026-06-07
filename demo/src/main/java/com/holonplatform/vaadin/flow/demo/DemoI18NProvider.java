@@ -14,7 +14,7 @@ import java.util.ResourceBundle;
  *
  * <p>Loads translations from {@code messages*.properties} files on the classpath.
  * The bundle covers all {@link com.holonplatform.vaadin.flow.components.kanban.KanbanI18n}
- * message codes (e.g. {@code kanban.column.add-card}) and any other keys the demo uses.</p>
+ * message codes (e.g. {@code kanban.column.content-card}) and any other keys the demo uses.</p>
  *
  * <p>Vaadin picks up any Spring {@link I18NProvider} bean automatically via
  * {@code VaadinService}. {@link com.holonplatform.vaadin.flow.i18n.LocalizationProvider}

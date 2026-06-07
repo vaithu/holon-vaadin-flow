@@ -64,7 +64,7 @@ public interface ComponentConfigurator<C extends ComponentConfigurator<C>> exten
 	 */
 	@SuppressWarnings("unchecked")
 	default C bindVisible(Signal<Boolean> visibleSignal) {
-		SignalBindings.bind(this, visibleSignal, this::visible);
+		SignalBindings.bind(this, visibleSignal, value -> visible(value != null && value));
 		return (C) this;
 	}
 
@@ -95,7 +95,7 @@ public interface ComponentConfigurator<C extends ComponentConfigurator<C>> exten
 	/**
 	 * Add an {@link AttachEvent} {@link ComponentEventListener} to the component, called after the component is
 	 * attached to the application.
-	 * @param listener Listener to add
+	 * @param listener Listener to content
 	 * @return this
 	 */
 	C withAttachListener(ComponentEventListener<AttachEvent> listener);
@@ -103,7 +103,7 @@ public interface ComponentConfigurator<C extends ComponentConfigurator<C>> exten
 	/**
 	 * Add an {@link DetachEvent} {@link ComponentEventListener} to the component, called before the component is
 	 * detached from the application.
-	 * @param listener Listener to add
+	 * @param listener Listener to content
 	 * @return this
 	 */
 	C withDetachListener(ComponentEventListener<DetachEvent> listener);

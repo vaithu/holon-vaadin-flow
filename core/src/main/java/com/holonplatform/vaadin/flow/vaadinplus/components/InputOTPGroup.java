@@ -67,7 +67,7 @@ public class InputOTPGroup extends Div {
     /**
      * Appends one or more {@link InputOTPSlot}s to this group.
      *
-     * @param slots the slots to add (null-safe; individual null elements are skipped)
+     * @param slots the slots to content (null-safe; individual null elements are skipped)
      */
     public void add(InputOTPSlot... slots) {
         if (slots == null) return;

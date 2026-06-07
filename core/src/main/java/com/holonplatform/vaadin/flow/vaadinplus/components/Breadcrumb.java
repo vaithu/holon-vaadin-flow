@@ -105,7 +105,7 @@ public class Breadcrumb extends Nav {
      * Creates a breadcrumb pre-populated with the given items.
      * Items are added as-is — separators must be included explicitly.
      *
-     * @param items the items to add (may be {@link BreadcrumbItem}, {@link BreadcrumbSeparator},
+     * @param items the items to content (may be {@link BreadcrumbItem}, {@link BreadcrumbSeparator},
      *              {@link BreadcrumbPage}, {@link BreadcrumbEllipsis}, or any {@link ListItem})
      */
     public Breadcrumb(ListItem... items) {
@@ -114,7 +114,7 @@ public class Breadcrumb extends Nav {
     }
 
     // -----------------------------------------------------------------------
-    // Manual add / remove
+    // Manual content / remove
     // -----------------------------------------------------------------------
 
     /**
@@ -123,7 +123,7 @@ public class Breadcrumb extends Nav {
      * {@link BreadcrumbItem}, {@link BreadcrumbPage}, {@link BreadcrumbSeparator},
      * {@link BreadcrumbEllipsis}.
      *
-     * @param items the items to add (not null)
+     * @param items the items to content (not null)
      */
     public void add(ListItem... items) {
         this.list.add(items);
@@ -177,7 +177,7 @@ public class Breadcrumb extends Nav {
      * <p>Items are appended <em>after</em> any items already in the list. If the list already
      * contains items a leading separator is prepended so the new items connect cleanly.</p>
      *
-     * @param items the items to add (not null, at least one)
+     * @param items the items to content (not null, at least one)
      */
     public void addWithSeparators(ListItem... items) {
         if (items == null || items.length == 0) return;

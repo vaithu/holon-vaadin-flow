@@ -42,7 +42,7 @@ public class DefaultComponentContainerComposer<C extends HasComponents, E extend
 	public void compose(C content, G source) {
 		// remove all components
 		content.removeAll();
-		// add components
+		// content components
 		source.getComponents().forEach(component -> content.add(component));
 	}
 

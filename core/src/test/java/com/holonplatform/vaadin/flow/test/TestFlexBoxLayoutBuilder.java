@@ -5,10 +5,8 @@ import com.holonplatform.vaadin.flow.components.builders.FlexBoxLayoutBuilder;
 import com.holonplatform.vaadin.flow.components.builders.FlexBoxLayoutConfigurator;
 import com.holonplatform.vaadin.flow.components.css.BorderRadius;
 import com.holonplatform.vaadin.flow.components.css.BoxSizing;
-import com.holonplatform.vaadin.flow.components.css.Size;
 import com.holonplatform.vaadin.flow.internal.lumo.Display;
 import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.component.html.Span;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
@@ -138,7 +136,7 @@ class TestFlexBoxLayoutBuilder {
         @Test
         void flex_setsOnChild() {
             Div child = new Div("Child");
-            FlexBoxLayout layout = FlexBoxLayoutBuilder.create()
+            FlexBoxLayoutBuilder.create()
                     .add(child)
                     .flex("1 1 auto", child)
                     .build();
@@ -148,7 +146,7 @@ class TestFlexBoxLayoutBuilder {
         @Test
         void flexBasis_setsOnChild() {
             Div child = new Div("Child");
-            FlexBoxLayout layout = FlexBoxLayoutBuilder.create()
+            FlexBoxLayoutBuilder.create()
                     .add(child)
                     .flexBasis("200px", child)
                     .build();
@@ -158,7 +156,7 @@ class TestFlexBoxLayoutBuilder {
         @Test
         void flexShrink_setsOnChild() {
             Div child = new Div("Child");
-            FlexBoxLayout layout = FlexBoxLayoutBuilder.create()
+            FlexBoxLayoutBuilder.create()
                     .add(child)
                     .flexShrink("0", child)
                     .build();

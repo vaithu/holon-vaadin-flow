@@ -143,7 +143,7 @@ public class DefaultItemListingLazyDataProviderAdapter<T, F> extends AbstractBac
 	 */
 	@Override
 	public void addAdditionalItem(T item) {
-		ObjectUtils.argumentNotNull(item, "Additional item to add must be not null");
+		ObjectUtils.argumentNotNull(item, "Additional item to content must be not null");
 		this.additionalItems.add(item);
 		refreshAll();
 	}

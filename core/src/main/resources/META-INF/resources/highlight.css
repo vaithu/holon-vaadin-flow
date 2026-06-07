@@ -4,7 +4,7 @@
  * KPI / metric card — three composable layouts out of the box:
  *
  *  1. KPI stat card  (value-first + accent border + icon-badge suffix)
- *     → add .highlight--value-first  +  .highlight--accent-{color}
+ *     → content .highlight--value-first  +  .highlight--accent-{color}
  *
  *  2. Project card   (card-header + title/subtitle + progress bar)
  *     → setCardHeader(icon, action)  +  setProgress(0.4)

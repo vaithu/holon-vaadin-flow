@@ -397,7 +397,7 @@ public interface ItemListingColumn<P, T, V> extends Serializable {
 
 	/**
 	 * Add a property editor validator.
-	 * @param validator The validator to add (not null)
+	 * @param validator The validator to content (not null)
 	 */
 	void addValidator(Validator<V> validator);
 

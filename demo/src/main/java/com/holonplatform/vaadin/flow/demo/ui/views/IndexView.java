@@ -118,7 +118,7 @@ public class IndexView extends Div {
                         "Vertical audit-log / event-history timeline with static pre-loading, infinite-scroll lazy loading, real-time prepend, entry click events, and per-entry severity levels.",
                         TimelineStepperDemoView.class),
                 new Entry("BulkItemPickerDialog",
-                        "Two-panel bulk-add dialog: left panel for search/scan with live item list, right panel for selected items with per-item quantity steppers and running total. Confirm callback receives BulkPickerEntry list.",
+                        "Two-panel bulk-content dialog: left panel for search/scan with live item list, right panel for selected items with per-item quantity steppers and running total. Confirm callback receives BulkPickerEntry list.",
                         BulkItemPickerDemoView.class),
                 new Entry("TransferList",
                         "Dual-panel shuttle component for moving items between Available and Selected panels. Single and all-items transfer in both directions. CSS-grid layout with mobile stack.",

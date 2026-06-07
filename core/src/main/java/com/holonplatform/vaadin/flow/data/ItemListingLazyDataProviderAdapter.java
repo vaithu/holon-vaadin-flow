@@ -75,7 +75,7 @@ public interface ItemListingLazyDataProviderAdapter<T, F> extends BackEndDataPro
 	 * NOTE: Additional items are identified in the same way than any other item, using the {@link #getId(Object)}
 	 * method. So the id providing logic should be consistent with any other item.
 	 * </p>
-	 * @param item The item to add (not null)
+	 * @param item The item to content (not null)
 	 * @see #removeAdditionalItem(Object)
 	 */
 	void addAdditionalItem(T item);

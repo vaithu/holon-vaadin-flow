@@ -3,7 +3,6 @@ package com.holonplatform.vaadin.flow.test;
 import com.holonplatform.vaadin.flow.components.builders.GridHeaderBuilder;
 import com.holonplatform.vaadin.flow.vaadinplus.components.GridHeader;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.html.Span;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
@@ -39,6 +38,18 @@ class TestGridHeaderBuilder {
         GridHeader header = GridHeaderBuilder.create("Orders").build();
         assertTrue(header.getTitle().isPresent());
         assertEquals("Orders", header.getTitle().get());
+    }
+
+    @Test
+    void build_keepsActionsColumnVisible() {
+        Button action = new Button("Add");
+
+        GridHeader header = GridHeaderBuilder.create("Items")
+                .defaultActions(action)
+                .build();
+
+        assertTrue(header.getColumnLayout().isVisible(), "GridHeader should keep the actions column visible");
+        assertTrue(action.getParent().isPresent(), "default actions must remain attached to the header");
     }
 
     // =========================================================================

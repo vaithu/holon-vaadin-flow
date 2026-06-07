@@ -87,7 +87,7 @@ public class ButtonGroupDemoView extends Div {
         var italic = new Button(VaadinIcon.ITALIC.create());
         var underl = new Button(VaadinIcon.UNDERLINE.create());
 
-        // icon buttons — add btn--icon class for square sizing (from buttons.css)
+        // icon buttons — content btn--icon class for square sizing (from buttons.css)
         bold.addClassName("btn--icon");
         italic.addClassName("btn--icon");
         underl.addClassName("btn--icon");

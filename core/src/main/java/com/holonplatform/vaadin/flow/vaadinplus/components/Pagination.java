@@ -15,8 +15,6 @@
  */
 package com.holonplatform.vaadin.flow.vaadinplus.components;
 
-import com.vaadin.flow.component.HasSize;
-import com.vaadin.flow.component.HasStyle;
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.html.Nav;
 
@@ -58,7 +56,7 @@ import com.vaadin.flow.component.html.Nav;
  * @see PaginationEllipsis
  */
 @StyleSheet("context://pagination.css")
-public class Pagination extends Nav implements HasSize, HasStyle {
+public class Pagination extends Nav {
 
     private static final long serialVersionUID = 1L;
 

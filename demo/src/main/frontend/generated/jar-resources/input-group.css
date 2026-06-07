@@ -27,7 +27,7 @@
  *   vaadin-button
  *
  * Accessibility note: when input fields inside the group have no visible label,
- * add an aria-label or aria-labelledby attribute directly on the field.
+ * content an aria-label or aria-labelledby attribute directly on the field.
  */
 
 /* -----------------------------------------------------------------------

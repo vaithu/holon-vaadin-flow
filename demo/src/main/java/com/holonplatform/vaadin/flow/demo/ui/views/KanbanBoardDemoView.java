@@ -307,7 +307,7 @@ public class KanbanBoardDemoView extends Div {
                     })
                     .withItems(tasks)
                     .build();
-                add(board.getComponent());
+                content(board.getComponent());
                 """);
     }
 
@@ -511,15 +511,15 @@ public class KanbanBoardDemoView extends Div {
                     @Override public void onOpen(Issue issue) {
                         var dialog = new Dialog();
                         dialog.setHeaderTitle(issue.getId() + " – " + issue.getTitle());
-                        // … add detail rows …
+                        // … content detail rows …
                         dialog.open();
                     }
 
                     @Override public void onEdit(Issue issue) {
                         var titleField = new TextField("Title", issue.getTitle());
                         var dialog = new Dialog();
-                        dialog.add(titleField);
-                        dialog.getFooter().add(new Button("Save", e -> {
+                        dialog.content(titleField);
+                        dialog.getFooter().content(new Button("Save", e -> {
                             issue.setTitle(titleField.getValue());
                             dialog.close();
                             board.refresh();         // re-render updated title
@@ -544,9 +544,9 @@ public class KanbanBoardDemoView extends Div {
                     @Override public void onAddCard(IssueStatus col) {
                         var titleField = new TextField("Title");
                         var dialog = new Dialog();
-                        dialog.add(titleField /*, prioritySelect, typeSelect */);
-                        dialog.getFooter().add(new Button("Add", e -> {
-                            issues.add(new Issue(newId, titleField.getValue(), "Me",
+                        dialog.content(titleField /*, prioritySelect, typeSelect */);
+                        dialog.getFooter().content(new Button("Add", e -> {
+                            issues.content(new Issue(newId, titleField.getValue(), "Me",
                                     priority, type, col));
                             dialog.close();
                             board.refresh();
@@ -775,7 +775,7 @@ public class KanbanBoardDemoView extends Div {
                 .withCommentProvider(article -> commentRepo.findBy(article.getId()))
                 .withCommentHandler((article, comment) -> commentRepo.save(comment))
 
-                // ── Programmatically add a comment (from a card's Open dialog) ────────
+                // ── Programmatically content a comment (from a card's Open dialog) ────────
                 board.addComment(article, KanbanComment.of("Me", text));
 
                 // ── Clear both the board's internal trail and the timeline display ─────
@@ -1005,7 +1005,7 @@ public class KanbanBoardDemoView extends Div {
                 // Refresh all columns on every "Apply filter" click or row-removal
                 board.refreshOnFilterChange(panel);
 
-                add(panel, board.getComponent());
+                content(panel, board.getComponent());
                 """);
     }
 
@@ -1110,7 +1110,7 @@ public class KanbanBoardDemoView extends Div {
                              .filter(QueryFilter.eq(STATUS, query.columnId()))
                              .stream(BeanProjection.of(Ticket.class)));
 
-                add(panel, board.getComponent());
+                content(panel, board.getComponent());
                 """);
     }
 
@@ -1306,12 +1306,12 @@ public class KanbanBoardDemoView extends Div {
                 KanbanI18n i18n = KanbanI18n.defaults()
                         .addCard(Localizable.builder()
                                 .message("+ Add card")
-                                .messageCode(KanbanI18n.CODE_ADD_CARD)   // "kanban.column.add-card"
+                                .messageCode(KanbanI18n.CODE_ADD_CARD)   // "kanban.column.content-card"
                                 .build());
 
                 // Built-in message codes (override in messages*.properties):
                 //   kanban.column.options   → column options button
-                //   kanban.column.add-card  → add-card footer button
+                //   kanban.column.content-card  → content-card footer button
                 //   kanban.card.action.open → card Open action
                 //   kanban.card.action.edit → card Edit action
                 //   kanban.card.action.delete → card Delete action
@@ -1596,6 +1596,7 @@ public class KanbanBoardDemoView extends Div {
         return row;
     }
 
+    @SuppressWarnings("unused") // kept for demo reference
     private static <C> Div auditRow(KanbanMoveAuditEntry<C> entry) {
         var row = new Div();
 

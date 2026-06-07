@@ -38,6 +38,7 @@ import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.DetachEvent;
+import com.vaadin.flow.component.radiobutton.RadioGroupVariant;
 import com.vaadin.flow.data.provider.DataProvider;
 import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.data.provider.QuerySortOrder;
@@ -133,6 +134,12 @@ public class DefaultPropertyOptionsSingleSelectInputBuilder<T> extends AbstractP
 	public PropertyOptionsSingleSelectInputBuilder<T> renderer(
 			ComponentRenderer<? extends Component, PropertyBox> renderer) {
 		builder.renderer(renderer);
+		return this;
+	}
+
+	@Override
+	public PropertyOptionsSingleSelectInputBuilder<T> withThemeVariants(RadioGroupVariant... variants) {
+		builder.withThemeVariants(variants);
 		return this;
 	}
 
@@ -587,6 +594,12 @@ public class DefaultPropertyOptionsSingleSelectInputBuilder<T> extends AbstractP
 		public ValidatablePropertyOptionsSingleSelectInputBuilder<T> renderer(
 				ComponentRenderer<? extends Component, PropertyBox> renderer) {
 			builder.renderer(renderer);
+			return this;
+		}
+
+		@Override
+		public ValidatablePropertyOptionsSingleSelectInputBuilder<T> withThemeVariants(RadioGroupVariant... variants) {
+			builder.withThemeVariants(variants);
 			return this;
 		}
 
@@ -1103,6 +1116,12 @@ public class DefaultPropertyOptionsSingleSelectInputBuilder<T> extends AbstractP
 			return this;
 		}
 
+		@Override
+		public DatastorePropertyOptionsSingleSelectInputBuilder<T> withThemeVariants(RadioGroupVariant... variants) {
+			builder.withThemeVariants(variants);
+			return this;
+		}
+
 		/*
 		 * (non-Javadoc)
 		 * 
@@ -1543,6 +1562,12 @@ public class DefaultPropertyOptionsSingleSelectInputBuilder<T> extends AbstractP
 		public ValidatableDatastorePropertyOptionsSingleSelectInputBuilder<T> renderer(
 				ComponentRenderer<? extends Component, PropertyBox> renderer) {
 			builder.renderer(renderer);
+			return this;
+		}
+
+		@Override
+		public ValidatableDatastorePropertyOptionsSingleSelectInputBuilder<T> withThemeVariants(RadioGroupVariant... variants) {
+			builder.withThemeVariants(variants);
 			return this;
 		}
 

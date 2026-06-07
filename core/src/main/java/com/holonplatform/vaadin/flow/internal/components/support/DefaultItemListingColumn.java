@@ -30,8 +30,6 @@ import com.vaadin.flow.component.grid.SortOrderProvider;
 import com.vaadin.flow.data.renderer.Renderer;
 import com.vaadin.flow.function.SerializableFunction;
 import com.vaadin.flow.function.ValueProvider;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.function.Function;
@@ -49,7 +47,6 @@ import java.util.function.Supplier;
 public class DefaultItemListingColumn<P, T, V> implements ItemListingColumn<P, T, V> {
 
 	private static final long serialVersionUID = 8922982578042556430L;
-	private static final Logger log = LoggerFactory.getLogger(DefaultItemListingColumn.class);
 
 	private final P property;
 //	private final String columnKey;
@@ -86,6 +83,7 @@ public class DefaultItemListingColumn<P, T, V> implements ItemListingColumn<P, T
 	private String footerPartName;
 	
 	private SerializableFunction<T, String> partNameGenerator;
+	@SuppressWarnings("unused") // set via setTooltipGenerator but read not yet implemented
 	private SerializableFunction<T, String> tooltipGenerator;
 
 	private List<ValueChangeListener<V, GroupValueChangeEvent<V, P, Input<?>, EditorComponentGroup<P, T>>>> valueChangeListeners = new ArrayList<>();

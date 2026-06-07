@@ -3,7 +3,6 @@ package com.holonplatform.vaadin.flow.test;
 import com.holonplatform.vaadin.flow.components.builders.FlexLayoutBuilder;
 import com.holonplatform.vaadin.flow.components.builders.FlexLayoutConfigurator;
 import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.FlexLayout;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;

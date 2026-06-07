@@ -4,6 +4,8 @@ import com.holonplatform.vaadin.flow.components.BeanListing;
 import com.holonplatform.vaadin.flow.components.PropertyListing;
 import com.holonplatform.vaadin.flow.components.builders.GridHeaderConfigurator;
 import com.holonplatform.vaadin.flow.vaadinplus.components.GridHeader;
+import com.holonplatform.vaadin.flow.vaadinplus.utilities.HeadingLevel;
+import com.holonplatform.vaadin.flow.vaadinplus.utilities.Font;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasEnabled;
 import com.vaadin.flow.component.HasSize;
@@ -24,6 +26,34 @@ public abstract class AbstractGridHeaderConfigurator<C extends GridHeaderConfigu
      */
     public AbstractGridHeaderConfigurator(GridHeader gridHeader) {
         super(gridHeader);
+    }
+
+    @Override
+    public C heading(Component component, HeadingLevel headingLevel) {
+        if (headingLevel == null || headingLevel == HeadingLevel.NONE) {
+            getComponent().setHeading(component);
+        } else if (component != null) {
+            getComponent().setHeading(component);
+        }
+        return getConfigurator();
+    }
+
+    @Override
+    public C heading(String title, HeadingLevel headingLevel) {
+        getComponent().setHeading(title, headingLevel != null ? headingLevel : HeadingLevel.H2);
+        return getConfigurator();
+    }
+
+    @Override
+    public C withSize(Font.Size size) {
+        getComponent().setHeadingFontSize(size);
+        return getConfigurator();
+    }
+
+    @Override
+    public C withoutBorder() {
+        getComponent().withoutBorder();
+        return getConfigurator();
     }
 
     @Override

@@ -150,6 +150,7 @@ public class ChatChannelList extends Composite<Div> {
     // Internal
     // ------------------------------------------------------------------ //
 
+    @SuppressWarnings("deprecation") // findAllChannels fallback for backwards-compatibility
     private void loadRooms() {
         closeActiveManager();
         roomRows.clear();

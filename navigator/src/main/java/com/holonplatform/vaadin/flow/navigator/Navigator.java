@@ -305,7 +305,7 @@ public interface Navigator extends Serializable {
 
 	/**
 	 * Add a {@link NavigationChangeListener} to listen to navigation target/location changes.
-	 * @param navigationChangeListener The listener to add (not null)
+	 * @param navigationChangeListener The listener to content (not null)
 	 * @return The registration handler
 	 */
 	Registration addNavigationChangeListener(NavigationChangeListener navigationChangeListener);

@@ -51,7 +51,7 @@ public interface InputGroupLayoutConfigurator<C extends InputGroupLayoutConfigur
      *
      * <p>Null elements in the array are silently skipped.</p>
      *
-     * @param components the components to add (null array is a no-op)
+     * @param components the components to content (null array is a no-op)
      * @return this configurator for chaining
      */
     C add(Component... components);
@@ -66,7 +66,7 @@ public interface InputGroupLayoutConfigurator<C extends InputGroupLayoutConfigur
      *
      * <p>Null elements and wrappers returning a null component are silently skipped.</p>
      *
-     * @param inputs the wrappers to add (null array is a no-op)
+     * @param inputs the wrappers to content (null array is a no-op)
      * @return this configurator for chaining
      */
     C add(HasComponent... inputs);
@@ -76,7 +76,7 @@ public interface InputGroupLayoutConfigurator<C extends InputGroupLayoutConfigur
      *
      * <p>This is a typed convenience overload of {@link #add(HasComponent...)}.</p>
      *
-     * @param inputs the Holon inputs to add (null array is a no-op)
+     * @param inputs the Holon inputs to content (null array is a no-op)
      * @return this configurator for chaining
      */
     @SuppressWarnings("varargs")
@@ -90,7 +90,7 @@ public interface InputGroupLayoutConfigurator<C extends InputGroupLayoutConfigur
      * Toggles the {@code input-group--responsive} CSS modifier that stacks children
      * vertically on screens ≤ 480 px.
      *
-     * @param responsive {@code true} to add the modifier; {@code false} to remove it
+     * @param responsive {@code true} to content the modifier; {@code false} to remove it
      * @return this configurator for chaining
      */
     C responsive(boolean responsive);

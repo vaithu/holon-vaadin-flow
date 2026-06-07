@@ -44,7 +44,7 @@ public interface HasEnabledConfigurator<C extends HasEnabledConfigurator<C>> {
 	 */
 	@SuppressWarnings("unchecked")
 	default C bindEnabled(Signal<Boolean> enabledSignal) {
-		SignalBindings.bind(this, enabledSignal, this::enabled);
+		SignalBindings.bind(this, enabledSignal, value -> enabled(value != null && value));
 		return (C) this;
 	}
 

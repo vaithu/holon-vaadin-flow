@@ -26,15 +26,15 @@ import com.holonplatform.vaadin.flow.vaadinplus.components.InputGroup;
  * <p>Text prefix + text field:
  * <pre>{@code
  * InputGroup group = InputGroup.builder()
- *     .add(new InputGroupText("@"))
- *     .add(new TextField())
+ *     .content(new InputGroupText("@"))
+ *     .content(new TextField())
  *     .build();
  * }</pre>
  *
  * <p>Search field + button:
  * <pre>{@code
  * InputGroup group = InputGroup.builder()
- *     .add(new TextField(), new Button("Search"))
+ *     .content(new TextField(), new Button("Search"))
  *     .build();
  * }</pre>
  *
@@ -43,16 +43,16 @@ import com.holonplatform.vaadin.flow.vaadinplus.components.InputGroup;
  * Input<BigDecimal> price = Components.input.bigDecimal().build();
  *
  * InputGroup group = InputGroup.builder()
- *     .add(new InputGroupText("$"))
- *     .add(price)
- *     .add(new InputGroupText(".00"))
+ *     .content(new InputGroupText("$"))
+ *     .content(price)
+ *     .content(new InputGroupText(".00"))
  *     .build();
  * }</pre>
  *
  * <p>Responsive group:
  * <pre>{@code
  * InputGroup group = InputGroup.builder()
- *     .add(searchField, searchButton)
+ *     .content(searchField, searchButton)
  *     .responsive()
  *     .build();
  * }</pre>

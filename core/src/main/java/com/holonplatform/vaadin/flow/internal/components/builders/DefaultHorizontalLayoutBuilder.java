@@ -29,6 +29,7 @@ public class DefaultHorizontalLayoutBuilder
 
 	public DefaultHorizontalLayoutBuilder() {
 		super(new HorizontalLayout());
+		getComponent().setMargin(false);
 		getComponent().setSpacing(false);
 	}
 

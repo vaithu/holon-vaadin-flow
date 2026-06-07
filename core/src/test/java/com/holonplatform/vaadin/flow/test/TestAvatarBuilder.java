@@ -195,6 +195,12 @@ class TestAvatarBuilder {
     // =========================================================================
 
     @Test
+    void builder_profile_addsProfileClass() {
+        Avatar avatar = AvatarBuilder.create("Jane Doe").profile().build();
+        assertTrue(avatar.getClassNames().contains("avatar--profile-xl"));
+    }
+
+    @Test
     void builder_withThemeVariants_applyVariant() {
         Avatar avatar = AvatarBuilder.create("XS")
                 .withThemeVariants(AvatarVariant.LUMO_XSMALL).build();

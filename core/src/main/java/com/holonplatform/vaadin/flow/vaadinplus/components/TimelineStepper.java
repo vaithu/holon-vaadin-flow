@@ -55,7 +55,7 @@ import java.util.stream.Collectors;
 @com.vaadin.flow.component.Tag("timeline-stepper")
 @JsModule("./timeline-stepper.js")
 @StyleSheet("context://timeline.css")
-public class TimelineStepper extends Component implements HasSize, HasStyle, HasEnabled {
+public class TimelineStepper extends Component implements HasSize, HasEnabled {
 
     private static final long serialVersionUID = 1L;
 

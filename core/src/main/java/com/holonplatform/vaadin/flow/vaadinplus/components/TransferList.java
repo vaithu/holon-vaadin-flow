@@ -4,8 +4,6 @@ import com.holonplatform.vaadin.flow.components.Components;
 import com.holonplatform.vaadin.flow.components.builders.TransferListBuilder;
 import com.vaadin.flow.component.ComponentEvent;
 import com.vaadin.flow.component.ComponentEventListener;
-import com.vaadin.flow.component.HasSize;
-import com.vaadin.flow.component.HasStyle;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.html.Div;
@@ -60,7 +58,7 @@ import java.util.*;
  * @see TransferListBuilder
  */
 @StyleSheet("context://transfer-list.css")
-public class TransferList extends Div implements HasSize, HasStyle {
+public class TransferList extends Div {
 
     private static final long serialVersionUID = 1L;
 

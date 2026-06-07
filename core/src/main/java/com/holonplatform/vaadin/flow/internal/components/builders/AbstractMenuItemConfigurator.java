@@ -113,10 +113,6 @@ public abstract class AbstractMenuItemConfigurator<C extends MenuItemConfigurato
         return withSubMenu(icon).add(text);
     }
 
-    private void printMenuText(MenuItem menuItem) {
-        log.info("MenuItem name is {}",menuItem.getText());
-    }
-
     @Override
     public C withMenuItem(Component component) {
         menuItem = parentMenuItem = getComponent().addItem(component);

@@ -53,7 +53,7 @@ public interface InputConfigurator<T, E extends ValueChangeEvent<T>, C extends I
 	 */
 	@SuppressWarnings("unchecked")
 	default C bindReadOnly(Signal<? extends Boolean> readOnlySignal) {
-		SignalBindings.bind(this, readOnlySignal, this::readOnly);
+		SignalBindings.bind(this, readOnlySignal, value -> readOnly(value != null && value));
 		return (C) this;
 	}
 
@@ -67,14 +67,14 @@ public interface InputConfigurator<T, E extends ValueChangeEvent<T>, C extends I
 
 	/**
 	 * Add a {@link ReadonlyChangeListener} to be notified when the input read-only state changes.
-	 * @param listener The {@link ReadonlyChangeListener} to add (not null)
+	 * @param listener The {@link ReadonlyChangeListener} to content (not null)
 	 * @return this
 	 */
 	C withReadonlyChangeListener(ReadonlyChangeListener listener);
 
 	/**
 	 * Add a {@link ValueChangeListener} to be notified when the input value changes.
-	 * @param listener The {@link ValueChangeListener} to add (not null)
+	 * @param listener The {@link ValueChangeListener} to content (not null)
 	 * @return this
 	 */
 	C withValueChangeListener(ValueChangeListener<T, E> listener);
@@ -112,7 +112,7 @@ public interface InputConfigurator<T, E extends ValueChangeEvent<T>, C extends I
 	 */
 	@SuppressWarnings("unchecked")
 	default C bindRequired(Signal<? extends Boolean> requiredSignal) {
-		SignalBindings.bind(this, requiredSignal, this::required);
+		SignalBindings.bind(this, requiredSignal, value -> required(value != null && value));
 		return (C) this;
 	}
 

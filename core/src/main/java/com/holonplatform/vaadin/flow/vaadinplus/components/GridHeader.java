@@ -8,6 +8,7 @@ import com.holonplatform.vaadin.flow.vaadinplus.utilities.HeadingLevel;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.data.selection.SelectionEvent;
 
 import java.util.Optional;
@@ -15,9 +16,17 @@ import java.util.Optional;
 @StyleSheet("context://grid-header.css")
 public class GridHeader extends Header {
 
+    private static final String NO_TITLE_CLASS = "grid-header--no-title";
+    private static final String HIDDEN_ACTION_CLASS = "grid-header__action--hidden";
+    private static final String SELECTION_COUNT_CLASS = "grid-header__selection-count";
+    private static final String TITLE_CLASS = "grid-header__title";
+
     private String title;
     private Component[] defaultActions;
     private Component[] contextActions;
+    private final Span selectionCount = new Span("0 selected");
+    private Component titleComponent;
+    private boolean selectionCountVisible;
     private Grid<?> grid;
     private LabelBuilder<?> labelBuilder;
 
@@ -25,12 +34,14 @@ public class GridHeader extends Header {
         this(title, HeadingLevel.H2);
         setHeadingFontSize(Font.Size.LARGE);
         addClassName("grid-header");
+        configureSelectionCount();
     }
 
     public GridHeader(LabelBuilder<?> labelBuilder) {
         super(labelBuilder);
         this.labelBuilder = labelBuilder;
         addClassName("grid-header");
+        configureSelectionCount();
     }
 
     public GridHeader(String title, Grid<?> grid) {
@@ -47,6 +58,7 @@ public class GridHeader extends Header {
         this.title = title;
         setHeadingFontSize(Font.Size.LARGE);
         addClassName("grid-header");
+        configureSelectionCount();
     }
 
     public GridHeader(String title, HeadingLevel level, Grid<?> grid) {
@@ -95,11 +107,7 @@ public class GridHeader extends Header {
     }
 
     private void setDefaultActionsVisible(boolean visible) {
-        if (this.defaultActions != null) {
-            for (Component defaultAction : this.defaultActions) {
-                defaultAction.setVisible(visible);
-            }
-        }
+        setActionsVisible(this.defaultActions, visible);
     }
 
     public void setContextActions(Component... components) {
@@ -108,15 +116,14 @@ public class GridHeader extends Header {
     }
 
     private void setContextActionsVisible(boolean visible) {
-        if (this.contextActions != null) {
-            for (Component contextAction : this.contextActions) {
-                contextAction.setVisible(visible);
-            }
-        }
+        setActionsVisible(this.contextActions, visible);
     }
 
     public void updateActions() {
-        setActions(this.defaultActions);
+        updateNoTitleState();
+        updatePrefix();
+        setActions();
+        addActions(this.defaultActions);
         addActions(this.contextActions);
 
         if (this.grid != null) {
@@ -130,25 +137,97 @@ public class GridHeader extends Header {
      * Update header appearance and actions visibility based on selection size.
      */
     public void updateActionsVisibility(int size) {
+        updateNoTitleState();
         if (size > 0) {
-            if (labelBuilder != null) {
-                labelBuilder.styleNames("grid-header__label--selected");
-            } else if (title != null) {
-                setHeading(size + " selected");
-            }
             addClassName("grid-header--selected");
+            selectionCount.setText(size + " selected");
+            setSelectionCountVisible(true);
             setDefaultActionsVisible(false);
             setContextActionsVisible(true);
         } else {
-            if (labelBuilder != null) {
-                labelBuilder.styleNames("grid-header__label--default");
-            } else if (title != null) {
-                setHeading(title);
-            }
             removeClassName("grid-header--selected");
+            selectionCount.setText("0 selected");
+            setSelectionCountVisible(false);
             setDefaultActionsVisible(true);
             setContextActionsVisible(false);
         }
+        updatePrefix();
+    }
+
+    private void setActionsVisible(Component[] components, boolean visible) {
+        if (components == null) {
+            return;
+        }
+        for (Component component : components) {
+            if (component != null) {
+                setActionVisible(component, visible);
+            }
+        }
+    }
+
+    private void setActionVisible(Component component, boolean visible) {
+        component.setVisible(visible);
+        if (visible) {
+            component.removeClassName(HIDDEN_ACTION_CLASS);
+        } else {
+            component.addClassName(HIDDEN_ACTION_CLASS);
+        }
+    }
+
+    private void configureSelectionCount() {
+        selectionCount.addClassName(SELECTION_COUNT_CLASS);
+        setSelectionCountVisible(false);
+        if (this.titleComponent == null) {
+            this.titleComponent = createTitleComponent();
+        }
+        hideHeadingColumn();
+        updatePrefix();
+    }
+
+    private void updatePrefix() {
+        boolean hasSelection = selectionCountVisible;
+        boolean hasVisibleTitle = hasVisibleTitle();
+
+        if (hasSelection) {
+            setPrefix(this.selectionCount);
+        } else if (hasVisibleTitle) {
+            setPrefix(this.titleComponent);
+        } else {
+            setPrefix();
+        }
+    }
+
+    private Component createTitleComponent() {
+        Component component;
+        if (labelBuilder != null) {
+            component = labelBuilder.build();
+        } else {
+            component = new Span(title != null ? title : "");
+        }
+        component.addClassName(TITLE_CLASS);
+        return component;
+    }
+
+    private void hideHeadingColumn() {
+        setHeadingVisible(false);
+    }
+
+    private void setSelectionCountVisible(boolean visible) {
+        this.selectionCountVisible = visible;
+        selectionCount.setVisible(visible);
+        setActionVisible(selectionCount, visible);
+    }
+
+    private void updateNoTitleState() {
+        if (hasVisibleTitle()) {
+            removeClassName(NO_TITLE_CLASS);
+        } else {
+            addClassName(NO_TITLE_CLASS);
+        }
+    }
+
+    private boolean hasVisibleTitle() {
+        return labelBuilder != null || (title != null && !title.isBlank());
     }
 
 }

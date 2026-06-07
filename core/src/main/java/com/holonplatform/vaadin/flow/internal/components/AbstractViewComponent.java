@@ -38,7 +38,7 @@ import java.util.Optional;
  * @since 5.2.2
  */
 public abstract class AbstractViewComponent<C extends Component, T> extends Composite<Div>
-		implements ViewComponent<T>, HasSize, HasStyle, HasEnabled, ClickNotifier<Component> {
+		implements ViewComponent<T>, HasSize, HasEnabled, ClickNotifier<Component> {
 
 	private static final long serialVersionUID = -1079320883460226029L;
 

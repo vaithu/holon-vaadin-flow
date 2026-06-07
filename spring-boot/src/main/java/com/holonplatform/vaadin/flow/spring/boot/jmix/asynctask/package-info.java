@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-@NonNullApi
+@NullMarked
 package com.holonplatform.vaadin.flow.spring.boot.jmix.asynctask;
 
-import org.springframework.lang.NonNullApi;
+import org.jspecify.annotations.NullMarked;

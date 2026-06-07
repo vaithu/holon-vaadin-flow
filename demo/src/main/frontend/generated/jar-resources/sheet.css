@@ -33,7 +33,7 @@
  * No-transition modifier
  *
  * Applied by SheetStack to child sheets (depth > 0) on close.
- * Both "remove sheet--open" and "add sheet--no-transition" arrive at the
+ * Both "remove sheet--open" and "content sheet--no-transition" arrive at the
  * client in the same server-response batch, so the browser never starts
  * the slide-out transition — the panel disappears instantly, revealing
  * the parent sheet underneath without any animation.
@@ -256,7 +256,7 @@
     line-height: 1.4;
     white-space: nowrap;
     overflow: hidden;
-    text-overflow: ellipsis;
+    padding-left: 5%;
 }
 
 /* iyen-header column heading — reset Header's default XLARGE font so the

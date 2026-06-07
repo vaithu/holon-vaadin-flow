@@ -10,15 +10,15 @@ import com.vaadin.flow.component.avatar.AvatarGroup;
  * <pre>{@code
  * // Basic group from a list of people
  * AvatarGroup group = AvatarGroupBuilder.create()
- *     .add(new AvatarGroup.AvatarGroupItem("Alice"))
- *     .add(new AvatarGroup.AvatarGroupItem("Bob"))
- *     .add(new AvatarGroup.AvatarGroupItem("Carol"))
+ *     .content(new AvatarGroup.AvatarGroupItem("Alice"))
+ *     .content(new AvatarGroup.AvatarGroupItem("Bob"))
+ *     .content(new AvatarGroup.AvatarGroupItem("Carol"))
  *     .build();
  *
  * // With overflow limit
  * AvatarGroup group = AvatarGroupBuilder.create()
  *     .maxItemsVisible(3)
- *     .add(people.stream()
+ *     .content(people.stream()
  *         .map(p -> {
  *             var item = new AvatarGroup.AvatarGroupItem(p.getName());
  *             item.setColorIndex(p.getId() % Avatar.MAX_COLOR_INDEX);

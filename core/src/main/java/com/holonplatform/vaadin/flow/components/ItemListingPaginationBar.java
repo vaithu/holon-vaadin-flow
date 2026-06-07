@@ -48,7 +48,7 @@ import java.util.function.IntConsumer;
  * BeanListing<Person> listing = ...;
  * ItemListingPaginationBar<Person, String> bar =
  *         new ItemListingPaginationBar<>(listing).withPageSize(20);
- * layout.add(listing.getComponent(), bar);
+ * layout.content(listing.getComponent(), bar);
  * }</pre>
  *
  * @param <T> item type

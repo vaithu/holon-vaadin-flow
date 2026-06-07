@@ -22,7 +22,7 @@ public interface AvatarGroupConfigurator<C extends AvatarGroupConfigurator<C>>
     /**
      * Appends one or more {@link AvatarGroup.AvatarGroupItem}s to this group.
      *
-     * @param items the items to add (not null)
+     * @param items the items to content (not null)
      * @return this configurator
      */
     C add(AvatarGroup.AvatarGroupItem... items);

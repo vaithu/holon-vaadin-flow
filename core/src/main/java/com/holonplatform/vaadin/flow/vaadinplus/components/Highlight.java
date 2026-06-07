@@ -10,8 +10,6 @@ import com.holonplatform.vaadin.flow.vaadinplus.utilities.Font;
 import com.holonplatform.vaadin.flow.vaadinplus.utilities.HeadingLevel;
 import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.HasSize;
-import com.vaadin.flow.component.HasStyle;
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.progressbar.ProgressBar;
@@ -36,7 +34,7 @@ import com.vaadin.flow.component.progressbar.ProgressBar;
  * </ul>
  */
 @StyleSheet("context://highlight.css")
-public class Highlight extends Layout implements HasSize, HasStyle {
+public class Highlight extends Layout {
 
     /**
      * Ready-made Chart.js {@code options} JSON that strips all chrome from a line chart,

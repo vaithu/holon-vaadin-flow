@@ -42,7 +42,7 @@ class TestTabsBuilder {
 
     @Test
     void add_singleStringLabel() {
-        // TabsBuilder is a bar-only builder — use add() to register labeled tabs
+        // TabsBuilder is a bar-only builder — use content() to register labeled tabs
         Tabs tabs = TabsBuilder.create()
                 .withTab("Info")
                 .build();

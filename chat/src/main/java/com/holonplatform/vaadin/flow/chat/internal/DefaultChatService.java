@@ -174,7 +174,7 @@ public class DefaultChatService implements ChatService {
         var filter = MSG_ROOM_ID.eq(roomId).and(MSG_DELETED.eq(false));
         // Fetch newest N from DB, then re-sort chronologically for display
         return messages.findSlice(filter, MSG_CREATED_AT.desc(), limit, 0)
-                .stream().sorted(Comparator.comparing(ChatMessage::getCreatedAt)).toList();
+                .sorted(Comparator.comparing(ChatMessage::getCreatedAt)).toList();
     }
 
     @Override
@@ -182,7 +182,7 @@ public class DefaultChatService implements ChatService {
         if (limit <= 0) throw new IllegalArgumentException("limit must be > 0");
         var filter = MSG_ROOM_ID.eq(roomId).and(MSG_CREATED_AT.lt(before)).and(MSG_DELETED.eq(false));
         return messages.findSlice(filter, MSG_CREATED_AT.desc(), limit, 0)
-                .stream().sorted(Comparator.comparing(ChatMessage::getCreatedAt)).toList();
+                .sorted(Comparator.comparing(ChatMessage::getCreatedAt)).toList();
     }
 
     @Override

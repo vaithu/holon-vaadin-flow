@@ -1,8 +1,6 @@
 package com.holonplatform.vaadin.flow.vaadinplus.components;
 
 import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.HasSize;
-import com.vaadin.flow.component.HasStyle;
 import com.vaadin.flow.component.html.Div;
 
 /**
@@ -10,7 +8,7 @@ import com.vaadin.flow.component.html.Div;
  *
  * <p>Holds buttons, links, or any interactive components displayed below the description.</p>
  */
-public class AlertAction extends Div implements HasSize, HasStyle {
+public class AlertAction extends Div {
 
     /**
      * Creates an action slot pre-populated with the given components.

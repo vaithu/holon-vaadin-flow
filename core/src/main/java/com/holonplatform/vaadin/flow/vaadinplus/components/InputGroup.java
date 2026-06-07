@@ -20,8 +20,6 @@ import com.holonplatform.vaadin.flow.components.Input;
 import com.holonplatform.vaadin.flow.components.builders.InputGroupBuilder;
 import com.holonplatform.vaadin.flow.components.builders.InputGroupLayoutConfigurator;
 import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.HasSize;
-import com.vaadin.flow.component.HasStyle;
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.html.Div;
 
@@ -45,7 +43,7 @@ import com.vaadin.flow.component.html.Div;
  * from {@code input-group.css}. Vaadin field variants ({@code vaadin-text-field},
  * {@code vaadin-date-picker}, {@code vaadin-button}, …) are all supported.
  * Holon {@link Input} and any {@link HasComponent} wrapper are unwrapped to
- * their underlying {@link Component} on add.
+ * their underlying {@link Component} on content.
  *
  * <p><strong>Examples:</strong>
  *
@@ -87,7 +85,7 @@ import com.vaadin.flow.component.html.Div;
  */
 @StyleSheet("context://material-symbols.css")
 @StyleSheet("context://input-group.css")
-public class InputGroup extends Div implements HasSize, HasStyle {
+public class InputGroup extends Div {
 
     private static final long serialVersionUID = 1L;
 
@@ -125,7 +123,7 @@ public class InputGroup extends Div implements HasSize, HasStyle {
      * <p>Accepts any Vaadin component: {@code TextField}, {@code DatePicker},
      * {@code Button}, {@link InputGroupText}, etc.
      *
-     * @param components the components to add (not null; individual elements may be null and are skipped)
+     * @param components the components to content (not null; individual elements may be null and are skipped)
      */
     @Override
     public void add(Component... components) {
@@ -148,10 +146,10 @@ public class InputGroup extends Div implements HasSize, HasStyle {
      *
      * <pre>{@code
      * Input<String> nameInput = Components.input.string().placeholder("Name").build();
-     * group.add(nameInput);
+     * group.content(nameInput);
      * }</pre>
      *
-     * @param inputs the wrappers to add (not null; individual elements may be null and are skipped)
+     * @param inputs the wrappers to content (not null; individual elements may be null and are skipped)
      */
     public void add(HasComponent... inputs) {
         if (inputs == null) return;
@@ -174,10 +172,10 @@ public class InputGroup extends Div implements HasSize, HasStyle {
      * <pre>{@code
      * Input<String> username = Components.input.string().placeholder("Username").build();
      * Input<LocalDate> dob   = Components.input.localDate().build();
-     * group.add(username, dob);
+     * group.content(username, dob);
      * }</pre>
      *
-     * @param inputs the Holon inputs to add (not null; individual elements may be null and are skipped)
+     * @param inputs the Holon inputs to content (not null; individual elements may be null and are skipped)
      */
     @SuppressWarnings("varargs")
     public void add(Input<?>... inputs) {
@@ -223,8 +221,8 @@ public class InputGroup extends Div implements HasSize, HasStyle {
      *
      * <pre>{@code
      * InputGroup group = InputGroup.builder()
-     *     .add(new InputGroupText("@"))
-     *     .add(new TextField())
+     *     .content(new InputGroupText("@"))
+     *     .content(new TextField())
      *     .build();
      * }</pre>
      *

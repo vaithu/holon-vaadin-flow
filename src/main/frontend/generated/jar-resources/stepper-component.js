@@ -194,18 +194,20 @@ class FlowStepper extends HTMLElement {
         :host {
           display: block;
           font-family: 'Segoe UI', system-ui, sans-serif;
-          --color-bg:        #ffffff;
-          --color-surface:   #f5f5f7;
-          --color-border:    #d1d5db;
-          --color-active:    #1a56db;
-          --color-active-bg: #eff6ff;
-          --color-done:      #0ea57a;
-          --color-done-bg:   #ecfdf5;
-          --color-error:     #e24b4a;
-          --color-error-bg:  #fcebeb;
-          --color-error-con: #f09595;
+          /* connector / label palette */
+          --color-border:    #e2e8f0;
           --color-text:      #111827;
-          --color-text-sub:  #6b7280;
+          --color-text-sub:  #94a3b8;
+          /* tinted badge palette — mirrors icon-badge / avatar--badge variants */
+          --color-pending-bg:  #f1f5f9;
+          --color-pending-fg:  #64748b;
+          --color-active-bg:   #dbeafe;
+          --color-active:      #1e40af;
+          --color-done-bg:     #d1fae5;
+          --color-done:        #065f46;
+          --color-error-bg:    #fee2e2;
+          --color-error:       #991b1b;
+          --color-error-con:   #fca5a5;
           --radius:          50%;
           --node-size:       2.4rem;
           --conn-thickness:  2px;
@@ -280,7 +282,7 @@ class FlowStepper extends HTMLElement {
           transform: scale(1.08);
         }
 
-        /* Node */
+        /* Node — tinted badge style: filled background, no visible border */
         .step-node {
           width: var(--node-size);
           height: var(--node-size);
@@ -289,9 +291,9 @@ class FlowStepper extends HTMLElement {
           align-items: center;
           justify-content: center;
           flex-shrink: 0;
-          border: 2px solid var(--color-border);
-          background: var(--color-bg);
-          color: var(--color-text-sub);
+          border: 2px solid transparent;
+          background: var(--color-pending-bg);
+          color: var(--color-pending-fg);
           font-weight: 600;
           font-size: 0.875rem;
           transition: all var(--transition);
@@ -312,23 +314,23 @@ class FlowStepper extends HTMLElement {
           border-radius: 50%;
         }
 
-        /* States */
+        /* States — tinted fill, no border, strong icon colour */
         .step-item.active .step-node {
-          border-color: var(--color-active);
           background: var(--color-active-bg);
           color: var(--color-active);
-          box-shadow: 0 0 0 4px color-mix(in srgb, var(--color-active) 15%, transparent);
+          border-color: transparent;
+          box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-active) 20%, transparent);
         }
         .step-item.completed .step-node {
-          border-color: var(--color-done);
           background: var(--color-done-bg);
           color: var(--color-done);
+          border-color: transparent;
         }
         .step-item.error .step-node {
-          border-color: var(--color-error);
           background: var(--color-error-bg);
           color: var(--color-error);
-          box-shadow: 0 0 0 4px color-mix(in srgb, var(--color-error) 15%, transparent);
+          border-color: transparent;
+          box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-error) 20%, transparent);
         }
 
         /* Labels */

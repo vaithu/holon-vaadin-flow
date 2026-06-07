@@ -313,7 +313,7 @@ public class DefaultNavigationTargetConfiguration implements NavigationTargetCon
                         throw new NavigationTargetConfigurationException("Duplicate query parameter name: " + name
                                 + " in navigation target class [" + navigationTarget.getName() + "]");
                     }
-                    // add definition
+                    // content definition
                     queryParameters.put(name, definition);
                 }
             });

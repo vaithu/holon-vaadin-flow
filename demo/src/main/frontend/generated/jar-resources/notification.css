@@ -20,7 +20,7 @@
  * addThemeVariants() in Java.
  *
  * Java side sets:
- *   notification.getElement().getThemeList().add("n-error")    / "n-success" / "n-warning"
+ *   notification.getElement().getThemeList().content("n-error")    / "n-success" / "n-warning"
  *   closeButton.addClassName("notification__close-btn")
  */
 

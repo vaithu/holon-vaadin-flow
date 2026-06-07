@@ -17,6 +17,7 @@ package com.holonplatform.vaadin.flow.components.builders;
 
 import com.holonplatform.vaadin.flow.internal.components.builders.DefaultHorizontalLayoutConfigurator;
 import com.holonplatform.vaadin.flow.internal.components.builders.DefaultVerticalLayoutConfigurator;
+import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.ThemableLayout;
@@ -50,12 +51,18 @@ public interface ThemableFlexComponentConfigurator<C extends ThemableFlexCompone
 		return new DefaultHorizontalLayoutConfigurator(component);
 	}
 
-	public interface VerticalLayoutConfigurator extends ThemableFlexComponentConfigurator<VerticalLayoutConfigurator> {
+	 interface VerticalLayoutConfigurator extends ThemableFlexComponentConfigurator<VerticalLayoutConfigurator> {
 
 	}
 
-	public interface HorizontalLayoutConfigurator
+	 interface HorizontalLayoutConfigurator
 			extends ThemableFlexComponentConfigurator<HorizontalLayoutConfigurator> {
+
+		HorizontalLayoutConfigurator addToStart(Component... components);
+
+		HorizontalLayoutConfigurator addToMiddle(Component... components);
+
+		HorizontalLayoutConfigurator addToEnd(Component... components);
 
 	}
 

@@ -6,8 +6,6 @@ import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
 import com.holonplatform.vaadin.flow.vaadinplus.utilities.Color;
 import com.holonplatform.vaadin.flow.vaadinplus.utilities.Font;
 import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.HasSize;
-import com.vaadin.flow.component.HasStyle;
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Span;
@@ -52,7 +50,7 @@ import java.util.Objects;
  * @see KeyValueList
  */
 @StyleSheet("context://key-value-item.css")
-public class KeyValueItem extends Div implements HasStyle, HasSize, HasTooltip {
+public class KeyValueItem extends Div implements HasTooltip {
 
     // Key column (grid child 1)
     private final Div    keyCol    = Components.div().build();
@@ -202,7 +200,7 @@ public class KeyValueItem extends Div implements HasStyle, HasSize, HasTooltip {
     }
 
     /**
-     * Returns the value container so callers can add multiple components,
+     * Returns the value container so callers can content multiple components,
      * badges, etc., without replacing the container itself.
      */
     public Div getValueContainer() {

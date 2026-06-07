@@ -31,7 +31,7 @@ public class ChatRoomMember implements Serializable {
 
     /** Membership role within a room. */
     public enum Role {
-        /** Room creator — can delete the room, rename it, or add/remove members. */
+        /** Room creator — can delete the room, rename it, or content/remove members. */
         OWNER,
         /** Regular participant — can send messages and leave. */
         MEMBER

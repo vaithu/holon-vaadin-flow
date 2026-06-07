@@ -66,7 +66,7 @@ import java.util.Optional;
  * @see FilterInputForm
  * @see FilterConverter
  */
-public interface FilterInput<T> extends HasComponent, Serializable {
+public interface FilterInput<T> extends HasComponent {
 
     /**
      * Represents a lower/upper bound range value.

@@ -6,7 +6,7 @@ import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.HtmlComponent;
 import com.vaadin.flow.component.Tag;
 import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.component.tabs.TabsVariant;
@@ -31,7 +31,7 @@ public class AbstractLazyTabsConfiguratorTest {
      */
     private static class TestLazyTabsConfigurator extends AbstractLazyTabsConfigurator<TestLazyTabsConfigurator> {
         public TestLazyTabsConfigurator() {
-            super(new VerticalLayout());
+            super(new Tabs());
         }
         @Override
         protected TestLazyTabsConfigurator getConfigurator() {
@@ -44,12 +44,15 @@ public class AbstractLazyTabsConfiguratorTest {
     @Tag("x-sample")
     private static class SampleComp extends HtmlComponent {
         private final String id = UUID.randomUUID().toString();
+        @SuppressWarnings("unused") // useful for debugging
         public String getIdStr() { return id; }
     }
 
     @BeforeEach
     void setUp() {
         testee = new TestLazyTabsConfigurator();
+        // Wire a content container — required for switchToTab() to render content.
+        testee.withContainer(new Div());
     }
 
     /** Helper to fetch the single content component currently shown. */
@@ -119,8 +122,8 @@ public class AbstractLazyTabsConfiguratorTest {
         Tab t1 = new Tab("LazyNoCache");
         Tab t2 = new Tab("Other");
 
-        // IMPORTANT: withTab(Tab, Supplier) DOES NOT add the tab to the Tabs component.
-        // Use withLazyTab(Tab, Supplier) which DOES add it.
+        // IMPORTANT: withTab(Tab, Supplier) DOES NOT content the tab to the Tabs component.
+        // Use withLazyTab(Tab, Supplier) which DOES content it.
         testee.withLazyTab(t1, SampleComp::new);      // adds t1 + supplier
         testee.withEagerTab(t2, new SampleComp());         // adds t2 (eager)
 
@@ -169,7 +172,7 @@ public class AbstractLazyTabsConfiguratorTest {
 
     @Test
     void userSelectedChangeListenerStillFires() {
-        // add two eager tabs
+        // content two eager tabs
         testee.withEagerTab("L1", new Div("L1"))
                 .withEagerTab("L2", new Div("L2"));
 
@@ -200,19 +203,19 @@ public class AbstractLazyTabsConfiguratorTest {
     }
 
     // --------------------------------------------------------
-    // 7) buildTabsWithContent() wrapper contains tabs + content
+    // 7) buildHorizontal() wrapper contains tabs + content container
     // --------------------------------------------------------
 
     @Test
-    void buildTabsWithContentProducesWrapperWithEagerTabsAndContainer() {
+    void buildHorizontalProducesWrapperWithTabsAndContainer() {
         // Prepare one tab to ensure content can render
         testee.withEagerTab("Wrapper", new Div("X"));
         testee.selectedIndex(0);
 
-        Component wrapper = testee.buildTabsWithContent();
-        assertTrue(wrapper instanceof VerticalLayout);
+        HorizontalLayout wrapper = testee.buildHorizontal();
+        assertNotNull(wrapper, "buildHorizontal() must not return null");
 
-        List<Component> children = ((VerticalLayout) wrapper).getChildren().toList();
+        List<Component> children = wrapper.getChildren().toList();
         assertEquals(2, children.size(), "Wrapper should contain Tabs + content container");
 
         // Expect the first child to be Tabs, second the content container
@@ -221,16 +224,15 @@ public class AbstractLazyTabsConfiguratorTest {
     }
 
     // --------------------------------------------------------
-    // 8) (Optional) Document current bug: withLazyTab(String, Supplier)
-    //    DOES NOT add the tab to the Tabs component
+    // 8) withLazyTab(String, Supplier) adds the Tab to the Tabs component
     // --------------------------------------------------------
 
     @Test
-    void withLazyTabStringShouldAddTabToTabs() {
+    void withLazyTabStringAddsTabToTabs() {
         int before = testee.getTabs().getTabCount();
         testee.withLazyTab("LazyByLabel", SampleComp::new);
         int after = testee.getTabs().getTabCount();
-        assertEquals(before + 1, after, "withLazyTab(String, Supplier) should add the Tab to the Tabs component");
+        assertEquals(before + 1, after, "withLazyTab(String, Supplier) should content the Tab to the Tabs component");
     }
 
     // --------------------------------------------------------
@@ -244,7 +246,7 @@ public class AbstractLazyTabsConfiguratorTest {
         testee.withEagerTab(label, new Div("i18n content"));
 
         int tabCount = testee.getTabs().getTabCount();
-        assertEquals(1, tabCount, "Localizable eager tab should add one Tab to the bar");
+        assertEquals(1, tabCount, "Localizable eager tab should content one Tab to the bar");
 
         // Verify label fallback resolves to the message string
         com.vaadin.flow.component.tabs.Tab added = testee.getTabs()

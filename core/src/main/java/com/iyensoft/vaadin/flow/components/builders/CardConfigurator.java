@@ -9,7 +9,7 @@ import com.vaadin.flow.component.card.CardVariant;
 public interface CardConfigurator<C extends CardConfigurator<C>> extends
         ComponentConfigurator<C>,
         HasComponentsConfigurator<C>,
-        HasElementConfigurator<C>, HasEnabledConfigurator<C>, HasStyleConfigurator<C>, HasSizeConfigurator<C>,
+        HasStyleConfigurator<C>, HasSizeConfigurator<C>,
         HasThemeVariantConfigurator<CardVariant, C> {
 
 // ---------- Children content ----------

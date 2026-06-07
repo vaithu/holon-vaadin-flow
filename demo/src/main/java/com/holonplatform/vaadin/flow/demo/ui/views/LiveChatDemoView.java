@@ -305,7 +305,7 @@ public class LiveChatDemoView extends Div implements BeforeEnterObserver {
                 "Use InviteToGroupDialog to invite users to a group room. "
                 + "The dialog supports two modes: a searchable user list (when you provide "
                 + "a user supplier) and a manual user-ID input. "
-                + "Accepted invitations automatically add the user as a room member.");
+                + "Accepted invitations automatically content the user as a room member.");
 
         // The group room we'll invite users into
         ChatRoom groupRoom = ChatRoom.group("demo-group-1", "Project Alpha",

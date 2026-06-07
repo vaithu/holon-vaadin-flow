@@ -14,7 +14,6 @@ import com.vaadin.flow.router.Route;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import com.holonplatform.vaadin.flow.vaadinplus.ResponsiveDiv;
 
 
 /**
@@ -24,7 +23,7 @@ import com.holonplatform.vaadin.flow.vaadinplus.ResponsiveDiv;
  * <ol>
  *   <li>Basic calendar – default month view, read-write</li>
  *   <li>Pre-loaded events – bulk {@code setEvents()} on ready</li>
- *   <li>Read-only – no add/edit/delete, agenda view</li>
+ *   <li>Read-only – no content/edit/delete, agenda view</li>
  *   <li>Dark theme – dark variant with custom primary color</li>
  * </ol>
  */

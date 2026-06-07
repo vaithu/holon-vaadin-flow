@@ -49,7 +49,7 @@ public interface ViewComponentConfigurator<T, C extends ViewComponentConfigurato
 	 */
 	@SuppressWarnings("unchecked")
 	default C bindLabelVisible(Signal<? extends Boolean> visibleSignal) {
-		SignalBindings.bind(this, visibleSignal, this::labelVisible);
+		SignalBindings.bind(this, visibleSignal, value -> labelVisible(value != null && value));
 		return (C) this;
 	}
 
@@ -74,7 +74,7 @@ public interface ViewComponentConfigurator<T, C extends ViewComponentConfigurato
 
 	/**
 	 * Add a {@link ValueChangeListener} to the component.
-	 * @param listener The {@link ValueChangeListener} to add (not null)
+	 * @param listener The {@link ValueChangeListener} to content (not null)
 	 * @return this
 	 */
 	C withValueChangeListener(ValueChangeListener<T, ValueChangeEvent<T>> listener);

@@ -18,8 +18,9 @@ import com.vaadin.flow.server.streams.DownloadHandler;
  *   <li>{@link #imageHandler(DownloadHandler)} — stream image from a backend resource</li>
  *   <li>{@link #colorIndex(int)} / {@link #colorIndex(AvatarColor)} — background colour slot 0–6</li>
  *   <li>{@link #variant(Alert.Variant)} — IconBadge-style tinted background (success/warning/info/destructive)</li>
+ *   <li>{@link #profile()} — Aura-compatible XL profile avatar styling</li>
  *   <li>{@link #ariaLabel(String)} / {@link #ariaLabel(Localizable)} — accessible label</li>
- *   <li>{@link #withThemeVariants(AvatarVariant...)} — xsmall / small / large / xlarge size</li>
+ *   <li>Theme variants (xsmall / small / large / xlarge) via the inherited avatar theme-variant API</li>
  * </ul>
  *
  * <p>Implements {@link DeferrableLocalizationConfigurator}: call
@@ -58,6 +59,8 @@ public interface AvatarConfigurator<C extends AvatarConfigurator<C>>
      * @return this configurator
      */
     C name(Localizable name);
+
+    C name(LabelBuilder<?> label);
 
     /**
      * Sets the display name using a message-code lookup.
@@ -177,6 +180,21 @@ public interface AvatarConfigurator<C extends AvatarConfigurator<C>>
      * @return this configurator
      */
     C variant(Alert.Variant variant);
+
+    // -----------------------------------------------------------------------
+    // Profile avatar (Aura-compatible XL presentation)
+    // -----------------------------------------------------------------------
+
+    /**
+     * Applies the Aura-compatible XL profile-avatar presentation.
+     *
+     * <p>This is a CSS-only variant that adds the {@code avatar--profile-xl} class,
+     * letting the stylesheet control the 128px sizing, surface background, and
+     * abbreviation styling without relying on theme tokens.</p>
+     *
+     * @return this configurator
+     */
+    C profile();
 
     // -----------------------------------------------------------------------
     // Configure factory

@@ -70,7 +70,7 @@ public interface TabsConfigurator<C extends TabsConfigurator<C>>
 
     /**
      * Adds a tab with a plain {@code label} and a numeric counter badge.
-     * Equivalent to {@code add(new Tab(new Span(label), Badge.createBadge(counter)))}.
+     * Equivalent to {@code content(new Tab(new Span(label), Badge.createBadge(counter)))}.
      */
     C withTab(String label, int counter);
 

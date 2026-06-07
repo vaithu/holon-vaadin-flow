@@ -6,20 +6,16 @@ import com.holonplatform.vaadin.flow.customer.entity.CustomerType;
 import com.holonplatform.vaadin.flow.customer.i18n.CustomerI18n;
 import com.holonplatform.vaadin.flow.customer.service.CustomerService;
 import com.holonplatform.vaadin.flow.customer.ui.dialog.CustomerFormDialog;
+import com.holonplatform.vaadin.flow.customer.ui.view.CustomerDetailView;
 import com.holonplatform.vaadin.flow.vaadinplus.components.Breadcrumb;
 import com.holonplatform.vaadin.flow.vaadinplus.components.BreadcrumbItem;
 import com.holonplatform.vaadin.flow.vaadinplus.components.BreadcrumbPage;
 import com.holonplatform.vaadin.flow.vaadinplus.components.BreadcrumbSeparator;
-import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.confirmdialog.ConfirmDialog;
 import com.vaadin.flow.component.dependency.StyleSheet;
-import com.vaadin.flow.component.html.Anchor;
-import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.component.html.H2;
-import com.vaadin.flow.component.html.Paragraph;
-import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
@@ -29,7 +25,7 @@ import com.vaadin.flow.component.notification.NotificationVariant;
  *
  * <pre>{@code
  * // Minimal usage
- * add(new CustomerListPanel(customerService));
+ * content(new CustomerListPanel(customerService));
  * }</pre>
  *
  * <p>Shows a paginated, searchable listing of {@link Customer} records with
@@ -89,7 +85,7 @@ public class CustomerListPanel extends Div {
                 .pageSizes(10, 25, 50)
                 .defaultPageSize(10)
                 .search(getTranslation(CustomerI18n.VIEW_SEARCH))
-                .fetch((q, text) -> customerService.fetch(q.getOffset(), q.getLimit(), text))
+                .fetch((q, text, sort) -> customerService.fetch(q.getOffset(), q.getLimit(), text))
                 .build();
 
         // Override the displayName column with a rich component cell
@@ -128,7 +124,7 @@ public class CustomerListPanel extends Div {
         var nameSpan = new Span(c.getDisplayName());
         nameSpan.addClassName("customer-list__name-primary");
         nameSpan.getElement().addEventListener("click",
-                ev -> UI.getCurrent().navigate("customers/" + c.getId()));
+                ev -> CustomerDetailView.show(c.getId()));
 
         var sub     = resolveSubtitle(c);
         var subSpan = new Span(sub);
@@ -158,7 +154,7 @@ public class CustomerListPanel extends Div {
         viewBtn.addThemeVariants(ButtonVariant.LUMO_TERTIARY, ButtonVariant.LUMO_ICON,
                 ButtonVariant.LUMO_SMALL);
         viewBtn.setAriaLabel("View " + c.getDisplayName());
-        viewBtn.addClickListener(ev -> UI.getCurrent().navigate("customers/" + c.getId()));
+        viewBtn.addClickListener(ev -> CustomerDetailView.show(c.getId()));
 
         var editBtn = new Button(VaadinIcon.EDIT.create());
         editBtn.addThemeVariants(ButtonVariant.LUMO_TERTIARY, ButtonVariant.LUMO_ICON,

@@ -32,21 +32,21 @@ public interface CompositionNotifierConfigurator<C extends CompositionNotifierCo
 
 	/**
 	 * Adds a <code>compositionstart</code> listener to this component.
-	 * @param listener the listener to add, not <code>null</code>
+	 * @param listener the listener to content, not <code>null</code>
 	 * @return this
 	 */
 	C withCompositionStartListener(ComponentEventListener<CompositionStartEvent> listener);
 
 	/**
 	 * Adds a <code>compositionupdate</code> listener to this component.
-	 * @param listener the listener to add, not <code>null</code>
+	 * @param listener the listener to content, not <code>null</code>
 	 * @return this
 	 */
 	C withCompositionUpdateListener(ComponentEventListener<CompositionUpdateEvent> listener);
 
 	/**
 	 * Adds a <code>compositionend</code> listener to this component.
-	 * @param listener the listener to add, not <code>null</code>
+	 * @param listener the listener to content, not <code>null</code>
 	 * @return this
 	 */
 	C withCompositionEndListener(ComponentEventListener<CompositionEndEvent> listener);

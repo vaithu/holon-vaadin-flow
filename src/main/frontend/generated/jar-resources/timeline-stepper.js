@@ -141,11 +141,12 @@ class TimelineStepper extends HTMLElement {
   /* ── Rendering helpers ──────────────────────────────────────────────── */
 
   _severityMeta(s) {
+    // Tailwind-200 tints — more saturated than 100 for small 28px dots to be clearly legible
     const m = {
-      success: { dot:'#0ea57a', ring:'#ecfdf5', label:'#085041', icon:'✓' },
-      warning: { dot:'#d97706', ring:'#fffbeb', label:'#854F0B', icon:'!' },
-      error:   { dot:'#e24b4a', ring:'#fcebeb', label:'#a32d2d', icon:'✕' },
-      info:    { dot:'#378add', ring:'#e6f1fb', label:'#0c447c', icon:'i' },
+      success: { dot: '#a7f3d0', fg: '#065f46', label: '#065f46', icon: '✓' },
+      warning: { dot: '#fde68a', fg: '#92400e', label: '#92400e', icon: '!'  },
+      error:   { dot: '#fecaca', fg: '#991b1b', label: '#991b1b', icon: '✕' },
+      info:    { dot: '#ddd6fe', fg: '#4c1d95', label: '#4c1d95', icon: 'i'  },
     };
     return m[s] || m.info;
   }
@@ -167,9 +168,10 @@ class TimelineStepper extends HTMLElement {
   }
 
   _avatarPalette(name) {
+    // Tailwind-200 tints — small 20px avatar circles need more saturation than 100-level
     const palettes = [
-      ['#eff6ff','#1a56db'], ['#ecfdf5','#0ea57a'], ['#faf5ff','#7c3aed'],
-      ['#fff7ed','#c2410c'], ['#fdf2f8','#be185d'], ['#f0fdf4','#15803d'],
+      ['#bfdbfe','#1e40af'], ['#a7f3d0','#065f46'], ['#ddd6fe','#4c1d95'],
+      ['#fde68a','#92400e'], ['#fbcfe8','#9d174d'], ['#bbf7d0','#166534'],
     ];
     let h = 0;
     for (let i = 0; i < (name || '').length; i++) h = (h * 31 + name.charCodeAt(i)) & 0xffff;
@@ -183,7 +185,7 @@ class TimelineStepper extends HTMLElement {
     const isLast = idx === total - 1;
 
     const badge = entry.category
-      ? `<span class="tl-badge" style="background:${m.ring};color:${m.label};">${entry.category}</span>`
+      ? `<span class="tl-badge" style="background:${m.dot};color:${m.label};">${entry.category}</span>`
       : '';
 
     return `
@@ -191,8 +193,8 @@ class TimelineStepper extends HTMLElement {
            role="listitem" tabindex="${this._clickable ? '0' : '-1'}"
            aria-label="${entry.action} — ${entry.actor || 'System'} — ${ts}">
         <div class="tl-rail">
-          <div class="tl-dot" style="background:${m.dot};box-shadow:0 0 0 4px ${m.ring};">
-            <span class="tl-icon">${m.icon}</span>
+          <div class="tl-dot" style="background:${m.dot};">
+            <span class="tl-icon" style="color:${m.fg};">${m.icon}</span>
           </div>
           ${!isLast ? '<div class="tl-line"></div>' : ''}
         </div>
@@ -292,7 +294,7 @@ class TimelineStepper extends HTMLElement {
           position: relative; z-index: 1;
           transition: transform 0.15s;
         }
-        .tl-icon { font-size: 11px; font-weight: 700; color: #fff; font-style: normal; line-height: 1; }
+        .tl-icon { font-size: 11px; font-weight: 700; font-style: normal; line-height: 1; }
         .tl-line {
           flex: 1; width: 2px; min-height: 24px; margin: 5px 0;
           background: light-dark(#e5e7eb, #374151); border-radius: 1px;

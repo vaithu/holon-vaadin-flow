@@ -251,7 +251,7 @@ class TestAccordionBuilder {
     }
 
     // =========================================================================
-    // Panel sub-builder — add components
+    // Panel sub-builder — content components
     // =========================================================================
 
     @Test

@@ -41,7 +41,7 @@ public abstract class AbstractGridDetailView<T> implements GridDetailView<T> {
                 .id("DetailContent")
                 .fullWidth()
                 .addComponentAsFirst(createDetailMenuBar())
-                .add(getDetailMenuBody())
+                .content(getDetailMenuBody())
                 .withoutPadding()
                 .withoutSpacing()
                 .build();

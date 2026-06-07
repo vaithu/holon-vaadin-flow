@@ -2,12 +2,16 @@ package com.iyensoft.vaadin.flow.components.builders;
 
 import com.holonplatform.vaadin.flow.components.BeanListing;
 import com.holonplatform.vaadin.flow.components.ItemListing;
+import com.holonplatform.vaadin.flow.components.ListingBundle;
 import com.holonplatform.vaadin.flow.components.PropertyListing;
+import com.holonplatform.vaadin.flow.vaadinplus.components.Breadcrumb;
+import com.holonplatform.vaadin.flow.vaadinplus.components.Header;
 import com.iyensoft.vaadin.flow.components.MasterDetailLayout;
 import com.iyensoft.vaadin.flow.internal.components.builders.DefaultMasterDetailBuilder;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.grid.Grid;
-import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.component.menubar.MenuBar;
+import com.vaadin.flow.component.tabs.Tabs;
 
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -55,18 +59,47 @@ public interface MasterDetailBuilder<T> {
      * @param header the header component (not null)
      * @return this builder
      */
-    MasterDetailBuilder<T> masterHeader(Component header);
+    MasterDetailBuilder<T> masterHeader(Header header);
 
     /**
-     * Adds an optional search / filter toolbar to the master panel.
-     * The field is placed in a responsive toolbar row; additional action buttons
-     * are aligned to the trailing edge.
+     * Adds an optional toolbar component to the master panel, rendered inside
+     * {@code .iyen-master-content} <em>above</em> the grid (CSS hook:
+     * {@code .iyen-master-toolbar}).
      *
-     * @param searchField the search input (not null)
-     * @param actions     optional trailing action buttons
+     * <p>Use this for hand-built toolbars (page-size selector, search field,
+     * action buttons, etc.). When wiring an entire {@link ListingBundle} via
+     * {@link #masterGrid(ListingBundle)} the bundle's
+     * {@link ListingBundle#toolbar() toolbar()} is wired into this same slot
+     * automatically — calling {@code masterToolbar(...)} after
+     * {@link #masterGrid(ListingBundle)} therefore overrides the bundle's toolbar.</p>
+     *
+     * <p>{@code null} is treated as a no-op (the toolbar slot is left untouched);
+     * useful when supplying an optional toolbar without an explicit null-check at
+     * the call site.</p>
+     *
+     * @param toolbar the toolbar component, or {@code null} for no-op
      * @return this builder
      */
-    MasterDetailBuilder<T> masterSearch(TextField searchField, com.vaadin.flow.component.button.Button... actions);
+    MasterDetailBuilder<T> masterToolbar(Component toolbar);
+
+    /**
+     * Adds an optional footer component to the master panel, rendered <em>below</em>
+     * the {@code .iyen-master-content} container (CSS hook: {@code .iyen-master-footer}).
+     *
+     * <p>Use this for pagination bars, status rows, or summary widgets. When wiring
+     * an entire {@link ListingBundle} via {@link #masterGrid(ListingBundle)} the
+     * bundle's {@link ListingBundle#footer() footer()} is wired into this same slot
+     * automatically — calling {@code masterFooter(...)} after
+     * {@link #masterGrid(ListingBundle)} therefore overrides the bundle's footer.</p>
+     *
+     * <p>{@code null} is treated as a no-op (the footer slot is left untouched);
+     * useful when supplying an optional footer without an explicit null-check at
+     * the call site.</p>
+     *
+     * @param footer the footer component, or {@code null} for no-op
+     * @return this builder
+     */
+    MasterDetailBuilder<T> masterFooter(Component footer);
 
     /**
      * Sets the mandatory master {@link Grid}.
@@ -107,6 +140,53 @@ public interface MasterDetailBuilder<T> {
      */
     MasterDetailBuilder<T> masterGrid(PropertyListing listing);
 
+    /**
+     * Sets an entire {@link ListingBundle} as the master panel — the simplest way
+     * to wire a fully-featured listing into a master-detail screen.
+     *
+     * <p>The bundle is decomposed and each piece is placed in the canonical slot
+     * of the master panel:</p>
+     *
+     * <ul>
+     *   <li>{@link ListingBundle#header()  bundle.header()}  → master header
+     *       ({@code .iyen-master-header}) — title, summary, optional in-header
+     *       search/filter controls when {@code gridHeader(...)} was configured.</li>
+     *   <li>{@link ListingBundle#toolbar() bundle.toolbar()} → master toolbar
+     *       ({@code .iyen-master-toolbar}, placed inside {@code .iyen-master-content}
+     *       above the grid) — page-size selector, search field, filter-options menu.
+     *       Skipped when the bundle was built with {@code gridHeader(...)} (the toolbar
+     *       returns an invisible {@link com.vaadin.flow.component.html.Div Div} in that
+     *       configuration because all controls live inside the header instead).</li>
+     *   <li>{@link ListingBundle#listing() bundle.listing()} → master grid
+     *       ({@code .mdl-master-grid}) — extracted via {@link #masterGrid(ItemListing)}.</li>
+     *   <li>{@link ListingBundle#footer()  bundle.footer()}  → master footer
+     *       ({@code .iyen-master-footer}, placed at the bottom of the master panel)
+     *       — pagination bar. Hidden by default; auto-shows when the user switches
+     *       to paginated mode via the bundle's options menu.</li>
+     * </ul>
+     *
+     * <p>Resulting layout:</p>
+     * <pre>
+     * .iyen-master
+     * ├── .iyen-master-header        ← bundle.header()
+     * ├── .iyen-master-content
+     * │   ├── .iyen-master-toolbar   ← bundle.toolbar()   (when visible)
+     * │   └── .mdl-master-grid       ← bundle.listing()
+     * └── .iyen-master-footer        ← bundle.footer()    (when paginated mode active)
+     * </pre>
+     *
+     * <p>Equivalent to wiring each piece individually — but you almost never want to,
+     * because the bundle internally cross-wires the page-size selector, pagination bar,
+     * filter dialog, and grid data view, and re-creating those wires by hand is fragile.</p>
+     *
+     * <p>Calling {@link #masterHeader(Component)} <em>after</em> this method overrides the
+     * bundle's header.</p>
+     *
+     * @param bundle the listing bundle (not null)
+     * @return this builder
+     */
+    MasterDetailBuilder<T> masterGrid(ListingBundle<T> bundle);
+
     // -------------------------------------------------------------------------
     // Detail panel — static parts
     // -------------------------------------------------------------------------
@@ -119,16 +199,33 @@ public interface MasterDetailBuilder<T> {
      * @param header the header component (not null)
      * @return this builder
      */
-    MasterDetailBuilder<T> detailHeader(Component header);
+    MasterDetailBuilder<T> detailHeader(Header header);
+
+    /**
+     * Adds an optional breadcrumbs component below the detail header.
+     *
+     * @param breadcrumbs the breadcrumbs component (not null)
+     * @return this builder
+     */
+    MasterDetailBuilder<T> detailBreadcrumbs(Breadcrumb breadcrumbs);
 
     /**
      * Adds an optional static menu / navigation component (e.g. {@code MenuBar} or
      * {@code Tabs}) below the detail header.
      *
-     * @param menuOrTabs the menu / tabs component (not null)
+     * @param tabs the tabs component (not null)
      * @return this builder
      */
-    MasterDetailBuilder<T> detailMenu(Component menuOrTabs);
+    MasterDetailBuilder<T> detailMenu(Tabs tabs);
+
+    /**
+     * Adds an optional static menu / navigation component (e.g. {@code MenuBar} or
+     * {@code Tabs}) below the detail header.
+     *
+     * @param menuBar the MenuBar component (not null)
+     * @return this builder
+     */
+    MasterDetailBuilder<T> detailMenu(MenuBar menuBar);
 
     // -------------------------------------------------------------------------
     // Detail panel — dynamic content
@@ -147,6 +244,17 @@ public interface MasterDetailBuilder<T> {
      * @return this builder
      */
     MasterDetailBuilder<T> detailContent(Function<T, Component[]> contentProvider);
+
+    /**
+     * Adds a static footer at the bottom of the detail panel, below the scrollable
+     * dynamic content area. The footer does not change when the selection changes;
+     * use {@link #withDetailSync(Component, java.util.function.Consumer)} to reactively
+     * update individual footer components.
+     *
+     * @param footer one or more footer components (not null)
+     * @return this builder
+     */
+    MasterDetailBuilder<T> detailFooter(Component... footer);
 
     // -------------------------------------------------------------------------
     // URL synchronisation

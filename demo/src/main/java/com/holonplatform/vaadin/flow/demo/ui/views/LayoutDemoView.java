@@ -4,7 +4,6 @@ import com.holonplatform.vaadin.flow.components.builders.LayoutBuilder;
 import com.holonplatform.vaadin.flow.demo.ui.DemoExample;
 import com.holonplatform.vaadin.flow.demo.ui.DemoMainLayout;
 import com.holonplatform.vaadin.flow.internal.lumo.*;
-import com.holonplatform.vaadin.flow.vaadinplus.Layout;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.Paragraph;

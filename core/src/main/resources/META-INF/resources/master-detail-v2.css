@@ -1,0 +1,104 @@
+/*
+ * master-detail-v2.css
+ *
+ * Clean, mobile-first layout and grid selection styling for
+ * DefaultMasterDetailBuilderV2.
+ */
+
+.master-detail-container {
+    --mdl-selected-accent: #1864ff;
+    --mdl-selected-bg: rgba(24, 100, 255, 0.12);
+    --mdl-selected-hover-bg: rgba(24, 100, 255, 0.18);
+
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    min-width: 0;
+}
+
+.master-view,
+.detail-view {
+    min-width: 0;
+    width: 100%;
+}
+
+.master-view {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.detail-view {
+    display: none;
+    padding-left: 0;
+}
+
+.separator {
+    display: none;
+    flex: 0 0 1px;
+    width: 1px;
+    align-self: stretch;
+}
+
+.master-view-content {
+    display: flex;
+    flex-direction: column;
+    padding-right: 1%;
+}
+
+.master-detail-container.mdl-mobile-master-only .detail-view,
+.master-detail-container.mdl-mobile-master-only .separator {
+    display: none;
+}
+
+.mdl-master-grid {
+    flex: 1 1 auto;
+    min-height: 0;
+    width: 100%;
+    border-radius: 0%;
+    padding-right: 1%;
+}
+
+/* Remove outer border */
+vaadin-grid.mdl-master-grid {
+    border: none !important;
+}
+
+vaadin-grid.mdl-master-grid::part(mdl-selected) {
+    box-shadow: inset 4px 0 0 var(--mdl-selected-accent, #378add);
+    background-color: var(--mdl-selected-bg, #e6f1fb);
+}
+
+vaadin-grid.mdl-master-grid::part(selected-row),
+vaadin-grid.mdl-master-grid::part(selected-row-cell) {
+    border-left: none !important;
+    box-shadow: none !important;
+}
+
+
+@media (min-width: 768px) {
+    .master-detail-container {
+        flex-direction: row;
+        overflow: hidden;
+    }
+
+    .master-view {
+        max-width: 378px;
+        flex: 1 1 300px;/* grow: 1, shrink: 1, basis: 300px */
+        overflow: auto;
+    }
+
+    .separator {
+        display: block;
+        background-color: var(--mdl-selected-accent);
+    }
+
+    .detail-view {
+        display: block;
+        flex: 2 1 500px;
+        /* Grows twice as fast as the master view */
+        overflow: auto;
+        padding-left: 1rem;
+    }
+}

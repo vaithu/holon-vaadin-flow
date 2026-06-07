@@ -4,8 +4,6 @@ import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
 import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.HasSize;
-import com.vaadin.flow.component.HasStyle;
 import com.vaadin.flow.component.html.Div;
 
 /**
@@ -14,7 +12,7 @@ import com.vaadin.flow.component.html.Div;
  * <p>Supports plain text, Holon {@link Localizable} (resolved on attach and on explicit set),
  * and arbitrary child components.</p>
  */
-public class AlertTitle extends Div implements HasSize, HasStyle {
+public class AlertTitle extends Div {
 
     private Localizable localizable;
 

@@ -480,7 +480,7 @@ vaadin-badge[theme~="pill"] {
 
 /* ============================================================
   12. VIEW & CARD UTILITIES
-      .nexus-view  — add to your @Route view's root element
+      .nexus-view  — content to your @Route view's root element
       .nexus-card  — card / panel container
       .nexus-badge — HTML fallback for vaadin-badge
    ============================================================ */

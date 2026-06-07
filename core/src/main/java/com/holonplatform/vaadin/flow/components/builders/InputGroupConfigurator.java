@@ -90,7 +90,7 @@ public interface InputGroupConfigurator<P, T, G extends BoundComponentGroup<P, I
 	/**
 	 * Add a {@link BiConsumer} to allow further {@link Input} configuration before the input is actually bound to a
 	 * property as editor.
-	 * @param postProcessor the post processor to add (not null)
+	 * @param postProcessor the post processor to content (not null)
 	 * @return this
 	 */
 	C withPostProcessor(BiConsumer<P, Input<?>> postProcessor);
@@ -98,7 +98,7 @@ public interface InputGroupConfigurator<P, T, G extends BoundComponentGroup<P, I
 
 	/**
 	 * Adds a group value {@link Validator}.
-	 * @param validator The group validator to add (not null)
+	 * @param validator The group validator to content (not null)
 	 * @return this
 	 */
 	C withValidator(Validator<T> validator);
@@ -179,7 +179,7 @@ public interface InputGroupConfigurator<P, T, G extends BoundComponentGroup<P, I
 		 * Add a {@link ValueChangeListener} to the {@link Input} bound to given <code>property</code>.
 		 * @param <V> Property type
 		 * @param property The property (not null)
-		 * @param listener The ValueChangeListener to add (not null)
+		 * @param listener The ValueChangeListener to content (not null)
 		 * @return this
 		 */
 		<V> C withValueChangeListener(Property<V> property,
@@ -189,7 +189,7 @@ public interface InputGroupConfigurator<P, T, G extends BoundComponentGroup<P, I
 		 * Adds a {@link Validator} to the {@link Input} bound to given <code>property</code>.
 		 * @param <V> Property type
 		 * @param property The property (not null)
-		 * @param validator The validator to add (not null)
+		 * @param validator The validator to content (not null)
 		 * @return this
 		 */
 		<V> C withValidator(Property<V> property, Validator<? super V> validator);
@@ -220,7 +220,7 @@ public interface InputGroupConfigurator<P, T, G extends BoundComponentGroup<P, I
 		 * Add a {@link ValueChangeListener} to the {@link Input} bound to given <code>property</code>.
 		 * @param <V> Property type
 		 * @param property The property (not null)
-		 * @param listener The ValueChangeListener to add (not null)
+		 * @param listener The ValueChangeListener to content (not null)
 		 * @return this
 		 */
 		<V> C withValueChangeListener(String property,
@@ -230,7 +230,7 @@ public interface InputGroupConfigurator<P, T, G extends BoundComponentGroup<P, I
 		 * Adds a {@link Validator} to the {@link Input} bound to given <code>property</code>.
 		 * @param <V> Property type
 		 * @param property The property (not null)
-		 * @param validator The validator to add (not null)
+		 * @param validator The validator to content (not null)
 		 * @return this
 		 */
 		<V> C withValidator(String property, Validator<? super V> validator);
@@ -260,7 +260,7 @@ public interface InputGroupConfigurator<P, T, G extends BoundComponentGroup<P, I
 		/**
 		 * Add a {@link ValueChangeListener} to the {@link Input} bound to given <code>property</code>.
 		 * @param property Property (not null)
-		 * @param listener The ValueChangeListener to add (not null)
+		 * @param listener The ValueChangeListener to content (not null)
 		 * @return this
 		 */
 		C withValueChangeListener(String property,
@@ -269,7 +269,7 @@ public interface InputGroupConfigurator<P, T, G extends BoundComponentGroup<P, I
 		/**
 		 * Adds a {@link Validator} to the {@link Input} bound to given <code>property</code>.
 		 * @param property The property (not null)
-		 * @param validator The validator to add (not null)
+		 * @param validator The validator to content (not null)
 		 * @return this
 		 */
 		C withValidator(String property, Validator<?> validator);

@@ -1,0 +1,527 @@
+ M .vscode/.copilot-plugin
+ M calendar/src/main/java/com/holonplatform/vaadin/flow/calendar/VaadinCalendar.java
+ M chat/src/main/java/com/holonplatform/vaadin/flow/chat/ChatRoomMember.java
+ M chat/src/main/java/com/holonplatform/vaadin/flow/chat/components/ChatChannelList.java
+ M chat/src/main/java/com/holonplatform/vaadin/flow/chat/components/LiveChat.java
+ M chat/src/main/java/com/holonplatform/vaadin/flow/chat/components/TypingIndicator.java
+ M chat/src/main/java/com/holonplatform/vaadin/flow/chat/internal/DefaultChatService.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/Components.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/FilterInput.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/FilterInputForm.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/Input.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/ItemListing.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/ItemListingPageSizeSelector.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/ItemListingPaginationBar.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/KanbanBoard.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/ListingBundle.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/ListingBundleBuilder.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/PropertyInputForm.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/PropertyListingBundleBuilder.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/Selectable.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/SplitViewFrame.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/ValidatableInput.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/ValueHolder.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/builders/AlertDialogConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/builders/AvatarBuilder.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/builders/AvatarConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/builders/AvatarGroupBuilder.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/builders/AvatarGroupConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/builders/BulkActionConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/builders/BulkItemPickerDialogConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/builders/ButtonBuilder.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/builders/ButtonGroupBuilder.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/builders/ButtonGroupConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/builders/ClickNotifierConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/builders/ComponentConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/builders/ComponentGroupConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/builders/CompositionNotifierConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/builders/ContextMenuConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/builders/DatastoreDataProviderConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/builders/DateTimeInputConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/builders/DialogConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/builders/FilterInputFormBuilder.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/builders/FilterableSingleSelectConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/builders/FlexComponentConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/builders/FocusableConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/builders/FormLayoutConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/builders/GridHeaderConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/builders/HasBeanDatastoreDataProviderConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/builders/HasBeanDatastoreFilterableDataProviderConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/builders/HasComponentsConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/builders/HasDataProviderConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/builders/HasDatastoreDataProviderConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/builders/HasDetailsConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/builders/HasElementConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/builders/HasEnabledConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/builders/HasIconConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/builders/HasItemsConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/builders/HasPropertyBoxDatastoreDataProviderConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/builders/HasPropertyBoxDatastoreFilterableDataProviderConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/builders/HasPropertySetDatastoreDataProviderConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/builders/HasThemeVariantConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/builders/HeaderConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/builders/HorizontalLayoutBuilder.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/builders/InputAdapterBuilder.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/builders/InputConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/builders/InputConverterBuilder.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/builders/InputGroupBuilder.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/builders/InputGroupConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/builders/InputGroupLayoutConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/builders/InputNotifierConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/builders/ItemListingConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/builders/KeyNotifierConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/builders/LayoutConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/builders/ListMultiSelectConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/builders/ListSingleSelectConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/builders/LocalDateInputConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/builders/MenuBarConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/builders/MenuItemConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/builders/NotificationConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/builders/OptionsMultiSelectConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/builders/OptionsSingleSelectConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/builders/PropertyListingConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/builders/PropertyViewGroupConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/builders/SearchBarConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/builders/SelectableInputConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/builders/SheetConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/builders/SingleSelectConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/builders/StepperConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/builders/TabConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/builders/ThemableFlexComponentConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/builders/TransferListBuilder.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/builders/ValidatableInputConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/builders/ViewComponentConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/builders/ZohoViewConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/events/InvalidChangeEventNotifier.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/kanban/KanbanColumnActionHandler.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/kanban/KanbanI18n.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/kanban/KanbanStatusBadge.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/components/utils/UIUtils.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/data/DatastoreDataProvider.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/data/DatastoreLazyDataProvider.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/data/ItemListingDataProviderAdapter.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/data/ItemListingLazyDataProviderAdapter.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/AbstractItemListing.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/AbstractViewComponent.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/DefaultBeanListing.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/DefaultBeanPropertyInputForm.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/DefaultComponentContainerComposer.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/DefaultDialog.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/DefaultEditButton.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/DefaultKanbanBoard.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/DefaultPropertyInputGroup.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/DefaultPropertyListing.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/NotificationValidationStatusHandler.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/AbstractAlertDialogConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/AbstractAvatarConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/AbstractButtonConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/AbstractFormLayoutConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/AbstractGridDetailView.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/AbstractGridHeaderConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/AbstractHeaderConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/AbstractInputConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/AbstractLocalDateInputBuilder.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/AbstractLocalDateTimeInputBuilder.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/AbstractMenuBarConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/AbstractMenuItemConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/AbstractNotificationConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/AbstractTabSheetConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/AbstractThemableFlexComponentConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/AbstractTitleConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/AbstractZohoView.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/DefaultContextMenuItemBuilder.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/DefaultFlexComponentConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/DefaultFormResponsiveStepBuilder.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/DefaultHorizontalLayoutBuilder.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/DefaultHorizontalLayoutConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/DefaultIconConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/DefaultListSingleSelectInputBuilder.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/DefaultMenuBarItemBuilder.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/DefaultOptionsSingleSelectInputBuilder.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/DefaultPropertyOptionsSingleSelectInputBuilder.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/DefaultShortcutConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/DefaultValidatableInputConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/DelegatedShortcutConfigurator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/support/DefaultItemListingColumn.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/support/DefaultItemListingFooterRow.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/support/DefaultItemListingHeaderRow.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/support/DefaultItemListingHeaderSection.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/components/support/ItemListingColumn.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/data/DefaultItemListingDataProviderAdapter.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/internal/data/DefaultItemListingLazyDataProviderAdapter.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/util/WebBrowserTools.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/util/package-info.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/KeyValueItem.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/KeyValueList.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/Layout.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/ResponsiveDiv.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/Alert.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/AlertAction.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/AlertDescription.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/AlertDialog.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/AlertTitle.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/Breadcrumb.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/BreadcrumbPage.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/BreadcrumbSeparator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/BulkItemPickerDialog.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/ButtonGroup.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/Carousel.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/CarouselContent.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/CarouselItem.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/CarouselNext.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/CarouselPrevious.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/CollaborationFormSupport.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/DynamicFilterPanel.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/Empty.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/EmptyTitle.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/EntityFormPanel.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/FlowStepper.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/GridHeader.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/Header.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/Highlight.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/IconBadge.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/InputGroup.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/InputOTP.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/InputOTPGroup.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/LineItemGrid.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/Pagination.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/PaginationContent.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/PaginationLink.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/PaginationNext.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/PaginationPrevious.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/Separator.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/Sheet.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/SheetDescription.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/SheetTitle.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/TimelineStepper.java
+ M core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/TransferList.java
+ M core/src/main/java/com/iyensoft/vaadin/flow/components/MasterDetailLayout.java
+ M core/src/main/java/com/iyensoft/vaadin/flow/components/builders/CardConfigurator.java
+ M core/src/main/java/com/iyensoft/vaadin/flow/components/builders/IyenCommonConfigurator.java
+ M core/src/main/java/com/iyensoft/vaadin/flow/components/builders/LazyTabsBuilder.java
+ M core/src/main/java/com/iyensoft/vaadin/flow/components/builders/LazyTabsConfigurator.java
+ M core/src/main/java/com/iyensoft/vaadin/flow/components/builders/MasterDetailBuilder.java
+ M core/src/main/java/com/iyensoft/vaadin/flow/components/builders/TabsConfigurator.java
+ M core/src/main/java/com/iyensoft/vaadin/flow/internal/components/builders/AbstractIyenCommonConfigurator.java
+ M core/src/main/java/com/iyensoft/vaadin/flow/internal/components/builders/AbstractLazyTabsConfigurator.java
+ M core/src/main/java/com/iyensoft/vaadin/flow/internal/components/builders/AbstractMobileGridColumnConfigurator.java
+ M core/src/main/java/com/iyensoft/vaadin/flow/internal/components/builders/DefaultLazyTabsBuilder.java
+ M core/src/main/java/com/iyensoft/vaadin/flow/internal/components/builders/DefaultLazyTabsConfigurator.java
+ M core/src/main/java/com/iyensoft/vaadin/flow/internal/components/builders/DefaultMasterDetailBuilder.java
+ M core/src/main/java/com/iyensoft/vaadin/flow/internal/components/builders/MobileGridColumnConfigurator.java
+ M core/src/main/java/com/iyensoft/vaadin/flow/utils/responsive/IyenResponsiveLayout.java
+ M core/src/main/java/com/iyensoft/vaadin/flow/utils/responsive/Orientation.java
+ M core/src/main/java/com/iyensoft/vaadin/flow/utils/responsive/ViewMode.java
+ M core/src/main/resources/META-INF/resources/alert-dialog.css
+ M core/src/main/resources/META-INF/resources/alert-modal.css
+ M core/src/main/resources/META-INF/resources/app-shell.css
+ M core/src/main/resources/META-INF/resources/button-group.css
+ M core/src/main/resources/META-INF/resources/filter-panel.css
+ M core/src/main/resources/META-INF/resources/grid-header.css
+ M core/src/main/resources/META-INF/resources/h-dialog.css
+ M core/src/main/resources/META-INF/resources/header.css
+ M core/src/main/resources/META-INF/resources/highlight.css
+ M core/src/main/resources/META-INF/resources/input-group.css
+ M core/src/main/resources/META-INF/resources/input-otp.css
+ M core/src/main/resources/META-INF/resources/kanban-board.css
+ M core/src/main/resources/META-INF/resources/key-value-item.css
+ M core/src/main/resources/META-INF/resources/master-detail-layout.css
+ M core/src/main/resources/META-INF/resources/master-details.css
+ D core/src/main/resources/META-INF/resources/mdl-demo.css
+ M core/src/main/resources/META-INF/resources/menu.css
+ M core/src/main/resources/META-INF/resources/notification.css
+ M core/src/main/resources/META-INF/resources/pagination.css
+ M core/src/main/resources/META-INF/resources/sheet.css
+ M core/src/main/resources/META-INF/resources/utilities.css
+ M core/src/main/resources/META-INF/resources/vaadin-shell-theme.css
+ M core/src/test/java/com/holonplatform/vaadin/flow/test/AbstractLazyTabsConfiguratorTest.java
+ M core/src/test/java/com/holonplatform/vaadin/flow/test/TestAccordionBuilder.java
+ M core/src/test/java/com/holonplatform/vaadin/flow/test/TestAlertDialog.java
+ M core/src/test/java/com/holonplatform/vaadin/flow/test/TestAvatarBuilder.java
+ M core/src/test/java/com/holonplatform/vaadin/flow/test/TestBreadcrumb.java
+ M core/src/test/java/com/holonplatform/vaadin/flow/test/TestBulkActionBuilder.java
+ M core/src/test/java/com/holonplatform/vaadin/flow/test/TestButtonGroup.java
+ M core/src/test/java/com/holonplatform/vaadin/flow/test/TestDateInput.java
+ M core/src/test/java/com/holonplatform/vaadin/flow/test/TestDetailsBuilder.java
+ M core/src/test/java/com/holonplatform/vaadin/flow/test/TestDialogBuilder.java
+ M core/src/test/java/com/holonplatform/vaadin/flow/test/TestDivBuilder.java
+ M core/src/test/java/com/holonplatform/vaadin/flow/test/TestFlexBoxLayoutBuilder.java
+ M core/src/test/java/com/holonplatform/vaadin/flow/test/TestFlexLayoutBuilder.java
+ M core/src/test/java/com/holonplatform/vaadin/flow/test/TestFormLayoutBuilder.java
+ M core/src/test/java/com/holonplatform/vaadin/flow/test/TestGridHeaderBuilder.java
+ M core/src/test/java/com/holonplatform/vaadin/flow/test/TestHeader.java
+ M core/src/test/java/com/holonplatform/vaadin/flow/test/TestHeaderBuilder.java
+ M core/src/test/java/com/holonplatform/vaadin/flow/test/TestInputGroup.java
+ M core/src/test/java/com/holonplatform/vaadin/flow/test/TestInputGroupBuilder.java
+ M core/src/test/java/com/holonplatform/vaadin/flow/test/TestItemListingPaginationBarLazy.java
+ M core/src/test/java/com/holonplatform/vaadin/flow/test/TestItemListingPaginationBarSignal.java
+ M core/src/test/java/com/holonplatform/vaadin/flow/test/TestKanbanBoard.java
+ M core/src/test/java/com/holonplatform/vaadin/flow/test/TestKeyValuePairs.java
+ M core/src/test/java/com/holonplatform/vaadin/flow/test/TestLabel.java
+ M core/src/test/java/com/holonplatform/vaadin/flow/test/TestLazyTabsBuilder.java
+ M core/src/test/java/com/holonplatform/vaadin/flow/test/TestListSingleSelectInput.java
+ M core/src/test/java/com/holonplatform/vaadin/flow/test/TestListingBundleFilter.java
+D  core/src/test/java/com/holonplatform/vaadin/flow/test/TestMasterDetailDetailSync.java
+ M core/src/test/java/com/holonplatform/vaadin/flow/test/TestMasterDetailLayout.java
+ M core/src/test/java/com/holonplatform/vaadin/flow/test/TestPropertyListing.java
+ M core/src/test/java/com/holonplatform/vaadin/flow/test/TestSheet.java
+ M core/src/test/java/com/holonplatform/vaadin/flow/test/TestTabsBuilder.java
+ M customer/src/main/java/com/holonplatform/vaadin/flow/customer/entity/Customer.java
+ M customer/src/main/java/com/holonplatform/vaadin/flow/customer/ui/CustomerDetailPanel.java
+ M customer/src/main/java/com/holonplatform/vaadin/flow/customer/ui/CustomerListPanel.java
+ M customer/src/main/java/com/holonplatform/vaadin/flow/customer/ui/dialog/CustomerFormDialog.java
+ M customer/src/main/java/com/holonplatform/vaadin/flow/customer/ui/view/CustomerDetailView.java
+ M customer/src/main/java/com/holonplatform/vaadin/flow/customer/ui/view/CustomerListView.java
+ M demo/src/main/frontend/generated/flow/Flow.tsx
+ M demo/src/main/frontend/generated/flow/ReactAdapter.tsx
+D  demo/src/main/frontend/generated/jar-resources/Flow.d.ts
+D  demo/src/main/frontend/generated/jar-resources/Flow.js
+D  demo/src/main/frontend/generated/jar-resources/Flow.js.map
+D  demo/src/main/frontend/generated/jar-resources/FlowBootstrap.d.ts
+D  demo/src/main/frontend/generated/jar-resources/FlowBootstrap.js
+D  demo/src/main/frontend/generated/jar-resources/FlowClient.d.ts
+D  demo/src/main/frontend/generated/jar-resources/FlowClient.js
+D  demo/src/main/frontend/generated/jar-resources/ReactRouterOutletElement.tsx
+D  demo/src/main/frontend/generated/jar-resources/alert-dialog.css
+D  demo/src/main/frontend/generated/jar-resources/alert-modal.css
+D  demo/src/main/frontend/generated/jar-resources/alert.css
+D  demo/src/main/frontend/generated/jar-resources/app-bar.css
+D  demo/src/main/frontend/generated/jar-resources/app-shell.css
+D  demo/src/main/frontend/generated/jar-resources/brand-gold-leaf.css
+D  demo/src/main/frontend/generated/jar-resources/breadcrumb.css
+D  demo/src/main/frontend/generated/jar-resources/bulk-item-picker-dialog.css
+D  demo/src/main/frontend/generated/jar-resources/button-group.css
+D  demo/src/main/frontend/generated/jar-resources/buttons.css
+D  demo/src/main/frontend/generated/jar-resources/carousel.css
+D  demo/src/main/frontend/generated/jar-resources/chartjs/holon-chartjs.js
+D  demo/src/main/frontend/generated/jar-resources/comboBoxConnector.js
+D  demo/src/main/frontend/generated/jar-resources/component-view.css
+D  demo/src/main/frontend/generated/jar-resources/contextMenuConnector.js
+D  demo/src/main/frontend/generated/jar-resources/contextMenuTargetConnector.js
+D  demo/src/main/frontend/generated/jar-resources/copilot-version.js
+D  demo/src/main/frontend/generated/jar-resources/copilot.d.ts
+D  demo/src/main/frontend/generated/jar-resources/copilot.js
+D  demo/src/main/frontend/generated/jar-resources/copilot/base-panel-1TKfd_TU.js
+D  demo/src/main/frontend/generated/jar-resources/copilot/copilot-CU3iDIqB.js
+D  demo/src/main/frontend/generated/jar-resources/copilot/copilot-development-setup-user-guide-BpetXdZS.js
+D  demo/src/main/frontend/generated/jar-resources/copilot/copilot-devtools-BdFsRNzU.js
+D  demo/src/main/frontend/generated/jar-resources/copilot/copilot-features-plugin-V6IAW0gl.js
+D  demo/src/main/frontend/generated/jar-resources/copilot/copilot-feedback-plugin-CdSzQZZ4.js
+D  demo/src/main/frontend/generated/jar-resources/copilot/copilot-focus-trap-BJyJdYf-.js
+D  demo/src/main/frontend/generated/jar-resources/copilot/copilot-global-vars-later-DNFWAE4X.js
+D  demo/src/main/frontend/generated/jar-resources/copilot/copilot-impersonator-plugin-Be_o9Aiv.js
+D  demo/src/main/frontend/generated/jar-resources/copilot/copilot-info-plugin-Bkc7IKRU.js
+D  demo/src/main/frontend/generated/jar-resources/copilot/copilot-init-step2-i3b-mhIM.js
+D  demo/src/main/frontend/generated/jar-resources/copilot/copilot-log-plugin-B7IOmAQ2.js
+D  demo/src/main/frontend/generated/jar-resources/copilot/copilot-settings-panel-CASTmmBY.js
+D  demo/src/main/frontend/generated/jar-resources/copilot/directive-helpers-BSORqdwD.js
+D  demo/src/main/frontend/generated/jar-resources/copilot/figma-public/figma-api.d.ts
+D  demo/src/main/frontend/generated/jar-resources/copilot/icons-D3Jbaxkx.js
+D  demo/src/main/frontend/generated/jar-resources/copilot/lit-renderer-yazA_W8V.js
+D  demo/src/main/frontend/generated/jar-resources/copilot/repeat-qwrFor5b.js
+D  demo/src/main/frontend/generated/jar-resources/copilot/shared/copilot-plugin-support.d.ts
+D  demo/src/main/frontend/generated/jar-resources/copilot/shared/flow-utils.d.ts
+D  demo/src/main/frontend/generated/jar-resources/copilot/state-BMZDi6a6.js
+D  demo/src/main/frontend/generated/jar-resources/copilot/typescript-DTNHbhH0.js
+D  demo/src/main/frontend/generated/jar-resources/datepickerConnector.js
+D  demo/src/main/frontend/generated/jar-resources/disableOnClickFunctions.js
+D  demo/src/main/frontend/generated/jar-resources/dndConnector.js
+D  demo/src/main/frontend/generated/jar-resources/double-label.css
+D  demo/src/main/frontend/generated/jar-resources/empty.css
+D  demo/src/main/frontend/generated/jar-resources/entity-form-panel.css
+D  demo/src/main/frontend/generated/jar-resources/filter-panel.css
+D  demo/src/main/frontend/generated/jar-resources/flow-component-directive.js
+D  demo/src/main/frontend/generated/jar-resources/flow-component-renderer.js
+D  demo/src/main/frontend/generated/jar-resources/grid-header.css
+D  demo/src/main/frontend/generated/jar-resources/gridConnector.ts
+D  demo/src/main/frontend/generated/jar-resources/h-dialog.css
+D  demo/src/main/frontend/generated/jar-resources/header.css
+D  demo/src/main/frontend/generated/jar-resources/highlight.css
+D  demo/src/main/frontend/generated/jar-resources/index.d.ts
+D  demo/src/main/frontend/generated/jar-resources/index.js
+D  demo/src/main/frontend/generated/jar-resources/index.js.map
+D  demo/src/main/frontend/generated/jar-resources/input-group.css
+D  demo/src/main/frontend/generated/jar-resources/input-otp.css
+D  demo/src/main/frontend/generated/jar-resources/invoice-entry.css
+D  demo/src/main/frontend/generated/jar-resources/kanban-board.css
+D  demo/src/main/frontend/generated/jar-resources/key-value-item.css
+D  demo/src/main/frontend/generated/jar-resources/key-value-pair.css
+D  demo/src/main/frontend/generated/jar-resources/layout.css
+D  demo/src/main/frontend/generated/jar-resources/lazy-tabs.css
+D  demo/src/main/frontend/generated/jar-resources/line-item-grid.css
+D  demo/src/main/frontend/generated/jar-resources/list-item.css
+D  demo/src/main/frontend/generated/jar-resources/lit-renderer.ts
+D  demo/src/main/frontend/generated/jar-resources/master-detail-layout.css
+D  demo/src/main/frontend/generated/jar-resources/master-details.css
+D  demo/src/main/frontend/generated/jar-resources/material-symbols.css
+D  demo/src/main/frontend/generated/jar-resources/mdl-demo.css
+D  demo/src/main/frontend/generated/jar-resources/menu.css
+D  demo/src/main/frontend/generated/jar-resources/menubarConnector.js
+D  demo/src/main/frontend/generated/jar-resources/messageListConnector.js
+D  demo/src/main/frontend/generated/jar-resources/notification.css
+D  demo/src/main/frontend/generated/jar-resources/page-size-selector.css
+D  demo/src/main/frontend/generated/jar-resources/pagination.css
+D  demo/src/main/frontend/generated/jar-resources/preview.css
+D  demo/src/main/frontend/generated/jar-resources/price-list.css
+D  demo/src/main/frontend/generated/jar-resources/selectConnector.js
+D  demo/src/main/frontend/generated/jar-resources/separator.css
+D  demo/src/main/frontend/generated/jar-resources/sheet.css
+D  demo/src/main/frontend/generated/jar-resources/stepper-component.js
+D  demo/src/main/frontend/generated/jar-resources/stepper.css
+D  demo/src/main/frontend/generated/jar-resources/tag.css
+D  demo/src/main/frontend/generated/jar-resources/theme-util.js
+D  demo/src/main/frontend/generated/jar-resources/timeline-stepper.js
+D  demo/src/main/frontend/generated/jar-resources/timeline.css
+D  demo/src/main/frontend/generated/jar-resources/tokens.css
+D  demo/src/main/frontend/generated/jar-resources/toolbar.css
+D  demo/src/main/frontend/generated/jar-resources/tooltip.ts
+D  demo/src/main/frontend/generated/jar-resources/transfer-list.css
+D  demo/src/main/frontend/generated/jar-resources/treeGridConnector.ts
+D  demo/src/main/frontend/generated/jar-resources/utilities.css
+D  demo/src/main/frontend/generated/jar-resources/vaadin-big-decimal-field.js
+D  demo/src/main/frontend/generated/jar-resources/vaadin-calendar-element.js
+D  demo/src/main/frontend/generated/jar-resources/vaadin-dev-tools/License.d.ts
+D  demo/src/main/frontend/generated/jar-resources/vaadin-dev-tools/connection.d.ts
+D  demo/src/main/frontend/generated/jar-resources/vaadin-dev-tools/hotswap-scroll.d.ts
+D  demo/src/main/frontend/generated/jar-resources/vaadin-dev-tools/live-reload-connection.d.ts
+D  demo/src/main/frontend/generated/jar-resources/vaadin-dev-tools/pre-trial-splash-screen.d.ts
+D  demo/src/main/frontend/generated/jar-resources/vaadin-dev-tools/vaadin-dev-tools.d.ts
+D  demo/src/main/frontend/generated/jar-resources/vaadin-dev-tools/vaadin-dev-tools.js
+D  demo/src/main/frontend/generated/jar-resources/vaadin-dev-tools/vaadin-dev-tools.js.map
+D  demo/src/main/frontend/generated/jar-resources/vaadin-dev-tools/websocket-connection.d.ts
+D  demo/src/main/frontend/generated/jar-resources/vaadin-grid-flow-selection-column.js
+D  demo/src/main/frontend/generated/jar-resources/vaadin-popover/popover.ts
+D  demo/src/main/frontend/generated/jar-resources/vaadin-shell-theme.css
+D  demo/src/main/frontend/generated/jar-resources/vaadin-time-picker/helpers.js
+D  demo/src/main/frontend/generated/jar-resources/vaadin-time-picker/timepickerConnector.js
+D  demo/src/main/frontend/generated/jar-resources/vaadin-upload-manager-connector.ts
+D  demo/src/main/frontend/generated/jar-resources/virtualListConnector.js
+ M demo/src/main/java/com/holonplatform/vaadin/flow/demo/DemoApplication.java
+ M demo/src/main/java/com/holonplatform/vaadin/flow/demo/DemoI18NProvider.java
+ M demo/src/main/java/com/holonplatform/vaadin/flow/demo/data/service/ProductService.java
+ M demo/src/main/java/com/holonplatform/vaadin/flow/demo/ui/DemoExample.java
+ M demo/src/main/java/com/holonplatform/vaadin/flow/demo/ui/DemoMainLayout.java
+ M demo/src/main/java/com/holonplatform/vaadin/flow/demo/ui/views/AlertModalDemoView.java
+ M demo/src/main/java/com/holonplatform/vaadin/flow/demo/ui/views/BeanInputFormDemoView.java
+ M demo/src/main/java/com/holonplatform/vaadin/flow/demo/ui/views/BeanListingDemoView.java
+ M demo/src/main/java/com/holonplatform/vaadin/flow/demo/ui/views/ButtonGroupDemoView.java
+ M demo/src/main/java/com/holonplatform/vaadin/flow/demo/ui/views/CalendarDemoView.java
+ M demo/src/main/java/com/holonplatform/vaadin/flow/demo/ui/views/CollaborationFormSupportDemoView.java
+ M demo/src/main/java/com/holonplatform/vaadin/flow/demo/ui/views/CustomerDemoView.java
+ M demo/src/main/java/com/holonplatform/vaadin/flow/demo/ui/views/DialogDemoView.java
+ M demo/src/main/java/com/holonplatform/vaadin/flow/demo/ui/views/EntityFormPanelDemoView.java
+ M demo/src/main/java/com/holonplatform/vaadin/flow/demo/ui/views/FilterPanelDemoView.java
+ M demo/src/main/java/com/holonplatform/vaadin/flow/demo/ui/views/FormHeaderDemoView.java
+ M demo/src/main/java/com/holonplatform/vaadin/flow/demo/ui/views/GridHeaderDemoView.java
+ M demo/src/main/java/com/holonplatform/vaadin/flow/demo/ui/views/HeaderDemoView.java
+ M demo/src/main/java/com/holonplatform/vaadin/flow/demo/ui/views/IndexView.java
+ M demo/src/main/java/com/holonplatform/vaadin/flow/demo/ui/views/IyenView.java
+ M demo/src/main/java/com/holonplatform/vaadin/flow/demo/ui/views/KanbanBoardDemoView.java
+ M demo/src/main/java/com/holonplatform/vaadin/flow/demo/ui/views/LayoutDemoView.java
+ M demo/src/main/java/com/holonplatform/vaadin/flow/demo/ui/views/LazyTabsDemoView.java
+ M demo/src/main/java/com/holonplatform/vaadin/flow/demo/ui/views/LineItemGridDemoView.java
+ M demo/src/main/java/com/holonplatform/vaadin/flow/demo/ui/views/ListingBundleDemoView.java
+ M demo/src/main/java/com/holonplatform/vaadin/flow/demo/ui/views/LiveChatDemoView.java
+D  demo/src/main/java/com/holonplatform/vaadin/flow/demo/ui/views/MasterDetailLayoutDemoView.java
+ M demo/src/main/java/com/holonplatform/vaadin/flow/demo/ui/views/MultiSelectDemoView.java
+ M demo/src/main/java/com/holonplatform/vaadin/flow/demo/ui/views/PanelDemoView.java
+ M demo/src/main/java/com/holonplatform/vaadin/flow/demo/ui/views/ProductCrudDemoView.java
+ M demo/src/main/java/com/holonplatform/vaadin/flow/demo/ui/views/RowColumnBuilderDemoView.java
+ M demo/src/main/java/com/holonplatform/vaadin/flow/demo/ui/views/SideNavDemoView.java
+ M demo/src/main/java/com/holonplatform/vaadin/flow/demo/ui/views/SignalsDemoView.java
+ M demo/src/main/java/com/holonplatform/vaadin/flow/demo/ui/views/TimelineStepperDemoView.java
+ M demo/src/main/java/com/holonplatform/vaadin/flow/demo/ui/views/TitleDemoView.java
+ M demo/src/main/java/com/holonplatform/vaadin/flow/demo/ui/views/VaadinLayoutsDemoView.java
+ M demo/src/main/java/com/holonplatform/vaadin/flow/demo/ui/views/ValidatableInputDemoView.java
+ M demo/src/main/resources/META-INF/resources/brand-override-example.css
+ M demo/src/main/resources/META-INF/resources/nexus-theme.css
+ M demo/src/main/resources/application.properties
+ M demo/vite.config.ts
+ M demo/vite.generated.ts
+ M navigator/src/main/java/com/holonplatform/vaadin/flow/navigator/Navigator.java
+ M navigator/src/main/java/com/holonplatform/vaadin/flow/navigator/internal/config/DefaultNavigationTargetConfiguration.java
+ M navigator/src/test/java/com/holonplatform/vaadin/flow/navigator/test/TestViewConfiguration.java
+ M spring-boot/src/main/java/com/holonplatform/vaadin/flow/spring/boot/jmix/asynctask/DelegatingSecurityRunnable.java
+ M spring-boot/src/main/java/com/holonplatform/vaadin/flow/spring/boot/jmix/asynctask/UiAsyncTaskProperties.java
+ M spring-boot/src/main/java/com/holonplatform/vaadin/flow/spring/boot/jmix/asynctask/UiAsyncTasks.java
+ M spring-boot/src/main/java/com/holonplatform/vaadin/flow/spring/boot/jmix/asynctask/package-info.java
+ M spring-boot/src/main/java/com/holonplatform/vaadin/flow/spring/boot/jmix/flowui/sys/AppCookies.java
+ M spring-boot/src/main/java/com/holonplatform/vaadin/flow/spring/boot/jmix/flowui/sys/ExtendedClientDetailsProvider.java
+ M spring-boot/src/main/java/com/holonplatform/vaadin/flow/spring/boot/jmix/flowui/sys/LogoutSupport.java
+ M src/main/bundles/dev.bundle
+ M src/main/frontend/generated/flow/generated-flow-imports.js
+ M src/main/frontend/generated/flow/generated-flow-webcomponent-imports.js
+ M src/main/frontend/generated/jar-resources/alert-dialog.css
+ M src/main/frontend/generated/jar-resources/alert-modal.css
+ M src/main/frontend/generated/jar-resources/alert.css
+ D src/main/frontend/generated/jar-resources/details-drawer.css
+ D src/main/frontend/generated/jar-resources/drawer.css
+ M src/main/frontend/generated/jar-resources/filter-panel.css
+ M src/main/frontend/generated/jar-resources/header.css
+ M src/main/frontend/generated/jar-resources/highlight.css
+ M src/main/frontend/generated/jar-resources/layout.css
+ M src/main/frontend/generated/jar-resources/master-detail-layout.css
+ D src/main/frontend/generated/jar-resources/mdl-demo.css
+ M src/main/frontend/generated/jar-resources/menu.css
+ M src/main/frontend/generated/jar-resources/pagination.css
+ M src/main/frontend/generated/jar-resources/separator.css
+ M src/main/frontend/generated/jar-resources/sheet.css
+ D src/main/frontend/generated/jar-resources/sidebar.css
+ M src/main/frontend/generated/jar-resources/stepper-component.js
+ M src/main/frontend/generated/jar-resources/tag.css
+ M src/main/frontend/generated/jar-resources/timeline-stepper.js
+ M src/main/frontend/generated/jar-resources/tokens.css
+ M src/main/frontend/generated/jar-resources/utilities.css
+ M src/main/frontend/generated/jar-resources/vaadin-shell-theme.css
+ D src/main/frontend/generated/jar-resources/vaadin-theme-25.1.css
+ M tasks/lessons.md
+?? .vscode/tasks.json
+?? core/src/main/java/com/holonplatform/vaadin/flow/components/builders/ListingBundleConfigurator.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/components/builders/LitRendererBuilder.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/components/builders/MasterDetailConfigurator.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/AbstractListingBundleConfigurator.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/DefaultBaseListingBundleConfigurator.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/DefaultLitRendererBuilder.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/internal/components/builders/MobileGridColumnLitRenderer.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/BeanToMap.java
+?? core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/FormSection.java
+?? core/src/main/java/com/iyensoft/vaadin/flow/components/builders/BundleMasterDetailBuilder.java
+?? core/src/main/java/com/iyensoft/vaadin/flow/components/builders/MasterDetailConfigurator.java
+?? core/src/main/java/com/iyensoft/vaadin/flow/internal/components/builders/AbstractMasterDetailConfigurator.java
+?? core/src/main/java/com/iyensoft/vaadin/flow/internal/components/builders/DefaultBundleMasterDetailBuilder.java
+?? core/src/main/java/com/iyensoft/vaadin/flow/internal/components/builders/DefaultMasterDetailConfigurator.java
+?? core/src/main/java/com/iyensoft/vaadin/flow/internal/components/masterdetail/
+?? core/src/main/resources/META-INF/resources/chart-of-accounts.css
+?? core/src/main/resources/META-INF/resources/form-section.css
+?? core/src/main/resources/META-INF/resources/master-detail-v2.css
+?? core/src/main/resources/META-INF/resources/master-details-v2.css
+?? core/src/main/resources/META-INF/resources/mobile-grid.css
+?? core/src/main/resources/META-INF/resources/tailadmin-brand.css
+?? core/src/test/java/com/holonplatform/vaadin/flow/internal/
+?? core/src/test/java/com/holonplatform/vaadin/flow/test/TestListingBundleGridHeader.java
+?? core/src/test/java/com/holonplatform/vaadin/flow/test/TestMasterDetailConfiguratorV2.java
+?? demo-compile-result.txt
+?? demo-out.txt
+?? demo/src/main/frontend/generated/jar-resources/
+?? demo/src/main/java/com/holonplatform/vaadin/flow/demo/ui/dialog/
+?? demo/src/main/java/com/holonplatform/vaadin/flow/demo/ui/views/ChartOfAccountsDemoView.java
+?? demo/src/main/java/com/holonplatform/vaadin/flow/demo/ui/views/ListingBundleConfiguratorDemoView.java
+?? demo/src/main/java/com/holonplatform/vaadin/flow/demo/ui/views/MasterDetailLayoutDemoView.java
+?? demo/src/main/java/com/holonplatform/vaadin/flow/demo/ui/views/MasterDetailLayoutV2DemoView.java
+?? src/main/frontend/generated/jar-resources/app-shell.css
+?? src/main/frontend/generated/jar-resources/brand-gold-leaf.css
+?? src/main/frontend/generated/jar-resources/bulk-item-picker-dialog.css
+?? src/main/frontend/generated/jar-resources/chart-of-accounts.css
+?? src/main/frontend/generated/jar-resources/form-section.css
+?? src/main/frontend/generated/jar-resources/invoice-entry.css
+?? src/main/frontend/generated/jar-resources/key-value-item.css
+?? src/main/frontend/generated/jar-resources/lazy-tabs.css
+?? src/main/frontend/generated/jar-resources/line-item-grid.css
+?? src/main/frontend/generated/jar-resources/mobile-grid.css
+?? src/main/frontend/generated/jar-resources/page-size-selector.css
+?? src/main/frontend/generated/jar-resources/tailadmin-brand.css
+?? src/main/frontend/generated/jar-resources/transfer-list.css
+?? tasks/demo-compile-cols.txt
+?? tasks/demo-v2-fix.txt
+?? tasks/git-status.txt
+?? tasks/mvn-test-masterdetail.txt

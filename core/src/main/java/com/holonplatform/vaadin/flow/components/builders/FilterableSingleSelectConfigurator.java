@@ -113,11 +113,11 @@ public interface FilterableSingleSelectConfigurator<T, ITEM, B extends Filterabl
      * a value that don't already exist in the select items set.
      * <p>
      * As a side effect makes the select allow custom values. If you don't want to
-     * allow a user to add new values to the list once the listener is added please
+     * allow a user to content new values to the list once the listener is added please
      * disable it explicitly via the {@link #allowCustomValue(boolean)} method.
      * </p>
      *
-     * @param customValueSetListener The listener to add (not null)
+     * @param customValueSetListener The listener to content (not null)
      * @return this
      * @since 5.2.13
      */
@@ -198,7 +198,7 @@ public interface FilterableSingleSelectConfigurator<T, ITEM, B extends Filterabl
          * @param target     The {@link DataTarget} to use as query target (not null)
          * @param properties The property set to use as query projection (not null)
          * @return An extended builder which allow further data provider configuration,
-         * for example to add fixed {@link QueryFilter} and {@link QuerySort}.
+         * for example to content fixed {@link QueryFilter} and {@link QuerySort}.
          * @see DatastoreDataProviderConfigurator
          */
         default D dataSource(Datastore datastore, DataTarget<?> target, Property<?>... properties) {
@@ -215,7 +215,7 @@ public interface FilterableSingleSelectConfigurator<T, ITEM, B extends Filterabl
          * @param target     The {@link DataTarget} to use as query target (not null)
          * @param properties The property set to use as query projection (not null)
          * @return An extended builder which allow further data provider configuration,
-         * for example to add fixed {@link QueryFilter} and {@link QuerySort}.
+         * for example to content fixed {@link QueryFilter} and {@link QuerySort}.
          * @see DatastoreDataProviderConfigurator
          */
         @SuppressWarnings("rawtypes")
@@ -233,7 +233,7 @@ public interface FilterableSingleSelectConfigurator<T, ITEM, B extends Filterabl
          * @param datastore The {@link Datastore} to use (not null)
          * @param target    The {@link DataTarget} to use as query target (not null)
          * @return An extended builder which allow further data provider configuration,
-         * for example to add fixed {@link QueryFilter} and {@link QuerySort}.
+         * for example to content fixed {@link QueryFilter} and {@link QuerySort}.
          * @see DatastoreDataProviderConfigurator
          */
         D dataSource(Datastore datastore, DataTarget<?> target);
@@ -253,7 +253,7 @@ public interface FilterableSingleSelectConfigurator<T, ITEM, B extends Filterabl
          * @param filterConverter Data provider filter type to {@link QueryFilter}
          *                        converter (not null)
          * @return An extended builder which allow further data provider configuration,
-         * for example to add fixed {@link QueryFilter} and {@link QuerySort}.
+         * for example to content fixed {@link QueryFilter} and {@link QuerySort}.
          * @see DatastoreDataProviderConfigurator
          */
         D dataSource(Datastore datastore, DataTarget<?> target, Function<String, QueryFilter> filterConverter);

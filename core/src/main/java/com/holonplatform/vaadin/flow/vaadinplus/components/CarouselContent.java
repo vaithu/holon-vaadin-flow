@@ -15,7 +15,6 @@
  */
 package com.holonplatform.vaadin.flow.vaadinplus.components;
 
-import com.vaadin.flow.component.HasStyle;
 import com.vaadin.flow.component.html.Div;
 
 /**
@@ -36,7 +35,7 @@ import com.vaadin.flow.component.html.Div;
  * @see Carousel
  * @see CarouselItem
  */
-public class CarouselContent extends Div implements HasStyle {
+public class CarouselContent extends Div {
 
     private static final long serialVersionUID = 1L;
 
@@ -61,7 +60,7 @@ public class CarouselContent extends Div implements HasStyle {
     /**
      * Appends one or more {@link CarouselItem}s to this viewport.
      *
-     * @param items items to add (not null)
+     * @param items items to content (not null)
      */
     public void add(CarouselItem... items) {
         for (CarouselItem item : items) {

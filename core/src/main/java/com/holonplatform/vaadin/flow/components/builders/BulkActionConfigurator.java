@@ -9,7 +9,7 @@ import com.vaadin.flow.component.menubar.MenuBar;
 import java.util.function.Consumer;
 
 public interface BulkActionConfigurator<C extends BulkActionConfigurator<C>> extends HasOptionsMenuBarConfigurator<C>,
-        HasCloseButtonConfigurator<C>,HasStyleConfigurator<C>,ComponentConfigurator<C>, HasComponentsConfigurator<C> {
+        HasCloseButtonConfigurator<C>,HasStyleConfigurator<C>, HasComponentsConfigurator<C> {
 
     C bulkAction(MenuBar menuBar);
 

@@ -73,8 +73,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.jetbrains.annotations.NotNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import tools.jackson.databind.JsonNode;
 
 import java.math.BigDecimal;
@@ -121,18 +119,12 @@ public class UIUtils {
             </div>
             </div>
             """;
-    private static final Logger log = LoggerFactory.getLogger(UIUtils.class);
 
     private static NumberFormat currencyFormat = NumberFormat.getCurrencyInstance();
 
     public static Button addNewItemButton() {
-        return Components.button()
-                .icon(VaadinIcon.PLUS)
-                .iconAfterText(false)
-                .text("New", "new.code")
-                .withThemeVariants(ButtonVariant.LUMO_PRIMARY)
-                .withFocusShortcutKey(Key.KEY_N, KeyModifier.CONTROL)
-                .tooltip("Add New", "add.new.code")
+        return Components.button().newButton()
+            
                 .build();
     }
 
@@ -501,6 +493,17 @@ public class UIUtils {
         Notification.show(text, 3000, Notification.Position.BOTTOM_CENTER);
     }
 
+    /**
+     * Shows a brief toast notification at the bottom-end of the viewport.
+     *
+     * @param message the message to display
+     * @param variant the notification variant (e.g. {@code LUMO_SUCCESS}, {@code LUMO_ERROR})
+     */
+    public static void toast(String message, NotificationVariant variant) {
+        Notification n = Notification.show(message, 2000, Notification.Position.BOTTOM_END);
+        n.addThemeVariants(variant);
+    }
+
 
     public static void setColSpan(int span, Component... components) {
         for (Component component : components) {
@@ -553,7 +556,7 @@ public class UIUtils {
         layout.setFlexDirection(FlexLayout.FlexDirection.COLUMN);
         layout.addClassName("card");
         layout.addClassName(LumoUtility.Gap.MEDIUM);
-        layout.add(components);
+        layout.content(components);
         return layout;
     }*/
     public static FlexLayout createCard(String heading, Component... components) {
@@ -697,6 +700,7 @@ public class UIUtils {
 
     public static final int MOBILE_BREAKPOINT = 480;
 
+    @SuppressWarnings("deprecation")
     public static boolean isMobile(AttachEvent attachEvent) {
         final List<Boolean> mobile = new ArrayList<>();
         Page page = attachEvent.getUI().getPage();
@@ -732,6 +736,7 @@ public class UIUtils {
         notification(ExceptionUtils.getRootCauseMessage(e), NotificationVariant.LUMO_ERROR);
     }
 
+    @SuppressWarnings("unchecked")
     public static Component viewPropertyBox(PropertyBox propertyBox) {
         FlexLayout layout = new FlexLayout();
         layout.setFlexDirection(FlexLayout.FlexDirection.COLUMN);
@@ -782,10 +787,6 @@ public class UIUtils {
                 .withPosition(Tooltip.TooltipPosition.BOTTOM_END);
     }
 
-    private void write(Object o) {
-        System.out.println(o);
-    }
-
     public static final class DeleteDialog extends ConfirmDialog {
 
         private String headerTitle;
@@ -814,7 +815,7 @@ public class UIUtils {
         public DeleteDialog setHeaderTitle(String headerTitle) {
             this.headerTitle = headerTitle;
             setHeader(this.headerTitle);
-//            add(new Hr());
+//            content(new Hr());
             return this;
         }
 
@@ -1536,6 +1537,7 @@ public class UIUtils {
         return new Image(String.format("images/%s", imageName), altText);
     }
 
+    @SuppressWarnings("unchecked")
     public static KeyValuePairs createKeyValuePairs(PropertyBox propertyBox) {
         KeyValuePairs keyValuePairs = new KeyValuePairs();
 
@@ -1837,7 +1839,7 @@ public class UIUtils {
         }
 
         public static Button createRefreshButton() {
-            return createTertiaryButton(VaadinIcon.REFRESH);
+            return ButtonBuilder.create().refresh().build();
         }
 
     }
@@ -1967,6 +1969,7 @@ public class UIUtils {
             return createIconItem(menu, i, label, ariaLabel, false);
         }
 
+        @SuppressWarnings("unused") // kept for future use
         private static MenuItemComponent createIconItem(HasMenuItems menu, String iconName, String label) {
             Icon icon = new Icon("vaadin", iconName);
             return createIconItem(menu, icon, label, null, false);
@@ -1987,6 +1990,7 @@ public class UIUtils {
             return new MenuItemComponent(item, text);
         }
 
+        @SuppressWarnings("unused") // kept for future use
         private static Component createIcon(String name) {
             Image image = new Image("icons/" + name + ".png", name);
             image.setMaxWidth("25px");

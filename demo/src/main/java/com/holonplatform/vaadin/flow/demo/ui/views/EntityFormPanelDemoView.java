@@ -144,7 +144,7 @@ public class EntityFormPanelDemoView extends Div {
     // ── Saved items registry (shared across examples with lists) ──────────────
 
     private final List<Employee>  savedEmployees = new ArrayList<>();
-    private final List<Product>   savedProducts  = new ArrayList<>();
+
 
     // ── Constructor ───────────────────────────────────────────────────────────
 
@@ -312,6 +312,7 @@ public class EntityFormPanelDemoView extends Div {
     // Example 4 — Pre-populated form (edit existing entity)
     // ─────────────────────────────────────────────────────────────────────────
 
+    @SuppressWarnings("unchecked")
     private DemoExample editExistingEntityExample() {
         var result = resultSpan();
         var existing = new Employee("Alice", "Martin", "Engineering", "alice@example.com");
@@ -353,11 +354,12 @@ public class EntityFormPanelDemoView extends Div {
     // Example 5 — configure(): exclude fields, read-only, custom validators
     // ─────────────────────────────────────────────────────────────────────────
 
+    @SuppressWarnings("unchecked")
     private DemoExample configureExample() {
         var result = resultSpan();
 
         // @Identifier (id) and @Version (version) are hidden by default.
-        // Use configure() to add property-level validators via the underlying
+        // Use configure() to content property-level validators via the underlying
         // BeanPropertyInputFormBuilder.
         var panel = EntityFormPanel.<Product>bean(Product.class)
                 .configure(fb -> {

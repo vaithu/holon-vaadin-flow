@@ -184,7 +184,7 @@ public abstract class AbstractMenuBarConfigurator<M extends MenuBar, I extends M
     /**
      * Add given theme variants to the component.
      *
-     * @param variants The theme variants to add
+     * @param variants The theme variants to content
      * @return this
      */
     @Override

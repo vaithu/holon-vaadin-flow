@@ -154,7 +154,7 @@ public abstract class AbstractTabSheetConfigurator<C extends TabSheetConfigurato
     /**
      * Add given theme variants to the component.
      *
-     * @param variants The theme variants to add
+     * @param variants The theme variants to content
      * @return this
      */
     @Override

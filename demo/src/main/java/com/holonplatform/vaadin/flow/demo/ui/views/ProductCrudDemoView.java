@@ -54,11 +54,6 @@ public class ProductCrudDemoView extends Div {
                 "All data survives page navigation and is reset on application restart.");
         heading.addClassName("app-page-header");
 
-        // ── Add button ───────────────────────────────────────────────────────
-        var addBtn = new Button("Add product", VaadinIcon.PLUS.create());
-        addBtn.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        addBtn.addClickListener(e -> openForm(null));
-
         // ── Info banner ───────────────────────────────────────────────────────
         var infoAlert = Alert.builder(Alert.Variant.INFO)
                 .title("Spring Data JPA active")
@@ -68,8 +63,12 @@ public class ProductCrudDemoView extends Div {
         // ── Listing bundle ────────────────────────────────────────────────────
         var bundle = buildBundle();
 
-        add(heading, subTitle, infoAlert, addBtn,
-            bundle.toolbar(), bundle.grid(), bundle.footer());
+        // Layout: page wrapper that prevents overflow
+        var content = new Div();
+        content.addClassName("listing-page");
+        content.add(heading, subTitle, infoAlert,
+                bundle.header(), bundle.toolbar(), bundle.grid(), bundle.footer());
+        add(content);
     }
 
     // ─────────────────────────────────────────────────────────────────────────
@@ -81,6 +80,8 @@ public class ProductCrudDemoView extends Div {
         var bundle = Components.listing(Product.class)
                 .columns("id", "name", "category", "price", "active", "createdDate")
                 .withFilterPanel()
+                .multiSelect()
+                .gridHeader("Product Catalogue")
                 .header("id",          "ID")
                 .header("name",        "Name")
                 .header("category",    "Category")
@@ -89,7 +90,7 @@ public class ProductCrudDemoView extends Div {
                 .header("createdDate", "Created")
                 .pageSizes(10, 25, 50)
                 .search("Search by name or category…")
-                .fetch((q, text, filter) -> productService.fetch(q.getOffset(), q.getLimit(), text, filter))
+                .fetch((q, text, filter, sort) -> productService.fetch(q.getOffset(), q.getLimit(), text, filter, sort))
                 .build();
 
         // Add a component column for Edit / Delete actions
@@ -140,7 +141,7 @@ public class ProductCrudDemoView extends Div {
                             try {
                                 if (isNew) {
                                     product.setCreatedDate(LocalDate.now());
-                                } else {
+                                } else if (existing != null) {
                                     product.setId(existing.getId());
                                     product.setCreatedDate(existing.getCreatedDate());
                                 }

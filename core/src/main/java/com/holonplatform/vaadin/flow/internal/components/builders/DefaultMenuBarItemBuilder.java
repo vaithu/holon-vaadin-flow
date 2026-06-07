@@ -107,7 +107,7 @@ public class DefaultMenuBarItemBuilder<M extends MenuBar, I extends MenuItem, S 
 	/**
 	 * Register a menu item click event listener.
 	 *
-	 * @param menuItemClickListener The listener to add (not null)
+	 * @param menuItemClickListener The listener to content (not null)
 	 * @return this
 	 */
 	@Override
@@ -192,7 +192,7 @@ public class DefaultMenuBarItemBuilder<M extends MenuBar, I extends MenuItem, S 
 
 	/*
 	 * (non-Javadoc)
-	 * @see com.holonplatform.vaadin.flow.components.builders.ContextMenuConfigurator.MenuItemBuilder#add()
+	 * @see com.holonplatform.vaadin.flow.components.builders.ContextMenuConfigurator.MenuItemBuilder#content()
 	 */
 	@Override
 	public B add() {

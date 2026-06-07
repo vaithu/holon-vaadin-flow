@@ -18,8 +18,6 @@ package com.holonplatform.vaadin.flow.vaadinplus.components;
 import com.holonplatform.vaadin.flow.components.builders.SeparatorBuilder;
 import com.holonplatform.vaadin.flow.components.builders.SeparatorConfigurator;
 import com.holonplatform.vaadin.flow.vaadinplus.utilities.Color;
-import com.vaadin.flow.component.HasSize;
-import com.vaadin.flow.component.HasStyle;
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.html.Div;
 
@@ -78,7 +76,7 @@ import com.vaadin.flow.component.html.Div;
  * @see Orientation
  */
 @StyleSheet("context://separator.css")
-public class Separator extends Div implements HasSize, HasStyle {
+public class Separator extends Div {
 
     private static final long serialVersionUID = 1L;
 

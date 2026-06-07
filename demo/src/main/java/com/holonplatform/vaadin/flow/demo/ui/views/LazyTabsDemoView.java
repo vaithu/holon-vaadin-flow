@@ -10,7 +10,6 @@ import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.VaadinIcon;
-import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
@@ -74,8 +73,22 @@ public class LazyTabsDemoView extends Div {
      * Each tab holds a concrete Component instance that is always shown as-is;
      * no factory is involved.
      */
+
+private Div createContainerDiv() {
+        return ResponsiveDiv.flex().column().gapM().marginS().build();
+}
+
+private Div createWrapperDiv(Tabs tabs, Div containerDiv) {
+        return ResponsiveDiv.flex().column().gapM()
+        .add(tabs,containerDiv)
+        .build();
+}
+
+
     private DemoExample eagerTabsExample() {
+        Div container = createContainerDiv();
         var panel = LazyTabsBuilder.create()
+        .withContainer(container)
                 .withEagerTab("Overview",
                         new Paragraph("Overview — this exact Paragraph instance is always shown."))
                 .withEagerTab("Configuration",
@@ -84,7 +97,9 @@ public class LazyTabsDemoView extends Div {
                         new Paragraph("Metrics — lives in memory from the moment the board is built."))
                 .build();
 
-        return new DemoExample("Eager tabs – same component instance on every switch", panel, """
+               
+
+        return new DemoExample("Eager tabs – same component instance on every switch", createWrapperDiv(panel,container) ,"""
                 // withEagerTab(label, Component) — the Component is provided upfront.
                 // The SAME object is returned on every tab activation (no factory involved).
                 // Use when content is cheap to build and must survive tab switches unchanged.
@@ -102,15 +117,18 @@ public class LazyTabsDemoView extends Div {
      * panel proves a new component is created each time you revisit a tab.
      */
     private DemoExample lazyNoCacheExample() {
+        Div container = createContainerDiv();
         var panel = LazyTabsBuilder.create()
                 .withLazyTab("Dashboard", () -> stampedPanel("Dashboard"))
                 .withLazyTab("Analytics", () -> stampedPanel("Analytics"))
                 .withLazyTab("Reports",   () -> stampedPanel("Reports"))
                 .build();
 
+               
+
         return new DemoExample(
                 "Lazy tabs (no cache) – Supplier called on every switch",
-                panel, """
+                createWrapperDiv(panel,container) ,"""
                 // withLazyTab(label, Supplier<Component>) — Supplier runs on EVERY activation.
                 // Without .cacheEnabled() the component is re-created each visit.
                 // Switch away and back: the timestamp in each panel updates on every visit.
@@ -127,16 +145,20 @@ public class LazyTabsDemoView extends Div {
      * The Supplier runs exactly once per tab; the timestamp stays fixed on re-visits.
      */
     private DemoExample lazyCacheExample() {
+        Div container = createContainerDiv();
         var panel = LazyTabsBuilder.create()
+        .withContainer(container)
                 .cacheEnabled()                           // factory called once; result reused
                 .withLazyTab("Dashboard", () -> stampedPanel("Dashboard (cached)"))
                 .withLazyTab("Analytics", () -> stampedPanel("Analytics (cached)"))
                 .withLazyTab("Reports",   () -> stampedPanel("Reports (cached)"))
                 .build();
 
+               
+
         return new DemoExample(
                 "Lazy tabs with caching – Supplier called once per tab",
-                panel, """
+                createWrapperDiv(panel,container) ,"""
                 // .cacheEnabled() — Supplier runs ONCE; the result is reused on every visit.
                 // Switch away and back: the timestamp stays identical — no rebuild.
                 // Ideal for expensive components: Grid, Chart, heavy form, etc.
@@ -158,7 +180,9 @@ public class LazyTabsDemoView extends Div {
      * and icon + TabVariant.
      */
     private DemoExample iconsAndCountersExample() {
+        Div container = createContainerDiv();
         var panel = LazyTabsBuilder.create()
+        .withContainer(container)
                 // Eager + icon
                 .withEagerTab("Home",     VaadinIcon.HOME.create(),
                         new Paragraph("Home — eager tab with a leading icon."))
@@ -176,7 +200,9 @@ public class LazyTabsDemoView extends Div {
                         () -> new Paragraph("Alerts — lazy tab, badge shows 0."))
                 .build();
 
-        return new DemoExample("Icons and counter badges", panel, """
+               
+
+        return new DemoExample("Icons and counter badges", createWrapperDiv(panel,container) ,"""
                 // Icon before label (eager):
                 .withEagerTab("Home",  VaadinIcon.HOME.create(),  new HomePanel())
                 .withEagerTab("Team",  VaadinIcon.USERS.create(), new TeamPanel())
@@ -201,8 +227,9 @@ public class LazyTabsDemoView extends Div {
      */
     private DemoExample selectionAndEventsExample() {
         var activeLabel = new Span("Active: Reports");
-
+Div container = createContainerDiv();
         var panel = LazyTabsBuilder.create()
+        .withContainer(container)
                 .withLazyTab("Overview", () -> new Paragraph("Overview panel"))
                 .withLazyTab("Details",  () -> new Paragraph("Details panel"))
                 .withLazyTab("Reports",  () -> new Paragraph("Reports panel"))
@@ -213,7 +240,9 @@ public class LazyTabsDemoView extends Div {
                 .selectedIndex(2)           // start on "Reports"
                 .build();
 
-        var wrapper = new Div(panel, activeLabel);
+               
+
+        var wrapper = new Div(createWrapperDiv(panel,container) ,activeLabel);
 
         return new DemoExample(
                 "Programmatic selection + selected-change event",
@@ -240,16 +269,20 @@ public class LazyTabsDemoView extends Div {
      * All tabs share the full tab-bar width regardless of label length.
      */
     private DemoExample flexGrowExample() {
+        Div container = createContainerDiv();
         var panel = LazyTabsBuilder.create()
+        .withContainer(container)
                 .flexGrowForEnclosedTabs(1.0)   // every tab stretches to equal width
                 .withLazyTab("Short",                 () -> new Paragraph("Short tab"))
                 .withLazyTab("A Very Long Tab Label", () -> new Paragraph("Long tab"))
                 .withLazyTab("Medium Tab",            () -> new Paragraph("Medium tab"))
                 .build();
 
+               
+
         return new DemoExample(
                 "Equal-width tabs via flexGrowForEnclosedTabs(1.0)",
-                panel, """
+                createWrapperDiv(panel,container) ,"""
                 // flexGrowForEnclosedTabs(1.0) — all tabs expand to share the bar equally.
                 // Without this, each tab sizes itself to its label width (default).
                 LazyTabsBuilder.create()
@@ -269,7 +302,8 @@ public class LazyTabsDemoView extends Div {
      * without calling build(); buildHorizontal() assembles tabs + content side-by-side.
      */
     private DemoExample verticalOrientationExample() {
-        var layout = LazyTabsConfigurator.configure(new VerticalLayout())
+        var layout = LazyTabsConfigurator.configure(new Tabs())
+        .withContainer(createContainerDiv())
                 .orientation(Tabs.Orientation.VERTICAL)
                 .withLazyTab("Profile",     () -> new Paragraph("Profile settings"))
                 .withLazyTab("Security",    () -> new Paragraph("Security settings"))
@@ -280,11 +314,11 @@ public class LazyTabsDemoView extends Div {
         layout.setWidthFull();
 
         return new DemoExample(
-                "Vertical orientation via configure() with manual layout wiring",
+                "Vertical orientation via orientation() with manual layout wiring",
                 layout, """
                 // LazyTabsConfigurator.configure(layout) — no build(), no ownership transfer.
                 // buildHorizontal() places tabs on the left and content on the right.
-                var layout = LazyTabsConfigurator.configure(new VerticalLayout())
+                var layout = LazyTabsConfigurator.configure(new Tabs())
                     .orientation(Tabs.Orientation.VERTICAL)
                     .withLazyTab("Profile",     () -> profilePanel())
                     .withLazyTab("Security",    () -> securityPanel())
@@ -296,7 +330,7 @@ public class LazyTabsDemoView extends Div {
                 // vs. tabs-on-top (default):
                 LazyTabsBuilder.create()
                     .withLazyTab("Tab A", () -> panelA())
-                    .build();   // returns VerticalLayout: [Tabs, content]
+                    .build();   // returns Tabs: [Tabs]
                 """);
     }
 

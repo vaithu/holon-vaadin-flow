@@ -2,6 +2,7 @@ package com.iyensoft.vaadin.flow.components.builders;
 
 import com.holonplatform.vaadin.flow.components.BeanListing;
 import com.holonplatform.vaadin.flow.components.Input;
+import com.holonplatform.vaadin.flow.components.ListingBundle;
 import com.holonplatform.vaadin.flow.components.PropertyListing;
 import com.holonplatform.vaadin.flow.components.builders.ComponentConfigurator;
 import com.holonplatform.vaadin.flow.components.builders.HasSizeConfigurator;
@@ -39,13 +40,9 @@ public interface IyenCommonConfigurator<C extends IyenCommonConfigurator<C>>
 
     C content(GridHeader gridHeader, PropertyListing listing);
 
-    C content(Grid<?> grid);
-
-    C content(BeanListing<?> listing);
-
-    C content(PropertyListing listing);
-
     C content(Component component);
+
+    C content(ListingBundle<?> bundle);
 
     /**
      * Get the content {@link Layout}.

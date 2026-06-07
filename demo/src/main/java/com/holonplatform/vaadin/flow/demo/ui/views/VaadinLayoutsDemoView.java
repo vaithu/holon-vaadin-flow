@@ -1,6 +1,5 @@
 package com.holonplatform.vaadin.flow.demo.ui.views;
 
-import com.holonplatform.vaadin.flow.components.FlexBoxLayout;
 import com.holonplatform.vaadin.flow.components.builders.FlexBoxLayoutBuilder;
 import com.holonplatform.vaadin.flow.components.builders.FlexLayoutBuilder;
 import com.holonplatform.vaadin.flow.components.builders.HorizontalLayoutBuilder;

@@ -15,7 +15,6 @@ import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.html.Span;
-import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.PageTitle;
@@ -517,7 +516,7 @@ public class BeanListingDemoView extends Div {
         FilterInput<Boolean> activeInput = FilterInput.bool(ACTIVE_PROP);
 
         // ── FilterInputForm: wraps inputs in a HorizontalLayout toolbar ────────
-        // form.getComponent() is the HorizontalLayout — add it directly to the view.
+        // form.getComponent() is the HorizontalLayout — content it directly to the view.
         var form = FilterInputForm.horizontalLayout()
                 .withFilter(NAME_PROP,   nameInput)
                 .withFilter(STATUS_PROP, statusInput)
@@ -1020,7 +1019,7 @@ public class BeanListingDemoView extends Div {
                 .pageSizes(3, 5, 10)
                 .defaultPageSize(5)
                 .search("Search by name or category…")
-                .fetch((q, text) -> PRODUCTS.stream()
+                .fetch((q, text, sort) -> PRODUCTS.stream()
                         .filter(p -> text.isBlank()
                                 || p.getName().toLowerCase().contains(text.toLowerCase())
                                 || p.getCategory().toLowerCase().contains(text.toLowerCase()))

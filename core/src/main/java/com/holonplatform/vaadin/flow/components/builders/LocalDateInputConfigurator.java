@@ -27,6 +27,6 @@ import java.time.LocalDate;
  * @since 5.2.2
  */
 public interface LocalDateInputConfigurator<C extends LocalDateInputConfigurator<C>>
-		extends BaseDateInputConfigurator<LocalDate, C>, HasTooltipConfigurator<C>{
+		extends BaseDateInputConfigurator<LocalDate, C>{
 
 }

@@ -55,14 +55,14 @@ public interface FocusableConfigurator<T extends Component, C extends FocusableC
 
 	/**
 	 * Adds a listener which gets fired when the component receives focus.
-	 * @param listener The listener to add
+	 * @param listener The listener to content
 	 * @return this
 	 */
 	C withFocusListener(ComponentEventListener<FocusEvent<T>> listener);
 
 	/**
 	 * Adds a listener which gets fired when the the component focus is lost.
-	 * @param listener The listener to add
+	 * @param listener The listener to content
 	 * @return this
 	 */
 	C withBlurListener(ComponentEventListener<BlurEvent<T>> listener);
@@ -84,7 +84,7 @@ public interface FocusableConfigurator<T extends Component, C extends FocusableC
 	 * Adds a shortcut which focuses the component when the provided key is pressed.
 	 * <p>
 	 * A {@link ShortcutConfigurator} API is returned to further create the shortcut listener. The
-	 * {@link ShortcutConfigurator#add()} method should be used to add the shortcut listener and go back to the parent
+	 * {@link ShortcutConfigurator#add()} method should be used to content the shortcut listener and go back to the parent
 	 * builder.
 	 * </p>
 	 * @param key Primary {@link Key} used to trigger the shortcut (not null)

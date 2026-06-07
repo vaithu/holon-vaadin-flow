@@ -41,7 +41,7 @@ public interface InputConverterBuilder<T, V>
 
 	/**
 	 * Add a set of {@link ValueChangeListener}s to be notified when the input value changes.
-	 * @param listeners The {@link ValueChangeListener}s to add (not null)
+	 * @param listeners The {@link ValueChangeListener}s to content (not null)
 	 * @return this
 	 */
 	InputConverterBuilder<T, V> withValueChangeListeners(
@@ -49,7 +49,7 @@ public interface InputConverterBuilder<T, V>
 
 	/**
 	 * Add a set of {@link ReadonlyChangeListener}s to be notified when the input read-only state changes.
-	 * @param listeners The {@link ReadonlyChangeListener}s to add (not null)
+	 * @param listeners The {@link ReadonlyChangeListener}s to content (not null)
 	 * @return this
 	 */
 	InputConverterBuilder<T, V> withReadonlyChangeListeners(Collection<ReadonlyChangeListener> listeners);
@@ -57,14 +57,14 @@ public interface InputConverterBuilder<T, V>
 	/**
 	 * Add a set of adapters.
 	 * @param <A> Adapter type
-	 * @param adapters The adapters to add
+	 * @param adapters The adapters to content
 	 * @return this
 	 */
 	<A> InputConverterBuilder<T, V> withAdapters(Map<Class<A>, Function<Input<T>, A>> adapters);
 
 	/**
 	 * Add a set of adapters.
-	 * @param adapters The adapters to add
+	 * @param adapters The adapters to content
 	 * @return this
 	 */
 	default InputConverterBuilder<T, V> withAdapters(InputAdaptersContainer<T> adapters) {

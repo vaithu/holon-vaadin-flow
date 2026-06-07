@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
  * <p>If you need to embed the customer listing inside an existing view
  * instead of navigating to a dedicated URL, use {@link CustomerListPanel} directly:</p>
  * <pre>{@code
- * add(new CustomerListPanel(customerService));
+ * content(new CustomerListPanel(customerService));
  * }</pre>
  */
 @Component

@@ -143,7 +143,7 @@ public class PanelDemoView extends Div {
                 .gap(Gap.MEDIUM)
                 .fullWidth()               // fullWidth() is in the builder chain — no setWidth() needed
                 .add(sidebar)
-                .addAndExpand(main)        // add(main) + flexGrow(main)
+                .addAndExpand(main)        // content(main) + flexGrow(main)
                 .build();
 
         return new DemoExample("addAndExpand — sidebar + expanding main content", panel, """

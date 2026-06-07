@@ -397,7 +397,7 @@ public class DefaultPropertyInputGroup extends AbstractPropertySetGroup<Input<?>
 
 	/**
 	 * Add an overall validator
-	 * @param validator the {@link Validator} to add (not null)
+	 * @param validator the {@link Validator} to content (not null)
 	 */
 	protected void addValidator(Validator<PropertyBox> validator) {
 		ObjectUtils.argumentNotNull(validator, "Validator must be not null");
@@ -585,39 +585,6 @@ public class DefaultPropertyInputGroup extends AbstractPropertySetGroup<Input<?>
 			// use default
 			return propertyConfiguration.getProperty().renderIfAvailable(Input.class).map(c -> (Input<T>) c);
 		}
-	}
-
-	private boolean isRequiredByValidators(Property<?> property) {
-
-		if (property.getValidators().isEmpty()) {
-			return false;
-		}
-
-		// 1️⃣ Check null
-		if (failsValidation(property, null)) {
-			return true;
-		}
-
-		// 2️⃣ Check blank for String properties
-		if (String.class.equals(property.getType())) {
-			if (failsValidation(property, "")) return true;
-			if (failsValidation(property, "   ")) return true;
-		}
-
-		return false;
-	}
-
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	private boolean failsValidation(Property<?> property, Object value) {
-		for (Validator v : property.getValidators()) {
-			try {
-				v.validate(value);
-			} catch (ValidationException ex) {
-				// Validator throws on null → required
-				return true;
-			}
-		}
-		return false;
 	}
 
 	/**

@@ -559,6 +559,51 @@ vaadin-avatar.avatar--badge-info {
 }
 
 /* =====================================================================
+ * 36c. Avatar profile XL variant — Aura-compatible profile presentation
+ * ===================================================================== */
+
+vaadin-avatar.avatar--profile-xl {
+    inline-size: 4.5rem;
+    block-size: 4.5rem;
+    max-inline-size: 100%;
+    max-block-size: 100%;
+    background-color: #bfcad8;
+    color: #1f2937;
+    box-shadow: var(--shadow-xs);
+    border: 0;
+}
+
+vaadin-avatar.avatar--profile-xl::part(abbr) {
+    font-size: 1.75rem;
+    font-weight: 700;
+    line-height: 1;
+}
+
+@media (min-width: 640px) {
+    vaadin-avatar.avatar--profile-xl {
+        inline-size: 6rem;
+        block-size: 6rem;
+    }
+
+    vaadin-avatar.avatar--profile-xl::part(abbr) {
+        font-size: 2rem;
+        font-weight: 700;
+    }
+}
+
+@media (min-width: 1024px) {
+    vaadin-avatar.avatar--profile-xl {
+        inline-size: 8rem;
+        block-size: 8rem;
+    }
+
+    vaadin-avatar.avatar--profile-xl::part(abbr) {
+        font-size: 2.75rem;
+        font-weight: 700;
+    }
+}
+
+/* =====================================================================
  * 37. Generic layout utilities  (sourced from reindeerplus)
  * ===================================================================== */
 

@@ -163,7 +163,7 @@ public class DefaultValidatableInputConfigurator<T>
 		// check required
 		if (required) {
 			input.setRequired(true);
-			// add required validator
+			// content required validator
 			input.addValidator(getRequiredValidator().orElse(new RequiredInputValidator<>(input,
 					getRequiredMessage().orElse(RequiredInputValidator.DEFAULT_REQUIRED_ERROR))));
 		}

@@ -70,7 +70,7 @@ public abstract class AbstractFormLayoutConfigurator<C extends FormLayoutConfigu
 
     /*
 	 * (non-Javadoc)
-	 * @see com.holonplatform.vaadin.flow.components.builders.HasComponentsConfigurator#add(com.vaadin.flow.component.
+	 * @see com.holonplatform.vaadin.flow.components.builders.HasComponentsConfigurator#content(com.vaadin.flow.component.
 	 * Component[])
 	 */
 	@Override

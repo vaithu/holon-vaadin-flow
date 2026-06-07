@@ -29,7 +29,6 @@ import com.holonplatform.vaadin.flow.vaadinplus.ResponsiveDiv;
 @Route(value = "multi-select", layout = DemoMainLayout.class)
 public class MultiSelectDemoView extends Div {
 
-    private enum Color { RED, GREEN, BLUE, YELLOW, PURPLE, ORANGE, CYAN }
     private enum Permission { READ, WRITE, EXECUTE, DELETE, ADMIN }
 
     public MultiSelectDemoView() {

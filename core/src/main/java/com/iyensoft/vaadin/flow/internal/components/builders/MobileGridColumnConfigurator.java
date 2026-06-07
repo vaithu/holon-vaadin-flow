@@ -56,6 +56,9 @@ public interface MobileGridColumnConfigurator<
     /** Tertiary supporting text (e.g. amount, status). */
     C withTertiaryText(String text);
 
+        /** Tertiary supporting text with an explicit semantic text class. */
+        C withTertiaryText(String text, String textClassName);
+
     /** Tertiary currencyValue with an associated date line. */
     C withTertiaryCurrencyValueAndDate(
             String currencyValue,

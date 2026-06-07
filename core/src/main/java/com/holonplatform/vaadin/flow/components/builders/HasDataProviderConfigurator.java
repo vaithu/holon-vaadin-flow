@@ -67,7 +67,7 @@ public interface HasDataProviderConfigurator<T, C extends HasDataProviderConfigu
 	 * When an in-memory item set is provided, any data source configured using {@link #dataSource(DataProvider)} will
 	 * be ignored.
 	 * </p>
-	 * @param item The data item to add (not null)
+	 * @param item The data item to content (not null)
 	 * @return this
 	 */
 	@Override

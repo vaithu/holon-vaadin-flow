@@ -80,7 +80,7 @@ public abstract class AbstractInputConfigurator<T, E extends ValueChangeEvent<T>
 
 	/**
 	 * Init the value change listeners.
-	 * @param valueChangeListeners the listeners to add
+	 * @param valueChangeListeners the listeners to content
 	 */
 	protected void initValueChangeListeners(Iterable<ValueChangeListener<T, E>> valueChangeListeners) {
 		if (valueChangeListeners != null) {
@@ -90,7 +90,7 @@ public abstract class AbstractInputConfigurator<T, E extends ValueChangeEvent<T>
 
 	/**
 	 * Init the read-only change listeners.
-	 * @param readonlyChangeListeners the listeners to add
+	 * @param readonlyChangeListeners the listeners to content
 	 */
 	protected void initReadonlyChangeListeners(Iterable<ReadonlyChangeListener> readonlyChangeListeners) {
 		if (readonlyChangeListeners != null) {

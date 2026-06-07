@@ -118,7 +118,7 @@ public interface ItemListingConfigurator<T, P, L extends ItemListing<T, P>, C ex
      *                      using the current row item instance (not null)
      * @return An {@link ItemListingColumnBuilder} which allow further column
      * configuration and provides the {@link ItemListingColumnBuilder#add()}
-     * method to add the column to the listing
+     * method to content the column to the listing
      */
     <X> ItemListingColumnBuilder<T, P, L, C> withColumn(ValueProvider<T, X> valueProvider);
 
@@ -131,7 +131,7 @@ public interface ItemListingConfigurator<T, P, L extends ItemListing<T, P>, C ex
      *                      (not null)
      * @return An {@link ItemListingColumnBuilder} which allow further column
      * configuration and provides the {@link ItemListingColumnBuilder#add()}
-     * method to add the column to the listing
+     * method to content the column to the listing
      */
     ItemListingColumnBuilder<T, P, L, C> withComponentColumn(ValueProvider<T, Component> valueProvider);
 
@@ -144,7 +144,7 @@ public interface ItemListingConfigurator<T, P, L extends ItemListing<T, P>, C ex
      *                      (not null)
      * @return An {@link ItemListingColumnBuilder} which allow further column
      * configuration and provides the {@link ItemListingColumnBuilder#add()}
-     * method to add the column to the listing
+     * method to content the column to the listing
      */
     default ItemListingColumnBuilder<T, P, L, C> mobileColumn(ValueProvider<T, Component> valueProvider) {
         return withComponentColumn(valueProvider);
@@ -413,6 +413,7 @@ public interface ItemListingConfigurator<T, P, L extends ItemListing<T, P>, C ex
      * @param flexGrow the flex grow ratio to set
      * @return this
      */
+    @SuppressWarnings("unchecked")
     C flexGrow(int flexGrow, P... properties) ;
 
     /**
@@ -695,7 +696,7 @@ public interface ItemListingConfigurator<T, P, L extends ItemListing<T, P>, C ex
      * Add a {@link ColumnPostProcessor} which can be used to furtherly create
      * each listing column before adding it to the listing component.
      *
-     * @param columnPostProcessor The post processor to add (not null)
+     * @param columnPostProcessor The post processor to content (not null)
      * @return this
      */
     C withColumnPostProcessor(ColumnPostProcessor<P> columnPostProcessor);
@@ -845,7 +846,7 @@ public interface ItemListingConfigurator<T, P, L extends ItemListing<T, P>, C ex
      * (i.e. {@link SelectionMode} is not {@link SelectionMode#NONE}).
      * </p>
      *
-     * @param selectionListener The selection listener to add (not null)
+     * @param selectionListener The selection listener to content (not null)
      * @return this
      */
     C withSelectionListener(SelectionListener<T> selectionListener);
@@ -853,7 +854,7 @@ public interface ItemListingConfigurator<T, P, L extends ItemListing<T, P>, C ex
     /**
      * Adds a listener that gets notified when user clicks on an item row.
      *
-     * @param listener The {@link ItemClickListener} to add (not null)
+     * @param listener The {@link ItemClickListener} to content (not null)
      * @return this
      */
     C withItemClickListener(ClickEventListener<L, ItemClickEvent<L, T>> listener);
@@ -866,7 +867,7 @@ public interface ItemListingConfigurator<T, P, L extends ItemListing<T, P>, C ex
      * is available from {@link ItemEvent#getItem()}.
      * </p>
      *
-     * @param listener The {@link ItemEventListener} to add (not null)
+     * @param listener The {@link ItemEventListener} to content (not null)
      * @return this
      */
     C withItemRefreshListener(ItemEventListener<L, T, ItemEvent<L, T>> listener);
@@ -881,10 +882,10 @@ public interface ItemListingConfigurator<T, P, L extends ItemListing<T, P>, C ex
     C multiSort(boolean multiSort);
 
     /**
-     * Get a {@link ItemListingContextMenuBuilder} to create and add a context
+     * Get a {@link ItemListingContextMenuBuilder} to create and content a context
      * menu to show for each listing item.
      * <p>
-     * Use the {@link ItemListingContextMenuBuilder#add()} method to add the context
+     * Use the {@link ItemListingContextMenuBuilder#add()} method to content the context
      * menu to the item listing.
      * </p>
      * <p>
@@ -977,7 +978,7 @@ public interface ItemListingConfigurator<T, P, L extends ItemListing<T, P>, C ex
     /**
      * Adds an item editor listener for editor <code>save</code> events.
      *
-     * @param listener The listener to add (not null)
+     * @param listener The listener to content (not null)
      * @return this
      */
     C withEditorSaveListener(EditorSaveListener<T, P> listener);
@@ -985,7 +986,7 @@ public interface ItemListingConfigurator<T, P, L extends ItemListing<T, P>, C ex
     /**
      * Adds an item editor listener for editor <code>cancel</code> events.
      *
-     * @param listener The listener to add (not null)
+     * @param listener The listener to content (not null)
      * @return this
      */
     C withEditorCancelListener(EditorCancelListener<T, P> listener);
@@ -993,7 +994,7 @@ public interface ItemListingConfigurator<T, P, L extends ItemListing<T, P>, C ex
     /**
      * Adds an item editor save listener for editor <code>open</code> events.
      *
-     * @param listener The listener to add (not null)
+     * @param listener The listener to content (not null)
      * @return this
      */
     C withEditorOpenListener(EditorOpenListener<T, P> listener);
@@ -1001,7 +1002,7 @@ public interface ItemListingConfigurator<T, P, L extends ItemListing<T, P>, C ex
     /**
      * Adds an item editor save listener for editor <code>close</code> events.
      *
-     * @param listener The listener to add (not null)
+     * @param listener The listener to content (not null)
      * @return this
      */
     C withEditorCloseListener(EditorCloseListener<T, P> listener);
@@ -1071,7 +1072,7 @@ public interface ItemListingConfigurator<T, P, L extends ItemListing<T, P>, C ex
     /**
      * Adds a listing drag start listener.
      *
-     * @param listener The listener to add (not null)
+     * @param listener The listener to content (not null)
      * @return this
      */
     C withDragStartListener(ItemListingDnDListener<T, P, ItemListingDragStartEvent<T, P>> listener);
@@ -1079,7 +1080,7 @@ public interface ItemListingConfigurator<T, P, L extends ItemListing<T, P>, C ex
     /**
      * Adds a listing drag end listener.
      *
-     * @param listener The listener to add (not null)
+     * @param listener The listener to content (not null)
      * @return this
      */
     C withDragEndListener(ItemListingDnDListener<T, P, ItemListingDragEndEvent<T, P>> listener);
@@ -1148,7 +1149,7 @@ public interface ItemListingConfigurator<T, P, L extends ItemListing<T, P>, C ex
     /**
      * Adds a listing drop listener.
      *
-     * @param listener The listener to add (not null)
+     * @param listener The listener to content (not null)
      * @return this
      */
     C withDropListener(ItemListingDnDListener<T, P, ItemListingDropEvent<T, P>> listener);
@@ -1156,7 +1157,7 @@ public interface ItemListingConfigurator<T, P, L extends ItemListing<T, P>, C ex
     /**
      * Add listener for column resize events.
      *
-     * @param listener The listener to add (not null)
+     * @param listener The listener to content (not null)
      * @return this
      */
     C withColumnResizeListener(ColumnResizeListener<T, P> listener);
@@ -1164,7 +1165,7 @@ public interface ItemListingConfigurator<T, P, L extends ItemListing<T, P>, C ex
     /**
      * Add listener for column reorder events.
      *
-     * @param listener The listener to add (not null)
+     * @param listener The listener to content (not null)
      * @return this
      */
     C withColumnReorderListener(ColumnReorderListener<T, P> listener);

@@ -78,7 +78,7 @@ import java.util.function.Supplier;
  * @see SheetDescription
  */
 @StyleSheet("context://sheet.css")
-public class Sheet extends Div implements HasSize, HasStyle {
+public class Sheet extends Div {
 
     private static final long serialVersionUID = 1L;
 

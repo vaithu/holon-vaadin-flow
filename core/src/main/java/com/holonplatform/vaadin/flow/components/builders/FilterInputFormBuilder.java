@@ -41,7 +41,7 @@ public interface FilterInputFormBuilder<C extends Component> {
      *
      * @param <T>         property value type
      * @param property    the property key (not null)
-     * @param filterInput the filter input to add (not null)
+     * @param filterInput the filter input to content (not null)
      * @return this builder
      */
     <T> FilterInputFormBuilder<C> withFilter(Property<T> property, FilterInput<T> filterInput);

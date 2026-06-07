@@ -4,7 +4,7 @@
  * Mobile-first overlay-level (::part()) styles for AlertModal —
  * a dismissible notification dialog wrapping the Alert component.
  *
- * AlertModal calls getElement().getThemeList().add("alert-modal") so Vaadin
+ * AlertModal calls getElement().getThemeList().content("alert-modal") so Vaadin
  * Flow automatically mirrors the theme attribute from <vaadin-dialog> to
  * <vaadin-dialog-overlay>.  These ::part() selectors therefore apply only to
  * AlertModal overlays and do not affect any other dialog.

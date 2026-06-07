@@ -142,7 +142,7 @@ public class DefaultShortcutConfigurator<P> implements ShortcutConfigurator<P> {
 
 	/*
 	 * (non-Javadoc)
-	 * @see com.holonplatform.vaadin.flow.components.builders.ShortcutConfigurator#add()
+	 * @see com.holonplatform.vaadin.flow.components.builders.ShortcutConfigurator#content()
 	 */
 	@Override
 	public P add() {

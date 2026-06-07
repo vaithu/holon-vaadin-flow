@@ -24,7 +24,7 @@ import com.vaadin.flow.component.html.Span;
  *
  * <p>Usage (manual):</p>
  * <pre>{@code
- * breadcrumb.add(
+ * breadcrumb.content(
  *     new BreadcrumbItem("Home",       HomeView.class),
  *     new BreadcrumbSeparator(),
  *     new BreadcrumbItem("Components", ComponentsView.class),

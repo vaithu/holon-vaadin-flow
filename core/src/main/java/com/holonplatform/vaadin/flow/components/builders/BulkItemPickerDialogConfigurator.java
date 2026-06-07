@@ -42,7 +42,7 @@ public interface BulkItemPickerDialogConfigurator<C extends BulkItemPickerDialog
     /**
      * Appends a single item to the item catalogue.
      *
-     * @param item the item to add (not null)
+     * @param item the item to content (not null)
      * @return this configurator (for chaining)
      */
     C item(BulkPickerItem item);
@@ -150,7 +150,7 @@ public interface BulkItemPickerDialogConfigurator<C extends BulkItemPickerDialog
     // ── Callbacks ─────────────────────────────────────────────────────────────
 
     /**
-     * Registers the confirm callback invoked when the user clicks the add button.
+     * Registers the confirm callback invoked when the user clicks the content button.
      * Receives the full list of {@link BulkPickerEntry} objects (item + quantity).
      *
      * @param callback the confirm handler (not null)

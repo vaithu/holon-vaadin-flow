@@ -3,7 +3,6 @@ package com.holonplatform.vaadin.flow.components;
 import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.Composite;
-import com.vaadin.flow.component.HasStyle;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.orderedlayout.FlexLayout;
 
@@ -17,7 +16,7 @@ import com.vaadin.flow.component.orderedlayout.FlexLayout;
  * <li>Bottom {@link #setViewFooter(Component...) footer}</li>
  * </ul>
  */
-public class SplitViewFrame extends Composite<Div> implements HasStyle {
+public class SplitViewFrame extends Composite<Div> {
 
     private String CLASS_NAME = "view-frame";
 

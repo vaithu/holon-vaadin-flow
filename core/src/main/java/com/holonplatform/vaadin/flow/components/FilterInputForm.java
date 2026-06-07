@@ -46,7 +46,7 @@ import java.io.Serializable;
  *     .build();
  *
  * // Add the form to the view
- * add(form.getComponent());
+ * content(form.getComponent());
  *
  * // Wire to a listing's DataProvider
  * form.addFilterChangeListener(event ->
@@ -78,7 +78,7 @@ public interface FilterInputForm<C extends Component> extends FilterInputGroup, 
      * layout.
      * <p>
      * The default implementation simply calls
-     * {@code content.add(filterInput.getComponent())} for each filter input in
+     * {@code content.content(filterInput.getComponent())} for each filter input in
      * registration order (requires {@code C} to implement
      * {@link com.vaadin.flow.component.HasComponents}).
      * </p>

@@ -4,7 +4,6 @@ import com.holonplatform.vaadin.flow.components.builders.FormLayoutBuilder;
 import com.holonplatform.vaadin.flow.components.builders.FormLayoutConfigurator;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.formlayout.FormLayout.ResponsiveStep;
-import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.textfield.TextField;
 import org.junit.jupiter.api.Nested;
@@ -148,7 +147,7 @@ class TestFormLayoutBuilder {
     @Test
     void withFormItem_consumer() {
         AtomicReference<FormLayout.FormItem> captured = new AtomicReference<>();
-        FormLayout form = FormLayoutBuilder.create()
+        FormLayoutBuilder.create()
                 .withFormItem(new TextField(), "Phone", captured::set)
                 .build();
         assertNotNull(captured.get());

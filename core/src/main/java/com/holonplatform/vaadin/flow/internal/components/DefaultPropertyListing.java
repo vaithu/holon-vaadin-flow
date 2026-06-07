@@ -76,7 +76,7 @@ public class DefaultPropertyListing extends AbstractItemListing<PropertyBox, Pro
 		ObjectUtils.argumentNotNull(properties, "Property set must be not null");
 		this.propertySet = (properties instanceof PropertySet<?>) ? (PropertySet<?>) properties
 				: PropertySet.of(properties);
-		// add properties as columns
+		// content properties as columns
 		for (Property<?> property : propertySet) {
 			addPropertyColumn(property);
 		}
@@ -95,7 +95,7 @@ public class DefaultPropertyListing extends AbstractItemListing<PropertyBox, Pro
 		}
 		this.propertySet = (properties instanceof PropertySet<?>) ? (PropertySet<?>) properties
 				: PropertySet.of(properties);
-		// add properties as columns
+		// content properties as columns
 		for (Property<?> property : propertySet) {
 			addPropertyColumn(property);
 		}
@@ -368,14 +368,14 @@ public class DefaultPropertyListing extends AbstractItemListing<PropertyBox, Pro
 		}
 
 		@Override
-		@SuppressWarnings("unchecked")
+		@SuppressWarnings({"unchecked", "rawtypes"})
 		public PropertyListingBuilder itemsPageable(Grid.SpringData.FetchCallback<?, PropertyBox> fetchCallback) {
 			getInstance().getGrid().setItemsPageable((Grid.SpringData.FetchCallback) fetchCallback);
 			return getConfigurator();
 		}
 
 		@Override
-		@SuppressWarnings("unchecked")
+		@SuppressWarnings({"unchecked", "rawtypes"})
 		public PropertyListingBuilder itemsPageable(Grid.SpringData.FetchCallback<?, PropertyBox> fetchCallback,
 				Grid.SpringData.CountCallback<?> countCallback) {
 			getInstance().getGrid().setItemsPageable((Grid.SpringData.FetchCallback) fetchCallback,

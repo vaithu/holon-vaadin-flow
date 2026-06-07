@@ -8,7 +8,7 @@ import com.vaadin.flow.signals.Signal;
 
 public interface HasDetailsConfigurator<C extends HasDetailsConfigurator<C>>
         extends ComponentConfigurator<C>, HasStyleConfigurator<C>, HasThemeVariantConfigurator<DetailsVariant, C>,
-        HasSizeConfigurator<C>, HasEnabledConfigurator<C>, DeferrableLocalizationConfigurator<C>, HasComponentsConfigurator<C> {
+        HasSizeConfigurator<C>, DeferrableLocalizationConfigurator<C>, HasComponentsConfigurator<C> {
 
     C opened(boolean opened);
 
@@ -20,7 +20,7 @@ public interface HasDetailsConfigurator<C extends HasDetailsConfigurator<C>>
    */
   @SuppressWarnings("unchecked")
   default C bindOpened(Signal<? extends Boolean> openedSignal) {
-    SignalBindings.bind(this, openedSignal, this::opened);
+    SignalBindings.bind(this, openedSignal, value -> opened(value != null && value));
     return (C) this;
   }
 

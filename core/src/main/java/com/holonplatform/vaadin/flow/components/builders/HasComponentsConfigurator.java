@@ -33,14 +33,14 @@ public interface HasComponentsConfigurator<C extends HasComponentsConfigurator<C
 
 	/**
 	 * Adds the given components as children of this component.
-	 * @param components The components to add
+	 * @param components The components to content
 	 * @return this
 	 */
 	C add(Component... components);
 
 	/**
 	 * Adds the components of each {@link HasComponent} as children of this component.
-	 * @param components The {@link HasComponent}s to add
+	 * @param components The {@link HasComponent}s to content
 	 * @return this
 	 */
 	default C add(HasComponent... components) {

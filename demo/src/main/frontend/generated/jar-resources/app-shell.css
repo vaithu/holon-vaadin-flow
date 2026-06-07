@@ -8,7 +8,7 @@
  * No hardcoded colours — rebrand by changing tokens only.
  *
  * Catalogue:
- *   .app-view              — full-page view container (add to @Route root)
+ *   .app-view              — full-page view container (content to @Route root)
  *   .app-page-header       — title + subtitle + actions row
  *   .app-page-title        — large page heading
  *   .app-page-subtitle     — secondary line below title

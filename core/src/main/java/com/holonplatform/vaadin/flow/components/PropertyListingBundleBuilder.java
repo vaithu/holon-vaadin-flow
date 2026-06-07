@@ -15,16 +15,21 @@
  */
 package com.holonplatform.vaadin.flow.components;
 
+import com.holonplatform.core.property.PathProperty;
 import com.holonplatform.core.property.Property;
 import com.holonplatform.core.property.PropertyBox;
 import com.holonplatform.core.property.PropertySet;
 import com.holonplatform.core.query.QueryFilter;
+import com.holonplatform.core.query.QuerySort;
 import com.holonplatform.vaadin.flow.vaadinplus.components.DynamicFilterPanel;
+import com.holonplatform.vaadin.flow.vaadinplus.components.GridHeader;
+import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.provider.CallbackDataProvider;
 import com.vaadin.flow.data.provider.Query;
+import com.vaadin.flow.data.provider.QuerySortOrder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,7 +57,7 @@ import java.util.stream.Stream;
  *     .fetch((q, text) -> service.fetch(q.getOffset(), q.getLimit(), text))
  *     .build();
  *
- * add(bundle.toolbar(), bundle.grid(), bundle.footer());
+ * content(bundle.toolbar(), bundle.grid(), bundle.footer());
  * }</pre>
  *
  * <h3>Usage with a PropertySet</h3>
@@ -78,21 +83,22 @@ public final class PropertyListingBundleBuilder {
     // ── Callback interfaces (mirrors ListingBundleBuilder) ─────────────────
 
     /**
-     * Fetch callback that receives the Vaadin {@link Query} and the current search text.
+     * Fetch callback that receives the Vaadin {@link Query}, search text, and a Holon
+     * {@link QuerySort} derived from the grid's current sort state.
      */
     @FunctionalInterface
     public interface FetchCallback {
-        Stream<PropertyBox> fetch(Query<PropertyBox, Void> query, String searchText);
+        Stream<PropertyBox> fetch(Query<PropertyBox, Void> query, String searchText, QuerySort sort);
     }
 
     /**
      * Fetch callback that additionally receives the {@link QueryFilter} committed by the
-     * {@link DynamicFilterPanel}.
+     * {@link DynamicFilterPanel} and a Holon {@link QuerySort}.
      */
     @FunctionalInterface
     public interface FilteredFetchCallback {
         Stream<PropertyBox> fetch(Query<PropertyBox, Void> query, String searchText,
-                                  QueryFilter filter);
+                                  QueryFilter filter, QuerySort sort);
     }
 
     // ── Logger ─────────────────────────────────────────────────────────────
@@ -110,8 +116,16 @@ public final class PropertyListingBundleBuilder {
     private boolean                      includeFilterPanel;
     private FetchCallback                fetchCallback;
     private FilteredFetchCallback        filteredFetchCallback;
-    /** Extra items appended to the options sub-menu in integrated search+filter mode. */
-    private final List<ListingBundle.FilterOption> filterOptions = new ArrayList<>();
+    /** Extra items appended to the options menu. */
+    private final List<ListingBundle.MenuAction> menuActions = new ArrayList<>();
+    /** Optional import handler; when set, an "Import" item appears in the options menu. */
+    private Runnable importAction;
+    /** Optional export handler; when set, an "Export" item appears in the options menu. */
+    private Runnable exportAction;
+    /** Title for the GridHeader (null = legacy toolbar mode). */
+    private String gridHeaderTitle;
+    /** Context actions for the GridHeader. */
+    private Component[] gridHeaderContextComponents;
     /** Label of the "Advanced Search" menu item (default: "Advanced Search"). */
     private String advancedSearchLabel = "Advanced Search";
     /**
@@ -120,6 +134,12 @@ public final class PropertyListingBundleBuilder {
      * to reset the panel every time the dialog is opened.
      */
     private boolean retainFilterValues = true;
+    /**
+     * When {@code true} the bundle starts in paginated mode (pagination bar visible,
+     * fixed-page fetch).  When {@code false} (default) the bundle starts in virtual-scroll
+     * mode (infinite scroll, pagination bar hidden).
+     */
+    private boolean paginatedMode = false;
 
     // ── Package constructors ───────────────────────────────────────────────
 
@@ -190,7 +210,7 @@ public final class PropertyListingBundleBuilder {
      * Adds a {@link DynamicFilterPanel} above the toolbar, introspecting the configured
      * property set. When a search field is also configured, the panel is integrated
      * into the toolbar and toggled via an "Advanced Search" menu item — do <em>not</em>
-     * add {@code bundle.filterPanel()} to the layout separately in that case.
+     * content {@code bundle.filterPanel()} to the layout separately in that case.
      * Use {@link #fetch(FilteredFetchCallback)} to receive the committed
      * {@link QueryFilter} on every data load.
      *
@@ -214,16 +234,98 @@ public final class PropertyListingBundleBuilder {
     }
 
     /**
-     * Appends an extra item to the options menu next to the search field.
+     * Sets the context-action components for the {@link GridHeader}.
+     *
+     * @param components context action components
+     * @return this builder
+     */
+    public PropertyListingBundleBuilder gridHeader(Component... components) {
+        this.gridHeaderContextComponents = components != null ? Arrays.copyOf(components, components.length) : null;
+        return this;
+    }
+
+    /**
+     * Sets the GridHeader context-action components.
+     *
+     * @param components context action components
+     * @return this builder
+     */
+    public PropertyListingBundleBuilder contextActions(Component... components) {
+        return gridHeader(components);
+    }
+
+    /**
+     * Adds a {@link GridHeader} with the given title and optional context actions.
+     *
+     * @param title the header title
+     * @param contextActions optional components shown when rows are selected
+     * @return this builder
+     */
+    public PropertyListingBundleBuilder gridHeader(String title, Component... contextActions) {
+        this.gridHeaderTitle = Objects.requireNonNull(title, "title must not be null");
+        this.gridHeaderContextComponents = contextActions != null ? Arrays.copyOf(contextActions, contextActions.length) : null;
+        return this;
+    }
+
+    /**
+     * Appends an extra item (text-only) to the options menu.
      *
      * @param label  display text (not null)
      * @param action action to run when clicked (not null)
      * @return this builder
      */
-    public PropertyListingBundleBuilder withFilterOption(String label, Runnable action) {
+    public PropertyListingBundleBuilder withMenuAction(String label, Runnable action) {
         Objects.requireNonNull(label,  "label must not be null");
         Objects.requireNonNull(action, "action must not be null");
-        this.filterOptions.add(new ListingBundle.FilterOption(label, action));
+        this.menuActions.add(ListingBundle.MenuAction.of(label, action));
+        return this;
+    }
+
+    /**
+     * Appends an extra item (icon + text) to the options menu.
+     *
+     * @param icon   icon shown to the left of the label (not null)
+     * @param label  display text (not null)
+     * @param action action to run when clicked (not null)
+     * @return this builder
+     */
+    public PropertyListingBundleBuilder withMenuAction(VaadinIcon icon, String label, Runnable action) {
+        Objects.requireNonNull(icon,   "icon must not be null");
+        Objects.requireNonNull(label,  "label must not be null");
+        Objects.requireNonNull(action, "action must not be null");
+        this.menuActions.add(ListingBundle.MenuAction.of(icon, label, action));
+        return this;
+    }
+
+    /**
+     * @deprecated Use {@link #withMenuAction(String, Runnable)} instead.
+     */
+    @Deprecated(since = "10.0.2", forRemoval = true)
+    public PropertyListingBundleBuilder withFilterOption(String label, Runnable action) {
+        return withMenuAction(label, action);
+    }
+
+    /**
+     * Registers a handler for the <em>Import</em> menu item.
+     * The item is only visible when a handler is provided.
+     *
+     * @param action action to run when the user clicks "Import" (not null)
+     * @return this builder
+     */
+    public PropertyListingBundleBuilder importAction(Runnable action) {
+        this.importAction = Objects.requireNonNull(action, "importAction must not be null");
+        return this;
+    }
+
+    /**
+     * Registers a handler for the <em>Export</em> menu item.
+     * The item is only visible when a handler is provided.
+     *
+     * @param action action to run when the user clicks "Export" (not null)
+     * @return this builder
+     */
+    public PropertyListingBundleBuilder exportAction(Runnable action) {
+        this.exportAction = Objects.requireNonNull(action, "exportAction must not be null");
         return this;
     }
 
@@ -239,6 +341,44 @@ public final class PropertyListingBundleBuilder {
      */
     public PropertyListingBundleBuilder retainFilterValues(boolean retain) {
         this.retainFilterValues = retain;
+        return this;
+    }
+
+    /**
+     * Configures the bundle to start in <strong>paginated mode</strong>: a fixed page of
+     * rows is shown at a time and the user navigates via the pagination bar in the footer.
+     *
+     * <p>When neither {@code paginated()} nor {@code virtualScroll()} is called the bundle
+     * defaults to virtual-scroll mode.</p>
+     *
+     * @return this builder
+     * @see #virtualScroll()
+     */
+    public PropertyListingBundleBuilder paginated() {
+        this.paginatedMode = true;
+        return this;
+    }
+
+    /**
+     * Configures the bundle to start in <strong>virtual-scroll mode</strong> (the default):
+     * infinite scroll, pagination bar hidden.
+     *
+     * @return this builder
+     * @see #paginated()
+     */
+    public PropertyListingBundleBuilder virtualScroll() {
+        this.paginatedMode = false;
+        return this;
+    }
+
+    /**
+     * Controls whether the bundle starts in paginated or virtual-scroll mode.
+     *
+     * @param paginated {@code true} for paginated mode, {@code false} (default) for virtual scroll
+     * @return this builder
+     */
+    public PropertyListingBundleBuilder paginated(boolean paginated) {
+        this.paginatedMode = paginated;
         return this;
     }
 
@@ -323,10 +463,11 @@ public final class PropertyListingBundleBuilder {
             CallbackDataProvider.FetchCallback<PropertyBox, Void> wrappedFetch = q -> {
                 String text = fSearch != null ? fSearch.getValue() : "";
                 QueryFilter qf = fPanel != null ? fPanel.getQueryFilter().orElse(null) : null;
+                QuerySort sort = toQuerySort(q.getSortOrders());
                 if (filteredFetchCallback != null) {
-                    return filteredFetchCallback.fetch((Query<PropertyBox, Void>) q, text, qf);
+                    return filteredFetchCallback.fetch((Query<PropertyBox, Void>) q, text, qf, sort);
                 }
-                return fetchCallback.fetch((Query<PropertyBox, Void>) q, text);
+                return fetchCallback.fetch((Query<PropertyBox, Void>) q, text, sort);
             };
             sb.withLazyFetch(wrappedFetch, null);
         }
@@ -337,7 +478,29 @@ public final class PropertyListingBundleBuilder {
         ItemListingPageSizeSelector<PropertyBox, ?> selector = sb.build();
 
         return (ListingBundle<PropertyBox>) new ListingBundle(listing, bar, selector, search, panel,
-                filterOptions, advancedSearchLabel, retainFilterValues);
+                menuActions, importAction, exportAction,
+                advancedSearchLabel, retainFilterValues, gridHeaderTitle, gridHeaderContextComponents, List.of(), paginatedMode);
+    }
+
+    /**
+     * Converts Vaadin {@link QuerySortOrder} list to a Holon {@link QuerySort}.
+     */
+    private static QuerySort toQuerySort(java.util.List<QuerySortOrder> sortOrders) {
+        if (sortOrders == null || sortOrders.isEmpty()) {
+            return null;
+        }
+        java.util.List<QuerySort> sorts = new java.util.ArrayList<>(sortOrders.size());
+        for (QuerySortOrder order : sortOrders) {
+            String propertyName = order.getSorted();
+            if (propertyName == null || propertyName.isBlank()) continue;
+            QuerySort.SortDirection direction =
+                    (order.getDirection() == com.vaadin.flow.data.provider.SortDirection.DESCENDING)
+                            ? QuerySort.SortDirection.DESCENDING
+                            : QuerySort.SortDirection.ASCENDING;
+            sorts.add(QuerySort.of(PathProperty.create(propertyName, Object.class), direction));
+        }
+        if (sorts.isEmpty()) return null;
+        return sorts.size() == 1 ? sorts.getFirst() : QuerySort.of(sorts);
     }
 }
 

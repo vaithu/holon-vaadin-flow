@@ -72,7 +72,7 @@ import java.util.regex.Pattern;
  * var collab = CollaborationFormSupport.of(Contact.class, localUser);
  * FormLayout form = collab.generateFormLayout("id", "createdAt");
  *
- * toolbar.add(collab.avatarGroup(), collab.toggleButton());
+ * toolbar.content(collab.avatarGroup(), collab.toggleButton());
  * collab.setEntity("contact/" + id, contact);
  * }</pre>
  *

@@ -97,7 +97,7 @@ public interface Input<T> extends ValueHolder<T, ValueChangeEvent<T>>, ValueComp
 
 	/**
 	 * Adds a read-only change listener, called when the read-only state changes.
-	 * @param listener the read-only change listener to add (not null)
+	 * @param listener the read-only change listener to content (not null)
 	 * @return a registration for the listener, which provides the <em>remove</em>
 	 *         operation
 	 */

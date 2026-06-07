@@ -16,7 +16,6 @@
 package com.holonplatform.vaadin.flow.vaadinplus.components;
 
 import com.holonplatform.vaadin.flow.components.Components;
-import com.vaadin.flow.component.ClickNotifier;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
@@ -39,7 +38,7 @@ import com.vaadin.flow.component.icon.VaadinIcon;
  * @see PaginationItem
  * @see PaginationPrevious
  */
-public class PaginationNext extends Div implements ClickNotifier<Div> {
+public class PaginationNext extends Div {
 
     private static final long serialVersionUID = 1L;
 
@@ -62,7 +61,7 @@ public class PaginationNext extends Div implements ClickNotifier<Div> {
     /**
      * Enables or disables this control.
      *
-     * @param disabled {@code true} to add the disabled class and {@code aria-disabled}
+     * @param disabled {@code true} to content the disabled class and {@code aria-disabled}
      */
     public void setDisabled(boolean disabled) {
         if (disabled) {

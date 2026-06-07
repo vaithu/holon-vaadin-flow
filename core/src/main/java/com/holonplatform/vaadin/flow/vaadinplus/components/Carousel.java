@@ -62,7 +62,7 @@ import com.vaadin.flow.shared.Registration;
  * @see CarouselNext
  */
 @StyleSheet("context://carousel.css")
-public class Carousel extends Div implements HasSize, HasStyle {
+public class Carousel extends Div {
 
     private static final long serialVersionUID = 1L;
 

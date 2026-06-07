@@ -47,7 +47,7 @@ public interface HasItemsConfigurator<ITEM, C extends HasItemsConfigurator<ITEM,
 
 	/**
 	 * Add given <code>item</code> to the item set which acts as in-memory items data source.
-	 * @param item The data item to add (not null)
+	 * @param item The data item to content (not null)
 	 * @return this
 	 */
 	C addItem(ITEM item);

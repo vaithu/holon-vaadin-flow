@@ -53,7 +53,7 @@ public class DefaultFlexComponentConfigurator<C extends Component>
 	/*
 	 * (non-Javadoc)
 	 * @see
-	 * com.holonplatform.vaadin.flow.components.builders.HasComponentsConfigurator#add(com.vaadin.flow.component.
+	 * com.holonplatform.vaadin.flow.components.builders.HasComponentsConfigurator#content(com.vaadin.flow.component.
 	 * Component[])
 	 */
 	@Override

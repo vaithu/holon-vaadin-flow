@@ -60,7 +60,7 @@ import java.util.List;
  *     .withPersistence(chatService)
  *     .withTypingIndicator()
  *     .build();
- * add(chat);
+ * content(chat);
  * }</pre>
  *
  * <h3>Custom page size</h3>

@@ -40,6 +40,7 @@ import com.holonplatform.vaadin.flow.internal.converters.ItemConverterConverter;
 import com.holonplatform.vaadin.flow.internal.utils.CollectionUtils;
 import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
+import com.vaadin.flow.component.radiobutton.RadioGroupVariant;
 import com.vaadin.flow.component.shared.HasTooltip;
 import com.vaadin.flow.data.provider.DataProvider;
 import com.vaadin.flow.data.provider.ListDataProvider;
@@ -201,6 +202,13 @@ public class DefaultOptionsSingleSelectInputBuilder<T, ITEM> extends
 	public com.holonplatform.vaadin.flow.components.builders.OptionsSingleSelectConfigurator.OptionsSingleSelectInputBuilder<T, ITEM> renderer(
 			ComponentRenderer<? extends Component, ITEM> renderer) {
 		getComponent().setRenderer(renderer);
+		return getConfigurator();
+	}
+
+	@Override
+	public OptionsSingleSelectInputBuilder<T, ITEM> withThemeVariants(RadioGroupVariant... variants) {
+		ObjectUtils.argumentNotNull(variants, "Variants must be not null");
+		getComponent().addThemeVariants(variants);
 		return getConfigurator();
 	}
 
@@ -405,6 +413,12 @@ public class DefaultOptionsSingleSelectInputBuilder<T, ITEM> extends
 		public ValidatableOptionsSingleSelectInputBuilder<T, ITEM> renderer(
 				ComponentRenderer<? extends Component, ITEM> renderer) {
 			builder.renderer(renderer);
+			return this;
+		}
+
+		@Override
+		public ValidatableOptionsSingleSelectInputBuilder<T, ITEM> withThemeVariants(RadioGroupVariant... variants) {
+			builder.withThemeVariants(variants);
 			return this;
 		}
 
@@ -854,6 +868,12 @@ public class DefaultOptionsSingleSelectInputBuilder<T, ITEM> extends
 			return this;
 		}
 
+		@Override
+		public DatastoreOptionsSingleSelectInputBuilder<T, ITEM> withThemeVariants(RadioGroupVariant... variants) {
+			builder.withThemeVariants(variants);
+			return this;
+		}
+
 		/*
 		 * (non-Javadoc)
 		 * @see
@@ -1223,6 +1243,12 @@ public class DefaultOptionsSingleSelectInputBuilder<T, ITEM> extends
 		public ValidatableDatastoreOptionsSingleSelectInputBuilder<T, ITEM> renderer(
 				ComponentRenderer<? extends Component, ITEM> renderer) {
 			builder.renderer(renderer);
+			return this;
+		}
+
+		@Override
+		public ValidatableDatastoreOptionsSingleSelectInputBuilder<T, ITEM> withThemeVariants(RadioGroupVariant... variants) {
+			builder.withThemeVariants(variants);
 			return this;
 		}
 

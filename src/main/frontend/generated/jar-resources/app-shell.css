@@ -1,0 +1,310 @@
+/*
+ * app-shell.css
+ * ──────────────────────────────────────────────────────────────────────────
+ * Generic application shell utility classes for Vaadin @Route views.
+ *
+ * All classes use the --brand-*, --surface-*, --text-*, --zinc-*, --sp-*,
+ * --font-size-*, --radius-* tokens from vaadin-shell-theme.css.
+ * No hardcoded colours — rebrand by changing tokens only.
+ *
+ * Catalogue:
+ *   .app-view              — full-page view container (add to @Route root)
+ *   .app-page-header       — title + subtitle + actions row
+ *   .app-page-title        — large page heading
+ *   .app-page-subtitle     — secondary line below title
+ *   .app-page-actions      — right-aligned action buttons
+ *   .app-card              — white card with border
+ *   .app-card--elevated    — card with shadow, no border
+ *   .app-card--flush       — card with no padding (embed grids flush)
+ *   .app-card__header      — row inside card: title + action
+ *   .app-card__title       — label for card__header
+ *   .app-toolbar           — flex row above tables / lists
+ *   .app-toolbar__spacer   — pushes right-side actions to the end
+ *   .app-badge             — small status chip (base, always combine with modifier)
+ *   .app-badge--primary    — brand tint
+ *   .app-badge--success    — green tint
+ *   .app-badge--warning    — amber tint
+ *   .app-badge--danger     — red tint
+ *   .app-badge--neutral    — gray tint
+ *   .app-badge--outline    — border only (no fill)
+ *   .app-stats-row         — responsive auto-fit grid of metric tiles
+ *   .app-stat-card         — individual metric tile
+ *   .app-stat-label        — metric name
+ *   .app-stat-value        — metric number
+ *   .app-stat-change       — trend text (combine with --up/--down)
+ *   .app-section-header    — label row above a sub-section
+ *   .app-section-title     — label text inside .app-section-header
+ *   .app-divider           — full-width 1px horizontal rule
+ *   .app-empty             — centred empty-state block
+ *   .app-empty__icon       — large icon above empty message
+ *   .app-empty__title      — "No data found" heading
+ *   .app-empty__description — helper text below title
+ *
+ * Java usage example:
+ *   VerticalLayout root = new VerticalLayout();
+ *   root.addClassName("app-view");
+ *
+ *   Div header = new Div();
+ *   header.addClassNames("app-page-header");
+ *
+ *   Span badge = new Span("Active");
+ *   badge.addClassNames("app-badge", "app-badge--success");
+ */
+
+
+/* ══════════════════════════════════════════════════════════════
+   VIEW ROOT
+   Add "app-view" to your @Route component's root element.
+   The vaadin-app-layout::part(content) already provides
+   background + padding — .app-view is for standalone views
+   or nested sections that need the same treatment.
+   ══════════════════════════════════════════════════════════════ */
+.app-view {
+  padding:    1.75rem 2rem;
+  background: var(--surface-1);
+  min-height: 100%;
+}
+
+.app-view h2,
+.app-view h3 {
+  color:       var(--text-primary);
+  font-weight: 500;
+  margin-top:  0;
+}
+
+
+/* ══════════════════════════════════════════════════════════════
+   PAGE HEADER  (title + subtitle left, action buttons right)
+   ══════════════════════════════════════════════════════════════ */
+.app-page-header {
+  display:         flex;
+  align-items:     flex-start;
+  justify-content: space-between;
+  gap:             var(--sp-4, 16px);
+  margin-bottom:   var(--sp-6, 24px);
+  flex-wrap:       wrap;
+}
+
+.app-page-title {
+  font-size:   var(--font-size-lg, 1rem);
+  font-weight: 600;
+  color:       var(--text-primary);
+  margin:      0;
+  line-height: 1.3;
+}
+
+.app-page-subtitle {
+  font-size:  var(--font-size-base, 0.8125rem);
+  color:      var(--text-secondary);
+  margin-top: var(--sp-1, 4px);
+}
+
+.app-page-actions {
+  display:     flex;
+  align-items: center;
+  gap:         var(--sp-2, 8px);
+  flex-shrink: 0;
+}
+
+
+/* ══════════════════════════════════════════════════════════════
+   CARD
+   ══════════════════════════════════════════════════════════════ */
+.app-card {
+  background:    var(--surface-0);
+  border:        1px solid var(--zinc-200);
+  border-radius: var(--radius-lg, 10px);
+  padding:       var(--sp-4, 16px) var(--sp-5, 20px);
+}
+
+/* Shadow variant — no border */
+.app-card--elevated {
+  box-shadow: var(--shadow-md);
+  border:     none;
+}
+
+/* No padding — use when embedding a Grid or list flush to the edges */
+.app-card--flush {
+  padding: 0;
+}
+
+/* Row inside card: label on the left, optional action on the right */
+.app-card__header {
+  display:         flex;
+  align-items:     center;
+  justify-content: space-between;
+  margin-bottom:   var(--sp-4, 16px);
+}
+
+.app-card__title {
+  font-size:   var(--font-size-md, 0.875rem);
+  font-weight: 600;
+  color:       var(--text-primary);
+}
+
+
+/* ══════════════════════════════════════════════════════════════
+   TOOLBAR  (horizontal group of actions above a table / list)
+   ══════════════════════════════════════════════════════════════ */
+.app-toolbar {
+  display:       flex;
+  align-items:   center;
+  gap:           var(--sp-2, 8px);
+  flex-wrap:     wrap;
+  margin-bottom: var(--sp-4, 16px);
+}
+
+/* Pushes everything after this element to the right */
+.app-toolbar__spacer {
+  flex: 1;
+}
+
+
+/* ══════════════════════════════════════════════════════════════
+   BADGES
+   Usage: <span class="app-badge app-badge--success">Active</span>
+   ══════════════════════════════════════════════════════════════ */
+.app-badge {
+  display:       inline-flex;
+  align-items:   center;
+  font-size:     var(--font-size-xs, 0.6875rem);
+  line-height:   1;
+  padding:       3px 8px;
+  border-radius: var(--radius-full, 9999px);
+  font-weight:   500;
+  white-space:   nowrap;
+}
+
+.app-badge--primary {
+  background: var(--brand-50);
+  color:      var(--brand-700);
+}
+
+.app-badge--success {
+  background: var(--ok-light);
+  color:      var(--ok-dark);
+}
+
+.app-badge--warning {
+  background: var(--warn-light);
+  color:      var(--warn-dark);
+}
+
+.app-badge--danger {
+  background: var(--err-light);
+  color:      var(--err-dark);
+}
+
+.app-badge--neutral {
+  background: var(--zinc-100);
+  color:      var(--zinc-600);
+}
+
+.app-badge--outline {
+  background: transparent;
+  border:     1px solid var(--zinc-300);
+  color:      var(--text-secondary);
+}
+
+
+/* ══════════════════════════════════════════════════════════════
+   STAT / KPI  — responsive grid of metric tiles
+   ══════════════════════════════════════════════════════════════ */
+.app-stats-row {
+  display:               grid;
+  gap:                   var(--sp-4, 16px);
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+}
+
+.app-stat-card {
+  background:    var(--surface-0);
+  border:        1px solid var(--zinc-200);
+  border-radius: var(--radius-lg, 10px);
+  padding:       var(--sp-4, 16px) var(--sp-5, 20px);
+}
+
+.app-stat-label {
+  font-size:   var(--font-size-sm, 0.75rem);
+  color:       var(--text-secondary);
+  font-weight: 500;
+}
+
+.app-stat-value {
+  font-size:   var(--font-size-lg, 1rem);
+  font-weight: 700;
+  color:       var(--text-primary);
+  line-height: 1.2;
+  margin-top:  var(--sp-1, 4px);
+}
+
+.app-stat-change {
+  font-size:  var(--font-size-xs, 0.6875rem);
+  margin-top: var(--sp-1, 4px);
+}
+
+.app-stat-change--up   { color: var(--ok);  }
+.app-stat-change--down { color: var(--err); }
+
+
+/* ══════════════════════════════════════════════════════════════
+   SECTION HEADER  (label + optional action inside a card)
+   ══════════════════════════════════════════════════════════════ */
+.app-section-header {
+  display:         flex;
+  align-items:     center;
+  justify-content: space-between;
+  margin-bottom:   var(--sp-4, 16px);
+}
+
+.app-section-title {
+  font-size:   var(--font-size-md, 0.875rem);
+  font-weight: 600;
+  color:       var(--text-primary);
+}
+
+
+/* ══════════════════════════════════════════════════════════════
+   DIVIDER
+   ══════════════════════════════════════════════════════════════ */
+.app-divider {
+  width:        100%;
+  height:       1px;
+  background:   var(--zinc-200);
+  margin-block: var(--sp-4, 16px);
+  border:       none;
+}
+
+
+/* ══════════════════════════════════════════════════════════════
+   EMPTY STATE
+   ══════════════════════════════════════════════════════════════ */
+.app-empty {
+  display:         flex;
+  flex-direction:  column;
+  align-items:     center;
+  justify-content: center;
+  padding:         3rem 2rem;
+  text-align:      center;
+  gap:             var(--sp-3, 12px);
+}
+
+.app-empty__icon {
+  color:  var(--zinc-300);
+  width:  3rem;
+  height: 3rem;
+}
+
+.app-empty__title {
+  font-size:   var(--font-size-md, 0.875rem);
+  font-weight: 500;
+  color:       var(--text-primary);
+}
+
+.app-empty__description {
+  font-size: var(--font-size-base, 0.8125rem);
+  max-width: 28rem;
+  color:     var(--text-secondary);
+}
+
+
+

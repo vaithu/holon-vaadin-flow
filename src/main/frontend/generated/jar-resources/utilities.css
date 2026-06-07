@@ -402,3 +402,292 @@ vaadin-grid.grid--wrap-cell-content::part(cell) {
     flex: 1;
 }
 
+/* =====================================================================
+ * 36. Icon badge — circular tinted container for a vaadin-icon
+ *
+ *  Usage:
+ *    Div badge = new Div(myIcon);
+ *    badge.addClassNames("icon-badge", "icon-badge--success");
+ *
+ *  Variants: icon-badge--default | --destructive | --warning | --success | --info
+ *
+ *  Size modifiers: icon-badge--sm (2rem) | icon-badge--lg (3.5rem)
+ * ===================================================================== */
+
+.icon-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width:  2.75rem;  /* 44 px — matches AlertDialog header icon size */
+    height: 2.75rem;
+    border-radius: 50%;
+    flex-shrink: 0;
+    background-color: #f1f5f9; /* zinc-100 — neutral default */
+    color:            #64748b; /* zinc-500 */
+}
+
+/* The icon inside always inherits the wrapper's color */
+.icon-badge vaadin-icon,
+.icon-badge svg {
+    width:  1.25rem;
+    height: 1.25rem;
+    color: inherit;
+    flex-shrink: 0;
+}
+
+/* Variants */
+.icon-badge--default {
+    background-color: #f1f5f9;
+    color:            #64748b;
+}
+
+.icon-badge--destructive {
+    background-color: #fef2f2;
+    color:            #dc2626;
+}
+
+.icon-badge--warning {
+    background-color: #fffbeb;
+    color:            #f97316;
+}
+
+.icon-badge--success {
+    background-color: #f0fdf4;
+    color:            #16a34a;
+}
+
+.icon-badge--info {
+    background-color: #f5f3ff;
+    color:            #7c3aed;
+}
+
+/* Size modifiers */
+.icon-badge--sm {
+    width:  2rem;
+    height: 2rem;
+}
+.icon-badge--sm vaadin-icon,
+.icon-badge--sm svg {
+    width:  1rem;
+    height: 1rem;
+}
+
+.icon-badge--lg {
+    width:  3.5rem;
+    height: 3.5rem;
+}
+.icon-badge--lg vaadin-icon,
+.icon-badge--lg svg {
+    width:  1.75rem;
+    height: 1.75rem;
+}
+
+/* Dark mode */
+@media (prefers-color-scheme: dark) {
+    .icon-badge,
+    .icon-badge--default { background-color: #1e293b; color: #94a3b8; }
+    .icon-badge--destructive { background-color: #450a0a; color: #f87171; }
+    .icon-badge--warning     { background-color: #451a03; color: #fb923c; }
+    .icon-badge--success     { background-color: #052e16; color: #4ade80; }
+    .icon-badge--info        { background-color: #2e1065; color: #a78bfa; }
+}
+
+/* =====================================================================
+ * 36b. Avatar badge variants — IconBadge-style tinted background for vaadin-avatar
+ *
+ *  Applied when the developer calls: AvatarBuilder.create(...).variant(Alert.Variant.SUCCESS)
+ *  Uses --vaadin-avatar-background and --vaadin-avatar-text-color (Aura properties).
+ *  Backgrounds use Tailwind 100-level tints for clear visibility (same hue as icon-badge).
+ *
+ *  CSS class applied to <vaadin-avatar>:
+ *    avatar--badge              (base marker)
+ *    avatar--badge-default      (neutral slate)
+ *    avatar--badge-destructive  (red)
+ *    avatar--badge-warning      (amber / orange)
+ *    avatar--badge-success      (green)
+ *    avatar--badge-info         (violet)
+ * ===================================================================== */
+
+vaadin-avatar.avatar--badge-default {
+    --vaadin-avatar-background:  #e2e8f0;
+    --vaadin-avatar-text-color:  #334155;
+}
+
+vaadin-avatar.avatar--badge-destructive {
+    --vaadin-avatar-background:  #fee2e2;
+    --vaadin-avatar-text-color:  #991b1b;
+}
+
+vaadin-avatar.avatar--badge-warning {
+    --vaadin-avatar-background:  #fef3c7;
+    --vaadin-avatar-text-color:  #92400e;
+}
+
+vaadin-avatar.avatar--badge-success {
+    --vaadin-avatar-background:  #d1fae5;
+    --vaadin-avatar-text-color:  #065f46;
+}
+
+vaadin-avatar.avatar--badge-info {
+    --vaadin-avatar-background:  #ede9fe;
+    --vaadin-avatar-text-color:  #4c1d95;
+}
+
+/* Dark mode */
+@media (prefers-color-scheme: dark) {
+    vaadin-avatar.avatar--badge,
+    vaadin-avatar.avatar--badge-default {
+        --vaadin-avatar-background:  #1e293b;
+        --vaadin-avatar-text-color:  #94a3b8;
+    }
+    vaadin-avatar.avatar--badge-destructive {
+        --vaadin-avatar-background:  #450a0a;
+        --vaadin-avatar-text-color:  #f87171;
+    }
+    vaadin-avatar.avatar--badge-warning {
+        --vaadin-avatar-background:  #451a03;
+        --vaadin-avatar-text-color:  #fb923c;
+    }
+    vaadin-avatar.avatar--badge-success {
+        --vaadin-avatar-background:  #052e16;
+        --vaadin-avatar-text-color:  #4ade80;
+    }
+    vaadin-avatar.avatar--badge-info {
+        --vaadin-avatar-background:  #2e1065;
+        --vaadin-avatar-text-color:  #a78bfa;
+    }
+}
+
+/* =====================================================================
+ * 37. Generic layout utilities  (sourced from reindeerplus)
+ * ===================================================================== */
+
+/** .contents  — makes the element's box disappear so its children
+    participate in the parent's layout directly (useful for grid/flex).  */
+.contents { display: contents; }
+
+/** .flex-1  — shorthand for flex: 1 1 0% (grow and shrink freely).    */
+.flex-1 { flex: 1 1 0%; }
+
+/** .order-first  — places the element before all siblings in the flow. */
+.order-first { order: -9999; }
+
+/* =====================================================================
+ * 38. Typography utilities  (sourced from reindeerplus)
+ * ===================================================================== */
+
+/** .font-mono  — switch element to a monospace stack.                  */
+.font-mono {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+                 "Liberation Mono", "Courier New", monospace;
+}
+
+/** .no-underline:hover  — remove underline decoration on hover.        */
+.no-underline:hover { text-decoration-line: none; }
+
+/* =====================================================================
+ * 39. Accessibility — "not-sr-only" (companion to .sr-only above)
+ * =====================================================================
+ * Reverts the sr-only clip trick so a previously hidden element becomes
+ * visible again.  Useful when toggling visibility via className.
+ * ===================================================================== */
+
+.not-sr-only {
+    clip       : auto;
+    height     : auto;
+    margin     : 0;
+    overflow   : visible;
+    padding    : 0;
+    position   : static;
+    white-space: normal;
+    width      : auto;
+}
+
+/* =====================================================================
+ * 40. Border utilities  (sourced from reindeerplus)
+ * ===================================================================== */
+
+/** .border-2  — 2px border-width (use with border-color classes).      */
+.border-2 { border-width: 2px; }
+
+/* =====================================================================
+ * 41. Responsive prefix utilities  (sourced from reindeerplus)
+ *
+ *  Breakpoints match the project's ResponsiveDSL / layout.css:
+ *    sm  ≥ 640px   md  ≥ 768px   lg  ≥ 1024px   xl  ≥ 1280px   2xl ≥ 1536px
+ *
+ *  Class names use CSS escaping: .sm\:flex means class="sm:flex" in Java.
+ *  Usage in Java:  component.addClassName("sm:flex")
+ * ===================================================================== */
+
+/* -- Display: flex (responsive) -- */
+@media (min-width: 640px)  { .sm\:flex  { display: flex; } }
+@media (min-width: 768px)  { .md\:flex  { display: flex; } }
+@media (min-width: 1024px) { .lg\:flex  { display: flex; } }
+@media (min-width: 1280px) { .xl\:flex  { display: flex; } }
+@media (min-width: 1536px) { .\32xl\:flex { display: flex; } }
+
+/* -- Overflow hidden (responsive) -- */
+@media (min-width: 640px)  { .sm\:overflow-hidden  { overflow: hidden; } }
+@media (min-width: 768px)  { .md\:overflow-hidden  { overflow: hidden; } }
+@media (min-width: 1024px) { .lg\:overflow-hidden  { overflow: hidden; } }
+@media (min-width: 1280px) { .xl\:overflow-hidden  { overflow: hidden; } }
+@media (min-width: 1536px) { .\32xl\:overflow-hidden { overflow: hidden; } }
+
+/* -- Width auto (responsive) -- */
+@media (min-width: 640px)  { .sm\:w-auto  { width: auto; } }
+@media (min-width: 768px)  { .md\:w-auto  { width: auto; } }
+@media (min-width: 1024px) { .lg\:w-auto  { width: auto; } }
+@media (min-width: 1280px) { .xl\:w-auto  { width: auto; } }
+@media (min-width: 1536px) { .\32xl\:w-auto { width: auto; } }
+
+/* -- Flex grow 0 (responsive) -- */
+@media (min-width: 640px)  { .sm\:flex-grow-0  { flex-grow: 0; } }
+@media (min-width: 768px)  { .md\:flex-grow-0  { flex-grow: 0; } }
+@media (min-width: 1024px) { .lg\:flex-grow-0  { flex-grow: 0; } }
+@media (min-width: 1280px) { .xl\:flex-grow-0  { flex-grow: 0; } }
+@media (min-width: 1536px) { .\32xl\:flex-grow-0 { flex-grow: 0; } }
+
+/* -- White-space nowrap (responsive) -- */
+@media (min-width: 640px)  { .sm\:whitespace-nowrap  { white-space: nowrap; } }
+@media (min-width: 768px)  { .md\:whitespace-nowrap  { white-space: nowrap; } }
+@media (min-width: 1024px) { .lg\:whitespace-nowrap  { white-space: nowrap; } }
+@media (min-width: 1280px) { .xl\:whitespace-nowrap  { white-space: nowrap; } }
+@media (min-width: 1536px) { .\32xl\:whitespace-nowrap { white-space: nowrap; } }
+
+/* -- Text overflow ellipsis (responsive) -- */
+@media (min-width: 640px)  { .sm\:overflow-ellipsis  { text-overflow: ellipsis; } }
+@media (min-width: 768px)  { .md\:overflow-ellipsis  { text-overflow: ellipsis; } }
+@media (min-width: 1024px) { .lg\:overflow-ellipsis  { text-overflow: ellipsis; } }
+@media (min-width: 1280px) { .xl\:overflow-ellipsis  { text-overflow: ellipsis; } }
+@media (min-width: 1536px) { .\32xl\:overflow-ellipsis { text-overflow: ellipsis; } }
+
+/* -- Divide X/Y (responsive border between siblings) -- */
+@media (min-width: 640px) {
+  .sm\:divide-x > * + * { border-inline-start: var(--border-default); }
+  .sm\:divide-y > * + * { border-block-start:  var(--border-default); }
+}
+@media (min-width: 768px) {
+  .md\:divide-x > * + * { border-inline-start: var(--border-default); }
+  .md\:divide-y > * + * { border-block-start:  var(--border-default); }
+}
+@media (min-width: 1024px) {
+  .lg\:divide-x > * + * { border-inline-start: var(--border-default); }
+  .lg\:divide-y > * + * { border-block-start:  var(--border-default); }
+}
+@media (min-width: 1280px) {
+  .xl\:divide-x > * + * { border-inline-start: var(--border-default); }
+  .xl\:divide-y > * + * { border-block-start:  var(--border-default); }
+}
+@media (min-width: 1536px) {
+  .\32xl\:divide-x > * + * { border-inline-start: var(--border-default); }
+  .\32xl\:divide-y > * + * { border-block-start:  var(--border-default); }
+}
+
+/* -- not-sr-only (responsive) -- */
+@media (min-width: 640px)  { .sm\:not-sr-only  { clip: auto; height: auto; margin: 0; overflow: visible; padding: 0; position: static; white-space: normal; width: auto; } }
+@media (min-width: 768px)  { .md\:not-sr-only  { clip: auto; height: auto; margin: 0; overflow: visible; padding: 0; position: static; white-space: normal; width: auto; } }
+@media (min-width: 1024px) { .lg\:not-sr-only  { clip: auto; height: auto; margin: 0; overflow: visible; padding: 0; position: static; white-space: normal; width: auto; } }
+@media (min-width: 1280px) { .xl\:not-sr-only  { clip: auto; height: auto; margin: 0; overflow: visible; padding: 0; position: static; white-space: normal; width: auto; } }
+@media (min-width: 1536px) { .\32xl\:not-sr-only { clip: auto; height: auto; margin: 0; overflow: visible; padding: 0; position: static; white-space: normal; width: auto; } }
+

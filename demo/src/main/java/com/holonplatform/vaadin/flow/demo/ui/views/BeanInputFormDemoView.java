@@ -29,7 +29,7 @@ import com.vaadin.flow.router.Route;
  *   <li>setBean() / getBean() round-trip</li>
  *   <li>excludeFields() — hide specific fields from the form</li>
  *   <li>readOnlyFields() — mark individual fields as read-only</li>
- *   <li>configure() escape hatch — add validators via PropertyInputFormBuilder</li>
+ *   <li>configure() escape hatch — content validators via PropertyInputFormBuilder</li>
  *   <li>@Identifier + @Caption annotations — auto-hidden ID, custom labels</li>
  *   <li>@Identifier + @Version — auto-hide behaviour, round-trip value preservation, opt-in reveal</li>
  *   <li>VerticalLayout layout variant</li>
@@ -411,6 +411,7 @@ public class BeanInputFormDemoView extends Div {
 
     // ── Example 5 – configure() escape hatch + validators ────────────────────
 
+    @SuppressWarnings({"unchecked", "rawtypes"})
     private DemoExample configureValidatorsExample() {
         // We need PathProperty references to attach typed validators.
         var builder = BeanPropertyInputForm.formLayout(Employee.class);
@@ -444,7 +445,7 @@ public class BeanInputFormDemoView extends Div {
 
         var container = new Div(form.getComponent(), submitBtn, result);
 
-        return new DemoExample("configure() — add per-field validators", container, """
+        return new DemoExample("configure() — content per-field validators", container, """
                 var builder = BeanPropertyInputForm.formLayout(Employee.class);
 
                 // Resolve PathProperty references before calling configure():
@@ -916,7 +917,7 @@ public class BeanInputFormDemoView extends Div {
 
                         // Summary card — a plain ResponsiveDiv.flex().column().card()
                         var summaryCard = ResponsiveDiv.flex().column().gapS().card().padM()
-                            .add(new H4("Live Preview"), summaryRows)
+                            .content(new H4("Live Preview"), summaryRows)
                             .build();
 
                         // Outer shell switches direction at the desktop breakpoint.
@@ -925,7 +926,7 @@ public class BeanInputFormDemoView extends Div {
                         var container = ResponsiveDiv.flex()
                             .column().gapM()
                             .desktop().row().gapXL().alignStart().end()
-                            .add(formWrapper, summaryCard)
+                            .content(formWrapper, summaryCard)
                             .build();
                         """);
     }

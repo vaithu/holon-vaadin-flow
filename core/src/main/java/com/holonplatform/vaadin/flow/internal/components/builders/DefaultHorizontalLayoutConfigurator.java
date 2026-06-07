@@ -16,6 +16,7 @@
 package com.holonplatform.vaadin.flow.internal.components.builders;
 
 import com.holonplatform.vaadin.flow.components.builders.ThemableFlexComponentConfigurator.HorizontalLayoutConfigurator;
+import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 
 /**
@@ -29,6 +30,24 @@ public class DefaultHorizontalLayoutConfigurator
 
 	public DefaultHorizontalLayoutConfigurator(HorizontalLayout component) {
 		super(component);
+	}
+
+	@Override
+	public HorizontalLayoutConfigurator addToStart(Component... components) {
+		getComponent().addToStart(components);
+		return getConfigurator();
+	}
+
+	@Override
+	public HorizontalLayoutConfigurator addToMiddle(Component... components) {
+		getComponent().addToMiddle(components);
+		return getConfigurator();
+	}
+
+	@Override
+	public HorizontalLayoutConfigurator addToEnd(Component... components) {
+		getComponent().addToEnd(components);
+		return getConfigurator();
 	}
 
 	/*

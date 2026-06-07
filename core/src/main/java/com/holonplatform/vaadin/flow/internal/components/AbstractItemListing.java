@@ -733,11 +733,10 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
         throw new IllegalArgumentException("No column is bound to the property [" + property + "]");
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public void addHoverEffect(AttachEvent attachEvent, SerializableFunction<T, String> partNameGenerator) {
 
-        // Add the hover effect only for desktop browsers
-        @SuppressWarnings("deprecation")
         com.vaadin.flow.component.page.Page.ExtendedClientDetailsReceiver receiver = details -> {
             if (!details.isTouchDevice()) {
                 getGrid().addClassNames(CSSUtility.Transform.Hover.SCALE_102,
@@ -847,6 +846,15 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
     }
 
     @Override
+    public void setMobileHeader(Component component) {
+         if (mobileColumn != null) {
+            mobileColumn.setHeader(component);
+        } else {
+            getGrid().getColumns().getFirst().setHeader(component);
+        }
+    }
+
+    @Override
     public void showMobileColumn(boolean mobile) {
         List<Column<T>> allColumns = getAllColumns();
         if (mobileColumn != null) {
@@ -906,10 +914,12 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
 
 
 
+    @SuppressWarnings("unused") // reserved for future use
     private void showAllHiddenColumns() {
         getHiddenColumns().forEach(p -> getColumn(p).ifPresent(column -> column.setVisible(true)));
     }
 
+    @SuppressWarnings("unused") // reserved for future use
     private void hideAllVisibleColumns() {
         getVisibleColumns().forEach(p -> getColumn(p).ifPresent(column -> column.setVisible(false)));
     }
@@ -989,7 +999,7 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
     /**
      * Add an item property to be rendered as a listing column.
      *
-     * @param property The item property id to add (not null)
+     * @param property The item property id to content (not null)
      * @return the column configuration
      */
     protected ItemListingColumn<P, T, ?> addPropertyColumn(P property) {
@@ -1001,7 +1011,7 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
     /**
      * Add an item property to be rendered as a listing column as first column.
      *
-     * @param property The item property id to add (not null)
+     * @param property The item property id to content (not null)
      * @return the column configuration
      */
     protected ItemListingColumn<P, T, ?> addPropertyColumnAsFirst(P property) {
@@ -1013,7 +1023,7 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
     /**
      * Add an item property to be rendered as a listing column as last column.
      *
-     * @param property The item property id to add (not null)
+     * @param property The item property id to content (not null)
      * @return the column configuration
      */
     protected ItemListingColumn<P, T, ?> addPropertyColumnAsLast(P property) {
@@ -1026,8 +1036,8 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
      * Add an item property to be rendered as a listing column before the
      * <code>beforeProperty</code> property id.
      *
-     * @param property       The item property id to add (not null)
-     * @param beforeProperty The property before to add the item property
+     * @param property       The item property id to content (not null)
+     * @param beforeProperty The property before to content the item property
      * @return <code>true</code> if the <code>beforeProperty</code> is available. If
      * <code>false</code>, the property column will be added at the end of
      * the list
@@ -1049,8 +1059,8 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
      * Add an item property to be rendered as a listing column after the
      * <code>afterProperty</code> property id.
      *
-     * @param property      The item property id to add (not null)
-     * @param afterProperty The property after to add the item property
+     * @param property      The item property id to content (not null)
+     * @param afterProperty The property after to content the item property
      * @return <code>true</code> if the <code>afterProperty</code> is available. If
      * <code>false</code>, the property column will be added at the end of
      * the list
@@ -1242,7 +1252,7 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
 //        getGrid().getColumns().forEach(column -> getGrid().removeColumn(column));
         getGrid().removeAllColumns();
         columnsHeaders.clear();
-        // add a column for each visible property
+        // content a column for each visible property
         getVisibleColumnProperties().forEach(this::addGridColumn);
 //        log.info("Visible columns are {}", getVisibleColumns());
         // selection listeners
@@ -1266,7 +1276,7 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
         ObjectUtils.argumentNotNull(property, "Property must be not null");
         // get the column configuration
         final ItemListingColumn<P, T, ?> configuration = preProcessConfiguration(getColumnConfiguration(property));
-        // add the column
+        // content the column
         final Column<T> column = generateGridColumn(configuration);
         // create the column
         column.setKey(configuration.getColumnKey());
@@ -1499,6 +1509,7 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
         getGrid().sort(orders);
     }
 
+    @SuppressWarnings("unused") // reserved for future use
     private GridLazyDataView<T> getGridLazyDataView() {
         return getGrid().getLazyDataView();
 
@@ -1835,7 +1846,7 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
     /**
      * Add the selection listener to the current Grid selection model.
      *
-     * @param selectionListener The selection listener to add
+     * @param selectionListener The selection listener to content
      */
     private void addAndRegisterSelectionListener(SelectionListener<T> selectionListener) {
         final com.vaadin.flow.shared.Registration registration = getGrid().addSelectionListener(e ->
@@ -1936,7 +1947,7 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
     /**
      * Add an item validator.
      *
-     * @param validator The validator to add (not null)
+     * @param validator The validator to content (not null)
      */
     protected void addValidator(Validator<T> validator) {
         ObjectUtils.argumentNotNull(validator, "Validator must be not null");
@@ -1947,7 +1958,7 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
     /**
      * Add a column post processor.
      *
-     * @param columnPostProcessor The column post processor to add (not null)
+     * @param columnPostProcessor The column post processor to content (not null)
      */
     protected void addColumnPostProcessor(ColumnPostProcessor<P> columnPostProcessor) {
         ObjectUtils.argumentNotNull(columnPostProcessor, "Column post-processor must be not null");
@@ -1966,7 +1977,7 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
     /**
      * Add a editor post processor.
      *
-     * @param postProcessor The editor post processor to add (not null)
+     * @param postProcessor The editor post processor to content (not null)
      */
     protected void addEditorPostProcessor(BiConsumer<P, Input<?>> postProcessor) {
         ObjectUtils.argumentNotNull(postProcessor, "Editor post-processor must be not null");
@@ -1985,7 +1996,7 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
     /**
      * Add a new {@link EditorOpenListener}.
      *
-     * @param listener The listener to add
+     * @param listener The listener to content
      */
     protected void addEditorOpenListener(EditorOpenListener<T, P> listener) {
         ObjectUtils.argumentNotNull(listener, "Editor listener must be not null");
@@ -1995,7 +2006,7 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
     /**
      * Add a new {@link EditorCloseListener}.
      *
-     * @param listener The listener to add
+     * @param listener The listener to content
      */
     protected void addEditorCloseListener(EditorCloseListener<T, P> listener) {
         ObjectUtils.argumentNotNull(listener, "Editor listener must be not null");
@@ -2005,7 +2016,7 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
     /**
      * Add a new {@link EditorSaveListener}.
      *
-     * @param listener The listener to add
+     * @param listener The listener to content
      */
     protected void addEditorSaveListener(EditorSaveListener<T, P> listener) {
         ObjectUtils.argumentNotNull(listener, "Editor listener must be not null");
@@ -2015,7 +2026,7 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
     /**
      * Add a new {@link EditorCancelListener}.
      *
-     * @param listener The listener to add
+     * @param listener The listener to content
      */
     protected void addEditorCancelListener(EditorCancelListener<T, P> listener) {
         ObjectUtils.argumentNotNull(listener, "Editor listener must be not null");
@@ -2025,7 +2036,7 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
     /**
      * Add a editor value change listener.
      *
-     * @param valueChangeListener the value change listener to add (not null)
+     * @param valueChangeListener the value change listener to content (not null)
      * @return The listener registration
      */
     protected Registration addValueChangeListener(
@@ -2746,6 +2757,7 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
 
         private boolean frozen;
         private boolean toggleableColumns;
+        @SuppressWarnings("unused") // set via configurator but not yet consumed
         private boolean removeAllColumns;
 
         public AbstractItemListingConfigurator(I instance) {
@@ -3384,6 +3396,7 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
          * @param properties The properties to create (not null)
          * @return this
          */
+        @SuppressWarnings("unchecked")
         @Override
         public C flexGrow(int flexGrow, P... properties) {
             for (P property : properties) {
@@ -4321,7 +4334,7 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
          *
          * @see
          * com.holonplatform.vaadin.flow.components.builders.ItemListingConfigurator.
-         * ItemListingContextMenuBuilder#add()
+         * ItemListingContextMenuBuilder#content()
          */
         @Override
         public C add() {
@@ -4491,7 +4504,7 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
          *
          * @see
          * com.holonplatform.vaadin.flow.components.builders.ContextMenuConfigurator.
-         * MenuItemBuilder#add()
+         * MenuItemBuilder#content()
          */
         @Override
         public B add() {
@@ -4790,7 +4803,7 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
          *
          * @see
          * com.holonplatform.vaadin.flow.components.builders.ItemListingConfigurator.
-         * ItemListingColumnBuilder#add()
+         * ItemListingColumnBuilder#content()
          */
         @Override
         public B add() {

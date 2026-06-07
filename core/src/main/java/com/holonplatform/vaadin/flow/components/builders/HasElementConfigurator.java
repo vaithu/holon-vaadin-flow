@@ -29,7 +29,7 @@ public interface HasElementConfigurator<C extends HasElementConfigurator<C>> {
 
 	/**
 	 * Adds a theme name to this component.
-	 * @param themeName the theme name to add, not <code>null</code>
+	 * @param themeName the theme name to content, not <code>null</code>
 	 * @return this
 	 */
 	C withThemeName(String themeName);
@@ -40,7 +40,7 @@ public interface HasElementConfigurator<C extends HasElementConfigurator<C>> {
 	 * Event listeners are triggered in the order they are registered.
 	 * </p>
 	 * @param eventType the type of event to listen to, not <code>null</code>
-	 * @param listener the listener to add, not <code>null</code>
+	 * @param listener the listener to content, not <code>null</code>
 	 * @return this
 	 */
 	C withEventListener(String eventType, DomEventListener listener);
@@ -58,7 +58,7 @@ public interface HasElementConfigurator<C extends HasElementConfigurator<C>> {
 	 * Event listeners are triggered in the order they are registered.
 	 * </p>
 	 * @param eventType the type of event to listen to, not <code>null</code>
-	 * @param listener the listener to add, not <code>null</code>
+	 * @param listener the listener to content, not <code>null</code>
 	 * @param filter the JavaScript filter expression
 	 * @return this
 	 */

@@ -39,7 +39,6 @@ import com.vaadin.flow.shared.Registration;
 
 import java.time.LocalDate;
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * Base {@link LocalDateInputConfigurator} implementation using a {@link DatePicker} as concrete component.

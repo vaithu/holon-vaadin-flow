@@ -5,7 +5,7 @@ import com.holonplatform.vaadin.flow.components.HasEditButton;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.icon.VaadinIcon;
 
-public class DefaultEditButton extends Button implements HasEditButton {
+public class DefaultEditButton extends Button implements HasEditButton<DefaultEditButton> {
 
     public DefaultEditButton() {
         this.editBtn = Components.button()

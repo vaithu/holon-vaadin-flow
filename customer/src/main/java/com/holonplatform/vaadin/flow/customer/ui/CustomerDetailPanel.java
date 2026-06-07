@@ -40,10 +40,10 @@ import java.util.Optional;
  *
  * <pre>{@code
  * // Minimal usage — full CRUD with master list + detail panel
- * add(new CustomerDetailPanel(customerService));
+ * content(new CustomerDetailPanel(customerService));
  *
  * // Pre-select a specific customer
- * add(new CustomerDetailPanel(customerService, customerId));
+ * content(new CustomerDetailPanel(customerService, customerId));
  * }</pre>
  *
  * <p>Renders a responsive {@link MasterDetailLayout}: a searchable master list on the left
@@ -179,7 +179,6 @@ public class CustomerDetailPanel extends Div {
         // ── MasterDetailLayout ─────────────────────────────────────────────────
         masterDetail = MasterDetailLayout.<Customer>builder()
                 .masterHeader(masterHeader)
-                .masterSearch(masterSearch)
                 .masterGrid(masterGrid)
                 .detailHeader(detailHeader)
                 .detailContent(c -> new Component[]{ detailBody })

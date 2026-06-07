@@ -15,7 +15,6 @@
  */
 package com.holonplatform.vaadin.flow.vaadinplus.components;
 
-import com.vaadin.flow.component.ClickNotifier;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
@@ -34,7 +33,7 @@ import com.vaadin.flow.component.icon.VaadinIcon;
  * @see Carousel
  * @see CarouselNext
  */
-public class CarouselPrevious extends Div implements ClickNotifier<Div> {
+public class CarouselPrevious extends Div {
 
     private static final long serialVersionUID = 1L;
 

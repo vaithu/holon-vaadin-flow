@@ -12,7 +12,6 @@ import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
-import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.TabVariant;
 import com.vaadin.flow.component.tabs.Tabs;
@@ -35,7 +34,7 @@ import java.util.function.Supplier;
  * otherwise they are resolved immediately at configuration time.
  */
 public abstract class AbstractLazyTabsConfigurator<C extends LazyTabsConfigurator<C> & DeferrableLocalizationConfigurator<C>>
-        extends AbstractLocalizableComponentConfigurator<VerticalLayout, C>
+        extends AbstractLocalizableComponentConfigurator<Tabs, C>
         implements LazyTabsConfigurator<C> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractLazyTabsConfigurator.class);
@@ -55,28 +54,21 @@ public abstract class AbstractLazyTabsConfigurator<C extends LazyTabsConfigurato
 
     private boolean enableCaching = false;
 
-    private final Tabs tabs = new Tabs();
-
     // Display area
-    private final Div contentContainer = Components.div().build();
+    private  Div contentContainer ;
 
     public Tabs getTabs() {
-        return tabs;
+        return getComponent();
     }
 
     public Div getContentContainer() {
         return contentContainer;
     }
 
-    public AbstractLazyTabsConfigurator(VerticalLayout component) {
+    public AbstractLazyTabsConfigurator(Tabs component) {
         super(component);
-        contentContainer.addClassName("lazy-tabs-content");
-        contentContainer.setSizeFull();
-        contentContainer.addAttachListener(e -> e.getUI().getPage().addStyleSheet("context://lazy-tabs.css"));
-        tabs.setWidthFull();
 
-        // Keep the content area in sync with the selected tab
-        tabs.addSelectedChangeListener(e -> switchToTab(e.getSelectedTab()));
+        getComponent().setWidthFull();
     }
 
     // ── Deferred-localization helper ──────────────────────────────────────────
@@ -108,25 +100,13 @@ public abstract class AbstractLazyTabsConfigurator<C extends LazyTabsConfigurato
     }
 
     /**
-     * Convenience wrapper: Tabs on top + content below.
-     */
-    public Component buildTabsWithContent() {
-        VerticalLayout wrapper = Components.vl().build();
-        wrapper.setPadding(false);
-        wrapper.setSpacing(false);
-        wrapper.setSizeFull();
-        wrapper.add(tabs, contentContainer);
-        return wrapper;
-    }
-
-    /**
      * Convenience wrapper: Tabs on the left + content on the right.
      * Use this for vertical-orientation side-by-side layouts instead of
      * assembling {@code getTabs()} + {@code getContentContainer()} manually.
      */
     @Override
     public HorizontalLayout buildHorizontal() {
-        HorizontalLayout layout = Components.hl().add(tabs, contentContainer).build();
+        HorizontalLayout layout = Components.hl().add(getComponent(), contentContainer).build();
         layout.setPadding(false);
         layout.setSpacing(false);
         layout.setSizeFull();
@@ -203,38 +183,38 @@ public abstract class AbstractLazyTabsConfigurator<C extends LazyTabsConfigurato
 
     @Override
     public C scrollIntoView() {
-        tabs.scrollIntoView();
+        getComponent().scrollIntoView();
         return getConfigurator();
     }
 
     @Override
     public C scrollIntoView(ScrollIntoViewOption... options) {
-        tabs.scrollIntoView(options);
+        getComponent().scrollIntoView(options);
         return getConfigurator();
     }
 
     @Override
     public C autoselect(boolean autoselect) {
-        tabs.setAutoselect(autoselect);
+        getComponent().setAutoselect(autoselect);
         return getConfigurator();
     }
 
     @Override
     public C flexGrowForEnclosedTabs(double flexGrow) {
-        tabs.setFlexGrowForEnclosedTabs(flexGrow);
+        getComponent().setFlexGrowForEnclosedTabs(flexGrow);
         return getConfigurator();
     }
 
     @Override
     public C orientation(Tabs.Orientation orientation) {
-        tabs.setOrientation(orientation);
+        getComponent().setOrientation(orientation);
         return getConfigurator();
     }
 
     @Override
     public C selectedIndex(int selectedIndex) {
-        tabs.setSelectedIndex(selectedIndex);
-        Tab selected = tabs.getSelectedTab();
+        getComponent().setSelectedIndex(selectedIndex);
+        Tab selected = getComponent().getSelectedTab();
         if (selected != null) switchToTab(selected);
         return getConfigurator();
     }
@@ -242,14 +222,14 @@ public abstract class AbstractLazyTabsConfigurator<C extends LazyTabsConfigurato
     @Override
     public C selectedTab(Tab tab) {
         getTabs().setSelectedTab(tab);
-        Tab selected = tabs.getSelectedTab();
+        Tab selected = getComponent().getSelectedTab();
         if (selected != null) switchToTab(selected);
         return getConfigurator();
     }
 
     @Override
     public C selectedTab(String tabTitle) {
-        Tab existing = tabs.getChildren()
+        Tab existing = getComponent().getChildren()
                 .filter(c -> c instanceof Tab)
                 .map(c -> (Tab) c)
                 .filter(t -> Objects.equals(t.getLabel(), tabTitle))
@@ -265,7 +245,7 @@ public abstract class AbstractLazyTabsConfigurator<C extends LazyTabsConfigurato
 
     @Override
     public C withSelectedChangeListener(ComponentEventListener<Tabs.SelectedChangeEvent> listener) {
-        tabs.addSelectedChangeListener(listener);
+        getComponent().addSelectedChangeListener(listener);
         return getConfigurator();
     }
 
@@ -282,7 +262,7 @@ public abstract class AbstractLazyTabsConfigurator<C extends LazyTabsConfigurato
         // added tab and fires SelectedChangeEvent immediately, so the supplier
         // must already be present in the map when switchToTab is invoked.
         tabSupplierMap.put(tab, () -> component);
-        tabs.add(tab);
+        getComponent().add(tab);
         return getConfigurator();
     }
 
@@ -359,7 +339,7 @@ public abstract class AbstractLazyTabsConfigurator<C extends LazyTabsConfigurato
         Objects.requireNonNull(factory, "factory must not be null");
         // Register supplier BEFORE adding to Tabs for the same reason as withEagerTab.
         tabSupplierMap.put(tab, factory);
-        tabs.add(tab);
+        getComponent().add(tab);
         return getConfigurator();
     }
 
@@ -428,19 +408,28 @@ public abstract class AbstractLazyTabsConfigurator<C extends LazyTabsConfigurato
 
     @Override
     public C withThemeVariants(TabsVariant... variants) {
-        tabs.addThemeVariants(variants);
+        getComponent().addThemeVariants(variants);
         return getConfigurator();
     }
 
     // ── Capabilities ──────────────────────────────────────────────────────────
 
     @Override
-    protected Optional<HasSize> hasSize() { return Optional.of(tabs); }
+    protected Optional<HasSize> hasSize() { return Optional.of(getComponent()); }
 
     @Override
-    protected Optional<HasStyle> hasStyle() { return Optional.of(tabs); }
+    protected Optional<HasStyle> hasStyle() { return Optional.of(getComponent()); }
 
     @Override
-    protected Optional<HasEnabled> hasEnabled() { return Optional.of(tabs); }
+    protected Optional<HasEnabled> hasEnabled() { return Optional.of(getComponent()); }
+
+    @Override
+    public C withContainer(Div div) {
+        this.contentContainer = div;
+        this.contentContainer.setSizeFull();
+        // Keep the content area in sync with the selected tab
+        getComponent().addSelectedChangeListener(e -> switchToTab(e.getSelectedTab()));
+        return getConfigurator();
+    }
 }
 

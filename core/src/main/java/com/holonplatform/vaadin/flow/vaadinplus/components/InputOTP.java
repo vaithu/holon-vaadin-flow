@@ -19,8 +19,6 @@ import com.holonplatform.vaadin.flow.components.Components;
 import com.holonplatform.vaadin.flow.components.builders.InputOTPBuilder;
 import com.holonplatform.vaadin.flow.components.builders.InputOTPConfigurator;
 import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.HasSize;
-import com.vaadin.flow.component.HasStyle;
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Span;
@@ -68,13 +66,13 @@ import java.util.List;
  * <p><strong>Manual assembly:</strong>
  * <pre>{@code
  * InputOTPGroup group1 = new InputOTPGroup();
- * group1.add(new InputOTPSlot(), new InputOTPSlot(), new InputOTPSlot());
+ * group1.content(new InputOTPSlot(), new InputOTPSlot(), new InputOTPSlot());
  *
  * InputOTPGroup group2 = new InputOTPGroup();
- * group2.add(new InputOTPSlot(), new InputOTPSlot(), new InputOTPSlot());
+ * group2.content(new InputOTPSlot(), new InputOTPSlot(), new InputOTPSlot());
  *
  * InputOTP otp = new InputOTP();
- * otp.add(group1, new InputOTPSeparator(), group2);
+ * otp.content(group1, new InputOTPSeparator(), group2);
  * }</pre>
  *
  * <p><strong>Digit-only, numeric pattern:</strong>
@@ -98,7 +96,7 @@ import java.util.List;
  */
 @StyleSheet("context://material-symbols.css")
 @StyleSheet("context://input-otp.css")
-public class InputOTP extends Div implements HasSize, HasStyle {
+public class InputOTP extends Div {
 
     private static final long serialVersionUID = 1L;
 
@@ -162,7 +160,7 @@ public class InputOTP extends Div implements HasSize, HasStyle {
      * The stored {@link #setPattern(String)}, read-only, and enabled states are applied
      * to each newly-registered slot.
      *
-     * @param components the components to add (null-safe; individual null elements skipped)
+     * @param components the components to content (null-safe; individual null elements skipped)
      */
     @Override
     public void add(Component... components) {

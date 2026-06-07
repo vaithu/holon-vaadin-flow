@@ -22,10 +22,11 @@ import com.vaadin.flow.component.UI;
 import com.vaadin.flow.spring.security.AuthenticationContext;
 import jakarta.servlet.ServletContext;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.lang.Nullable;
+import jakarta.annotation.Nullable;
 import org.springframework.stereotype.Component;
 
 @Component("flowui_LogoutSupport")
+@SuppressWarnings("null")
 public class LogoutSupport {
 
     protected ServletContext servletContext;

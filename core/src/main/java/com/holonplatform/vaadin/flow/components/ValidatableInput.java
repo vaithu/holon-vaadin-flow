@@ -71,7 +71,7 @@ public interface ValidatableInput<T> extends Input<T>, Validatable {
 
 	/**
 	 * Adds a {@link Validator} to validate the input value.
-	 * @param validator The validator to add (not null)
+	 * @param validator The validator to content (not null)
 	 * @return The validator registration reference
 	 */
 	Registration addValidator(Validator<T> validator);

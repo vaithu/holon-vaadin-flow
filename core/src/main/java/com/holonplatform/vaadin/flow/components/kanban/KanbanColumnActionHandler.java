@@ -20,7 +20,7 @@ public interface KanbanColumnActionHandler<C> extends Serializable {
     }
 
     /**
-     * Called when the add-card action is triggered.
+     * Called when the content-card action is triggered.
      *
      * @param columnId column id
      */

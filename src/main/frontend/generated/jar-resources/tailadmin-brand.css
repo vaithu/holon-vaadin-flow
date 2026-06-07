@@ -1,0 +1,520 @@
+/*
+ * tailadmin-brand.css
+ * ──────────────────────────────────────────────────────────────────────────────
+ *  TailAdmin-inspired brand for Vaadin.
+ *
+ *  Design system origin:
+ *    • Font          : Outfit (Google Fonts variable font, 100–900)
+ *    • Brand palette : Blue-purple (#465fff primary)
+ *    • Neutral scale : TailAdmin gray (warm blue-gray, not cool zinc)
+ *    • Semantic      : TailAdmin success / error / warning / info stops
+ *    • Radius        : Slightly more rounded than the default (md=8px, lg=12px)
+ *    • Sidebar       : Light (white + brand accent) — TailAdmin default style
+ *    • Cards         : White on gray-50 canvas, 1px gray-200 border, soft shadow
+ *
+ *  Load order — copy into your AppShellConfigurator:
+ *    @StyleSheet(Lumo.STYLESHEET)
+ *    @StyleSheet("context://vaadin-shell-theme.css")      ← wiring layer
+ *    @StyleSheet("context://tailadmin-brand.css")         ← THIS FILE
+ *    @StyleSheet("context://app-shell.css")               ← utility layer
+ * ──────────────────────────────────────────────────────────────────────────────
+ */
+
+/* ═══════════════════════════════════════════════════════════════════
+   OUTFIT FONT  — variable weight (100–900), two unicode ranges
+   Source: Google Fonts static CDN (woff2, subset-optimised)
+   ═══════════════════════════════════════════════════════════════════ */
+@font-face {
+  font-family: 'Outfit';
+  font-style:  normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url(https://fonts.gstatic.com/s/outfit/v15/QGYvz_MVcBeNP4NJuktqQ4E.woff2) format("woff2");
+  /* Latin-ext subset */
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7,
+                 U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF,
+                 U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB,
+                 U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+@font-face {
+  font-family: 'Outfit';
+  font-style:  normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url(https://fonts.gstatic.com/s/outfit/v15/QGYvz_MVcBeNP4NJtEtq.woff2) format("woff2");
+  /* Latin subset */
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6,
+                 U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F,
+                 U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215,
+                 U+FEFF, U+FFFD;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   ALL BRAND TOKENS
+   ═══════════════════════════════════════════════════════════════════ */
+:root {
+
+  /* ──────────────────────────────────────────────────────────────
+     1. NEUTRAL SCALE  —  TailAdmin Gray
+        Warm blue-gray family (closer to slate than zinc).
+        Used for borders, dividers, and chrome backgrounds.
+     ────────────────────────────────────────────────────────────── */
+  --zinc-50:   #f9fafb;   /* gray-50  */
+  --zinc-100:  #f2f4f7;   /* gray-100 */
+  --zinc-200:  #e4e7ec;   /* gray-200 */
+  --zinc-300:  #d0d5dd;   /* gray-300 */
+  --zinc-400:  #98a2b3;   /* gray-400 */
+  --zinc-500:  #667085;   /* gray-500 */
+  --zinc-600:  #475467;   /* gray-600 */
+  --zinc-700:  #344054;   /* gray-700 */
+  --zinc-800:  #1d2939;   /* gray-800 */
+  --zinc-900:  #101828;   /* gray-900 */
+  --zinc-950:  #0c111d;   /* gray-950 */
+
+  /* Legacy --gray-* aliases kept for backward compatibility */
+  --gray-100: var(--zinc-100);  --gray-150: var(--zinc-200);
+  --gray-200: var(--zinc-200);  --gray-300: var(--zinc-300);
+  --gray-400: var(--zinc-400);  --gray-500: var(--zinc-500);
+  --gray-600: var(--zinc-600);  --gray-700: var(--zinc-700);
+  --gray-800: var(--zinc-800);  --gray-900: var(--zinc-950);
+
+
+  /* ──────────────────────────────────────────────────────────────
+     2. SEMANTIC STATUS COLOURS  —  TailAdmin palette stops
+        success → green-500 family
+        error   → error-500 family (distinct red, not rose)
+        warning → warning-500 family (amber-orange)
+        info    → blue-light-500 family (sky)
+     ────────────────────────────────────────────────────────────── */
+  --ok-light:   #ecfdf3;   /* success-50  */
+  --ok:         #12b76a;   /* success-500 */
+  --ok-dark:    #027a48;   /* success-700 */
+
+  --err-light:  #fef3f2;   /* error-50    */
+  --err:        #f04438;   /* error-500   */
+  --err-dark:   #b42318;   /* error-700   */
+
+  --warn-light: #fffaeb;   /* warning-50  */
+  --warn:       #f79009;   /* warning-500 */
+  --warn-dark:  #b54708;   /* warning-700 */
+
+  --info-light: #f0f9ff;   /* blue-light-50  */
+  --info:       #0ba5ec;   /* blue-light-500 */
+  --info-dark:  #0086c9;   /* blue-light-600 */
+
+
+  /* ──────────────────────────────────────────────────────────────
+     3. SURFACES  —  TailAdmin gray-based canvas
+        surface-0 = pure white         (cards, inputs)
+        surface-1 = gray-50 canvas     (page background)
+        surface-2 = gray-100 elevated  (sub-panels, insets)
+        surface-3 = gray-200 divider   (strong separation)
+        surface-4 = gray-300 strong    (heavy chrome)
+     ────────────────────────────────────────────────────────────── */
+  --surface-0:  #ffffff;
+  --surface-1:  #f9fafb;   /* gray-50  */
+  --surface-2:  #f2f4f7;   /* gray-100 */
+  --surface-3:  #e4e7ec;   /* gray-200 */
+  --surface-4:  #d0d5dd;   /* gray-300 */
+
+
+  /* ──────────────────────────────────────────────────────────────
+     4. TEXT  —  TailAdmin gray text ramp
+        Primary uses gray-900 (dark gray-black, not pure #000).
+        WCAG AA: gray-600 on white ≈ 5.9:1 ✓
+     ────────────────────────────────────────────────────────────── */
+  --text-primary:   #101828;   /* gray-900 */
+  --text-secondary: #475467;   /* gray-600 */
+  --text-tertiary:  #98a2b3;   /* gray-400 */
+  --text-disabled:  #d0d5dd;   /* gray-300 */
+  --text-link:      var(--brand-700);
+  --text-inverse:   #ffffff;
+
+
+  /* ──────────────────────────────────────────────────────────────
+     5. BORDERS  —  TailAdmin gray hierarchy
+     ────────────────────────────────────────────────────────────── */
+  --border-subtle:    1px solid var(--zinc-100);
+  --border-default:   1px solid var(--zinc-200);
+  --border-strong:    1px solid var(--zinc-300);
+  --border-focus:     2px solid var(--brand-500);
+  --border-separator: 1px solid var(--zinc-200);
+  --border-error:     1px solid var(--err);
+
+
+  /* ──────────────────────────────────────────────────────────────
+     6. RADIUS  —  TailAdmin is noticeably more rounded than default.
+        Base = 10px (same anchor) but md/lg shift upward.
+        --radius-md  8px  → inputs, buttons, dropdowns
+        --radius-lg  12px → cards, dialogs, panels
+     ────────────────────────────────────────────────────────────── */
+  --radius:      0.75rem;                       /* 12px — base anchor */
+  --radius-xs:   0.125rem;                      /*  2px */
+  --radius-sm:   0.25rem;                       /*  4px */
+  --radius-md:   0.5rem;                        /*  8px */
+  --radius-lg:   var(--radius);                 /* 12px */
+  --radius-xl:   1rem;                          /* 16px */
+  --radius-2xl:  1.25rem;                       /* 20px */
+  --radius-full: 9999px;
+
+
+  /* ──────────────────────────────────────────────────────────────
+     7. SPACING  (4-pt grid — unchanged from base)
+     ────────────────────────────────────────────────────────────── */
+  --sp-1:  4px;   --sp-2:  8px;   --sp-3:  12px;  --sp-4:  16px;
+  --sp-5:  20px;  --sp-6:  24px;  --sp-8:  32px;  --sp-10: 40px;
+  --space-1: 0.25rem;  --space-2: 0.5rem;   --space-3: 0.75rem;
+  --space-4: 1rem;     --space-5: 1.25rem;  --space-6: 1.5rem;
+
+
+  /* ──────────────────────────────────────────────────────────────
+     8. TYPOGRAPHY  —  Outfit replaces Inter.
+        TailAdmin uses 16px base in consumer contexts; we keep the
+        enterprise-dense 13–14px body scale but widen line-heights
+        to honour Outfit's more open proportions.
+     ────────────────────────────────────────────────────────────── */
+  --font-display: 'Outfit', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-body:    'Outfit', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-sans:    'Outfit', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono:    'Cascadia Code', 'Fira Code', ui-monospace, 'Courier New', monospace;
+
+  /* Size scale — kept dense for enterprise but bumped slightly for Outfit's geometry */
+  --font-size-xs:   0.6875rem;  /* ≈ 11px — micro labels     */
+  --font-size-sm:   0.75rem;    /*   12px — captions         */
+  --font-size-base: 0.8125rem;  /* ≈ 13px — dense body text  */
+  --font-size-md:   0.875rem;   /*   14px — standard body    */
+  --font-size-lg:   1rem;       /*   16px — page headings    */
+
+  /* Aura / Lumo font token wired via vaadin-shell-theme.css → --lumo-font-family */
+
+
+  /* ──────────────────────────────────────────────────────────────
+     8b. SHADOWS  —  TailAdmin uses slightly warmer/softer shadows.
+         xs is intentionally lighter to let the border do the work.
+     ────────────────────────────────────────────────────────────── */
+  --shadow-xs:    0 1px 2px 0 rgba(16, 24, 40, .04);
+  --shadow-sm:    0 1px 3px 0 rgba(16, 24, 40, .08), 0 1px 2px -1px rgba(16, 24, 40, .06);
+  --shadow-md:    0 4px 8px -2px rgba(16, 24, 40, .08), 0 2px 4px -2px rgba(16, 24, 40, .06);
+  --shadow-lg:    0 12px 16px -4px rgba(16, 24, 40, .08), 0 4px 6px -2px rgba(16, 24, 40, .05);
+  --shadow-xl:    0 20px 24px -4px rgba(16, 24, 40, .08), 0 8px 8px -4px rgba(16, 24, 40, .03);
+  --shadow-focus: 0 0 0 2px var(--surface-0), 0 0 0 4px var(--brand-500);
+  --shadow-shell: var(--shadow-md);
+  --shadow-card:  var(--shadow-xs);
+
+  /* Transitions */
+  --ease-out:        cubic-bezier(.16, 1, .3, 1);
+  --ease-in-out:     cubic-bezier(.4, 0, .2, 1);
+  --dur-fast:        100ms;
+  --dur-base:        150ms;
+  --dur-slow:        250ms;
+  --transition-fast: 120ms ease;
+  --transition-base: var(--dur-base) var(--ease-out);
+
+
+  /* ──────────────────────────────────────────────────────────────
+     8c. COMPONENT DIMENSIONS  —  Outfit's generous proportions
+         pair well with slightly taller fields (38px vs 36px).
+     ────────────────────────────────────────────────────────────── */
+  --field-h-sm:  32px;  --field-h-md:  38px;  --field-h-lg:  44px;
+  --btn-h-sm:    32px;  --btn-h-md:    38px;  --btn-h-lg:    44px;
+  --toolbar-h:   60px;
+  --master-w:    280px;
+  --master-panel-width:      var(--master-w);
+  --toolbar-height:          var(--toolbar-h);
+  --sidenav-collapsed-width: 3.5rem;
+
+
+  /* ──────────────────────────────────────────────────────────────
+     8d. COMPONENT RING  —  brand-500 focus, gray-200 rest border
+         TailAdmin uses a brand tint for hover so inputs feel
+         interactive, not disabled (zinc-400 gray reads as inactive).
+     ────────────────────────────────────────────────────────────── */
+  --comp-bg:           var(--surface-0);
+  --comp-border-color: var(--zinc-200);
+  --comp-border-hover: var(--brand-300);  /* brand-300 = #9cb9ff — clear "ready to type" signal */
+  --comp-border-focus: var(--brand-500);
+  --comp-border-error: var(--err);
+  --comp-shadow:       0 1px 2px 0 rgba(16, 24, 40, .05);
+  --comp-shadow-inset: inset 0 1px 2px rgba(16, 24, 40, .04);
+  --comp-radius:       var(--radius-md);
+  --comp-focus-ring:   0 0 0 2px var(--surface-0), 0 0 0 4px var(--brand-500);
+
+
+  /* ──────────────────────────────────────────────────────────────
+     8e. TYPOGRAPHY SCALE  —  Outfit-tuned sizes & weights
+         Outfit is a geometric sans with tight letter-spacing at
+         display sizes; use -0.02em only for display/h1.
+         Body text reads best at 400–500 weight with 1.6 line-height.
+     ────────────────────────────────────────────────────────────── */
+  /* Display — hero / marketing */
+  --type-sz-display:  2.25rem;    --type-wt-display: 700;
+  --type-lh-display:  1.1;        --type-ls-display: -0.02em;
+
+  /* Headings */
+  --type-sz-h1:  1.5rem;          --type-wt-h1:  600;
+  --type-lh-h1:  1.2;             --type-ls-h1:  -0.015em;
+
+  --type-sz-h2:  1.25rem;         --type-wt-h2:  600;
+  --type-lh-h2:  1.25;            --type-ls-h2:  -0.01em;
+
+  --type-sz-h3:  1.125rem;        --type-wt-h3:  600;
+  --type-lh-h3:  1.3;             --type-ls-h3:  -0.005em;
+
+  --type-sz-h4:  1rem;            --type-wt-h4:  600;
+  --type-lh-h4:  1.4;             --type-ls-h4:  0;
+
+  /* Body — Outfit has a tall x-height; 1.6 line-height is comfortable */
+  --type-sz-body-lg:  1rem;       --type-wt-body:    400;  --type-lh-body-lg: 1.6;
+  --type-sz-body:     0.875rem;                            --type-lh-body:    1.6;
+  --type-sz-body-sm:  0.8125rem;                           --type-lh-body-sm: 1.55;
+  --type-sz-caption:  0.75rem;                             --type-lh-caption: 1.5;
+  --type-sz-overline: 0.6875rem;  --type-wt-overline: 600; --type-ls-overline: 0.08em;
+  --type-sz-mono:     0.8125rem;
+
+
+  /* ╔══════════════════════════════════════════════════════════════╗
+     ║  ★  9. BRAND PALETTE  ★  — TailAdmin blue-purple            ║
+     ║                                                              ║
+     ║  Anchor: #465fff (brand-500).  This drives all buttons,     ║
+     ║  focus rings, active nav items, selected grid rows, badges. ║
+     ║                                                              ║
+     ║  Contrast:  brand-700 (#2a31d8) on white ≈ 5.7:1 (AA ✓)   ║
+     ╚══════════════════════════════════════════════════════════════╝ */
+  --brand-50:   #ecf3ff;
+  --brand-100:  #dde9ff;
+  --brand-200:  #c2d6ff;
+  --brand-300:  #9cb9ff;
+  --brand-400:  #7592ff;
+  --brand-500:  #465fff;   /* ← primary: CTA buttons, focus rings, active nav */
+  --brand-600:  #3641f5;   /* ← primary button background                     */
+  --brand-700:  #2a31d8;   /* ← primary button hover + link text (WCAG AA ✓) */
+  --brand-800:  #252dae;
+  --brand-900:  #161950;
+
+
+  /* ╔══════════════════════════════════════════════════════════════╗
+     ║  10. SIDEBAR  — Light (TailAdmin default)                   ║
+     ║                                                              ║
+     ║  TailAdmin ships a clean white sidebar with brand-tinted    ║
+     ║  active items — no dark nav chrome.  To restore a dark      ║
+     ║  navy sidebar copy the sidenav block from                   ║
+     ║  brand-override-example.css over these tokens.             ║
+     ╚══════════════════════════════════════════════════════════════╝ */
+  --sidenav-width:    240px;
+  --sidenav-bg:       var(--surface-0);      /* white sidebar panel               */
+  --sidenav-border:   var(--zinc-200);        /* gray-200 right edge               */
+
+  /* Section group labels — uppercase micro-caps */
+  --sidenav-label-color:     var(--zinc-400);      /* gray-400 muted label — TailAdmin nav section title   */
+  --sidenav-label-font-size: 0.625rem;             /* 10px small-caps                                      */
+  --sidenav-label-padding:   1rem 1rem 0.375rem;
+
+  /* Nav items — default (inactive)
+     TailAdmin source: .menu-item-inactive { color: var(--color-gray-700) }
+     TailAdmin source: .menu-item         { font-weight: var(--font-weight-medium) }  → 500  */
+  --sidenav-item-color:       var(--zinc-700);   /* #344054 = gray-700                         */
+  --sidenav-item-font-size:   0.875rem;           /* 14px = var(--text-theme-sm) in TailAdmin   */
+  --sidenav-item-font-weight: 500;               /* font-weight-medium                          */
+  --sidenav-item-padding:     0.5625rem 1rem;    /* 9px 16px                                    */
+  --sidenav-item-radius:      var(--radius-md);  /* 8px rounded items                           */
+
+  /* Hover — TailAdmin: gray-100 bg, gray-700 text stays (no brand color on hover)
+     TailAdmin source: .menu-item-inactive:hover { background-color: var(--color-gray-100) }   */
+  --sidenav-item-hover-bg:    var(--zinc-100);   /* #f2f4f7 = gray-100                          */
+  --sidenav-item-hover-color: var(--zinc-700);   /* gray-700 — no color change on hover         */
+
+  /* Active — TailAdmin: brand-50 bg + brand-500 text (NOT brand-700)
+     TailAdmin source: .menu-item-active { bg: brand-50; color: brand-500 }                    */
+  --sidenav-item-active-bg:          var(--brand-50);
+  --sidenav-item-active-color:       var(--brand-500);  /* #465fff — TailAdmin uses brand-500   */
+  --sidenav-item-active-border:      transparent;       /* TailAdmin has NO left border accent  */
+  --sidenav-item-active-font-weight: 500;               /* no weight change on active            */
+
+  /* Icons — TailAdmin .menu-item-icon-inactive uses gray-500 (#667085), not gray-400
+     TailAdmin source: .menu-item-icon-inactive { color: var(--color-gray-500) }               */
+  --sidenav-icon-color:        var(--zinc-500);   /* #667085 = gray-500                         */
+  --sidenav-icon-active-color: var(--brand-500);  /* #465fff                                    */
+
+  /* Badge pill */
+  --sidenav-badge-bg:     var(--brand-50);
+  --sidenav-badge-color:  var(--brand-500);      /* align with active item text color            */
+  --sidenav-badge-radius: var(--radius-full);
+
+  /* Toggle / chevron — gray-400 at rest, gray-700 on hover (no brand change)
+     Mirrors icon-inactive hover behaviour in TailAdmin                                         */
+  --sidenav-toggle-color:       var(--zinc-400);
+  --sidenav-toggle-hover-color: var(--zinc-700); /* gray-700, same as text hover — no brand     */
+
+  /* Parent group headers — TailAdmin treats expandable groups as regular .menu-item entries:
+     same gray-700 color + medium (500) weight + same vertical padding as regular items        */
+  --sidenav-group-color:          var(--zinc-700);   /* gray-700, same as inactive items        */
+  --sidenav-group-font-size:      0.875rem;
+  --sidenav-group-font-weight:    500;               /* medium weight, same as all items        */
+  --sidenav-group-padding-top:    0.5625rem;         /* 9px — consistent with item padding      */
+  --sidenav-group-padding-bottom: 0.5625rem;         /* 9px — consistent with item padding      */
+
+  /* Child leaf items — TailAdmin .menu-dropdown-item: gray-700 + medium weight + full opacity */
+  --sidenav-child-color:       var(--zinc-700);  /* #344054                                     */
+  --sidenav-child-opacity:     1;                /* no dimming                                  */
+  --sidenav-child-font-weight: 500;              /* font-weight-medium                          */
+  --sidenav-child-font-size:   0.8125rem;        /* 13px — slightly smaller than parent         */
+
+  /* Vaadin native side-nav properties */
+  --vaadin-side-nav-child-indent:       1.25rem;
+  --vaadin-side-nav-item-border-radius: var(--radius-md);
+  --vaadin-side-nav-item-font-size:     0.875rem;
+  --vaadin-side-nav-item-font-weight:   500;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   CARD  —  TailAdmin card surface
+   ───────────────────────────────────────────────────────────────────
+   TailAdmin cards are characteristically:
+     • Pure white background on a gray-50 page
+     • 1px gray-200 border (subtle but present)
+     • Rounded corners (radius-lg = 12px)
+     • Very soft shadow (xs) — the border does most of the work
+     • Generous padding (20–24px)
+   Overrides .surface-card from vaadin-shell-theme.css §7.
+   ═══════════════════════════════════════════════════════════════════ */
+.surface-card {
+  background:    var(--surface-0);
+  border:        1px solid var(--zinc-200);
+  border-radius: var(--radius-lg);
+  box-shadow:    var(--shadow-sm);
+  padding:       var(--space-5) var(--space-6);
+}
+
+/* Inset panel — sits inside a card, lightly tinted */
+.surface-panel {
+  background:    var(--surface-2);
+  border:        1px solid var(--zinc-100);
+  border-radius: var(--radius-md);
+  padding:       var(--space-3) var(--space-4);
+}
+
+/* Divider */
+.surface-divider {
+  border:     none;
+  border-top: var(--border-subtle);
+  margin:     0;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   DARK MODE  —  Lumo [theme~="dark"] overrides
+   ───────────────────────────────────────────────────────────────────
+   Surfaces invert: gray-950 canvas, gray-800 card, gray-700 panel.
+   Text ramp shifts to near-white → gray-400 → gray-600.
+   Brand palette stays the same hue; 400 replaces 500 as primary
+   to maintain contrast on the dark canvas.
+   ═══════════════════════════════════════════════════════════════════ */
+[theme~="dark"] {
+  /* Surfaces */
+  --surface-0:  #1d2939;   /* gray-800 — card / input background */
+  --surface-1:  #101828;   /* gray-900 — page canvas             */
+  --surface-2:  #1a2231;   /* gray-dark — elevated panel         */
+  --surface-3:  #344054;   /* gray-700 — strong separation       */
+  --surface-4:  #475467;   /* gray-600                           */
+
+  /* Neutral chrome */
+  --zinc-50:   #1d2939;
+  --zinc-100:  #344054;
+  --zinc-200:  #475467;
+  --zinc-300:  #667085;
+  --zinc-400:  #98a2b3;
+  --zinc-500:  #d0d5dd;
+  --zinc-600:  #e4e7ec;
+  --zinc-700:  #f2f4f7;
+  --zinc-800:  #f9fafb;
+  --zinc-900:  #ffffff;
+
+  /* Text */
+  --text-primary:   #f2f4f7;   /* near-white */
+  --text-secondary: #d0d5dd;   /* gray-300   */
+  --text-tertiary:  #98a2b3;   /* gray-400   */
+  --text-disabled:  #667085;   /* gray-500   */
+
+  /* Brand — 400 step for better contrast on dark */
+  --brand-50:  #161950;
+  --brand-100: #252dae;
+  --brand-200: #2a31d8;
+  --brand-300: #3641f5;
+  --brand-400: #465fff;
+  --brand-500: #7592ff;   /* primary on dark — higher lightness */
+  --brand-600: #9cb9ff;
+  --brand-700: #c2d6ff;
+
+  /* Semantic — keep light tones but darken backgrounds */
+  --ok-light:   #05603a;  --ok:   #32d583;  --ok-dark:   #6ce9a6;
+  --err-light:  #912018;  --err:  #f97066;  --err-dark:  #fda29b;
+  --warn-light: #93370d;  --warn: #fdb022;  --warn-dark: #fedf89;
+  --info-light: #0b4a6f;  --info: #36bffa;  --info-dark: #7cd4fd;
+
+  /* Shadows — stronger on dark (very dark ambient) */
+  --shadow-xs: 0 1px 3px 0 rgba(0, 0, 0, .25);
+  --shadow-sm: 0 2px 4px 0 rgba(0, 0, 0, .30), 0 1px 2px -1px rgba(0, 0, 0, .20);
+  --shadow-md: 0 4px 8px -2px rgba(0, 0, 0, .35), 0 2px 4px -2px rgba(0, 0, 0, .20);
+
+  /* Lumo bridge — vaadin-shell-theme.css reads these */
+  --lumo-base-color:           var(--surface-0);
+  --lumo-primary-color:        var(--brand-500);
+  --lumo-primary-text-color:   var(--brand-700);
+  --lumo-body-text-color:      var(--text-primary);
+  --lumo-secondary-text-color: var(--text-secondary);
+  --lumo-disabled-text-color:  var(--text-disabled);
+
+  /* Inputs — dark mode hover uses brand-500 (lighter #7592ff) for visibility */
+  --comp-border-hover: var(--brand-500);
+
+  /* Sidebar — dark variant mirrors surface-2, same TailAdmin hover/active logic */
+  --sidenav-bg:              var(--surface-2);
+  --sidenav-border:          var(--zinc-200);
+  --sidenav-label-color:     var(--zinc-400);
+  --sidenav-item-color:      var(--zinc-700);   /* in dark mode: zinc-700 = #f2f4f7 (near-white) */
+  --sidenav-item-hover-bg:   var(--zinc-100);   /* in dark mode: zinc-100 = #344054 (dark tint)  */
+  --sidenav-item-hover-color: var(--zinc-700);  /* keep same color on hover, no brand change      */
+  --sidenav-item-active-bg:  color-mix(in srgb, var(--brand-500) 15%, transparent);
+  --sidenav-item-active-color: var(--brand-500); /* brand-500 in dark = #7592ff (brand-400 equiv)*/
+  --sidenav-icon-color:       var(--zinc-500);  /* in dark mode: zinc-500 = #d0d5dd              */
+  --sidenav-icon-active-color: var(--brand-500);
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   BUTTON HOVER OVERRIDES  —  TailAdmin brand-tinted hover states
+   ───────────────────────────────────────────────────────────────────
+   vaadin-shell-theme.css uses zinc-100 (gray) for the outline button
+   hover which reads as "disabled" or inactive.  TailAdmin uses a brand
+   tint (brand-50 bg, brand-700 text) so hover clearly signals
+   "interactive — click me", consistent with the brand colour language.
+
+   Three-state hierarchy for outline/default buttons:
+     Rest  → white bg + zinc-200 ring + secondary gray text
+     Hover → brand-50 bg + brand-700 text   ← clearly interactive
+     Click → press feedback via transform translateY(1px)
+
+   Same selector as vaadin-shell-theme.css §4; loads after → wins.
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* ── OUTLINE (default) hover ── brand tint replaces gray */
+vaadin-button:not([theme~="primary"]):not([theme~="error"]):not([theme~="success"]):not([theme~="warning"]):not([theme~="tertiary"]):not([theme~="contrast"]):not([disabled]):hover {
+  --vaadin-button-background: var(--brand-50);    /* #ecf3ff — very light brand tint     */
+  --vaadin-button-text-color: var(--brand-700);   /* #2a31d8 — dark brand, WCAG AA ✓     */
+}
+
+/* ── TERTIARY hover — add subtle brand tint (ghost button at rest) ── */
+vaadin-button[theme~="tertiary"]:not([disabled]):hover {
+  --vaadin-button-background: var(--brand-50);
+  --vaadin-button-text-color: var(--brand-700);
+}
+
+/* ── MENU BAR button hover — consistent with outline button ── */
+vaadin-menu-bar-button:not([disabled]):not([expanded]):hover {
+  --vaadin-button-background: var(--brand-50);
+  --vaadin-button-text-color: var(--brand-700);
+}
+

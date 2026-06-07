@@ -32,9 +32,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -62,15 +59,7 @@ public class TestDateInput {
 		CurrentInstance.set(UI.class, null);
 	}
 
-	private static final ZoneId ZONE_ID = ZoneId.of("Europe/Paris");
 	private static final TimeZone TIME_ZONE = TimeZone.getTimeZone("Europe/Paris");
-
-	private static LocalDate asLocalDate(Date date) {
-		if (date != null) {
-			return Instant.ofEpochMilli(date.getTime()).atZone(ZONE_ID).toLocalDate();
-		}
-		return null;
-	}
 
 	@Test
 	public void testBuilders() {
@@ -363,10 +352,10 @@ public class TestDateInput {
 
 		final Calendar calendar = Calendar.getInstance(TIME_ZONE);
 		calendar.set(2018, 9, 21);
-		final Date date1 = calendar.getTime();
+		calendar.getTime();
 		final Calendar calendar2 = Calendar.getInstance(TIME_ZONE);
 		calendar2.set(2018, 9, 23);
-		final Date date2 = calendar.getTime();
+		calendar.getTime();
 
 		Input<Date> input = Input.date().locale(Locale.ITALIAN).build();
 		assertTrue(input.getComponent() instanceof DatePicker);

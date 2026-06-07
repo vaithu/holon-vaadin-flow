@@ -15,9 +15,6 @@
  */
 package com.holonplatform.vaadin.flow.components.builders;
 
-import java.util.Optional;
-import java.util.function.Function;
-
 import com.holonplatform.core.datastore.DataTarget;
 import com.holonplatform.core.datastore.Datastore;
 import com.holonplatform.core.property.Property;
@@ -33,7 +30,11 @@ import com.holonplatform.vaadin.flow.internal.components.builders.DefaultOptions
 import com.holonplatform.vaadin.flow.internal.components.builders.DefaultPropertyOptionsSingleSelectInputBuilder;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
+import com.vaadin.flow.component.radiobutton.RadioGroupVariant;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
+
+import java.util.Optional;
+import java.util.function.Function;
 
 /**
  * {@link SingleSelect} input builder using a {@link RadioButtonGroup} as input component.
@@ -45,7 +46,8 @@ import com.vaadin.flow.data.renderer.ComponentRenderer;
  * @since 5.2.0
  */
 public interface OptionsSingleSelectConfigurator<T, ITEM, B extends OptionsSingleSelectConfigurator<T, ITEM, B>> extends
-		SingleSelectableInputConfigurator<T, ITEM, B>, HasLabelConfigurator<B>, HasItemEnableConfigurator<ITEM, B> {
+		SingleSelectableInputConfigurator<T, ITEM, B>, HasLabelConfigurator<B>, HasItemEnableConfigurator<ITEM, B>
+{
 
 	/**
 	 * Sets the {@link ComponentRenderer} responsible to render the individual items in the list of possible choices.
@@ -54,6 +56,24 @@ public interface OptionsSingleSelectConfigurator<T, ITEM, B extends OptionsSingl
 	 * @return this
 	 */
 	B renderer(ComponentRenderer<? extends Component, ITEM> renderer);
+
+	/**
+	 * Adds one or more {@link RadioGroupVariant} theme variants to the underlying
+	 * {@link RadioButtonGroup} component.
+	 *
+	 * <p>Most commonly used to switch between the default horizontal layout and a
+	 * vertical layout:</p>
+	 * <pre>{@code
+	 * Components.input.singleOptionSelect(Status.class)
+	 *     .items(Status.values())
+	 *     .withThemeVariants(RadioGroupVariant.LUMO_VERTICAL)
+	 *     .build();
+	 * }</pre>
+	 *
+	 * @param variants the theme variants to apply (not null)
+	 * @return this
+	 */
+	B withThemeVariants(RadioGroupVariant... variants);
 
 	// ------- specific configurators
 
@@ -101,7 +121,7 @@ public interface OptionsSingleSelectConfigurator<T, ITEM, B extends OptionsSingl
 		 * </p>
 		 * @param datastore The {@link Datastore} to use (not null)
 		 * @param target The {@link DataTarget} to use as query target (not null)
-		 * @return An extended builder which allow further data provider configuration, for example to add fixed
+		 * @return An extended builder which allow further data provider configuration, for example to content fixed
 		 *         {@link QueryFilter} and {@link QuerySort}.
 		 * @see DatastoreDataProviderConfigurator
 		 */

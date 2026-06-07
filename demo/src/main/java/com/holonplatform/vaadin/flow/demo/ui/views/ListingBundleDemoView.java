@@ -11,7 +11,6 @@ import com.holonplatform.vaadin.flow.demo.data.entity.Product;
 import com.holonplatform.vaadin.flow.demo.data.service.ProductService;
 import com.holonplatform.vaadin.flow.demo.ui.DemoExample;
 import com.holonplatform.vaadin.flow.demo.ui.DemoMainLayout;
-import com.holonplatform.vaadin.flow.vaadinplus.components.DynamicFilterPanel;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.Paragraph;
@@ -82,7 +81,7 @@ public class ListingBundleDemoView extends Div {
                 .columns("id", "name", "category", "price", "active")
                 .pageSizes(5, 10, 25)
                 .defaultPageSize(5)
-                .fetch((q, text) -> productService.fetch(q.getOffset(), q.getLimit(), ""))
+                .fetch((q, text, sort) -> productService.fetch(q.getOffset(), q.getLimit(), ""))
                 .build();
 
         return new DemoExample(
@@ -112,7 +111,7 @@ public class ListingBundleDemoView extends Div {
                 .defaultPageSize(5)
                 .search("Search by name or category…")
                 // text is debounced (ValueChangeMode.LAZY) and forwarded directly to the DB
-                .fetch((q, text) -> productService.fetch(q.getOffset(), q.getLimit(), text))
+                .fetch((q, text, sort) -> productService.fetch(q.getOffset(), q.getLimit(), text))
                 .build();
 
         return new DemoExample(
@@ -145,11 +144,11 @@ public class ListingBundleDemoView extends Div {
                 .defaultPageSize(5)
                 .search("Quick search…")
                 .withFilterPanel()
-                .fetch((q, text, filter) ->
+                .fetch((q, text, filter, sort) ->
                     // filter is the QueryFilter from the DynamicFilterPanel (null when no filter applied).
                     // text + filter are both AND-combined in the service query.
                     productService.fetch(       // text + filter AND-combined in the Datastore query
-                        q.getOffset(), q.getLimit(), text, filter))
+                        q.getOffset(), q.getLimit(), text, filter, sort))
                 .build();
 
         return new DemoExample(
@@ -185,7 +184,7 @@ public class ListingBundleDemoView extends Div {
                 .columns("id", "name", "price")
                 .pageSizes(3, 7, 15, 30)
                 .defaultPageSize(7)
-                .fetch((q, text) -> productService.fetch(q.getOffset(), q.getLimit(), ""))
+                .fetch((q, text, sort) -> productService.fetch(q.getOffset(), q.getLimit(), ""))
                 .build();
 
         return new DemoExample(
@@ -214,7 +213,7 @@ public class ListingBundleDemoView extends Div {
                 .pageSizes(5, 10)
                 .defaultPageSize(5)
                 .search("Search products…")
-                .fetch((q, text) -> productService.fetch(q.getOffset(), q.getLimit(), text))
+                .fetch((q, text, sort) -> productService.fetch(q.getOffset(), q.getLimit(), text))
                 .build();
 
         return new DemoExample(
@@ -250,7 +249,7 @@ public class ListingBundleDemoView extends Div {
                 .pageSizes(5, 10)
                 .defaultPageSize(5)
                 .search("Search by name…")
-                .fetch((q, text) -> productService.fetch(q.getOffset(), q.getLimit(), text)
+                .fetch((q, text, sort) -> productService.fetch(q.getOffset(), q.getLimit(), text)
                         // Map each Product bean to a PropertyBox so PropertyListing can render it.
                         // ProductService.fetch returns Stream<Product> — the mapping is done here
                         // rather than in the service to avoid Holon PropertySet stream-overload
@@ -301,7 +300,7 @@ public class ListingBundleDemoView extends Div {
                 .pageSizes(5, 10)
                 .defaultPageSize(5)
                 .search("Search…")
-                .fetch((q, text) -> productService.fetch(q.getOffset(), q.getLimit(), text))
+                .fetch((q, text, sort) -> productService.fetch(q.getOffset(), q.getLimit(), text))
                 .build();
 
         // Demonstrate typed access to individual pieces

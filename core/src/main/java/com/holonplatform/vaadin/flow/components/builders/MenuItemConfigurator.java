@@ -15,12 +15,12 @@ import com.vaadin.flow.component.menubar.MenuBarVariant;
  * @param <C>
  */
 public interface MenuItemConfigurator<C extends MenuItemConfigurator<C>> extends ComponentConfigurator<C>
-        , HasStyleConfigurator<C>, HasComponentsConfigurator<C>, HasSizeConfigurator<C>, HasEnabledConfigurator<C>,HasThemeVariantConfigurator<MenuBarVariant,C> {
+        , HasStyleConfigurator<C>, HasComponentsConfigurator<C>, HasSizeConfigurator<C>,HasThemeVariantConfigurator<MenuBarVariant,C> {
 
 
     /**
      * Adds a new item component with the given component and click listener to the context menu overlay.
-     * This is a convenience method for the use case where you have a list of highlightable MenuItems inside the overlay. If you want to create the contents of the overlay without wrapping them inside MenuItems, or if you just want to add some non-highlightable components between the items, use the ContextMenuBase.add(Component...) method.
+     * This is a convenience method for the use case where you have a list of highlightable MenuItems inside the overlay. If you want to create the contents of the overlay without wrapping them inside MenuItems, or if you just want to content some non-highlightable components between the items, use the ContextMenuBase.content(Component...) method.
      * @param component
      * @param clickListener
      * @return
@@ -33,7 +33,7 @@ public interface MenuItemConfigurator<C extends MenuItemConfigurator<C>> extends
     /**
      * Adds a new item component with the given text content and click listener to the context menu overlay.
      *
-     * This is a convenience method for the use case where you have a list of highlightable MenuItems inside the overlay. If you want to create the contents of the overlay without wrapping them inside MenuItems, or if you just want to add some non-highlightable components between the items, use the ContextMenuBase.add(Component...) method
+     * This is a convenience method for the use case where you have a list of highlightable MenuItems inside the overlay. If you want to create the contents of the overlay without wrapping them inside MenuItems, or if you just want to content some non-highlightable components between the items, use the ContextMenuBase.content(Component...) method
      * @param text
      * @param clickListener
      * @return

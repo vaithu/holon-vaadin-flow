@@ -118,6 +118,7 @@ class TestItemListingPaginationBarLazy {
         @Override public void setMobileColumn(com.vaadin.flow.data.renderer.Renderer<String> r) { throw new UnsupportedOperationException(); }
         @Override public void setMobileColumn(com.vaadin.flow.function.ValueProvider<String, Component> c) { throw new UnsupportedOperationException(); }
         @Override public void setMobileHeader(String h)                 { throw new UnsupportedOperationException(); }
+        @Override public void setMobileHeader(Component c)             { throw new UnsupportedOperationException(); }
         @Override public void addThemeVariants(com.vaadin.flow.component.grid.GridVariant... v) { throw new UnsupportedOperationException(); }
         @Override public void removeThemeVariants(com.vaadin.flow.component.grid.GridVariant... v) { throw new UnsupportedOperationException(); }
         @Override public void showMobileColumn(boolean m)               { throw new UnsupportedOperationException(); }
@@ -560,9 +561,12 @@ class TestItemListingPaginationBarLazy {
         private final List<FilterChangeListener<?>> listeners = new ArrayList<>();
 
         /** Fires a null-event to all registered listeners (the selector lambda ignores it). */
-        @SuppressWarnings({"unchecked", "rawtypes"})
         void fireFilterChange() {
-            listeners.forEach(l -> ((FilterChangeListener) l).filterChanged(null));
+            listeners.forEach(this::fireFilterChanged);
+        }
+
+        private <T> void fireFilterChanged(FilterChangeListener<T> listener) {
+            listener.filterChanged(null);
         }
 
         @Override

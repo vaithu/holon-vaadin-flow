@@ -308,7 +308,7 @@ public interface Components {
 
     /**
      * Obtain a {@link SheetBuilder} for a {@link Sheet.Side#BOTTOM} sheet
-     * (slides up from the bottom — primary mobile pattern).
+     * (slides up from the bottom â€” primary mobile pattern).
      *
      * @return a new {@link SheetBuilder}
      */
@@ -344,9 +344,9 @@ public interface Components {
      * call creates, configures, and opens a new sheet, applying stacking rules
      * automatically:</p>
      * <ul>
-     *   <li>Root sheet — {@code backdropVisible(true)}: dims the app content behind it.</li>
-     *   <li>Child sheets — {@code backdropVisible(false)}: parent not visible through overlay.</li>
-     *   <li>All sheets — {@code fullscreenOnMobile(true)}: full viewport on mobile.</li>
+     *   <li>Root sheet â€” {@code backdropVisible(true)}: dims the app content behind it.</li>
+     *   <li>Child sheets â€” {@code backdropVisible(false)}: parent not visible through overlay.</li>
+     *   <li>All sheets â€” {@code fullscreenOnMobile(true)}: full viewport on mobile.</li>
      * </ul>
      *
      * <pre>{@code
@@ -556,6 +556,28 @@ public interface Components {
         return MobileGridColumnBuilder.create(layout);
     }
 
+    /**
+     * Get a {@link LitRendererBuilder.MobileGridColumnBuilder} to create a client-side Lit renderer
+     * with the same visual structure as {@link MobileGridColumnBuilder} but zero server-side
+     * component overhead per row.
+     *
+     * @param <T> the grid item type
+     * @return a new builder instance
+     */
+    static <T> LitRendererBuilder.MobileGridColumnBuilder<T> mobileGridColumnLit() {
+        return LitRendererBuilder.mobileGridColumn();
+    }
+
+    /**
+     * Get a {@link LitRendererBuilder} for composing client-side Lit template renderers.
+     *
+     * @param <T> the grid item type
+     * @return a new {@link LitRendererBuilder}
+     */
+    static <T> LitRendererBuilder<T> litRenderer() {
+        return LitRendererBuilder.create();
+    }
+
     // -----------------------------------------------------------------------
     // Alert (shadcn/ui-inspired inline notification banner)
     // -----------------------------------------------------------------------
@@ -623,7 +645,44 @@ public interface Components {
     }
 
     // -----------------------------------------------------------------------
-    // IconBadge — circular tinted icon container
+    // AlertDialog (shadcn/ui-inspired non-dismissible confirmation dialog)
+    // -----------------------------------------------------------------------
+
+    /**
+     * Get an {@link AlertDialogBuilder} to create an {@link AlertDialog} â€” the
+     * shadcn/ui-inspired confirmation dialog that forces an explicit user choice.
+     *
+     * <p>By default the dialog is non-dismissible (no ESC, no click-outside).
+     * Use for dangerous or irreversible operations such as deletion or sign-out.</p>
+     *
+     * <pre>{@code
+     * Components.alertDialog()
+     *     .title("Are you absolutely sure?")
+     *     .description("This action cannot be undone.")
+     *     .variant(Alert.Variant.DESTRUCTIVE)
+     *     .confirmText("Yes, delete account")
+     *     .onConfirm(() -> accountService.delete(currentUser))
+     *     .open();
+     * }</pre>
+     *
+     * @return a new {@link AlertDialogBuilder}
+     */
+    static AlertDialogBuilder alertDialog() {
+        return AlertDialogBuilder.create();
+    }
+
+    /**
+     * Get an {@link AlertDialogConfigurator} to configure an existing {@link AlertDialog}.
+     *
+     * @param dialog the dialog to configure (not null)
+     * @return a {@link AlertDialogConfigurator.BaseAlertDialogConfigurator}
+     */
+    static AlertDialogConfigurator.BaseAlertDialogConfigurator configure(AlertDialog dialog) {
+        return AlertDialogConfigurator.configure(dialog);
+    }
+
+    // -----------------------------------------------------------------------
+    // IconBadge â€” circular tinted icon container
     // -----------------------------------------------------------------------
 
     /**
@@ -700,7 +759,7 @@ public interface Components {
      * Get an {@link EmptyBuilder} to create an {@link Empty} empty-state component.
      *
      * <p>Use this component to communicate that a collection, list, or data set
-     * contains no items — and give the user a clear path forward.</p>
+     * contains no items â€” and give the user a clear path forward.</p>
      *
      * @return a new {@link EmptyBuilder}
      */
@@ -723,15 +782,15 @@ public interface Components {
     // -----------------------------------------------------------------------
 
     /**
-     * Get an {@link InputGroupBuilder} to create an {@link InputGroup} — a horizontal
+     * Get an {@link InputGroupBuilder} to create an {@link InputGroup} â€” a horizontal
      * flex container that merges input fields, buttons, and text addons into a single
      * unified control.
      *
      * <pre>{@code
      * InputGroup group = Components.inputGroup()
-     *     .add(new InputGroupText("@"))
-     *     .add(new TextField())
-     *     .add(new Button("Go"))
+     *     .content(new InputGroupText("@"))
+     *     .content(new TextField())
+     *     .content(new Button("Go"))
      *     .build();
      * }</pre>
      *
@@ -760,7 +819,7 @@ public interface Components {
      *
      * <pre>{@code
      * ButtonGroup group = Components.buttonGroup()
-     *     .add(new Button("Day"), new Button("Week"), new Button("Month"))
+     *     .content(new Button("Day"), new Button("Week"), new Button("Month"))
      *     .build();
      * }</pre>
      *
@@ -993,15 +1052,6 @@ public interface Components {
         return h4LabelBuilder;
     }
 
-
-    static ButtonBuilder deleteButton() {
-        return ButtonBuilder.createDelBtn();
-    }
-
-    static Button deleteButton(String text, ClickEventListener<Button, ClickEvent<Button>> clickListener) {
-        return ButtonBuilder.createDelBtn().text(text).onClick(clickListener).build();
-    }
-
     /**
      * Create a {@link Button} with given text and given <code>click</code> event
      * listener.
@@ -1015,13 +1065,7 @@ public interface Components {
         return ButtonBuilder.create().text(text).onClick(clickListener).build();
     }
 
-    static <T> Grid<T> grid(Class<T> tClass) {
-        return new Grid<T>(tClass);
-    }
-
-    static <T> Grid<T> grid(Class<T> tClass, boolean autoCreateColumns) {
-        return new Grid<T>(tClass, autoCreateColumns);
-    }
+    
 
     /**
      * Create a {@link Button} with given localizable text and given
@@ -1058,6 +1102,14 @@ public interface Components {
      */
     static NativeButtonBuilder nativeButton() {
         return NativeButtonBuilder.create();
+    }
+
+    static <T> Grid<T> grid(Class<T> tClass) {
+        return new Grid<T>(tClass);
+    }
+
+    static <T> Grid<T> grid(Class<T> tClass, boolean autoCreateColumns) {
+        return new Grid<T>(tClass, autoCreateColumns);
     }
 
     /**
@@ -1384,7 +1436,7 @@ public interface Components {
         // -----------------------------------------------------------------------
 
         /**
-         * Get an {@link AlertDialogBuilder} to create an {@link AlertDialog} — the
+         * Get an {@link AlertDialogBuilder} to create an {@link AlertDialog} â€” the
          * shadcn/ui-inspired confirmation dialog that forces an explicit user choice.
          * <p>By default the dialog is non-dismissible (no ESC, no click-outside).</p>
          *
@@ -3141,7 +3193,7 @@ public interface Components {
      * <pre>{@code
      * BeanListing<Person> listing = ...;
      * ItemListingPaginationBar<Person, String> bar = Components.paginationBar(listing);
-     * layout.add(listing.getComponent(), bar);
+     * layout.content(listing.getComponent(), bar);
      * }</pre>
      *
      * @param listing the listing to paginate (not null)
@@ -3163,7 +3215,7 @@ public interface Components {
      * <pre>{@code
      * PropertyListing listing = ...;
      * ItemListingPaginationBar<PropertyBox, Property<?>> bar = Components.paginationBar(listing);
-     * layout.add(listing.getComponent(), bar);
+     * layout.content(listing.getComponent(), bar);
      * }</pre>
      *
      * @param listing the property listing to paginate (not null)
@@ -3180,18 +3232,18 @@ public interface Components {
 
     /**
      * Creates a fluent {@link ListingBundleBuilder} that assembles a fully pre-wired
-     * {@link ListingBundle} — listing, pagination bar, page-size selector, optional
-     * search field, and optional filter panel — in a single chained call.
+     * {@link ListingBundle} â€” listing, pagination bar, page-size selector, optional
+     * search field, and optional filter panel â€” in a single chained call.
      *
      * <pre>{@code
      * var bundle = Components.listing(Product.class)
      *     .columns("id", "name", "category", "price")
      *     .pageSizes(10, 25, 50)
-     *     .search("Search products…")
+     *     .search("Search productsâ€¦")
      *     .fetch((q, text) -> service.fetch(q.getOffset(), q.getLimit(), text))
      *     .build();
      *
-     * add(bundle.toolbar(),   // [Show 10▾ entries]  [🔍 Search…]
+     * content(bundle.toolbar(),   // [Show 10â–¾ entries]  [ðŸ” Searchâ€¦]
      *     bundle.grid(),
      *     bundle.footer());   // [Previous] [1] [2] [Next]
      * }</pre>
@@ -3212,13 +3264,13 @@ public interface Components {
      * <pre>{@code
      * var bundle = Components.listing(NAME, CATEGORY, PRICE, STATUS)
      *     .header(NAME, "Product Name")
-     *     .header(PRICE, "Price (€)")
+     *     .header(PRICE, "Price (â‚¬)")
      *     .pageSizes(10, 25, 50)
-     *     .search("Search…")
+     *     .search("Searchâ€¦")
      *     .fetch((q, text) -> service.fetch(q.getOffset(), q.getLimit(), text))
      *     .build();
      *
-     * add(bundle.toolbar(), bundle.grid(), bundle.footer());
+     * content(bundle.toolbar(), bundle.grid(), bundle.footer());
      * }</pre>
      *
      * @param properties the properties to display as columns (not null)
@@ -3407,7 +3459,7 @@ public interface Components {
      * );
      * }</pre>
      *
-     * @param items the {@link KeyValueItem} rows to add (not null)
+     * @param items the {@link KeyValueItem} rows to content (not null)
      * @return a new {@link KeyValueList} containing the provided items
      * @since 10.0.0
      */
@@ -3479,4 +3531,120 @@ public interface Components {
         return com.iyensoft.vaadin.flow.components.builders.MasterDetailBuilder.create();
     }
 
+    /**
+     * Creates a new {@link com.iyensoft.vaadin.flow.components.builders.MasterDetailBuilder}
+     * with the master-grid item type supplied as a {@link Class} argument so the
+     * compiler can infer {@code T} at the call site without a type witness.
+     *
+     * <p>Equivalent to {@link #masterDetail()} â€” the {@code itemType} argument is
+     * used only to drive generic-type inference, not at runtime.</p>
+     *
+     * <pre>{@code
+     * MasterDetailLayout<Order> layout = Components.masterDetail(Order.class)
+     *     .masterGrid(orderGrid)
+     *     .detailContent(o -> new Component[]{ new OrderDetailForm(o) })
+     *     .build();
+     * }</pre>
+     *
+     * @param itemType the master grid item type (used only for type inference)
+     * @param <T>      the master grid item type
+     * @return a new {@link com.iyensoft.vaadin.flow.components.builders.MasterDetailBuilder}
+     * @since 10.0.3
+     */
+    @SuppressWarnings("unused")
+    static <T> com.iyensoft.vaadin.flow.components.builders.MasterDetailBuilder<T> masterDetail(Class<T> itemType) {
+        return com.iyensoft.vaadin.flow.components.builders.MasterDetailBuilder.create();
+    }
+
+    /**
+     * Creates a new {@link com.iyensoft.vaadin.flow.components.builders.MasterDetailConfigurator}
+     * for the nested master/header/grid-header/listing-bundle/detail builder chain.
+     *
+     * <pre>{@code
+     * MasterDetailLayout<Product> layout = Components.masterDetailV2(Product.class)
+     *     .master().listingBundle()
+     *         .columns("name", "category", "price")
+     *         .search("Search productsâ€¦")
+     *         .fetch(...)
+     *         .content()
+     *     .detail().content().content(detailBody).content()
+     *     .build();
+     * }</pre>
+     *
+     * @param itemType the bean class used to build the master listing bundle
+     * @param <T> the item type displayed in the master grid
+     * @return a new {@link com.iyensoft.vaadin.flow.components.builders.MasterDetailConfigurator}
+     * @since 10.0.4
+     */
+    @SuppressWarnings("unused")
+    static <T> com.iyensoft.vaadin.flow.components.builders.MasterDetailConfigurator<T, ?> masterDetailV2(Class<T> itemType) {
+        return new com.iyensoft.vaadin.flow.internal.components.builders.DefaultMasterDetailConfigurator<>(itemType);
+    }
+
+    /**
+     * Creates a mobile-first {@link com.iyensoft.vaadin.flow.components.builders.MasterDetailConfigurator}
+     * variant that keeps only the master panel on small screens and renders the full
+     * master + separator + detail composition on larger screens.
+     *
+     * <p>This is the variant to use when the mobile experience should stay focused on
+     * the list, while desktop/tablet continue to show the full split layout.</p>
+     *
+     * @param itemType the bean class used to build the master listing bundle
+     * @param <T> the item type displayed in the master grid
+     * @return a new mobile-master configurator
+     * @since 10.0.4
+     */
+    @SuppressWarnings("unused")
+    static <T> com.iyensoft.vaadin.flow.components.builders.MasterDetailConfigurator<T, ?> masterDetailMobile(Class<T> itemType) {
+        var cfg = new com.iyensoft.vaadin.flow.internal.components.builders.DefaultMasterDetailConfigurator<>(itemType);
+        cfg.mobileMasterOnly(true);
+        return cfg;
+    }
+
+    /**
+     * Creates a new {@link com.iyensoft.vaadin.flow.components.builders.BundleMasterDetailBuilder}
+     * pre-wired with the given {@link ListingBundle} as the entire left (master) panel.
+     *
+     * <p>This is the simplified entry point when you are already using
+     * {@link #listing(Class)} to build the master grid. The bundle's
+     * {@link com.holonplatform.vaadin.flow.vaadinplus.components.GridHeader GridHeader},
+     * search field, and {@link com.holonplatform.vaadin.flow.components.ItemListing ItemListing}
+     * are wired automatically â€” no need to call {@code masterHeader/masterSearch/masterGrid}
+     * separately.</p>
+     *
+     * <pre>{@code
+     * ListingBundle<Product> bundle = Components.listing(Product.class)
+     *     .columns("name", "price").hidden("id")
+     *     .gridHeader("Products")
+     *     .search("Searchâ€¦")
+     *     .fetch(...)
+     *     .build();
+     *
+     * MasterDetailLayout<Product> layout = Components.masterDetail(bundle)
+     *     .detailTitle("Product Details")
+     *     .detailActions(saveBtn, deleteBtn)
+     *     .detailTabs(tabSheet)
+     *     .detailContent(p -> new Component[]{ formBody })
+     *     .detailFooter(archiveBtn)
+     *     .withDetailSync(formBody, p -> nameField.setValue(p.getName()))
+     *     .itemId(p -> String.valueOf(p.getId()), id -> service.findById(Long.parseLong(id)))
+     *     .mobileSheetTitle("Product Details")
+     *     .autoSelectFirst(false)
+     *     .onDataChanged(() -> bundle.listing().getDataProvider().refreshAll())
+     *     .build();
+     *
+     * content(layout);
+     * }</pre>
+     *
+     * @param <T>    the item type displayed in the master grid
+     * @param bundle the listing bundle to use as the master panel (not null)
+     * @return a new {@link com.iyensoft.vaadin.flow.components.builders.BundleMasterDetailBuilder}
+     * @since 10.0.2
+     */
+    static <T> com.iyensoft.vaadin.flow.components.builders.BundleMasterDetailBuilder<T> masterDetail(
+            ListingBundle<T> bundle) {
+        return com.iyensoft.vaadin.flow.components.builders.BundleMasterDetailBuilder.create(bundle);
+    }
+
 }
+

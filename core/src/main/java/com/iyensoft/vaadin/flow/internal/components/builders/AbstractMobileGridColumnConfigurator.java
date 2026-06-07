@@ -238,6 +238,27 @@ public abstract class AbstractMobileGridColumnConfigurator<
     }
 
     @Override
+    public C withTertiaryText(String text, String textClassName) {
+        Span label = createText(text);
+        label.setId("tertiary-text");
+        label.addClassName("mobile-grid-tertiary-value");
+
+        if (NumberUtils.isCreatable(text)) {
+            label.setText(UIUtils.getCurrencySymbol() + text);
+            label.addClassName("mobile-grid-currency");
+        }
+
+        if (textClassName != null && !textClassName.isBlank()) {
+            label.addClassName(textClassName);
+        }
+
+        tertiary.add(label);
+        tertiary.setFlexGrow(1, label);
+        show(tertiary);
+        return getConfigurator();
+    }
+
+    @Override
     public C withTertiaryCurrencyValueAndDate(String currencyValue, LocalDate date) {
         withTertiaryText(currencyValue);
 

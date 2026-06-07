@@ -2,11 +2,13 @@ package com.iyensoft.vaadin.flow.internal.components.builders;
 
 import com.holonplatform.vaadin.flow.components.BeanListing;
 import com.holonplatform.vaadin.flow.components.Input;
+import com.holonplatform.vaadin.flow.components.ListingBundle;
 import com.holonplatform.vaadin.flow.components.PropertyListing;
 import com.holonplatform.vaadin.flow.internal.components.builders.AbstractComponentConfigurator;
 import com.holonplatform.vaadin.flow.internal.lumo.Display;
 import com.holonplatform.vaadin.flow.internal.lumo.FlexDirection;
 import com.holonplatform.vaadin.flow.vaadinplus.Layout;
+import com.holonplatform.vaadin.flow.vaadinplus.ResponsiveDiv;
 import com.holonplatform.vaadin.flow.vaadinplus.components.GridHeader;
 import com.holonplatform.vaadin.flow.vaadinplus.components.Header;
 import com.holonplatform.vaadin.flow.vaadinplus.utilities.Font;
@@ -17,6 +19,7 @@ import com.vaadin.flow.component.HasSize;
 import com.vaadin.flow.component.HasStyle;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.menubar.MenuBar;
 import com.vaadin.flow.component.shared.HasTooltip;
 import com.vaadin.flow.component.textfield.TextField;
@@ -147,23 +150,30 @@ public abstract class AbstractIyenCommonConfigurator<C extends IyenCommonConfigu
     }
 
     @Override
-    public C content(Grid<?> grid) {
-        return addContent(grid);
-    }
-
-    @Override
-    public C content(BeanListing<?> listing) {
-        return addContent(listing.getComponent());
-    }
-
-    @Override
-    public C content(PropertyListing listing) {
-        return addContent(listing.getComponent());
-    }
-
-    @Override
     public C content(Component component) {
         return addContent(component);
+    }
+
+    @Override
+    public C content(ListingBundle<?> bundle) {
+        ResponsiveDiv div = ResponsiveDiv.flex().column()
+                .fullHeight()
+                .gapS()
+                .build();
+        GridHeader header = bundle.header();
+        Div toolbar = bundle.toolbar();
+        Component grid = bundle.grid();
+        Div footer = bundle.footer();
+        if (header != null) {
+            div.add(header);
+        }
+        div.add(toolbar);
+        if (grid != null) {
+            div.add(grid);
+        }if (footer != null) {
+            div.add(footer);
+        }
+        return addContent(div);
     }
 
     @Override
@@ -185,7 +195,6 @@ public abstract class AbstractIyenCommonConfigurator<C extends IyenCommonConfigu
 
     private C addContent(Component contentComponent) {
         content = new Layout(contentComponent);
-        content.addClassName("master-content");
         this.container.add(content);
         content.setFlexGrow(contentComponent);
         return getConfigurator();

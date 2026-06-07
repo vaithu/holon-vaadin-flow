@@ -1,29 +1,52 @@
 /*
  * highlight.css
  *
- * Mobile-first styles for Highlight — a KPI / metric card that shows a
- * labelled numeric value with an optional prefix icon and suffix.
+ * KPI / metric card — three composable layouts out of the box:
+ *
+ *  1. KPI stat card  (value-first + accent border + icon-badge suffix)
+ *     → add .highlight--value-first  +  .highlight--accent-{color}
+ *
+ *  2. Project card   (card-header + title/subtitle + progress bar)
+ *     → setCardHeader(icon, action)  +  setProgress(0.4)
+ *
+ *  3. Financial card (accent border + value + inline trend metric)
+ *     → .highlight--accent-{color}  +  setInlineMetric(trendSpan)
  *
  * BEM namespace: .highlight
  *
  * Structure:
- *   .highlight           — root flex row (prefix | column | suffix)
- *   .highlight__heading  — small muted label above the value ("Revenue", "Users")
- *   .highlight__value    — the prominent numeric / text value
- *   .highlight__column   — vertical stack containing heading + value + details
- *
- * Mobile  (< 640 px) — full-width card, compact padding.
- * Desktop (≥ 640 px) — inline, generous padding.
+ *   .highlight              — root flex column (card container)
+ *   .highlight__card-header — optional top row: icon (left) + action (right)
+ *   .highlight__body        — horizontal slot row: prefix | column | suffix
+ *   .highlight__column      — vertical stack: heading → value-row → details
+ *   .highlight__heading     — small muted label
+ *   .highlight__subheading  — optional secondary muted line below heading
+ *   .highlight__value-row   — flex row: value  + optional inline metric
+ *   .highlight__value       — prominent numeric / text span
+ *   .highlight__value-metric— small trend / delta component beside the value
+ *   .highlight__details     — flex-wrap row below the value (chips, labels)
+ *   .highlight__prefix      — left icon / avatar slot
+ *   .highlight__suffix      — right icon / badge slot
+ *   .highlight__footer      — optional bottom area: progress-label + progress-bar
+ *   .highlight__chart       — optional full-bleed sparkline at card bottom
  */
 
-/* -----------------------------------------------------------------------
- * Root
- * ----------------------------------------------------------------------- */
+/* ── CSS custom properties ────────────────────────────────────────────────── */
+
+:root {
+    --highlight-color-purple: #7c3aed;
+    --highlight-color-orange: #f59e0b;
+    --highlight-color-teal:   #0d9488;
+    --highlight-color-green:  #16a34a;
+    --highlight-color-red:    #dc2626;
+    --highlight-color-blue:   #2563eb;
+}
+
+/* ── Root ─────────────────────────────────────────────────────────────────── */
 
 .highlight {
     display: flex;
-    align-items: center;
-    gap: 0.75rem;
+    flex-direction: column;
     border: 1px solid var(--color-border, #dde0e5);
     border-radius: var(--radius-xl, 16px);
     box-shadow: var(--shadow-xs);
@@ -31,18 +54,71 @@
     position: relative;
     width: 100%;
     box-sizing: border-box;
+    overflow: hidden;
 }
 
 @media (min-width: 640px) {
     .highlight {
-        gap: 1rem;
         padding: 1.5rem 1.25rem;
     }
 }
 
-/* -----------------------------------------------------------------------
- * Column — vertical stack: heading → value → details
- * ----------------------------------------------------------------------- */
+/* ── Accent border (coloured left stripe) ─────────────────────────────────── */
+
+.highlight--accent-purple,
+.highlight--accent-orange,
+.highlight--accent-teal,
+.highlight--accent-green,
+.highlight--accent-red,
+.highlight--accent-blue {
+    border-left-width: 3px;
+    border-left-style: solid;
+}
+
+.highlight--accent-purple { border-left-color: var(--highlight-color-purple); }
+.highlight--accent-orange { border-left-color: var(--highlight-color-orange); }
+.highlight--accent-teal   { border-left-color: var(--highlight-color-teal);   }
+.highlight--accent-green  { border-left-color: var(--highlight-color-green);  }
+.highlight--accent-red    { border-left-color: var(--highlight-color-red);    }
+.highlight--accent-blue   { border-left-color: var(--highlight-color-blue);   }
+
+/* ── Card header ──────────────────────────────────────────────────────────── */
+
+.highlight__card-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 0.875rem;
+}
+
+.highlight__card-icon {
+    display: flex;
+    align-items: center;
+}
+
+.highlight__card-action {
+    display: flex;
+    align-items: center;
+    color: var(--color-muted, #9ca3af);
+    cursor: pointer;
+}
+
+/* ── Body: horizontal slot row ────────────────────────────────────────────── */
+
+.highlight__body {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex: 1;
+}
+
+@media (min-width: 640px) {
+    .highlight__body {
+        gap: 1rem;
+    }
+}
+
+/* ── Column: vertical stack inside the body ───────────────────────────────── */
 
 .highlight__column {
     display: flex;
@@ -52,9 +128,7 @@
     padding-block: 0.25rem;
 }
 
-/* -----------------------------------------------------------------------
- * Heading — small muted label
- * ----------------------------------------------------------------------- */
+/* ── Heading: small muted label ───────────────────────────────────────────── */
 
 .highlight__heading {
     margin: 0;
@@ -63,24 +137,35 @@
     line-height: 1.4;
     letter-spacing: 0.06em;
     text-transform: uppercase;
+    color: var(--color-muted, #6b7280);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
-@media (min-width: 640px) {
-    .highlight__heading {
-        font-size: 0.6875rem;
-    }
+/* ── Sub-heading: optional secondary muted label ─────────────────────────── */
+
+.highlight__subheading {
+    font-size: 0.6875rem;   /* 11px — same scale as heading */
+    font-weight: 400;
+    line-height: 1.4;
+    color: var(--color-muted, #9ca3af);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-top: 0.0625rem;
 }
 
-/* -----------------------------------------------------------------------
- * Value — the prominent numeric / text content
- *
- * Font size is also controlled by Font.Size enum classes applied via
- * Highlight.setValueFontSize(); the .highlight__value class provides the
- * weight and colour as a baseline.
- * ----------------------------------------------------------------------- */
+/* ── Value row: value + optional inline metric ────────────────────────────── */
+
+.highlight__value-row {
+    display: flex;
+    align-items: baseline;
+    gap: 0.375rem;
+    flex-wrap: wrap;
+}
+
+/* ── Value: the prominent number / text ───────────────────────────────────── */
 
 .highlight__value {
     font-weight: 700;
@@ -91,3 +176,95 @@
     text-overflow: ellipsis;
 }
 
+/* ── Inline metric (trend %, delta, etc.) ─────────────────────────────────── */
+
+.highlight__value-metric {
+    font-size: 0.8125rem;   /* 13px */
+    font-weight: 600;
+    white-space: nowrap;
+    line-height: 1.4;
+}
+
+/* ── Details: flex-wrap row below the value ───────────────────────────────── */
+
+.highlight__details {
+    margin-top: 0.375rem;
+}
+
+/* ── Value-first variant: swap heading ↔ value-row visual order ───────────── */
+
+.highlight--value-first .highlight__heading    { order: 2; }
+.highlight--value-first .highlight__subheading { order: 3; }
+.highlight--value-first .highlight__value-row  { order: 1; }
+.highlight--value-first .highlight__details    { order: 4; }
+
+/* ── Footer: progress label + Vaadin ProgressBar ─────────────────────────── */
+
+.highlight__footer {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3125rem;
+    margin-top: 1rem;
+}
+
+.highlight__progress-label {
+    font-size: 0.75rem;
+    font-weight: 500;
+    line-height: 1.4;
+    color: var(--color-muted, #6b7280);
+}
+
+.highlight__progress {
+    width: 100%;
+}
+
+/* ── Progress bar accent fill via CSS shadow parts ────────────────────────── */
+
+.highlight--accent-purple .highlight__progress::part(value) {
+    background: var(--highlight-color-purple);
+}
+
+.highlight--accent-orange .highlight__progress::part(value) {
+    background: var(--highlight-color-orange);
+}
+
+.highlight--accent-teal .highlight__progress::part(value) {
+    background: var(--highlight-color-teal);
+}
+
+.highlight--accent-green .highlight__progress::part(value) {
+    background: var(--highlight-color-green);
+}
+
+.highlight--accent-red .highlight__progress::part(value) {
+    background: var(--highlight-color-red);
+}
+
+.highlight--accent-blue .highlight__progress::part(value) {
+    background: var(--highlight-color-blue);
+}
+
+/* ── Sparkline: full-bleed chart at card bottom ───────────────────────────── */
+/*
+ * Negative margins cancel the card's padding so the chart bleeds flush to the
+ * left, right, and bottom edges.  The card's `overflow: hidden` clips it cleanly
+ * to the rounded border-radius.
+ *
+ * Values must mirror the padding defined on .highlight / @media above.
+ */
+
+.highlight__chart {
+    margin-top: 0.75rem;
+    margin-left:   -1rem;
+    margin-right:  -1rem;
+    margin-bottom: -1.25rem;
+    line-height: 0;   /* collapse any inline-block gap */
+}
+
+@media (min-width: 640px) {
+    .highlight__chart {
+        margin-left:   -1.25rem;
+        margin-right:  -1.25rem;
+        margin-bottom: -1.5rem;
+    }
+}

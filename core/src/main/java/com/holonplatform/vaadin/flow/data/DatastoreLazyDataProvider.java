@@ -66,7 +66,7 @@ public interface DatastoreLazyDataProvider<T, F> extends BackEndDataProvider<T, 
 	/**
 	 * Add a {@link QueryConfigurationProvider}.
 	 * @param queryConfigurationProvider The {@link QueryConfigurationProvider} to
-	 *                                   add (not null)
+	 *                                   content (not null)
 	 */
 	void addQueryConfigurationProvider(QueryConfigurationProvider queryConfigurationProvider);
 
@@ -414,14 +414,14 @@ public interface DatastoreLazyDataProvider<T, F> extends BackEndDataProvider<T, 
 		 * Add a {@link QueryConfigurationProvider} to provide additional query
 		 * configuration parameters, such as {@link QueryFilter} and {@link QuerySort}.
 		 * @param queryConfigurationProvider the {@link QueryConfigurationProvider} to
-		 *                                   add (not null)
+		 *                                   content (not null)
 		 * @return this
 		 */
 		Builder<T, F> withQueryConfigurationProvider(QueryConfigurationProvider queryConfigurationProvider);
 
 		/**
 		 * Add a fixed {@link QueryFilter} to the data provider queries.
-		 * @param queryFilter The filter to add (not null)
+		 * @param queryFilter The filter to content (not null)
 		 * @return this
 		 */
 		default Builder<T, F> withQueryFilter(QueryFilter queryFilter) {
@@ -433,7 +433,7 @@ public interface DatastoreLazyDataProvider<T, F> extends BackEndDataProvider<T, 
 		 * <p>
 		 * The provided sort will be appended to any other dynamic sort of the queries.
 		 * </p>
-		 * @param querySort The sort to add (not null)
+		 * @param querySort The sort to content (not null)
 		 * @return this
 		 */
 		default Builder<T, F> withQuerySort(QuerySort querySort) {
@@ -446,7 +446,7 @@ public interface DatastoreLazyDataProvider<T, F> extends BackEndDataProvider<T, 
 		 * The provided sort will be used when no other sort is available for the
 		 * queries.
 		 * </p>
-		 * @param defaultQuerySort The default sort to add
+		 * @param defaultQuerySort The default sort to content
 		 * @return this
 		 */
 		Builder<T, F> withDefaultQuerySort(QuerySort defaultQuerySort);

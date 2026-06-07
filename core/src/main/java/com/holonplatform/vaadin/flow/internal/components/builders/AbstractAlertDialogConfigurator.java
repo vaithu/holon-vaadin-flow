@@ -70,8 +70,6 @@ public abstract class AbstractAlertDialogConfigurator<C extends AlertDialogConfi
     @Override public C onConfirm(Runnable action)     { getComponent().setOnConfirm(action); return getConfigurator(); }
     @Override public C onConfirm(BooleanSupplier cond){ getComponent().setOnConfirm(cond); return getConfigurator(); }
     @Override public C onCancel(Runnable action)      { getComponent().setOnCancel(action); return getConfigurator(); }
-    @Override @Deprecated
-              public C destructive()                  { getComponent().setVariant(Alert.Variant.DESTRUCTIVE); return getConfigurator(); }
     @Override public C variant(Alert.Variant v)       { getComponent().setVariant(v); return getConfigurator(); }
     @Override public C withCancelButton(boolean v)    { getComponent().setCancelButtonVisible(v); return getConfigurator(); }
     @Override public C secondaryAction(String text, Runnable onAction)            { getComponent().setSecondaryAction(text, onAction); return getConfigurator(); }

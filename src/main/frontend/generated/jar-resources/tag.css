@@ -32,6 +32,7 @@
     line-height: 1.25;
     white-space: nowrap;
     overflow: hidden;
+    max-width: 100%;
 }
 
 /* -----------------------------------------------------------------------

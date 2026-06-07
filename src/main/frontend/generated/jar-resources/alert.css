@@ -6,20 +6,6 @@
    Desktop overrides at ≥ 640 px.
 */
 
-/* --- Token defaults (overridable per-instance or globally) --- */
-
-:root {
-  --alert-default-border:       var(--color-border, #dde0e5);
-
-  --alert-destructive-border:   var(--color-destructive, #dc2626);
-
-  --alert-warning-border:       var(--color-warning, #ca8a04);
-
-  --alert-success-border:       var(--color-success, #16a34a);
-
-  --alert-info-border:          var(--color-info, #2563eb);
-}
-
 /* --- Base --- */
 
 .alert {
@@ -31,7 +17,7 @@
   width: 100%;
   display: grid;
   grid-template-columns: 1fr;
-  border-radius: 0.5rem;
+  border-radius: var(--radius-md, 0.5rem);
   border: 1px solid;
   padding: 0.875rem;       /* slightly tighter on mobile */
   box-sizing: border-box;
@@ -68,17 +54,6 @@
   justify-content: center;
   overflow: visible;       /* must stay visible — overflow:hidden clips vaadin-icon shadow DOM */
   margin-top: 0.0625rem;  /* optical alignment with the cap-height of the title */
-}
-
-/* vaadin-icon is a custom element that does NOT auto-size from its parent.
-   --vaadin-icon-size drives the internal shadow-DOM SVG in Vaadin 25.
-   Use a direct literal — var() references can silently fail to cross the
-   shadow boundary in some Vaadin versions, producing a near-zero icon.
-.alert__icon vaadin-icon {
-  width: 1.25rem;
-  height: 1.25rem;
-  --vaadin-icon-size: 1.25rem;
-  flex-shrink: 0;
 }
 
 /* --- Content slot --- */
@@ -135,4 +110,116 @@
 .alert__action > vaadin-button,
 .alert__action > button {
   min-height: 2.75rem; /* 44 px */
+}
+
+/* ============================================================
+   Variant colour rules — project design tokens only
+   Background / border / text / icon for each semantic variant.
+   Borders use color-mix() to create a medium tint between the
+   semantic colour and its light-background token.
+   ============================================================ */
+
+/* --- DEFAULT --- */
+.alert--default {
+  background-color: var(--surface-0, #ffffff);
+  border-color:     var(--zinc-200, #e4e4e7);
+  color:            var(--text-primary, #0f172a);
+}
+.alert--default .alert__icon {
+  color: var(--text-tertiary, #94a3b8);
+}
+
+/* --- DESTRUCTIVE --- */
+.alert--destructive {
+  background-color: var(--err-light, #fef2f2);
+  border-color:     color-mix(in srgb, var(--err, #dc2626) 30%, var(--err-light, #fef2f2));
+  color:            var(--err-dark, #b91c1c);
+}
+.alert--destructive .alert__icon {
+  color: var(--err, #dc2626);
+}
+.alert--destructive .alert__title {
+  color: var(--err-dark, #b91c1c);
+}
+
+/* --- WARNING --- */
+.alert--warning {
+  background-color: var(--warn-light, #fefce8);
+  border-color:     color-mix(in srgb, var(--warn, #ca8a04) 35%, var(--warn-light, #fefce8));
+  color:            var(--warn-dark, #a16207);
+}
+.alert--warning .alert__icon {
+  color: var(--warn, #ca8a04);
+}
+
+/* --- SUCCESS --- */
+.alert--success {
+  background-color: var(--ok-light, #f0fdf4);
+  border-color:     color-mix(in srgb, var(--ok, #16a34a) 30%, var(--ok-light, #f0fdf4));
+  color:            var(--ok-dark, #166534);
+}
+.alert--success .alert__icon {
+  color: var(--ok, #16a34a);
+}
+
+/* --- INFO --- */
+.alert--info {
+  background-color: var(--info-light, #eff6ff);
+  border-color:     color-mix(in srgb, var(--info, #2563eb) 20%, var(--info-light, #eff6ff));
+  color:            var(--info-dark, #1d4ed8);
+}
+.alert--info .alert__icon {
+  color: var(--info, #2563eb);
+}
+
+/* ============================================================
+   vaadin-icon inherits currentColor by default, but the
+   shadow-DOM SVG also needs an explicit size to render correctly.
+   ============================================================ */
+.alert__icon vaadin-icon {
+  width:  var(--alert-icon-size, 1.25rem);
+  height: var(--alert-icon-size, 1.25rem);
+  --vaadin-icon-size: var(--alert-icon-size, 1.25rem);
+  color: inherit;
+  flex-shrink: 0;
+}
+
+/* ============================================================
+   Dark mode overrides — invert to dark-surface tints
+   ============================================================ */
+@media (prefers-color-scheme: dark) {
+  .alert--default {
+    background-color: var(--surface-2, #1e293b);
+    border-color:     var(--zinc-700, #3f3f46);
+    color:            var(--text-primary, #f1f5f9);
+  }
+
+  .alert--destructive {
+    background-color: color-mix(in srgb, var(--err, #dc2626) 15%, #0f172a);
+    border-color:     color-mix(in srgb, var(--err, #dc2626) 40%, transparent);
+    color:            color-mix(in srgb, var(--err, #dc2626) 70%, #ffffff);
+  }
+  .alert--destructive .alert__icon  { color: color-mix(in srgb, var(--err, #dc2626) 80%, #ffffff); }
+  .alert--destructive .alert__title { color: color-mix(in srgb, var(--err, #dc2626) 70%, #ffffff); }
+
+  .alert--warning {
+    background-color: color-mix(in srgb, var(--warn, #ca8a04) 15%, #0f172a);
+    border-color:     color-mix(in srgb, var(--warn, #ca8a04) 40%, transparent);
+    color:            color-mix(in srgb, var(--warn, #ca8a04) 70%, #ffffff);
+  }
+  .alert--warning .alert__icon { color: color-mix(in srgb, var(--warn, #ca8a04) 80%, #ffffff); }
+
+  .alert--success {
+    background-color: color-mix(in srgb, var(--ok, #16a34a) 15%, #0f172a);
+    border-color:     color-mix(in srgb, var(--ok, #16a34a) 40%, transparent);
+    color:            color-mix(in srgb, var(--ok, #16a34a) 70%, #ffffff);
+  }
+  .alert--success .alert__icon { color: color-mix(in srgb, var(--ok, #16a34a) 80%, #ffffff); }
+
+  .alert--info {
+    background-color: color-mix(in srgb, var(--info, #2563eb) 15%, #0f172a);
+    border-color:     color-mix(in srgb, var(--info, #2563eb) 40%, transparent);
+    color:            color-mix(in srgb, var(--info, #2563eb) 70%, #ffffff);
+  }
+  .alert--info .alert__icon { color: color-mix(in srgb, var(--info, #2563eb) 80%, #ffffff); }
 }

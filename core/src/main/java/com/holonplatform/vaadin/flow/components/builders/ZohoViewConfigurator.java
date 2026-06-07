@@ -31,7 +31,7 @@ public interface ZohoViewConfigurator<C extends ZohoViewConfigurator< C>> {
 
     /**
      * Common builder contract; accumulates UI parts and finally adds them to the
-     * parent's layout when {@code add()} is called.
+     * parent's layout when {@code content()} is called.
      */
 
     interface ZohoCommonBuilder<B extends ZohoViewConfigurator<B>>

@@ -107,7 +107,7 @@ public class TimelineStepperDemoView extends Div {
                 new AuditEntry("b1", "2026-04-13 08:00", "Alice", "Sprint started")
                         .severity(Severity.INFO),
                 new AuditEntry("b2", "2026-04-13 08:30", "Alice", "PR #42 merged")
-                        .detail("feat: add pagination component")
+                        .detail("feat: content pagination component")
                         .severity(Severity.SUCCESS),
                 new AuditEntry("b3", "2026-04-13 09:00", "CI/CD", "Build failed")
                         .detail("Unit tests: 3 failures")

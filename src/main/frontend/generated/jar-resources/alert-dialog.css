@@ -7,33 +7,38 @@
  * THREE LAYERS OF STYLING
  * ───────────────────────
  *   1. Overlay-level  vaadin-dialog-overlay[theme~="alert-dialog"]::part(*)
- *      AlertDialog calls getElement().getThemeList().add("alert-dialog") so Vaadin
- *      Flow automatically mirrors the theme attribute from <vaadin-dialog> to
- *      <vaadin-dialog-overlay>.  These ::part() selectors control the overlay box,
- *      backdrop, and content slot.
- *
  *   2. Content-level  .alert-dialog__*  BEM classes (light DOM)
- *      Controls the header, footer, title, description and button layout.
- *
  *   3. Feature modifiers
- *      .alert-dialog--has-icon   — adjusts header layout when an icon badge is present
- *      .alert-dialog--centered   — centers icon, title, description and footer buttons
- *      .alert-dialog--stacked    — forces buttons to always stack vertically
- *      .alert-dialog--closeable  — reveals the absolute close button
- *      Theme values for size: alert-dialog-sm / alert-dialog-lg / alert-dialog-xl / alert-dialog-2xl
+ *      .alert-dialog--has-icon / --centered / --stacked / --closeable
+ *      Theme values for size: alert-dialog-sm / -lg / -xl / -2xl
  *      Theme value for mobile: alert-dialog-fullscreen-mobile
  *
- * RESPONSIVE BEHAVIOUR
- * ────────────────────
- *   AlertDialog is a non-dismissible CONFIRMATION dialog — a centred modal is more
- *   appropriate than a bottom sheet because it signals "you cannot swipe away this
- *   decision".
+ * BUTTON APPROACH
+ * ───────────────
+ *   The action button carries ButtonVariant.LUMO_PRIMARY in Java.
+ *   vaadin-shell-theme.css's primary button rule (vaadin-button[theme~="primary"])
+ *   applies brand-600 background, white text, and the brand box-shadow.
  *
- *   All screen sizes: centred, width = min(90vw, 28rem)  [default MD size]
+ *   Cancel / secondary-action buttons use the default shell-theme button
+ *   appearance (white + zinc-200 ring) — no colour overrides needed here.
  *
- *   Mobile  (< 640 px) — buttons stacked vertically (primary action on top),
- *                         full-width touch targets (44 px min-height).
- *   Desktop (≥ 640 px) — buttons in a horizontal row, auto-width.
+ *   Variant CSS classes (--destructive, --warning, --success, --info) use a
+ *   combined two-class selector (specificity 0,2,0) to beat the shell theme's
+ *   vaadin-button[theme~="primary"] rule (0,1,1).  Both --vaadin-button-shadow
+ *   (shadow DOM) and box-shadow (host element) are set so Aura and the shell
+ *   theme host-level box-shadow are both correctly replaced.
+ *
+ * DESIGN TOKENS
+ * ─────────────
+ *   All colours use project tokens: --brand-*, --zinc-*, --surface-*, --text-*,
+ *   --radius-*, --shadow-*, --err/--err-dark/--err-light, --ok/--ok-dark/--ok-light,
+ *   --warn/--warn-dark/--warn-light, --info/--info-dark/--info-light.
+ *   Each var() includes a matching hex fallback for resilience.
+ *
+ * FOCUS RINGS
+ * ───────────
+ *   Not defined here.  vaadin-shell-theme.css has a universal
+ *   vaadin-button[focus-ring] rule with !important covering every variant.
  */
 
 /* ==========================================================================
@@ -61,8 +66,10 @@ vaadin-dialog-overlay[theme~="alert-dialog"] {
 
 vaadin-dialog-overlay[theme~="alert-dialog"]::part(overlay) {
     width: var(--vaadin-dialog-overlay-width, min(90vw, 28rem));
-    border-radius: 0.75rem;
-    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.2);
+    border-radius: var(--radius-xl, 0.875rem);
+    box-shadow: var(--shadow-xl,
+        0 20px 25px -5px rgba(0,0,0,.10),
+        0  8px 10px -6px rgba(0,0,0,.10));
     padding: 0;
     overflow: hidden;
     /* Entry animation — scale + fade, following Tailwind UI panel transition */
@@ -96,6 +103,7 @@ vaadin-dialog-overlay[theme~="alert-dialog"]::part(content) {
     display: flex;
     flex-direction: column;
     gap: 0.375rem;
+    padding: 1.25rem 1.5rem 0;
     box-sizing: border-box;
 }
 
@@ -120,20 +128,18 @@ vaadin-dialog-overlay[theme~="alert-dialog"]::part(content) {
 
 .alert-dialog__close-btn {
     --vaadin-button-border-width:  0;
-    --vaadin-button-border-radius: 0.375rem;
-    --vaadin-button-padding:       0.25rem;
+    --vaadin-button-border-radius: var(--radius-sm, 0.375rem);
+    --vaadin-button-height:        2rem;
     --vaadin-button-shadow:        none;
-    --vaadin-button-margin:        0;
 
-    display: none;              /* hidden unless .alert-dialog--closeable is present */
+    display: none;
     position: absolute;
     top:   0.75rem;
     right: 0.75rem;
     z-index: 1;
-
     min-width:  2rem;
-    min-height: 2rem;
     box-sizing: border-box;
+    box-shadow: none;
 }
 
 /* Size the Vaadin icon inside the close button */
@@ -157,6 +163,7 @@ vaadin-dialog-overlay[theme~="alert-dialog"]::part(content) {
     font-size: 1.125rem;
     font-weight: 600;
     line-height: 1.4;
+    color: var(--text-primary, #0f172a);
 }
 
 /* --------------------------------------------------------------------------
@@ -167,7 +174,8 @@ vaadin-dialog-overlay[theme~="alert-dialog"]::part(content) {
     margin: 0;
     font-size: 0.875rem;
     line-height: 1.5;
-    padding-bottom: 15px;
+    padding-bottom: 1rem;
+    color: var(--text-secondary, #475569);
 }
 
 /* --------------------------------------------------------------------------
@@ -198,33 +206,20 @@ vaadin-dialog-overlay[theme~="alert-dialog"]::part(content) {
 /* --------------------------------------------------------------------------
  * Cancel button
  *
- * Styled via Vaadin Aura CSS custom properties so that the text colour
- * is driven by --vaadin-button-text-color (picked up inside shadow DOM),
- * not by the host-level `color` property which vaadin-button ignores.
- *
- * Mobile: full-width, 44 px touch target.
- * Desktop: auto-width.
+ * Default shell-theme button appearance (white + zinc-200 ring) is correct.
+ * Only sizing/layout overrides applied here.
+ * Mobile: full-width.  Desktop: auto-width.
  * -------------------------------------------------------------------------- */
 
 .alert-dialog__cancel {
-    --vaadin-button-border-width:  1px;
-    --vaadin-button-border-radius: 0.375rem;
-    --vaadin-button-font-size:     0.875rem;
+    --vaadin-button-border-radius: var(--radius-sm, 0.375rem);
     --vaadin-button-font-weight:   500;
-    --vaadin-button-padding:       0.375rem 0.875rem;
-    --vaadin-button-height:        2.25rem;   /* 36 px — compact */
-    --vaadin-button-shadow:        none;
-    --vaadin-button-margin:        0;
+    --vaadin-button-height:        2.25rem;
 
-    width: 100%;          /* full-width on mobile */
+    width: 100%;
     box-sizing: border-box;
 }
 
-.alert-dialog__cancel[focus-ring] {
-    box-shadow: 0 0 0 2px var(--surface-0, #ffffff),
-                0 0 0 4px var(--brand-500, #3b82f6) !important;
-    outline: none !important;
-}
 
 @media (min-width: 640px) {
     .alert-dialog__cancel {
@@ -236,29 +231,22 @@ vaadin-dialog-overlay[theme~="alert-dialog"]::part(content) {
 /* --------------------------------------------------------------------------
  * Action (confirm) button
  *
- * Mobile: full-width, 44 px touch target.
- * Desktop: auto-width.
+ * ButtonVariant.LUMO_PRIMARY applied in Java — shell theme provides
+ * brand-600 background, white text, and primary box-shadow automatically.
+ * Only sizing/layout overrides applied here.  Variant classes below in
+ * Section 4 replace colours when --destructive / --warning etc. are set.
+ * Mobile: full-width.  Desktop: auto-width.
  * -------------------------------------------------------------------------- */
 
 .alert-dialog__action {
-    --vaadin-button-border-width:  1px;
-    --vaadin-button-border-radius: 0.375rem;
-    --vaadin-button-font-size:     0.875rem;
+    --vaadin-button-border-radius: var(--radius-sm, 0.375rem);
     --vaadin-button-font-weight:   500;
-    --vaadin-button-padding:       0.375rem 0.875rem;
-    --vaadin-button-height:        2.25rem;   /* 36 px — compact */
-    --vaadin-button-shadow:        none;
-    --vaadin-button-margin:        0;
+    --vaadin-button-height:        2.25rem;
 
-    width: 100%;          /* full-width on mobile */
+    width: 100%;
     box-sizing: border-box;
 }
 
-.alert-dialog__action[focus-ring] {
-    box-shadow: 0 0 0 2px var(--surface-0, #ffffff),
-                0 0 0 4px var(--brand-500, #3b82f6) !important;
-    outline: none !important;
-}
 
 @media (min-width: 640px) {
     .alert-dialog__action {
@@ -361,8 +349,6 @@ vaadin-dialog-overlay[theme~="alert-dialog"]::part(content) {
 
 .alert-dialog--centered .alert-dialog__header {
     align-items: center;
-    padding-left: 1.25rem;
-    padding-right: 1.25rem;
 }
 
 .alert-dialog--centered .alert-dialog__icon-wrapper {
@@ -399,30 +385,19 @@ vaadin-dialog-overlay[theme~="alert-dialog"]::part(content) {
 /* --------------------------------------------------------------------------
  * 6. Secondary action button
  *
- * Sits between the cancel button and the primary action in the footer.
- * Uses an outlined style (same as cancel) to visually separate it from the
- * primary destructive/success action.
+ * Same default shell-theme appearance as cancel (white + zinc-200 ring).
+ * Only sizing/layout overrides applied here.
  * -------------------------------------------------------------------------- */
 
 .alert-dialog__secondary-action {
-    --vaadin-button-border-width:  1px;
-    --vaadin-button-border-radius: 0.375rem;
-    --vaadin-button-font-size:     0.875rem;
+    --vaadin-button-border-radius: var(--radius-sm, 0.375rem);
     --vaadin-button-font-weight:   500;
-    --vaadin-button-padding:       0.375rem 0.875rem;
     --vaadin-button-height:        2.25rem;
-    --vaadin-button-shadow:        none;
-    --vaadin-button-margin:        0;
 
     width: 100%;
     box-sizing: border-box;
 }
 
-.alert-dialog__secondary-action[focus-ring] {
-    box-shadow: 0 0 0 2px var(--surface-0, #ffffff),
-                0 0 0 4px var(--brand-500, #3b82f6) !important;
-    outline: none !important;
-}
 
 @media (min-width: 640px) {
     .alert-dialog__secondary-action {
@@ -440,14 +415,15 @@ vaadin-dialog-overlay[theme~="alert-dialog"]::part(content) {
  * -------------------------------------------------------------------------- */
 
 .alert-dialog__body {
-    padding: 0.75rem 1.25rem 0.75rem;
-    border-top: 1px solid var(--alert-dialog-footer-border, #f0f0f2);
+    padding: 0.75rem 1.5rem;
+    border-top: 1px solid var(--zinc-100, #f4f4f5);
     max-height: 60vh;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
     overscroll-behavior: contain;
     font-size: 0.875rem;
     line-height: 1.6;
+    color: var(--text-secondary, #475569);
     box-sizing: border-box;
 }
 
@@ -504,7 +480,22 @@ vaadin-dialog-overlay[theme~="alert-dialog"][theme~="alert-dialog-2xl"] {
 }
 
 /* --------------------------------------------------------------------------
- * 10. Stacked buttons modifier
+ * 10. Footer background modifier
+ *
+ * Opt-in muted background on the footer — disabled by default.
+ * Enable via AlertDialog.setFooterBackground(true) or builder .footerBackground(true).
+ *
+ * Useful when the dialog has rich scrollable body content and a clear visual
+ * separation between content and action buttons is desired (Tailwind UI pattern).
+ * -------------------------------------------------------------------------- */
+
+.alert-dialog--footer-bg .alert-dialog__footer {
+    background-color: var(--surface-1, #f8fafc);
+    border-top: 1px solid var(--zinc-100, #f4f4f5);
+}
+
+/* --------------------------------------------------------------------------
+ * 11. Stacked buttons modifier
  *
  * Forces the footer into a vertical column layout on all screen sizes,
  * overriding the default desktop-row behaviour.
@@ -530,7 +521,7 @@ vaadin-dialog-overlay[theme~="alert-dialog"][theme~="alert-dialog-2xl"] {
 }
 
 /* --------------------------------------------------------------------------
- * 11. Full-screen on mobile / bottom-sheet pattern
+ * 12. Full-screen on mobile / bottom-sheet pattern
  *
  * On mobile (≤ 639 px) the overlay anchors to the bottom of the viewport,
  * takes up the full width, and shows only the top two corners rounded —
@@ -548,7 +539,7 @@ vaadin-dialog-overlay[theme~="alert-dialog"][theme~="alert-dialog-2xl"] {
     vaadin-dialog-overlay[theme~="alert-dialog"][theme~="alert-dialog-fullscreen-mobile"]::part(overlay) {
         width: 100vw;
         max-width: 100vw;
-        border-radius: 0.875rem 0.875rem 0 0; /* only top corners rounded */
+        border-radius: var(--radius-xl, 0.875rem) var(--radius-xl, 0.875rem) 0 0;
         margin: 0;
         animation: alert-dialog-sheet-in 200ms cubic-bezier(0.32, 0.72, 0, 1) both;
     }
@@ -567,110 +558,101 @@ vaadin-dialog-overlay[theme~="alert-dialog"][theme~="alert-dialog-2xl"] {
 }
 
 /* ==========================================================================
-   SECTION 4 — COLOUR RULES
+   SECTION 4 — COLOUR RULES (design tokens — no hardcoded hex values)
    ========================================================================== */
 
 /* --------------------------------------------------------------------------
- * Cancel button — neutral outlined style
+ * Cancel / secondary-action buttons
+ *
+ * Default shell-theme button appearance is correct for these roles.
+ * No colour overrides needed — the shell theme applies white background,
+ * zinc-200 ring, and text-secondary colour automatically.
  * -------------------------------------------------------------------------- */
-
-.alert-dialog__cancel {
-    --vaadin-button-background:   transparent;
-    --vaadin-button-text-color:   #374151;
-    --vaadin-button-border-color: #d1d5db;
-}
-
-.alert-dialog__cancel:hover {
-    --vaadin-button-background:   #f9fafb;
-}
 
 /* --------------------------------------------------------------------------
- * Secondary action button — same neutral outlined style as cancel
+ * Action button — DEFAULT (primary)
+ *
+ * ButtonVariant.LUMO_PRIMARY in Java → shell theme provides:
+ *   --vaadin-button-background:   var(--brand-600)
+ *   --vaadin-button-text-color:   #ffffff
+ *   box-shadow: brand-coloured lift shadow
+ * No CSS colour overrides needed here.
  * -------------------------------------------------------------------------- */
-
-.alert-dialog__secondary-action {
-    --vaadin-button-background:   transparent;
-    --vaadin-button-text-color:   #374151;
-    --vaadin-button-border-color: #d1d5db;
-}
-
-.alert-dialog__secondary-action:hover {
-    --vaadin-button-background:   #f9fafb;
-}
 
 /* --------------------------------------------------------------------------
- * Action (confirm) button — DEFAULT (dark/primary)
+ * Action button VARIANTS
+ *
+ * DESTRUCTIVE and SUCCESS are handled entirely by Vaadin theme attribute
+ * combinations added in Java:
+ *   DESTRUCTIVE → addThemeVariants(LUMO_ERROR)   + LUMO_PRIMARY already on button
+ *   SUCCESS     → addThemeVariants(LUMO_SUCCESS) + LUMO_PRIMARY already on button
+ * Shell theme rules vaadin-button[theme~="error"][theme~="primary"] and
+ * vaadin-button[theme~="success"][theme~="primary"] handle all colour states,
+ * including hover and box-shadow, via specificity 0,2,1 > primary alone 0,1,1.
+ * No CSS needed here for those two variants.
+ *
+ * WARNING and INFO have no shell-theme primary combination rule, so they are
+ * handled by CSS using vaadin-button[theme~="primary"].alert-dialog__action--*
+ * selectors.  Specificity analysis vs shell theme primary hover (0,3,1):
+ *   Base:  vaadin-button[theme~="primary"].alert-dialog__action--* → 0,2,1  beats 0,1,1 ✓
+ *   Hover: + :not([disabled]):hover                                → 0,4,1  beats 0,3,1 ✓
+ * !important is additionally applied to match the shell theme's own pattern
+ * (used for focus ring overrides) and guard against cascade layer ordering.
  * -------------------------------------------------------------------------- */
 
-.alert-dialog__action {
-    --vaadin-button-background:   #0f172a;
-    --vaadin-button-text-color:   #ffffff;
-    --vaadin-button-border-color: #0f172a;
+/* WARNING — filled amber
+ * Uses !important matching the shell theme's own pattern (focus ring).
+ * Target via theme attribute so the selector competes at the same level
+ * as the shell primary rule — both reference the vaadin-button host.
+ * Base:  vaadin-button[theme~="primary"].alert-dialog__action--warning → 0,2,1
+ * Hover: + :not([disabled])                                              → 0,3,1
+ * Both beat the shell primary base (0,1,1) and hover (0,3,1) rules.
+ * !important on box-shadow guarantees the host-level shadow is replaced. */
+vaadin-button[theme~="primary"].alert-dialog__action--warning {
+    --vaadin-button-primary-background:   var(--warn, #ca8a04) !important;
+    --vaadin-button-text-color:   #ffffff !important;
+    --vaadin-button-border-color: var(--warn, #ca8a04) !important;
+    --vaadin-button-shadow:
+        0 1px 3px 0   color-mix(in srgb, var(--warn, #ca8a04) 40%, transparent),
+        0 1px 2px -1px rgb(0 0 0 / 0.10) !important;
+    box-shadow:
+        0 1px 3px 0   color-mix(in srgb, var(--warn, #ca8a04) 40%, transparent),
+        0 1px 2px -1px rgb(0 0 0 / 0.10) !important;
 }
 
-.alert-dialog__action:hover {
-    --vaadin-button-background:   #1e293b;
-    --vaadin-button-border-color: #1e293b;
+vaadin-button[theme~="primary"].alert-dialog__action--warning:not([disabled]):hover {
+    --vaadin-button-primary-background:   var(--warn-dark, #a16207) !important;
+    --vaadin-button-border-color: var(--warn-dark, #a16207) !important;
+    --vaadin-button-shadow:
+        0 3px 7px 0   color-mix(in srgb, var(--warn, #ca8a04) 45%, transparent),
+        0 1px 3px -1px rgb(0 0 0 / 0.12) !important;
+    box-shadow:
+        0 3px 7px 0   color-mix(in srgb, var(--warn, #ca8a04) 45%, transparent),
+        0 1px 3px -1px rgb(0 0 0 / 0.12) !important;
 }
 
-/* --------------------------------------------------------------------------
- * Action button — DESTRUCTIVE (red)
- * -------------------------------------------------------------------------- */
-
-.alert-dialog__action--destructive {
-    --vaadin-button-background:   #dc2626;
-    --vaadin-button-text-color:   #ffffff;
-    --vaadin-button-border-color: #dc2626;
+/* INFO — filled blue */
+vaadin-button[theme~="primary"].alert-dialog__action--info {
+    --vaadin-button-primary-background:   var(--info, #2563eb) !important;
+    --vaadin-button-text-color:   #ffffff !important;
+    --vaadin-button-border-color: var(--info, #2563eb) !important;
+    --vaadin-button-shadow:
+        0 1px 3px 0   color-mix(in srgb, var(--info, #2563eb) 40%, transparent),
+        0 1px 2px -1px rgb(0 0 0 / 0.10) !important;
+    box-shadow:
+        0 1px 3px 0   color-mix(in srgb, var(--info, #2563eb) 40%, transparent),
+        0 1px 2px -1px rgb(0 0 0 / 0.10) !important;
 }
 
-.alert-dialog__action--destructive:hover {
-    --vaadin-button-background:   #b91c1c;
-    --vaadin-button-border-color: #b91c1c;
-}
-
-/* --------------------------------------------------------------------------
- * Action button — WARNING (orange)
- * -------------------------------------------------------------------------- */
-
-.alert-dialog__action--warning {
-    --vaadin-button-background:   #f97316;
-    --vaadin-button-text-color:   #ffffff;
-    --vaadin-button-border-color: #f97316;
-}
-
-.alert-dialog__action--warning:hover {
-    --vaadin-button-background:   #ea580c;
-    --vaadin-button-border-color: #ea580c;
-}
-
-/* --------------------------------------------------------------------------
- * Action button — SUCCESS (green)
- * -------------------------------------------------------------------------- */
-
-.alert-dialog__action--success {
-    --vaadin-button-background:   #16a34a;
-    --vaadin-button-text-color:   #ffffff;
-    --vaadin-button-border-color: #16a34a;
-}
-
-.alert-dialog__action--success:hover {
-    --vaadin-button-background:   #15803d;
-    --vaadin-button-border-color: #15803d;
-}
-
-/* --------------------------------------------------------------------------
- * Action button — INFO (violet)
- * -------------------------------------------------------------------------- */
-
-.alert-dialog__action--info {
-    --vaadin-button-background:   #7c3aed;
-    --vaadin-button-text-color:   #ffffff;
-    --vaadin-button-border-color: #7c3aed;
-}
-
-.alert-dialog__action--info:hover {
-    --vaadin-button-background:   #6d28d9;
-    --vaadin-button-border-color: #6d28d9;
+vaadin-button[theme~="primary"].alert-dialog__action--info:not([disabled]):hover {
+    --vaadin-button-primary-background:   var(--info-dark, #1d4ed8) !important;
+    --vaadin-button-border-color: var(--info-dark, #1d4ed8) !important;
+    --vaadin-button-shadow:
+        0 3px 7px 0   color-mix(in srgb, var(--info, #2563eb) 45%, transparent),
+        0 1px 3px -1px rgb(0 0 0 / 0.12) !important;
+    box-shadow:
+        0 3px 7px 0   color-mix(in srgb, var(--info, #2563eb) 45%, transparent),
+        0 1px 3px -1px rgb(0 0 0 / 0.12) !important;
 }
 
 /* --------------------------------------------------------------------------
@@ -678,8 +660,8 @@ vaadin-dialog-overlay[theme~="alert-dialog"][theme~="alert-dialog-2xl"] {
  * -------------------------------------------------------------------------- */
 
 .alert-dialog__icon-wrapper {
-    background-color: #f1f5f9;
-    color:            #64748b;
+    background-color: var(--surface-2, #f1f5f9);
+    color:            var(--text-tertiary, #94a3b8);
 }
 
 /* Vaadin icon inherits color from the wrapper */
@@ -693,8 +675,8 @@ vaadin-dialog-overlay[theme~="alert-dialog"][theme~="alert-dialog-2xl"] {
  * -------------------------------------------------------------------------- */
 
 .alert-dialog__icon-wrapper--destructive {
-    background-color: #fef2f2;
-    color:            #dc2626;
+    background-color: var(--err-light, #fef2f2);
+    color:            var(--err, #dc2626);
 }
 
 /* --------------------------------------------------------------------------
@@ -702,73 +684,25 @@ vaadin-dialog-overlay[theme~="alert-dialog"][theme~="alert-dialog-2xl"] {
  * -------------------------------------------------------------------------- */
 
 .alert-dialog__icon-wrapper--warning {
-    background-color: #fffbeb;
-    color:            #f97316;
+    background-color: var(--warn-light, #fefce8);
+    color:            var(--warn, #ca8a04);
 }
 
 /* --------------------------------------------------------------------------
- * Icon wrapper — SUCCESS (green tint) — matches image row 1 & 2
+ * Icon wrapper — SUCCESS (green tint)
  * -------------------------------------------------------------------------- */
 
 .alert-dialog__icon-wrapper--success {
-    background-color: #f0fdf4;
-    color:            #16a34a;
+    background-color: var(--ok-light, #f0fdf4);
+    color:            var(--ok, #16a34a);
 }
 
 /* --------------------------------------------------------------------------
- * Icon wrapper — INFO (violet tint) — matches image row 4
+ * Icon wrapper — INFO (blue tint)
  * -------------------------------------------------------------------------- */
 
 .alert-dialog__icon-wrapper--info {
-    background-color: #f5f3ff;
-    color:            #7c3aed;
-}
-
-/* --------------------------------------------------------------------------
- * Dark mode overrides
- * -------------------------------------------------------------------------- */
-
-@media (prefers-color-scheme: dark) {
-    .alert-dialog__cancel,
-    .alert-dialog__secondary-action {
-        --vaadin-button-text-color:   #d1d5db;
-        --vaadin-button-border-color: #374151;
-    }
-
-    .alert-dialog__cancel:hover,
-    .alert-dialog__secondary-action:hover {
-        --vaadin-button-background:   #1f2937;
-    }
-
-    .alert-dialog__action {
-        --vaadin-button-background:   #f1f5f9;
-        --vaadin-button-text-color:   #0f172a;
-        --vaadin-button-border-color: #f1f5f9;
-    }
-
-    .alert-dialog__icon-wrapper {
-        background-color: #1e293b;
-        color:            #94a3b8;
-    }
-
-    .alert-dialog__icon-wrapper--destructive {
-        background-color: #450a0a;
-        color:            #f87171;
-    }
-
-    .alert-dialog__icon-wrapper--warning {
-        background-color: #451a03;
-        color:            #fb923c;
-    }
-
-    .alert-dialog__icon-wrapper--success {
-        background-color: #052e16;
-        color:            #4ade80;
-    }
-
-    .alert-dialog__icon-wrapper--info {
-        background-color: #2e1065;
-        color:            #a78bfa;
-    }
+    background-color: var(--info-light, #eff6ff);
+    color:            var(--info, #2563eb);
 }
 

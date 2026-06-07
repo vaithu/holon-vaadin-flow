@@ -77,7 +77,7 @@ class TestBreadcrumb {
     }
 
     // =========================================================================
-    // Breadcrumb — add / remove
+    // Breadcrumb — content / remove
     // =========================================================================
 
     @Test
@@ -157,7 +157,7 @@ class TestBreadcrumb {
     void addWithSeparators_appendedToExistingItems_prependsSeparator() {
         Breadcrumb bc = new Breadcrumb();
         bc.add(new BreadcrumbItem(linkWithHref("home")));         // 1 existing item
-        bc.addWithSeparators(new BreadcrumbPage("Current"));      // should add sep + item
+        bc.addWithSeparators(new BreadcrumbPage("Current"));      // should content sep + item
 
         // 1 existing + 1 separator + 1 new = 3
         assertEquals(3, olChildCount(bc));

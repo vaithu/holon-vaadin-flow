@@ -34,7 +34,7 @@ import java.util.regex.Pattern;
  *   <li>Calendar groups / category filtering: {@link CalendarGroup}</li>
  *   <li>Sidebar with mini-month, search, and group toggle</li>
  *   <li>Event popover (click-to-preview before edit)</li>
- *   <li>Rich add/edit dialog with repeat, location, URL, color picker</li>
+ *   <li>Rich content/edit dialog with repeat, location, URL, color picker</li>
  *   <li>Week numbers, business hours, timezone configuration</li>
  *   <li>Theming via CSS custom properties ({@code --vaadin-calendar-primary}, etc.)</li>
  * </ul>
@@ -49,7 +49,7 @@ import java.util.regex.Pattern;
  * cal.addEventUpdatedListener(e -> service.update(e.getEvent()));
  * cal.addEventDeletedListener(e -> service.delete(e.getDeletedId()));
  *
- * add(cal);
+ * content(cal);
  * }</pre>
  */
 @Tag("vaadin-calendar")
@@ -59,7 +59,7 @@ import java.util.regex.Pattern;
 @NpmPackage(value = "@fullcalendar/list",        version = "6.1.15")
 @NpmPackage(value = "@fullcalendar/interaction", version = "6.1.15")
 @JsModule("./vaadin-calendar-element.js")
-public class VaadinCalendar extends Component implements HasSize, HasStyle, Focusable<VaadinCalendar>, LocaleChangeObserver {
+public class VaadinCalendar extends Component implements HasSize, Focusable<VaadinCalendar>, LocaleChangeObserver {
 
     private static final DateTimeFormatter ISO = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
 
@@ -458,7 +458,7 @@ public class VaadinCalendar extends Component implements HasSize, HasStyle, Focu
         private Localizable week        = lz("vaadin.calendar.week",                  "Week");
         private Localizable day         = lz("vaadin.calendar.day",                   "Day");
         private Localizable agenda      = lz("vaadin.calendar.agenda",                "Agenda");
-        private Localizable addEvent    = lz("vaadin.calendar.add.event",             "+ Add Event");
+        private Localizable addEvent    = lz("vaadin.calendar.content.event",             "+ Add Event");
 
         // ── Sidebar ────────────────────────────────────────────────────────
         private Localizable searchPlaceholder = lz("vaadin.calendar.search.placeholder", "Search events");
@@ -487,7 +487,7 @@ public class VaadinCalendar extends Component implements HasSize, HasStyle, Focu
         private Localizable delete                = lz("vaadin.calendar.delete",                 "Delete");
         private Localizable cancel                = lz("vaadin.calendar.cancel",                 "Cancel");
         private Localizable saveChanges           = lz("vaadin.calendar.save.changes",           "Save changes");
-        private Localizable addEventBtn           = lz("vaadin.calendar.add.event.btn",          "Add Event");
+        private Localizable addEventBtn           = lz("vaadin.calendar.content.event.btn",          "Add Event");
 
         // ── Repeat unit labels ─────────────────────────────────────────────
         private Localizable repeatNone    = lz("vaadin.calendar.repeat.none",    "None");

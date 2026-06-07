@@ -331,9 +331,7 @@ public class DefaultBeanPropertyInputForm<T> implements BeanPropertyInputForm<T>
             //    is inferred as Composer<HasComponents,...> while C is only bounded by Component.
             //    All concrete layout types (FormLayout, VerticalLayout, HorizontalLayout) do
             //    implement HasComponents, so the cast is safe at runtime.
-            @SuppressWarnings("rawtypes")
             Composable.Composer rawComposer = Composable.componentContainerComposer();
-            @SuppressWarnings("unchecked")
             PropertyInputFormBuilder<C> fb = PropertyInputForm.builder(content, orderedProperties)
                     .composer(rawComposer);
 
@@ -397,7 +395,7 @@ public class DefaultBeanPropertyInputForm<T> implements BeanPropertyInputForm<T>
                     .orElse(false);
         }
 
-        @SuppressWarnings({"rawtypes", "unchecked"})
+        @SuppressWarnings("rawtypes")
         private void applyCaptionAnnotation(PropertyInputFormBuilder<C> builder, BeanProperty<?> beanProperty,
                                             PathProperty<?> property) {
             beanProperty.getAnnotation(Caption.class).ifPresent(caption -> {

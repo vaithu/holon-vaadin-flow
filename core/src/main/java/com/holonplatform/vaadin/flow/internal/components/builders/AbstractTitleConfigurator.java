@@ -4,7 +4,6 @@ import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.vaadin.flow.components.builders.TitleConfigurator;
 import com.holonplatform.vaadin.flow.components.utils.UIUtils;
 import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
-import com.holonplatform.vaadin.flow.internal.components.DefaultTitle;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasEnabled;
 import com.vaadin.flow.component.HasSize;
@@ -21,7 +20,6 @@ public abstract class AbstractTitleConfigurator<C extends TitleConfigurator<C>>
         implements TitleConfigurator<C> {
 
     private final H4 h4;
-    private DefaultTitle defaultTitle;
     private DefaultHasTextConfigurator textConfigurator;
 
 
@@ -35,7 +33,6 @@ public abstract class AbstractTitleConfigurator<C extends TitleConfigurator<C>>
     public AbstractTitleConfigurator(HorizontalLayout component) {
         super(component);
         h4 = new H4();
-        defaultTitle = new DefaultTitle(h4);
         textConfigurator = new DefaultHasTextConfigurator(h4);
 
         getComponent().setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
@@ -51,7 +48,7 @@ public abstract class AbstractTitleConfigurator<C extends TitleConfigurator<C>>
     /**
      * Adds the given components as children of this component.
      *
-     * @param components The components to add
+     * @param components The components to content
      * @return this
      */
     @Override

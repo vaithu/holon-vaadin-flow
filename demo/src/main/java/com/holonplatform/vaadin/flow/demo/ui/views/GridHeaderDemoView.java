@@ -126,10 +126,7 @@ public class GridHeaderDemoView extends Div {
     private DemoExample withTabsExample() {
         var header = new Header("Reports");
         header.setTabs(
-                new Tab("Daily"),
-                new Tab("Weekly"),
-                new Tab("Monthly"),
-                new Tab("Yearly")
+                new Tab("Daily")
         );
         header.setActions(new Button("Export", VaadinIcon.DOWNLOAD.create()));
 

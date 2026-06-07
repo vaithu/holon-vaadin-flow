@@ -286,6 +286,7 @@ public interface ItemListing<T, P> extends ItemSet, Selectable<T>, HasComponent 
     void setMobileColumn(ValueProvider<T, Component> component);
 
     void setMobileHeader(String header);
+    void setMobileHeader(Component component);
 
     void addThemeVariants(GridVariant... variants);
 
@@ -481,7 +482,7 @@ public interface ItemListing<T, P> extends ItemSet, Selectable<T>, HasComponent 
      * logic should be consistent with any other item.
      * </p>
      *
-     * @param item The item to add (not null)
+     * @param item The item to content (not null)
      * @see #removeAdditionalItem(Object)
      */
     void addAdditionalItem(T item);

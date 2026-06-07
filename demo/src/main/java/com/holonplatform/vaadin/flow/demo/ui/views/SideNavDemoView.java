@@ -56,7 +56,7 @@ public class SideNavDemoView extends Div {
      * Demonstrates the CSS hover/active/child-item colouring without any extras.
      */
     private DemoExample basicExample() {
-        // Store the builder first — .add() returns SideNavConfigurator<?> (raw),
+        // Store the builder first — .content() returns SideNavConfigurator<?> (raw),
         // so .build() must be called on the typed builder reference.
         var builder = SideNavBuilder.create().label("Platform");
 

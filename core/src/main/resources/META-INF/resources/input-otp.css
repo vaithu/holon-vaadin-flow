@@ -132,7 +132,7 @@
  * so it is reached with the child combinator (> input), NOT ::part(value).
  * TextFieldVariant.ALIGN_CENTER (set in Java) applies theme-level centering;
  * these rules provide the typography and ensure the caret stays centred
- * by zeroing any residual padding the browser or theme may add.
+ * by zeroing any residual padding the browser or theme may content.
  */
 .input-otp__slot-input > input {
     text-align: center;

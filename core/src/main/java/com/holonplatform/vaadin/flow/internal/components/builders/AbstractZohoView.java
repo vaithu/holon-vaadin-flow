@@ -105,11 +105,13 @@ public abstract class AbstractZohoView<T> implements ZohoView<T> {
                 beanListing.getFirstItem().ifPresent(this::updateOperations));
     }
 
+    @SuppressWarnings("unused") // called reflectively or reserved for future use
     private final void postProcessor() {
         gridMainView.refreshGrid();
         setCurrentItem();
     }
 
+    @SuppressWarnings("unused") // called reflectively or reserved for future use
     private final void preProcessor() {
 
 //           updateBeanListingListeners();

@@ -56,7 +56,7 @@ public interface FormLayoutConfigurator<C extends FormLayoutConfigurator<C>> ext
 	}
 
 	/**
-	 * Create and add a new {@link FormItem} to this layout that wraps the given field with a label.
+	 * Create and content a new {@link FormItem} to this layout that wraps the given field with a label.
 	 * @param field the field component to wrap
 	 * @param label the label component to set
 	 * @param formItem Optional {@link Consumer} to create the created {@link FormItem} instance
@@ -65,7 +65,7 @@ public interface FormLayoutConfigurator<C extends FormLayoutConfigurator<C>> ext
 	C withFormItem(Component field, Component label, Consumer<FormItem> formItem);
 
 	/**
-	 * Create and add a new {@link FormItem} to this layout that wraps the given field with a label.
+	 * Create and content a new {@link FormItem} to this layout that wraps the given field with a label.
 	 * @param field the field component to wrap (not null)
 	 * @param label the label component to set
 	 * @param formItem Optional {@link Consumer} to create the created {@link FormItem} instance
@@ -77,7 +77,7 @@ public interface FormLayoutConfigurator<C extends FormLayoutConfigurator<C>> ext
 	}
 
 	/**
-	 * Create and add a new {@link FormItem} to this layout that wraps the given field with a label.
+	 * Create and content a new {@link FormItem} to this layout that wraps the given field with a label.
 	 * @param field the field component to wrap
 	 * @param label the label component to set
 	 * @return this
@@ -88,7 +88,7 @@ public interface FormLayoutConfigurator<C extends FormLayoutConfigurator<C>> ext
 	}
 
 	/**
-	 * Create and add a new {@link FormItem} to this layout that wraps the given field with a label.
+	 * Create and content a new {@link FormItem} to this layout that wraps the given field with a label.
 	 * @param field the field component to wrap
 	 * @param label the label component to set
 	 * @return this
@@ -99,7 +99,7 @@ public interface FormLayoutConfigurator<C extends FormLayoutConfigurator<C>> ext
 	}
 
 	/**
-	 * Create and add a new {@link FormItem} to this layout that wraps the given field with a label.
+	 * Create and content a new {@link FormItem} to this layout that wraps the given field with a label.
 	 * @param field the field component to wrap
 	 * @param label the label text to set
 	 * @param formItem Optional {@link Consumer} to create the created {@link FormItem} instance
@@ -108,7 +108,7 @@ public interface FormLayoutConfigurator<C extends FormLayoutConfigurator<C>> ext
 	C withFormItem(Component field, String label, Consumer<FormItem> formItem);
 
 	/**
-	 * Create and add a new {@link FormItem} to this layout that wraps the given field with a label.
+	 * Create and content a new {@link FormItem} to this layout that wraps the given field with a label.
 	 * @param field the field component to wrap
 	 * @param label the label text to set
 	 * @param formItem Optional {@link Consumer} to create the created {@link FormItem} instance
@@ -120,7 +120,7 @@ public interface FormLayoutConfigurator<C extends FormLayoutConfigurator<C>> ext
 	}
 
 	/**
-	 * Create and add a new {@link FormItem} to this layout that wraps the given field with a label.
+	 * Create and content a new {@link FormItem} to this layout that wraps the given field with a label.
 	 * @param field the field component to wrap
 	 * @param label the label text to set
 	 * @return this
@@ -131,7 +131,7 @@ public interface FormLayoutConfigurator<C extends FormLayoutConfigurator<C>> ext
 	}
 
 	/**
-	 * Create and add a new {@link FormItem} to this layout that wraps the given field with a label.
+	 * Create and content a new {@link FormItem} to this layout that wraps the given field with a label.
 	 * @param field the field component to wrap
 	 * @param label the label text to set
 	 * @return this

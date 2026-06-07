@@ -55,7 +55,7 @@ public interface KanbanBoard<T, C> extends HasComponent {
     void setCommentHandler(KanbanCommentHandler<T> commentHandler);
 
     /**
-     * Sets the i18n labels used for internally-rendered buttons (options, add card,
+     * Sets the i18n labels used for internally-rendered buttons (options, content card,
      * open, edit, delete). Passing {@code null} resets to the built-in English defaults.
      *
      * @param i18n the {@link KanbanI18n} instance; {@code null} resets to defaults

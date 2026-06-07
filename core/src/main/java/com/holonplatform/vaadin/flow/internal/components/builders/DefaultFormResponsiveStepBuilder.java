@@ -30,6 +30,7 @@ public class DefaultFormResponsiveStepBuilder
         return this;
     }
 
+    @SuppressWarnings("unused") // debug helper
     private void printResponsiveStepsValue() {
         responsiveSteps.forEach(responsiveStep -> System.out.println(responsiveStep.toJson()));
     }

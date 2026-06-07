@@ -46,6 +46,7 @@ public class TestLabel {
 		assertTrue(div.getId().isPresent());
 		assertEquals("testid", div.getId().get());
 
+		@SuppressWarnings("rawtypes")
 		DivConfigurator divConfigurator = Components.configure(div);
 		assertNotNull(divConfigurator);
 

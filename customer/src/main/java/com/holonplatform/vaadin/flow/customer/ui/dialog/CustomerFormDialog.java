@@ -196,8 +196,8 @@ public class CustomerFormDialog extends Dialog {
         form.setResponsiveSteps(
                 new FormLayout.ResponsiveStep("0", 1),
                 new FormLayout.ResponsiveStep("480px", 2));
-        var typeItem   = form.addFormItem(typeSelect,       getTranslation(CustomerI18n.FIELD_TYPE));
-        var statusItem = form.addFormItem(statusSelect,     getTranslation(CustomerI18n.FIELD_STATUS));
+        form.addFormItem(typeSelect,       getTranslation(CustomerI18n.FIELD_TYPE));
+        form.addFormItem(statusSelect,     getTranslation(CustomerI18n.FIELD_STATUS));
         var nameItem   = form.addFormItem(nameBlock,        getTranslation(CustomerI18n.FIELD_FIRST_NAME));
         var lastItem   = form.addFormItem(lastNameField,    getTranslation(CustomerI18n.FIELD_LAST_NAME));
         form.addFormItem(companyNameField, getTranslation(CustomerI18n.FIELD_COMPANY_NAME));

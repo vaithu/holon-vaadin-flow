@@ -344,7 +344,7 @@ public class TestKanbanBoard {
 
                     @Override
                     public void onAddCard(String columnId) {
-                        action.set("add:" + columnId);
+                        action.set("content:" + columnId);
                     }
                 })
                 .withItems(List.of(new TaskItem("1", "Design login", "TODO")))
@@ -355,10 +355,10 @@ public class TestKanbanBoard {
         optionsButton.click();
         assertEquals("options:TODO", action.get());
 
-        Button addCardButton = findFirstButtonByClass(board.getComponent(), "kanban-board-column-add-card");
+        Button addCardButton = findFirstButtonByClass(board.getComponent(), "kanban-board-column-content-card");
         assertNotNull(addCardButton);
         addCardButton.click();
-        assertEquals("add:TODO", action.get());
+        assertEquals("content:TODO", action.get());
     }
 
     private int countComponentsByClass(Component root, String className) {
@@ -368,6 +368,7 @@ public class TestKanbanBoard {
                 .sum();
     }
 
+    @SuppressWarnings("unused") // test helper, kept for future assertions
     private int countComponentsByType(Component root, Class<? extends Component> type) {
         int count = type.isInstance(root) ? 1 : 0;
         return count + root.getChildren()

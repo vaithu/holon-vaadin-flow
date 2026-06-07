@@ -7,6 +7,7 @@ import com.holonplatform.vaadin.flow.components.css.CSSUtility;
 import com.holonplatform.vaadin.flow.vaadinplus.Layout;
 import com.holonplatform.vaadin.flow.vaadinplus.components.BreadcrumbItem;
 import com.holonplatform.vaadin.flow.vaadinplus.components.Header;
+import com.holonplatform.vaadin.flow.vaadinplus.utilities.HeadingLevel;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasEnabled;
 import com.vaadin.flow.component.HasSize;
@@ -46,6 +47,22 @@ public abstract class AbstractHeaderConfigurator<C extends HeaderConfigurator<C>
     }
 
     @Override
+    public C heading(Component component, HeadingLevel headingLevel) {
+        if (headingLevel == null || headingLevel == HeadingLevel.NONE) {
+            getComponent().setHeading(component);
+        } else if (component != null) {
+            getComponent().setHeading(component);
+        }
+        return getConfigurator();
+    }
+
+    @Override
+    public C heading(String title, HeadingLevel headingLevel) {
+        getComponent().setHeading(title, headingLevel != null ? headingLevel : HeadingLevel.H2);
+        return getConfigurator();
+    }
+
+    @Override
     public C hidePrefixOnDesktop(boolean hidePrefixOnDesktop) {
         if (hidePrefixOnDesktop && getComponent().getPrefixComponents() != null) {
             Arrays.stream(getComponent().getPrefixComponents()).filter(Objects::nonNull)
@@ -70,6 +87,16 @@ public abstract class AbstractHeaderConfigurator<C extends HeaderConfigurator<C>
     public C actions(Component... components) {
         getComponent().setActions(components);
         return getConfigurator();
+    }
+
+    @Override
+    public Layout getColumnLayout() {
+        return getComponent().getColumnLayout();
+    }
+
+    @Override
+    public Layout getRowLayout() {
+        return getComponent().getRowLayout();
     }
 
     @Override
@@ -132,16 +159,6 @@ public abstract class AbstractHeaderConfigurator<C extends HeaderConfigurator<C>
                 .title("Close")
                 .build();
         return addActions(configurator, discardBtn);
-    }
-
-    @Override
-    public Layout getRowLayout() {
-        return getComponent().getRowLayout();
-    }
-
-    @Override
-    public Layout getColumnLayout() {
-        return getComponent().getColumnLayout();
     }
 
     @Override

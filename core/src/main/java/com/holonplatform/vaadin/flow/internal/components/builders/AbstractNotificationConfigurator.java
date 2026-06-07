@@ -140,7 +140,7 @@ public abstract class AbstractNotificationConfigurator<C extends NotificationCon
     }
 
     @Override
-    public C closeButton(Consumer<ButtonConfigurator> buttonConfigurator) {
+    public C closeButton(Consumer<ButtonConfigurator<?>> buttonConfigurator) {
         Button closeButton = Components.button().build();
         buttonConfigurator.accept(ButtonConfigurator.configure(closeButton));
         add(closeButton);

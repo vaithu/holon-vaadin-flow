@@ -18,7 +18,7 @@ import com.holonplatform.vaadin.flow.vaadinplus.components.TransferList;
  *     .onTransfer(event -> save(event.getSelectedItems()))
  *     .build();
  *
- * add(list);
+ * content(list);
  * }</pre>
  *
  * @see TransferListConfigurator

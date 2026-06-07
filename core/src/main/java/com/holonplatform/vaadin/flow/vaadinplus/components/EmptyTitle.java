@@ -19,8 +19,6 @@ import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
 import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.HasSize;
-import com.vaadin.flow.component.HasStyle;
 import com.vaadin.flow.component.html.Div;
 
 /**
@@ -31,7 +29,7 @@ import com.vaadin.flow.component.html.Div;
  *
  * @see Empty
  */
-public class EmptyTitle extends Div implements HasSize, HasStyle {
+public class EmptyTitle extends Div {
 
     private Localizable localizable;
 

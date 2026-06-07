@@ -17,7 +17,10 @@ package com.holonplatform.vaadin.flow.components.builders;
 
 import com.holonplatform.vaadin.flow.internal.components.builders.DefaultButtonBuilder;
 import com.holonplatform.vaadin.flow.internal.components.builders.DefaultDeleteButtonBuilder;
+import com.vaadin.flow.component.Key;
+import com.vaadin.flow.component.KeyModifier;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.icon.VaadinIcon;
 
 /**
  * Builder to create {@link Button} components.
@@ -36,6 +39,67 @@ public interface ButtonBuilder extends ButtonConfigurator<ButtonBuilder>, Compon
 
 	static ButtonBuilder createDelBtn() {
 		return new DefaultDeleteButtonBuilder();
+	}
+
+	default ButtonBuilder newButton() {
+		return icon(VaadinIcon.PLUS)
+		.text("New", "new.code")
+            .withFocusShortcutKey(Key.KEY_N, KeyModifier.CONTROL)
+                .tooltip("Create New Record", "content.new.code")
+				.primary();
+	}
+
+	default ButtonBuilder newButton(String text) {
+		return newButton().text(text);
+	}
+
+	default ButtonBuilder edit() {
+		return icon(VaadinIcon.EDIT)
+		.text("Edit", "edit.code")
+            .iconAfterText(false)
+                .tooltip("Edit Record", "content.edit.code")
+				.tertiaryInline();
+	}
+
+	default ButtonBuilder edit(String text) {
+		return edit().text(text);
+	}
+
+	default ButtonBuilder duplicate() {
+		return icon(VaadinIcon.COPY)
+		.text("Duplicate", "duplicate.code")
+                .tooltip("Create Duplicate Record", "content.duplicate.code")
+				.tertiaryInline();
+	}
+
+	default ButtonBuilder duplicate(String text) {
+		return duplicate().text(text);
+	}
+
+	default ButtonBuilder export() {
+		return icon(VaadinIcon.DOWNLOAD)
+		.text("Export", "export.code")
+                .tooltip("Export Records", "content.export.code")
+				.tertiaryInline();
+	}
+
+	default ButtonBuilder export(String text) {
+		return export().text(text);
+	}
+
+	default ButtonBuilder refresh() {
+		return icon(VaadinIcon.REFRESH)
+		.text("Refresh", "refresh.code")
+                .tooltip("Refresh Records", "content.refresh.code")
+				.tertiaryInline();
+	}
+
+	default ButtonBuilder refresh(String text) {
+		return refresh().text(text);
+	}
+
+	default ButtonBuilder delete() {
+		return createDelBtn();
 	}
 
 }

@@ -116,7 +116,7 @@ public interface FlexComponentConfigurator<C extends FlexComponentConfigurator<C
 	 * Setting to flex grow property value 0 disables the expansion of the element container. Negative values are not
 	 * allowed.
 	 * </p>
-	 * @param component The component to add
+	 * @param component The component to content
 	 * @param flexGrow the proportion of the available space the element container should take up
 	 * @return this
 	 */
@@ -141,12 +141,12 @@ public interface FlexComponentConfigurator<C extends FlexComponentConfigurator<C
 	 * Setting to flex grow property value 0 disables the expansion of the element container. Negative values are not
 	 * allowed.
 	 * </p>
-	 * @param component The {@link HasComponent} to add
+	 * @param component The {@link HasComponent} to content
 	 * @param flexGrow the proportion of the available space the element container should take up
 	 * @return this
 	 */
 	default C addAndExpand(HasComponent component, double flexGrow) {
-		ObjectUtils.argumentNotNull(component, "Component to add must be not null");
+		ObjectUtils.argumentNotNull(component, "Component to content must be not null");
 		return addAndExpand(component.getComponent(), flexGrow);
 	}
 
@@ -182,7 +182,7 @@ public interface FlexComponentConfigurator<C extends FlexComponentConfigurator<C
 
 	/**
 	 * Adds a component to the layout using given <code>alignment</code>.
-	 * @param component The component to add
+	 * @param component The component to content
 	 * @param alignment the Alignment to use for the component
 	 * @return this
 	 */
@@ -193,7 +193,7 @@ public interface FlexComponentConfigurator<C extends FlexComponentConfigurator<C
 
 	/**
 	 * Adds a component to the layout using given <code>alignment</code>.
-	 * @param component The component to add (not null)
+	 * @param component The component to content (not null)
 	 * @param alignment the Alignment to use for the component
 	 * @return this
 	 */

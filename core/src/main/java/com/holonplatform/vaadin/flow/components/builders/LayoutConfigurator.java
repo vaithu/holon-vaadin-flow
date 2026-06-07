@@ -7,7 +7,7 @@ import com.iyensoft.vaadin.flow.utils.responsive.ViewMode;
 import com.vaadin.flow.component.Component;
 
 public interface LayoutConfigurator<C extends LayoutConfigurator<C>> extends ComponentConfigurator<C>,
-        HasSizeConfigurator<C>, HasStyleConfigurator<C>, HasEnabledConfigurator<C>, HasComponentsConfigurator<C>  {
+        HasSizeConfigurator<C>, HasStyleConfigurator<C>, HasComponentsConfigurator<C>  {
 
     C alignItems(AlignItems alignItems);
 

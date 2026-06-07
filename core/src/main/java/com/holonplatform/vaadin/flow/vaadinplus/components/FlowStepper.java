@@ -67,7 +67,7 @@ import java.util.stream.Collectors;
 @com.vaadin.flow.component.Tag("flow-stepper")
 @JsModule("./stepper-component.js")
 @StyleSheet("context://stepper.css")
-public class FlowStepper extends Component implements HasSize, HasStyle, HasEnabled {
+public class FlowStepper extends Component implements HasSize, HasEnabled {
 
     private static final long serialVersionUID = 1L;
 

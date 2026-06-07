@@ -18,8 +18,6 @@ package com.holonplatform.vaadin.flow.internal.components;
 import com.holonplatform.vaadin.flow.components.ValidationStatusHandler;
 import com.vaadin.flow.component.notification.Notification;
 
-import java.util.stream.Collectors;
-
 /**
  * A {@link ValidationStatusHandler} which uses an error {@link Notification} to notify validation errors.
  *

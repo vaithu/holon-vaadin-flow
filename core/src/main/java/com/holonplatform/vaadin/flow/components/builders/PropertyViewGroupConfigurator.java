@@ -82,7 +82,7 @@ public interface PropertyViewGroupConfigurator<C extends PropertyViewGroupConfig
 	/**
 	 * Add a {@link BiConsumer} to allow further {@link ViewComponent} configuration after generation and before the
 	 * {@link ViewComponent} is actually bound to a property.
-	 * @param postProcessor the post processor to add (not null)
+	 * @param postProcessor the post processor to content (not null)
 	 * @return this
 	 */
 	C withPostProcessor(BiConsumer<Property<?>, ViewComponent<?>> postProcessor);

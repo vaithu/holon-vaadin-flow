@@ -16,7 +16,6 @@
 package com.holonplatform.vaadin.flow.vaadinplus.components;
 
 import com.holonplatform.vaadin.flow.components.Components;
-import com.vaadin.flow.component.ClickNotifier;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Span;
 
@@ -35,7 +34,7 @@ import com.vaadin.flow.component.html.Span;
  *
  * @see PaginationItem
  */
-public class PaginationLink extends Div implements ClickNotifier<Div> {
+public class PaginationLink extends Div {
 
     private static final long serialVersionUID = 1L;
 

@@ -44,7 +44,7 @@ public interface ButtonGroupConfigurator<C extends ButtonGroupConfigurator<C>>
      *
      * <p>Null elements are silently skipped.</p>
      *
-     * @param buttons the buttons to add (null array is a no-op)
+     * @param buttons the buttons to content (null array is a no-op)
      * @return this configurator for chaining
      */
     C add(Button... buttons);

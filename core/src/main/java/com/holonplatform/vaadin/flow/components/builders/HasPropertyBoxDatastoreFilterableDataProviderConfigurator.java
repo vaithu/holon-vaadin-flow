@@ -45,7 +45,7 @@ public interface HasPropertyBoxDatastoreFilterableDataProviderConfigurator<F, D 
 	 * @param target The {@link DataTarget} to use as query target (not null)
 	 * @param filterConverter Data provider filter type to {@link QueryFilter} converter (not null)
 	 * @param properties The property set to use as query projection (not null)
-	 * @return An extended builder which allow further data provider configuration, for example to add fixed
+	 * @return An extended builder which allow further data provider configuration, for example to content fixed
 	 *         {@link QueryFilter} and {@link QuerySort}.
 	 * @see DatastoreDataProviderConfigurator
 	 */
@@ -60,7 +60,7 @@ public interface HasPropertyBoxDatastoreFilterableDataProviderConfigurator<F, D 
 	 * @param target The {@link DataTarget} to use as query target (not null)
 	 * @param filterConverter Data provider filter type to {@link QueryFilter} converter (not null)
 	 * @param properties The property set to use as query projection (not null)
-	 * @return An extended builder which allow further data provider configuration, for example to add fixed
+	 * @return An extended builder which allow further data provider configuration, for example to content fixed
 	 *         {@link QueryFilter} and {@link QuerySort}.
 	 * @see DatastoreDataProviderConfigurator
 	 */

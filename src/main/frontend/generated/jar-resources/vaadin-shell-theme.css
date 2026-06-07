@@ -430,6 +430,84 @@ vaadin-menu-bar-button[focus-ring] {
   --vaadin-grid-border-color:             var(--zinc-200);
 }
 
+/* ── Outer frame — card feel ── */
+vaadin-grid {
+  border        : 1px solid var(--zinc-200, #e4e4e7);
+  border-radius : var(--radius-md, 0.5rem);
+  overflow      : hidden;
+}
+
+/* ── Header — compact uppercase labels ── */
+vaadin-grid::part(header-cell) {
+  background     : var(--surface-1, #f8fafc);
+  font-size      : 0.6875rem;
+  font-weight    : 600;
+  letter-spacing : 0.06em;
+  text-transform : uppercase;
+  color          : var(--text-secondary, #6b7280);
+  border-bottom  : 1px solid var(--zinc-200, #e4e4e7);
+  padding-block  : 0.625rem;
+}
+
+/* ── Body cells — hairline row separators; NO transition (prevents selection flicker) ── */
+vaadin-grid::part(body-cell) {
+  border-bottom : 1px solid var(--zinc-100, #f4f4f5);
+  font-size     : var(--font-size-base, 0.8125rem);
+}
+
+/* ── Full-row hover — set the CSS variable that every cell reads for background ──
+   vaadin-grid::part(row):hover covers all cells in the row at once.
+   Per-cell hover via ::part(body-cell):hover only covered the single hovered cell.  */
+vaadin-grid::part(row):hover {
+  --vaadin-grid-cell-background : color-mix(in srgb, var(--brand-400, #60a5fa) 5%, var(--surface-0, #ffffff));
+}
+
+/* ── Footer ── */
+vaadin-grid::part(footer-cell) {
+  background  : var(--surface-1, #f8fafc);
+  font-weight : 500;
+  border-top  : 1px solid var(--zinc-200, #e4e4e7);
+}
+
+/* ── Selected row ──
+   Same --vaadin-grid-cell-background variable pattern: Vaadin's internal shadow CSS
+   reads this variable for each cell's background, so setting it on the cell part
+   is the correct override point.
+   Top + bottom box-shadows create an accent line without layout shift.              */
+vaadin-grid::part(selected-row-cell) {
+  --vaadin-grid-cell-background : var(--brand-50, #eff6ff);
+  color       : var(--brand-700, #1d4ed8);
+  font-weight : 500;
+  box-shadow  : 0 -1px 0 0 var(--brand-200, #bfdbfe),
+                0  1px 0 0 var(--brand-200, #bfdbfe);
+}
+
+vaadin-grid::part(selected-row-cell):hover {
+  --vaadin-grid-cell-background : var(--brand-100, #dbeafe);
+}
+
+/* Kill any Aura animation/transition on rows/cells — prevents flicker on selection */
+vaadin-grid::part(row),
+vaadin-grid::part(body-cell),
+vaadin-grid::part(selected-row),
+vaadin-grid::part(selected-row-cell) {
+  animation  : none !important;
+  transition : none !important;
+}
+
+/* ── Numeric column cells ──
+   Part 'col-numeric' set via Grid.Column.setPartNameGenerator() in ListingBundleBuilder.
+   Targets the shadow-DOM <td>. text-align is an inherited CSS property
+   so it flows from <td> through the slot to vaadin-grid-cell-content.  */
+vaadin-grid::part(col-numeric) {
+  text-align          : right;
+  font-variant-numeric: tabular-nums;
+  letter-spacing      : -0.01em;
+}
+vaadin-grid::part(header-cell col-numeric) {
+  text-align: right;
+}
+
 
 /* ══════════════════════════════════════════════════════════════
    6. FORM INPUTS  (vaadin-text-field, vaadin-combo-box, etc.)

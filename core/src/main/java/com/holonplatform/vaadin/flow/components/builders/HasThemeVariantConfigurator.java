@@ -27,7 +27,7 @@ public interface HasThemeVariantConfigurator<V extends Enum<V>, C extends HasThe
 
 	/**
 	 * Add given theme variants to the component.
-	 * @param variants The theme variants to add
+	 * @param variants The theme variants to content
 	 * @return this
 	 */
 	@SuppressWarnings("unchecked")

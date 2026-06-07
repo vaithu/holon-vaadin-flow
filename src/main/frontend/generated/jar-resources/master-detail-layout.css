@@ -174,9 +174,9 @@
         max-width: unset;
     }
 
-    .mdl-root .iyen-master-content {
-        overflow-y: auto; /* content row scrolls; master column no longer does */
-    }
+    /* Keep overflow:hidden at desktop so the .iyen-master-footer (pagination
+       bar) stays pinned at the panel bottom. The Vaadin Grid handles its own
+       internal virtual-scroll, so the content area itself never needs to scroll. */
 }
 
 /* -----------------------------------------------------------------------
@@ -211,7 +211,7 @@
  * overrides ensure the values hold inside the MasterDetailLayout context.
  */
 .mdl-root .iyen-detail-header {
-    padding: 1rem 1.5rem;
+    padding: 0;
     background: var(--mdl-surface-0);
     border-bottom: 1px solid var(--mdl-surface-100);
 }
@@ -247,11 +247,15 @@
 }
 
 /* ── Selected row ──
- *  Grid.setPartNameGenerator returns "mdl-selected" for the active row.
+ *  Grid.setPartNameGenerator returns "mdl-selected" for the active row. The
+ *  generator propagates the part name to BOTH the row element and every body
+ *  cell, so `::part(mdl-selected)` alone would paint the accent on every cell.
+ *  Combining `row` + `mdl-selected` restricts the match to the row element only,
+ *  rendering a single full-row left accent bar.
  *  ::part() pierces the vaadin-grid shadow DOM.
  *  3px inset box-shadow acts as the left accent bar (avoids layout shift). */
 
-.mdl-master-grid::part(mdl-selected) {
+.mdl-master-grid::part(row mdl-selected) {
     box-shadow: inset 3px 0 0 var(--mdl-selected-row-accent);
 }
 
@@ -312,3 +316,236 @@
     from { opacity: 0; transform: translateY(4px); }
     to   { opacity: 1; transform: none; }
 }
+
+/* -----------------------------------------------------------------------
+ * 11) Host wrapper — use on the outer view container that hosts a
+ *     MasterDetailLayout so it fills its parent and clips overflow.
+ *     Replaces hand-rolled `display:flex; height:100%; overflow:hidden`
+ *     blocks consumers used to write per-view.
+ * ----------------------------------------------------------------------- */
+.mdl-host {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    min-height: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+/* -----------------------------------------------------------------------
+ * 12) Master header (e.g. GridHeader from a ListingBundle, or any custom
+ *     Header). Padding lives on the header's internal row container so
+ *     border-bottom hugs the panel edge.
+ * ----------------------------------------------------------------------- */
+.mdl-root .iyen-master-header {
+    padding: 0;
+    border-bottom: 1px solid var(--mdl-surface-200);
+    background: var(--mdl-surface-0);
+}
+
+.mdl-root .iyen-master-header .iyen-header__row {
+    padding: 0.875rem 1rem 0.75rem;
+}
+
+.mdl-root .iyen-master-header .iyen-header__row h1,
+.mdl-root .iyen-master-header .iyen-header__row h2,
+.mdl-root .iyen-master-header .iyen-header__row h3,
+.mdl-root .iyen-master-header .iyen-header__row h4 {
+    font-size: 0.8125rem;
+    font-weight: 600;
+}
+
+/* -----------------------------------------------------------------------
+ * 13) Master toolbar slot — search field, page-size selector, filter
+ *     menu, or a routed GridHeader (when the bundle was built with
+ *     gridHeader(title), the GridHeader is placed in this slot).
+ * ----------------------------------------------------------------------- */
+.mdl-root .iyen-master-toolbar {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--mdl-surface-200);
+    box-sizing: border-box;
+}
+
+/* -----------------------------------------------------------------------
+ * 13b) Master footer — pagination bar / selector pinned at the bottom of
+ *      the master panel, below the grid. The footer is appended as the
+ *      last child of .iyen-master-content (a flex column), so the grid
+ *      above it absorbs all remaining height and the footer never shifts
+ *      vertically as the grid rows change.
+ * ----------------------------------------------------------------------- */
+.mdl-root .iyen-master-footer {
+    flex: 0 0 auto;
+    border-top: 1px solid var(--mdl-surface-200);
+    background: var(--mdl-surface-0);
+    box-sizing: border-box;
+    width: 100%;
+}
+
+/* -----------------------------------------------------------------------
+ * 14) Detail header — padding on the inner row + sized headings so the
+ *     border-bottom (set on .iyen-detail-header above) sits flush with
+ *     the panel edge.
+ * ----------------------------------------------------------------------- */
+.mdl-root .iyen-detail-header .iyen-header__row {
+    padding: 0.875rem 1.5rem;
+    gap: 0.875rem;
+    align-items: center;
+}
+
+.mdl-root .iyen-detail-header .iyen-header__row h1,
+.mdl-root .iyen-detail-header .iyen-header__row h2,
+.mdl-root .iyen-detail-header .iyen-header__row h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+}
+
+.mdl-root .iyen-detail-header .iyen-header__details {
+    font-size: 0.75rem;
+    margin-top: 3px;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+/* -----------------------------------------------------------------------
+ * 15) Sticky detail footer — pinned at bottom of the detail panel.
+ *     Builder-applied class: see DefaultMasterDetailBuilder.detailFooter().
+ * ----------------------------------------------------------------------- */
+.mdl-root .iyen-detail-footer {
+    position: sticky;
+    bottom: 0;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    border-top: 1px solid var(--mdl-surface-200);
+    background: var(--mdl-surface-0);
+    width: 100%;
+    box-sizing: border-box;
+    min-width: 0;
+}
+
+/* -----------------------------------------------------------------------
+ * 16) Detail content building blocks.
+ *     Add these classes inside detail content suppliers so consumers
+ *     never need view-local CSS files for common patterns.
+ * ----------------------------------------------------------------------- */
+
+/* Vertical stack of tab content with consistent spacing */
+.mdl-tab-body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.875rem;
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    padding-bottom: 0.875rem;
+}
+
+/* Card-style section: white bg, 1px border, rounded corners */
+.mdl-form-section {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    padding: 1rem 1.125rem;
+    border: 1px solid var(--mdl-surface-200);
+    border-radius: 10px;
+    background: var(--mdl-surface-0);
+    min-width: 0;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+/* Constrain Vaadin web components to the card width (defaults exceed it) */
+.mdl-form-section vaadin-form-layout {
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+}
+
+.mdl-form-section vaadin-text-field,
+.mdl-form-section vaadin-email-field {
+    width: 100%;
+    min-width: 0;
+}
+
+/* All-caps tertiary section heading */
+.mdl-section-label {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    margin-bottom: 0.75rem;
+    color: var(--mdl-text-secondary);
+}
+
+/* Right-aligned action row inside a tab body */
+.mdl-tab-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+}
+
+/* Read-only profile rows: "key  value" */
+.mdl-profile-row {
+    display: flex;
+    gap: 0.75rem;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--mdl-surface-100);
+}
+.mdl-profile-row:last-child { border-bottom: none; }
+
+.mdl-profile-key {
+    flex: 0 0 8rem;
+    font-size: 0.75rem;
+    color: var(--mdl-text-secondary);
+}
+
+.mdl-profile-value {
+    flex: 1 1 auto;
+    font-size: 0.8125rem;
+    min-width: 0;
+    word-break: break-word;
+}
+
+/* Detail-header meta line: "role · department · location" */
+.mdl-detail-meta {
+    font-size: 0.75rem;
+    color: var(--mdl-text-secondary);
+}
+
+/* Confirmation message for destructive actions */
+.mdl-delete-msg {
+    font-size: 0.8125rem;
+    color: var(--mdl-text-secondary);
+}
+
+/* -----------------------------------------------------------------------
+ * 17) Status pill — small rounded badge with leading colour dot.
+ *     Compose with one of the colour modifiers (.mdl-status--*) to render.
+ * ----------------------------------------------------------------------- */
+.mdl-status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.6875rem;
+    font-weight: 500;
+    padding: 3px 10px 3px 6px;
+    border-radius: 9999px;
+    flex-shrink: 0;
+}
+.mdl-status-pill::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+    flex-shrink: 0;
+}
+
+.mdl-status--active { background: #dcfce7; color: #166534; }
+.mdl-status--idle   { background: #f3f4f6; color: #4b5563; }
+.mdl-status--new    { background: #ede9fe; color: #5b21b6; }
+

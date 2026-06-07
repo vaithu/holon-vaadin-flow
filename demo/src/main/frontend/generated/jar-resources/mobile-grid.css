@@ -1,0 +1,166 @@
+/* =====================================================
+   Mobile Grid Column – Root
+   ===================================================== */
+
+.mobile-grid-column {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    align-items: center;
+    padding-right: 1%;
+}
+
+/* When rendered inside a row-based parent */
+.mobile-grid-column.flex-row {
+    flex-direction: row;
+    gap: var(--lumo-space-m);
+}
+
+/* =====================================================
+   Sections (Primary / Secondary / Tertiary)
+   ===================================================== */
+
+.mobile-grid-primary,
+.mobile-grid-secondary,
+.mobile-grid-tertiary {
+    display: flex;
+}
+
+/* ---------- Primary ----------
+   Avatar / icons / actions
+   -------------------------------- */
+
+.mobile-grid-primary {
+    align-items: center;
+    gap: var(--lumo-space-xs);
+}
+
+/* ---------- Secondary ----------
+   Main descriptive text
+   -------------------------------- */
+
+.mobile-grid-secondary {
+    flex-direction: column;
+    flex-grow: 1;
+    align-items: flex-start;
+}
+
+/* ---------- Tertiary ----------
+   Numeric value + date
+   -------------------------------- */
+
+.mobile-grid-tertiary {
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+/* =====================================================
+   Text Styles
+   ===================================================== */
+
+/* ---------- Primary text ---------- */
+
+.mobile-grid-primary-text {
+    font-size: var(--lumo-font-size-m);
+    font-weight: 500;
+    color: var(--lumo-header-text-color);
+
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+/* ---------- Secondary text ---------- */
+
+.mobile-grid-secondary-text {
+    font-size: var(--lumo-font-size-s);
+    font-weight: 600; /* semibold */
+    color: var(--lumo-body-text-color);
+
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+
+    margin-bottom: var(--lumo-space-s);
+}
+
+/* ---------- Tertiary value ---------- */
+
+.mobile-grid-tertiary-value {
+    font-weight: bold;
+    line-height: 1.2;
+    flex-grow: 1;
+}
+
+/* ---------- Tertiary date ---------- */
+
+.mobile-grid-tertiary-date {
+    font-size: var(--lumo-font-size-xs);
+    color: var(--lumo-tertiary-text-color);
+}
+
+/* =====================================================
+   Numeric / Currency Styling
+   ===================================================== */
+
+.mobile-grid-currency {
+    font-family: monospace;
+    letter-spacing: 0.02em;
+}
+
+.mobile-grid-positive {
+    color: var(--lumo-success-text-color);
+}
+
+.mobile-grid-negative {
+    color: var(--lumo-error-text-color);
+}
+
+/* =====================================================
+   Media
+   ===================================================== */
+
+.mobile-grid-image {
+    width: var(--lumo-size-m);
+    height: var(--lumo-size-m);
+    flex-shrink: 0;
+}
+
+/* =====================================================
+   Utilities (Optional but useful)
+   ===================================================== */
+
+/* Hide empty sections defensively */
+.mobile-grid-primary:empty,
+.mobile-grid-secondary:empty,
+.mobile-grid-tertiary:empty {
+    display: none;
+}
+
+/* Tight vertical alignment for compact rows */
+.mobile-grid-compact .mobile-grid-secondary-text {
+    margin-bottom: 0;
+}
+
+/* =====================================================
+   Responsive tweaks (optional)
+   ===================================================== */
+
+@media (max-width: 600px) {
+    .mobile-grid-column {
+        gap: var(--lumo-space-s);
+    }
+
+    .mobile-grid-primary-text {
+        font-size: var(--lumo-font-size-s);
+    }
+
+    .mobile-grid-tertiary-value {
+        font-size: var(--lumo-font-size-s);
+    }
+}
+
+/* Target vaadin-grid-cell-content that contains the specific mobile grid layout */
+vaadin-grid-cell-content:has(> .mobile-grid-column.flex-row) {
+    padding-left: 0 !important;
+}

@@ -59,23 +59,23 @@ public interface ListSingleSelectConfigurator<T, ITEM, B extends ListSingleSelec
 
 	/**
 	 * Adds the given component before the list items.
-	 * @param component The component to add (not null)
+	 * @param component The component to content (not null)
 	 * @return this
 	 */
 	B withPrefixComponent(Component component);
 
 	/**
 	 * Adds the given component before the given list item.
-	 * @param beforeItem The item before which to add the component (not null)
-	 * @param component  The component to add (not null)
+	 * @param beforeItem The item before which to content the component (not null)
+	 * @param component  The component to content (not null)
 	 * @return this
 	 */
 	B withComponentBefore(ITEM beforeItem, Component component);
 
 	/**
 	 * Adds the given component after the given list item.
-	 * @param afterItem The item after which to add the component (not null)
-	 * @param component The component to add (not null)
+	 * @param afterItem The item after which to content the component (not null)
+	 * @param component The component to content (not null)
 	 * @return this
 	 */
 	B withComponentAfter(ITEM afterItem, Component component);
@@ -143,7 +143,7 @@ public interface ListSingleSelectConfigurator<T, ITEM, B extends ListSingleSelec
 		 * @param datastore The {@link Datastore} to use (not null)
 		 * @param target    The {@link DataTarget} to use as query target (not null)
 		 * @return An extended builder which allow further data provider configuration,
-		 *         for example to add fixed {@link QueryFilter} and {@link QuerySort}.
+		 *         for example to content fixed {@link QueryFilter} and {@link QuerySort}.
 		 * @see DatastoreDataProviderConfigurator
 		 */
 		D dataSource(Datastore datastore, DataTarget<?> target);

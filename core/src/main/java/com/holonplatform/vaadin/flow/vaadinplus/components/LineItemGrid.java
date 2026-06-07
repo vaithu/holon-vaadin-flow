@@ -185,7 +185,7 @@ public class LineItemGrid extends Composite<Div> implements HasComponent {
      * Appends {@code count} new empty rows in a single batch refresh.
      * Silently clamps so the total never exceeds {@value #MAX_ROWS}.
      *
-     * @param count number of rows to add (clamped to available capacity)
+     * @param count number of rows to content (clamped to available capacity)
      */
     public void addRows(int count) {
         int available = MAX_ROWS - rows.size();
@@ -388,7 +388,7 @@ public class LineItemGrid extends Composite<Div> implements HasComponent {
         rowCountField.setMin(1);
         rowCountField.setMax(50);
         rowCountField.setStepButtonsVisible(true);
-        rowCountField.setTitle("Number of rows to add");
+        rowCountField.setTitle("Number of rows to content");
 
         Button addBtn = Components.button().text("Add Rows").icon(VaadinIcon.PLUS).tertiary()
                 .withClickListener(e -> {
@@ -511,7 +511,7 @@ public class LineItemGrid extends Composite<Div> implements HasComponent {
             refreshAll();
         });
 
-        var deleteBtn = Components.button().text("Delete Row").error().tertiary().withClickListener(e -> removeRow(row)).build();
+        Components.button().text("Delete Row").error().tertiary().withClickListener(e -> removeRow(row)).build();
 
         Sheet.builder(Sheet.Side.BOTTOM)
                 .title(row.getItemName() != null ? row.getItemName() : "Edit Line Item")
@@ -529,7 +529,7 @@ public class LineItemGrid extends Composite<Div> implements HasComponent {
     // ── Bulk items dialog ─────────────────────────────────────────────────────
 
     /**
-     * Two-panel bulk add dialog:
+     * Two-panel bulk content dialog:
      * <ul>
      *   <li><b>Left</b> — searchable catalog list; click to toggle selection.</li>
      *   <li><b>Right</b> — selected items with individual per-item quantity steppers.</li>
@@ -684,7 +684,7 @@ public class LineItemGrid extends Composite<Div> implements HasComponent {
     // ── Refresh helpers ───────────────────────────────────────────────────────
 
     /**
-     * Full refresh — used after structural changes (add, remove, setRows, sheet save).
+     * Full refresh — used after structural changes (content, remove, setRows, sheet save).
      * Calls {@code dataView.refreshAll()} which tells Vaadin only the data changed;
      * the Grid component itself is NOT replaced.
      */

@@ -34,7 +34,7 @@ ComponentConfigurator<C>,
    */
   @SuppressWarnings("unchecked")
   default C bindOpened(Signal<? extends Boolean> openedSignal) {
-    SignalBindings.bind(this, openedSignal, this::opened);
+    SignalBindings.bind(this, openedSignal, value -> opened(value != null && value));
     return (C) this;
   }
 
@@ -92,7 +92,7 @@ ComponentConfigurator<C>,
 
     C closeButton(boolean close);
 
-    C closeButton(Consumer<ButtonConfigurator> buttonConfigurator);
+    C closeButton(Consumer<ButtonConfigurator<?>> buttonConfigurator);
 
    default C topStretch() {
        return position(Notification.Position.TOP_STRETCH);

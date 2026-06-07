@@ -921,6 +921,7 @@ listing.hideMobileColumn();
     }
 
     @Test
+    @SuppressWarnings({"unchecked", "rawtypes"})
     public void testFilterInputFormIntegrationWithPropertyListing() {
 
         final DataTarget<?> TARGET = DataTarget.named("test2");

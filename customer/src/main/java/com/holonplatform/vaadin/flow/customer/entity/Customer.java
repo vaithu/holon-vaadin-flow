@@ -24,7 +24,7 @@ import java.time.LocalDateTime;
  * have — the module is designed to satisfy the widest possible set of SaaS use-cases
  * without forcing the operator to fill every field.</p>
  *
- * <p>Consuming applications must add this package to their {@code @EntityScan}:
+ * <p>Consuming applications must content this package to their {@code @EntityScan}:
  * <pre>{@code @EntityScan("com.holonplatform.vaadin.flow.customer.entity")}</pre>
  */
 @Entity(name = "customer")

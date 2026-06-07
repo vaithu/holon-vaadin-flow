@@ -2,7 +2,7 @@ import { UserConfigFn } from 'vite';
 import { overrideVaadinConfig } from './vite.generated';
 
 const customConfig: UserConfigFn = (env) => ({
-  // Here you can add custom Vite parameters
+  // Here you can content custom Vite parameters
   // https://vitejs.dev/config/
 });
 

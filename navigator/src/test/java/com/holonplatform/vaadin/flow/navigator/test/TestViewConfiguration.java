@@ -48,7 +48,6 @@ import com.vaadin.flow.server.VaadinSession;
 
 public class TestViewConfiguration {
 
-    private int count;
     private MockUI ui;
 
     @BeforeEach

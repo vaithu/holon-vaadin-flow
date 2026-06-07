@@ -1,32 +1,27 @@
 /*
  * tokens.css
  *
- * Application-level design tokens that EXTEND vaadin-theme-25.1.css.
- * vaadin-theme-25.1.css MUST be loaded first (via AppShellConfigurator)
+ * Supplementary application-level design tokens.
+ * vaadin-shell-theme.css MUST be loaded first (via AppShellConfigurator)
  * before this file has any effect.
  *
  * What this file owns:
- *   1. Surface shades          — semantic surface aliases
- *   2. Semantic status colours — badge / status indicator fills
- *   3. Spacing scale           — rem-based, 4-pt grid (--space-*)
- *   4. [REMOVED]               — radius scale now lives in vaadin-theme-25.1.css (--radius-*)
- *   5. Border aliases          — --border-default / --border-separator alias the theme tokens
- *   6. Shadow aliases          — --shadow-shell / --shadow-card alias the theme shadow scale
- *   7. Typography scale        — rem font sizes (--font-size-*)
- *   8. Transition presets      — --transition-fast
- *   9. Layout aliases          — --master-panel-width / --toolbar-height alias theme tokens
+ *   1. [merged into vaadin-shell-theme.css] — spacing rem aliases (--space-*)
+ *   2. [merged into vaadin-shell-theme.css] — shadow aliases (--shadow-shell/card)
+ *   3. [merged into vaadin-shell-theme.css] — font-size scale (--font-size-*)
+ *   4. [merged into vaadin-shell-theme.css] — layout dimension aliases
+ *   5. [retained here]                      — any additional app-specific tokens
  *
- * Usage:
- *   Load via @StyleSheet("context://tokens.css") on any component that needs
- *   these tokens, or import from the global stylesheet.
- *   Never reference Lumo custom properties (--lumo-*) in application code.
+ * Note: --radius-*, --border-*, --shadow-*, --sp-*, --font-size-*, --space-*
+ * are all defined in vaadin-shell-theme.css section 0.
+ * This file exists as an optional extension point for future additions.
  */
 
 :root {
 
   /* ==========================================================================
    * 1. Surface shades
-   *    These alias the --surface-* tokens from vaadin-theme-25.1.css so that
+   *    These alias the --surface-* tokens from vaadin-shell-theme.css so that
    *    older/external code that used hardcoded hex values now inherits dark mode.
    * ========================================================================== */
 
@@ -43,7 +38,7 @@
 
   /* ==========================================================================
    * 3. Spacing scale  (rem — scales with user font-size preference)
-   *    --sp-* (px) from vaadin-theme-25.1.css is the canonical system.
+   *    --sp-* (px) from vaadin-shell-theme.css is the canonical system.
    *    These rem aliases allow both naming conventions to work.
    * ========================================================================== */
 
@@ -56,18 +51,18 @@
 
   /* ==========================================================================
    * 4. Border-radius scale
-   *    Defined in vaadin-theme-25.1.css as --radius-xs/sm/md/lg/xl/2xl/full.
+   *    Defined in vaadin-shell-theme.css as --radius-xs/sm/md/lg/xl/2xl/full.
    *    Do NOT redefine here — all component CSS must use the theme tokens.
    * ========================================================================== */
 
   /* ==========================================================================
    * 5. Border aliases
-   *    vaadin-theme-25.1.css defines --border-subtle, --border-default,
+   *    vaadin-shell-theme.css defines --border-subtle, --border-default,
    *    --border-strong, --border-focus, --border-separator, --border-error.
    *    These are pass-throughs; the theme file owns the actual values.
    * ========================================================================== */
 
-  /* (no overrides — use --border-* tokens from vaadin-theme-25.1.css directly) */
+  /* (no overrides — use --border-* tokens from vaadin-shell-theme.css directly) */
 
   /* ==========================================================================
    * 6. Shadow aliases
@@ -105,10 +100,10 @@
 
   /* ==========================================================================
    * 9. Layout dimension aliases
-   *    vaadin-theme-25.1.css defines --master-w and --toolbar-h.
+   *    vaadin-shell-theme.css defines --master-w and --toolbar-h.
    *    These aliases let older code keep using the longer names.
    * ========================================================================== */
 
-  --master-panel-width: var(--master-w);    /* 290px — defined in vaadin-theme-25.1.css */
-  --toolbar-height:     var(--toolbar-h);   /*  52px — defined in vaadin-theme-25.1.css */
+  --master-panel-width: var(--master-w);    /* 290px — defined in vaadin-shell-theme.css */
+  --toolbar-height:     var(--toolbar-h);   /*  52px — defined in vaadin-shell-theme.css */
 }

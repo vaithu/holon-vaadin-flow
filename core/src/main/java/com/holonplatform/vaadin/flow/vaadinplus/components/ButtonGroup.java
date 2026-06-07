@@ -17,8 +17,6 @@ package com.holonplatform.vaadin.flow.vaadinplus.components;
 
 import com.holonplatform.vaadin.flow.components.builders.ButtonGroupBuilder;
 import com.holonplatform.vaadin.flow.components.builders.ButtonGroupConfigurator;
-import com.vaadin.flow.component.HasSize;
-import com.vaadin.flow.component.HasStyle;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.html.Div;
@@ -56,7 +54,7 @@ import com.vaadin.flow.component.html.Div;
  * <p><strong>Holon Fluent builder:</strong>
  * <pre>{@code
  * ButtonGroup group = ButtonGroup.builder()
- *     .add(new Button("Left"), new Button("Center"), new Button("Right"))
+ *     .content(new Button("Left"), new Button("Center"), new Button("Right"))
  *     .vertical()
  *     .build();
  * }</pre>
@@ -70,7 +68,7 @@ import com.vaadin.flow.component.html.Div;
  * @see ButtonGroupConfigurator
  */
 @StyleSheet("context://button-group.css")
-public class ButtonGroup extends Div implements HasSize, HasStyle {
+public class ButtonGroup extends Div {
 
     private static final long serialVersionUID = 1L;
 
@@ -98,7 +96,7 @@ public class ButtonGroup extends Div implements HasSize, HasStyle {
     /**
      * Creates a horizontal button group pre-populated with the given buttons.
      *
-     * @param buttons the buttons to add; individual {@code null} entries are skipped
+     * @param buttons the buttons to content; individual {@code null} entries are skipped
      */
     public ButtonGroup(Button... buttons) {
         this();
@@ -109,7 +107,7 @@ public class ButtonGroup extends Div implements HasSize, HasStyle {
      * Creates a button group with the given orientation and buttons.
      *
      * @param orientation the layout direction (not null)
-     * @param buttons     the buttons to add; individual {@code null} entries are skipped
+     * @param buttons     the buttons to content; individual {@code null} entries are skipped
      */
     public ButtonGroup(Orientation orientation, Button... buttons) {
         this();
@@ -124,7 +122,7 @@ public class ButtonGroup extends Div implements HasSize, HasStyle {
     /**
      * Appends one or more {@link Button} instances to this group.
      *
-     * @param buttons the buttons to add; individual {@code null} entries are skipped
+     * @param buttons the buttons to content; individual {@code null} entries are skipped
      */
     public void add(Button... buttons) {
         if (buttons == null) return;
@@ -175,7 +173,7 @@ public class ButtonGroup extends Div implements HasSize, HasStyle {
      *
      * <pre>{@code
      * ButtonGroup group = ButtonGroup.builder()
-     *     .add(new Button("A"), new Button("B"), new Button("C"))
+     *     .content(new Button("A"), new Button("B"), new Button("C"))
      *     .fullWidth()
      *     .build();
      * }</pre>

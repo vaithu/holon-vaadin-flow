@@ -388,7 +388,7 @@ public class BulkItemPickerDialog extends Dialog {
     /**
      * Appends a single item to the catalogue without clearing the selection.
      *
-     * @param item the item to add (not null)
+     * @param item the item to content (not null)
      */
     public void addItem(BulkPickerItem item) {
         Objects.requireNonNull(item, "item must not be null");

@@ -261,17 +261,20 @@
     margin-inline-start  : auto;   /* always push to far right */
 }
 
-/* Search field: fixed max-width, shrinks gracefully */
+/* Search field: grows to fill available space on desktop */
 .listing-toolbar__search {
-    flex      : 0 1 280px;
-    min-width : 0;
+    flex      : 1 1 280px;
+    min-width : 180px;
+    max-width : 500px;
 }
 
 /* Footer / pagination row: centered */
 .listing-footer {
     display         : flex;
-    justify-content : center;
+    align-items     : center;
+    justify-content : space-between;
     padding-top     : 0.625rem;
+    gap             : 1rem;
 }
 
 /* ══════════════════════════════════════════════════════════════════════════════
@@ -285,8 +288,89 @@
     flex-shrink : 0;
 }
 
+/* Menu item icons */
+.listing-menu-icon {
+    width    : 1rem;
+    height   : 1rem;
+    color    : var(--text-secondary, #6b7280);
+}
+
+/* Menu separator (disabled empty item styled as a thin line) */
+.listing-menu-separator {
+    min-height     : 0 !important;
+    height         : 1px !important;
+    padding        : 0 !important;
+    margin-block   : 0.25rem !important;
+    background     : var(--zinc-200, #e4e4e7);
+    pointer-events : none;
+}
+
+/* ==========================================================================
+   Listing Page wrapper — prevents overflow on all screen sizes
+   ========================================================================== */
+.listing-page {
+    display        : flex;
+    flex-direction : column;
+    width          : 100%;
+    max-width      : 100%;
+    min-width      : 0;
+    overflow-x     : hidden;
+    gap            : 0;
+}
+
+/* ==========================================================================
+   Listing Header — applied to GridHeader when gridHeader(String) is configured.
+   The GridHeader extends Header (Layout) with structure:
+     .iyen-header > .iyen-header__row > [heading column] + .iyen-header__actions
+   We style the actions area to align search + filter + menu horizontally.
+   ========================================================================== */
+.listing-header {
+    width          : 100%;
+    min-width      : 0;
+    padding-right  : 1%;
+}
+
+/* withoutBorder() — Header.setBordered(false) adds .header--no-border.
+   Two-class specificity overrides the single-class .listing-header rule. */
+.listing-header.header--no-border {
+    border-bottom : none;
+}
+
+/* Actions slot inside the header — search + filter + menu inline */
+.listing-header .iyen-header__actions {
+    display     : flex;
+    flex-wrap   : nowrap;
+    align-items : center;
+    gap         : 0.375rem;
+    min-width   : 0;
+}
+
+/* Search field inside actions */
+.listing-header__search {
+    flex      : 1 1 200px;
+    min-width : 120px;
+    max-width : 400px;
+}
+
+.listing-header__filter-btn {
+    flex-shrink : 0;
+}
+
 /* ── Responsive: mobile ≤ 600 px ── */
 @media (max-width: 600px) {
+    .listing-header .iyen-header__row {
+        gap       : 0.375rem;
+    }
+    .listing-header .iyen-header__actions {
+        width     : 100%;
+        flex-wrap : wrap;
+    }
+    .listing-header__search {
+        flex      : 1 1 auto;
+        min-width : 0;
+        max-width : 100%;
+    }
+
     .listing-toolbar {
         flex-direction  : column;
         align-items     : stretch;
@@ -295,7 +379,7 @@
     }
     .listing-toolbar__right {
         flex-direction      : row;
-        margin-inline-start : 0;     /* take full width on mobile */
+        margin-inline-start : 0;
         width               : 100%;
     }
     .listing-toolbar__search {
@@ -304,15 +388,76 @@
     }
 }
 
+/* ── Responsive: tablet ≤ 900 px ── */
+@media (max-width: 900px) and (min-width: 601px) {
+    .listing-header__search {
+        flex      : 1 1 160px;
+        max-width : 280px;
+    }
+}
+
 /* ==========================================================================
-   Listing grid — always fill its container
+   Listing grid — card wrapper + fill behaviour
    Class added by ListingBundle on every managed grid so consumers don't need
    to set width / flex manually in their view layouts.
    ========================================================================== */
 .listing-bundle-grid {
-    width      : 100%;
-    flex       : 1 1 auto;   /* grow inside flex-column views            */
-    align-self : stretch;    /* stretch inside grid / flex-row parents   */
-    min-width  : 0;          /* prevent flex overflow on narrow screens  */
+    width            : 100%;
+    flex             : 1 1 auto;
+    align-self       : stretch;
+    min-width        : 0;
+    max-width        : 100%;
+    /* Card appearance */
+    background-color : var(--color-surface, #ffffff);
+    border           : 1px solid rgb(0 0 0 / 0.08);
+    border-radius    : var(--radius-l, 0.75rem);
+    box-shadow       : 0 1px 3px rgb(0 0 0 / 0.06),
+                       0 1px 2px rgb(0 0 0 / 0.04);
+
+    /* Clip grid rows to the card corners */
+    overflow         : hidden;
+}
+
+/* ==========================================================================
+   Clickable grid rows — pointer cursor when item click listener is registered
+   ========================================================================== */
+.listing-bundle-clickable::part(row) {
+    cursor: pointer;
+}
+.listing-bundle-clickable::part(body-cell) {
+    cursor: pointer;
+}
+
+/* ==========================================================================
+   Compact pagination — small screens (≤ 480 px)
+   Strategy: show only [Previous icon] [active page number] [Next icon].
+   All other numbered pages and ellipses are hidden.  The Previous/Next labels
+   ("Previous" / "Next" text) are also hidden leaving only the chevron icons,
+   so the three-item bar fits even on very narrow viewports.
+   ========================================================================== */
+@media (max-width: 480px) {
+
+    /* Hide numbered page items that are NOT the active page */
+    .listing-pagination-bar .pagination__item:has(
+        .pagination__link:not(.pagination__link--active)
+    ) {
+        display: none;
+    }
+
+    /* Hide ellipsis items */
+    .listing-pagination-bar .pagination__item:has(.pagination__ellipsis) {
+        display: none;
+    }
+
+    /* Strip the "Previous" / "Next" text labels — keep only the chevron icons */
+    .listing-pagination-bar .pagination__nav-label {
+        display: none;
+    }
+
+    /* Give the active page badge a touch-friendly minimum size */
+    .listing-pagination-bar .pagination__link--active {
+        min-width: 2.5rem;
+        font-size: 0.875rem;
+    }
 }
 

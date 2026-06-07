@@ -61,7 +61,7 @@ public class RowColumnBuilderDemoView extends Div {
 
     /** ColSpan.COL_1 through COL_12 — all 12 constants in one grid. */
     private DemoExample colSpanReferenceExample() {
-        var wrapper = new Div();
+        var wrapper = ResponsiveDiv.flex().column().gapM().marginS().build();
 
         for (ColSpan cs : ColSpan.values()) {
             wrapper.add(RowBuilder.create().styleName("gap-m")

@@ -18,6 +18,7 @@
 .separator {
     display: block;
     flex-shrink: 0;
+    background-color: var(--separator-color, var(--zinc-200, #e4e4e7));
 }
 
 /* -----------------------------------------------------------------------

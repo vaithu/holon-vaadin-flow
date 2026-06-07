@@ -84,7 +84,8 @@ public class DefaultItemListingHeaderRow<P> implements EditableItemListingRow<P>
 	@Override
 	public ItemListingCell join(Collection<P> properties) {
 		ObjectUtils.argumentNotNull(properties, "Properties must be not null");
-		final List<Column<?>> columns = properties.stream()
+		@SuppressWarnings("unchecked")
+		final List<Column<?>> columns = (List<Column<?>>) (List<?>) properties.stream()
 				.map(propertyColumnProvider::apply)
 				.filter(Objects::nonNull)
 				.toList();

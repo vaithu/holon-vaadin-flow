@@ -86,7 +86,7 @@ public interface ValueHolder<V, E extends ValueChangeEvent<V>> extends Serializa
 
 	/**
 	 * Adds a value change listener, called when the value changes.
-	 * @param listener the value change listener to add (not null)
+	 * @param listener the value change listener to content (not null)
 	 * @return a registration for the listener, which provides the <em>remove</em> operation
 	 */
 	public Registration addValueChangeListener(ValueChangeListener<V, E> listener);

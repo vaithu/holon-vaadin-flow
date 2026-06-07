@@ -5,7 +5,6 @@ import com.holonplatform.vaadin.flow.components.builders.HeaderConfigurator;
 import com.holonplatform.vaadin.flow.vaadinplus.components.BreadcrumbItem;
 import com.holonplatform.vaadin.flow.vaadinplus.components.Header;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.Tabs;

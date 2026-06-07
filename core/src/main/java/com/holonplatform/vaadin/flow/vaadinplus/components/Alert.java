@@ -4,8 +4,6 @@ import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.vaadin.flow.components.Components;
 import com.holonplatform.vaadin.flow.components.builders.AlertBuilder;
 import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.HasSize;
-import com.vaadin.flow.component.HasStyle;
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.icon.Icon;
@@ -42,7 +40,7 @@ import com.vaadin.flow.component.icon.Icon;
  * Variant colours are exposed as overridable CSS custom properties (e.g. {@code --alert-default-bg}).
  */
 @StyleSheet("context://alert.css")
-public class Alert extends Div implements HasSize, HasStyle {
+public class Alert extends Div {
 
     private static final long serialVersionUID = 1L;
 

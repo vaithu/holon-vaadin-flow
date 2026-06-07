@@ -22,6 +22,7 @@ import com.vaadin.flow.component.page.PendingJavaScriptResult;
 /**
  * Utility class for web browser related functionality.
  */
+@SuppressWarnings("null")
 public final class WebBrowserTools {
 
     public static final String BEFORE_UNLOAD_LISTENER = "jmixBeforeUnloadListener";

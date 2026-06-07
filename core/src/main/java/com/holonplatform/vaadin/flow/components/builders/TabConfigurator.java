@@ -39,7 +39,7 @@ public interface TabConfigurator<C extends TabConfigurator<C>>
    */
   @SuppressWarnings("unchecked")
   default C bindSelected(Signal<? extends Boolean> selectedSignal) {
-    SignalBindings.bind(this, selectedSignal, this::selected);
+    SignalBindings.bind(this, selectedSignal, value -> selected(value != null && value));
     return (C) this;
   }
 

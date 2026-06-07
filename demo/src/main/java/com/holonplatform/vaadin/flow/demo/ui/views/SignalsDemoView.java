@@ -1,9 +1,6 @@
 package com.holonplatform.vaadin.flow.demo.ui.views;
 
-import com.holonplatform.vaadin.flow.components.Components;
 import com.holonplatform.vaadin.flow.components.Input;
-import com.holonplatform.vaadin.flow.components.ViewComponent;
-import com.holonplatform.vaadin.flow.components.builders.SignalBindings;
 import com.holonplatform.vaadin.flow.demo.ui.DemoExample;
 import com.holonplatform.vaadin.flow.demo.ui.DemoMainLayout;
 import com.vaadin.flow.component.button.Button;
@@ -13,7 +10,6 @@ import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.shared.Registration;
 import com.vaadin.flow.signals.Signal;
 import com.vaadin.flow.signals.local.ValueSignal;
 import com.holonplatform.vaadin.flow.vaadinplus.ResponsiveDiv;
@@ -98,7 +94,7 @@ public class SignalsDemoView extends Div {
 
         // The effect is lifecycle-bound to `display` — it auto-disposes
         // when the component is detached.
-        Registration effectReg = Signal.effect(display, () ->
+        Signal.effect(display, () ->
                 display.setText("Count: " + signal.get()));
 
         var incButton = new Button("Increment", e -> signal.set(signal.get() + 1));

@@ -41,7 +41,7 @@ public class PaginationContent extends UnorderedList {
      * Adds one or more {@link PaginationItem}s; {@code null} elements are silently
      * skipped.
      *
-     * @param items the items to add
+     * @param items the items to content
      */
     public void add(PaginationItem... items) {
         if (items == null) return;

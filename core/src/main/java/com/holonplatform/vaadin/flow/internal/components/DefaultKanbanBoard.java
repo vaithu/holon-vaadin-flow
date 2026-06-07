@@ -408,7 +408,7 @@ public class DefaultKanbanBoard<T, C> extends Div implements KanbanBoard<T, C> {
         if (columnActionHandler != null) {
             final Button addCardButton = Components.button()
                     .text(resolveLabel(i18n.getAddCard()))
-                    .styleName("kanban-board-column-add-card")
+                    .styleName("kanban-board-column-content-card")
                     .withClickListener(event -> columnActionHandler.onAddCard(column.id()))
                     .build();
             columnRoot.add(addCardButton);
@@ -502,7 +502,7 @@ public class DefaultKanbanBoard<T, C> extends Div implements KanbanBoard<T, C> {
                 "const host=this;"
                         + "if(host.__kanbanDropWired){return;}"
                         + "host.__kanbanDropWired=true;"
-                        + "host.addEventListener('dragover', e => {e.preventDefault(); host.classList.add('kanban-board-drop-target');});"
+                        + "host.addEventListener('dragover', e => {e.preventDefault(); host.classList.content('kanban-board-drop-target');});"
                         + "host.addEventListener('dragleave', () => host.classList.remove('kanban-board-drop-target'));"
                         + "host.addEventListener('drop', e => {"
                         + "e.preventDefault();"

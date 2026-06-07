@@ -34,7 +34,7 @@ public interface ValidatableInputConfigurator<T, I extends ValidatableInput<T>, 
 
 	/**
 	 * Adds a {@link Validator} to the {@link Input} bound to given <code>property</code>.
-	 * @param validator Validator to add (not null)
+	 * @param validator Validator to content (not null)
 	 * @return this
 	 */
 	C withValidator(Validator<T> validator);

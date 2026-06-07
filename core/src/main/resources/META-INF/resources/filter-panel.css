@@ -178,7 +178,7 @@ vaadin-text-field.filter-panel__value-placeholder::part(value) {
     flex-shrink : 0;
 }
 
-vaadin-button.filter-panel__remove::part(button) {
+vaadin-button.filter-panel__remove{
     border           : none;
     box-shadow       : none;
     padding-inline   : 0.25rem;
@@ -187,7 +187,7 @@ vaadin-button.filter-panel__remove::part(button) {
     transition       : color 0.12s, background-color 0.12s;
 }
 
-vaadin-button.filter-panel__remove:not([disabled])::part(button):hover {
+vaadin-button.filter-panel__remove:not([disabled]):hover {
     background-color : rgb(220 38 38 / 0.08);
     color            : var(--color-error, #dc2626);
 }
@@ -424,6 +424,7 @@ vaadin-button.filter-panel__apply[focus-ring] {
         max-height : 65dvh;
         overflow-y : auto;
         overflow-x : hidden;
+        padding: 1%;
     }
 
     /* Restore horizontal breathing room — the dialog overlay gives a small gutter

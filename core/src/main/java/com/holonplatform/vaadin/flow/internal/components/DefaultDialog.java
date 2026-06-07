@@ -22,7 +22,6 @@ import com.holonplatform.vaadin.flow.components.builders.DialogConfigurator;
 import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
 import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.HasStyle;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.dialog.Dialog;
@@ -66,7 +65,7 @@ import java.util.stream.Stream;
  * @since 5.2.0
  */
 @StyleSheet("context://h-dialog.css")
-public class DefaultDialog extends Dialog implements HasStyle {
+public class DefaultDialog extends Dialog {
 
     private static final long serialVersionUID = 5017183187214693820L;
 

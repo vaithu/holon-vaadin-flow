@@ -33,6 +33,11 @@ import com.vaadin.flow.server.streams.DownloadHandler;
  *     .ariaLabel("Alice's avatar")
  *     .build();
  *
+ * // Aura-compatible XL profile avatar
+ * Avatar profile = AvatarBuilder.create("Jane Doe")
+ *     .profile()
+ *     .build();
+ *
  * // Deterministic colour from entity id
  * Avatar user = AvatarBuilder.create(person.getFullName())
  *     .colorIndex(AvatarColor.forId(person.getId()))

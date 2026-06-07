@@ -17,7 +17,6 @@ package com.holonplatform.vaadin.flow.internal.components.support;
 
 import java.util.List;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import com.holonplatform.core.internal.utils.ObjectUtils;
 import com.holonplatform.vaadin.flow.components.ItemListing.ItemListingSection;

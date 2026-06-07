@@ -51,7 +51,7 @@ public interface PropertyListingConfigurator<C extends PropertyListingConfigurat
 	 * @param <X> Property type
 	 * @param property The virtual property which represent the column.
 	 * @return An {@link ItemListingColumnBuilder} which allow further column configuration and provides the
-	 *         {@link ItemListingColumnBuilder#add()} method to add the column to the listing
+	 *         {@link ItemListingColumnBuilder#add()} method to content the column to the listing
 	 */
 	<X> ItemListingColumnBuilder<PropertyBox, Property<?>, PropertyListing, C> withColumn(VirtualProperty<X> property);
 
@@ -63,7 +63,7 @@ public interface PropertyListingConfigurator<C extends PropertyListingConfigurat
 	 * </p>
 	 * @param property The virtual property which represent the column.
 	 * @return An {@link ItemListingColumnBuilder} which allow further column configuration and provides the
-	 *         {@link ItemListingColumnBuilder#add()} method to add the column to the listing
+	 *         {@link ItemListingColumnBuilder#add()} method to content the column to the listing
 	 */
 	ItemListingColumnBuilder<PropertyBox, Property<?>, PropertyListing, C> withComponentColumn(
 			VirtualProperty<? extends Component> property);

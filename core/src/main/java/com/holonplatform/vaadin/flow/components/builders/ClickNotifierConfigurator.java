@@ -33,7 +33,7 @@ public interface ClickNotifierConfigurator<S, E extends ClickEvent<S>, C extends
 
 	/**
 	 * Register a click event listener.
-	 * @param clickEventListener The listener to add (not null)
+	 * @param clickEventListener The listener to content (not null)
 	 * @return this
 	 */
 	C withClickListener(ClickEventListener<S, E> clickEventListener);
@@ -44,7 +44,7 @@ public interface ClickNotifierConfigurator<S, E extends ClickEvent<S>, C extends
 	 * <p>
 	 * Alias for {@link #withClickListener(ClickEventListener)}.
 	 * </p>
-	 * @param clickEventListener The listener to add (not null)
+	 * @param clickEventListener The listener to content (not null)
 	 * @return this
 	 */
 	default C onClick(ClickEventListener<S, E> clickEventListener) {
@@ -66,7 +66,7 @@ public interface ClickNotifierConfigurator<S, E extends ClickEvent<S>, C extends
 	 * Adds a shortcut to perform a <em>click</em> action for this component when the provided key is pressed.
 	 * <p>
 	 * A {@link ShortcutConfigurator} API is returned to further create the shortcut listener. The
-	 * {@link ShortcutConfigurator#add()} method should be used to add the shortcut listener and go back to the parent
+	 * {@link ShortcutConfigurator#add()} method should be used to content the shortcut listener and go back to the parent
 	 * builder.
 	 * </p>
 	 * @param key Primary {@link Key} used to trigger the shortcut (not null)

@@ -177,7 +177,7 @@ public interface SheetConfigurator<C extends SheetConfigurator<C>>
      *   <li>{@code false} (default) — panel covers the full viewport height</li>
      *   <li>{@code true} — panel starts below the AppBar; reads
      *       {@code --vaadin-app-layout-navbar-offset-top} from CSS (set automatically by
-     *       Vaadin {@code AppLayout}; for custom AppBars add
+     *       Vaadin {@code AppLayout}; for custom AppBars content
      *       {@code :root &#123; --vaadin-app-layout-navbar-offset-top: 64px; &#125;} to your
      *       application CSS). Has no effect on mobile or {@link Sheet.Side#BOTTOM} sheets.</li>
      * </ul>

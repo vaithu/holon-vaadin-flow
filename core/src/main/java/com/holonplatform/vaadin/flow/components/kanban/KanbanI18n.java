@@ -25,7 +25,7 @@ import java.util.Objects;
  * KanbanI18n i18n = KanbanI18n.defaults()
  *         .addCard(Localizable.builder()
  *                 .message("+ Add card")
- *                 .messageCode("myapp.kanban.add-card")
+ *                 .messageCode("myapp.kanban.content-card")
  *                 .build());
  *
  * KanbanBoard.<Task, Status>builder()
@@ -37,7 +37,7 @@ import java.util.Objects;
  * <p>Default message codes (override any via your {@code messages*.properties}):</p>
  * <ul>
  *   <li>{@value #CODE_COLUMN_OPTIONS} – column options button</li>
- *   <li>{@value #CODE_ADD_CARD} – add-card footer button</li>
+ *   <li>{@value #CODE_ADD_CARD} – content-card footer button</li>
  *   <li>{@value #CODE_OPEN} – card "Open" action</li>
  *   <li>{@value #CODE_EDIT} – card "Edit" action</li>
  *   <li>{@value #CODE_DELETE} – card "Delete" action</li>
@@ -49,7 +49,7 @@ public final class KanbanI18n implements Serializable {
 
     /** Message code for the column options button. */
     public static final String CODE_COLUMN_OPTIONS = "kanban.column.options";
-    /** Message code for the add-card footer button. */
+    /** Message code for the content-card footer button. */
     public static final String CODE_ADD_CARD       = "kanban.column.add-card";
     /** Message code for the card Open action button. */
     public static final String CODE_OPEN           = "kanban.card.action.open";
@@ -97,7 +97,7 @@ public final class KanbanI18n implements Serializable {
         return columnOptions(Localizable.builder().message(requireNonBlank(text, "columnOptions")).build());
     }
 
-    /** Sets the add-card button label as plain text (no message-code lookup). */
+    /** Sets the content-card button label as plain text (no message-code lookup). */
     public KanbanI18n addCard(String text) {
         return addCard(Localizable.builder().message(requireNonBlank(text, "addCard")).build());
     }
@@ -129,7 +129,7 @@ public final class KanbanI18n implements Serializable {
         return this;
     }
 
-    /** Sets the add-card button label as a {@link Localizable}. */
+    /** Sets the content-card button label as a {@link Localizable}. */
     public KanbanI18n addCard(Localizable localizable) {
         this.addCard = Objects.requireNonNull(localizable, "addCard Localizable must not be null");
         return this;

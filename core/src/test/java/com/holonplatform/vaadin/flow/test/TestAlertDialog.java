@@ -169,6 +169,7 @@ class TestAlertDialog {
     // =========================================================================
 
     @Test
+    @SuppressWarnings("removal")
     void setActionDestructive_addsDestructiveClass() {
         AlertDialog dialog = new AlertDialog();
         dialog.setActionDestructive(); // must not throw
@@ -200,6 +201,7 @@ class TestAlertDialog {
     // =========================================================================
 
     @Test
+    @SuppressWarnings("removal")
     void alertDialogBuilder_fluentChain_fullConfiguration() {
         AtomicInteger confirmCount = new AtomicInteger(0);
         AtomicInteger cancelCount  = new AtomicInteger(0);
@@ -211,7 +213,6 @@ class TestAlertDialog {
                 .cancelText("Cancel")
                 .onConfirm(confirmCount::incrementAndGet)
                 .onCancel(cancelCount::incrementAndGet)
-                .destructive()
                 .closeOnEsc(false)
                 .closeOnOutsideClick(false)
                 .draggable(false)
@@ -1075,7 +1076,7 @@ class TestAlertDialog {
 
     /**
      * Returns the wrapper {@link Div} that is the sole direct child of the dialog's
-     * content (always added as {@code add(this.wrapper)} in the constructor).
+     * content (always added as {@code content(this.wrapper)} in the constructor).
      */
     private static Component getWrapper(AlertDialog dialog) {
         return dialog.getChildren().findFirst()

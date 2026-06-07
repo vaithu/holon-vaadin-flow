@@ -51,7 +51,7 @@
  *
  * --vaadin-button-border-radius overrides the internal theme value on the
  * host element. Default is 0 (fully square). Override --btn-group-radius
- * on a parent or the group itself to add rounding to all buttons.
+ * on a parent or the group itself to content rounding to all buttons.
  * ----------------------------------------------------------------------- */
 
 .btn-group > vaadin-button {

@@ -118,7 +118,7 @@ public interface AlertDialogConfigurator<C extends AlertDialogConfigurator<C>>
      * Adds arbitrary components to the scrollable body content slot that sits
      * between the header and the footer buttons.
      *
-     * @param components the components to add (not null)
+     * @param components the components to content (not null)
      */
     C bodyContent(Component... components);
 
@@ -171,14 +171,6 @@ public interface AlertDialogConfigurator<C extends AlertDialogConfigurator<C>>
 
     /** Registers the callback fired when the cancel button is clicked. */
     C onCancel(Runnable action);
-
-    /**
-     * Adds a destructive CSS modifier to the action button.
-     *
-     * @deprecated Use {@link #variant(Alert.Variant)} with {@link Alert.Variant#DESTRUCTIVE} instead.
-     */
-    @Deprecated(since = "10.0.0", forRemoval = true)
-    C destructive();
 
     /**
      * Applies a semantic variant colour to the action (confirm) button so its appearance

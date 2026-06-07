@@ -27,7 +27,7 @@ public interface InvalidChangeEventNotifier {
 
 	/**
 	 * Add an invalid change event listener.
-	 * @param listener The listener to add (not null)
+	 * @param listener The listener to content (not null)
 	 * @return An handler to remove the registered listener
 	 */
 	Registration addInvalidChangeListener(InvalidChangeEventListener listener);

@@ -47,10 +47,10 @@ public interface ContextMenuConfigurator<L extends EventListener, M extends Cont
 	/**
 	 * Create a new menu item with the given localizable text content.
 	 * <p>
-	 * The {@link MenuItemBuilder#add()} method can be used to add the item to the context menu.
+	 * The {@link MenuItemBuilder#add()} method can be used to content the item to the context menu.
 	 * </p>
 	 * @param text Localizable menu item text content
-	 * @return A {@link MenuItemBuilder} to create and add the menu item
+	 * @return A {@link MenuItemBuilder} to create and content the menu item
 	 * @see LocalizationProvider
 	 */
 	MenuItemBuilder<L, M, I, S, C> withItem(Localizable text);
@@ -58,10 +58,10 @@ public interface ContextMenuConfigurator<L extends EventListener, M extends Cont
 	/**
 	 * Create a new menu item with the given text content.
 	 * <p>
-	 * The {@link MenuItemBuilder#add()} method can be used to add the item to the context menu.
+	 * The {@link MenuItemBuilder#add()} method can be used to content the item to the context menu.
 	 * </p>
 	 * @param text Menu item text content
-	 * @return A {@link MenuItemBuilder} to create and add the menu item
+	 * @return A {@link MenuItemBuilder} to create and content the menu item
 	 */
 	default MenuItemBuilder<L, M, I, S, C> withItem(String text) {
 		return withItem(Localizable.builder().message(text).build());
@@ -70,13 +70,13 @@ public interface ContextMenuConfigurator<L extends EventListener, M extends Cont
 	/**
 	 * Create a new menu item using given <code>messageCode</code> for text content localization.
 	 * <p>
-	 * The {@link MenuItemBuilder#add()} method can be used to add the item to the context menu.
+	 * The {@link MenuItemBuilder#add()} method can be used to content the item to the context menu.
 	 * </p>
 	 * @param defaultText Default menu item text content if no translation is available for given
 	 *        <code>messageCode</code>.
 	 * @param messageCode Menu item text content translation message key
 	 * @param arguments Optional translation arguments
-	 * @return A {@link MenuItemBuilder} to create and add the menu item
+	 * @return A {@link MenuItemBuilder} to create and content the menu item
 	 * @see LocalizationProvider
 	 */
 	default MenuItemBuilder<L, M, I, S, C> withItem(String defaultText, String messageCode, Object... arguments) {
@@ -87,20 +87,20 @@ public interface ContextMenuConfigurator<L extends EventListener, M extends Cont
 	/**
 	 * Create a new menu item with the given component inside.
 	 * <p>
-	 * The {@link MenuItemBuilder#add()} method can be used to add the item to the context menu.
+	 * The {@link MenuItemBuilder#add()} method can be used to content the item to the context menu.
 	 * </p>
 	 * @param component The menu item component (not null)
-	 * @return A {@link MenuItemBuilder} to create and add the menu item
+	 * @return A {@link MenuItemBuilder} to create and content the menu item
 	 */
 	MenuItemBuilder<L, M, I, S, C> withItem(Component component);
 
 	/**
 	 * Create a new menu item with the given {@link HasComponent} component inside.
 	 * <p>
-	 * The {@link MenuItemBuilder#add()} method can be used to add the item to the context menu.
+	 * The {@link MenuItemBuilder#add()} method can be used to content the item to the context menu.
 	 * </p>
 	 * @param component The menu item component (not null)
-	 * @return A {@link MenuItemBuilder} to create and add the menu item
+	 * @return A {@link MenuItemBuilder} to create and content the menu item
 	 */
 	default MenuItemBuilder<L, M, I, S, C> withItem(HasComponent component) {
 		ObjectUtils.argumentNotNull(component, "HasComponent must be not null");
@@ -177,7 +177,7 @@ public interface ContextMenuConfigurator<L extends EventListener, M extends Cont
 
 	/**
 	 * Adds a listener to be notified when the context menu is opened or closed.
-	 * @param listener the listener to add
+	 * @param listener the listener to content
 	 * @return this
 	 */
 	C withOpenedChangeListener(ComponentEventListener<OpenedChangeEvent<M>> listener);
@@ -253,7 +253,7 @@ public interface ContextMenuConfigurator<L extends EventListener, M extends Cont
 
 		/**
 		 * Register a menu item click event listener.
-		 * @param menuItemClickListener The listener to add (not null)
+		 * @param menuItemClickListener The listener to content (not null)
 		 * @return this
 		 */
 		MenuItemBuilder<L, M, I, S, B> withClickListener(L menuItemClickListener);
@@ -263,7 +263,7 @@ public interface ContextMenuConfigurator<L extends EventListener, M extends Cont
 		 * <p>
 		 * Alias for {@link #withClickListener(EventListener)}.
 		 * </p>
-		 * @param menuItemClickListener The listener to add (not null)
+		 * @param menuItemClickListener The listener to content (not null)
 		 * @return this
 		 */
 		default MenuItemBuilder<L, M, I, S, B> onClick(L menuItemClickListener) {

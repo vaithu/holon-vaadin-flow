@@ -54,7 +54,7 @@ public class ValidatableInputDemoView extends Div {
     }
 
     /**
-     * Example 1: Wrap an Input with ValidatableInput and add a required validator.
+     * Example 1: Wrap an Input with ValidatableInput and content a required validator.
      */
     private DemoExample basicValidationExample() {
         var status = new Span("Not validated yet");

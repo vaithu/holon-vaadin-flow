@@ -34,21 +34,21 @@ public interface KeyNotifierConfigurator<C extends KeyNotifierConfigurator<C>> {
 
 	/**
 	 * Adds a <code>keydown</code> listener to this component.
-	 * @param listener the listener to add, not <code>null</code>
+	 * @param listener the listener to content, not <code>null</code>
 	 * @return this
 	 */
 	C withKeyDownListener(ComponentEventListener<KeyDownEvent> listener);
 
 	/**
 	 * Adds a <code>keypress</code> listener to this component.
-	 * @param listener the listener to add, not <code>null</code>
+	 * @param listener the listener to content, not <code>null</code>
 	 * @return this
 	 */
 	C withKeyPressListener(ComponentEventListener<KeyPressEvent> listener);
 
 	/**
 	 * Adds a <code>keyup</code> listener to this component.
-	 * @param listener the listener to add, not <code>null</code>
+	 * @param listener the listener to content, not <code>null</code>
 	 * @return this
 	 */
 	C withKeyUpListener(ComponentEventListener<KeyUpEvent> listener);
@@ -60,7 +60,7 @@ public interface KeyNotifierConfigurator<C extends KeyNotifierConfigurator<C>> {
 	 * See {@link Key} for common static instances or use {@link Key#of(String, String...)} to get an instance from an
 	 * arbitrary value.
 	 * @param key the key to match
-	 * @param listener the listener to add, not <code>null</code>
+	 * @param listener the listener to content, not <code>null</code>
 	 * @param modifiers the optional modifiers to match
 	 * @return this
 	 */
@@ -73,7 +73,7 @@ public interface KeyNotifierConfigurator<C extends KeyNotifierConfigurator<C>> {
 	 * See {@link Key} for common static instances or use {@link Key#of(String, String...)} to get an instance from an
 	 * arbitrary value.
 	 * @param key the key to match
-	 * @param listener the listener to add, not <code>null</code>
+	 * @param listener the listener to content, not <code>null</code>
 	 * @param modifiers the optional modifiers to match
 	 * @return this
 	 */
@@ -86,7 +86,7 @@ public interface KeyNotifierConfigurator<C extends KeyNotifierConfigurator<C>> {
 	 * See {@link Key} for common static instances or use {@link Key#of(String, String...)} to get an instance from an
 	 * arbitrary value.
 	 * @param key the key to match
-	 * @param listener the listener to add, not <code>null</code>
+	 * @param listener the listener to content, not <code>null</code>
 	 * @param modifiers the optional modifiers to match
 	 * @return this
 	 */

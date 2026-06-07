@@ -37,7 +37,7 @@ class TestDivBuilder {
     }
 
     // =========================================================================
-    // add — components
+    // content — components
     // =========================================================================
 
     @Test
@@ -75,7 +75,7 @@ class TestDivBuilder {
     }
 
     // =========================================================================
-    // add — with title
+    // content — with title
     // =========================================================================
 
     @Test
@@ -138,13 +138,13 @@ class TestDivBuilder {
     }
 
     // =========================================================================
-    // add — with column span
+    // content — with column span
     // =========================================================================
 
     @Test
     void add_intColumnSpan_appliesSpanClass() {
         Span child = new Span("Wide");
-        Div div = DivBuilder.create()
+        DivBuilder.create()
                 .gridLayout(4)
                 .add(2, child)
                 .build();
@@ -154,7 +154,7 @@ class TestDivBuilder {
     @Test
     void add_columnSpanEnum_appliesSpanClass() {
         Span child = new Span("Wide");
-        Div div = DivBuilder.create()
+        DivBuilder.create()
                 .gridLayout(6)
                 .add(ColumnSpan.COLUMN_SPAN_3, child)
                 .build();
@@ -247,7 +247,7 @@ class TestDivBuilder {
     @Test
     void withPostProcessor_callsProcessor() {
         AtomicBoolean called = new AtomicBoolean(false);
-        Div div = DivBuilder.create()
+        DivBuilder.create()
                 .withPostProcessor(cfg -> called.set(true))
                 .build();
         assertTrue(called.get());

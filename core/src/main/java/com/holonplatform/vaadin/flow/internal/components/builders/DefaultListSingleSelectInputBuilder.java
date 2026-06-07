@@ -439,6 +439,7 @@ public class DefaultListSingleSelectInputBuilder<T, ITEM>
 	 * boolean)
 	 */
 	@Override
+	@SuppressWarnings("deprecation")
 	public ListSingleSelectInputBuilder<T, ITEM> required(boolean required) {
 		getComponent().setRequiredIndicatorVisible(required);
 		return getConfigurator();

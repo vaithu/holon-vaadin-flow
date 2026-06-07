@@ -17,17 +17,21 @@ package com.holonplatform.vaadin.flow.components;
 
 import com.holonplatform.core.internal.utils.ObjectUtils;
 import com.holonplatform.core.query.QueryFilter;
+import com.holonplatform.vaadin.flow.components.builders.NotificationBuilder;
+import com.holonplatform.vaadin.flow.components.Components;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.dataview.GridLazyDataView;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.provider.CallbackDataProvider;
 import com.vaadin.flow.data.provider.Query;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.signals.Signal;
+import com.vaadin.flow.component.UI;
 
 import java.util.Arrays;
 import java.util.List;
@@ -125,6 +129,8 @@ public class ItemListingPageSizeSelector<T, P> extends Div {
      */
     private Supplier<Integer> countSupplier;
 
+    private Notification noResultsNotification;
+
     // -----------------------------------------------------------------------
     // Constructor (use the builder or Components factory)
     // -----------------------------------------------------------------------
@@ -195,19 +201,54 @@ public class ItemListingPageSizeSelector<T, P> extends Div {
     public void resetToPage1() {
         if (managedDataView == null) return;
         currentPageOffset[0] = 0;
-        // Recompute bar page count before navigating, so the bar shows the
-        // correct total pages for the updated filter / data set.
+        final UI currentUi = UI.getCurrent();
+
+        if (!paginatedMode) {
+            // Virtual-scroll mode: re-assert unknown count so any previous
+            // setItemCountCallback call (e.g. from applyPageSize or a stale
+            // paginated-mode fetch) cannot silently cap visible rows.
+            managedDataView.setItemCountUnknown();
+        } else {
+            managedDataView.setItemCountCallback(cq -> currentPageSz[0]);
+        }
+
+        // Always recompute bar page count from the count supplier when available —
+        // regardless of paginatedMode. Filter changes narrow the result set in both
+        // virtual-scroll and paginated mode; the bar should always reflect the new count.
         if (paginationBar != null && countSupplier != null) {
             int count = Math.max(0, countSupplier.get());
             paginationBar.seedTotalPagesFromCount(count, currentPageSz[0]);
+            if (count == 0) {
+                showNoResultsNotification();
+            } else if (noResultsNotification != null) {
+                noResultsNotification.close();
+                noResultsNotification = null;
+            }
         }
+
         // Use GridLazyDataView.refreshAll() — the correct Vaadin 25 API for lazy data.
-        // This directly resets the DataCommunicator and triggers a client-side re-fetch
-        // with the current page offset (0 after filter change).
-        managedDataView.refreshAll();
-        if (paginationBar != null) {
-            paginationBar.goToFirstPage();
+        // When called from a headless test there is no active UI, so skip the
+        // UI-bound refresh/navigation calls but still keep the selector state updated.
+        if (currentUi != null) {
+            managedDataView.refreshAll();
+            if (paginationBar != null) {
+                paginationBar.goToFirstPage();
+            }
         }
+    }
+
+    private void showNoResultsNotification() {
+        if (noResultsNotification != null && noResultsNotification.isOpened()) {
+            return;
+        }
+        noResultsNotification = Components.notification()
+                .text("No matching records found.")
+                .warning()
+                .autoClose(false)
+                .closeButton(true)
+                .bottomEnd()
+                .build();
+        noResultsNotification.open();
     }
 
     // -----------------------------------------------------------------------
@@ -237,11 +278,9 @@ public class ItemListingPageSizeSelector<T, P> extends Div {
             int initialPageSize) {
 
         // Wrap: inject page offset + look-ahead (fetch limit+1 to detect next page)
+        final int[] lastFetchedCount = {initialPageSize};
+
         managedDataView = listing.setItems(q -> {
-            // Read limit from Vaadin's Query — satisfies CallbackDataProvider's
-            // contract that requires getLimit() to be called on the provided query.
-            // This value equals currentPageSz[0] because we set setItemCountCallback
-            // to return currentPageSz[0], so Vaadin always requests exactly that many rows.
             final int limit = q.getLimit();
             // Fetch one extra row — if it comes back, a next page exists
             java.util.List<T> rows = originalFetch.fetch(new Query<>(
@@ -253,15 +292,30 @@ public class ItemListingPageSizeSelector<T, P> extends Div {
                     .limit(limit + 1L)
                     .toList();
             final boolean next = rows.size() > limit;
-            if (paginationBar != null) {
-                // Push look-ahead result to bar — no COUNT(*) needed
-                paginationBar.setHasNextPage(next);
+            int actualCount = Math.min(rows.size(), limit);
+            lastFetchedCount[0] = actualCount;
+
+            // Only apply pagination logic when in paginated mode
+            if (paginatedMode) {
+                if (paginationBar != null) {
+                    paginationBar.setHasNextPage(next);
+                }
+                // Partial page: update count so subsequent renders don't show blanks,
+                // and notify user they've reached the end.
+                if (actualCount < currentPageSz[0] && actualCount > 0) {
+                    managedDataView.setItemCountCallback(cq -> lastFetchedCount[0]);
+                    com.vaadin.flow.component.notification.Notification.show(
+                            "Reached end of data", 2000,
+                            com.vaadin.flow.component.notification.Notification.Position.BOTTOM_CENTER);
+                } else if (actualCount == currentPageSz[0]) {
+                    // Full page — restore count to page size for next fetch cycle
+                    managedDataView.setItemCountCallback(cq -> currentPageSz[0]);
+                }
             }
-            // Return at most `limit` rows to the grid
             return rows.stream().limit(limit);
         });
 
-        // Hard-limit: grid sees exactly pageSize rows, no infinite scroll
+        // Initial count = pageSize so the grid requests a full page on first load
         managedDataView.setItemCountCallback(q -> currentPageSz[0]);
 
         // Set initial grid page size so ItemListingPaginationBar.getPageSize() works
@@ -273,6 +327,10 @@ public class ItemListingPageSizeSelector<T, P> extends Div {
             // On page navigation: update offset and reload data
             paginationBar.addPageChangeListener(page -> {
                 currentPageOffset[0] = (page - 1) * currentPageSz[0];
+                // Restore full page count so the grid requests a full page of items.
+                // Without this, navigating back from a partial last page would still
+                // use the reduced count, causing the same partial result + notification.
+                managedDataView.setItemCountCallback(cq -> currentPageSz[0]);
                 managedDataView.refreshAll();
             });
             // Seed initial page count from the count supplier (if provided).
@@ -283,6 +341,74 @@ public class ItemListingPageSizeSelector<T, P> extends Div {
                 paginationBar.seedTotalPagesFromCount(count, initialPageSize);
             }
         }
+
+        // If the component starts in virtual-scroll mode (the default), override the
+        // paginated defaults that were set above — unknown count + larger page size.
+        if (!paginatedMode) {
+            managedDataView.setItemCountUnknown();
+            if (listing.getComponent() instanceof Grid<?> g) {
+                g.setPageSize(50);
+            }
+        }
+    }
+
+    // -----------------------------------------------------------------------
+    // Paginated / virtual-scroll mode toggle
+    // -----------------------------------------------------------------------
+
+    /** Whether pagination is currently active (true) or virtual-scroll mode (false). Default is virtual-scroll. */
+    private boolean paginatedMode = false;
+
+    /**
+     * Switches between paginated mode and default virtual-scroll mode.
+     *
+     * <p>In paginated mode (default), the grid shows a fixed page of items and
+     * navigation is via the pagination bar.</p>
+     *
+     * <p>In virtual-scroll mode, the grid uses Vaadin's built-in infinite scroll
+     * with the same data provider — no page offset is injected and the item count
+     * is set to unknown so the grid fetches rows as the user scrolls.</p>
+     *
+     * @param paginated {@code true} for paginated mode, {@code false} for virtual scroll
+     */
+    public void setPaginatedMode(boolean paginated) {
+        if (this.paginatedMode == paginated) return;
+        this.paginatedMode = paginated;
+
+        if (managedDataView == null) return;
+
+        if (paginated) {
+            // Switch to paginated: reset to page 1, hard-cap rows to pageSize.
+            // Do NOT call refreshAll() — the data already in the grid is still valid
+            // for page 1. Vaadin will re-render the grid automatically when the count
+            // strategy changes via setItemCountCallback. A refreshAll() would trigger
+            // a redundant backend query that the user never asked for.
+            currentPageOffset[0] = 0;
+            managedDataView.setItemCountCallback(cq -> currentPageSz[0]);
+            if (listing.getComponent() instanceof Grid<?> grid) {
+                grid.setPageSize(currentPageSz[0]);
+            }
+            if (paginationBar != null) {
+                paginationBar.goToFirstPage();
+            }
+        } else {
+            // Switch to virtual-scroll: reset offset, let the grid grow as the user scrolls.
+            // Do NOT call refreshAll() — currently visible rows are already correct.
+            // setItemCountUnknown() notifies the client that more rows may exist and enables
+            // infinite scroll; the grid will fetch additional rows only when the user scrolls.
+            currentPageOffset[0] = 0;
+            managedDataView.setItemCountUnknown();
+            if (listing.getComponent() instanceof Grid<?> grid) {
+                grid.setPageSize(50);
+            }
+        }
+    }
+
+    /**
+     * Returns {@code true} if currently in paginated mode.
+     */
+    public boolean isPaginatedMode() {
+        return paginatedMode;
     }
 
     // -----------------------------------------------------------------------
@@ -363,13 +489,27 @@ public class ItemListingPageSizeSelector<T, P> extends Div {
             currentPageSz[0]     = size;
             currentPageOffset[0] = 0;  // reset to page 1
 
-            // Keep grid page size in sync for bar.getPageSize()
             if (listing.getComponent() instanceof Grid<?> grid) {
-                grid.setPageSize(size);
+                if (!paginatedMode) {
+                    // Virtual-scroll: use a large batch size so the infinite scroll
+                    // feels smooth; never cap rows with a count callback.
+                    grid.setPageSize(Math.max(size, 50));
+                    managedDataView.setItemCountUnknown();
+                } else {
+                    // Paginated: hard-limit to exactly 'size' rows per page.
+                    grid.setPageSize(size);
+                    managedDataView.setItemCountCallback(q -> size);
+                }
+            } else {
+                if (!paginatedMode) {
+                    managedDataView.setItemCountUnknown();
+                } else {
+                    managedDataView.setItemCountCallback(q -> size);
+                }
             }
-            managedDataView.setItemCountCallback(q -> size);
+
             managedDataView.refreshAll();
-            if (paginationBar != null) {
+            if (paginatedMode && paginationBar != null) {
                 paginationBar.refreshState();
             }
             return;

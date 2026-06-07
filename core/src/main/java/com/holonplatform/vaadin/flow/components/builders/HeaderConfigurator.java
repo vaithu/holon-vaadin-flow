@@ -4,6 +4,7 @@ import com.holonplatform.vaadin.flow.internal.components.builders.DefaultHeaderC
 import com.holonplatform.vaadin.flow.vaadinplus.Layout;
 import com.holonplatform.vaadin.flow.vaadinplus.components.BreadcrumbItem;
 import com.holonplatform.vaadin.flow.vaadinplus.components.Header;
+import com.holonplatform.vaadin.flow.vaadinplus.utilities.HeadingLevel;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.menubar.MenuBar;
 import com.vaadin.flow.component.tabs.Tab;
@@ -12,10 +13,23 @@ import com.vaadin.flow.component.tabs.Tabs;
 import java.util.Optional;
 import java.util.function.Consumer;
 
+@SuppressWarnings("all")
 public interface HeaderConfigurator<C extends HeaderConfigurator<C>> extends ComponentConfigurator<C>,
         HasSizeConfigurator<C>, HasStyleConfigurator<C>, HasEnabledConfigurator<C> {
 
     C prefix(Component... components);
+
+    default C heading(Component component) {
+        return heading(component, HeadingLevel.NONE);
+    }
+
+    C heading(Component component, HeadingLevel headingLevel);
+
+    default C heading(String title) {
+        return heading(title, HeadingLevel.H2);
+    }
+
+    C heading(String title, HeadingLevel headingLevel);
 
     default C hidePrefixOnDesktop() {
         return hidePrefixOnDesktop(true);
@@ -40,10 +54,6 @@ public interface HeaderConfigurator<C extends HeaderConfigurator<C>> extends Com
 
     C close(Consumer<ButtonConfigurator.BaseButtonConfigurator> configurator);
 
-    Layout getRowLayout();
-
-    Layout getColumnLayout();
-
     Optional<Tabs> getTabs();
 
     C tabs(Tab... tabs);
@@ -51,6 +61,9 @@ public interface HeaderConfigurator<C extends HeaderConfigurator<C>> extends Com
     C tabs(Tabs tabs);
 
     C withoutBorder();
+
+    Layout getColumnLayout();
+    Layout getRowLayout();
 
     static HeaderConfigurator.BaseHeaderConfigurator configure(Header header) {
         return new DefaultHeaderConfigurator(header);

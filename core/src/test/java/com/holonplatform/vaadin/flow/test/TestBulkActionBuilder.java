@@ -95,7 +95,7 @@ class TestBulkActionBuilder {
     @Test
     void withPostProcessor_executes() {
         boolean[] called = {false};
-        HorizontalLayout layout = BulkActionBuilder.create()
+        BulkActionBuilder.create()
                 .withPostProcessor(cfg -> called[0] = true)
                 .build();
         assertTrue(called[0]);

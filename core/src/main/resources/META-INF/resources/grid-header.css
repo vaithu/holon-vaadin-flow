@@ -24,6 +24,45 @@
     transition: background-color 150ms ease;
 }
 
+.grid-header .iyen-header__row {
+    align-items: center;
+    min-height: 3rem;
+}
+
+.grid-header .iyen-header__prefix,
+.grid-header .iyen-header__actions {
+    min-height: 3rem;
+}
+
+.grid-header .iyen-header__actions {
+    padding-left  : 1%;
+}
+
+.grid-header--no-title .iyen-header__actions {
+    flex: 1 1 auto;
+    margin-inline-start: 0;
+    justify-content: flex-end;
+}
+
+.grid-header__title {
+    min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.4;
+}
+
+.grid-header__selection-count {
+    flex-shrink: 0;
+    white-space: nowrap;
+    line-height: 1.4;
+}
+
+.grid-header__action--hidden {
+    visibility: hidden;
+    pointer-events: none;
+}
+
 /* -----------------------------------------------------------------------
  * Heading label — default (no selection)
  * ----------------------------------------------------------------------- */

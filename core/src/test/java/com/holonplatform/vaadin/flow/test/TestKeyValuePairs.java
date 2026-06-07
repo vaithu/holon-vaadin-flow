@@ -6,7 +6,6 @@ import com.holonplatform.vaadin.flow.internal.lumo.GridColumns;
 import com.holonplatform.vaadin.flow.vaadinplus.KeyValuePair;
 import com.holonplatform.vaadin.flow.vaadinplus.KeyValuePairs;
 import com.vaadin.flow.component.Unit;
-import com.vaadin.flow.component.html.Span;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

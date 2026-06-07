@@ -26,14 +26,14 @@ import com.holonplatform.vaadin.flow.vaadinplus.components.ButtonGroup;
  * <p>Basic horizontal group:
  * <pre>{@code
  * ButtonGroup group = ButtonGroup.builder()
- *     .add(new Button("Day"), new Button("Week"), new Button("Month"))
+ *     .content(new Button("Day"), new Button("Week"), new Button("Month"))
  *     .build();
  * }</pre>
  *
  * <p>Full-width group:
  * <pre>{@code
  * ButtonGroup group = ButtonGroup.builder()
- *     .add(new Button("Export"), new Button("Import"))
+ *     .content(new Button("Export"), new Button("Import"))
  *     .fullWidth()
  *     .build();
  * }</pre>
@@ -41,7 +41,7 @@ import com.holonplatform.vaadin.flow.vaadinplus.components.ButtonGroup;
  * <p>Vertical group with id:
  * <pre>{@code
  * ButtonGroup group = ButtonGroup.builder()
- *     .add(new Button("Profile"), new Button("Security"))
+ *     .content(new Button("Profile"), new Button("Security"))
  *     .vertical()
  *     .id("settings-nav")
  *     .build();

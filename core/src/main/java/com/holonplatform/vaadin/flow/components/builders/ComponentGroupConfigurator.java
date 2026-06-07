@@ -47,7 +47,7 @@ public interface ComponentGroupConfigurator<P, T, E extends HasComponent, G exte
 
 	/**
 	 * Add a group value change listener.
-	 * @param listener The {@link ValueChangeListener} to add (not null)
+	 * @param listener The {@link ValueChangeListener} to content (not null)
 	 * @return this
 	 */
 	C withValueChangeListener(ValueChangeListener<T, GroupValueChangeEvent<T, P, E, G>> listener);
