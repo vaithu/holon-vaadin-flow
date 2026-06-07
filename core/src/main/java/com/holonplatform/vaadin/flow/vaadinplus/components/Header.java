@@ -540,6 +540,6 @@ public class Header extends Layout implements HasTheme {
     }
 
     public void setGap(Gap gap) {
-
+        addClassName(gap.getClassName());
     }
 }

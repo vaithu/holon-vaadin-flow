@@ -19,6 +19,7 @@ import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
+import com.vaadin.flow.theme.lumo.LumoIcon;
 
 /**
  * Self-contained customer listing panel — drop it into any Vaadin view.
@@ -156,7 +157,7 @@ public class CustomerListPanel extends Div {
         viewBtn.setAriaLabel("View " + c.getDisplayName());
         viewBtn.addClickListener(ev -> CustomerDetailView.show(c.getId()));
 
-        var editBtn = new Button(VaadinIcon.EDIT.create());
+        var editBtn = new Button(LumoIcon.EDIT.create());
         editBtn.addThemeVariants(ButtonVariant.LUMO_TERTIARY, ButtonVariant.LUMO_ICON,
                 ButtonVariant.LUMO_SMALL);
         editBtn.setAriaLabel("Edit " + c.getDisplayName());

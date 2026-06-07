@@ -189,10 +189,12 @@ public class GridHeader extends Header {
         boolean hasVisibleTitle = hasVisibleTitle();
 
         if (hasSelection) {
+            hideHeadingColumn();
             setPrefix(this.selectionCount);
         } else if (hasVisibleTitle) {
-            setPrefix(this.titleComponent);
+            setHeading(this.titleComponent);
         } else {
+            hideHeadingColumn();
             setPrefix();
         }
     }

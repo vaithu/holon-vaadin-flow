@@ -7,12 +7,7 @@ import com.holonplatform.vaadin.flow.customer.service.CustomerService;
 import com.holonplatform.vaadin.flow.customer.ui.dialog.CustomerFormDialog;
 import com.holonplatform.vaadin.flow.vaadinplus.KeyValueItem;
 import com.holonplatform.vaadin.flow.vaadinplus.KeyValueList;
-import com.holonplatform.vaadin.flow.vaadinplus.components.Breadcrumb;
-import com.holonplatform.vaadin.flow.vaadinplus.components.BreadcrumbItem;
-import com.holonplatform.vaadin.flow.vaadinplus.components.BreadcrumbPage;
-import com.holonplatform.vaadin.flow.vaadinplus.components.BreadcrumbSeparator;
-import com.holonplatform.vaadin.flow.vaadinplus.components.GridHeader;
-import com.holonplatform.vaadin.flow.vaadinplus.components.Header;
+import com.holonplatform.vaadin.flow.vaadinplus.components.*;
 import com.holonplatform.vaadin.flow.vaadinplus.utilities.Font;
 import com.holonplatform.vaadin.flow.vaadinplus.utilities.HeadingLevel;
 import com.iyensoft.vaadin.flow.components.MasterDetailLayout;
@@ -32,6 +27,7 @@ import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.provider.DataProvider;
+import com.vaadin.flow.theme.lumo.LumoIcon;
 
 import java.util.Optional;
 
@@ -151,7 +147,7 @@ public class CustomerDetailPanel extends Div {
 
         // ── Detail header action buttons ──────────────────────────────────────
         var editBtn = new Button(getTranslation(CustomerI18n.VIEW_EDIT),
-                VaadinIcon.EDIT.create());
+                LumoIcon.EDIT.create());
         editBtn.addThemeVariants(ButtonVariant.LUMO_TERTIARY, ButtonVariant.LUMO_SMALL);
         editBtn.addClickListener(e -> {
             if (currentCustomer != null) openFormDialog(currentCustomer);

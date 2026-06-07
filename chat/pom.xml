@@ -1,18 +1,18 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
         <groupId>com.holon-platform.vaadin</groupId>
         <artifactId>holon-vaadin-flow-root</artifactId>
-        <version>10</version>
+        <version>10.0.2-SNAPSHOT</version>
     </parent>
 
     <artifactId>holon-vaadin-flow-chat</artifactId>
-    <packaging>jar</packaging>
+        <version>10.0.2-SNAPSHOT</version>
 
     <name>${project.groupId}:${project.artifactId}</name>
-    <description>Holon Vaadin Flow Chat – real-time MS Teams-like chat components with DB-backed persistence</description>
+    <description>Holon Vaadin Flow Chat â€“ real-time MS Teams-like chat components with DB-backed persistence</description>
 
     <url>https://holon-platform.com</url>
 
@@ -24,13 +24,13 @@
             <artifactId>holon-vaadin-flow</artifactId>
         </dependency>
 
-        <!-- Vaadin Collaboration Kit – real-time sync engine (Apache 2.0) -->
+        <!-- Vaadin Collaboration Kit â€“ real-time sync engine (Apache 2.0) -->
         <dependency>
             <groupId>com.vaadin</groupId>
             <artifactId>collaboration-engine</artifactId>
         </dependency>
 
-        <!-- Jakarta Persistence API – optional, required only when entities are used with JPA Datastore -->
+        <!-- Jakarta Persistence API â€“ optional, required only when entities are used with JPA Datastore -->
         <dependency>
             <groupId>jakarta.persistence</groupId>
             <artifactId>jakarta.persistence-api</artifactId>
@@ -70,3 +70,5 @@
     </build>
 
 </project>
+
+

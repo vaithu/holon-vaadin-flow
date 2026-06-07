@@ -21,6 +21,7 @@ import com.vaadin.flow.component.notification.Notification.Position;
 import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.theme.lumo.LumoIcon;
 
 import java.time.LocalDate;
 
@@ -95,7 +96,7 @@ public class ProductCrudDemoView extends Div {
 
         // Add a component column for Edit / Delete actions
         bundle.listing().addComponentColumn(product -> {
-            var editBtn = new Button(VaadinIcon.EDIT.create());
+            var editBtn = new Button(LumoIcon.EDIT.create());
             editBtn.addThemeVariants(ButtonVariant.LUMO_TERTIARY, ButtonVariant.LUMO_ICON);
             editBtn.setAriaLabel("Edit " + product.getName());
             editBtn.addClickListener(e -> openForm(product));

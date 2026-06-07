@@ -17,6 +17,7 @@ import com.vaadin.flow.component.sidenav.SideNavItem;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.dom.Style;
 import com.vaadin.flow.router.RouterLink;
+import com.vaadin.flow.theme.lumo.LumoIcon;
 
 /**
  * Root application layout — shared by every demo view.
@@ -175,10 +176,10 @@ public final class DemoMainLayout extends AppLayout {
 
         // ── Forms & Input ────────────────────────────────────────────────────
         nav.withNavItem("Forms & Input")
-                .prefixComponent(VaadinIcon.EDIT.create())
+                .prefixComponent(LumoIcon.EDIT.create())
                 .withItems(
                         new SideNavItem("EntityFormPanel",  EntityFormPanelDemoView.class,  VaadinIcon.FORM.create()),
-                        new SideNavItem("BeanInputForm",    BeanInputFormDemoView.class,    VaadinIcon.EDIT.create()),
+                        new SideNavItem("BeanInputForm",    BeanInputFormDemoView.class,    LumoIcon.EDIT.create()),
                         new SideNavItem("PropertyInputForm",PropertyInputFormDemoView.class, VaadinIcon.PENCIL.create()),
                         new SideNavItem("CollabFormSupport",CollaborationFormSupportDemoView.class, VaadinIcon.USERS.create()),
                         new SideNavItem("Inputs",           InputsDemoView.class,           VaadinIcon.KEYBOARD.create()),

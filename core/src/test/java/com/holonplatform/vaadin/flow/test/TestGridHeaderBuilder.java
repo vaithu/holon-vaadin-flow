@@ -3,6 +3,8 @@ package com.holonplatform.vaadin.flow.test;
 import com.holonplatform.vaadin.flow.components.builders.GridHeaderBuilder;
 import com.holonplatform.vaadin.flow.vaadinplus.components.GridHeader;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.html.Span;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
@@ -50,6 +52,25 @@ class TestGridHeaderBuilder {
 
         assertTrue(header.getColumnLayout().isVisible(), "GridHeader should keep the actions column visible");
         assertTrue(action.getParent().isPresent(), "default actions must remain attached to the header");
+    }
+
+    @Test
+    void selectionCount_hidesHeadingWhileSelected() {
+        GridHeader header = GridHeaderBuilder.create("Items").build();
+
+        header.updateActionsVisibility(2);
+
+        Component heading = header.getColumnLayout().getChildren()
+                .flatMap(Component::getChildren)
+                .filter(component -> component instanceof Span span && "Items".equals(span.getText()))
+                .findFirst()
+                .orElseThrow(() -> new AssertionError("Expected the header title component to exist"));
+
+        assertFalse(heading.isVisible(), "the heading must be hidden while selection count is shown");
+        assertTrue(header.getTopRowLayout().getChildren()
+                .flatMap(Component::getChildren)
+                .anyMatch(component -> component instanceof Span span && "2 selected".equals(span.getText()) && span.isVisible()),
+                "the selection count must be visible in the prefix area");
     }
 
     // =========================================================================

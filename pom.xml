@@ -1,4 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+﻿<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
@@ -9,7 +9,7 @@
 
 	<groupId>com.holon-platform.vaadin</groupId>
 	<artifactId>holon-vaadin-flow-root</artifactId>
-	<version>10</version>
+	<version>10.0.2-SNAPSHOT</version>
 
 	<packaging>pom</packaging>
 
@@ -49,7 +49,7 @@
 		<connection>scm:git:https://github.com/holon-platform/holon-vaadin-flow.git</connection>
 		<url>https://github.com/holon-platform/holon-vaadin-flow</url>
 		<developerConnection>scm:git:https://github.com/holon-platform/holon-vaadin-flow.git</developerConnection>
-		<tag>V10.0.1</tag>
+		<tag>HEAD</tag>
 	</scm>
 
 	<properties>
@@ -64,14 +64,14 @@
 		<vaadin.version>25.1.0</vaadin.version>
 		<spring-boot.version>4.0.4</spring-boot.version>
 
-		<!-- Servlet API – must match what vaadin flow-server 25.1.0 declares (6.1.0 / Jakarta EE 11).
+		<!-- Servlet API â€“ must match what vaadin flow-server 25.1.0 declares (6.1.0 / Jakarta EE 11).
 		     Using 6.0.0 (Jakarta EE 10) would leave us compiling against an older API than Vaadin. -->
 		<servlet.version>6.1.0</servlet.version>
 
 		<holon.jdbc.datastore.version>10.0.0</holon.jdbc.datastore.version>
 		<holon.jpa.datastore.version>10.0.0</holon.jpa.datastore.version>
 
-		<!-- line-awesome (latest; built against Vaadin 24.2.0 but used as pure CSS/font static assets – no Java API coupling) -->
+		<!-- line-awesome (latest; built against Vaadin 24.2.0 but used as pure CSS/font static assets â€“ no Java API coupling) -->
 		<line-awesome.version>2.1.0</line-awesome.version>
 
 		<!-- Mockito (test) -->
@@ -86,7 +86,7 @@
 		<!-- assertj: fixes CVE-2026-24400 (XXE in isXmlEqualTo) -->
 		<assertj.version>3.27.7</assertj.version>
 		<!-- spring-security: fixes CVE-2024-38821, CVE-2025-41232, CVE-2025-41248
-		     NOTE: CVE-2026-22732 (CRITICAL – HTTP headers not written) affects ALL released versions
+		     NOTE: CVE-2026-22732 (CRITICAL â€“ HTTP headers not written) affects ALL released versions
 		     including 6.4.0-6.4.14 and 6.5.0-6.5.8; no patched version is available yet.
 		     Expected fix: spring-security 6.5.9 (not yet released as of 2026-03-31). -->
 		<spring-security.version>6.4.10</spring-security.version>
@@ -153,7 +153,7 @@
 				<version>${holon.jdbc.datastore.version}</version>
 			</dependency>
 
-			<!-- Holon JPA Datastore — used via DefaultBeanCrud for CRUD -->
+			<!-- Holon JPA Datastore â€” used via DefaultBeanCrud for CRUD -->
 			<dependency>
 				<groupId>com.holon-platform.jpa</groupId>
 				<artifactId>holon-datastore-jpa-spring-boot</artifactId>
@@ -249,9 +249,9 @@
 				<version>${assertj.version}</version>
 			</dependency>
 
-			<!-- Transitive CVE overrides – force safe versions regardless of what upstream BOMs resolve -->
+			<!-- Transitive CVE overrides â€“ force safe versions regardless of what upstream BOMs resolve -->
 
-			<!-- Servlet API – lock to 6.1.0 (Jakarta EE 11) to match vaadin flow-server 25.1.0 -->
+			<!-- Servlet API â€“ lock to 6.1.0 (Jakarta EE 11) to match vaadin flow-server 25.1.0 -->
 			<dependency>
 				<groupId>jakarta.servlet</groupId>
 				<artifactId>jakarta.servlet-api</artifactId>
@@ -285,7 +285,7 @@
 				<version>${commons-lang3.version}</version>
 			</dependency>
 
-			<!-- Line Awesome icon font – static CSS/font assets only, no Java API coupling -->
+			<!-- Line Awesome icon font â€“ static CSS/font assets only, no Java API coupling -->
 			<dependency>
 				<groupId>org.parttio</groupId>
 				<artifactId>line-awesome</artifactId>

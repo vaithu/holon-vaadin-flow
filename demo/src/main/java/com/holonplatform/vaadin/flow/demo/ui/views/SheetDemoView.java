@@ -2,6 +2,7 @@ package com.holonplatform.vaadin.flow.demo.ui.views;
 
 import com.holonplatform.vaadin.flow.demo.ui.DemoExample;
 import com.holonplatform.vaadin.flow.demo.ui.DemoMainLayout;
+import com.holonplatform.vaadin.flow.vaadinplus.ResponsiveDiv;
 import com.holonplatform.vaadin.flow.vaadinplus.components.Sheet;
 import com.holonplatform.vaadin.flow.vaadinplus.components.SheetStack;
 import com.vaadin.flow.component.button.Button;
@@ -18,7 +19,7 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.signals.Signal;
 import com.vaadin.flow.signals.local.ValueSignal;
-import com.holonplatform.vaadin.flow.vaadinplus.ResponsiveDiv;
+import com.vaadin.flow.theme.lumo.LumoIcon;
 
 
 /**
@@ -153,7 +154,7 @@ public class SheetDemoView extends Div {
                 .onClose(() -> Notification.show("Saved: " + nameField.getValue()))
                 .build();
 
-        var triggerBtn = new Button("Open Edit Sheet", VaadinIcon.EDIT.create());
+        var triggerBtn = new Button("Open Edit Sheet", LumoIcon.EDIT.create());
         triggerBtn.addClickListener(e -> sheet.open());
 
         return new DemoExample("Title + Description + onOpen/onClose callbacks", triggerBtn, """

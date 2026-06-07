@@ -1,5 +1,5 @@
 /* -----------------------------------------------------------------------
- * Header root
+ * Root header container
  * ----------------------------------------------------------------------- */
 
 .iyen-header {
@@ -20,7 +20,7 @@
 }
 
 /* -----------------------------------------------------------------------
- * Breadcrumbs
+ * Breadcrumbs row
  * ----------------------------------------------------------------------- */
 
 .iyen-header__breadcrumb {
@@ -28,7 +28,7 @@
 }
 
 /* -----------------------------------------------------------------------
- * Middle row: prefix | heading/details | actions
+ * Main header row: prefix | heading/details | actions
  * ----------------------------------------------------------------------- */
 
 .iyen-header__row {
@@ -105,11 +105,12 @@
     display: flex;
     align-items: center;
     min-width: 0;
+    flex-wrap: wrap;
 }
 
 .iyen-header__column-line > :first-child {
-    flex: 1 1 12rem;
     min-width: 0;
+    margin-right: auto;
 }
 
 .iyen-header__details {
@@ -122,14 +123,19 @@
     width: 100%;
 }
 
+/* -----------------------------------------------------------------------
+ * Actions toolbar: stay inline while space allows, wrap when needed
+ * ----------------------------------------------------------------------- */
+
 .iyen-header__actions {
     display: flex;
     align-items: center;
-    justify-content: flex-end;
     gap: 0.5rem;
     flex-wrap: wrap;
-    width: auto;
+    flex: 0 1 auto;
+    max-width: 100%;
     min-width: 0;
+    width: auto;
 }
 
 .iyen-header__actions--compact {
@@ -141,29 +147,12 @@
     flex: 0 0 auto;
 }
 
-@media (min-width: 768px) {
-    .iyen-header__actions {
-        flex: 0 0 auto;
-        flex-wrap: nowrap;
-        align-items: center;
-    }
-
-    .iyen-header__actions--compact {
-        width: fit-content;
-        max-width: none;
-    }
-
-    .iyen-header__actions > * {
-        flex: 0 0 auto;
-    }
-}
-
 .iyen-header__row--with-details {
     align-items: stretch;
 }
 
 /* -----------------------------------------------------------------------
- * Tabs
+ * Tabs row
  * ----------------------------------------------------------------------- */
 
 .iyen-header__tabs {

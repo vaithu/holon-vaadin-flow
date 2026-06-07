@@ -11,11 +11,7 @@ import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dialog.Dialog;
-import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.component.html.H1;
-import com.vaadin.flow.component.html.H2;
-import com.vaadin.flow.component.html.Paragraph;
-import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
@@ -25,6 +21,7 @@ import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.theme.lumo.LumoIcon;
 
 import java.util.List;
 import java.util.Map;
@@ -331,7 +328,7 @@ public class LiveChatDemoView extends Div implements BeforeEnterObserver {
         openListMode.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
 
         // ── Mode B: manual ID input ──
-        var openManualMode = new Button("Open invite dialog (manual ID)", VaadinIcon.EDIT.create(),
+        var openManualMode = new Button("Open invite dialog (manual ID)", LumoIcon.EDIT.create(),
                 e -> InviteToGroupDialog.open(chatService, groupRoom, inviterInfo));
 
         // ── Pending invitations panel for the current user ──

@@ -4,6 +4,7 @@ import com.holonplatform.vaadin.flow.components.Components;
 import com.holonplatform.vaadin.flow.demo.data.entity.Product;
 import com.holonplatform.vaadin.flow.demo.data.service.ProductService;
 import com.holonplatform.vaadin.flow.demo.ui.DemoMainLayout;
+import com.holonplatform.vaadin.flow.internal.lumo.FlexDirection;
 import com.holonplatform.vaadin.flow.vaadinplus.components.BreadcrumbItem;
 import com.iyensoft.vaadin.flow.components.builders.MasterDetailConfigurator;
 import com.vaadin.flow.component.avatar.Avatar;
@@ -74,13 +75,24 @@ public class MasterDetailLayoutV2DemoView extends Div {
                 .actions(Components.button().newButton().build())
                 .add();
         master.listingBundle()
+                .autoCreateColumns(false)
                 .columns("name", "category", "price", "active")
-                .hidden("id", "createdDate")
-                .header("name", "Name")
-                .header("category", "Category")
-                .header("price", "Price")
-                .header("active", "Active")
+                .multiSelect()
+                .mobileViewColumn(Components.<Product>mobileGridColumnLit()
+                        .flexDirection(FlexDirection.ROW)
+                        .withAvatarAsPrimary(Product::getName)
+                        .withSecondaryText(Product::getName)
+                        .withTertiaryText(product -> String.valueOf(product.getPrice()))
+
+                        .build())
+                .mobileViewHeader(
+                        Components.hl()
+                                .addToStart(new Span("Product Name"))
+                                .addToEnd(new Span("Price"))
+                                .build()
+                )
                 .gridHeader("")
+                .gridHeader(Components.button().delete().build())
                 .pageSizes(10, 25, 50)
                 .defaultPageSize(10)
                 .search("Search products…")
