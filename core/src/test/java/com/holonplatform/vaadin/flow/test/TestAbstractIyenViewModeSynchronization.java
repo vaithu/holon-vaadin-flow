@@ -54,13 +54,13 @@ class TestAbstractIyenViewModeSynchronization {
     void abstractIyenViewReferencesExpectedStyleSheet() {
         StyleSheet styleSheet = AbstractIyenView.class.getAnnotation(StyleSheet.class);
         assertNotNull(styleSheet);
-        assertEquals("context://master-details.css", styleSheet.value());
+        assertEquals("context://master-detail-layout.css", styleSheet.value());
     }
 
     @Test
     void masterDetailsCssResourceIsAvailableOnClasspath() {
-        URL css = AbstractIyenView.class.getClassLoader().getResource("META-INF/resources/master-details.css");
-        assertNotNull(css, "Expected META-INF/resources/master-details.css to be present on classpath");
+        URL css = AbstractIyenView.class.getClassLoader().getResource("META-INF/resources/master-detail-layout.css");
+        assertNotNull(css, "Expected META-INF/resources/master-detail-layout.css to be present on classpath");
     }
 
     private static AttachEvent mockAttachEventWithWindowSize(int width, int height) {

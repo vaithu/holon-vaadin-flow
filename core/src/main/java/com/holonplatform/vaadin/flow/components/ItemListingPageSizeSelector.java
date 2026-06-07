@@ -17,8 +17,7 @@ package com.holonplatform.vaadin.flow.components;
 
 import com.holonplatform.core.internal.utils.ObjectUtils;
 import com.holonplatform.core.query.QueryFilter;
-import com.holonplatform.vaadin.flow.components.builders.NotificationBuilder;
-import com.holonplatform.vaadin.flow.components.Components;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.grid.Grid;
@@ -31,7 +30,6 @@ import com.vaadin.flow.data.provider.CallbackDataProvider;
 import com.vaadin.flow.data.provider.Query;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.signals.Signal;
-import com.vaadin.flow.component.UI;
 
 import java.util.Arrays;
 import java.util.List;
@@ -238,6 +236,9 @@ public class ItemListingPageSizeSelector<T, P> extends Div {
     }
 
     private void showNoResultsNotification() {
+        if (UI.getCurrent() == null) {
+            return;
+        }
         if (noResultsNotification != null && noResultsNotification.isOpened()) {
             return;
         }
