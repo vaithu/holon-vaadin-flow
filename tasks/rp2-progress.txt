@@ -1,0 +1,30 @@
+﻿[INFO] [INFO] 
+[INFO] [INFO] --- remote-resources:3.1.0:process (default) @ holon-vaadin-flow-root ---
+[INFO] [INFO] Preparing remote bundle com.holon-platform:holon-shared:1.0.6
+[INFO] [INFO] Copying 6 resources from 1 bundle.
+[INFO] [INFO] 
+[INFO] [INFO] --- jacoco:0.8.12:report (post-unit-test) @ holon-vaadin-flow-root ---
+[INFO] [INFO] Skipping JaCoCo execution due to missing execution data file.
+[INFO] [INFO] 
+[INFO] [INFO] ------------< com.holon-platform.vaadin:holon-vaadin-flow >-------------
+[INFO] [INFO] Building com.holon-platform.vaadin:holon-vaadin-flow 10.0.2       [2/13]
+[INFO] [INFO]   from core\pom.xml
+[INFO] [INFO] --------------------------------[ jar ]---------------------------------
+[INFO] [INFO] 
+[INFO] [INFO] --- clean:3.2.0:clean (default-clean) @ holon-vaadin-flow ---
+[INFO] [INFO] Deleting C:\Users\sxp267\IdeaProjects\holon-vaadin-flow\core\target
+[INFO] [INFO] 
+[INFO] [INFO] --- jacoco:0.8.12:prepare-agent (pre-unit-test) @ holon-vaadin-flow ---
+[INFO] [INFO] surefireArgLine set to -javaagent:C:\\Users\\sxp267\\.m2\\repository\\org\\jacoco\\org.jacoco.agent\\0.8.12\\org.jacoco.agent-0.8.12-runtime.jar=destfile=C:\\Users\\sxp267\\IdeaProjects\\holon-vaadin-flow\\core\\target\\coverage-reports\\jacoco-ut.exec
+[INFO] [INFO] 
+[INFO] [INFO] --- remote-resources:3.1.0:process (default) @ holon-vaadin-flow ---
+[INFO] [INFO] Preparing remote bundle com.holon-platform:holon-shared:1.0.6
+[INFO] [INFO] Copying 6 resources from 1 bundle.
+[INFO] [INFO] 
+[INFO] [INFO] --- resources:3.4.0:resources (default-resources) @ holon-vaadin-flow ---
+[INFO] [INFO] Copying 61 resources from src\main\resources to target\classes
+[INFO] [INFO] Copying 6 resources from target\maven-shared-archive-resources to target\classes
+[INFO] [INFO] 
+[INFO] [INFO] --- compiler:3.15.0:compile (default-compile) @ holon-vaadin-flow ---
+[INFO] [INFO] Recompiling the module because of changed source code.
+[INFO] [INFO] Compiling 943 source files with javac [debug release 21] to target\classes

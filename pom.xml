@@ -61,8 +61,8 @@
 		<holon.core.version>10.0.0</holon.core.version>
 
 		<!-- Vaadin -->
-		<vaadin.version>25.1.0</vaadin.version>
-		<spring-boot.version>4.0.4</spring-boot.version>
+		<vaadin.version>25.2.1</vaadin.version>
+		<spring-boot.version>4.1.0</spring-boot.version>
 
 		<!-- Servlet API â€“ must match what vaadin flow-server 25.1.0 declares (6.1.0 / Jakarta EE 11).
 		     Using 6.0.0 (Jakarta EE 10) would leave us compiling against an older API than Vaadin. -->

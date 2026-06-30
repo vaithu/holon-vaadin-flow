@@ -1,0 +1,20 @@
+[INFO] Executing: cmd.exe /X /C "git status --porcelain ."
+[INFO] Working directory: C:\Users\sxp267\IdeaProjects\holon-vaadin-flow
+[WARNING] Ignoring unrecognized line: ?? tasks/demo-plugin-check.txt
+[WARNING] Ignoring unrecognized line: ?? tasks/git-commit-out.txt
+[WARNING] Ignoring unrecognized line: ?? tasks/git-commit2.txt
+[WARNING] Ignoring unrecognized line: ?? tasks/git-push-out.txt
+[WARNING] Ignoring unrecognized line: ?? tasks/git-push2.txt
+[WARNING] Ignoring unrecognized line: ?? tasks/git-status2.txt
+[WARNING] Ignoring unrecognized line: ?? tasks/git-status3.txt
+[WARNING] Ignoring unrecognized line: ?? tasks/rc-tail.txt
+[WARNING] Ignoring unrecognized line: ?? tasks/release-clean-tail.txt
+[WARNING] Ignoring unrecognized line: ?? tasks/release-clean.txt
+[WARNING] Ignoring unrecognized line: ?? tasks/release-prepare.txt
+[INFO] 3/17 prepare:check-dependency-snapshots
+[INFO] Checking dependencies and plugins for snapshots ...
+[INFO] 4/17 prepare:create-backup-poms
+[INFO] Creating pom.xml backup with .releaseBackup suffix
+[INFO] 5/17 prepare:map-release-versions
+[INFO] 6/17 prepare:input-variables
+[WARNING] No server with id 'git-scm-server' found in Maven settings

@@ -1,0 +1,85 @@
+﻿[INFO] Scanning for projects...
+[WARNING] 
+[WARNING] Some problems were encountered while building the effective model for com.holon-platform.vaadin:holon-vaadin-flow-demo:jar:10.0.2-SNAPSHOT
+[WARNING] 'build.plugins.plugin.version' for org.springframework.boot:spring-boot-maven-plugin is missing. @ line 116, column 21
+[WARNING] 
+[WARNING] It is highly recommended to fix these problems because they threaten the stability of your build.
+[WARNING] 
+[WARNING] For this reason, future Maven versions might no longer support building such malformed projects.
+[WARNING] 
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Build Order:
+[INFO] 
+[INFO] com.holon-platform.vaadin:holon-vaadin-flow-root                   [pom]
+[INFO] com.holon-platform.vaadin:holon-vaadin-flow                        [jar]
+[INFO] com.holon-platform.vaadin:holon-vaadin-flow-chartjs                [jar]
+[INFO] com.holon-platform.vaadin:holon-vaadin-flow-calendar               [jar]
+[INFO] com.holon-platform.vaadin:holon-vaadin-flow-navigator              [jar]
+[INFO] com.holon-platform.vaadin:holon-vaadin-flow-spring                 [jar]
+[INFO] com.holon-platform.vaadin:holon-vaadin-flow-spring-boot            [jar]
+[INFO] com.holon-platform.vaadin:holon-starter-vaadin-flow                [jar]
+[INFO] com.holon-platform.vaadin:holon-vaadin-flow-chat                   [jar]
+[INFO] com.holon-platform.vaadin:holon-vaadin-flow-customer               [jar]
+[INFO] com.holon-platform.vaadin:holon-vaadin-flow-bom                    [pom]
+[INFO] com.holon-platform.vaadin:documentation-vaadin-flow                [jar]
+[INFO] com.holon-platform.vaadin:holon-vaadin-flow-demo                   [jar]
+Downloading from central: https://repo.maven.apache.org/maven2/org/jacoco/maven-metadata.xml
+Downloading from central: https://repo.maven.apache.org/maven2/org/asciidoctor/maven-metadata.xml
+Downloading from central: https://repo.maven.apache.org/maven2/io/fabric8/maven-metadata.xml
+Downloading from central: https://repo.maven.apache.org/maven2/org/sonatype/plugins/maven-metadata.xml
+Progress (1): 237 B
+Progress (2): 237 B | 249 B
+Progress (3): 237 B | 249 B | 3.1 kB
+Progress (4): 237 B | 249 B | 3.1 kB | 1.9 kB
+Progress (4): 237 B | 249 B | 4.3 kB | 1.9 kB
+                                             
+Downloaded from central: https://repo.maven.apache.org/maven2/org/jacoco/maven-metadata.xml (237 B at 464 B/s)
+Downloading from central: https://repo.maven.apache.org/maven2/org/eclipse/m2e/maven-metadata.xml
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/plugins/maven-metadata.xml
+Progress (4): 249 B | 4.3 kB | 1.9 kB | 4.6 kB
+Progress (4): 249 B | 4.3 kB | 1.9 kB | 9.7 kB
+Progress (4): 249 B | 4.3 kB | 1.9 kB | 14 kB 
+                                             
+Downloaded from central: https://repo.maven.apache.org/maven2/org/asciidoctor/maven-metadata.xml (249 B at 399 B/s)
+Downloading from central: https://repo.maven.apache.org/maven2/org/codehaus/mojo/maven-metadata.xml
+Downloaded from central: https://repo.maven.apache.org/maven2/io/fabric8/maven-metadata.xml (1.9 kB at 3.0 kB/s)
+Downloaded from central: https://repo.maven.apache.org/maven2/org/sonatype/plugins/maven-metadata.xml (4.3 kB at 6.3 kB/s)
+Progress (2): 14 kB | 3.1 kB
+Progress (2): 14 kB | 7.7 kB
+Progress (2): 14 kB | 12 kB 
+Progress (2): 14 kB | 17 kB
+Progress (2): 14 kB | 20 kB
+Progress (2): 14 kB | 21 kB
+                           
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/plugins/maven-metadata.xml (14 kB at 62 kB/s)
+Downloaded from central: https://repo.maven.apache.org/maven2/org/codehaus/mojo/maven-metadata.xml (21 kB at 59 kB/s)
+[INFO] 
+[INFO] ----------< com.holon-platform.vaadin:holon-vaadin-flow-root >----------
+[INFO] Building com.holon-platform.vaadin:holon-vaadin-flow-root 10.0.2-SNAPSHOT [1/13]
+[INFO]   from pom.xml
+[INFO] --------------------------------[ pom ]---------------------------------
+[INFO] 
+[INFO] --- release:3.1.1:clean (default-cli) @ holon-vaadin-flow-root ---
+[INFO] Cleaning up after release...
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Summary for com.holon-platform.vaadin:holon-vaadin-flow-root 10.0.2-SNAPSHOT:
+[INFO] 
+[INFO] com.holon-platform.vaadin:holon-vaadin-flow-root ... SUCCESS [  2.074 s]
+[INFO] com.holon-platform.vaadin:holon-vaadin-flow ........ SKIPPED
+[INFO] com.holon-platform.vaadin:holon-vaadin-flow-chartjs  SKIPPED
+[INFO] com.holon-platform.vaadin:holon-vaadin-flow-calendar SKIPPED
+[INFO] com.holon-platform.vaadin:holon-vaadin-flow-navigator SKIPPED
+[INFO] com.holon-platform.vaadin:holon-vaadin-flow-spring . SKIPPED
+[INFO] com.holon-platform.vaadin:holon-vaadin-flow-spring-boot SKIPPED
+[INFO] com.holon-platform.vaadin:holon-starter-vaadin-flow  SKIPPED
+[INFO] com.holon-platform.vaadin:holon-vaadin-flow-chat ... SKIPPED
+[INFO] com.holon-platform.vaadin:holon-vaadin-flow-customer SKIPPED
+[INFO] com.holon-platform.vaadin:holon-vaadin-flow-bom .... SKIPPED
+[INFO] com.holon-platform.vaadin:documentation-vaadin-flow  SKIPPED
+[INFO] com.holon-platform.vaadin:holon-vaadin-flow-demo ... SKIPPED
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  5.612 s
+[INFO] Finished at: 2026-06-30T06:27:39-04:00
+[INFO] ------------------------------------------------------------------------

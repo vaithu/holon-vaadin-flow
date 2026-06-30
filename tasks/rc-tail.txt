@@ -1,0 +1,15 @@
+[INFO] com.holon-platform.vaadin:holon-vaadin-flow-navigator SKIPPED
+[INFO] com.holon-platform.vaadin:holon-vaadin-flow-spring . SKIPPED
+[INFO] com.holon-platform.vaadin:holon-vaadin-flow-spring-boot SKIPPED
+[INFO] com.holon-platform.vaadin:holon-starter-vaadin-flow  SKIPPED
+[INFO] com.holon-platform.vaadin:holon-vaadin-flow-chat ... SKIPPED
+[INFO] com.holon-platform.vaadin:holon-vaadin-flow-customer SKIPPED
+[INFO] com.holon-platform.vaadin:holon-vaadin-flow-bom .... SKIPPED
+[INFO] com.holon-platform.vaadin:documentation-vaadin-flow  SKIPPED
+[INFO] com.holon-platform.vaadin:holon-vaadin-flow-demo ... SKIPPED
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  5.612 s
+[INFO] Finished at: 2026-06-30T06:27:39-04:00
+[INFO] ------------------------------------------------------------------------

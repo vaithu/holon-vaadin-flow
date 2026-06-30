@@ -1,0 +1,7 @@
+            <!-- Makes the JAR executable via `java -jar` -->
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+            <!-- JDK9 Automatic-Module-Name -->
+            <plugin>

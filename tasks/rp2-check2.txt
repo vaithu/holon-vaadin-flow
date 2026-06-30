@@ -1,0 +1,30 @@
+[INFO] [INFO] ------< com.holon-platform.vaadin:holon-vaadin-flow-spring-boot >-------
+[INFO] [INFO] Building com.holon-platform.vaadin:holon-vaadin-flow-spring-boot 10.0.2 [7/13]
+[INFO] [INFO]   from spring-boot\pom.xml
+[INFO] [INFO] --------------------------------[ jar ]---------------------------------
+[INFO] [INFO] 
+[INFO] [INFO] --- clean:3.2.0:clean (default-clean) @ holon-vaadin-flow-spring-boot ---
+[INFO] [INFO] Deleting C:\Users\sxp267\IdeaProjects\holon-vaadin-flow\spring-boot\target
+[INFO] [INFO] 
+[INFO] [INFO] --- jacoco:0.8.12:prepare-agent (pre-unit-test) @ holon-vaadin-flow-spring-boot ---
+[INFO] [INFO] surefireArgLine set to -javaagent:C:\\Users\\sxp267\\.m2\\repository\\org\\jacoco\\org.jacoco.agent\\0.8.12\\org.jacoco.agent-0.8.12-runtime.jar=destfile=C:\\Users\\sxp267\\IdeaProjects\\holon-vaadin-flow\\spring-boot\\target\\coverage-reports\\jacoco-ut.exec
+[INFO] [INFO] 
+[INFO] [INFO] --- remote-resources:3.1.0:process (default) @ holon-vaadin-flow-spring-boot ---
+[INFO] [INFO] Preparing remote bundle com.holon-platform:holon-shared:1.0.6
+[INFO] [INFO] Copying 6 resources from 1 bundle.
+[INFO] [INFO] 
+[INFO] [INFO] --- resources:3.4.0:resources (default-resources) @ holon-vaadin-flow-spring-boot ---
+[INFO] [INFO] Copying 1 resource from src\main\resources to target\classes
+[INFO] [INFO] Copying 6 resources from target\maven-shared-archive-resources to target\classes
+[INFO] [INFO] 
+[INFO] [INFO] --- compiler:3.15.0:compile (default-compile) @ holon-vaadin-flow-spring-boot ---
+[INFO] [INFO] Recompiling the module because of changed dependency.
+[INFO] [INFO] Compiling 16 source files with javac [debug release 21] to target\classes
+[INFO] [INFO] 
+[INFO] [INFO] --- resources:3.4.0:testResources (default-testResources) @ holon-vaadin-flow-spring-boot ---
+[INFO] [INFO] Copying 2 resources from src\test\resources to target\test-classes
+[INFO] [INFO] Copying 6 resources from target\maven-shared-archive-resources to target\test-classes
+[INFO] [INFO] 
+[INFO] [INFO] --- compiler:3.15.0:testCompile (default-testCompile) @ holon-vaadin-flow-spring-boot ---
+[INFO] [INFO] Recompiling the module because of changed dependency.
+[INFO] [INFO] Compiling 8 source files with javac [debug release 21] to target\test-classes

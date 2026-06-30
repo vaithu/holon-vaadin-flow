@@ -1,0 +1,47 @@
+﻿[INFO] Scanning for projects...
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Build Order:
+[INFO] 
+[INFO] com.holon-platform.vaadin:holon-vaadin-flow-root                   [pom]
+[INFO] com.holon-platform.vaadin:holon-vaadin-flow                        [jar]
+[INFO] com.holon-platform.vaadin:holon-vaadin-flow-chartjs                [jar]
+[INFO] com.holon-platform.vaadin:holon-vaadin-flow-calendar               [jar]
+[INFO] com.holon-platform.vaadin:holon-vaadin-flow-navigator              [jar]
+[INFO] com.holon-platform.vaadin:holon-vaadin-flow-spring                 [jar]
+[INFO] com.holon-platform.vaadin:holon-vaadin-flow-spring-boot            [jar]
+[INFO] com.holon-platform.vaadin:holon-starter-vaadin-flow                [jar]
+[INFO] com.holon-platform.vaadin:holon-vaadin-flow-chat                   [jar]
+[INFO] com.holon-platform.vaadin:holon-vaadin-flow-customer               [jar]
+[INFO] com.holon-platform.vaadin:holon-vaadin-flow-bom                    [pom]
+[INFO] com.holon-platform.vaadin:documentation-vaadin-flow                [jar]
+[INFO] com.holon-platform.vaadin:holon-vaadin-flow-demo                   [jar]
+[INFO] 
+[INFO] ----------< com.holon-platform.vaadin:holon-vaadin-flow-root >----------
+[INFO] Building com.holon-platform.vaadin:holon-vaadin-flow-root 10.0.2-SNAPSHOT [1/13]
+[INFO]   from pom.xml
+[INFO] --------------------------------[ pom ]---------------------------------
+[INFO] 
+[INFO] --- release:3.1.1:clean (default-cli) @ holon-vaadin-flow-root ---
+[INFO] Cleaning up after release...
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Summary for com.holon-platform.vaadin:holon-vaadin-flow-root 10.0.2-SNAPSHOT:
+[INFO] 
+[INFO] com.holon-platform.vaadin:holon-vaadin-flow-root ... SUCCESS [  2.159 s]
+[INFO] com.holon-platform.vaadin:holon-vaadin-flow ........ SKIPPED
+[INFO] com.holon-platform.vaadin:holon-vaadin-flow-chartjs  SKIPPED
+[INFO] com.holon-platform.vaadin:holon-vaadin-flow-calendar SKIPPED
+[INFO] com.holon-platform.vaadin:holon-vaadin-flow-navigator SKIPPED
+[INFO] com.holon-platform.vaadin:holon-vaadin-flow-spring . SKIPPED
+[INFO] com.holon-platform.vaadin:holon-vaadin-flow-spring-boot SKIPPED
+[INFO] com.holon-platform.vaadin:holon-starter-vaadin-flow  SKIPPED
+[INFO] com.holon-platform.vaadin:holon-vaadin-flow-chat ... SKIPPED
+[INFO] com.holon-platform.vaadin:holon-vaadin-flow-customer SKIPPED
+[INFO] com.holon-platform.vaadin:holon-vaadin-flow-bom .... SKIPPED
+[INFO] com.holon-platform.vaadin:documentation-vaadin-flow  SKIPPED
+[INFO] com.holon-platform.vaadin:holon-vaadin-flow-demo ... SKIPPED
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  3.364 s
+[INFO] Finished at: 2026-06-30T06:30:08-04:00
+[INFO] ------------------------------------------------------------------------

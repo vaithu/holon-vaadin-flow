@@ -6,7 +6,7 @@
  *
  * THREE LAYERS OF STYLING
  * ───────────────────────
- *   1. Overlay-level  vaadin-dialog-overlay[theme~="alert-dialog"]::part(*)
+ *   1. Overlay-level  vaadin-dialog[theme~="alert-dialog"]::part(*)
  *   2. Content-level  .alert-dialog__*  BEM classes (light DOM)
  *   3. Feature modifiers
  *      .alert-dialog--has-icon / --centered / --stacked / --closeable
@@ -49,22 +49,22 @@
  * Backdrop
  * -------------------------------------------------------------------------- */
 
-vaadin-dialog-overlay[theme~="alert-dialog"]::part(backdrop) {
+vaadin-dialog[theme~="alert-dialog"]::part(backdrop) {
     transition: opacity 200ms ease;
 }
 
 /* --------------------------------------------------------------------------
  * Overlay box — centred on all screen sizes.
  *
- * --vaadin-dialog-overlay-width is the Vaadin 25.1 standard custom property.
+ * --vaadin-dialog-overlay-width is the Vaadin 25.2 standard custom property.
  * It controls the width of the overlay box regardless of viewport size.
  * -------------------------------------------------------------------------- */
 
-vaadin-dialog-overlay[theme~="alert-dialog"] {
+vaadin-dialog[theme~="alert-dialog"] {
     --vaadin-dialog-overlay-width: min(90vw, 28rem);
 }
 
-vaadin-dialog-overlay[theme~="alert-dialog"]::part(overlay) {
+vaadin-dialog[theme~="alert-dialog"]::part(overlay) {
     width: var(--vaadin-dialog-overlay-width, min(90vw, 28rem));
     border-radius: var(--radius-xl, 0.875rem);
     box-shadow: var(--shadow-xl,
@@ -80,7 +80,7 @@ vaadin-dialog-overlay[theme~="alert-dialog"]::part(overlay) {
  * Content slot — padding delegated to .alert-dialog wrapper
  * -------------------------------------------------------------------------- */
 
-vaadin-dialog-overlay[theme~="alert-dialog"]::part(content) {
+vaadin-dialog[theme~="alert-dialog"]::part(content) {
     padding: 0;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
@@ -452,9 +452,8 @@ vaadin-dialog-overlay[theme~="alert-dialog"]::part(content) {
 /* --------------------------------------------------------------------------
  * 9. Size variants
  *
- * Each size variant adds a second theme attribute to the vaadin-dialog element
- * which is mirrored to vaadin-dialog-overlay, allowing us to override the
- * --vaadin-dialog-overlay-width custom property per size.
+ * Each size variant adds a second theme attribute to the vaadin-dialog element.
+ * Override the --vaadin-dialog-overlay-width custom property per size.
  *
  * SM  → 24 rem  (384 px)  — compact confirmation
  * MD  → 28 rem  (448 px)  — default (no extra theme value needed)
@@ -463,19 +462,19 @@ vaadin-dialog-overlay[theme~="alert-dialog"]::part(content) {
  * 2XL → 42 rem  (672 px)  — rich content such as a scrollable list
  * -------------------------------------------------------------------------- */
 
-vaadin-dialog-overlay[theme~="alert-dialog"][theme~="alert-dialog-sm"] {
+vaadin-dialog[theme~="alert-dialog"][theme~="alert-dialog-sm"] {
     --vaadin-dialog-overlay-width: min(90vw, 24rem);
 }
 
-vaadin-dialog-overlay[theme~="alert-dialog"][theme~="alert-dialog-lg"] {
+vaadin-dialog[theme~="alert-dialog"][theme~="alert-dialog-lg"] {
     --vaadin-dialog-overlay-width: min(90vw, 32rem);
 }
 
-vaadin-dialog-overlay[theme~="alert-dialog"][theme~="alert-dialog-xl"] {
+vaadin-dialog[theme~="alert-dialog"][theme~="alert-dialog-xl"] {
     --vaadin-dialog-overlay-width: min(90vw, 36rem);
 }
 
-vaadin-dialog-overlay[theme~="alert-dialog"][theme~="alert-dialog-2xl"] {
+vaadin-dialog[theme~="alert-dialog"][theme~="alert-dialog-2xl"] {
     --vaadin-dialog-overlay-width: min(90vw, 42rem);
 }
 
@@ -531,12 +530,12 @@ vaadin-dialog-overlay[theme~="alert-dialog"][theme~="alert-dialog-2xl"] {
  * -------------------------------------------------------------------------- */
 
 @media (max-width: 639px) {
-    vaadin-dialog-overlay[theme~="alert-dialog"][theme~="alert-dialog-fullscreen-mobile"] {
+    vaadin-dialog[theme~="alert-dialog"][theme~="alert-dialog-fullscreen-mobile"] {
         --vaadin-dialog-overlay-width: 100vw;
         align-items: flex-end; /* push panel to the bottom of the viewport */
     }
 
-    vaadin-dialog-overlay[theme~="alert-dialog"][theme~="alert-dialog-fullscreen-mobile"]::part(overlay) {
+    vaadin-dialog[theme~="alert-dialog"][theme~="alert-dialog-fullscreen-mobile"]::part(overlay) {
         width: 100vw;
         max-width: 100vw;
         border-radius: var(--radius-xl, 0.875rem) var(--radius-xl, 0.875rem) 0 0;

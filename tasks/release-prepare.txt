@@ -1,0 +1,53 @@
+﻿[INFO] Scanning for projects...
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Build Order:
+[INFO] 
+[INFO] com.holon-platform.vaadin:holon-vaadin-flow-root                   [pom]
+[INFO] com.holon-platform.vaadin:holon-vaadin-flow                        [jar]
+[INFO] com.holon-platform.vaadin:holon-vaadin-flow-chartjs                [jar]
+[INFO] com.holon-platform.vaadin:holon-vaadin-flow-calendar               [jar]
+[INFO] com.holon-platform.vaadin:holon-vaadin-flow-navigator              [jar]
+[INFO] com.holon-platform.vaadin:holon-vaadin-flow-spring                 [jar]
+[INFO] com.holon-platform.vaadin:holon-vaadin-flow-spring-boot            [jar]
+[INFO] com.holon-platform.vaadin:holon-starter-vaadin-flow                [jar]
+[INFO] com.holon-platform.vaadin:holon-vaadin-flow-chat                   [jar]
+[INFO] com.holon-platform.vaadin:holon-vaadin-flow-customer               [jar]
+[INFO] com.holon-platform.vaadin:holon-vaadin-flow-bom                    [pom]
+[INFO] com.holon-platform.vaadin:documentation-vaadin-flow                [jar]
+[INFO] com.holon-platform.vaadin:holon-vaadin-flow-demo                   [jar]
+[INFO] 
+[INFO] ----------< com.holon-platform.vaadin:holon-vaadin-flow-root >----------
+[INFO] Building com.holon-platform.vaadin:holon-vaadin-flow-root 10.0.2-SNAPSHOT [1/13]
+[INFO]   from pom.xml
+[INFO] --------------------------------[ pom ]---------------------------------
+[INFO] 
+[INFO] --- release:3.1.1:prepare (default-cli) @ holon-vaadin-flow-root ---
+[INFO] starting prepare goal, composed of 17 phases: check-poms, scm-check-modifications, check-dependency-snapshots, create-backup-poms, map-release-versions, input-variables, map-development-versions, rewrite-poms-for-release, generate-release-poms, run-preparation-goals, scm-commit-release, scm-tag, rewrite-poms-for-development, remove-release-poms, run-completion-goals, scm-commit-development, end-release
+[INFO] 1/17 prepare:check-poms
+[WARNING] No server with id 'git-scm-server' found in Maven settings
+[INFO] 2/17 prepare:scm-check-modifications
+[INFO] Verifying that there are no local modifications...
+[INFO]   ignoring changes on: **\pom.xml.next, **\release.properties, **\pom.xml.branch, **\pom.xml.tag, **\pom.xml.backup, **\pom.xml.releaseBackup
+[WARNING] No server with id 'git-scm-server' found in Maven settings
+[INFO] Executing: cmd.exe /X /C "git rev-parse --show-prefix"
+[INFO] Working directory: C:\Users\sxp267\IdeaProjects\holon-vaadin-flow
+[INFO] Executing: cmd.exe /X /C "git status --porcelain ."
+[INFO] Working directory: C:\Users\sxp267\IdeaProjects\holon-vaadin-flow
+[WARNING] Ignoring unrecognized line: ?? tasks/demo-plugin-check.txt
+[WARNING] Ignoring unrecognized line: ?? tasks/git-commit-out.txt
+[WARNING] Ignoring unrecognized line: ?? tasks/git-commit2.txt
+[WARNING] Ignoring unrecognized line: ?? tasks/git-push-out.txt
+[WARNING] Ignoring unrecognized line: ?? tasks/git-push2.txt
+[WARNING] Ignoring unrecognized line: ?? tasks/git-status2.txt
+[WARNING] Ignoring unrecognized line: ?? tasks/git-status3.txt
+[WARNING] Ignoring unrecognized line: ?? tasks/rc-tail.txt
+[WARNING] Ignoring unrecognized line: ?? tasks/release-clean-tail.txt
+[WARNING] Ignoring unrecognized line: ?? tasks/release-clean.txt
+[WARNING] Ignoring unrecognized line: ?? tasks/release-prepare.txt
+[INFO] 3/17 prepare:check-dependency-snapshots
+[INFO] Checking dependencies and plugins for snapshots ...
+[INFO] 4/17 prepare:create-backup-poms
+[INFO] Creating pom.xml backup with .releaseBackup suffix
+[INFO] 5/17 prepare:map-release-versions
+[INFO] 6/17 prepare:input-variables
+[WARNING] No server with id 'git-scm-server' found in Maven settings

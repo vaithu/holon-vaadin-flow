@@ -10,21 +10,21 @@
 /* ── Dialog-level: wide two-panel sizing ─────────────────── */
 
 @media (min-width: 640px) {
-  vaadin-dialog-overlay[theme~="bip-dialog"] {
+  vaadin-dialog[theme~="bip-dialog"] {
     --vaadin-dialog-overlay-width: min(92vw, 860px);
   }
 
-  vaadin-dialog-overlay[theme~="bip-dialog"]::part(overlay) {
+  vaadin-dialog[theme~="bip-dialog"]::part(overlay) {
     max-height: min(90vh, 660px);
     border-radius: 0.75rem;
   }
 
-  vaadin-dialog-overlay[theme~="bip-dialog"]::part(content) {
+  vaadin-dialog[theme~="bip-dialog"]::part(content) {
     padding: 0;
     overflow: hidden;
   }
 
-  vaadin-dialog-overlay[theme~="bip-dialog"]::part(footer) {
+  vaadin-dialog[theme~="bip-dialog"]::part(footer) {
     flex-direction: row;
     padding: 0.625rem 1.25rem;
     gap: 0.5rem;

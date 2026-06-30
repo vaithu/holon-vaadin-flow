@@ -3,7 +3,7 @@
  *
  * Amalgamation of three dialog design systems:
  *
- *   1. Vaadin Dialog (25.1)  — server-side overlay, slot API, ::part() theme attribute
+ *   1. Vaadin Dialog (25.2)  — server-side overlay, slot API, ::part() theme attribute
  *   2. shadcn/ui Dialog      — three-slot model, DialogTrigger, DialogClose,
  *                              ARIA, conditional close guard, size variants
  *   3. Tailwind Plus modal   — mobile bottom-sheet, desktop centred modal,
@@ -11,7 +11,7 @@
  *
  * TWO LAYERS OF STYLING
  * ─────────────────────
- *   1. Overlay-level  vaadin-dialog-overlay[theme~="h-dialog"]::part(*)
+ *   1. Overlay-level  vaadin-dialog[theme~="h-dialog"]::part(*)
  *      Controls overlay box position, size, backdrop, and slot containers.
  *
  *   2. Content-level  .h-dialog__*  BEM classes (light DOM)
@@ -29,8 +29,8 @@
  * ─────────────────────────────
  *   DefaultDialog calls getElement().getThemeList().content("h-dialog").
  *   Vaadin Flow mirrors the theme attribute from <vaadin-dialog>
- *   to <vaadin-dialog-overlay>, so
- *       vaadin-dialog-overlay[theme~="h-dialog"]
+ *   to <vaadin-dialog>, so
+ *       vaadin-dialog[theme~="h-dialog"]
  *   targets only dialogs created via DefaultDialog / DialogBuilder.
  */
 
@@ -42,19 +42,19 @@
  * Backdrop
  * -------------------------------------------------------------------------- */
 
-vaadin-dialog-overlay[theme~="h-dialog"]::part(backdrop) {
+vaadin-dialog[theme~="h-dialog"]::part(backdrop) {
     transition: opacity 200ms ease;
 }
 
 /* --------------------------------------------------------------------------
  * Overlay box
  *
- * vaadin-dialog-overlay has position: fixed; inset: 0 (full-screen host).
+ * vaadin-dialog has position: fixed; inset: 0 (full-screen host).
  * Setting position: absolute on ::part(overlay) positions it relative to
  * that fixed container so we can anchor it to the bottom on mobile.
  * -------------------------------------------------------------------------- */
 
-vaadin-dialog-overlay[theme~="h-dialog"]::part(overlay) {
+vaadin-dialog[theme~="h-dialog"]::part(overlay) {
     /* Mobile: pin to bottom, stretch to full width */
     position: absolute;
     inset-block-end: 0;
@@ -90,7 +90,7 @@ vaadin-dialog-overlay[theme~="h-dialog"]::part(overlay) {
  * at the overlay root. Header padding-inline-end leaves space for it.
  * -------------------------------------------------------------------------- */
 
-vaadin-dialog-overlay[theme~="h-dialog"]::part(header) {
+vaadin-dialog[theme~="h-dialog"]::part(header) {
     display: flex;
     flex-direction: row;
     align-items: flex-start;
@@ -102,7 +102,7 @@ vaadin-dialog-overlay[theme~="h-dialog"]::part(header) {
  * Content slot
  * -------------------------------------------------------------------------- */
 
-vaadin-dialog-overlay[theme~="h-dialog"]::part(content) {
+vaadin-dialog[theme~="h-dialog"]::part(content) {
     padding: 0.75rem 1.25rem;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
@@ -116,7 +116,7 @@ vaadin-dialog-overlay[theme~="h-dialog"]::part(content) {
  * which is the expected mobile UX (primary CTA closest to thumb).
  * -------------------------------------------------------------------------- */
 
-vaadin-dialog-overlay[theme~="h-dialog"]::part(footer) {
+vaadin-dialog[theme~="h-dialog"]::part(footer) {
     display: flex;
     flex-direction: column-reverse;
     gap: 0.5rem;
@@ -127,7 +127,7 @@ vaadin-dialog-overlay[theme~="h-dialog"]::part(footer) {
 
 /* ==========================================================================
    SECTION 2 — DESKTOP OVERRIDES  (≥ 640 px)
-   Vaadin 25.1 CSS custom property --vaadin-dialog-overlay-width controls the
+   Vaadin 25.2 CSS custom property --vaadin-dialog-overlay-width controls the
    width of the ::part(overlay) box when it is in its normal (non-absolute)
    flow position.
    ========================================================================== */
@@ -140,12 +140,12 @@ vaadin-dialog-overlay[theme~="h-dialog"]::part(footer) {
 
 @media (min-width: 640px) {
 
-    /* Control dialog width via the Vaadin 25.1 standard custom property */
-    vaadin-dialog-overlay[theme~="h-dialog"] {
+    /* Control dialog width via the Vaadin 25.2 standard custom property */
+    vaadin-dialog[theme~="h-dialog"] {
         --vaadin-dialog-overlay-width: min(90vw, 32rem);
     }
 
-    vaadin-dialog-overlay[theme~="h-dialog"]::part(overlay) {
+    vaadin-dialog[theme~="h-dialog"]::part(overlay) {
         /* Revert to normal centred positioning (parent is flex, centred) */
         position: relative;
         inset-block-end: auto;
@@ -167,16 +167,16 @@ vaadin-dialog-overlay[theme~="h-dialog"]::part(footer) {
         animation: h-dialog-scale-in 180ms cubic-bezier(0.16, 1, 0.3, 1);
     }
 
-    vaadin-dialog-overlay[theme~="h-dialog"]::part(header) {
+    vaadin-dialog[theme~="h-dialog"]::part(header) {
         padding: 1.25rem 3.5rem 0.5rem 1.5rem;  /* right padding reserves space under the close btn */
     }
 
-    vaadin-dialog-overlay[theme~="h-dialog"]::part(content) {
+    vaadin-dialog[theme~="h-dialog"]::part(content) {
         padding: 0.75rem 1.5rem;
     }
 
     /* Footer — horizontal row: cancel floats left, action stays right */
-    vaadin-dialog-overlay[theme~="h-dialog"]::part(footer) {
+    vaadin-dialog[theme~="h-dialog"]::part(footer) {
         flex-direction: row;
         align-items: center;
         padding: 0.5rem 1.25rem;
@@ -430,7 +430,7 @@ vaadin-dialog-overlay[theme~="h-dialog"]::part(footer) {
 
 /* ─── Mobile base (< 640 px) ─────────────────────────────────────────────── */
 
-vaadin-dialog-overlay[theme~="h-dialog"][theme~="h-dialog--centered"]::part(header) {
+vaadin-dialog[theme~="h-dialog"][theme~="h-dialog--centered"]::part(header) {
     flex-direction: column;
     align-items: center;
     text-align: center;
@@ -438,7 +438,7 @@ vaadin-dialog-overlay[theme~="h-dialog"][theme~="h-dialog--centered"]::part(head
     gap: 0.5rem;
 }
 
-vaadin-dialog-overlay[theme~="h-dialog"][theme~="h-dialog--centered"]::part(content) {
+vaadin-dialog[theme~="h-dialog"][theme~="h-dialog--centered"]::part(content) {
     text-align: center;
 }
 
@@ -448,11 +448,11 @@ vaadin-dialog-overlay[theme~="h-dialog"][theme~="h-dialog--centered"]::part(cont
 
 @media (min-width: 640px) {
 
-    vaadin-dialog-overlay[theme~="h-dialog"][theme~="h-dialog--centered"]::part(header) {
+    vaadin-dialog[theme~="h-dialog"][theme~="h-dialog--centered"]::part(header) {
         padding: 2rem 1.5rem 0.5rem;
     }
 
-    vaadin-dialog-overlay[theme~="h-dialog"][theme~="h-dialog--centered"]::part(footer) {
+    vaadin-dialog[theme~="h-dialog"][theme~="h-dialog--centered"]::part(footer) {
         flex-direction: row;
         justify-content: center;
         gap: 0.75rem;
@@ -464,23 +464,23 @@ vaadin-dialog-overlay[theme~="h-dialog"][theme~="h-dialog--centered"]::part(cont
      * Override the .h-dialog__cancel-btn { margin-right: auto } rule
      * with a more-specific selector.
      */
-    vaadin-dialog-overlay[theme~="h-dialog"][theme~="h-dialog--centered"] .h-dialog__cancel-btn {
+    vaadin-dialog[theme~="h-dialog"][theme~="h-dialog--centered"] .h-dialog__cancel-btn {
         margin-right: 0;
         min-width: 7rem;
     }
 
-    vaadin-dialog-overlay[theme~="h-dialog"][theme~="h-dialog--centered"] .h-dialog__action-btn {
+    vaadin-dialog[theme~="h-dialog"][theme~="h-dialog--centered"] .h-dialog__action-btn {
         min-width: 7rem;
     }
 
     /* Header-text wrapper must not stretch vertically in column layout */
-    vaadin-dialog-overlay[theme~="h-dialog"][theme~="h-dialog--centered"] .h-dialog__header-text {
+    vaadin-dialog[theme~="h-dialog"][theme~="h-dialog--centered"] .h-dialog__header-text {
         flex: 0 1 auto;
         align-items: center;
     }
 
     /* Icon bottom gap before the text group */
-    vaadin-dialog-overlay[theme~="h-dialog"][theme~="h-dialog--centered"] .h-dialog__icon {
+    vaadin-dialog[theme~="h-dialog"][theme~="h-dialog--centered"] .h-dialog__icon {
         margin-block-end: 0.25rem;
     }
 }
@@ -507,23 +507,23 @@ vaadin-dialog-overlay[theme~="h-dialog"][theme~="h-dialog--centered"]::part(cont
 
 @media (min-width: 640px) {
 
-    vaadin-dialog-overlay[theme~="h-dialog"][theme~="h-dialog--sm"] {
+    vaadin-dialog[theme~="h-dialog"][theme~="h-dialog--sm"] {
         --vaadin-dialog-overlay-width: min(90vw, 24rem);
     }
 
-    vaadin-dialog-overlay[theme~="h-dialog"][theme~="h-dialog--md"] {
+    vaadin-dialog[theme~="h-dialog"][theme~="h-dialog--md"] {
         --vaadin-dialog-overlay-width: min(90vw, 32rem);
     }
 
-    vaadin-dialog-overlay[theme~="h-dialog"][theme~="h-dialog--lg"] {
+    vaadin-dialog[theme~="h-dialog"][theme~="h-dialog--lg"] {
         --vaadin-dialog-overlay-width: min(90vw, 42rem);
     }
 
-    vaadin-dialog-overlay[theme~="h-dialog"][theme~="h-dialog--xl"] {
+    vaadin-dialog[theme~="h-dialog"][theme~="h-dialog--xl"] {
         --vaadin-dialog-overlay-width: min(90vw, 56rem);
     }
 
-    vaadin-dialog-overlay[theme~="h-dialog"][theme~="h-dialog--full"] {
+    vaadin-dialog[theme~="h-dialog"][theme~="h-dialog--full"] {
         --vaadin-dialog-overlay-width: 95vw;
     }
 }

@@ -1,0 +1,8 @@
+﻿git : To https://github.com/vaithu/holon-vaadin-flow.git
+At line:1 char:1
++ git push origin modernize/java-20260526093038 2>&1 | Out-File "C:\Use ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (To https://gith...vaadin-flow.git:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+   6fa15fd..174f377  modernize/java-20260526093038 -> modernize/java-20260526093038

@@ -1,0 +1,896 @@
+﻿[INFO] Scanning for projects...
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Build Order:
+[INFO] 
+[INFO] com.holon-platform.vaadin:holon-vaadin-flow-root                   [pom]
+[INFO] com.holon-platform.vaadin:holon-vaadin-flow                        [jar]
+[INFO] com.holon-platform.vaadin:holon-vaadin-flow-chartjs                [jar]
+[INFO] com.holon-platform.vaadin:holon-vaadin-flow-calendar               [jar]
+[INFO] com.holon-platform.vaadin:holon-vaadin-flow-navigator              [jar]
+[INFO] com.holon-platform.vaadin:holon-vaadin-flow-spring                 [jar]
+[INFO] com.holon-platform.vaadin:holon-vaadin-flow-spring-boot            [jar]
+[INFO] com.holon-platform.vaadin:holon-starter-vaadin-flow                [jar]
+[INFO] com.holon-platform.vaadin:holon-vaadin-flow-chat                   [jar]
+[INFO] com.holon-platform.vaadin:holon-vaadin-flow-customer               [jar]
+[INFO] com.holon-platform.vaadin:holon-vaadin-flow-bom                    [pom]
+[INFO] com.holon-platform.vaadin:documentation-vaadin-flow                [jar]
+[INFO] com.holon-platform.vaadin:holon-vaadin-flow-demo                   [jar]
+[INFO] 
+[INFO] ----------< com.holon-platform.vaadin:holon-vaadin-flow-root >----------
+[INFO] Building com.holon-platform.vaadin:holon-vaadin-flow-root 10.0.2-SNAPSHOT [1/13]
+[INFO]   from pom.xml
+[INFO] --------------------------------[ pom ]---------------------------------
+[INFO] 
+[INFO] --- release:3.1.1:prepare (default-cli) @ holon-vaadin-flow-root ---
+[INFO] starting prepare goal, composed of 17 phases: check-poms, scm-check-modifications, check-dependency-snapshots, create-backup-poms, map-release-versions, input-variables, map-development-versions, rewrite-poms-for-release, generate-release-poms, run-preparation-goals, scm-commit-release, scm-tag, rewrite-poms-for-development, remove-release-poms, run-completion-goals, scm-commit-development, end-release
+[INFO] 1/17 prepare:check-poms
+[WARNING] No server with id 'git-scm-server' found in Maven settings
+[INFO] 2/17 prepare:scm-check-modifications
+[INFO] Verifying that there are no local modifications...
+[INFO]   ignoring changes on: **\pom.xml.next, **\release.properties, **\pom.xml.branch, **\pom.xml.tag, **\pom.xml.backup, **\pom.xml.releaseBackup
+[WARNING] No server with id 'git-scm-server' found in Maven settings
+[INFO] Executing: cmd.exe /X /C "git rev-parse --show-prefix"
+[INFO] Working directory: C:\Users\sxp267\IdeaProjects\holon-vaadin-flow
+[INFO] Executing: cmd.exe /X /C "git status --porcelain ."
+[INFO] Working directory: C:\Users\sxp267\IdeaProjects\holon-vaadin-flow
+[WARNING] Ignoring unrecognized line: ?? tasks/demo-plugin-check.txt
+[WARNING] Ignoring unrecognized line: ?? tasks/git-commit-out.txt
+[WARNING] Ignoring unrecognized line: ?? tasks/git-commit2.txt
+[WARNING] Ignoring unrecognized line: ?? tasks/git-push-out.txt
+[WARNING] Ignoring unrecognized line: ?? tasks/git-push2.txt
+[WARNING] Ignoring unrecognized line: ?? tasks/git-status2.txt
+[WARNING] Ignoring unrecognized line: ?? tasks/git-status3.txt
+[WARNING] Ignoring unrecognized line: ?? tasks/rc-tail.txt
+[WARNING] Ignoring unrecognized line: ?? tasks/release-clean-tail.txt
+[WARNING] Ignoring unrecognized line: ?? tasks/release-clean.txt
+[WARNING] Ignoring unrecognized line: ?? tasks/release-clean2.txt
+[WARNING] Ignoring unrecognized line: ?? tasks/release-prepare.txt
+[WARNING] Ignoring unrecognized line: ?? tasks/release-prepare2.txt
+[WARNING] Ignoring unrecognized line: ?? tasks/rp-tail.txt
+[INFO] 3/17 prepare:check-dependency-snapshots
+[INFO] Checking dependencies and plugins for snapshots ...
+[INFO] 4/17 prepare:create-backup-poms
+[INFO] Creating pom.xml backup with .releaseBackup suffix
+[INFO] 5/17 prepare:map-release-versions
+[INFO] 6/17 prepare:input-variables
+[WARNING] No server with id 'git-scm-server' found in Maven settings
+[INFO] 7/17 prepare:map-development-versions
+[INFO] 8/17 prepare:rewrite-poms-for-release
+[INFO] Transforming pom.xml holon-vaadin-flow-root 'com.holon-platform.vaadin:holon-vaadin-flow-root'...
+[WARNING] No server with id 'git-scm-server' found in Maven settings
+[INFO]   Ignoring artifact version update for expression ${project.version}
+[INFO]   Ignoring artifact version update for expression ${project.version}
+[INFO]   Ignoring artifact version update for expression ${project.version}
+[INFO]   Ignoring artifact version update for expression ${project.version}
+[INFO]   Ignoring artifact version update for expression ${project.version}
+[INFO]   Ignoring artifact version update for expression ${project.version}
+[INFO]   Ignoring artifact version update for expression ${project.version}
+[INFO]   Ignoring artifact version update for expression ${project.version}
+[INFO]   Ignoring artifact version update for expression ${project.version}
+[INFO] Transforming core/pom.xml holon-vaadin-flow 'com.holon-platform.vaadin:holon-vaadin-flow'...
+[WARNING] No server with id 'git-scm-server' found in Maven settings
+[INFO] Transforming chartjs/pom.xml holon-vaadin-flow-chartjs 'com.holon-platform.vaadin:holon-vaadin-flow-chartjs'...
+[WARNING] No server with id 'git-scm-server' found in Maven settings
+[INFO] Transforming calendar/pom.xml holon-vaadin-flow-calendar 'com.holon-platform.vaadin:holon-vaadin-flow-calendar'...
+[WARNING] No server with id 'git-scm-server' found in Maven settings
+[INFO] Transforming navigator/pom.xml holon-vaadin-flow-navigator 'com.holon-platform.vaadin:holon-vaadin-flow-navigator'...
+[WARNING] No server with id 'git-scm-server' found in Maven settings
+[INFO] Transforming spring/pom.xml holon-vaadin-flow-spring 'com.holon-platform.vaadin:holon-vaadin-flow-spring'...
+[WARNING] No server with id 'git-scm-server' found in Maven settings
+[INFO] Transforming spring-boot/pom.xml holon-vaadin-flow-spring-boot 'com.holon-platform.vaadin:holon-vaadin-flow-spring-boot'...
+[WARNING] No server with id 'git-scm-server' found in Maven settings
+[INFO] Transforming starter/pom.xml holon-starter-vaadin-flow 'com.holon-platform.vaadin:holon-starter-vaadin-flow'...
+[WARNING] No server with id 'git-scm-server' found in Maven settings
+[INFO] Transforming chat/pom.xml holon-vaadin-flow-chat 'com.holon-platform.vaadin:holon-vaadin-flow-chat'...
+[WARNING] No server with id 'git-scm-server' found in Maven settings
+[INFO] Transforming customer/pom.xml holon-vaadin-flow-customer 'com.holon-platform.vaadin:holon-vaadin-flow-customer'...
+[WARNING] No server with id 'git-scm-server' found in Maven settings
+[INFO] Transforming bom/pom.xml holon-vaadin-flow-bom 'com.holon-platform.vaadin:holon-vaadin-flow-bom'...
+[WARNING] No server with id 'git-scm-server' found in Maven settings
+[INFO]   Ignoring artifact version update for expression ${project.version}
+[INFO]   Ignoring artifact version update for expression ${project.version}
+[INFO]   Ignoring artifact version update for expression ${project.version}
+[INFO]   Ignoring artifact version update for expression ${project.version}
+[INFO]   Ignoring artifact version update for expression ${project.version}
+[INFO]   Ignoring artifact version update for expression ${project.version}
+[INFO]   Ignoring artifact version update for expression ${project.version}
+[INFO]   Ignoring artifact version update for expression ${project.version}
+[INFO] Transforming documentation/pom.xml documentation-vaadin-flow 'com.holon-platform.vaadin:documentation-vaadin-flow'...
+[WARNING] No server with id 'git-scm-server' found in Maven settings
+[INFO] Transforming demo/pom.xml holon-vaadin-flow-demo 'com.holon-platform.vaadin:holon-vaadin-flow-demo'...
+[WARNING] No server with id 'git-scm-server' found in Maven settings
+[INFO] 9/17 prepare:generate-release-poms
+[INFO] Not generating release POMs
+[INFO] 10/17 prepare:run-preparation-goals
+[INFO] Executing goals 'clean verify'...
+[INFO] [INFO] Scanning for projects...
+[INFO] [INFO] ------------------------------------------------------------------------
+[INFO] [INFO] Reactor Build Order:
+[INFO] [INFO] 
+[INFO] [INFO] com.holon-platform.vaadin:holon-vaadin-flow-root                   [pom]
+[INFO] [INFO] com.holon-platform.vaadin:holon-vaadin-flow                        [jar]
+[INFO] [INFO] com.holon-platform.vaadin:holon-vaadin-flow-chartjs                [jar]
+[INFO] [INFO] com.holon-platform.vaadin:holon-vaadin-flow-calendar               [jar]
+[INFO] [INFO] com.holon-platform.vaadin:holon-vaadin-flow-navigator              [jar]
+[INFO] [INFO] com.holon-platform.vaadin:holon-vaadin-flow-spring                 [jar]
+[INFO] [INFO] com.holon-platform.vaadin:holon-vaadin-flow-spring-boot            [jar]
+[INFO] [INFO] com.holon-platform.vaadin:holon-starter-vaadin-flow                [jar]
+[INFO] [INFO] com.holon-platform.vaadin:holon-vaadin-flow-chat                   [jar]
+[INFO] [INFO] com.holon-platform.vaadin:holon-vaadin-flow-customer               [jar]
+[INFO] [INFO] com.holon-platform.vaadin:holon-vaadin-flow-bom                    [pom]
+[INFO] [INFO] com.holon-platform.vaadin:documentation-vaadin-flow                [jar]
+[INFO] [INFO] com.holon-platform.vaadin:holon-vaadin-flow-demo                   [jar]
+[INFO] [INFO] 
+[INFO] [INFO] ----------< com.holon-platform.vaadin:holon-vaadin-flow-root >----------
+[INFO] [INFO] Building com.holon-platform.vaadin:holon-vaadin-flow-root 10.0.2  [1/13]
+[INFO] [INFO]   from pom.xml
+[INFO] [INFO] --------------------------------[ pom ]---------------------------------
+[INFO] [INFO] 
+[INFO] [INFO] --- clean:3.2.0:clean (default-clean) @ holon-vaadin-flow-root ---
+[INFO] [INFO] Deleting C:\Users\sxp267\IdeaProjects\holon-vaadin-flow\target
+[INFO] [INFO] 
+[INFO] [INFO] --- jacoco:0.8.12:prepare-agent (pre-unit-test) @ holon-vaadin-flow-root ---
+[INFO] [INFO] surefireArgLine set to -javaagent:C:\\Users\\sxp267\\.m2\\repository\\org\\jacoco\\org.jacoco.agent\\0.8.12\\org.jacoco.agent-0.8.12-runtime.jar=destfile=C:\\Users\\sxp267\\IdeaProjects\\holon-vaadin-flow\\target\\coverage-reports\\jacoco-ut.exec
+[INFO] [INFO] 
+[INFO] [INFO] --- remote-resources:3.1.0:process (default) @ holon-vaadin-flow-root ---
+[INFO] [INFO] Preparing remote bundle com.holon-platform:holon-shared:1.0.6
+[INFO] [INFO] Copying 6 resources from 1 bundle.
+[INFO] [INFO] 
+[INFO] [INFO] --- jacoco:0.8.12:report (post-unit-test) @ holon-vaadin-flow-root ---
+[INFO] [INFO] Skipping JaCoCo execution due to missing execution data file.
+[INFO] [INFO] 
+[INFO] [INFO] ------------< com.holon-platform.vaadin:holon-vaadin-flow >-------------
+[INFO] [INFO] Building com.holon-platform.vaadin:holon-vaadin-flow 10.0.2       [2/13]
+[INFO] [INFO]   from core\pom.xml
+[INFO] [INFO] --------------------------------[ jar ]---------------------------------
+[INFO] [INFO] 
+[INFO] [INFO] --- clean:3.2.0:clean (default-clean) @ holon-vaadin-flow ---
+[INFO] [INFO] Deleting C:\Users\sxp267\IdeaProjects\holon-vaadin-flow\core\target
+[INFO] [INFO] 
+[INFO] [INFO] --- jacoco:0.8.12:prepare-agent (pre-unit-test) @ holon-vaadin-flow ---
+[INFO] [INFO] surefireArgLine set to -javaagent:C:\\Users\\sxp267\\.m2\\repository\\org\\jacoco\\org.jacoco.agent\\0.8.12\\org.jacoco.agent-0.8.12-runtime.jar=destfile=C:\\Users\\sxp267\\IdeaProjects\\holon-vaadin-flow\\core\\target\\coverage-reports\\jacoco-ut.exec
+[INFO] [INFO] 
+[INFO] [INFO] --- remote-resources:3.1.0:process (default) @ holon-vaadin-flow ---
+[INFO] [INFO] Preparing remote bundle com.holon-platform:holon-shared:1.0.6
+[INFO] [INFO] Copying 6 resources from 1 bundle.
+[INFO] [INFO] 
+[INFO] [INFO] --- resources:3.4.0:resources (default-resources) @ holon-vaadin-flow ---
+[INFO] [INFO] Copying 61 resources from src\main\resources to target\classes
+[INFO] [INFO] Copying 6 resources from target\maven-shared-archive-resources to target\classes
+[INFO] [INFO] 
+[INFO] [INFO] --- compiler:3.15.0:compile (default-compile) @ holon-vaadin-flow ---
+[INFO] [INFO] Recompiling the module because of changed source code.
+[INFO] [INFO] Compiling 943 source files with javac [debug release 21] to target\classes
+[INFO] [INFO] Annotation processing is enabled because one or more processors were found
+[INFO]   on the class path. A future release of javac may disable annotation processing
+[INFO]   unless at least one processor is specified by name (-processor), or a search
+[INFO]   path is specified (--processor-path, --processor-module-path), or annotation
+[INFO]   processing is enabled explicitly (-proc:only, -proc:full).
+[INFO]   Use -Xlint:-options to suppress this message.
+[INFO]   Use -proc:none to disable annotation processing.
+[INFO] [WARNING] /C:/Users/sxp267/IdeaProjects/holon-vaadin-flow/core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/EntityFormPanel.java:[437,70] unchecked cast
+[INFO]   required: L
+[INFO]   found:    com.vaadin.flow.component.Component
+[INFO] [WARNING] /C:/Users/sxp267/IdeaProjects/holon-vaadin-flow/core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/EntityFormPanel.java:[1692,38] unchecked call to accept(T) as a member of the raw type java.util.function.Consumer
+[INFO] [WARNING] /C:/Users/sxp267/IdeaProjects/holon-vaadin-flow/core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/EntityFormPanel.java:[1727,34] unchecked call to accept(T) as a member of the raw type java.util.function.Consumer
+[INFO] [WARNING] /C:/Users/sxp267/IdeaProjects/holon-vaadin-flow/core/src/main/java/com/iyensoft/vaadin/flow/internal/components/builders/AbstractLazyTabsConfigurator.java:[176,44] unchecked cast
+[INFO]   required: com.iyensoft.vaadin.flow.components.DetailSyncAware<java.lang.Object>
+[INFO]   found:    com.iyensoft.vaadin.flow.components.DetailSyncAware<capture#1 of ?>
+[INFO] [WARNING] /C:/Users/sxp267/IdeaProjects/holon-vaadin-flow/core/src/main/java/com/iyensoft/vaadin/flow/internal/components/builders/AbstractLazyTabsConfigurator.java:[493,48] unchecked cast
+[INFO]   required: com.iyensoft.vaadin.flow.components.DetailSyncAware<java.lang.Object>
+[INFO]   found:    com.iyensoft.vaadin.flow.components.DetailSyncAware<capture#2 of ?>
+[INFO] [INFO] 
+[INFO] [INFO] --- resources:3.4.0:testResources (default-testResources) @ holon-vaadin-flow ---
+[INFO] [INFO] Copying 4 resources from src\test\resources to target\test-classes
+[INFO] [INFO] Copying 6 resources from target\maven-shared-archive-resources to target\test-classes
+[INFO] [INFO] 
+[INFO] [INFO] --- compiler:3.15.0:testCompile (default-testCompile) @ holon-vaadin-flow ---
+[INFO] [INFO] Recompiling the module because of changed dependency.
+[INFO] [INFO] Compiling 163 source files with javac [debug release 21] to target\test-classes
+[INFO] [INFO] Annotation processing is enabled because one or more processors were found
+[INFO]   on the class path. A future release of javac may disable annotation processing
+[INFO]   unless at least one processor is specified by name (-processor), or a search
+[INFO]   path is specified (--processor-path, --processor-module-path), or annotation
+[INFO]   processing is enabled explicitly (-proc:only, -proc:full).
+[INFO]   Use -Xlint:-options to suppress this message.
+[INFO]   Use -proc:none to disable annotation processing.
+[INFO] [WARNING] /C:/Users/sxp267/IdeaProjects/holon-vaadin-flow/core/src/test/java/com/holonplatform/vaadin/flow/test/TestMasterDetailView.java:[35,36] com.vaadin.testbench.unit.UIUnitTest in com.vaadin.testbench.unit has been deprecated and marked for removal
+[INFO] [WARNING] /C:/Users/sxp267/IdeaProjects/holon-vaadin-flow/core/src/test/java/com/holonplatform/vaadin/flow/test/TestMasterDetailView.java:[34,2] com.vaadin.testbench.unit.ViewPackages in com.vaadin.testbench.unit has been deprecated and marked for removal
+[INFO] [WARNING] /C:/Users/sxp267/IdeaProjects/holon-vaadin-flow/core/src/test/java/com/holonplatform/vaadin/flow/test/TestMasterDetailView.java:[35,36] com.vaadin.testbench.unit.UIUnitTest in com.vaadin.testbench.unit has been deprecated and marked for removal
+[INFO] [WARNING] /C:/Users/sxp267/IdeaProjects/holon-vaadin-flow/core/src/test/java/com/holonplatform/vaadin/flow/test/TestMasterDetailView.java:[34,2] com.vaadin.testbench.unit.ViewPackages in com.vaadin.testbench.unit has been deprecated and marked for removal
+[INFO] [WARNING] /C:/Users/sxp267/IdeaProjects/holon-vaadin-flow/core/src/test/java/com/holonplatform/vaadin/flow/test/TestMasterDetailView.java:[35,36] com.vaadin.testbench.unit.UIUnitTest in com.vaadin.testbench.unit has been deprecated and marked for removal
+[INFO] [WARNING] /C:/Users/sxp267/IdeaProjects/holon-vaadin-flow/core/src/test/java/com/holonplatform/vaadin/flow/test/TestMasterDetailView.java:[34,2] com.vaadin.testbench.unit.ViewPackages in com.vaadin.testbench.unit has been deprecated and marked for removal
+[INFO] [WARNING] /C:/Users/sxp267/IdeaProjects/holon-vaadin-flow/core/src/test/java/com/holonplatform/vaadin/flow/test/TestMasterDetailView.java:[35,36] com.vaadin.testbench.unit.UIUnitTest in com.vaadin.testbench.unit has been deprecated and marked for removal
+[INFO] [WARNING] /C:/Users/sxp267/IdeaProjects/holon-vaadin-flow/core/src/test/java/com/holonplatform/vaadin/flow/test/TestMasterDetailView.java:[34,2] com.vaadin.testbench.unit.ViewPackages in com.vaadin.testbench.unit has been deprecated and marked for removal
+[INFO] [WARNING] /C:/Users/sxp267/IdeaProjects/holon-vaadin-flow/core/src/test/java/com/holonplatform/vaadin/flow/test/TestMasterDetailView.java:[35,36] com.vaadin.testbench.unit.UIUnitTest in com.vaadin.testbench.unit has been deprecated and marked for removal
+[INFO] [WARNING] /C:/Users/sxp267/IdeaProjects/holon-vaadin-flow/core/src/test/java/com/holonplatform/vaadin/flow/test/TestMasterDetailView.java:[34,2] com.vaadin.testbench.unit.ViewPackages in com.vaadin.testbench.unit has been deprecated and marked for removal
+[INFO] [INFO] 
+[INFO] [INFO] --- surefire:3.5.2:test (default-test) @ holon-vaadin-flow ---
+[INFO] [INFO] Tests are skipped.
+[INFO] [INFO] 
+[INFO] [INFO] --- jacoco:0.8.12:report (post-unit-test) @ holon-vaadin-flow ---
+[INFO] [INFO] Skipping JaCoCo execution due to missing execution data file.
+[INFO] [INFO] 
+[INFO] [INFO] --- jar:3.4.2:jar (default-jar) @ holon-vaadin-flow ---
+[INFO] [INFO] Building jar: C:\Users\sxp267\IdeaProjects\holon-vaadin-flow\core\target\holon-vaadin-flow-10.0.2.jar
+[INFO] [INFO] 
+[INFO] [INFO] --------< com.holon-platform.vaadin:holon-vaadin-flow-chartjs >---------
+[INFO] [INFO] Building com.holon-platform.vaadin:holon-vaadin-flow-chartjs 10.0.2 [3/13]
+[INFO] [INFO]   from chartjs\pom.xml
+[INFO] [INFO] --------------------------------[ jar ]---------------------------------
+[INFO] [INFO] 
+[INFO] [INFO] --- clean:3.2.0:clean (default-clean) @ holon-vaadin-flow-chartjs ---
+[INFO] [INFO] Deleting C:\Users\sxp267\IdeaProjects\holon-vaadin-flow\chartjs\target
+[INFO] [INFO] 
+[INFO] [INFO] --- jacoco:0.8.12:prepare-agent (pre-unit-test) @ holon-vaadin-flow-chartjs ---
+[INFO] [INFO] surefireArgLine set to -javaagent:C:\\Users\\sxp267\\.m2\\repository\\org\\jacoco\\org.jacoco.agent\\0.8.12\\org.jacoco.agent-0.8.12-runtime.jar=destfile=C:\\Users\\sxp267\\IdeaProjects\\holon-vaadin-flow\\chartjs\\target\\coverage-reports\\jacoco-ut.exec
+[INFO] [INFO] 
+[INFO] [INFO] --- remote-resources:3.1.0:process (default) @ holon-vaadin-flow-chartjs ---
+[INFO] [INFO] Preparing remote bundle com.holon-platform:holon-shared:1.0.6
+[INFO] [INFO] Copying 6 resources from 1 bundle.
+[INFO] [INFO] 
+[INFO] [INFO] --- resources:3.4.0:resources (default-resources) @ holon-vaadin-flow-chartjs ---
+[INFO] [INFO] Copying 2 resources from src\main\resources to target\classes
+[INFO] [INFO] Copying 6 resources from target\maven-shared-archive-resources to target\classes
+[INFO] [INFO] 
+[INFO] [INFO] --- compiler:3.15.0:compile (default-compile) @ holon-vaadin-flow-chartjs ---
+[INFO] [INFO] Recompiling the module because of changed dependency.
+[INFO] [INFO] Compiling 12 source files with javac [debug release 21] to target\classes
+[INFO] [INFO] 
+[INFO] [INFO] --- resources:3.4.0:testResources (default-testResources) @ holon-vaadin-flow-chartjs ---
+[INFO] [INFO] skip non existing resourceDirectory C:\Users\sxp267\IdeaProjects\holon-vaadin-flow\chartjs\src\test\resources
+[INFO] [INFO] Copying 6 resources from target\maven-shared-archive-resources to target\test-classes
+[INFO] [INFO] 
+[INFO] [INFO] --- compiler:3.15.0:testCompile (default-testCompile) @ holon-vaadin-flow-chartjs ---
+[INFO] [INFO] Recompiling the module because of changed dependency.
+[INFO] [INFO] Compiling 4 source files with javac [debug release 21] to target\test-classes
+[INFO] [INFO] 
+[INFO] [INFO] --- surefire:3.5.2:test (default-test) @ holon-vaadin-flow-chartjs ---
+[INFO] [INFO] Tests are skipped.
+[INFO] [INFO] 
+[INFO] [INFO] --- jacoco:0.8.12:report (post-unit-test) @ holon-vaadin-flow-chartjs ---
+[INFO] [INFO] Skipping JaCoCo execution due to missing execution data file.
+[INFO] [INFO] 
+[INFO] [INFO] --- jar:3.4.2:jar (default-jar) @ holon-vaadin-flow-chartjs ---
+[INFO] [INFO] Building jar: C:\Users\sxp267\IdeaProjects\holon-vaadin-flow\chartjs\target\holon-vaadin-flow-chartjs-10.0.2.jar
+[INFO] [INFO] 
+[INFO] [INFO] --------< com.holon-platform.vaadin:holon-vaadin-flow-calendar >--------
+[INFO] [INFO] Building com.holon-platform.vaadin:holon-vaadin-flow-calendar 10.0.2 [4/13]
+[INFO] [INFO]   from calendar\pom.xml
+[INFO] [INFO] --------------------------------[ jar ]---------------------------------
+[INFO] [INFO] 
+[INFO] [INFO] --- clean:3.2.0:clean (default-clean) @ holon-vaadin-flow-calendar ---
+[INFO] [INFO] Deleting C:\Users\sxp267\IdeaProjects\holon-vaadin-flow\calendar\target
+[INFO] [INFO] 
+[INFO] [INFO] --- jacoco:0.8.12:prepare-agent (pre-unit-test) @ holon-vaadin-flow-calendar ---
+[INFO] [INFO] surefireArgLine set to -javaagent:C:\\Users\\sxp267\\.m2\\repository\\org\\jacoco\\org.jacoco.agent\\0.8.12\\org.jacoco.agent-0.8.12-runtime.jar=destfile=C:\\Users\\sxp267\\IdeaProjects\\holon-vaadin-flow\\calendar\\target\\coverage-reports\\jacoco-ut.exec
+[INFO] [INFO] 
+[INFO] [INFO] --- remote-resources:3.1.0:process (default) @ holon-vaadin-flow-calendar ---
+[INFO] [INFO] Preparing remote bundle com.holon-platform:holon-shared:1.0.6
+[INFO] [INFO] Copying 6 resources from 1 bundle.
+[INFO] [INFO] 
+[INFO] [INFO] --- resources:3.4.0:resources (default-resources) @ holon-vaadin-flow-calendar ---
+[INFO] [INFO] Copying 1 resource from src\main\resources to target\classes
+[INFO] [INFO] Copying 6 resources from target\maven-shared-archive-resources to target\classes
+[INFO] [INFO] 
+[INFO] [INFO] --- compiler:3.15.0:compile (default-compile) @ holon-vaadin-flow-calendar ---
+[INFO] [INFO] Recompiling the module because of changed dependency.
+[INFO] [INFO] Compiling 1 source file with javac [debug release 21] to target\classes
+[INFO] [INFO] 
+[INFO] [INFO] --- resources:3.4.0:testResources (default-testResources) @ holon-vaadin-flow-calendar ---
+[INFO] [INFO] skip non existing resourceDirectory C:\Users\sxp267\IdeaProjects\holon-vaadin-flow\calendar\src\test\resources
+[INFO] [INFO] Copying 6 resources from target\maven-shared-archive-resources to target\test-classes
+[INFO] [INFO] 
+[INFO] [INFO] --- compiler:3.15.0:testCompile (default-testCompile) @ holon-vaadin-flow-calendar ---
+[INFO] [INFO] Recompiling the module because of changed dependency.
+[INFO] [INFO] Compiling 2 source files with javac [debug release 21] to target\test-classes
+[INFO] [INFO] 
+[INFO] [INFO] --- surefire:3.5.2:test (default-test) @ holon-vaadin-flow-calendar ---
+[INFO] [INFO] Tests are skipped.
+[INFO] [INFO] 
+[INFO] [INFO] --- jacoco:0.8.12:report (post-unit-test) @ holon-vaadin-flow-calendar ---
+[INFO] [INFO] Skipping JaCoCo execution due to missing execution data file.
+[INFO] [INFO] 
+[INFO] [INFO] --- jar:3.4.2:jar (default-jar) @ holon-vaadin-flow-calendar ---
+[INFO] [INFO] Building jar: C:\Users\sxp267\IdeaProjects\holon-vaadin-flow\calendar\target\holon-vaadin-flow-calendar-10.0.2.jar
+[INFO] [INFO] 
+[INFO] [INFO] -------< com.holon-platform.vaadin:holon-vaadin-flow-navigator >--------
+[INFO] [INFO] Building com.holon-platform.vaadin:holon-vaadin-flow-navigator 10.0.2 [5/13]
+[INFO] [INFO]   from navigator\pom.xml
+[INFO] [INFO] --------------------------------[ jar ]---------------------------------
+[INFO] [INFO] 
+[INFO] [INFO] --- clean:3.2.0:clean (default-clean) @ holon-vaadin-flow-navigator ---
+[INFO] [INFO] Deleting C:\Users\sxp267\IdeaProjects\holon-vaadin-flow\navigator\target
+[INFO] [INFO] 
+[INFO] [INFO] --- jacoco:0.8.12:prepare-agent (pre-unit-test) @ holon-vaadin-flow-navigator ---
+[INFO] [INFO] surefireArgLine set to -javaagent:C:\\Users\\sxp267\\.m2\\repository\\org\\jacoco\\org.jacoco.agent\\0.8.12\\org.jacoco.agent-0.8.12-runtime.jar=destfile=C:\\Users\\sxp267\\IdeaProjects\\holon-vaadin-flow\\navigator\\target\\coverage-reports\\jacoco-ut.exec
+[INFO] [INFO] 
+[INFO] [INFO] --- remote-resources:3.1.0:process (default) @ holon-vaadin-flow-navigator ---
+[INFO] [INFO] Preparing remote bundle com.holon-platform:holon-shared:1.0.6
+[INFO] [INFO] Copying 6 resources from 1 bundle.
+[INFO] [INFO] 
+[INFO] [INFO] --- resources:3.4.0:resources (default-resources) @ holon-vaadin-flow-navigator ---
+[INFO] [INFO] Copying 1 resource from src\main\resources to target\classes
+[INFO] [INFO] Copying 6 resources from target\maven-shared-archive-resources to target\classes
+[INFO] [INFO] 
+[INFO] [INFO] --- compiler:3.15.0:compile (default-compile) @ holon-vaadin-flow-navigator ---
+[INFO] [INFO] Recompiling the module because of changed dependency.
+[INFO] [INFO] Compiling 35 source files with javac [debug release 21] to target\classes
+[INFO] [INFO] 
+[INFO] [INFO] --- resources:3.4.0:testResources (default-testResources) @ holon-vaadin-flow-navigator ---
+[INFO] [INFO] Copying 3 resources from src\test\resources to target\test-classes
+[INFO] [INFO] Copying 6 resources from target\maven-shared-archive-resources to target\test-classes
+[INFO] [INFO] 
+[INFO] [INFO] --- compiler:3.15.0:testCompile (default-testCompile) @ holon-vaadin-flow-navigator ---
+[INFO] [INFO] Recompiling the module because of changed dependency.
+[INFO] [INFO] Compiling 30 source files with javac [debug release 21] to target\test-classes
+[INFO] [INFO] 
+[INFO] [INFO] --- surefire:3.5.2:test (default-test) @ holon-vaadin-flow-navigator ---
+[INFO] [INFO] Tests are skipped.
+[INFO] [INFO] 
+[INFO] [INFO] --- jacoco:0.8.12:report (post-unit-test) @ holon-vaadin-flow-navigator ---
+[INFO] [INFO] Skipping JaCoCo execution due to missing execution data file.
+[INFO] [INFO] 
+[INFO] [INFO] --- jar:3.4.2:jar (default-jar) @ holon-vaadin-flow-navigator ---
+[INFO] [INFO] Building jar: C:\Users\sxp267\IdeaProjects\holon-vaadin-flow\navigator\target\holon-vaadin-flow-navigator-10.0.2.jar
+[INFO] [INFO] 
+[INFO] [INFO] ---------< com.holon-platform.vaadin:holon-vaadin-flow-spring >---------
+[INFO] [INFO] Building com.holon-platform.vaadin:holon-vaadin-flow-spring 10.0.2 [6/13]
+[INFO] [INFO]   from spring\pom.xml
+[INFO] [INFO] --------------------------------[ jar ]---------------------------------
+[INFO] [INFO] 
+[INFO] [INFO] --- clean:3.2.0:clean (default-clean) @ holon-vaadin-flow-spring ---
+[INFO] [INFO] Deleting C:\Users\sxp267\IdeaProjects\holon-vaadin-flow\spring\target
+[INFO] [INFO] 
+[INFO] [INFO] --- jacoco:0.8.12:prepare-agent (pre-unit-test) @ holon-vaadin-flow-spring ---
+[INFO] [INFO] surefireArgLine set to -javaagent:C:\\Users\\sxp267\\.m2\\repository\\org\\jacoco\\org.jacoco.agent\\0.8.12\\org.jacoco.agent-0.8.12-runtime.jar=destfile=C:\\Users\\sxp267\\IdeaProjects\\holon-vaadin-flow\\spring\\target\\coverage-reports\\jacoco-ut.exec
+[INFO] [INFO] 
+[INFO] [INFO] --- remote-resources:3.1.0:process (default) @ holon-vaadin-flow-spring ---
+[INFO] [INFO] Preparing remote bundle com.holon-platform:holon-shared:1.0.6
+[INFO] [INFO] Copying 6 resources from 1 bundle.
+[INFO] [INFO] 
+[INFO] [INFO] --- resources:3.4.0:resources (default-resources) @ holon-vaadin-flow-spring ---
+[INFO] [INFO] skip non existing resourceDirectory C:\Users\sxp267\IdeaProjects\holon-vaadin-flow\spring\src\main\resources
+[INFO] [INFO] Copying 6 resources from target\maven-shared-archive-resources to target\classes
+[INFO] [INFO] 
+[INFO] [INFO] --- compiler:3.15.0:compile (default-compile) @ holon-vaadin-flow-spring ---
+[INFO] [INFO] Recompiling the module because of changed dependency.
+[INFO] [INFO] Compiling 5 source files with javac [debug release 21] to target\classes
+[INFO] [INFO] 
+[INFO] [INFO] --- resources:3.4.0:testResources (default-testResources) @ holon-vaadin-flow-spring ---
+[INFO] [INFO] Copying 1 resource from src\test\resources to target\test-classes
+[INFO] [INFO] Copying 6 resources from target\maven-shared-archive-resources to target\test-classes
+[INFO] [INFO] 
+[INFO] [INFO] --- compiler:3.15.0:testCompile (default-testCompile) @ holon-vaadin-flow-spring ---
+[INFO] [INFO] Recompiling the module because of changed dependency.
+[INFO] [INFO] Compiling 2 source files with javac [debug release 21] to target\test-classes
+[INFO] [INFO] 
+[INFO] [INFO] --- surefire:3.5.2:test (default-test) @ holon-vaadin-flow-spring ---
+[INFO] [INFO] Tests are skipped.
+[INFO] [INFO] 
+[INFO] [INFO] --- jacoco:0.8.12:report (post-unit-test) @ holon-vaadin-flow-spring ---
+[INFO] [INFO] Skipping JaCoCo execution due to missing execution data file.
+[INFO] [INFO] 
+[INFO] [INFO] --- jar:3.4.2:jar (default-jar) @ holon-vaadin-flow-spring ---
+[INFO] [INFO] Building jar: C:\Users\sxp267\IdeaProjects\holon-vaadin-flow\spring\target\holon-vaadin-flow-spring-10.0.2.jar
+[INFO] [INFO] 
+[INFO] [INFO] ------< com.holon-platform.vaadin:holon-vaadin-flow-spring-boot >-------
+[INFO] [INFO] Building com.holon-platform.vaadin:holon-vaadin-flow-spring-boot 10.0.2 [7/13]
+[INFO] [INFO]   from spring-boot\pom.xml
+[INFO] [INFO] --------------------------------[ jar ]---------------------------------
+[INFO] [INFO] 
+[INFO] [INFO] --- clean:3.2.0:clean (default-clean) @ holon-vaadin-flow-spring-boot ---
+[INFO] [INFO] Deleting C:\Users\sxp267\IdeaProjects\holon-vaadin-flow\spring-boot\target
+[INFO] [INFO] 
+[INFO] [INFO] --- jacoco:0.8.12:prepare-agent (pre-unit-test) @ holon-vaadin-flow-spring-boot ---
+[INFO] [INFO] surefireArgLine set to -javaagent:C:\\Users\\sxp267\\.m2\\repository\\org\\jacoco\\org.jacoco.agent\\0.8.12\\org.jacoco.agent-0.8.12-runtime.jar=destfile=C:\\Users\\sxp267\\IdeaProjects\\holon-vaadin-flow\\spring-boot\\target\\coverage-reports\\jacoco-ut.exec
+[INFO] [INFO] 
+[INFO] [INFO] --- remote-resources:3.1.0:process (default) @ holon-vaadin-flow-spring-boot ---
+[INFO] [INFO] Preparing remote bundle com.holon-platform:holon-shared:1.0.6
+[INFO] [INFO] Copying 6 resources from 1 bundle.
+[INFO] [INFO] 
+[INFO] [INFO] --- resources:3.4.0:resources (default-resources) @ holon-vaadin-flow-spring-boot ---
+[INFO] [INFO] Copying 1 resource from src\main\resources to target\classes
+[INFO] [INFO] Copying 6 resources from target\maven-shared-archive-resources to target\classes
+[INFO] [INFO] 
+[INFO] [INFO] --- compiler:3.15.0:compile (default-compile) @ holon-vaadin-flow-spring-boot ---
+[INFO] [INFO] Recompiling the module because of changed dependency.
+[INFO] [INFO] Compiling 16 source files with javac [debug release 21] to target\classes
+[INFO] [INFO] 
+[INFO] [INFO] --- resources:3.4.0:testResources (default-testResources) @ holon-vaadin-flow-spring-boot ---
+[INFO] [INFO] Copying 2 resources from src\test\resources to target\test-classes
+[INFO] [INFO] Copying 6 resources from target\maven-shared-archive-resources to target\test-classes
+[INFO] [INFO] 
+[INFO] [INFO] --- compiler:3.15.0:testCompile (default-testCompile) @ holon-vaadin-flow-spring-boot ---
+[INFO] [INFO] Recompiling the module because of changed dependency.
+[INFO] [INFO] Compiling 8 source files with javac [debug release 21] to target\test-classes
+[INFO] [INFO] 
+[INFO] [INFO] --- surefire:3.5.2:test (default-test) @ holon-vaadin-flow-spring-boot ---
+[INFO] [INFO] Tests are skipped.
+[INFO] [INFO] 
+[INFO] [INFO] --- jacoco:0.8.12:report (post-unit-test) @ holon-vaadin-flow-spring-boot ---
+[INFO] [INFO] Skipping JaCoCo execution due to missing execution data file.
+[INFO] [INFO] 
+[INFO] [INFO] --- jar:3.4.2:jar (default-jar) @ holon-vaadin-flow-spring-boot ---
+[INFO] [INFO] Building jar: C:\Users\sxp267\IdeaProjects\holon-vaadin-flow\spring-boot\target\holon-vaadin-flow-spring-boot-10.0.2.jar
+[INFO] [INFO] 
+[INFO] [INFO] --------< com.holon-platform.vaadin:holon-starter-vaadin-flow >---------
+[INFO] [INFO] Building com.holon-platform.vaadin:holon-starter-vaadin-flow 10.0.2 [8/13]
+[INFO] [INFO]   from starter\pom.xml
+[INFO] [INFO] --------------------------------[ jar ]---------------------------------
+[INFO] [INFO] 
+[INFO] [INFO] --- clean:3.2.0:clean (default-clean) @ holon-starter-vaadin-flow ---
+[INFO] [INFO] Deleting C:\Users\sxp267\IdeaProjects\holon-vaadin-flow\starter\target
+[INFO] [INFO] 
+[INFO] [INFO] --- jacoco:0.8.12:prepare-agent (pre-unit-test) @ holon-starter-vaadin-flow ---
+[INFO] [INFO] surefireArgLine set to -javaagent:C:\\Users\\sxp267\\.m2\\repository\\org\\jacoco\\org.jacoco.agent\\0.8.12\\org.jacoco.agent-0.8.12-runtime.jar=destfile=C:\\Users\\sxp267\\IdeaProjects\\holon-vaadin-flow\\starter\\target\\coverage-reports\\jacoco-ut.exec
+[INFO] [INFO] 
+[INFO] [INFO] --- remote-resources:3.1.0:process (default) @ holon-starter-vaadin-flow ---
+[INFO] [INFO] Preparing remote bundle com.holon-platform:holon-shared:1.0.6
+[INFO] [INFO] Copying 6 resources from 1 bundle.
+[INFO] [INFO] 
+[INFO] [INFO] --- resources:3.4.0:resources (default-resources) @ holon-starter-vaadin-flow ---
+[INFO] [INFO] Copying 1 resource from src\main\resources to target\classes
+[INFO] [INFO] Copying 6 resources from target\maven-shared-archive-resources to target\classes
+[INFO] [INFO] 
+[INFO] [INFO] --- compiler:3.15.0:compile (default-compile) @ holon-starter-vaadin-flow ---
+[INFO] [INFO] No sources to compile
+[INFO] [INFO] 
+[INFO] [INFO] --- resources:3.4.0:testResources (default-testResources) @ holon-starter-vaadin-flow ---
+[INFO] [INFO] skip non existing resourceDirectory C:\Users\sxp267\IdeaProjects\holon-vaadin-flow\starter\src\test\resources
+[INFO] [INFO] Copying 6 resources from target\maven-shared-archive-resources to target\test-classes
+[INFO] [INFO] 
+[INFO] [INFO] --- compiler:3.15.0:testCompile (default-testCompile) @ holon-starter-vaadin-flow ---
+[INFO] [INFO] No sources to compile
+[INFO] [INFO] 
+[INFO] [INFO] --- surefire:3.5.2:test (default-test) @ holon-starter-vaadin-flow ---
+[INFO] [INFO] Tests are skipped.
+[INFO] [INFO] 
+[INFO] [INFO] --- jacoco:0.8.12:report (post-unit-test) @ holon-starter-vaadin-flow ---
+[INFO] [INFO] Skipping JaCoCo execution due to missing execution data file.
+[INFO] [INFO] 
+[INFO] [INFO] --- jar:3.4.2:jar (default-jar) @ holon-starter-vaadin-flow ---
+[INFO] [INFO] Building jar: C:\Users\sxp267\IdeaProjects\holon-vaadin-flow\starter\target\holon-starter-vaadin-flow-10.0.2.jar
+[INFO] [INFO] 
+[INFO] [INFO] ----------< com.holon-platform.vaadin:holon-vaadin-flow-chat >----------
+[INFO] [INFO] Building com.holon-platform.vaadin:holon-vaadin-flow-chat 10.0.2  [9/13]
+[INFO] [INFO]   from chat\pom.xml
+[INFO] [INFO] --------------------------------[ jar ]---------------------------------
+[INFO] [INFO] 
+[INFO] [INFO] --- clean:3.2.0:clean (default-clean) @ holon-vaadin-flow-chat ---
+[INFO] [INFO] Deleting C:\Users\sxp267\IdeaProjects\holon-vaadin-flow\chat\target
+[INFO] [INFO] 
+[INFO] [INFO] --- jacoco:0.8.12:prepare-agent (pre-unit-test) @ holon-vaadin-flow-chat ---
+[INFO] [INFO] surefireArgLine set to -javaagent:C:\\Users\\sxp267\\.m2\\repository\\org\\jacoco\\org.jacoco.agent\\0.8.12\\org.jacoco.agent-0.8.12-runtime.jar=destfile=C:\\Users\\sxp267\\IdeaProjects\\holon-vaadin-flow\\chat\\target\\coverage-reports\\jacoco-ut.exec
+[INFO] [INFO] 
+[INFO] [INFO] --- remote-resources:3.1.0:process (default) @ holon-vaadin-flow-chat ---
+[INFO] [INFO] Preparing remote bundle com.holon-platform:holon-shared:1.0.6
+[INFO] [INFO] Copying 6 resources from 1 bundle.
+[INFO] [INFO] 
+[INFO] [INFO] --- resources:3.4.0:resources (default-resources) @ holon-vaadin-flow-chat ---
+[INFO] [INFO] Copying 8 resources from src\main\resources to target\classes
+[INFO] [INFO] Copying 6 resources from target\maven-shared-archive-resources to target\classes
+[INFO] [INFO] 
+[INFO] [INFO] --- compiler:3.15.0:compile (default-compile) @ holon-vaadin-flow-chat ---
+[INFO] [INFO] Recompiling the module because of changed dependency.
+[INFO] [INFO] Compiling 17 source files with javac [debug release 21] to target\classes
+[INFO] [INFO] /C:/Users/sxp267/IdeaProjects/holon-vaadin-flow/chat/src/main/java/com/holonplatform/vaadin/flow/chat/internal/DefaultChatService.java: C:\Users\sxp267\IdeaProjects\holon-vaadin-flow\chat\src\main\java\com\holonplatform\vaadin\flow\chat\internal\DefaultChatService.java uses or overrides a deprecated API.
+[INFO] [INFO] /C:/Users/sxp267/IdeaProjects/holon-vaadin-flow/chat/src/main/java/com/holonplatform/vaadin/flow/chat/internal/DefaultChatService.java: Recompile with -Xlint:deprecation for details.
+[INFO] [INFO] 
+[INFO] [INFO] --- resources:3.4.0:testResources (default-testResources) @ holon-vaadin-flow-chat ---
+[INFO] [INFO] skip non existing resourceDirectory C:\Users\sxp267\IdeaProjects\holon-vaadin-flow\chat\src\test\resources
+[INFO] [INFO] Copying 6 resources from target\maven-shared-archive-resources to target\test-classes
+[INFO] [INFO] 
+[INFO] [INFO] --- compiler:3.15.0:testCompile (default-testCompile) @ holon-vaadin-flow-chat ---
+[INFO] [INFO] Recompiling the module because of changed dependency.
+[INFO] [INFO] Compiling 1 source file with javac [debug release 21] to target\test-classes
+[INFO] [INFO] /C:/Users/sxp267/IdeaProjects/holon-vaadin-flow/chat/src/test/java/com/holonplatform/vaadin/flow/chat/DefaultChatServiceTest.java: C:\Users\sxp267\IdeaProjects\holon-vaadin-flow\chat\src\test\java\com\holonplatform\vaadin\flow\chat\DefaultChatServiceTest.java uses or overrides a deprecated API.
+[INFO] [INFO] /C:/Users/sxp267/IdeaProjects/holon-vaadin-flow/chat/src/test/java/com/holonplatform/vaadin/flow/chat/DefaultChatServiceTest.java: Recompile with -Xlint:deprecation for details.
+[INFO] [INFO] 
+[INFO] [INFO] --- surefire:3.5.2:test (default-test) @ holon-vaadin-flow-chat ---
+[INFO] [INFO] Tests are skipped.
+[INFO] [INFO] 
+[INFO] [INFO] --- jacoco:0.8.12:report (post-unit-test) @ holon-vaadin-flow-chat ---
+[INFO] [INFO] Skipping JaCoCo execution due to missing execution data file.
+[INFO] [INFO] 
+[INFO] [INFO] --- jar:3.4.2:jar (default-jar) @ holon-vaadin-flow-chat ---
+[INFO] [INFO] Building jar: C:\Users\sxp267\IdeaProjects\holon-vaadin-flow\chat\target\holon-vaadin-flow-chat-10.0.2.jar
+[INFO] [INFO] 
+[INFO] [INFO] --------< com.holon-platform.vaadin:holon-vaadin-flow-customer >--------
+[INFO] [INFO] Building com.holon-platform.vaadin:holon-vaadin-flow-customer 10.0.2 [10/13]
+[INFO] [INFO]   from customer\pom.xml
+[INFO] [INFO] --------------------------------[ jar ]---------------------------------
+[INFO] [INFO] 
+[INFO] [INFO] --- clean:3.2.0:clean (default-clean) @ holon-vaadin-flow-customer ---
+[INFO] [INFO] Deleting C:\Users\sxp267\IdeaProjects\holon-vaadin-flow\customer\target
+[INFO] [INFO] 
+[INFO] [INFO] --- jacoco:0.8.12:prepare-agent (pre-unit-test) @ holon-vaadin-flow-customer ---
+[INFO] [INFO] surefireArgLine set to -javaagent:C:\\Users\\sxp267\\.m2\\repository\\org\\jacoco\\org.jacoco.agent\\0.8.12\\org.jacoco.agent-0.8.12-runtime.jar=destfile=C:\\Users\\sxp267\\IdeaProjects\\holon-vaadin-flow\\customer\\target\\coverage-reports\\jacoco-ut.exec
+[INFO] [INFO] 
+[INFO] [INFO] --- remote-resources:3.1.0:process (default) @ holon-vaadin-flow-customer ---
+[INFO] [INFO] Preparing remote bundle com.holon-platform:holon-shared:1.0.6
+[INFO] [INFO] Copying 6 resources from 1 bundle.
+[INFO] [INFO] 
+[INFO] [INFO] --- resources:3.4.0:resources (default-resources) @ holon-vaadin-flow-customer ---
+[INFO] [INFO] Copying 3 resources from src\main\resources to target\classes
+[INFO] [INFO] Copying 6 resources from target\maven-shared-archive-resources to target\classes
+[INFO] [INFO] 
+[INFO] [INFO] --- compiler:3.15.0:compile (default-compile) @ holon-vaadin-flow-customer ---
+[INFO] [INFO] Recompiling the module because of changed dependency.
+[INFO] [INFO] Compiling 10 source files with javac [debug release 21] to target\classes
+[INFO] [INFO] 
+[INFO] [INFO] --- resources:3.4.0:testResources (default-testResources) @ holon-vaadin-flow-customer ---
+[INFO] [INFO] skip non existing resourceDirectory C:\Users\sxp267\IdeaProjects\holon-vaadin-flow\customer\src\test\resources
+[INFO] [INFO] Copying 6 resources from target\maven-shared-archive-resources to target\test-classes
+[INFO] [INFO] 
+[INFO] [INFO] --- compiler:3.15.0:testCompile (default-testCompile) @ holon-vaadin-flow-customer ---
+[INFO] [INFO] Recompiling the module because of changed dependency.
+[INFO] [INFO] 
+[INFO] [INFO] --- surefire:3.5.2:test (default-test) @ holon-vaadin-flow-customer ---
+[INFO] [INFO] Tests are skipped.
+[INFO] [INFO] 
+[INFO] [INFO] --- jacoco:0.8.12:report (post-unit-test) @ holon-vaadin-flow-customer ---
+[INFO] [INFO] Skipping JaCoCo execution due to missing execution data file.
+[INFO] [INFO] 
+[INFO] [INFO] --- jar:3.4.2:jar (default-jar) @ holon-vaadin-flow-customer ---
+[INFO] [INFO] Building jar: C:\Users\sxp267\IdeaProjects\holon-vaadin-flow\customer\target\holon-vaadin-flow-customer-10.0.2.jar
+[INFO] [INFO] 
+[INFO] [INFO] ----------< com.holon-platform.vaadin:holon-vaadin-flow-bom >-----------
+[INFO] [INFO] Building com.holon-platform.vaadin:holon-vaadin-flow-bom 10.0.2  [11/13]
+[INFO] [INFO]   from bom\pom.xml
+[INFO] [INFO] --------------------------------[ pom ]---------------------------------
+[INFO] [INFO] 
+[INFO] [INFO] --- clean:3.2.0:clean (default-clean) @ holon-vaadin-flow-bom ---
+[INFO] [INFO] Deleting C:\Users\sxp267\IdeaProjects\holon-vaadin-flow\bom\target
+[INFO] [INFO] 
+[INFO] [INFO] --- jacoco:0.8.12:prepare-agent (pre-unit-test) @ holon-vaadin-flow-bom ---
+[INFO] [INFO] surefireArgLine set to -javaagent:C:\\Users\\sxp267\\.m2\\repository\\org\\jacoco\\org.jacoco.agent\\0.8.12\\org.jacoco.agent-0.8.12-runtime.jar=destfile=C:\\Users\\sxp267\\IdeaProjects\\holon-vaadin-flow\\bom\\target\\coverage-reports\\jacoco-ut.exec
+[INFO] [INFO] 
+[INFO] [INFO] --- remote-resources:3.1.0:process (default) @ holon-vaadin-flow-bom ---
+[INFO] [INFO] Preparing remote bundle com.holon-platform:holon-shared:1.0.6
+[INFO] [INFO] Copying 6 resources from 1 bundle.
+[INFO] [INFO] 
+[INFO] [INFO] --- jacoco:0.8.12:report (post-unit-test) @ holon-vaadin-flow-bom ---
+[INFO] [INFO] Skipping JaCoCo execution due to missing execution data file.
+[INFO] [INFO] 
+[INFO] [INFO] --------< com.holon-platform.vaadin:documentation-vaadin-flow >---------
+[INFO] [INFO] Building com.holon-platform.vaadin:documentation-vaadin-flow 10.0.2 [12/13]
+[INFO] [INFO]   from documentation\pom.xml
+[INFO] [INFO] --------------------------------[ jar ]---------------------------------
+[INFO] [INFO] 
+[INFO] [INFO] --- clean:3.2.0:clean (default-clean) @ documentation-vaadin-flow ---
+[INFO] [INFO] Deleting C:\Users\sxp267\IdeaProjects\holon-vaadin-flow\documentation\target
+[INFO] [INFO] 
+[INFO] [INFO] --- jacoco:0.8.12:prepare-agent (pre-unit-test) @ documentation-vaadin-flow ---
+[INFO] [INFO] Skipping JaCoCo execution because property jacoco.skip is set.
+[INFO] [INFO] surefireArgLine set to empty
+[INFO] [INFO] 
+[INFO] [INFO] --- remote-resources:3.1.0:process (default) @ documentation-vaadin-flow ---
+[INFO] [INFO] Preparing remote bundle com.holon-platform:holon-shared:1.0.6
+[INFO] [INFO] Copying 6 resources from 1 bundle.
+[INFO] [INFO] 
+[INFO] [INFO] --- resources:3.4.0:resources (default-resources) @ documentation-vaadin-flow ---
+[INFO] [INFO] Copying 4 resources from src\docs\asciidoc to target\classes
+[INFO] [INFO] Copying 6 resources from target\maven-shared-archive-resources to target\classes
+[INFO] [INFO] 
+[INFO] [INFO] --- compiler:3.15.0:compile (default-compile) @ documentation-vaadin-flow ---
+[INFO] [INFO] Recompiling the module because of changed dependency.
+[INFO] [INFO] Compiling 28 source files with javac [debug release 21] to target\classes
+[INFO] [INFO] 
+[INFO] [INFO] --- resources:3.4.0:testResources (default-testResources) @ documentation-vaadin-flow ---
+[INFO] [INFO] skip non existing resourceDirectory C:\Users\sxp267\IdeaProjects\holon-vaadin-flow\documentation\src\test\resources
+[INFO] [INFO] Copying 6 resources from target\maven-shared-archive-resources to target\test-classes
+[INFO] [INFO] 
+[INFO] [INFO] --- compiler:3.15.0:testCompile (default-testCompile) @ documentation-vaadin-flow ---
+[INFO] [INFO] No sources to compile
+[INFO] [INFO] 
+[INFO] [INFO] --- surefire:3.5.2:test (default-test) @ documentation-vaadin-flow ---
+[INFO] [INFO] Tests are skipped.
+[INFO] [INFO] 
+[INFO] [INFO] --- jacoco:0.8.12:report (post-unit-test) @ documentation-vaadin-flow ---
+[INFO] [INFO] Skipping JaCoCo execution because property jacoco.skip is set.
+[INFO] [INFO] 
+[INFO] [INFO] --- jar:3.4.2:jar (default-jar) @ documentation-vaadin-flow ---
+[INFO] [INFO] Building jar: C:\Users\sxp267\IdeaProjects\holon-vaadin-flow\documentation\target\documentation-vaadin-flow-10.0.2.jar
+[INFO] [INFO] 
+[INFO] [INFO] --- asciidoctor:2.2.4:process-asciidoc (asciidoc-to-html) @ documentation-vaadin-flow ---
+[ERROR] 2026-06-30T06:35:28.237-04:00 [main] WARN FilenoUtil : Native subprocess control requires open access to the JDK IO subsystem
+[ERROR] Pass '--add-opens java.base/sun.nio.ch=ALL-UNNAMED --add-opens java.base/java.io=ALL-UNNAMED' to enable.
+[INFO] [INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] [INFO] Using 'UTF-8' encoding to copy filtered properties files.
+[INFO] [INFO] Copying 0 resource
+[INFO] [INFO] asciidoctor: WARN: _core.adoc: line 861: no callout found for <6>
+[INFO] [INFO] Converted C:\Users\sxp267\IdeaProjects\holon-vaadin-flow\documentation\src\docs\asciidoc\reference\holon-vaadin-flow.adoc
+[INFO] [INFO] 
+[INFO] [INFO] --- asciidoctor:2.2.4:process-asciidoc (asciidoc-to-pdf) @ documentation-vaadin-flow ---
+[INFO] [INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] [INFO] Using 'UTF-8' encoding to copy filtered properties files.
+[INFO] [INFO] Copying 0 resource
+[INFO] [INFO] asciidoctor: WARN: _core.adoc: line 861: no callout found for <6>
+[INFO] [INFO] Converted C:\Users\sxp267\IdeaProjects\holon-vaadin-flow\documentation\src\docs\asciidoc\reference\holon-vaadin-flow.adoc
+[INFO] [INFO] 
+[INFO] [INFO] --- assembly:3.7.1:single (assembly-docs) @ documentation-vaadin-flow ---
+[INFO] [INFO] Building zip: C:\Users\sxp267\IdeaProjects\holon-vaadin-flow\documentation\target\documentation-vaadin-flow-10.0.2-documentation.zip
+[INFO] [INFO] 
+[INFO] [INFO] ----------< com.holon-platform.vaadin:holon-vaadin-flow-demo >----------
+[INFO] [INFO] Building com.holon-platform.vaadin:holon-vaadin-flow-demo 10.0.2 [13/13]
+[INFO] [INFO]   from demo\pom.xml
+[INFO] [INFO] --------------------------------[ jar ]---------------------------------
+[INFO] [INFO] 
+[INFO] [INFO] --- clean:3.2.0:clean (default-clean) @ holon-vaadin-flow-demo ---
+[INFO] [INFO] Deleting C:\Users\sxp267\IdeaProjects\holon-vaadin-flow\demo\target
+[INFO] [INFO] 
+[INFO] [INFO] --- jacoco:0.8.12:prepare-agent (pre-unit-test) @ holon-vaadin-flow-demo ---
+[INFO] [INFO] surefireArgLine set to -javaagent:C:\\Users\\sxp267\\.m2\\repository\\org\\jacoco\\org.jacoco.agent\\0.8.12\\org.jacoco.agent-0.8.12-runtime.jar=destfile=C:\\Users\\sxp267\\IdeaProjects\\holon-vaadin-flow\\demo\\target\\coverage-reports\\jacoco-ut.exec
+[INFO] [INFO] 
+[INFO] [INFO] --- remote-resources:3.1.0:process (default) @ holon-vaadin-flow-demo ---
+[INFO] [INFO] Preparing remote bundle com.holon-platform:holon-shared:1.0.6
+[INFO] [INFO] Copying 6 resources from 1 bundle.
+[INFO] [INFO] 
+[INFO] [INFO] --- resources:3.4.0:resources (default-resources) @ holon-vaadin-flow-demo ---
+[INFO] [INFO] Copying 10 resources from src\main\resources to target\classes
+[INFO] [INFO] Copying 6 resources from target\maven-shared-archive-resources to target\classes
+[INFO] [INFO] 
+[INFO] [INFO] --- compiler:3.15.0:compile (default-compile) @ holon-vaadin-flow-demo ---
+[INFO] [INFO] Recompiling the module because of changed dependency.
+[INFO] [INFO] Compiling 108 source files with javac [debug release 21] to target\classes
+[INFO] [INFO] Annotation processing is enabled because one or more processors were found
+[INFO]   on the class path. A future release of javac may disable annotation processing
+[INFO]   unless at least one processor is specified by name (-processor), or a search
+[INFO]   path is specified (--processor-path, --processor-module-path), or annotation
+[INFO]   processing is enabled explicitly (-proc:only, -proc:full).
+[INFO]   Use -Xlint:-options to suppress this message.
+[INFO]   Use -proc:none to disable annotation processing.
+[INFO] [WARNING] /C:/Users/sxp267/IdeaProjects/holon-vaadin-flow/demo/src/main/java/com/holonplatform/vaadin/flow/demo/ui/views/EntityFormPanelDemoView.java:[486,122] unchecked cast
+[INFO]   required: com.holonplatform.core.property.PathProperty<java.lang.String>
+[INFO]   found:    com.holonplatform.core.property.PathProperty<capture#1 of ?>
+[INFO] [WARNING] /C:/Users/sxp267/IdeaProjects/holon-vaadin-flow/demo/src/main/java/com/holonplatform/vaadin/flow/demo/ui/views/EntityFormPanelDemoView.java:[488,121] unchecked cast
+[INFO]   required: com.holonplatform.core.property.PathProperty<java.lang.String>
+[INFO]   found:    com.holonplatform.core.property.PathProperty<capture#2 of ?>
+[INFO] [WARNING] /C:/Users/sxp267/IdeaProjects/holon-vaadin-flow/demo/src/main/java/com/holonplatform/vaadin/flow/demo/ui/views/EntityFormPanelDemoView.java:[490,118] unchecked cast
+[INFO]   required: com.holonplatform.core.property.PathProperty<java.lang.String>
+[INFO]   found:    com.holonplatform.core.property.PathProperty<capture#3 of ?>
+[INFO] [WARNING] /C:/Users/sxp267/IdeaProjects/holon-vaadin-flow/demo/src/main/java/com/holonplatform/vaadin/flow/demo/ui/views/EntityFormPanelDemoView.java:[550,122] unchecked cast
+[INFO]   required: com.holonplatform.core.property.PathProperty<java.lang.String>
+[INFO]   found:    com.holonplatform.core.property.PathProperty<capture#4 of ?>
+[INFO] [WARNING] /C:/Users/sxp267/IdeaProjects/holon-vaadin-flow/demo/src/main/java/com/holonplatform/vaadin/flow/demo/ui/views/EntityFormPanelDemoView.java:[552,118] unchecked cast
+[INFO]   required: com.holonplatform.core.property.PathProperty<java.lang.String>
+[INFO]   found:    com.holonplatform.core.property.PathProperty<capture#5 of ?>
+[INFO] [INFO] 
+[INFO] [INFO] --- resources:3.4.0:testResources (default-testResources) @ holon-vaadin-flow-demo ---
+[INFO] [INFO] skip non existing resourceDirectory C:\Users\sxp267\IdeaProjects\holon-vaadin-flow\demo\src\test\resources
+[INFO] [INFO] Copying 6 resources from target\maven-shared-archive-resources to target\test-classes
+[INFO] [INFO] 
+[INFO] [INFO] --- compiler:3.15.0:testCompile (default-testCompile) @ holon-vaadin-flow-demo ---
+[INFO] [INFO] Recompiling the module because of changed dependency.
+[INFO] [INFO] Compiling 2 source files with javac [debug release 21] to target\test-classes
+[INFO] [INFO] Annotation processing is enabled because one or more processors were found
+[INFO]   on the class path. A future release of javac may disable annotation processing
+[INFO]   unless at least one processor is specified by name (-processor), or a search
+[INFO]   path is specified (--processor-path, --processor-module-path), or annotation
+[INFO]   processing is enabled explicitly (-proc:only, -proc:full).
+[INFO]   Use -Xlint:-options to suppress this message.
+[INFO]   Use -proc:none to disable annotation processing.
+[INFO] [INFO] 
+[INFO] [INFO] --- surefire:3.5.2:test (default-test) @ holon-vaadin-flow-demo ---
+[INFO] [INFO] Tests are skipped.
+[INFO] [INFO] 
+[INFO] [INFO] --- jacoco:0.8.12:report (post-unit-test) @ holon-vaadin-flow-demo ---
+[INFO] [INFO] Skipping JaCoCo execution due to missing execution data file.
+[INFO] [INFO] 
+[INFO] [INFO] --- jar:3.4.2:jar (default-jar) @ holon-vaadin-flow-demo ---
+[INFO] [INFO] Building jar: C:\Users\sxp267\IdeaProjects\holon-vaadin-flow\demo\target\holon-vaadin-flow-demo-10.0.2.jar
+[INFO] [INFO] ------------------------------------------------------------------------
+[INFO] [INFO] Reactor Summary for com.holon-platform.vaadin:holon-vaadin-flow-root 10.0.2:
+[INFO] [INFO] 
+[INFO] [INFO] com.holon-platform.vaadin:holon-vaadin-flow-root ... SUCCESS [  2.588 s]
+[INFO] [INFO] com.holon-platform.vaadin:holon-vaadin-flow ........ SUCCESS [01:22 min]
+[INFO] [INFO] com.holon-platform.vaadin:holon-vaadin-flow-chartjs  SUCCESS [ 21.251 s]
+[INFO] [INFO] com.holon-platform.vaadin:holon-vaadin-flow-calendar SUCCESS [ 20.386 s]
+[INFO] [INFO] com.holon-platform.vaadin:holon-vaadin-flow-navigator SUCCESS [ 23.663 s]
+[INFO] [INFO] com.holon-platform.vaadin:holon-vaadin-flow-spring . SUCCESS [ 23.174 s]
+[INFO] [INFO] com.holon-platform.vaadin:holon-vaadin-flow-spring-boot SUCCESS [ 31.421 s]
+[INFO] [INFO] com.holon-platform.vaadin:holon-starter-vaadin-flow  SUCCESS [  5.563 s]
+[INFO] [INFO] com.holon-platform.vaadin:holon-vaadin-flow-chat ... SUCCESS [ 24.322 s]
+[INFO] [INFO] com.holon-platform.vaadin:holon-vaadin-flow-customer SUCCESS [ 18.182 s]
+[INFO] [INFO] com.holon-platform.vaadin:holon-vaadin-flow-bom .... SUCCESS [  0.481 s]
+[INFO] [INFO] com.holon-platform.vaadin:documentation-vaadin-flow  SUCCESS [01:56 min]
+[INFO] [INFO] com.holon-platform.vaadin:holon-vaadin-flow-demo ... SUCCESS [01:13 min]
+[INFO] [INFO] ------------------------------------------------------------------------
+[INFO] [INFO] BUILD SUCCESS
+[INFO] [INFO] ------------------------------------------------------------------------
+[INFO] [INFO] Total time:  07:25 min
+[INFO] [INFO] Finished at: 2026-06-30T06:38:09-04:00
+[INFO] [INFO] ------------------------------------------------------------------------
+[INFO] 11/17 prepare:scm-commit-release
+[INFO] Checking in modified POMs...
+[WARNING] No server with id 'git-scm-server' found in Maven settings
+[INFO] Executing: cmd.exe /X /C "git add -- pom.xml"
+[INFO] Working directory: C:\Users\sxp267\IdeaProjects\holon-vaadin-flow
+[INFO] Executing: cmd.exe /X /C "git add -- core/pom.xml"
+[INFO] Working directory: C:\Users\sxp267\IdeaProjects\holon-vaadin-flow
+[INFO] Executing: cmd.exe /X /C "git add -- chartjs/pom.xml"
+[INFO] Working directory: C:\Users\sxp267\IdeaProjects\holon-vaadin-flow
+[INFO] Executing: cmd.exe /X /C "git add -- calendar/pom.xml"
+[INFO] Working directory: C:\Users\sxp267\IdeaProjects\holon-vaadin-flow
+[INFO] Executing: cmd.exe /X /C "git add -- navigator/pom.xml"
+[INFO] Working directory: C:\Users\sxp267\IdeaProjects\holon-vaadin-flow
+[INFO] Executing: cmd.exe /X /C "git add -- spring/pom.xml"
+[INFO] Working directory: C:\Users\sxp267\IdeaProjects\holon-vaadin-flow
+[INFO] Executing: cmd.exe /X /C "git add -- spring-boot/pom.xml"
+[INFO] Working directory: C:\Users\sxp267\IdeaProjects\holon-vaadin-flow
+[INFO] Executing: cmd.exe /X /C "git add -- starter/pom.xml"
+[INFO] Working directory: C:\Users\sxp267\IdeaProjects\holon-vaadin-flow
+[INFO] Executing: cmd.exe /X /C "git add -- chat/pom.xml"
+[INFO] Working directory: C:\Users\sxp267\IdeaProjects\holon-vaadin-flow
+[INFO] Executing: cmd.exe /X /C "git add -- customer/pom.xml"
+[INFO] Working directory: C:\Users\sxp267\IdeaProjects\holon-vaadin-flow
+[INFO] Executing: cmd.exe /X /C "git add -- bom/pom.xml"
+[INFO] Working directory: C:\Users\sxp267\IdeaProjects\holon-vaadin-flow
+[INFO] Executing: cmd.exe /X /C "git add -- documentation/pom.xml"
+[INFO] Working directory: C:\Users\sxp267\IdeaProjects\holon-vaadin-flow
+[INFO] Executing: cmd.exe /X /C "git add -- demo/pom.xml"
+[INFO] Working directory: C:\Users\sxp267\IdeaProjects\holon-vaadin-flow
+[INFO] Executing: cmd.exe /X /C "git rev-parse --show-prefix"
+[INFO] Working directory: C:\Users\sxp267\IdeaProjects\holon-vaadin-flow
+[INFO] Executing: cmd.exe /X /C "git status --porcelain ."
+[INFO] Working directory: C:\Users\sxp267\IdeaProjects\holon-vaadin-flow
+[WARNING] Ignoring unrecognized line: ?? tasks/demo-plugin-check.txt
+[WARNING] Ignoring unrecognized line: ?? tasks/git-commit-out.txt
+[WARNING] Ignoring unrecognized line: ?? tasks/git-commit2.txt
+[WARNING] Ignoring unrecognized line: ?? tasks/git-push-out.txt
+[WARNING] Ignoring unrecognized line: ?? tasks/git-push2.txt
+[WARNING] Ignoring unrecognized line: ?? tasks/git-status2.txt
+[WARNING] Ignoring unrecognized line: ?? tasks/git-status3.txt
+[WARNING] Ignoring unrecognized line: ?? tasks/rc-tail.txt
+[WARNING] Ignoring unrecognized line: ?? tasks/release-clean-tail.txt
+[WARNING] Ignoring unrecognized line: ?? tasks/release-clean.txt
+[WARNING] Ignoring unrecognized line: ?? tasks/release-clean2.txt
+[WARNING] Ignoring unrecognized line: ?? tasks/release-prepare.txt
+[WARNING] Ignoring unrecognized line: ?? tasks/release-prepare2.txt
+[WARNING] Ignoring unrecognized line: ?? tasks/rp-check.txt
+[WARNING] Ignoring unrecognized line: ?? tasks/rp-tail.txt
+[WARNING] Ignoring unrecognized line: ?? tasks/rp2-check2.txt
+[WARNING] Ignoring unrecognized line: ?? tasks/rp2-progress.txt
+[INFO] Executing: cmd.exe /X /C "git commit --verbose -F C:\Users\sxp267\AppData\Local\Temp\maven-scm-1606301411.commit"
+[INFO] Working directory: C:\Users\sxp267\IdeaProjects\holon-vaadin-flow
+[INFO] Executing: cmd.exe /X /C "git symbolic-ref HEAD"
+[INFO] Working directory: C:\Users\sxp267\IdeaProjects\holon-vaadin-flow
+[INFO] Executing: cmd.exe /X /C "git push https://github.com/vaithu/holon-vaadin-flow.git refs/heads/modernize/java-20260526093038:refs/heads/modernize/java-20260526093038"
+[INFO] Working directory: C:\Users\sxp267\IdeaProjects\holon-vaadin-flow
+[INFO] 12/17 prepare:scm-tag
+[INFO] Tagging release with the label v10.0.2...
+[WARNING] No server with id 'git-scm-server' found in Maven settings
+[INFO] Executing: cmd.exe /X /C "git tag -F C:\Users\sxp267\AppData\Local\Temp\maven-scm-252620906.commit v10.0.2"
+[INFO] Working directory: C:\Users\sxp267\IdeaProjects\holon-vaadin-flow
+[INFO] Executing: cmd.exe /X /C "git push https://github.com/vaithu/holon-vaadin-flow.git refs/tags/v10.0.2"
+[INFO] Working directory: C:\Users\sxp267\IdeaProjects\holon-vaadin-flow
+[INFO] Executing: cmd.exe /X /C "git ls-files"
+[INFO] Working directory: C:\Users\sxp267\IdeaProjects\holon-vaadin-flow
+[INFO] 13/17 prepare:rewrite-poms-for-development
+[INFO] Transforming pom.xml holon-vaadin-flow-root 'com.holon-platform.vaadin:holon-vaadin-flow-root'...
+[WARNING] No server with id 'git-scm-server' found in Maven settings
+[INFO]   Ignoring artifact version update for expression ${project.version}
+[INFO]   Ignoring artifact version update for expression ${project.version}
+[INFO]   Ignoring artifact version update for expression ${project.version}
+[INFO]   Ignoring artifact version update for expression ${project.version}
+[INFO]   Ignoring artifact version update for expression ${project.version}
+[INFO]   Ignoring artifact version update for expression ${project.version}
+[INFO]   Ignoring artifact version update for expression ${project.version}
+[INFO]   Ignoring artifact version update for expression ${project.version}
+[INFO]   Ignoring artifact version update for expression ${project.version}
+[INFO] Transforming core/pom.xml holon-vaadin-flow 'com.holon-platform.vaadin:holon-vaadin-flow'...
+[WARNING] No server with id 'git-scm-server' found in Maven settings
+[INFO] Transforming chartjs/pom.xml holon-vaadin-flow-chartjs 'com.holon-platform.vaadin:holon-vaadin-flow-chartjs'...
+[WARNING] No server with id 'git-scm-server' found in Maven settings
+[INFO] Transforming calendar/pom.xml holon-vaadin-flow-calendar 'com.holon-platform.vaadin:holon-vaadin-flow-calendar'...
+[WARNING] No server with id 'git-scm-server' found in Maven settings
+[INFO] Transforming navigator/pom.xml holon-vaadin-flow-navigator 'com.holon-platform.vaadin:holon-vaadin-flow-navigator'...
+[WARNING] No server with id 'git-scm-server' found in Maven settings
+[INFO] Transforming spring/pom.xml holon-vaadin-flow-spring 'com.holon-platform.vaadin:holon-vaadin-flow-spring'...
+[WARNING] No server with id 'git-scm-server' found in Maven settings
+[INFO] Transforming spring-boot/pom.xml holon-vaadin-flow-spring-boot 'com.holon-platform.vaadin:holon-vaadin-flow-spring-boot'...
+[WARNING] No server with id 'git-scm-server' found in Maven settings
+[INFO] Transforming starter/pom.xml holon-starter-vaadin-flow 'com.holon-platform.vaadin:holon-starter-vaadin-flow'...
+[WARNING] No server with id 'git-scm-server' found in Maven settings
+[INFO] Transforming chat/pom.xml holon-vaadin-flow-chat 'com.holon-platform.vaadin:holon-vaadin-flow-chat'...
+[WARNING] No server with id 'git-scm-server' found in Maven settings
+[INFO] Transforming customer/pom.xml holon-vaadin-flow-customer 'com.holon-platform.vaadin:holon-vaadin-flow-customer'...
+[WARNING] No server with id 'git-scm-server' found in Maven settings
+[INFO] Transforming bom/pom.xml holon-vaadin-flow-bom 'com.holon-platform.vaadin:holon-vaadin-flow-bom'...
+[WARNING] No server with id 'git-scm-server' found in Maven settings
+[INFO]   Ignoring artifact version update for expression ${project.version}
+[INFO]   Ignoring artifact version update for expression ${project.version}
+[INFO]   Ignoring artifact version update for expression ${project.version}
+[INFO]   Ignoring artifact version update for expression ${project.version}
+[INFO]   Ignoring artifact version update for expression ${project.version}
+[INFO]   Ignoring artifact version update for expression ${project.version}
+[INFO]   Ignoring artifact version update for expression ${project.version}
+[INFO]   Ignoring artifact version update for expression ${project.version}
+[INFO] Transforming documentation/pom.xml documentation-vaadin-flow 'com.holon-platform.vaadin:documentation-vaadin-flow'...
+[WARNING] No server with id 'git-scm-server' found in Maven settings
+[INFO] Transforming demo/pom.xml holon-vaadin-flow-demo 'com.holon-platform.vaadin:holon-vaadin-flow-demo'...
+[WARNING] No server with id 'git-scm-server' found in Maven settings
+[INFO] 14/17 prepare:remove-release-poms
+[INFO] Not removing release POMs
+[INFO] 15/17 prepare:run-completion-goals
+[INFO] 16/17 prepare:scm-commit-development
+[INFO] Checking in modified POMs...
+[WARNING] No server with id 'git-scm-server' found in Maven settings
+[INFO] Executing: cmd.exe /X /C "git add -- pom.xml"
+[INFO] Working directory: C:\Users\sxp267\IdeaProjects\holon-vaadin-flow
+[INFO] Executing: cmd.exe /X /C "git add -- core/pom.xml"
+[INFO] Working directory: C:\Users\sxp267\IdeaProjects\holon-vaadin-flow
+[INFO] Executing: cmd.exe /X /C "git add -- chartjs/pom.xml"
+[INFO] Working directory: C:\Users\sxp267\IdeaProjects\holon-vaadin-flow
+[INFO] Executing: cmd.exe /X /C "git add -- calendar/pom.xml"
+[INFO] Working directory: C:\Users\sxp267\IdeaProjects\holon-vaadin-flow
+[INFO] Executing: cmd.exe /X /C "git add -- navigator/pom.xml"
+[INFO] Working directory: C:\Users\sxp267\IdeaProjects\holon-vaadin-flow
+[INFO] Executing: cmd.exe /X /C "git add -- spring/pom.xml"
+[INFO] Working directory: C:\Users\sxp267\IdeaProjects\holon-vaadin-flow
+[INFO] Executing: cmd.exe /X /C "git add -- spring-boot/pom.xml"
+[INFO] Working directory: C:\Users\sxp267\IdeaProjects\holon-vaadin-flow
+[INFO] Executing: cmd.exe /X /C "git add -- starter/pom.xml"
+[INFO] Working directory: C:\Users\sxp267\IdeaProjects\holon-vaadin-flow
+[INFO] Executing: cmd.exe /X /C "git add -- chat/pom.xml"
+[INFO] Working directory: C:\Users\sxp267\IdeaProjects\holon-vaadin-flow
+[INFO] Executing: cmd.exe /X /C "git add -- customer/pom.xml"
+[INFO] Working directory: C:\Users\sxp267\IdeaProjects\holon-vaadin-flow
+[INFO] Executing: cmd.exe /X /C "git add -- bom/pom.xml"
+[INFO] Working directory: C:\Users\sxp267\IdeaProjects\holon-vaadin-flow
+[INFO] Executing: cmd.exe /X /C "git add -- documentation/pom.xml"
+[INFO] Working directory: C:\Users\sxp267\IdeaProjects\holon-vaadin-flow
+[INFO] Executing: cmd.exe /X /C "git add -- demo/pom.xml"
+[INFO] Working directory: C:\Users\sxp267\IdeaProjects\holon-vaadin-flow
+[INFO] Executing: cmd.exe /X /C "git rev-parse --show-prefix"
+[INFO] Working directory: C:\Users\sxp267\IdeaProjects\holon-vaadin-flow
+[INFO] Executing: cmd.exe /X /C "git status --porcelain ."
+[INFO] Working directory: C:\Users\sxp267\IdeaProjects\holon-vaadin-flow
+[WARNING] Ignoring unrecognized line: ?? tasks/demo-plugin-check.txt
+[WARNING] Ignoring unrecognized line: ?? tasks/git-commit-out.txt
+[WARNING] Ignoring unrecognized line: ?? tasks/git-commit2.txt
+[WARNING] Ignoring unrecognized line: ?? tasks/git-push-out.txt
+[WARNING] Ignoring unrecognized line: ?? tasks/git-push2.txt
+[WARNING] Ignoring unrecognized line: ?? tasks/git-status2.txt
+[WARNING] Ignoring unrecognized line: ?? tasks/git-status3.txt
+[WARNING] Ignoring unrecognized line: ?? tasks/rc-tail.txt
+[WARNING] Ignoring unrecognized line: ?? tasks/release-clean-tail.txt
+[WARNING] Ignoring unrecognized line: ?? tasks/release-clean.txt
+[WARNING] Ignoring unrecognized line: ?? tasks/release-clean2.txt
+[WARNING] Ignoring unrecognized line: ?? tasks/release-prepare.txt
+[WARNING] Ignoring unrecognized line: ?? tasks/release-prepare2.txt
+[WARNING] Ignoring unrecognized line: ?? tasks/rp-check.txt
+[WARNING] Ignoring unrecognized line: ?? tasks/rp-tail.txt
+[WARNING] Ignoring unrecognized line: ?? tasks/rp2-check2.txt
+[WARNING] Ignoring unrecognized line: ?? tasks/rp2-progress.txt
+[INFO] Executing: cmd.exe /X /C "git commit --verbose -F C:\Users\sxp267\AppData\Local\Temp\maven-scm-737826622.commit"
+[INFO] Working directory: C:\Users\sxp267\IdeaProjects\holon-vaadin-flow
+[INFO] Executing: cmd.exe /X /C "git symbolic-ref HEAD"
+[INFO] Working directory: C:\Users\sxp267\IdeaProjects\holon-vaadin-flow
+[INFO] Executing: cmd.exe /X /C "git push https://github.com/vaithu/holon-vaadin-flow.git refs/heads/modernize/java-20260526093038:refs/heads/modernize/java-20260526093038"
+[INFO] Working directory: C:\Users\sxp267\IdeaProjects\holon-vaadin-flow
+[INFO] 17/17 prepare:end-release
+[INFO] Release preparation complete.
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Summary for com.holon-platform.vaadin:holon-vaadin-flow-root 10.0.2-SNAPSHOT:
+[INFO] 
+[INFO] com.holon-platform.vaadin:holon-vaadin-flow-root ... SUCCESS [08:24 min]
+[INFO] com.holon-platform.vaadin:holon-vaadin-flow ........ SKIPPED
+[INFO] com.holon-platform.vaadin:holon-vaadin-flow-chartjs  SKIPPED
+[INFO] com.holon-platform.vaadin:holon-vaadin-flow-calendar SKIPPED
+[INFO] com.holon-platform.vaadin:holon-vaadin-flow-navigator SKIPPED
+[INFO] com.holon-platform.vaadin:holon-vaadin-flow-spring . SKIPPED
+[INFO] com.holon-platform.vaadin:holon-vaadin-flow-spring-boot SKIPPED
+[INFO] com.holon-platform.vaadin:holon-starter-vaadin-flow  SKIPPED
+[INFO] com.holon-platform.vaadin:holon-vaadin-flow-chat ... SKIPPED
+[INFO] com.holon-platform.vaadin:holon-vaadin-flow-customer SKIPPED
+[INFO] com.holon-platform.vaadin:holon-vaadin-flow-bom .... SKIPPED
+[INFO] com.holon-platform.vaadin:documentation-vaadin-flow  SKIPPED
+[INFO] com.holon-platform.vaadin:holon-vaadin-flow-demo ... SKIPPED
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  08:26 min
+[INFO] Finished at: 2026-06-30T06:38:58-04:00
+[INFO] ------------------------------------------------------------------------

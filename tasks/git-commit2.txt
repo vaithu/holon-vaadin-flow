@@ -1,0 +1,2 @@
+﻿[modernize/java-20260526093038 f2bd436] chore: fix SCM URL to vaithu fork and pin spring-boot-maven-plugin version in demo
+ 2 files changed, 4 insertions(+), 3 deletions(-)
