@@ -64,8 +64,7 @@
 		<vaadin.version>25.2.1</vaadin.version>
 		<spring-boot.version>4.1.0</spring-boot.version>
 
-		<!-- Servlet API â€“ must match what vaadin flow-server 25.1.0 declares (6.1.0 / Jakarta EE 11).
-		     Using 6.0.0 (Jakarta EE 10) would leave us compiling against an older API than Vaadin. -->
+		<!-- Servlet API — must match what vaadin flow-server 25.2.x declares (6.1.0 / Jakarta EE 11). -->
 		<servlet.version>6.1.0</servlet.version>
 
 		<holon.jdbc.datastore.version>10.0.0</holon.jdbc.datastore.version>
@@ -85,11 +84,13 @@
 		<h2.version>2.3.232</h2.version>
 		<!-- assertj: fixes CVE-2026-24400 (XXE in isXmlEqualTo) -->
 		<assertj.version>3.27.7</assertj.version>
-		<!-- spring-security: fixes CVE-2024-38821, CVE-2025-41232, CVE-2025-41248
-		     NOTE: CVE-2026-22732 (CRITICAL â€“ HTTP headers not written) affects ALL released versions
-		     including 6.4.0-6.4.14 and 6.5.0-6.5.8; no patched version is available yet.
-		     Expected fix: spring-security 6.5.9 (not yet released as of 2026-03-31). -->
-		<spring-security.version>6.4.10</spring-security.version>
+		<!-- spring-security: 6.5.10 fixes CVE-2026-22751 (TOCTOU race in JdbcOneTimeTokenService).
+		     Compatible with Spring Boot 4.1 / Spring Framework 7.1 (Spring Boot 4.1 ships 6.5.x).
+		     NOTE: CVE-2026-22746 (LOW — DaoAuthenticationProvider timing-attack bypass) affects
+		     6.5.0–6.5.9 and has no patched version available yet. Monitor for 6.5.11+.
+		     NOTE: CVE-2026-22732 (CRITICAL — HTTP headers not written) has no released fix in any
+		     version as of 2026-06-30. Monitor for a patched release. -->
+		<spring-security.version>6.5.10</spring-security.version>
 		<!-- logback: 1.5.20 is the latest available; CVE-2026-1225 is flagged as 'Insufficient
 		     Information' (GHSA-qqpg-mvqg-649v) with no confirmed fix in any 1.5.x release yet.
 		     Using latest to minimize exposure. Monitor for a patched release. -->
@@ -251,7 +252,7 @@
 
 			<!-- Transitive CVE overrides â€“ force safe versions regardless of what upstream BOMs resolve -->
 
-			<!-- Servlet API â€“ lock to 6.1.0 (Jakarta EE 11) to match vaadin flow-server 25.1.0 -->
+			<!-- Servlet API — lock to 6.1.0 (Jakarta EE 11) to match vaadin flow-server 25.2.x -->
 			<dependency>
 				<groupId>jakarta.servlet</groupId>
 				<artifactId>jakarta.servlet-api</artifactId>

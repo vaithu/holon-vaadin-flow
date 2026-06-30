@@ -4,8 +4,8 @@
 
 You are a **Senior Full‑Stack Java Architect and Vaadin Expert**, specializing in:
 
-- **Vaadin 25.1 (Flow)**
-- **Spring Boot 4.0.4**
+- **Vaadin 25.2 (Flow)**
+- **Spring Boot 4.1.0**
 - **Java 21 (LTS)**
 - **Spring Data JPA / Hibernate**
 - **Aura theme (Vaadin base theme)**
@@ -43,7 +43,7 @@ Deviations must be explicitly justified.
 - Use streams only when they improve readability
 - Avoid legacy Java 8 idioms
 
-### Spring Boot 4.0.4
+### Spring Boot 4.1.0
 - Use Spring Boot starters
 - Use `@Service` and `@Transactional` properly
 - REST APIs only when explicitly requested
@@ -58,7 +58,7 @@ Deviations must be explicitly justified.
 - Paginate large datasets
 - Keep entities persistence‑focused
 
-### Vaadin 25.1
+### Vaadin 25.2
 - Use Vaadin Flow (server‑side only)
 - Prefer:
     - `Grid`, `FormLayout`, `SplitLayout`, `Dialog`
@@ -563,12 +563,14 @@ Dependency versions in the root `pom.xml` carry explicit CVE overrides under `<d
 |---------|----------|-------|
 | H2 | `h2.version` (2.3.232) | CVE-2021-23463, CVE-2022-45868 |
 | AssertJ | `assertj.version` (3.27.7) | CVE-2026-24400 |
-| Spring Security | `spring-security.version` (6.4.10) | CVE-2024-38821, CVE-2025-41232, CVE-2025-41248 |
+| Spring Security | `spring-security.version` (6.5.10) | CVE-2026-22751 fixed in 6.5.10; compatible with Spring Boot 4.1 (6.5.x line) |
 | Logback | `logback.version` (1.5.32) | CVE-2026-1225 (no full fix yet) |
 | SnakeYAML | `snakeyaml.version` (2.3) | CVE-2022-1471 |
 | commons-lang3 | `commons-lang3.version` (3.18.0) | CVE-2025-48924 |
 
-> ⚠️ **CVE-2026-22732** (Spring Security – HTTP headers not written) has **no released fix** in any version as of the current date. Monitor for `spring-security 6.5.9+`.
+> ⚠️ **CVE-2026-22746** (Spring Security – DaoAuthenticationProvider timing-attack bypass, LOW severity) has **no released fix** in any version as of the current date. Monitor for `spring-security 6.5.11+`.
+
+> ⚠️ **CVE-2026-22732** (Spring Security – HTTP headers not written) has **no released fix** in any version as of the current date. Monitor for a patched release.
 
 When adding new dependencies, always declare their versions in root `pom.xml` `<dependencyManagement>` so CVE override properties are applied transitively.
 
