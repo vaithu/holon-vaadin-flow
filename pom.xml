@@ -46,9 +46,9 @@
 	</issueManagement>
 
 	<scm>
-		<connection>scm:git:https://github.com/holon-platform/holon-vaadin-flow.git</connection>
-		<url>https://github.com/holon-platform/holon-vaadin-flow</url>
-		<developerConnection>scm:git:https://github.com/holon-platform/holon-vaadin-flow.git</developerConnection>
+		<connection>scm:git:https://github.com/vaithu/holon-vaadin-flow.git</connection>
+		<url>https://github.com/vaithu/holon-vaadin-flow</url>
+		<developerConnection>scm:git:https://github.com/vaithu/holon-vaadin-flow.git</developerConnection>
 		<tag>HEAD</tag>
 	</scm>
 
