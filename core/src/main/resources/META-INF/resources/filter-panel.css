@@ -312,6 +312,44 @@ vaadin-button.filter-panel__apply[focus-ring] {
     --vaadin-icon-size: 1rem;
 }
 
+/* --------------------------------------------------------------------------
+   BETWEEN inputs — date range containers
+   Wraps two inputs (from..to) with separator, displayed inline
+   -------------------------------------------------------------------------- */
+.filter-panel__between-container {
+    display     : flex;
+    align-items : center;
+    gap         : 0.25rem;
+    flex        : 1 1 auto;
+    min-width   : 0;
+}
+
+.filter-panel__between-container .filter-panel__value-input {
+    flex      : 1 1 auto;
+    min-width : 100px;
+}
+
+/* --------------------------------------------------------------------------
+   LocalTime datetime container — DatePicker + TimePicker side-by-side
+   -------------------------------------------------------------------------- */
+.filter-panel__datetime-container {
+    display     : flex;
+    align-items : center;
+    gap         : 0.375rem;
+    flex        : 1 1 auto;
+    min-width   : 0;
+}
+
+.filter-panel__datetime-container vaadin-date-picker.filter-panel__date-input {
+    flex      : 1 1 60%;
+    min-width : 130px;
+}
+
+.filter-panel__datetime-container vaadin-time-picker.filter-panel__time-input {
+    flex      : 1 1 40%;
+    min-width : 100px;
+}
+
 /* ==========================================================================
    ADVANCED SEARCH DIALOG context
    .listing-filter-dialog__body wraps the panel inside ListingBundle's dialog

@@ -67,8 +67,7 @@ public class ProductCrudDemoView extends Div {
         // Layout: page wrapper that prevents overflow
         var content = new Div();
         content.addClassName("listing-page");
-        content.add(heading, subTitle, infoAlert,
-                bundle.header(), bundle.toolbar(), bundle.grid(), bundle.footer());
+        content.add(heading, subTitle, infoAlert, bundle);
         add(content);
     }
 

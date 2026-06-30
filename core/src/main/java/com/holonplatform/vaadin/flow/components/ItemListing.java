@@ -327,7 +327,10 @@ public interface ItemListing<T, P> extends ItemSet, Selectable<T>, HasComponent 
     default GridLazyDataView<T> setItems(
             FilterInputGroup filterGroup,
             FilterInputSupport.FilteredFetchCallback<T> fetchCallback) {
-        return setItems(FilterInputSupport.fetchCallback(filterGroup, fetchCallback));
+        GridLazyDataView<T> dataView = setItems(FilterInputSupport.fetchCallback(filterGroup, fetchCallback));
+        dataView.setItemCountEstimate(1000);
+        dataView.setItemCountEstimateIncrease(500);
+        return dataView;
     }
 
     /**

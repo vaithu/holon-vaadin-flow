@@ -11,7 +11,7 @@ import com.holonplatform.vaadin.flow.vaadinplus.components.Highlight;
 import com.holonplatform.vaadin.flow.vaadinplus.components.Highlight.AccentColor;
 import com.holonplatform.vaadin.flow.vaadinplus.components.IconBadge;
 import com.holonplatform.vaadin.flow.vaadinplus.utilities.Font;
-import com.holonplatform.vaadin.flow.vaadinplus.utilities.HeadingLevel;
+import com.iyensoft.vaadin.flow.enums.HeadingLevel;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.Paragraph;
@@ -273,7 +273,7 @@ public class HighlightDemoView extends Div {
                     .valueFirst()                                // big number on top
                     .accentColor(s.accent())                    // coloured left border
                     .details(trend)
-                    .suffix(IconBadge.of(s.icon(), s.badge()))  // icon badge (right)
+                    .suffix(IconBadge.builder(s.icon().create(), s.badge()).build())  // icon badge (right)
                     .ariaLabel(s.metric() + " KPI")
                     .build());
         }
@@ -289,7 +289,7 @@ public class HighlightDemoView extends Div {
                     .valueFirst()                              // number above heading
                     .accentColor(AccentColor.PURPLE)           // left border stripe
                     .details(trend)
-                    .suffix(IconBadge.of(VaadinIcon.DOWNLOAD, Alert.Variant.INFO))
+                    .suffix(IconBadge.builder(VaadinIcon.DOWNLOAD, Alert.Variant.INFO).build())
                     .ariaLabel("Downloads KPI")                // WAI-ARIA
                     .build();
                 """);
@@ -432,7 +432,7 @@ public class HighlightDemoView extends Div {
             grid.add(Highlight.builder(s.name(), s.price())
                     .subheading(s.fullName())                      // muted secondary label
                     .valueFontSize(Font.Size.XLARGE)
-                    .prefix(IconBadge.of(s.icon(), s.badgeVariant()))
+                    .prefix(IconBadge.builder(s.icon().create(), s.badgeVariant()).build())
                     .inlineMetric(trendWrapper)                    // ↑/↓ + % beside price
                     .ariaLabel(s.name() + " stock price")
                     .build());
@@ -449,7 +449,7 @@ public class HighlightDemoView extends Div {
                 Highlight.builder("Apple, Inc", "$1,232.00")
                     .subheading("Apple, Inc")                     // muted secondary line
                     .valueFontSize(Font.Size.XLARGE)
-                    .prefix(IconBadge.of(VaadinIcon.CIRCLE, Alert.Variant.DEFAULT))
+                    .prefix(IconBadge.builder(VaadinIcon.CIRCLE).build())
                     .inlineMetric(trend)                          // beside the price
                     .ariaLabel("Apple, Inc stock price")
                     .build();
@@ -511,7 +511,7 @@ public class HighlightDemoView extends Div {
 
             grid.add(Highlight.builder(k.label(), k.value())
                     .details(trend)
-                    .suffix(IconBadge.of(k.icon(), k.badge()))
+                    .suffix(IconBadge.builder(k.icon().create(), k.badge()).build())
                     .sparkline(sparkline)                  // full-bleed chart at bottom
                     .ariaLabel(k.label() + " KPI with trend chart")
                     .build());
@@ -540,7 +540,7 @@ public class HighlightDemoView extends Div {
                 
                 Highlight.builder("Total Revenue", "$48,295")
                     .details(new Span("↗ +12.5% vs last month"))
-                    .suffix(IconBadge.of(VaadinIcon.DOLLAR, Alert.Variant.WARNING))
+                    .suffix(IconBadge.builder(VaadinIcon.DOLLAR, Alert.Variant.WARNING).build())
                     .sparkline(sparkline)
                     .ariaLabel("Total Revenue KPI with trend chart")
                     .build();

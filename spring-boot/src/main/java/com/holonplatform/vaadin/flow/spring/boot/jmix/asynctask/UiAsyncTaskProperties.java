@@ -24,7 +24,6 @@ import org.springframework.boot.context.properties.bind.DefaultValue;
  * Configuration properties for UI asynchronous tasks.
  */
 @ConfigurationProperties(prefix = "jmix.ui.async-task")
-@SuppressWarnings("null")
 public class UiAsyncTaskProperties {
 
     /**

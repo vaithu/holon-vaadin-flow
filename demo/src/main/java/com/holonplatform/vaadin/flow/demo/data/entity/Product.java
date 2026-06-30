@@ -75,6 +75,22 @@ public class Product {
     public void setCreatedDate(LocalDate createdDate)  { this.createdDate = createdDate; }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Product other)) {
+            return false;
+        }
+        return id != null && id.equals(other.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return id != null ? id.hashCode() : System.identityHashCode(this);
+    }
+
+    @Override
     public String toString() {
         return "Product[id=" + id + ", name=" + name + "]";
     }

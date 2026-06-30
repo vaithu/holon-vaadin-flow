@@ -1,0 +1,194 @@
+[INFO] Scanning for projects...
+[WARNING] 
+[WARNING] Some problems were encountered while building the effective model for com.holon-platform.vaadin:holon-vaadin-flow-demo:jar:10.0.2-SNAPSHOT
+[WARNING] 'build.plugins.plugin.version' for org.springframework.boot:spring-boot-maven-plugin is missing. @ line 112, column 21
+[WARNING] 
+[WARNING] It is highly recommended to fix these problems because they threaten the stability of your build.
+[WARNING] 
+[WARNING] For this reason, future Maven versions might no longer support building such malformed projects.
+[WARNING] 
+[INFO] 
+[INFO] ------------< com.holon-platform.vaadin:holon-vaadin-flow >-------------
+[INFO] Building com.holon-platform.vaadin:holon-vaadin-flow 10.0.2-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- jacoco:0.8.12:prepare-agent (pre-unit-test) @ holon-vaadin-flow ---
+[INFO] surefireArgLine set to -javaagent:C:\\Users\\sxp267\\.m2\\repository\\org\\jacoco\\org.jacoco.agent\\0.8.12\\org.jacoco.agent-0.8.12-runtime.jar=destfile=C:\\Users\\sxp267\\IdeaProjects\\holon-vaadin-flow\\core\\target\\coverage-reports\\jacoco-ut.exec
+[INFO] 
+[INFO] --- remote-resources:3.1.0:process (default) @ holon-vaadin-flow ---
+[INFO] Preparing remote bundle com.holon-platform:holon-shared:1.0.6
+[INFO] Copying 6 resources from 1 bundle.
+[INFO] 
+[INFO] --- resources:3.4.0:resources (default-resources) @ holon-vaadin-flow ---
+[INFO] Copying 56 resources from src\main\resources to target\classes
+[INFO] Copying 6 resources from target\maven-shared-archive-resources to target\classes
+[INFO] 
+[INFO] --- compiler:3.15.0:compile (default-compile) @ holon-vaadin-flow ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.4.0:testResources (default-testResources) @ holon-vaadin-flow ---
+[INFO] Copying 4 resources from src\test\resources to target\test-classes
+[INFO] Copying 6 resources from target\maven-shared-archive-resources to target\test-classes
+[INFO] 
+[INFO] --- compiler:3.15.0:testCompile (default-testCompile) @ holon-vaadin-flow ---
+[INFO] Recompiling the module because of added or removed source files.
+[INFO] Compiling 164 source files with javac [debug release 21] to target\test-classes
+[INFO] Annotation processing is enabled because one or more processors were found
+  on the class path. A future release of javac may disable annotation processing
+  unless at least one processor is specified by name (-processor), or a search
+  path is specified (--processor-path, --processor-module-path), or annotation
+  processing is enabled explicitly (-proc:only, -proc:full).
+  Use -Xlint:-options to suppress this message.
+  Use -proc:none to disable annotation processing.
+[INFO] -------------------------------------------------------------
+[ERROR] COMPILATION ERROR : 
+[INFO] -------------------------------------------------------------
+[ERROR] /C:/Users/sxp267/IdeaProjects/holon-vaadin-flow/core/src/test/java/com/holonplatform/vaadin/flow/test/TestMasterDetailConfiguratorV2.java:[41,75] cannot find symbol
+  symbol:   method masterView()
+  location: variable configurator of type com.iyensoft.vaadin.flow.components.builders.MasterDetailConfigurator<com.holonplatform.vaadin.flow.test.TestMasterDetailConfiguratorV2.Item,? extends com.iyensoft.vaadin.flow.components.builders.MasterDetailConfigurator<com.holonplatform.vaadin.flow.test.TestMasterDetailConfiguratorV2.Item,?>>
+[ERROR] /C:/Users/sxp267/IdeaProjects/holon-vaadin-flow/core/src/test/java/com/holonplatform/vaadin/flow/test/TestMasterDetailConfiguratorV2.java:[47,17] cannot find symbol
+  symbol:   method defaultView(com.iyensoft.vaadin.flow.components.builders.MasterDetailConfigurator.MasterNode<com.holonplatform.vaadin.flow.test.TestMasterDetailConfiguratorV2.Item,capture#1 of ?>)
+  location: variable configurator of type com.iyensoft.vaadin.flow.components.builders.MasterDetailConfigurator<com.holonplatform.vaadin.flow.test.TestMasterDetailConfiguratorV2.Item,? extends com.iyensoft.vaadin.flow.components.builders.MasterDetailConfigurator<com.holonplatform.vaadin.flow.test.TestMasterDetailConfiguratorV2.Item,?>>
+[ERROR] /C:/Users/sxp267/IdeaProjects/holon-vaadin-flow/core/src/test/java/com/holonplatform/vaadin/flow/test/TestMasterDetailConfiguratorV2.java:[54,35] cannot find symbol
+  symbol:   method getComponent()
+  location: variable configurator of type com.iyensoft.vaadin.flow.components.builders.MasterDetailConfigurator<com.holonplatform.vaadin.flow.test.TestMasterDetailConfiguratorV2.Item,? extends com.iyensoft.vaadin.flow.components.builders.MasterDetailConfigurator<com.holonplatform.vaadin.flow.test.TestMasterDetailConfiguratorV2.Item,?>>
+[ERROR] /C:/Users/sxp267/IdeaProjects/holon-vaadin-flow/core/src/test/java/com/holonplatform/vaadin/flow/test/TestMasterDetailConfiguratorV2.java:[55,46] cannot find symbol
+  symbol:   method getMasterHeader()
+  location: variable configurator of type com.iyensoft.vaadin.flow.components.builders.MasterDetailConfigurator<com.holonplatform.vaadin.flow.test.TestMasterDetailConfiguratorV2.Item,? extends com.iyensoft.vaadin.flow.components.builders.MasterDetailConfigurator<com.holonplatform.vaadin.flow.test.TestMasterDetailConfiguratorV2.Item,?>>
+[ERROR] /C:/Users/sxp267/IdeaProjects/holon-vaadin-flow/core/src/test/java/com/holonplatform/vaadin/flow/test/TestMasterDetailConfiguratorV2.java:[56,32] cannot find symbol
+  symbol:   method getSeparatorComponent()
+  location: variable configurator of type com.iyensoft.vaadin.flow.components.builders.MasterDetailConfigurator<com.holonplatform.vaadin.flow.test.TestMasterDetailConfiguratorV2.Item,? extends com.iyensoft.vaadin.flow.components.builders.MasterDetailConfigurator<com.holonplatform.vaadin.flow.test.TestMasterDetailConfiguratorV2.Item,?>>
+[ERROR] /C:/Users/sxp267/IdeaProjects/holon-vaadin-flow/core/src/test/java/com/holonplatform/vaadin/flow/test/TestMasterDetailConfiguratorV2.java:[57,32] cannot find symbol
+  symbol:   method getDetailHeader()
+  location: variable configurator of type com.iyensoft.vaadin.flow.components.builders.MasterDetailConfigurator<com.holonplatform.vaadin.flow.test.TestMasterDetailConfiguratorV2.Item,? extends com.iyensoft.vaadin.flow.components.builders.MasterDetailConfigurator<com.holonplatform.vaadin.flow.test.TestMasterDetailConfiguratorV2.Item,?>>
+[ERROR] /C:/Users/sxp267/IdeaProjects/holon-vaadin-flow/core/src/test/java/com/holonplatform/vaadin/flow/test/TestMasterDetailConfiguratorV2.java:[58,32] cannot find symbol
+  symbol:   method getDetailTabs()
+  location: variable configurator of type com.iyensoft.vaadin.flow.components.builders.MasterDetailConfigurator<com.holonplatform.vaadin.flow.test.TestMasterDetailConfiguratorV2.Item,? extends com.iyensoft.vaadin.flow.components.builders.MasterDetailConfigurator<com.holonplatform.vaadin.flow.test.TestMasterDetailConfiguratorV2.Item,?>>
+[ERROR] /C:/Users/sxp267/IdeaProjects/holon-vaadin-flow/core/src/test/java/com/holonplatform/vaadin/flow/test/TestMasterDetailConfiguratorV2.java:[59,37] cannot find symbol
+  symbol:   method getDetailContentComponents()
+  location: variable configurator of type com.iyensoft.vaadin.flow.components.builders.MasterDetailConfigurator<com.holonplatform.vaadin.flow.test.TestMasterDetailConfiguratorV2.Item,? extends com.iyensoft.vaadin.flow.components.builders.MasterDetailConfigurator<com.holonplatform.vaadin.flow.test.TestMasterDetailConfiguratorV2.Item,?>>
+[ERROR] /C:/Users/sxp267/IdeaProjects/holon-vaadin-flow/core/src/test/java/com/holonplatform/vaadin/flow/test/TestMasterDetailConfiguratorV2.java:[60,37] cannot find symbol
+  symbol:   method getDetailFooterComponents()
+  location: variable configurator of type com.iyensoft.vaadin.flow.components.builders.MasterDetailConfigurator<com.holonplatform.vaadin.flow.test.TestMasterDetailConfiguratorV2.Item,? extends com.iyensoft.vaadin.flow.components.builders.MasterDetailConfigurator<com.holonplatform.vaadin.flow.test.TestMasterDetailConfiguratorV2.Item,?>>
+[ERROR] /C:/Users/sxp267/IdeaProjects/holon-vaadin-flow/core/src/test/java/com/holonplatform/vaadin/flow/test/TestMasterDetailConfiguratorV2.java:[61,40] cannot find symbol
+  symbol:   method getListingBundle()
+  location: variable configurator of type com.iyensoft.vaadin.flow.components.builders.MasterDetailConfigurator<com.holonplatform.vaadin.flow.test.TestMasterDetailConfiguratorV2.Item,? extends com.iyensoft.vaadin.flow.components.builders.MasterDetailConfigurator<com.holonplatform.vaadin.flow.test.TestMasterDetailConfiguratorV2.Item,?>>
+[ERROR] /C:/Users/sxp267/IdeaProjects/holon-vaadin-flow/core/src/test/java/com/holonplatform/vaadin/flow/test/TestMasterDetailConfiguratorV2.java:[62,32] cannot find symbol
+  symbol:   method getMasterDiv()
+  location: variable configurator of type com.iyensoft.vaadin.flow.components.builders.MasterDetailConfigurator<com.holonplatform.vaadin.flow.test.TestMasterDetailConfiguratorV2.Item,? extends com.iyensoft.vaadin.flow.components.builders.MasterDetailConfigurator<com.holonplatform.vaadin.flow.test.TestMasterDetailConfiguratorV2.Item,?>>
+[ERROR] /C:/Users/sxp267/IdeaProjects/holon-vaadin-flow/core/src/test/java/com/holonplatform/vaadin/flow/test/TestMasterDetailConfiguratorV2.java:[63,32] cannot find symbol
+  symbol:   method getDetailDiv()
+  location: variable configurator of type com.iyensoft.vaadin.flow.components.builders.MasterDetailConfigurator<com.holonplatform.vaadin.flow.test.TestMasterDetailConfiguratorV2.Item,? extends com.iyensoft.vaadin.flow.components.builders.MasterDetailConfigurator<com.holonplatform.vaadin.flow.test.TestMasterDetailConfiguratorV2.Item,?>>
+[ERROR] /C:/Users/sxp267/IdeaProjects/holon-vaadin-flow/core/src/test/java/com/holonplatform/vaadin/flow/test/TestMasterDetailConfiguratorV2.java:[69,75] cannot find symbol
+  symbol:   method masterView()
+  location: variable configurator of type com.iyensoft.vaadin.flow.components.builders.MasterDetailConfigurator<com.holonplatform.vaadin.flow.test.TestMasterDetailConfiguratorV2.Item,? extends com.iyensoft.vaadin.flow.components.builders.MasterDetailConfigurator<com.holonplatform.vaadin.flow.test.TestMasterDetailConfiguratorV2.Item,?>>
+[ERROR] /C:/Users/sxp267/IdeaProjects/holon-vaadin-flow/core/src/test/java/com/holonplatform/vaadin/flow/test/TestMasterDetailConfiguratorV2.java:[79,32] cannot find symbol
+  symbol:   method getMasterHeader()
+  location: variable configurator of type com.iyensoft.vaadin.flow.components.builders.MasterDetailConfigurator<com.holonplatform.vaadin.flow.test.TestMasterDetailConfiguratorV2.Item,? extends com.iyensoft.vaadin.flow.components.builders.MasterDetailConfigurator<com.holonplatform.vaadin.flow.test.TestMasterDetailConfiguratorV2.Item,?>>
+[ERROR] /C:/Users/sxp267/IdeaProjects/holon-vaadin-flow/core/src/test/java/com/holonplatform/vaadin/flow/test/TestMasterDetailConfiguratorV2.java:[80,32] cannot find symbol
+  symbol:   method getSeparatorComponent()
+  location: variable configurator of type com.iyensoft.vaadin.flow.components.builders.MasterDetailConfigurator<com.holonplatform.vaadin.flow.test.TestMasterDetailConfiguratorV2.Item,? extends com.iyensoft.vaadin.flow.components.builders.MasterDetailConfigurator<com.holonplatform.vaadin.flow.test.TestMasterDetailConfiguratorV2.Item,?>>
+[ERROR] /C:/Users/sxp267/IdeaProjects/holon-vaadin-flow/core/src/test/java/com/holonplatform/vaadin/flow/test/TestMasterDetailConfiguratorV2.java:[81,32] cannot find symbol
+  symbol:   method getDetailHeader()
+  location: variable configurator of type com.iyensoft.vaadin.flow.components.builders.MasterDetailConfigurator<com.holonplatform.vaadin.flow.test.TestMasterDetailConfiguratorV2.Item,? extends com.iyensoft.vaadin.flow.components.builders.MasterDetailConfigurator<com.holonplatform.vaadin.flow.test.TestMasterDetailConfiguratorV2.Item,?>>
+[ERROR] /C:/Users/sxp267/IdeaProjects/holon-vaadin-flow/core/src/test/java/com/holonplatform/vaadin/flow/test/TestMasterDetailConfiguratorV2.java:[82,32] cannot find symbol
+  symbol:   method getDetailTabs()
+  location: variable configurator of type com.iyensoft.vaadin.flow.components.builders.MasterDetailConfigurator<com.holonplatform.vaadin.flow.test.TestMasterDetailConfiguratorV2.Item,? extends com.iyensoft.vaadin.flow.components.builders.MasterDetailConfigurator<com.holonplatform.vaadin.flow.test.TestMasterDetailConfiguratorV2.Item,?>>
+[ERROR] /C:/Users/sxp267/IdeaProjects/holon-vaadin-flow/core/src/test/java/com/holonplatform/vaadin/flow/test/TestMasterDetailConfiguratorV2.java:[83,37] cannot find symbol
+  symbol:   method getDetailContentComponents()
+  location: variable configurator of type com.iyensoft.vaadin.flow.components.builders.MasterDetailConfigurator<com.holonplatform.vaadin.flow.test.TestMasterDetailConfiguratorV2.Item,? extends com.iyensoft.vaadin.flow.components.builders.MasterDetailConfigurator<com.holonplatform.vaadin.flow.test.TestMasterDetailConfiguratorV2.Item,?>>
+[ERROR] /C:/Users/sxp267/IdeaProjects/holon-vaadin-flow/core/src/test/java/com/holonplatform/vaadin/flow/test/TestMasterDetailConfiguratorV2.java:[84,32] cannot find symbol
+  symbol:   method getDetailFooterComponents()
+  location: variable configurator of type com.iyensoft.vaadin.flow.components.builders.MasterDetailConfigurator<com.holonplatform.vaadin.flow.test.TestMasterDetailConfiguratorV2.Item,? extends com.iyensoft.vaadin.flow.components.builders.MasterDetailConfigurator<com.holonplatform.vaadin.flow.test.TestMasterDetailConfiguratorV2.Item,?>>
+[ERROR] /C:/Users/sxp267/IdeaProjects/holon-vaadin-flow/core/src/test/java/com/holonplatform/vaadin/flow/test/TestMasterDetailConfiguratorV2.java:[85,32] cannot find symbol
+  symbol:   method getListingBundle()
+  location: variable configurator of type com.iyensoft.vaadin.flow.components.builders.MasterDetailConfigurator<com.holonplatform.vaadin.flow.test.TestMasterDetailConfiguratorV2.Item,? extends com.iyensoft.vaadin.flow.components.builders.MasterDetailConfigurator<com.holonplatform.vaadin.flow.test.TestMasterDetailConfiguratorV2.Item,?>>
+[ERROR] /C:/Users/sxp267/IdeaProjects/holon-vaadin-flow/core/src/test/java/com/holonplatform/vaadin/flow/test/TestMasterDetailConfiguratorV2.java:[86,32] cannot find symbol
+  symbol:   method getMasterDiv()
+  location: variable configurator of type com.iyensoft.vaadin.flow.components.builders.MasterDetailConfigurator<com.holonplatform.vaadin.flow.test.TestMasterDetailConfiguratorV2.Item,? extends com.iyensoft.vaadin.flow.components.builders.MasterDetailConfigurator<com.holonplatform.vaadin.flow.test.TestMasterDetailConfiguratorV2.Item,?>>
+[ERROR] /C:/Users/sxp267/IdeaProjects/holon-vaadin-flow/core/src/test/java/com/holonplatform/vaadin/flow/test/TestMasterDetailConfiguratorV2.java:[87,32] cannot find symbol
+  symbol:   method getDetailDiv()
+  location: variable configurator of type com.iyensoft.vaadin.flow.components.builders.MasterDetailConfigurator<com.holonplatform.vaadin.flow.test.TestMasterDetailConfiguratorV2.Item,? extends com.iyensoft.vaadin.flow.components.builders.MasterDetailConfigurator<com.holonplatform.vaadin.flow.test.TestMasterDetailConfiguratorV2.Item,?>>
+[INFO] 22 errors 
+[INFO] -------------------------------------------------------------
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  28.804 s
+[INFO] Finished at: 2026-06-14T11:51:33-04:00
+[INFO] ------------------------------------------------------------------------
+[ERROR] Failed to execute goal org.apache.maven.plugins:maven-compiler-plugin:3.15.0:testCompile (default-testCompile) on project holon-vaadin-flow: Compilation failure: Compilation failure: 
+[ERROR] /C:/Users/sxp267/IdeaProjects/holon-vaadin-flow/core/src/test/java/com/holonplatform/vaadin/flow/test/TestMasterDetailConfiguratorV2.java:[41,75] cannot find symbol
+[ERROR]   symbol:   method masterView()
+[ERROR]   location: variable configurator of type com.iyensoft.vaadin.flow.components.builders.MasterDetailConfigurator<com.holonplatform.vaadin.flow.test.TestMasterDetailConfiguratorV2.Item,? extends com.iyensoft.vaadin.flow.components.builders.MasterDetailConfigurator<com.holonplatform.vaadin.flow.test.TestMasterDetailConfiguratorV2.Item,?>>
+[ERROR] /C:/Users/sxp267/IdeaProjects/holon-vaadin-flow/core/src/test/java/com/holonplatform/vaadin/flow/test/TestMasterDetailConfiguratorV2.java:[47,17] cannot find symbol
+[ERROR]   symbol:   method defaultView(com.iyensoft.vaadin.flow.components.builders.MasterDetailConfigurator.MasterNode<com.holonplatform.vaadin.flow.test.TestMasterDetailConfiguratorV2.Item,capture#1 of ?>)
+[ERROR]   location: variable configurator of type com.iyensoft.vaadin.flow.components.builders.MasterDetailConfigurator<com.holonplatform.vaadin.flow.test.TestMasterDetailConfiguratorV2.Item,? extends com.iyensoft.vaadin.flow.components.builders.MasterDetailConfigurator<com.holonplatform.vaadin.flow.test.TestMasterDetailConfiguratorV2.Item,?>>
+[ERROR] /C:/Users/sxp267/IdeaProjects/holon-vaadin-flow/core/src/test/java/com/holonplatform/vaadin/flow/test/TestMasterDetailConfiguratorV2.java:[54,35] cannot find symbol
+[ERROR]   symbol:   method getComponent()
+[ERROR]   location: variable configurator of type com.iyensoft.vaadin.flow.components.builders.MasterDetailConfigurator<com.holonplatform.vaadin.flow.test.TestMasterDetailConfiguratorV2.Item,? extends com.iyensoft.vaadin.flow.components.builders.MasterDetailConfigurator<com.holonplatform.vaadin.flow.test.TestMasterDetailConfiguratorV2.Item,?>>
+[ERROR] /C:/Users/sxp267/IdeaProjects/holon-vaadin-flow/core/src/test/java/com/holonplatform/vaadin/flow/test/TestMasterDetailConfiguratorV2.java:[55,46] cannot find symbol
+[ERROR]   symbol:   method getMasterHeader()
+[ERROR]   location: variable configurator of type com.iyensoft.vaadin.flow.components.builders.MasterDetailConfigurator<com.holonplatform.vaadin.flow.test.TestMasterDetailConfiguratorV2.Item,? extends com.iyensoft.vaadin.flow.components.builders.MasterDetailConfigurator<com.holonplatform.vaadin.flow.test.TestMasterDetailConfiguratorV2.Item,?>>
+[ERROR] /C:/Users/sxp267/IdeaProjects/holon-vaadin-flow/core/src/test/java/com/holonplatform/vaadin/flow/test/TestMasterDetailConfiguratorV2.java:[56,32] cannot find symbol
+[ERROR]   symbol:   method getSeparatorComponent()
+[ERROR]   location: variable configurator of type com.iyensoft.vaadin.flow.components.builders.MasterDetailConfigurator<com.holonplatform.vaadin.flow.test.TestMasterDetailConfiguratorV2.Item,? extends com.iyensoft.vaadin.flow.components.builders.MasterDetailConfigurator<com.holonplatform.vaadin.flow.test.TestMasterDetailConfiguratorV2.Item,?>>
+[ERROR] /C:/Users/sxp267/IdeaProjects/holon-vaadin-flow/core/src/test/java/com/holonplatform/vaadin/flow/test/TestMasterDetailConfiguratorV2.java:[57,32] cannot find symbol
+[ERROR]   symbol:   method getDetailHeader()
+[ERROR]   location: variable configurator of type com.iyensoft.vaadin.flow.components.builders.MasterDetailConfigurator<com.holonplatform.vaadin.flow.test.TestMasterDetailConfiguratorV2.Item,? extends com.iyensoft.vaadin.flow.components.builders.MasterDetailConfigurator<com.holonplatform.vaadin.flow.test.TestMasterDetailConfiguratorV2.Item,?>>
+[ERROR] /C:/Users/sxp267/IdeaProjects/holon-vaadin-flow/core/src/test/java/com/holonplatform/vaadin/flow/test/TestMasterDetailConfiguratorV2.java:[58,32] cannot find symbol
+[ERROR]   symbol:   method getDetailTabs()
+[ERROR]   location: variable configurator of type com.iyensoft.vaadin.flow.components.builders.MasterDetailConfigurator<com.holonplatform.vaadin.flow.test.TestMasterDetailConfiguratorV2.Item,? extends com.iyensoft.vaadin.flow.components.builders.MasterDetailConfigurator<com.holonplatform.vaadin.flow.test.TestMasterDetailConfiguratorV2.Item,?>>
+[ERROR] /C:/Users/sxp267/IdeaProjects/holon-vaadin-flow/core/src/test/java/com/holonplatform/vaadin/flow/test/TestMasterDetailConfiguratorV2.java:[59,37] cannot find symbol
+[ERROR]   symbol:   method getDetailContentComponents()
+[ERROR]   location: variable configurator of type com.iyensoft.vaadin.flow.components.builders.MasterDetailConfigurator<com.holonplatform.vaadin.flow.test.TestMasterDetailConfiguratorV2.Item,? extends com.iyensoft.vaadin.flow.components.builders.MasterDetailConfigurator<com.holonplatform.vaadin.flow.test.TestMasterDetailConfiguratorV2.Item,?>>
+[ERROR] /C:/Users/sxp267/IdeaProjects/holon-vaadin-flow/core/src/test/java/com/holonplatform/vaadin/flow/test/TestMasterDetailConfiguratorV2.java:[60,37] cannot find symbol
+[ERROR]   symbol:   method getDetailFooterComponents()
+[ERROR]   location: variable configurator of type com.iyensoft.vaadin.flow.components.builders.MasterDetailConfigurator<com.holonplatform.vaadin.flow.test.TestMasterDetailConfiguratorV2.Item,? extends com.iyensoft.vaadin.flow.components.builders.MasterDetailConfigurator<com.holonplatform.vaadin.flow.test.TestMasterDetailConfiguratorV2.Item,?>>
+[ERROR] /C:/Users/sxp267/IdeaProjects/holon-vaadin-flow/core/src/test/java/com/holonplatform/vaadin/flow/test/TestMasterDetailConfiguratorV2.java:[61,40] cannot find symbol
+[ERROR]   symbol:   method getListingBundle()
+[ERROR]   location: variable configurator of type com.iyensoft.vaadin.flow.components.builders.MasterDetailConfigurator<com.holonplatform.vaadin.flow.test.TestMasterDetailConfiguratorV2.Item,? extends com.iyensoft.vaadin.flow.components.builders.MasterDetailConfigurator<com.holonplatform.vaadin.flow.test.TestMasterDetailConfiguratorV2.Item,?>>
+[ERROR] /C:/Users/sxp267/IdeaProjects/holon-vaadin-flow/core/src/test/java/com/holonplatform/vaadin/flow/test/TestMasterDetailConfiguratorV2.java:[62,32] cannot find symbol
+[ERROR]   symbol:   method getMasterDiv()
+[ERROR]   location: variable configurator of type com.iyensoft.vaadin.flow.components.builders.MasterDetailConfigurator<com.holonplatform.vaadin.flow.test.TestMasterDetailConfiguratorV2.Item,? extends com.iyensoft.vaadin.flow.components.builders.MasterDetailConfigurator<com.holonplatform.vaadin.flow.test.TestMasterDetailConfiguratorV2.Item,?>>
+[ERROR] /C:/Users/sxp267/IdeaProjects/holon-vaadin-flow/core/src/test/java/com/holonplatform/vaadin/flow/test/TestMasterDetailConfiguratorV2.java:[63,32] cannot find symbol
+[ERROR]   symbol:   method getDetailDiv()
+[ERROR]   location: variable configurator of type com.iyensoft.vaadin.flow.components.builders.MasterDetailConfigurator<com.holonplatform.vaadin.flow.test.TestMasterDetailConfiguratorV2.Item,? extends com.iyensoft.vaadin.flow.components.builders.MasterDetailConfigurator<com.holonplatform.vaadin.flow.test.TestMasterDetailConfiguratorV2.Item,?>>
+[ERROR] /C:/Users/sxp267/IdeaProjects/holon-vaadin-flow/core/src/test/java/com/holonplatform/vaadin/flow/test/TestMasterDetailConfiguratorV2.java:[69,75] cannot find symbol
+[ERROR]   symbol:   method masterView()
+[ERROR]   location: variable configurator of type com.iyensoft.vaadin.flow.components.builders.MasterDetailConfigurator<com.holonplatform.vaadin.flow.test.TestMasterDetailConfiguratorV2.Item,? extends com.iyensoft.vaadin.flow.components.builders.MasterDetailConfigurator<com.holonplatform.vaadin.flow.test.TestMasterDetailConfiguratorV2.Item,?>>
+[ERROR] /C:/Users/sxp267/IdeaProjects/holon-vaadin-flow/core/src/test/java/com/holonplatform/vaadin/flow/test/TestMasterDetailConfiguratorV2.java:[79,32] cannot find symbol
+[ERROR]   symbol:   method getMasterHeader()
+[ERROR]   location: variable configurator of type com.iyensoft.vaadin.flow.components.builders.MasterDetailConfigurator<com.holonplatform.vaadin.flow.test.TestMasterDetailConfiguratorV2.Item,? extends com.iyensoft.vaadin.flow.components.builders.MasterDetailConfigurator<com.holonplatform.vaadin.flow.test.TestMasterDetailConfiguratorV2.Item,?>>
+[ERROR] /C:/Users/sxp267/IdeaProjects/holon-vaadin-flow/core/src/test/java/com/holonplatform/vaadin/flow/test/TestMasterDetailConfiguratorV2.java:[80,32] cannot find symbol
+[ERROR]   symbol:   method getSeparatorComponent()
+[ERROR]   location: variable configurator of type com.iyensoft.vaadin.flow.components.builders.MasterDetailConfigurator<com.holonplatform.vaadin.flow.test.TestMasterDetailConfiguratorV2.Item,? extends com.iyensoft.vaadin.flow.components.builders.MasterDetailConfigurator<com.holonplatform.vaadin.flow.test.TestMasterDetailConfiguratorV2.Item,?>>
+[ERROR] /C:/Users/sxp267/IdeaProjects/holon-vaadin-flow/core/src/test/java/com/holonplatform/vaadin/flow/test/TestMasterDetailConfiguratorV2.java:[81,32] cannot find symbol
+[ERROR]   symbol:   method getDetailHeader()
+[ERROR]   location: variable configurator of type com.iyensoft.vaadin.flow.components.builders.MasterDetailConfigurator<com.holonplatform.vaadin.flow.test.TestMasterDetailConfiguratorV2.Item,? extends com.iyensoft.vaadin.flow.components.builders.MasterDetailConfigurator<com.holonplatform.vaadin.flow.test.TestMasterDetailConfiguratorV2.Item,?>>
+[ERROR] /C:/Users/sxp267/IdeaProjects/holon-vaadin-flow/core/src/test/java/com/holonplatform/vaadin/flow/test/TestMasterDetailConfiguratorV2.java:[82,32] cannot find symbol
+[ERROR]   symbol:   method getDetailTabs()
+[ERROR]   location: variable configurator of type com.iyensoft.vaadin.flow.components.builders.MasterDetailConfigurator<com.holonplatform.vaadin.flow.test.TestMasterDetailConfiguratorV2.Item,? extends com.iyensoft.vaadin.flow.components.builders.MasterDetailConfigurator<com.holonplatform.vaadin.flow.test.TestMasterDetailConfiguratorV2.Item,?>>
+[ERROR] /C:/Users/sxp267/IdeaProjects/holon-vaadin-flow/core/src/test/java/com/holonplatform/vaadin/flow/test/TestMasterDetailConfiguratorV2.java:[83,37] cannot find symbol
+[ERROR]   symbol:   method getDetailContentComponents()
+[ERROR]   location: variable configurator of type com.iyensoft.vaadin.flow.components.builders.MasterDetailConfigurator<com.holonplatform.vaadin.flow.test.TestMasterDetailConfiguratorV2.Item,? extends com.iyensoft.vaadin.flow.components.builders.MasterDetailConfigurator<com.holonplatform.vaadin.flow.test.TestMasterDetailConfiguratorV2.Item,?>>
+[ERROR] /C:/Users/sxp267/IdeaProjects/holon-vaadin-flow/core/src/test/java/com/holonplatform/vaadin/flow/test/TestMasterDetailConfiguratorV2.java:[84,32] cannot find symbol
+[ERROR]   symbol:   method getDetailFooterComponents()
+[ERROR]   location: variable configurator of type com.iyensoft.vaadin.flow.components.builders.MasterDetailConfigurator<com.holonplatform.vaadin.flow.test.TestMasterDetailConfiguratorV2.Item,? extends com.iyensoft.vaadin.flow.components.builders.MasterDetailConfigurator<com.holonplatform.vaadin.flow.test.TestMasterDetailConfiguratorV2.Item,?>>
+[ERROR] /C:/Users/sxp267/IdeaProjects/holon-vaadin-flow/core/src/test/java/com/holonplatform/vaadin/flow/test/TestMasterDetailConfiguratorV2.java:[85,32] cannot find symbol
+[ERROR]   symbol:   method getListingBundle()
+[ERROR]   location: variable configurator of type com.iyensoft.vaadin.flow.components.builders.MasterDetailConfigurator<com.holonplatform.vaadin.flow.test.TestMasterDetailConfiguratorV2.Item,? extends com.iyensoft.vaadin.flow.components.builders.MasterDetailConfigurator<com.holonplatform.vaadin.flow.test.TestMasterDetailConfiguratorV2.Item,?>>
+[ERROR] /C:/Users/sxp267/IdeaProjects/holon-vaadin-flow/core/src/test/java/com/holonplatform/vaadin/flow/test/TestMasterDetailConfiguratorV2.java:[86,32] cannot find symbol
+[ERROR]   symbol:   method getMasterDiv()
+[ERROR]   location: variable configurator of type com.iyensoft.vaadin.flow.components.builders.MasterDetailConfigurator<com.holonplatform.vaadin.flow.test.TestMasterDetailConfiguratorV2.Item,? extends com.iyensoft.vaadin.flow.components.builders.MasterDetailConfigurator<com.holonplatform.vaadin.flow.test.TestMasterDetailConfiguratorV2.Item,?>>
+[ERROR] /C:/Users/sxp267/IdeaProjects/holon-vaadin-flow/core/src/test/java/com/holonplatform/vaadin/flow/test/TestMasterDetailConfiguratorV2.java:[87,32] cannot find symbol
+[ERROR]   symbol:   method getDetailDiv()
+[ERROR]   location: variable configurator of type com.iyensoft.vaadin.flow.components.builders.MasterDetailConfigurator<com.holonplatform.vaadin.flow.test.TestMasterDetailConfiguratorV2.Item,? extends com.iyensoft.vaadin.flow.components.builders.MasterDetailConfigurator<com.holonplatform.vaadin.flow.test.TestMasterDetailConfiguratorV2.Item,?>>
+[ERROR] -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException

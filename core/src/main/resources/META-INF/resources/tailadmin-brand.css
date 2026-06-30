@@ -10,7 +10,7 @@
  *    • Semantic      : TailAdmin success / error / warning / info stops
  *    • Radius        : Slightly more rounded than the default (md=8px, lg=12px)
  *    • Sidebar       : Light (white + brand accent) — TailAdmin default style
- *    • Cards         : White on gray-50 canvas, 1px gray-200 border, soft shadow
+ *    • Cards         : White on pale gray canvas, 1px gray-200 border, soft shadow
  *
  *  Load order — copy into your AppShellConfigurator:
  *    @StyleSheet(Lumo.STYLESHEET)
@@ -61,7 +61,7 @@
         Warm blue-gray family (closer to slate than zinc).
         Used for borders, dividers, and chrome backgrounds.
      ────────────────────────────────────────────────────────────── */
-  --zinc-50:   #f9fafb;   /* gray-50  */
+  --zinc-50:   #f3f5f8;   /* gray-50  */
   --zinc-100:  #f2f4f7;   /* gray-100 */
   --zinc-200:  #e4e7ec;   /* gray-200 */
   --zinc-300:  #d0d5dd;   /* gray-300 */
@@ -108,13 +108,13 @@
   /* ──────────────────────────────────────────────────────────────
      3. SURFACES  —  TailAdmin gray-based canvas
         surface-0 = pure white         (cards, inputs)
-        surface-1 = gray-50 canvas     (page background)
+        surface-1 = pale gray canvas    (page background)
         surface-2 = gray-100 elevated  (sub-panels, insets)
         surface-3 = gray-200 divider   (strong separation)
         surface-4 = gray-300 strong    (heavy chrome)
      ────────────────────────────────────────────────────────────── */
   --surface-0:  #ffffff;
-  --surface-1:  #f9fafb;   /* gray-50  */
+  --surface-1:  #f3f5f8;   /* gray-50  */
   --surface-2:  #f2f4f7;   /* gray-100 */
   --surface-3:  #e4e7ec;   /* gray-200 */
   --surface-4:  #d0d5dd;   /* gray-300 */
@@ -373,7 +373,7 @@
    CARD  —  TailAdmin card surface
    ───────────────────────────────────────────────────────────────────
    TailAdmin cards are characteristically:
-     • Pure white background on a gray-50 page
+     • Pure white background on a pale gray page
      • 1px gray-200 border (subtle but present)
      • Rounded corners (radius-lg = 12px)
      • Very soft shadow (xs) — the border does most of the work
@@ -387,22 +387,6 @@
   box-shadow:    var(--shadow-sm);
   padding:       var(--space-5) var(--space-6);
 }
-
-/* Inset panel — sits inside a card, lightly tinted */
-.surface-panel {
-  background:    var(--surface-2);
-  border:        1px solid var(--zinc-100);
-  border-radius: var(--radius-md);
-  padding:       var(--space-3) var(--space-4);
-}
-
-/* Divider */
-.surface-divider {
-  border:     none;
-  border-top: var(--border-subtle);
-  margin:     0;
-}
-
 
 /* ═══════════════════════════════════════════════════════════════════
    DARK MODE  —  Lumo [theme~="dark"] overrides
@@ -429,7 +413,7 @@
   --zinc-500:  #d0d5dd;
   --zinc-600:  #e4e7ec;
   --zinc-700:  #f2f4f7;
-  --zinc-800:  #f9fafb;
+  --zinc-800:  #f3f5f8;
   --zinc-900:  #ffffff;
 
   /* Text */

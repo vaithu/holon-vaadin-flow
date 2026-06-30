@@ -2,7 +2,8 @@ package com.iyensoft.vaadin.flow.internal.components.masterdetail;
 
 import com.holonplatform.vaadin.flow.vaadinplus.Layout;
 import com.holonplatform.vaadin.flow.vaadinplus.components.Sheet;
-import com.iyensoft.vaadin.flow.utils.responsive.ViewMode;
+import com.iyensoft.vaadin.flow.components.DetailSyncAware;
+import com.iyensoft.vaadin.flow.enums.ViewMode;
 import com.vaadin.flow.component.Component;
 
 import java.util.function.Function;
@@ -23,7 +24,7 @@ import java.util.function.Function;
  * <p>The desktop slot uses the CSS class {@code mdl-detail--no-selection} as its
  * "empty" state — added by {@link #hideDesktop()} and removed by {@link #showDesktop()}.
  * The cached components are never removed from the DOM; the placeholder is rendered
- * via a CSS {@code ::before} pseudo-element from {@code master-details.css}.</p>
+ * via a CSS {@code ::before} pseudo-element from {@code master-detail-v2.css}.</p>
  */
 public final class ResponsiveDetailHost {
 
@@ -54,6 +55,7 @@ public final class ResponsiveDetailHost {
      */
     public <T> void place(T item, ViewMode mode, Function<T, Component[]> contentProvider) {
         ensureComponents(item, contentProvider);
+        notifySyncAware(item);
         if (isMobile(mode)) {
             placeInMobile();
             mobileSheet.open();
@@ -113,6 +115,26 @@ public final class ResponsiveDetailHost {
         if (cachedComponents == null) {
             cachedComponents = contentProvider.apply(firstItem);
             location = Location.NONE;
+        }
+    }
+
+    /**
+     * Notifies all cached components that implement {@link DetailSyncAware} of the newly
+     * selected item.
+     *
+     * <p>Called on every {@link #place} invocation — including the first, so that components
+     * built by the content provider via a no-arg factory are populated immediately.
+     * Subsequent calls update cached components in-place without rebuilding them,
+     * which is the key performance characteristic for high-concurrency SaaS deployments:
+     * no component allocation on each row click after the first.</p>
+     */
+    @SuppressWarnings("unchecked")
+    private <T> void notifySyncAware(T item) {
+        if (cachedComponents == null || item == null) return;
+        for (Component c : cachedComponents) {
+            if (c instanceof DetailSyncAware<?> aware) {
+                ((DetailSyncAware<Object>) aware).onItemSelected(item);
+            }
         }
     }
 

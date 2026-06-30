@@ -31,11 +31,15 @@ import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.shared.HasTooltip;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
+import java.util.LinkedHashSet;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 /**
  * Default {@link PropertyInputForm} implementation.
@@ -52,6 +56,15 @@ public class DefaultPropertyInputForm<C extends Component>
 	private boolean enterMovesFocusToNext;
 
 	private boolean validateOnEnterFocusMove;
+
+	private boolean autoRequiredIndicators;
+
+	private Set<String> explicitRequiredPropertyNames = Set.of();
+
+	private static final String[] AUTO_REQUIRED_ANNOTATIONS = {
+			"jakarta.validation.constraints.NotNull",
+			"jakarta.validation.constraints.NotBlank",
+			"jakarta.validation.constraints.NotEmpty" };
 
 	private transient List<BoundComponentGroup.Binding<Property<?>, Input<?>>> inputBindings = List.of();
 
@@ -262,6 +275,51 @@ public class DefaultPropertyInputForm<C extends Component>
 	@Override
 	public <T> Optional<Input<T>> getInput(Property<T> property) {
 		return getComponentGroup().getInput(property);
+	}
+
+	@Override
+	public void setAutoRequiredIndicators(boolean autoRequiredIndicators) {
+		this.autoRequiredIndicators = autoRequiredIndicators;
+		refreshRequiredIndicators();
+	}
+
+	@Override
+	public boolean isAutoRequiredIndicators() {
+		return autoRequiredIndicators;
+	}
+
+	private void setExplicitRequiredPropertyNames(Set<String> explicitRequiredPropertyNames) {
+		this.explicitRequiredPropertyNames = (explicitRequiredPropertyNames != null) ? explicitRequiredPropertyNames
+				: Set.of();
+	}
+
+	private void refreshRequiredIndicators() {
+		getBindings().forEach(binding -> {
+			Property<?> property = binding.getProperty();
+			Input<?> input = binding.getElement();
+			boolean required = explicitRequiredPropertyNames.contains(property.getName())
+					|| (autoRequiredIndicators && isAutoRequiredProperty(property));
+			input.setRequired(required);
+		});
+	}
+
+	private boolean isAutoRequiredProperty(Property<?> property) {
+		for (String annotationClassName : AUTO_REQUIRED_ANNOTATIONS) {
+			if (hasAnnotation(property, annotationClassName)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private boolean hasAnnotation(Property<?> property, String annotationClassName) {
+		try {
+			Class<?> annotationType = Class.forName(annotationClassName);
+			return Boolean.TRUE.equals(property.getClass().getMethod("hasAnnotation", Class.class)
+					.invoke(property, annotationType));
+		} catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+			return false;
+		}
 	}
 
 	// Builder
@@ -617,6 +675,11 @@ public class DefaultPropertyInputForm<C extends Component>
 		@Override
 		public PropertyInputForm build() {
 			instance.setComponentGroup(inputGroupBuilder.withPostProcessor(instance::configurePropertyComponent).build());
+			instance.setExplicitRequiredPropertyNames(instance.getBindings()
+					.filter(binding -> binding.getElement().isRequired())
+					.map(binding -> binding.getProperty().getName())
+					.collect(Collectors.toCollection(LinkedHashSet::new)));
+			instance.refreshRequiredIndicators();
 			instance.setupEnterFocusNavigation();
 			return instance;
 		}

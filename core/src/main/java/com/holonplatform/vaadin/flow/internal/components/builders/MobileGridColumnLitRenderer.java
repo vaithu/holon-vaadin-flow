@@ -16,7 +16,6 @@
 package com.holonplatform.vaadin.flow.internal.components.builders;
 
 import com.holonplatform.vaadin.flow.components.builders.LitRendererBuilder;
-import com.holonplatform.vaadin.flow.components.builders.LitRendererBuilder.MobileGridColumnBuilder;
 import com.holonplatform.vaadin.flow.internal.lumo.FlexDirection;
 import com.vaadin.flow.data.renderer.LitRenderer;
 import com.vaadin.flow.function.SerializableBiConsumer;
@@ -167,12 +166,13 @@ public class MobileGridColumnLitRenderer<T> implements LitRendererBuilder.Mobile
     @Override
     public MobileGridColumnLitRenderer<T> withPrimaryAsLit(LitRenderer<T> renderer) {
         primaryFragments.add(new Fragment(templateOf(renderer)));
+        mergeFrom(renderer);
         return this;
     }
 
     // ─── Secondary section ───────────────────────────────────────────────
 
-   
+
 
     @Override
     public MobileGridColumnLitRenderer<T> withSecondaryText(ValueProvider<T, String> textProvider) {
@@ -196,6 +196,7 @@ public class MobileGridColumnLitRenderer<T> implements LitRendererBuilder.Mobile
     @Override
     public MobileGridColumnLitRenderer<T> withSecondaryAsLit(LitRenderer<T> renderer) {
         secondaryFragments.add(new Fragment(templateOf(renderer)));
+        mergeFrom(renderer);
         return this;
     }
 
@@ -307,6 +308,7 @@ public class MobileGridColumnLitRenderer<T> implements LitRendererBuilder.Mobile
     @Override
     public MobileGridColumnLitRenderer<T> withTertiaryAsLit(LitRenderer<T> renderer) {
         tertiaryFragments.add(new Fragment(templateOf(renderer)));
+        mergeFrom(renderer);
         return this;
     }
 
@@ -423,6 +425,48 @@ public class MobileGridColumnLitRenderer<T> implements LitRendererBuilder.Mobile
         }
 
         return renderer.toString();
+    }
+
+    /**
+     * Copies all property providers and client-callable functions from a nested
+     * {@link LitRenderer} into this builder's own maps so that {@code ${item.xxx}}
+     * bindings embedded via {@code withXxxAsLit} are actually resolved at render time.
+     */
+    @SuppressWarnings("unchecked")
+    private void mergeFrom(LitRenderer<T> renderer) {
+        // Vaadin internal field names for value providers — try both variants
+        for (String fieldName : new String[] {"valueProviders", "propertyProviders"}) {
+            try {
+                Field f = LitRenderer.class.getDeclaredField(fieldName);
+                f.setAccessible(true);
+                Map<String, ValueProvider<T, ?>> vp = (Map<String, ValueProvider<T, ?>>) f.get(renderer);
+                if (vp != null) {
+                    properties.putAll(vp);
+                }
+                break;
+            } catch (NoSuchFieldException | IllegalAccessException ignored) {
+                // try next name
+            }
+        }
+
+        // Vaadin internal field names for client callables / event handlers
+        for (String fieldName : new String[] {"clientCallables", "eventHandlers", "functions"}) {
+            try {
+                Field f = LitRenderer.class.getDeclaredField(fieldName);
+                f.setAccessible(true);
+                Object raw = f.get(renderer);
+                if (raw instanceof Map<?, ?> map) {
+                    map.forEach((k, v) -> {
+                        if (k instanceof String name && v instanceof SerializableBiConsumer<?, ?> fn) {
+                            functions.put(name, (SerializableBiConsumer<T, String>) fn);
+                        }
+                    });
+                }
+                break;
+            } catch (NoSuchFieldException | IllegalAccessException ignored) {
+                // try next name
+            }
+        }
     }
 
     private abstract static class ElementSupport {

@@ -59,7 +59,7 @@ public interface BeanPropertyInputForm<T> extends PropertyInputForm {
      * corresponding {@link Input} components without triggering validation.
      * </p>
      *
-     * @param bean the bean instance to read values from (not null)
+    * @param bean the bean instance to read values from; {@code null} clears all inputs
      */
     void setBean(T bean);
 

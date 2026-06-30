@@ -1,12 +1,12 @@
 /*
  * Copyright 2016-2017 Axioma srl.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -17,6 +17,7 @@ package com.holonplatform.vaadin.flow.components.builders;
 
 import com.holonplatform.vaadin.flow.components.events.ClickEvent;
 import com.holonplatform.vaadin.flow.components.events.ClickEventListener;
+import com.iyensoft.vaadin.flow.enums.ButtonPreset;
 import com.holonplatform.vaadin.flow.internal.components.builders.DefaultButtonConfigurator;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -24,9 +25,9 @@ import com.vaadin.flow.component.html.Image;
 
 /**
  * {@link Button} component configurator.
- * 
+ *
  * @param <C> Concrete configurator type
- * 
+ *
  * @since 5.2.0
  */
 public interface ButtonConfigurator<C extends ButtonConfigurator<C>> extends ComponentConfigurator<C>,
@@ -42,6 +43,7 @@ public interface ButtonConfigurator<C extends ButtonConfigurator<C>> extends Com
 	 * @return this
 	 */
 	C iconAfterText(boolean iconAfterText);
+
 
 	/**
 	 * Set the button to be input focused when the page loads.
@@ -95,11 +97,29 @@ public interface ButtonConfigurator<C extends ButtonConfigurator<C>> extends Com
 
 	C withClickListener(ClickEventListener<Button, ClickEvent<Button>> clickEventListener, boolean avoidDoubleClick);
 
+	C preset(ButtonPreset preset);
+
+	/**
+	 * Styles the button as a pill-shaped filter chip (inactive state).
+	 * Applies {@code theme="tertiary"} and adds class {@code btn--chip}.
+	 * Requires {@code chip.css} to be loaded (auto-loaded when using {@link ChipGroup}).
+	 * @return this
+	 */
+	C chip();
+
+	/**
+	 * Toggles the chip's active (selected) visual state.
+	 * Adds or removes class {@code btn--chip-active}.
+	 * @param active {@code true} to show the filled brand-tinted active state
+	 * @return this
+	 */
+	C chipActive(boolean active);
+
 
 	/**
 	 * Base button configurator.
 	 */
-	public interface BaseButtonConfigurator extends ButtonConfigurator<BaseButtonConfigurator> {
+	interface BaseButtonConfigurator extends ButtonConfigurator<BaseButtonConfigurator> {
 
 	}
 

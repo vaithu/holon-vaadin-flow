@@ -21,7 +21,6 @@ import com.vaadin.flow.router.BeforeEvent;
 import com.vaadin.flow.router.HasUrlParameter;
 import com.vaadin.flow.router.Route;
 
-@SuppressWarnings("serial")
 @Route("9")
 public class NavigationTarget9 extends Div implements HasUrlParameter<String> {
 

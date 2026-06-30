@@ -1,6 +1,6 @@
 package com.holonplatform.vaadin.flow.test;
 
-import com.holonplatform.vaadin.flow.vaadinplus.components.FilterOperator;
+import com.iyensoft.vaadin.flow.enums.FilterOperator;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;

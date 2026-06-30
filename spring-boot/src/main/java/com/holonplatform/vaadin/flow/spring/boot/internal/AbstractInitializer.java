@@ -66,7 +66,7 @@ public abstract class AbstractInitializer {
 			try {
 				return Optional.ofNullable(
 						((ConfigurableListableBeanFactory) beanFactory).getBeanDefinition(beanName).getScope());
-			} catch (@SuppressWarnings("unused") NoSuchBeanDefinitionException e) {
+			} catch ( NoSuchBeanDefinitionException e) {
 				return Optional.empty();
 			}
 		}

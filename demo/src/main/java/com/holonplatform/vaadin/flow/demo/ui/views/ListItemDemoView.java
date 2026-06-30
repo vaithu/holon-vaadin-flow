@@ -25,7 +25,7 @@ public class ListItemDemoView extends Div {
 
         var desc = new Paragraph(
                 "A flex list item with primary/secondary labels, optional prefix/suffix slots, "
-                + "and divider support. Extends FlexBoxLayout. Styled via list-item.css.");
+                + "and divider support. Extends FlexBoxLayout. Styled via document-row-lit-renderer.css.");
 
         var examples = ResponsiveDiv.flex().column().gapL().build();
 

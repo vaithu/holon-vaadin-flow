@@ -1,0 +1,38 @@
+[INFO] Scanning for projects...
+[WARNING] 
+[WARNING] Some problems were encountered while building the effective model for com.holon-platform.vaadin:holon-vaadin-flow-demo:jar:10.0.2-SNAPSHOT
+[WARNING] 'build.plugins.plugin.version' for org.springframework.boot:spring-boot-maven-plugin is missing. @ line 112, column 21
+[WARNING] 
+[WARNING] It is highly recommended to fix these problems because they threaten the stability of your build.
+[WARNING] 
+[WARNING] For this reason, future Maven versions might no longer support building such malformed projects.
+[WARNING] 
+[INFO] 
+[INFO] ----------< com.holon-platform.vaadin:holon-vaadin-flow-demo >----------
+[INFO] Building com.holon-platform.vaadin:holon-vaadin-flow-demo 10.0.2-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+Downloading from central: https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-maven-plugin/maven-metadata.xml
+Progress (1): 4.8 kBProgress (1): 9.2 kBProgress (1): 10 kB                    Downloaded from central: https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-maven-plugin/maven-metadata.xml (10 kB at 25 kB/s)
+[WARNING] The POM for com.holon-platform.vaadin:holon-starter-vaadin-flow:jar:10.0.2-SNAPSHOT is missing, no dependency information available
+[WARNING] The POM for com.holon-platform.vaadin:holon-vaadin-flow-chartjs:jar:10.0.2-SNAPSHOT is missing, no dependency information available
+[WARNING] The POM for com.holon-platform.vaadin:holon-vaadin-flow-calendar:jar:10.0.2-SNAPSHOT is missing, no dependency information available
+[WARNING] The POM for com.holon-platform.vaadin:holon-vaadin-flow-chat:jar:10.0.2-SNAPSHOT is missing, no dependency information available
+[WARNING] The POM for com.holon-platform.vaadin:holon-vaadin-flow-customer:jar:10.0.2-SNAPSHOT is missing, no dependency information available
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  4.828 s
+[INFO] Finished at: 2026-06-14T11:53:32-04:00
+[INFO] ------------------------------------------------------------------------
+[ERROR] Failed to execute goal on project holon-vaadin-flow-demo: Could not collect dependencies for project com.holon-platform.vaadin:holon-vaadin-flow-demo:jar:10.0.2-SNAPSHOT
+[ERROR] Failed to read artifact descriptor for com.holon-platform.vaadin:holon-vaadin-flow:jar:10.0.2-SNAPSHOT
+[ERROR] 	Caused by: The following artifacts could not be resolved: com.holon-platform.vaadin:holon-vaadin-flow-root:pom:10.0.2-SNAPSHOT (absent): Could not find artifact com.holon-platform.vaadin:holon-vaadin-flow-root:pom:10.0.2-SNAPSHOT
+[ERROR] 
+[ERROR] -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/DependencyResolutionException

@@ -133,17 +133,13 @@ public abstract class AbstractAvatarConfigurator<C extends AvatarConfigurator<C>
 
     @Override
     public C variant(Alert.Variant variant) {
-        // Base marker class — CSS targets vaadin-avatar.avatar--badge-*
-        getComponent().addClassName("avatar--badge");
+        var avatar = getComponent();
+        avatar.addClassName("avatar--badge");
+        for (Alert.Variant value : Alert.Variant.values()) {
+            avatar.removeClassName(value.getCssClass("avatar--badge", "-"));
+        }
         if (variant != null) {
-            String cls = switch (variant) {
-                case DESTRUCTIVE -> "avatar--badge-destructive";
-                case WARNING     -> "avatar--badge-warning";
-                case SUCCESS     -> "avatar--badge-success";
-                case INFO        -> "avatar--badge-info";
-                default          -> "avatar--badge-default";
-            };
-            getComponent().addClassName(cls);
+            avatar.addClassName(variant.getCssClass("avatar--badge", "-"));
         }
         return getConfigurator();
     }

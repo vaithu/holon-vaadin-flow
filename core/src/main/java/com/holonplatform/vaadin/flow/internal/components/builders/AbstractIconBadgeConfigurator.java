@@ -50,6 +50,12 @@ public abstract class AbstractIconBadgeConfigurator<C extends IconBadgeConfigura
         return getConfigurator();
     }
 
+    @Override
+    public C text(String text) {
+        getComponent().setText(text);
+        return getConfigurator();
+    }
+
     // -----------------------------------------------------------------------
     // AbstractComponentConfigurator hooks
     // -----------------------------------------------------------------------

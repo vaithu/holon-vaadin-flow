@@ -2,12 +2,12 @@
 .classpath
 .project
 .settings/
- 
+
 # Intellij
 .idea/
 *.iml
 *.iws
- 
+
 # Mac
 .DS_Store
 
@@ -31,12 +31,23 @@ buildNumber.properties
 dep-list-*.txt
 *-versions.txt
 
+# Build output text files (captured stdout/stderr)
+core-err.txt
+core-out.txt
+core-test-output.txt
+demo-compile-result.txt
+demo-out.txt
+
+# AI assistant workspace
+.junie/
+
 # Avoid ignoring Maven wrapper jar file (.jar files are usually ignored)
 !/.mvn/wrapper/maven-wrapper.jar
 
-# Vaadin 
+# Vaadin
 node_modules/
 package.json
 webpack.config.js
 webpack.generated.js
 package-lock.json
+

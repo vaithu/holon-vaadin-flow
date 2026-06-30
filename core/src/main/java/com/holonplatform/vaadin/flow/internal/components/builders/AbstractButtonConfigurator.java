@@ -1,12 +1,12 @@
 /*
  * Copyright 2016-2018 Axioma srl.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -20,6 +20,7 @@ import com.holonplatform.vaadin.flow.components.builders.ButtonConfigurator;
 import com.holonplatform.vaadin.flow.components.builders.ShortcutConfigurator;
 import com.holonplatform.vaadin.flow.components.events.ClickEvent;
 import com.holonplatform.vaadin.flow.components.events.ClickEventListener;
+import com.iyensoft.vaadin.flow.enums.ButtonPreset;
 import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
 import com.holonplatform.vaadin.flow.internal.components.support.ComponentClickListenerAdapter;
 import com.vaadin.flow.component.BlurNotifier.BlurEvent;
@@ -29,13 +30,15 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.icon.Icon;
+import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.theme.lumo.LumoIcon;
 import tools.jackson.databind.JsonNode;
 
 import java.util.Optional;
 
 /**
  * Base {@link ButtonConfigurator} implementation.
- * 
+ *
  * @param <C> Concrete configurator type
  *
  * @since 5.2.0
@@ -195,7 +198,7 @@ public abstract class AbstractButtonConfigurator<C extends ButtonConfigurator<C>
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see com.holonplatform.vaadin.flow.components.builders.ButtonConfigurator#
 	 * disableOnClick()
 	 */
@@ -207,7 +210,7 @@ public abstract class AbstractButtonConfigurator<C extends ButtonConfigurator<C>
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * com.holonplatform.vaadin.flow.components.builders.ClickNotifierConfigurator#
 	 * withClickListener(com.holonplatform.
@@ -239,7 +242,7 @@ public abstract class AbstractButtonConfigurator<C extends ButtonConfigurator<C>
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * com.holonplatform.vaadin.flow.components.builders.ClickNotifierConfigurator#
 	 * withClickShortcut(com.vaadin.flow. component.Key,
@@ -253,7 +256,7 @@ public abstract class AbstractButtonConfigurator<C extends ButtonConfigurator<C>
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * com.holonplatform.vaadin.flow.components.builders.ClickNotifierConfigurator#
 	 * withClickShortcut(com.vaadin.flow. component.Key)
@@ -265,7 +268,7 @@ public abstract class AbstractButtonConfigurator<C extends ButtonConfigurator<C>
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see com.holonplatform.vaadin.flow.components.builders.FocusableConfigurator#
 	 * tabIndex(int)
 	 */
@@ -277,7 +280,7 @@ public abstract class AbstractButtonConfigurator<C extends ButtonConfigurator<C>
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see com.holonplatform.vaadin.flow.components.builders.FocusableConfigurator#
 	 * withFocusListener(com.vaadin.flow. component.ComponentEventListener)
 	 */
@@ -289,7 +292,7 @@ public abstract class AbstractButtonConfigurator<C extends ButtonConfigurator<C>
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see com.holonplatform.vaadin.flow.components.builders.FocusableConfigurator#
 	 * withBlurListener(com.vaadin.flow. component.ComponentEventListener)
 	 */
@@ -301,7 +304,7 @@ public abstract class AbstractButtonConfigurator<C extends ButtonConfigurator<C>
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see com.holonplatform.vaadin.flow.components.builders.FocusableConfigurator#
 	 * withFocusShortcut(com.vaadin.flow. component.Key)
 	 */
@@ -312,7 +315,7 @@ public abstract class AbstractButtonConfigurator<C extends ButtonConfigurator<C>
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see com.holonplatform.vaadin.flow.components.builders.ButtonConfigurator#
 	 * iconAfterText(boolean)
 	 */
@@ -324,7 +327,7 @@ public abstract class AbstractButtonConfigurator<C extends ButtonConfigurator<C>
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see com.holonplatform.vaadin.flow.components.builders.ButtonConfigurator#
 	 * autofocus(boolean)
 	 */
@@ -423,4 +426,156 @@ public abstract class AbstractButtonConfigurator<C extends ButtonConfigurator<C>
 		}
 		return ariaLabel(LocalizationProvider.localize(ariaLabel).orElse(defaultAriaLabel));
 	}
+
+	@Override
+	public C preset(ButtonPreset preset) {
+
+		return switch (preset) {
+			case SAVE -> save();
+			case EDIT -> edit();
+			case DELETE -> delete();
+			case REFRESH -> refresh();
+			case DUPLICATE -> duplicate();
+			case EXPORT -> export();
+			case IMPORT -> importt();
+            case RESET -> reset();
+            case CANCEL -> cancel();
+            case CLOSE -> close();
+            case NEW -> newButton();
+		};
+	}
+
+	@Override
+	public C chip() {
+		getComponent().addThemeVariants(ButtonVariant.LUMO_TERTIARY);
+		getComponent().addClassName("btn--chip");
+		return getConfigurator();
+	}
+
+	@Override
+	public C chipActive(boolean active) {
+		if (active) {
+			getComponent().addClassName("btn--chip-active");
+		} else {
+			getComponent().removeClassName("btn--chip-active");
+		}
+		return getConfigurator();
+	}
+
+    private C close() {
+		return icon(LumoIcon.CROSS.create())
+				.text("Close", "close.code")
+				.iconAfterText(false)
+				.tooltip("Close", "tooltip.close.code")
+				.tertiaryInline();
+    }
+
+	private C cancel() {
+		return icon(LumoIcon.CROSS.create())
+				.text("Cancel", "cancel.code")
+				.iconAfterText(false)
+				.tooltip("Cancel", "tooltip.cancel.code")
+				.tertiaryInline();
+    }
+
+	private C reset() {
+		return icon(VaadinIcon.ERASER.create())
+				.text("Reset", "reset.code")
+				.iconAfterText(false)
+				.tooltip("Reset", "tooltip.reset.code")
+				.tertiaryInline();
+    }
+
+	/**
+	 * Creates a preset "new record" button configuration.
+	 *
+	 * @return this configurator
+	 */
+	public C newButton() {
+		return icon(LumoIcon.PLUS.create())
+				.text("New", "new.code")
+				.withFocusShortcutKey(Key.KEY_N, KeyModifier.CONTROL)
+				.tooltip("Create New Record", "tooltip.new.code")
+				.primary();
+	}
+
+	/**
+	 * Creates a preset "edit" button configuration.
+	 *
+	 * @return this configurator
+	 */
+	public C edit() {
+		return icon(LumoIcon.EDIT.create())
+				.text("Edit", "edit.code")
+				.iconAfterText(false)
+				.tooltip("Edit Record", "tooltip.edit.code")
+				.tertiaryInline();
+	}
+
+
+	/**
+	 * Creates a preset "duplicate" button configuration.
+	 *
+	 * @return this configurator
+	 */
+	public C duplicate() {
+		return icon(VaadinIcon.COPY)
+				.text("Duplicate", "duplicate.code")
+				.tooltip("Create Duplicate Record", "tooltip.duplicate.code")
+				.tertiaryInline();
+	}
+
+	/**
+	 * Creates a preset "export" button configuration.
+	 *
+	 * @return this configurator
+	 */
+	public C export() {
+		return icon(LumoIcon.DOWNLOAD.create())
+				.text("Export", "export.code")
+				.tooltip("Export Records", "tooltip.export.code")
+				.tertiaryInline();
+	}
+
+	/**
+	 * Creates a preset "import" button configuration.
+	 *
+	 * @return this configurator
+	 */
+	public C importt() {
+		return icon(LumoIcon.UPLOAD.create())
+				.text("Import", "import.code")
+				.tooltip("Import Records", "tooltip.import.code")
+				.tertiaryInline();
+	}
+
+	/**
+	 * Creates a preset "refresh" button configuration.
+	 *
+	 * @return this configurator
+	 */
+	public C refresh() {
+		return icon(LumoIcon.RELOAD.create())
+				.text("Refresh", "refresh.code")
+				.tooltip("Refresh Records", "tooltip.refresh.code")
+				.tertiaryInline();
+	}
+
+	public C delete() {
+		return icon(VaadinIcon.TRASH.create())
+				.text("Delete", "delete.code")
+				.tooltip("Delete Record(s)", "tooltip.delete.code")
+				.error();
+	}
+
+	public C save() {
+		return icon(VaadinIcon.CHECK.create())
+				.text("Save", "save.code")
+				.tooltip("Save Record(s)", "tooltip.save.code")
+				.primary();
+	}
+
+
+
+
 }

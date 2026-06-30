@@ -16,22 +16,33 @@
 package com.holonplatform.vaadin.flow.vaadinplus.components;
 
 import com.holonplatform.core.Validator;
+import com.holonplatform.core.operation.TriConsumer;
 import com.holonplatform.core.property.Property;
 import com.holonplatform.core.property.PropertyBox;
 import com.holonplatform.core.property.PropertySet;
 import com.holonplatform.vaadin.flow.components.BeanPropertyInputForm;
 import com.holonplatform.vaadin.flow.components.Components;
+import com.holonplatform.vaadin.flow.components.Input;
 import com.holonplatform.vaadin.flow.components.PropertyInputForm;
 import com.holonplatform.vaadin.flow.components.builders.BeanPropertyInputFormBuilder;
 import com.holonplatform.vaadin.flow.components.builders.ButtonConfigurator;
+import com.holonplatform.vaadin.flow.components.builders.FormResponsiveStepBuilder;
 import com.holonplatform.vaadin.flow.components.builders.PropertyInputFormBuilder;
+import com.holonplatform.vaadin.flow.components.utils.UIUtils;
+import com.iyensoft.vaadin.flow.enums.ViewMode;
+import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.Focusable;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.html.Div;
 
+import java.io.Serial;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Optional;
+import java.util.Objects;
 import java.util.function.Consumer;
 
 /**
@@ -66,6 +77,7 @@ import java.util.function.Consumer;
  * <pre>{@code
  * EntityFormPanel<Customer> panel = EntityFormPanel.<Customer>bean(Customer.class)
  *     .configure(fb -> fb.excludeFields("id", "createdAt"))
+ *     .properties("firstName", "lastName", "email")  // optional custom order / subset
  *     .saveButton(
  *         btn -> btn.primary().withText("Save"),
  *         customer -> service.save(customer))
@@ -97,6 +109,30 @@ import java.util.function.Consumer;
  * <p>All styling is handled by {@code entity-form-panel.css}; no inline styles
  * or Lumo tokens are used in Java code.
  *
+ * <h3>Layout-aware example</h3>
+ * <pre>{@code
+ * EntityFormPanel<Customer> panel = EntityFormPanel.<Customer>bean(Customer.class)
+ *     .properties("firstName", "lastName", "email", "notes")
+ *     .initializer(layout -> layout.setResponsiveSteps(
+ *         new FormLayout.ResponsiveStep("0", 1),
+ *         new FormLayout.ResponsiveStep("480px", 2)))
+ *     .responsiveSteps(steps -> steps
+ *         .mobile(1)
+ *         .tablet(2)
+ *         .desktop(3))
+ *     .withPostProcessor((layout, property, input) -> {
+ *         if ("email".equals(property.relativeName())) {
+ *             layout.setColspan(input.getComponent(), 2);
+ *         }
+ *     })
+ *     .saveButton(btn -> btn.save("Save"), customer -> service.save(customer))
+ *     .clearButton(btn -> btn.withText("Clear"))
+ *     .build();
+ * }</pre>
+ *
+ * <p>This keeps layout configuration and per-field adjustments close together
+ * without needing any external state holder.</p>
+ *
  * @param <T> The value type: the bean class for bean-mode, {@link PropertyBox} for PropertySet-mode.
  *
  * @see BeanPropertyInputForm
@@ -107,6 +143,7 @@ import java.util.function.Consumer;
 @StyleSheet("context://entity-form-panel.css")
 public class EntityFormPanel<T> extends Div {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     // -----------------------------------------------------------------------
@@ -118,6 +155,10 @@ public class EntityFormPanel<T> extends Div {
     private final Button saveAndNewButton;  // null when not configured
     private final Button clearButton;
     private final Button cancelButton;      // null when not configured
+    private final boolean stretchLastRow;
+    private final LayoutMode layoutMode;
+    private final List<FormLayout.ResponsiveStep> responsiveSteps;
+    private final List<TriConsumer<Component, Property<?>, Input<?>>> postProcessors;
 
     // -----------------------------------------------------------------------
     // Private constructor — use factory methods to create instances
@@ -129,13 +170,21 @@ public class EntityFormPanel<T> extends Div {
             Button saveBtn, Consumer<T> saveAction,
             Button saveAndNewBtn, Consumer<T> saveAndNewAction,
             Button clearBtn,
-            Button cancelBtn, Runnable cancelAction) {
+            Button cancelBtn, Runnable cancelAction,
+            LayoutMode layoutMode,
+            boolean stretchLastRow,
+            List<FormLayout.ResponsiveStep> responsiveSteps,
+            List<TriConsumer<Component, Property<?>, Input<?>>> postProcessors) {
 
         this.form = form;
         this.saveButton = saveBtn;
         this.saveAndNewButton = saveAndNewBtn;
         this.clearButton = clearBtn;
         this.cancelButton = cancelBtn;
+        this.stretchLastRow = stretchLastRow;
+        this.layoutMode = layoutMode;
+        this.responsiveSteps = responsiveSteps;
+        this.postProcessors = postProcessors;
 
         addClassName("entity-form-panel");
 
@@ -215,6 +264,189 @@ public class EntityFormPanel<T> extends Div {
         }
 
         add(body, footer);
+
+        form.compose();
+        applyDefaultLabels(form);
+
+        if (this.postProcessors != null && !this.postProcessors.isEmpty()) {
+            form.getBindings().forEach(binding ->
+                    this.postProcessors.forEach(postProcessor ->
+                            postProcessor.accept(form.getComponent(), binding.getProperty(), binding.getElement())));
+        }
+
+        if (this.layoutMode == LayoutMode.GRID) {
+            applyGridDivLayout((Div) form.getComponent(), form, this.responsiveSteps, this.stretchLastRow);
+        } else if (this.stretchLastRow) {
+            applyStretchLastRow((FormLayout) form.getComponent(), form);
+        }
+    }
+
+    private static void applyDefaultLabels(PropertyInputForm form) {
+        form.getBindings().forEach(binding -> {
+            Property<?> property = binding.getProperty();
+            binding.getElement().hasLabel().ifPresent(hasLabel -> {
+                String current = hasLabel.getLabel();
+                String rawName = property.getName();
+                if (current == null || current.isBlank() || current.equals(rawName)) {
+                    hasLabel.setLabel(toPascalCase(rawName));
+                }
+            });
+        });
+    }
+
+    private static void applyStretchLastRow(FormLayout layout, PropertyInputForm form) {
+        final var inputs = form.getBindings()
+                .map(binding -> binding.getElement())
+                .toList();
+        final var children = layout.getChildren().toList();
+
+        if (inputs.isEmpty() || children.size() < inputs.size()) {
+            return;
+        }
+
+        final int columns = layout.getResponsiveSteps().stream()
+                    .mapToInt(step -> step.toJson().path("columns").asInt(1))
+                .max()
+                .orElse(1);
+
+        if (columns <= 1) {
+            return;
+        }
+
+        final int remainder = inputs.size() % columns;
+        if (remainder == 0) {
+            return;
+        }
+
+        final int startIndex = inputs.size() - remainder;
+        final int baseSpan = columns / remainder;
+        final int extraColumns = columns % remainder;
+
+        for (int i = 0; i < remainder; i++) {
+            final int span = baseSpan + (i < extraColumns ? 1 : 0);
+            layout.setColspan(children.get(startIndex + i), span);
+        }
+    }
+
+    private static String toPascalCase(String name) {
+        if (name == null || name.isBlank()) {
+            return "";
+        }
+
+        StringBuilder sb = new StringBuilder(name.length());
+        boolean capitalizeNext = true;
+        for (int i = 0; i < name.length(); i++) {
+            char ch = name.charAt(i);
+            if (ch == '_' || ch == '-' || ch == ' ') {
+                capitalizeNext = true;
+                continue;
+            }
+            if (capitalizeNext) {
+                sb.append(Character.toUpperCase(ch));
+                capitalizeNext = false;
+            } else {
+                sb.append(ch);
+            }
+        }
+        return sb.toString();
+    }
+
+    private static void applyGridDivLayout(Div layout,
+                                           PropertyInputForm form,
+                                           List<FormLayout.ResponsiveStep> responsiveSteps,
+                                           boolean stretchLastRow) {
+
+        layout.addClassName("entity-form-panel__grid");
+        layout.addClassNames("grid", "grid-cols-12", "gap-m");
+
+        final List<Component> children = form.getBindings()
+                .map(binding -> binding.getElement().getComponent())
+                .toList();
+
+        if (children.isEmpty()) {
+            return;
+        }
+
+        final List<GridStep> steps = normalizeGridSteps(responsiveSteps);
+        for (GridStep step : steps) {
+            final String prefix = step.prefix();
+            final int columns = Math.max(1, step.columns());
+            final int baseSpan = spanFor(columns);
+
+            for (int index = 0; index < children.size(); index++) {
+                final int rowStart = (index / columns) * columns;
+                final int rowSize = Math.min(columns, children.size() - rowStart);
+                final int span = stretchLastRow && rowSize < columns ? spanFor(rowSize) : baseSpan;
+                addGridSpanClass(children.get(index), prefix, span);
+            }
+        }
+    }
+
+    private static List<GridStep> normalizeGridSteps(List<FormLayout.ResponsiveStep> responsiveSteps) {
+        if (responsiveSteps == null || responsiveSteps.isEmpty()) {
+            return List.of(new GridStep(null, 1));
+        }
+
+        return responsiveSteps.stream()
+                .filter(Objects::nonNull)
+                .sorted(Comparator.comparingInt(UIUtils::parseMinWidth))
+                .map(step -> new GridStep(prefixForResponsiveStep(step), responsiveStepColumns(step)))
+                .toList();
+    }
+
+    private static int responsiveStepColumns(FormLayout.ResponsiveStep step) {
+        final var json = step.toJson();
+        return json != null && json.has("columns") ? Math.max(1, json.get("columns").asInt(1)) : 1;
+    }
+
+    private static String prefixForResponsiveStep(FormLayout.ResponsiveStep step) {
+        final int minWidth = UIUtils.parseMinWidth(step);
+        return switch (minWidth) {
+            case 0 -> null;
+            case 576 -> ViewMode.MOBILE.getPrefix();
+            case 768 -> ViewMode.TABLET.getPrefix();
+            case 992 -> ViewMode.DESKTOP.getPrefix();
+            case 1200 -> ViewMode.LARGE_DESKTOP.getPrefix();
+            case 1400 -> ViewMode.ULTRA_WIDE.getPrefix();
+            default -> minWidth < 768 ? ViewMode.MOBILE.getPrefix()
+                    : minWidth < 992 ? ViewMode.TABLET.getPrefix()
+                    : minWidth < 1200 ? ViewMode.DESKTOP.getPrefix()
+                    : minWidth < 1400 ? ViewMode.LARGE_DESKTOP.getPrefix()
+                    : ViewMode.ULTRA_WIDE.getPrefix();
+        };
+    }
+
+    private static int spanFor(int columns) {
+        if (columns <= 1) {
+            return 12;
+        }
+        return Math.max(1, 12 / columns);
+    }
+
+    private static void addGridSpanClass(Component component, String prefix, int span) {
+        final String className = "col-span-" + span;
+        if (prefix == null || prefix.isBlank()) {
+            component.addClassName(className);
+        } else {
+            component.addClassName(prefix + ":" + className);
+        }
+    }
+
+    private static <L extends Component> TriConsumer<Component, Property<?>, Input<?>> adaptPostProcessor(
+            TriConsumer<L, Property<?>, Input<?>> postProcessor) {
+        return (layout, property, input) -> postProcessor.accept((L) layout, property, input);
+    }
+
+    private static List<FormLayout.ResponsiveStep> buildResponsiveSteps(Consumer<FormResponsiveStepBuilder> config) {
+        if (config == null) {
+            return List.of();
+        }
+        FormResponsiveStepBuilder responsiveStepsBuilder = FormResponsiveStepBuilder.create();
+        config.accept(responsiveStepsBuilder);
+        return responsiveStepsBuilder.build();
+    }
+
+    private record GridStep(String prefix, int columns) {
     }
 
     // -----------------------------------------------------------------------
@@ -269,6 +501,58 @@ public class EntityFormPanel<T> extends Div {
         return Optional.ofNullable(cancelButton);
     }
 
+    /**
+     * Enable or disable automatic required indicators for the wrapped form.
+     * <p>
+     * When enabled, bean-backed fields annotated with required validation
+     * constraints are marked required automatically, while explicit required
+     * settings are preserved.
+     * </p>
+     *
+     * @param autoRequiredIndicators whether automatic required indicators are enabled
+     */
+    public void setAutoRequiredIndicators(boolean autoRequiredIndicators) {
+        form.setAutoRequiredIndicators(autoRequiredIndicators);
+    }
+
+    /**
+     * Get whether automatic required indicators are enabled.
+     *
+     * @return whether automatic required indicators are enabled
+     */
+    public boolean isAutoRequiredIndicators() {
+        return form.isAutoRequiredIndicators();
+    }
+
+    /**
+     * Populates the underlying form from the given bean instance.
+     * <p>
+     * When this panel wraps a {@link BeanPropertyInputForm}, a {@code null}
+     * value clears all inputs. When the panel is backed by a plain
+     * {@link PropertyInputForm}, a {@code null} value clears the current
+     * property box and a non-null value must be a {@link PropertyBox}.
+     * </p>
+     *
+     * @param bean bean instance to load, or {@code null} to clear the form
+     */
+    @SuppressWarnings("unchecked")
+    public void setBean(T bean) {
+        if (form instanceof BeanPropertyInputForm<?>) {
+            ((BeanPropertyInputForm<T>) form).setBean(bean);
+            return;
+        }
+        if (bean == null) {
+            form.setValue(null);
+            return;
+        }
+        if (bean instanceof PropertyBox propertyBox) {
+            form.setValue(propertyBox);
+            return;
+        }
+        throw new IllegalStateException(
+                "EntityFormPanel#setBean is only supported when the underlying form is bean-based");
+    }
+
     // -----------------------------------------------------------------------
     // Factory methods
     // -----------------------------------------------------------------------
@@ -289,6 +573,19 @@ public class EntityFormPanel<T> extends Div {
     }
 
     /**
+     * Entry point for building an {@link EntityFormPanel} in <em>bean mode</em>
+     * using a CSS grid {@link Div} as the layout container.
+     *
+     * @param <T> bean type
+     * @param beanClass the bean class to introspect (not null)
+     * @return a new {@link DivBeanBuilder}
+     * @since 10.0.0
+     */
+    public static <T> DivBeanBuilder<T> beanDiv(Class<T> beanClass) {
+        return new DefaultDivBeanBuilder<>(beanClass);
+    }
+
+    /**
      * Entry point for building an {@link EntityFormPanel} in <em>PropertySet mode</em>.
      *
      * @param propertySet the property set that defines the form fields (not null)
@@ -300,6 +597,18 @@ public class EntityFormPanel<T> extends Div {
 
     /**
      * Entry point for building an {@link EntityFormPanel} in <em>PropertySet mode</em>
+     * using a CSS grid {@link Div} as the layout container.
+     *
+     * @param propertySet the property set that defines the form fields (not null)
+     * @return a new {@link DivPropertyBuilder}
+     * @since 10.0.0
+     */
+    public static DivPropertyBuilder propertiesDiv(PropertySet<?> propertySet) {
+        return new DefaultDivPropertyBuilder(propertySet);
+    }
+
+    /**
+     * Entry point for building an {@link EntityFormPanel} in <em>PropertySet mode</em>
      * using a varargs property list.
      *
      * @param properties the properties that define the form fields (not null)
@@ -307,6 +616,26 @@ public class EntityFormPanel<T> extends Div {
      */
     public static PropertyBuilder properties(Property<?>... properties) {
         return new DefaultPropertyBuilder(PropertySet.of(properties));
+    }
+
+    /**
+     * Available form layout modes.
+     */
+    public enum LayoutMode {
+        FORM,
+        GRID
+    }
+
+    /**
+     * Entry point for building an {@link EntityFormPanel} in <em>PropertySet mode</em>
+     * using a CSS grid {@link Div} as the layout container.
+     *
+     * @param properties the properties that define the form fields (not null)
+     * @return a new {@link DivPropertyBuilder}
+     * @since 10.0.0
+     */
+    public static DivPropertyBuilder propertiesDiv(Property<?>... properties) {
+        return new DefaultDivPropertyBuilder(PropertySet.of(properties));
     }
 
     // -----------------------------------------------------------------------
@@ -337,7 +666,86 @@ public class EntityFormPanel<T> extends Div {
          * @param config consumer that receives the form builder (not null)
          * @return this
          */
-        BeanBuilder<T> configure(Consumer<BeanPropertyInputFormBuilder<FormLayout, T>> config);
+        <C extends Component> BeanBuilder<T> configure(Consumer<BeanPropertyInputFormBuilder<C, T>> config);
+
+        /**
+         * Configure the underlying {@link FormLayout} used by the form.
+         * <p>
+         * The layout is provided automatically by the form builder, so this is the
+         * direct EntityFormPanel equivalent of {@code BeanPropertyInputForm}'s
+         * initializer hook.
+         * </p>
+         *
+         * @param initializer callback receiving the generated {@link FormLayout} (not null)
+         * @return this
+         */
+        <C extends Component> BeanBuilder<T> initializer(Consumer<C> initializer);
+
+        /**
+         * Select the form layout mode.
+         *
+         * @param layoutMode the layout mode to use (not null)
+         * @return this
+         */
+        BeanBuilder<T> layout(LayoutMode layoutMode);
+
+        /**
+         * Configure the form columns using responsive step shortcuts.
+         * <p>
+         * Use the provided builder to define the number of columns for each
+         * {@link ViewMode}.
+         * </p>
+         *
+         * @param config responsive step configurator (not null)
+         * @return this
+         */
+        BeanBuilder<T> responsiveSteps(Consumer<FormResponsiveStepBuilder> config);
+
+        /**
+         * Stretch the final incomplete row to fill the available width.
+         * <p>
+         * When enabled, the remaining fields in the last row are distributed across
+         * the full responsive-step column count instead of leaving empty space on the
+         * right.
+         * </p>
+         *
+         * @param stretchLastRow whether to stretch the last row
+         * @return this
+         */
+        BeanBuilder<T> stretchLastRow(boolean stretchLastRow);
+
+        /**
+         * Enable or disable automatic required indicators for the generated form.
+         *
+         * @param autoRequiredIndicators whether automatic required indicators are enabled
+         * @return this
+         */
+        BeanBuilder<T> autoRequiredIndicators(boolean autoRequiredIndicators);
+
+        /**
+         * Select the bean fields to render and define their order.
+         * <p>
+         * Only the named fields are rendered, in the exact order provided.
+         * Fields not listed here are omitted from the form.
+         * </p>
+         *
+         * @param fieldNames bean field names to render, in order (not null)
+         * @return this
+         */
+        BeanBuilder<T> properties(String... fieldNames);
+
+        /**
+         * Add a post-processor that runs after each input is created.
+         * <p>
+         * The current {@link FormLayout} is provided automatically, so this is the
+         * right place to adjust component-specific details such as colspan for
+         * individual properties.
+         * </p>
+         *
+         * @param postProcessor post-processor receiving the layout, property and its input (not null)
+         * @return this
+         */
+        <C extends Component> BeanBuilder<T> withPostProcessor(TriConsumer<C, Property<?>, Input<?>> postProcessor);
 
         /**
          * Configure the <strong>mandatory</strong> Save button and its action.
@@ -399,6 +807,48 @@ public class EntityFormPanel<T> extends Div {
     }
 
     /**
+     * Fluent builder for an {@link EntityFormPanel} in <em>bean mode</em> using a
+     * {@link Div} grid layout container.
+     *
+     * @param <T> bean type
+     */
+    public interface DivBeanBuilder<T> {
+
+        DivBeanBuilder<T> configure(Consumer<BeanPropertyInputFormBuilder<Div, T>> config);
+
+        DivBeanBuilder<T> initializer(Consumer<Div> initializer);
+
+        /**
+         * Enable or disable automatic required indicators for the generated form.
+         *
+         * @param autoRequiredIndicators whether automatic required indicators are enabled
+         * @return this
+         */
+        DivBeanBuilder<T> autoRequiredIndicators(boolean autoRequiredIndicators);
+
+        DivBeanBuilder<T> responsiveSteps(Consumer<FormResponsiveStepBuilder> config);
+
+        DivBeanBuilder<T> stretchLastRow(boolean stretchLastRow);
+
+        DivBeanBuilder<T> properties(String... fieldNames);
+
+        DivBeanBuilder<T> withPostProcessor(TriConsumer<Div, Property<?>, Input<?>> postProcessor);
+
+        DivBeanBuilder<T> saveButton(Consumer<ButtonConfigurator.BaseButtonConfigurator> config,
+                                     Consumer<T> onSave);
+
+        DivBeanBuilder<T> saveAndNewButton(Consumer<ButtonConfigurator.BaseButtonConfigurator> config,
+                                         Consumer<T> onSaveAndNew);
+
+        DivBeanBuilder<T> clearButton(Consumer<ButtonConfigurator.BaseButtonConfigurator> config);
+
+        DivBeanBuilder<T> cancelButton(Consumer<ButtonConfigurator.BaseButtonConfigurator> config,
+                                       Runnable onCancel);
+
+        EntityFormPanel<T> build();
+    }
+
+    /**
      * Fluent builder for an {@link EntityFormPanel} in <em>PropertySet mode</em>.
      */
     public interface PropertyBuilder {
@@ -410,7 +860,60 @@ public class EntityFormPanel<T> extends Div {
          * @param config consumer that receives the form builder (not null)
          * @return this
          */
-        PropertyBuilder configure(Consumer<PropertyInputFormBuilder<FormLayout>> config);
+        <C extends Component> PropertyBuilder configure(Consumer<PropertyInputFormBuilder<C>> config);
+
+        /**
+         * Configure the underlying {@link FormLayout} used by the form.
+         *
+         * @param initializer callback receiving the generated {@link FormLayout} (not null)
+         * @return this
+         */
+        <C extends Component> PropertyBuilder initializer(Consumer<C> initializer);
+
+        /**
+         * Select the form layout mode.
+         *
+         * @param layoutMode the layout mode to use (not null)
+         * @return this
+         */
+        PropertyBuilder layout(LayoutMode layoutMode);
+
+        /**
+         * Configure the form columns using responsive step shortcuts.
+         *
+         * @param config responsive step configurator (not null)
+         * @return this
+         */
+        PropertyBuilder responsiveSteps(Consumer<FormResponsiveStepBuilder> config);
+
+        /**
+         * Stretch the final incomplete row to fill the available width.
+         *
+         * @param stretchLastRow whether to stretch the last row
+         * @return this
+         */
+        PropertyBuilder stretchLastRow(boolean stretchLastRow);
+
+        /**
+         * Enable or disable automatic required indicators for the generated form.
+         *
+         * @param autoRequiredIndicators whether automatic required indicators are enabled
+         * @return this
+         */
+        PropertyBuilder autoRequiredIndicators(boolean autoRequiredIndicators);
+
+        /**
+         * Add a post-processor that runs after each input is created.
+         * <p>
+         * The current {@link FormLayout} is provided automatically, so this is the
+         * right place to adjust component-specific details such as colspan for
+         * individual properties.
+         * </p>
+         *
+         * @param postProcessor post-processor receiving the layout, property and its input (not null)
+         * @return this
+         */
+        <C extends Component> PropertyBuilder withPostProcessor(TriConsumer<C, Property<?>, Input<?>> postProcessor);
 
         /**
          * Configure the <strong>mandatory</strong> Save button and its action.
@@ -460,6 +963,44 @@ public class EntityFormPanel<T> extends Div {
         EntityFormPanel<PropertyBox> build();
     }
 
+    /**
+     * Fluent builder for an {@link EntityFormPanel} in <em>PropertySet mode</em>
+     * using a {@link Div} grid layout container.
+     */
+    public interface DivPropertyBuilder {
+
+        DivPropertyBuilder configure(Consumer<PropertyInputFormBuilder<Div>> config);
+
+        DivPropertyBuilder initializer(Consumer<Div> initializer);
+
+        /**
+         * Enable or disable automatic required indicators for the generated form.
+         *
+         * @param autoRequiredIndicators whether automatic required indicators are enabled
+         * @return this
+         */
+        DivPropertyBuilder autoRequiredIndicators(boolean autoRequiredIndicators);
+
+        DivPropertyBuilder responsiveSteps(Consumer<FormResponsiveStepBuilder> config);
+
+        DivPropertyBuilder stretchLastRow(boolean stretchLastRow);
+
+        DivPropertyBuilder withPostProcessor(TriConsumer<Div, Property<?>, Input<?>> postProcessor);
+
+        DivPropertyBuilder saveButton(Consumer<ButtonConfigurator.BaseButtonConfigurator> config,
+                                      Consumer<PropertyBox> onSave);
+
+        DivPropertyBuilder saveAndNewButton(Consumer<ButtonConfigurator.BaseButtonConfigurator> config,
+                                            Consumer<PropertyBox> onSaveAndNew);
+
+        DivPropertyBuilder clearButton(Consumer<ButtonConfigurator.BaseButtonConfigurator> config);
+
+        DivPropertyBuilder cancelButton(Consumer<ButtonConfigurator.BaseButtonConfigurator> config,
+                                        Runnable onCancel);
+
+        EntityFormPanel<PropertyBox> build();
+    }
+
     // -----------------------------------------------------------------------
     // Internal: FormValueSupplier
     // -----------------------------------------------------------------------
@@ -491,7 +1032,17 @@ public class EntityFormPanel<T> extends Div {
 
         private final Class<T> beanClass;
 
-        private Consumer<BeanPropertyInputFormBuilder<FormLayout, T>> formConfig;
+        private String[] propertyNames;
+
+        @SuppressWarnings("rawtypes")
+        private Consumer<BeanPropertyInputFormBuilder<?, T>> formConfig;
+        private Consumer<Component> initializer;
+        private Consumer<FormResponsiveStepBuilder> responsiveStepsConfig;
+        private boolean stretchLastRow;
+        private boolean autoRequiredIndicators;
+        private LayoutMode layoutMode = LayoutMode.FORM;
+
+        private final List<TriConsumer<Component, Property<?>, Input<?>>> postProcessors = new ArrayList<>();
 
         private Consumer<ButtonConfigurator.BaseButtonConfigurator> saveBtnConfig;
         private Consumer<T> saveAction;
@@ -509,8 +1060,52 @@ public class EntityFormPanel<T> extends Div {
         }
 
         @Override
-        public BeanBuilder<T> configure(Consumer<BeanPropertyInputFormBuilder<FormLayout, T>> config) {
-            this.formConfig = config;
+        @SuppressWarnings({"rawtypes", "unchecked"})
+        public <C extends Component> BeanBuilder<T> configure(Consumer<BeanPropertyInputFormBuilder<C, T>> config) {
+            this.formConfig = (Consumer) config;
+            return this;
+        }
+
+        @Override
+        @SuppressWarnings({"rawtypes", "unchecked"})
+        public <C extends Component> BeanBuilder<T> initializer(Consumer<C> initializer) {
+            this.initializer = (Consumer) initializer;
+            return this;
+        }
+
+        @Override
+        public BeanBuilder<T> layout(LayoutMode layoutMode) {
+            this.layoutMode = Objects.requireNonNull(layoutMode, "layoutMode must not be null");
+            return this;
+        }
+
+        @Override
+        public BeanBuilder<T> responsiveSteps(Consumer<FormResponsiveStepBuilder> config) {
+            this.responsiveStepsConfig = config;
+            return this;
+        }
+
+        @Override
+        public BeanBuilder<T> stretchLastRow(boolean stretchLastRow) {
+            this.stretchLastRow = stretchLastRow;
+            return this;
+        }
+
+        @Override
+        public BeanBuilder<T> autoRequiredIndicators(boolean autoRequiredIndicators) {
+            this.autoRequiredIndicators = autoRequiredIndicators;
+            return this;
+        }
+
+        @Override
+        public BeanBuilder<T> properties(String... fieldNames) {
+            this.propertyNames = fieldNames;
+            return this;
+        }
+
+        @Override
+        public <C extends Component> BeanBuilder<T> withPostProcessor(TriConsumer<C, Property<?>, Input<?>> postProcessor) {
+            this.postProcessors.add(adaptPostProcessor(postProcessor));
             return this;
         }
 
@@ -555,7 +1150,50 @@ public class EntityFormPanel<T> extends Div {
                         "EntityFormPanel: clearButton(config) is mandatory — call clearButton(...)");
             }
 
-            // Build the BeanPropertyInputForm with default ENTER navigation enabled.
+                if (layoutMode == LayoutMode.GRID) {
+                Div content = new Div();
+                content.addClassNames("entity-form-panel__grid", "grid", "grid-cols-12", "gap-m");
+
+                BeanPropertyInputFormBuilder<Div, T> beanFormBuilder =
+                    new com.holonplatform.vaadin.flow.internal.components.DefaultBeanPropertyInputForm.DefaultBuilder<>(content, beanClass)
+                        .configure(fb -> fb
+                            .enterMovesFocusToNext(true)
+                            .validateOnEnterFocusMove(true)
+                            .validateOnValueChange(true));
+
+                if (propertyNames != null) {
+                    beanFormBuilder.properties(propertyNames);
+                }
+
+                final List<FormLayout.ResponsiveStep> responsiveSteps = buildResponsiveSteps(responsiveStepsConfig);
+
+                if (formConfig != null) {
+                    (formConfig).accept(beanFormBuilder);
+                }
+
+                if (initializer != null) {
+                    initializer.accept(content);
+                }
+
+                BeanPropertyInputForm<T> beanForm = beanFormBuilder.build();
+
+                EntityFormPanel<T> panel = new EntityFormPanel<>(
+                    beanForm,
+                    beanForm::getBean,
+                    makeButton(saveBtnConfig), saveAction,
+                    saveAndNewBtnConfig != null ? makeButton(saveAndNewBtnConfig) : null, saveAndNewAction,
+                    makeButton(clearBtnConfig),
+                    cancelBtnConfig != null ? makeButton(cancelBtnConfig) : null, cancelAction,
+                    LayoutMode.GRID,
+                    stretchLastRow,
+                    responsiveSteps,
+                    postProcessors
+                );
+                panel.setAutoRequiredIndicators(autoRequiredIndicators);
+                return panel;
+                }
+
+                // Build the BeanPropertyInputForm with default ENTER navigation enabled.
             BeanPropertyInputFormBuilder<FormLayout, T> beanFormBuilder =
                     BeanPropertyInputForm.formLayout(beanClass)
                             .configure(fb -> fb
@@ -563,9 +1201,26 @@ public class EntityFormPanel<T> extends Div {
                                     .validateOnEnterFocusMove(true)  // stay on invalid field
                                     .validateOnValueChange(true));   // inline errors while typing
 
+            if (propertyNames != null) {
+                beanFormBuilder.properties(propertyNames);
+            }
+
             // Developer config is applied after defaults so it can selectively override.
             if (formConfig != null) {
                 formConfig.accept(beanFormBuilder);
+            }
+
+            Consumer<FormLayout> layoutInitializer = initializer != null ? layout -> initializer.accept(layout) : null;
+            if (responsiveStepsConfig != null) {
+                FormResponsiveStepBuilder responsiveStepsBuilder = FormResponsiveStepBuilder.create();
+                responsiveStepsConfig.accept(responsiveStepsBuilder);
+                Consumer<FormLayout> responsiveInitializer = layout -> layout.setResponsiveSteps(responsiveStepsBuilder.build());
+                layoutInitializer = (layoutInitializer == null) ? responsiveInitializer : layoutInitializer.andThen(responsiveInitializer);
+            }
+
+            Consumer<FormLayout> finalLayoutInitializer = layoutInitializer;
+            if (finalLayoutInitializer != null) {
+                beanFormBuilder.configure(fb -> fb.initializer(finalLayoutInitializer));
             }
 
             BeanPropertyInputForm<T> beanForm = beanFormBuilder.build();
@@ -573,14 +1228,334 @@ public class EntityFormPanel<T> extends Div {
             // Value supplier: validate and return bean.
             FormValueSupplier<T> valueSupplier = beanForm::getBean;
 
-            return new EntityFormPanel<>(
+            EntityFormPanel<T> panel = new EntityFormPanel<>(
                     beanForm,
                     valueSupplier,
                     makeButton(saveBtnConfig), saveAction,
                     saveAndNewBtnConfig != null ? makeButton(saveAndNewBtnConfig) : null, saveAndNewAction,
                     makeButton(clearBtnConfig),
-                    cancelBtnConfig != null ? makeButton(cancelBtnConfig) : null, cancelAction
+                    cancelBtnConfig != null ? makeButton(cancelBtnConfig) : null, cancelAction,
+                    LayoutMode.FORM,
+                    stretchLastRow,
+                    List.of(),
+                    postProcessors
             );
+            panel.setAutoRequiredIndicators(autoRequiredIndicators);
+            return panel;
+        }
+    }
+
+    // -----------------------------------------------------------------------
+    // Internal: DefaultDivBeanBuilder
+    // -----------------------------------------------------------------------
+
+    private static final class DefaultDivBeanBuilder<T> implements DivBeanBuilder<T> {
+
+        private final Class<T> beanClass;
+
+        private String[] propertyNames;
+
+        private Consumer<BeanPropertyInputFormBuilder<Div, T>> formConfig;
+        private Consumer<Div> initializer;
+        private Consumer<FormResponsiveStepBuilder> responsiveStepsConfig;
+        private boolean stretchLastRow;
+        private boolean autoRequiredIndicators;
+
+        private final List<TriConsumer<Component, Property<?>, Input<?>>> postProcessors = new ArrayList<>();
+
+        private Consumer<ButtonConfigurator.BaseButtonConfigurator> saveBtnConfig;
+        private Consumer<T> saveAction;
+
+        private Consumer<ButtonConfigurator.BaseButtonConfigurator> saveAndNewBtnConfig;
+        private Consumer<T> saveAndNewAction;
+
+        private Consumer<ButtonConfigurator.BaseButtonConfigurator> clearBtnConfig;
+
+        private Consumer<ButtonConfigurator.BaseButtonConfigurator> cancelBtnConfig;
+        private Runnable cancelAction;
+
+        DefaultDivBeanBuilder(Class<T> beanClass) {
+            this.beanClass = beanClass;
+        }
+
+        @Override
+        public DivBeanBuilder<T> configure(Consumer<BeanPropertyInputFormBuilder<Div, T>> config) {
+            this.formConfig = config;
+            return this;
+        }
+
+        @Override
+        public DivBeanBuilder<T> initializer(Consumer<Div> initializer) {
+            this.initializer = initializer;
+            return this;
+        }
+
+        @Override
+        public DivBeanBuilder<T> responsiveSteps(Consumer<FormResponsiveStepBuilder> config) {
+            this.responsiveStepsConfig = config;
+            return this;
+        }
+
+        @Override
+        public DivBeanBuilder<T> stretchLastRow(boolean stretchLastRow) {
+            this.stretchLastRow = stretchLastRow;
+            return this;
+        }
+
+        @Override
+        public DivBeanBuilder<T> autoRequiredIndicators(boolean autoRequiredIndicators) {
+            this.autoRequiredIndicators = autoRequiredIndicators;
+            return this;
+        }
+
+        @Override
+        public DivBeanBuilder<T> properties(String... fieldNames) {
+            this.propertyNames = fieldNames;
+            return this;
+        }
+
+        @Override
+        public DivBeanBuilder<T> withPostProcessor(TriConsumer<Div, Property<?>, Input<?>> postProcessor) {
+            this.postProcessors.add(adaptPostProcessor(postProcessor));
+            return this;
+        }
+
+        @Override
+        public DivBeanBuilder<T> saveButton(Consumer<ButtonConfigurator.BaseButtonConfigurator> config,
+                                            Consumer<T> onSave) {
+            this.saveBtnConfig = config;
+            this.saveAction = onSave;
+            return this;
+        }
+
+        @Override
+        public DivBeanBuilder<T> saveAndNewButton(Consumer<ButtonConfigurator.BaseButtonConfigurator> config,
+                                                  Consumer<T> onSaveAndNew) {
+            this.saveAndNewBtnConfig = config;
+            this.saveAndNewAction = onSaveAndNew;
+            return this;
+        }
+
+        @Override
+        public DivBeanBuilder<T> clearButton(Consumer<ButtonConfigurator.BaseButtonConfigurator> config) {
+            this.clearBtnConfig = config;
+            return this;
+        }
+
+        @Override
+        public DivBeanBuilder<T> cancelButton(Consumer<ButtonConfigurator.BaseButtonConfigurator> config,
+                                              Runnable onCancel) {
+            this.cancelBtnConfig = config;
+            this.cancelAction = onCancel;
+            return this;
+        }
+
+        @Override
+        public EntityFormPanel<T> build() {
+            if (saveBtnConfig == null || saveAction == null) {
+                throw new IllegalStateException(
+                        "EntityFormPanel: saveButton(config, action) is mandatory — call saveButton(...)");
+            }
+            if (clearBtnConfig == null) {
+                throw new IllegalStateException(
+                        "EntityFormPanel: clearButton(config) is mandatory — call clearButton(...)");
+            }
+
+            Div content = new Div();
+            content.addClassNames("entity-form-panel__grid", "grid", "grid-cols-12", "gap-m");
+
+            BeanPropertyInputFormBuilder<Div, T> beanFormBuilder =
+                    new com.holonplatform.vaadin.flow.internal.components.DefaultBeanPropertyInputForm.DefaultBuilder<>(content, beanClass)
+                            .configure(fb -> fb
+                                    .enterMovesFocusToNext(true)
+                                    .validateOnEnterFocusMove(true)
+                                    .validateOnValueChange(true));
+
+            if (propertyNames != null) {
+                beanFormBuilder.properties(propertyNames);
+            }
+
+            if (formConfig != null) {
+                formConfig.accept(beanFormBuilder);
+            }
+
+            if (initializer != null) {
+                beanFormBuilder.configure(fb -> fb.initializer(layout -> {
+                    layout.addClassNames("entity-form-panel__grid", "grid", "grid-cols-12", "gap-m");
+                    initializer.accept(layout);
+                }));
+            }
+
+            final List<FormLayout.ResponsiveStep> responsiveSteps = buildResponsiveSteps(responsiveStepsConfig);
+
+            BeanPropertyInputForm<T> beanForm = beanFormBuilder.build();
+
+            EntityFormPanel<T> panel = new EntityFormPanel<>(
+                    beanForm,
+                    beanForm::getBean,
+                    makeButton(saveBtnConfig), saveAction,
+                    saveAndNewBtnConfig != null ? makeButton(saveAndNewBtnConfig) : null, saveAndNewAction,
+                    makeButton(clearBtnConfig),
+                    cancelBtnConfig != null ? makeButton(cancelBtnConfig) : null, cancelAction,
+                        LayoutMode.GRID,
+                    stretchLastRow,
+                    responsiveSteps,
+                    postProcessors
+            );
+            panel.setAutoRequiredIndicators(autoRequiredIndicators);
+            return panel;
+        }
+    }
+
+    // -----------------------------------------------------------------------
+    // Internal: DefaultDivPropertyBuilder
+    // -----------------------------------------------------------------------
+
+    private static final class DefaultDivPropertyBuilder implements DivPropertyBuilder {
+
+        private final PropertySet<?> propertySet;
+
+        private Consumer<PropertyInputFormBuilder<Div>> formConfig;
+        private Consumer<Div> initializer;
+        private Consumer<FormResponsiveStepBuilder> responsiveStepsConfig;
+        private boolean stretchLastRow;
+        private boolean autoRequiredIndicators;
+
+        private final List<TriConsumer<Component, Property<?>, Input<?>>> postProcessors = new ArrayList<>();
+
+        private Consumer<ButtonConfigurator.BaseButtonConfigurator> saveBtnConfig;
+        private Consumer<PropertyBox> saveAction;
+
+        private Consumer<ButtonConfigurator.BaseButtonConfigurator> saveAndNewBtnConfig;
+        private Consumer<PropertyBox> saveAndNewAction;
+
+        private Consumer<ButtonConfigurator.BaseButtonConfigurator> clearBtnConfig;
+
+        private Consumer<ButtonConfigurator.BaseButtonConfigurator> cancelBtnConfig;
+        private Runnable cancelAction;
+
+        DefaultDivPropertyBuilder(PropertySet<?> propertySet) {
+            this.propertySet = propertySet;
+        }
+
+        @Override
+        public DivPropertyBuilder configure(Consumer<PropertyInputFormBuilder<Div>> config) {
+            this.formConfig = config;
+            return this;
+        }
+
+        @Override
+        public DivPropertyBuilder initializer(Consumer<Div> initializer) {
+            this.initializer = initializer;
+            return this;
+        }
+
+        @Override
+        public DivPropertyBuilder responsiveSteps(Consumer<FormResponsiveStepBuilder> config) {
+            this.responsiveStepsConfig = config;
+            return this;
+        }
+
+        @Override
+        public DivPropertyBuilder stretchLastRow(boolean stretchLastRow) {
+            this.stretchLastRow = stretchLastRow;
+            return this;
+        }
+
+        @Override
+        public DivPropertyBuilder autoRequiredIndicators(boolean autoRequiredIndicators) {
+            this.autoRequiredIndicators = autoRequiredIndicators;
+            return this;
+        }
+
+        @Override
+        public DivPropertyBuilder withPostProcessor(TriConsumer<Div, Property<?>, Input<?>> postProcessor) {
+            this.postProcessors.add(adaptPostProcessor(postProcessor));
+            return this;
+        }
+
+        @Override
+        public DivPropertyBuilder saveButton(Consumer<ButtonConfigurator.BaseButtonConfigurator> config,
+                                             Consumer<PropertyBox> onSave) {
+            this.saveBtnConfig = config;
+            this.saveAction = onSave;
+            return this;
+        }
+
+        @Override
+        public DivPropertyBuilder saveAndNewButton(Consumer<ButtonConfigurator.BaseButtonConfigurator> config,
+                                                 Consumer<PropertyBox> onSaveAndNew) {
+            this.saveAndNewBtnConfig = config;
+            this.saveAndNewAction = onSaveAndNew;
+            return this;
+        }
+
+        @Override
+        public DivPropertyBuilder clearButton(Consumer<ButtonConfigurator.BaseButtonConfigurator> config) {
+            this.clearBtnConfig = config;
+            return this;
+        }
+
+        @Override
+        public DivPropertyBuilder cancelButton(Consumer<ButtonConfigurator.BaseButtonConfigurator> config,
+                                               Runnable onCancel) {
+            this.cancelBtnConfig = config;
+            this.cancelAction = onCancel;
+            return this;
+        }
+
+        @Override
+        public EntityFormPanel<PropertyBox> build() {
+            if (saveBtnConfig == null || saveAction == null) {
+                throw new IllegalStateException(
+                        "EntityFormPanel: saveButton(config, action) is mandatory — call saveButton(...)");
+            }
+            if (clearBtnConfig == null) {
+                throw new IllegalStateException(
+                        "EntityFormPanel: clearButton(config) is mandatory — call clearButton(...)");
+            }
+
+            final Property<?>[] properties = propertySet.stream().toArray(Property[]::new);
+
+            Div content = new Div();
+            content.addClassNames("entity-form-panel__grid", "grid", "grid-cols-12", "gap-m");
+
+            PropertyInputFormBuilder<Div> formBuilder =
+                    PropertyInputForm.builder(content, properties)
+                            .composer(com.holonplatform.vaadin.flow.components.Composable.componentContainerComposer())
+                            .enterMovesFocusToNext(true)
+                            .validateOnEnterFocusMove(true)
+                            .validateOnValueChange(true);
+
+            if (formConfig != null) {
+                formConfig.accept(formBuilder);
+            }
+
+            if (initializer != null) {
+                formBuilder.initializer(layout -> {
+                    layout.addClassNames("entity-form-panel__grid", "grid", "grid-cols-12", "gap-m");
+                    initializer.accept(layout);
+                });
+            }
+
+            final List<FormLayout.ResponsiveStep> responsiveSteps = buildResponsiveSteps(responsiveStepsConfig);
+
+            PropertyInputForm propertyForm = formBuilder.build();
+
+            EntityFormPanel<PropertyBox> panel = new EntityFormPanel<>(
+                    propertyForm,
+                    propertyForm::getValue,
+                    makeButton(saveBtnConfig), saveAction,
+                    saveAndNewBtnConfig != null ? makeButton(saveAndNewBtnConfig) : null, saveAndNewAction,
+                    makeButton(clearBtnConfig),
+                    cancelBtnConfig != null ? makeButton(cancelBtnConfig) : null, cancelAction,
+                        LayoutMode.GRID,
+                    stretchLastRow,
+                    responsiveSteps,
+                    postProcessors
+            );
+            panel.setAutoRequiredIndicators(autoRequiredIndicators);
+            return panel;
         }
     }
 
@@ -592,7 +1567,15 @@ public class EntityFormPanel<T> extends Div {
 
         private final PropertySet<?> propertySet;
 
-        private Consumer<PropertyInputFormBuilder<FormLayout>> formConfig;
+        @SuppressWarnings("rawtypes")
+        private Consumer formConfig;
+        private Consumer<Component> initializer;
+        private Consumer<FormResponsiveStepBuilder> responsiveStepsConfig;
+        private boolean stretchLastRow;
+        private boolean autoRequiredIndicators;
+        private LayoutMode layoutMode = LayoutMode.FORM;
+
+        private final List<TriConsumer<Component, Property<?>, Input<?>>> postProcessors = new ArrayList<>();
 
         private Consumer<ButtonConfigurator.BaseButtonConfigurator> saveBtnConfig;
         private Consumer<PropertyBox> saveAction;
@@ -610,8 +1593,46 @@ public class EntityFormPanel<T> extends Div {
         }
 
         @Override
-        public PropertyBuilder configure(Consumer<PropertyInputFormBuilder<FormLayout>> config) {
-            this.formConfig = config;
+        @SuppressWarnings({"rawtypes", "unchecked"})
+        public <C extends Component> PropertyBuilder configure(Consumer<PropertyInputFormBuilder<C>> config) {
+            this.formConfig = (Consumer) config;
+            return this;
+        }
+
+        @Override
+        @SuppressWarnings("unchecked")
+        public <C extends Component> PropertyBuilder initializer(Consumer<C> initializer) {
+            this.initializer = (Consumer<Component>) initializer;
+            return this;
+        }
+
+        @Override
+        public PropertyBuilder layout(LayoutMode layoutMode) {
+            this.layoutMode = Objects.requireNonNull(layoutMode, "layoutMode must not be null");
+            return this;
+        }
+
+        @Override
+        public PropertyBuilder responsiveSteps(Consumer<FormResponsiveStepBuilder> config) {
+            this.responsiveStepsConfig = config;
+            return this;
+        }
+
+        @Override
+        public PropertyBuilder stretchLastRow(boolean stretchLastRow) {
+            this.stretchLastRow = stretchLastRow;
+            return this;
+        }
+
+        @Override
+        public PropertyBuilder autoRequiredIndicators(boolean autoRequiredIndicators) {
+            this.autoRequiredIndicators = autoRequiredIndicators;
+            return this;
+        }
+
+        @Override
+        public <C extends Component> PropertyBuilder withPostProcessor(TriConsumer<C, Property<?>, Input<?>> postProcessor) {
+            this.postProcessors.add(adaptPostProcessor(postProcessor));
             return this;
         }
 
@@ -656,6 +1677,45 @@ public class EntityFormPanel<T> extends Div {
                         "EntityFormPanel: clearButton(config) is mandatory — call clearButton(...)");
             }
 
+            if (layoutMode == LayoutMode.GRID) {
+                Div content = new Div();
+                content.addClassNames("entity-form-panel__grid", "grid", "grid-cols-12", "gap-m");
+
+                PropertyInputFormBuilder<Div> formBuilder =
+                    PropertyInputForm.builder(content, propertySet.stream().toArray(Property[]::new))
+                        .composer(com.holonplatform.vaadin.flow.components.Composable.componentContainerComposer())
+                        .enterMovesFocusToNext(true)
+                        .validateOnEnterFocusMove(true)
+                        .validateOnValueChange(true);
+
+                if (formConfig != null) {
+                    formConfig.accept(formBuilder);
+                }
+
+                if (initializer != null) {
+                    initializer.accept(content);
+                }
+
+                final List<FormLayout.ResponsiveStep> responsiveSteps = buildResponsiveSteps(responsiveStepsConfig);
+
+                PropertyInputForm propertyForm = formBuilder.build();
+
+                EntityFormPanel<PropertyBox> panel = new EntityFormPanel<>(
+                    propertyForm,
+                    propertyForm::getValue,
+                    makeButton(saveBtnConfig), saveAction,
+                    saveAndNewBtnConfig != null ? makeButton(saveAndNewBtnConfig) : null, saveAndNewAction,
+                    makeButton(clearBtnConfig),
+                    cancelBtnConfig != null ? makeButton(cancelBtnConfig) : null, cancelAction,
+                    LayoutMode.GRID,
+                    stretchLastRow,
+                    responsiveSteps,
+                    postProcessors
+                );
+                panel.setAutoRequiredIndicators(autoRequiredIndicators);
+                return panel;
+            }
+
             // Build the PropertyInputForm with default ENTER navigation enabled.
             PropertyInputFormBuilder<FormLayout> formBuilder =
                     PropertyInputForm.formLayout(propertySet)
@@ -667,22 +1727,38 @@ public class EntityFormPanel<T> extends Div {
                 formConfig.accept(formBuilder);
             }
 
+            Consumer<FormLayout> layoutInitializer = initializer != null ? layout -> initializer.accept(layout) : null;
+            if (responsiveStepsConfig != null) {
+                FormResponsiveStepBuilder responsiveStepsBuilder = FormResponsiveStepBuilder.create();
+                responsiveStepsConfig.accept(responsiveStepsBuilder);
+                Consumer<FormLayout> responsiveInitializer = layout -> layout.setResponsiveSteps(responsiveStepsBuilder.build());
+                layoutInitializer = (layoutInitializer == null) ? responsiveInitializer : layoutInitializer.andThen(responsiveInitializer);
+            }
+
+            Consumer<FormLayout> finalLayoutInitializer = layoutInitializer;
+            if (finalLayoutInitializer != null) {
+                formBuilder.initializer(finalLayoutInitializer);
+            }
+
             PropertyInputForm propertyForm = formBuilder.build();
 
-            // Value supplier: validate all inputs, then return the PropertyBox.
-            FormValueSupplier<PropertyBox> valueSupplier = () -> {
-                propertyForm.validate();           // throws ValidationException if invalid
-                return propertyForm.getValue(false); // no re-validation
-            };
+            // Value supplier: inherit validation from the underlying PropertyInputForm.
+            FormValueSupplier<PropertyBox> valueSupplier = propertyForm::getValue;
 
-            return new EntityFormPanel<>(
+            EntityFormPanel<PropertyBox> panel = new EntityFormPanel<>(
                     propertyForm,
                     valueSupplier,
                     makeButton(saveBtnConfig), saveAction,
                     saveAndNewBtnConfig != null ? makeButton(saveAndNewBtnConfig) : null, saveAndNewAction,
                     makeButton(clearBtnConfig),
-                    cancelBtnConfig != null ? makeButton(cancelBtnConfig) : null, cancelAction
+                    cancelBtnConfig != null ? makeButton(cancelBtnConfig) : null, cancelAction,
+                    LayoutMode.FORM,
+                    stretchLastRow,
+                    List.of(),
+                    postProcessors
             );
+            panel.setAutoRequiredIndicators(autoRequiredIndicators);
+            return panel;
         }
     }
 }

@@ -79,7 +79,10 @@ public class DefaultBeanPropertyInputForm<T> implements BeanPropertyInputForm<T>
 
     @Override
     public void setBean(T bean) {
-        ObjectUtils.argumentNotNull(bean, "Bean instance must be not null");
+        if (bean == null) {
+            delegate.setValue(null, false);
+            return;
+        }
         PropertyBox box = PropertyBox.builder(beanPropertySet).build();
         beanPropertySet.read(box, bean);
         // Populate only the properties present in the delegate form
@@ -196,6 +199,16 @@ public class DefaultBeanPropertyInputForm<T> implements BeanPropertyInputForm<T>
     }
 
     @Override
+    public void setAutoRequiredIndicators(boolean autoRequiredIndicators) {
+        delegate.setAutoRequiredIndicators(autoRequiredIndicators);
+    }
+
+    @Override
+    public boolean isAutoRequiredIndicators() {
+        return delegate.isAutoRequiredIndicators();
+    }
+
+    @Override
     public PropertyBox getEmptyValue() {
         return delegate.getEmptyValue();
     }
@@ -242,6 +255,9 @@ public class DefaultBeanPropertyInputForm<T> implements BeanPropertyInputForm<T>
         /** Additional configuration applied to the PropertyInputFormBuilder at build time. */
         private final List<Consumer<PropertyInputFormBuilder<C>>> extraConfigs = new ArrayList<>();
 
+        /** Explicit bean field order requested by the caller. */
+        private final List<String> explicitFieldOrder = new ArrayList<>();
+
         /**
          * Constructor.
          *
@@ -282,14 +298,20 @@ public class DefaultBeanPropertyInputForm<T> implements BeanPropertyInputForm<T>
         }
 
         @Override
+        public BeanPropertyInputFormBuilder<C, T> properties(String... fieldNames) {
+            ObjectUtils.argumentNotNull(fieldNames, "Field names must be not null");
+            explicitFieldOrder.clear();
+            Collections.addAll(explicitFieldOrder, fieldNames);
+            return this;
+        }
+
+        @Override
         public Optional<PathProperty<?>> property(String fieldName) {
             ObjectUtils.argumentNotNull(fieldName, "Field name must be not null");
             if (excludedFields.contains(fieldName)) {
                 return Optional.empty();
             }
-            return beanPropertySet.getProperty(fieldName)
-                    .filter(this::isIncludedProperty)
-                    .map(p -> (PathProperty<?>) p);
+            return asPathProperty(fieldName);
         }
 
         @Override
@@ -300,31 +322,44 @@ public class DefaultBeanPropertyInputForm<T> implements BeanPropertyInputForm<T>
         }
 
         @Override
-        @SuppressWarnings({"unchecked", "rawtypes"})
+        @SuppressWarnings({"rawtypes", "unchecked"})
         public BeanPropertyInputForm<T> build() {
 
             // 1. Build the filtered, ordered list of PathProperties.
-            //    We preserve BeanPropertySet declaration order and apply @Sequence explicitly,
-            //    so all com.holonplatform.core.beans metadata is consistently respected.
+            //    If the caller supplied an explicit field order, honor it exactly.
+            //    Otherwise preserve BeanPropertySet declaration order and apply @Sequence.
             List<PathProperty<?>> orderedProperties = new ArrayList<>();
-            Map<String, Integer> declarationOrder = new HashMap<>();
-            int idx = 0;
-            for (PathProperty<?> property : beanPropertySet) {
-                declarationOrder.put(property.relativeName(), idx++);
-                if (isIncludedProperty(property)) {
+            if (!explicitFieldOrder.isEmpty()) {
+                Set<String> seen = new HashSet<>();
+                for (String fieldName : explicitFieldOrder) {
+                    if (!seen.add(fieldName)) {
+                        throw new IllegalArgumentException("Duplicate bean field name in explicit order: " + fieldName);
+                    }
+                    PathProperty<?> property = property(fieldName)
+                            .orElseThrow(() -> new IllegalArgumentException(
+                                    "Unknown or excluded bean field in explicit order: " + fieldName));
                     orderedProperties.add(property);
                 }
-            }
-
-            orderedProperties.sort((left, right) -> {
-                int cmp = Integer.compare(sequenceOrder(left), sequenceOrder(right));
-                if (cmp != 0) {
-                    return cmp;
+            } else {
+                Map<String, Integer> declarationOrder = new HashMap<>();
+                int idx = 0;
+                for (PathProperty<?> property : beanPropertySet) {
+                    declarationOrder.put(property.relativeName(), idx++);
+                    if (isIncludedProperty(property)) {
+                        orderedProperties.add(property);
+                    }
                 }
-                return Integer.compare(
-                        declarationOrder.getOrDefault(left.relativeName(), Integer.MAX_VALUE),
-                        declarationOrder.getOrDefault(right.relativeName(), Integer.MAX_VALUE));
-            });
+
+                orderedProperties.sort((left, right) -> {
+                    int cmp = Integer.compare(sequenceOrder(left), sequenceOrder(right));
+                    if (cmp != 0) {
+                        return cmp;
+                    }
+                    return Integer.compare(
+                            declarationOrder.getOrDefault(left.relativeName(), Integer.MAX_VALUE),
+                            declarationOrder.getOrDefault(right.relativeName(), Integer.MAX_VALUE));
+                });
+            }
 
             // 3. Create the standard PropertyInputFormBuilder with the filtered set.
             //    The Composable.Composer raw cast is intentional – componentContainerComposer()
@@ -337,19 +372,16 @@ public class DefaultBeanPropertyInputForm<T> implements BeanPropertyInputForm<T>
 
             // 4. Apply annotation-driven configuration.
             for (PathProperty<?> prop : orderedProperties) {
-                BeanProperty<?> beanProperty = asBeanProperty(prop).orElse(null);
-                if (beanProperty != null) {
-                    applyCaptionAnnotation(fb, beanProperty, prop);
-                }
+                asBeanProperty(prop).ifPresent(beanProperty -> applyCaptionAnnotation(fb, beanProperty, prop));
                 if (isAutoHidden(prop)) {
-                    fb.hidden((Property) prop);
+                    fb.hidden(prop);
                 }
             }
 
             // 5. Apply read-only fields.
             for (PathProperty<?> prop : orderedProperties) {
                 if (readOnlyFields.contains(prop.relativeName())) {
-                    fb.readOnly((Property) prop);
+                    fb.readOnly(prop);
                 }
             }
 
@@ -366,6 +398,12 @@ public class DefaultBeanPropertyInputForm<T> implements BeanPropertyInputForm<T>
         // -----------------------------------------------------------------------
         // Helpers
         // -----------------------------------------------------------------------
+
+        @SuppressWarnings("unchecked")
+        private Optional<PathProperty<?>> asPathProperty(String fieldName) {
+            return (Optional<PathProperty<?>>) (Optional<?>) beanPropertySet.getProperty(fieldName)
+                    .filter(this::isIncludedProperty);
+        }
 
         private Optional<BeanProperty<?>> asBeanProperty(PathProperty<?> property) {
             if (property instanceof BeanProperty<?> beanProperty) {
@@ -395,16 +433,15 @@ public class DefaultBeanPropertyInputForm<T> implements BeanPropertyInputForm<T>
                     .orElse(false);
         }
 
-        @SuppressWarnings("rawtypes")
         private void applyCaptionAnnotation(PropertyInputFormBuilder<C> builder, BeanProperty<?> beanProperty,
                                             PathProperty<?> property) {
             beanProperty.getAnnotation(Caption.class).ifPresent(caption -> {
                 String value = caption.value();
                 String messageCode = caption.messageCode();
                 if (!messageCode.isEmpty()) {
-                    builder.propertyCaption((Property) property, value, messageCode);
+                    builder.propertyCaption(property, value, messageCode);
                 } else if (!value.isEmpty()) {
-                    builder.propertyCaption((Property) property, value);
+                    builder.propertyCaption(property, value);
                 }
             });
         }

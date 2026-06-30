@@ -22,7 +22,6 @@ import com.vaadin.flow.router.AfterNavigationEvent;
 import com.vaadin.flow.router.AfterNavigationObserver;
 import com.vaadin.flow.router.Route;
 
-@SuppressWarnings("serial")
 @Caption(value = "test", messageCode = "test.code")
 @Route("8")
 public class NavigationTarget8 extends Div implements AfterNavigationObserver {

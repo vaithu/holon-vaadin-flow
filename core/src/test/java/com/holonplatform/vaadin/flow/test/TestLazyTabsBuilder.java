@@ -105,8 +105,14 @@ class TestLazyTabsBuilder {
         LazyTabsBuilder builder = LazyTabsBuilder.create()
                 .withContainer(container)
                 .withEagerTab("Y", new Span("Y"));
-        assertSame(container, builder.getContentContainer(),
-                "getContentContainer() should return the Div passed to withContainer(...)");
+        // withContainer() wraps the provided Div in a SyncableContentContainer for
+        // DetailSyncAware relay. getContentContainer() returns that wrapper, which
+        // contains the original Div as a child.
+        assertNotNull(builder.getContentContainer(),
+                "getContentContainer() must return a non-null container");
+        assertTrue(builder.getContentContainer().getChildren()
+                        .anyMatch(c -> c == container),
+                "The wrapper returned by getContentContainer() must contain the original Div");
     }
 
     @Test
@@ -122,7 +128,9 @@ class TestLazyTabsBuilder {
         var children = layout.getChildren().toList();
         assertEquals(2, children.size(), "Wrapper should contain Tabs + content container");
         assertSame(builder.getTabs(), children.get(0));
-        assertSame(container, children.get(1));
+        // Second child is the SyncableContentContainer returned by getContentContainer()
+        assertSame(builder.getContentContainer(), children.get(1),
+                "Second child of buildHorizontal() must be the SyncableContentContainer");
     }
 
     @Test

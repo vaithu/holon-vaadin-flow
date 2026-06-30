@@ -1,5 +1,6 @@
 package com.holonplatform.vaadin.flow.vaadinplus.components;
 
+import com.iyensoft.vaadin.flow.enums.MaterialSymbol;
 import com.vaadin.flow.component.ClickEvent;
 import com.holonplatform.vaadin.flow.components.Components;
 import com.vaadin.flow.component.Component;

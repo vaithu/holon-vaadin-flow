@@ -8,6 +8,8 @@ import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.icon.Icon;
 
+import java.io.Serial;
+
 /**
  * Contextual alert component inspired by shadcn/ui Alert.
  *
@@ -42,6 +44,7 @@ import com.vaadin.flow.component.icon.Icon;
 @StyleSheet("context://alert.css")
 public class Alert extends Div {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     // -----------------------------------------------------------------------
@@ -53,16 +56,58 @@ public class Alert extends Div {
      */
     public enum Variant {
 
-        DEFAULT("alert--default"),
-        DESTRUCTIVE("alert--destructive"),
-        WARNING("alert--warning"),
-        SUCCESS("alert--success"),
-        INFO("alert--info");
+        DEFAULT("default"),
+        DESTRUCTIVE("destructive"),
+        WARNING("warning"),
+        SUCCESS("success"),
+        INFO("info");
 
-        private final String cssClass;
+        private final String cssModifier;
 
-        Variant(String cssClass) {
-            this.cssClass = cssClass;
+        Variant(String cssModifier) {
+            this.cssModifier = cssModifier;
+        }
+
+        /**
+         * Returns the CSS modifier name for this variant.
+         *
+         * @return the modifier name (never null)
+         */
+        public String getCssModifier() {
+            return cssModifier;
+        }
+
+        /**
+         * Returns whether this is the neutral default variant.
+         *
+         * @return true if this is the default variant
+         */
+        public boolean isDefault() {
+            return this == DEFAULT;
+        }
+
+        /**
+         * Returns the CSS class name for the given component prefix.
+         *
+         * @param componentPrefix the component prefix, for example {@code alert}
+         *                        or {@code icon-badge}
+         * @return the full CSS class name (never null)
+         */
+        public String getCssClass(String componentPrefix) {
+            return getCssClass(componentPrefix, "--");
+        }
+
+        /**
+         * Returns the CSS class name for the given component prefix and separator.
+         *
+         * @param componentPrefix the component prefix, for example {@code alert}
+         *                        or {@code avatar--badge}
+         * @param separator the separator between prefix and modifier, for example
+         *                  {@code "--"} or {@code "-"}
+         * @return the full CSS class name (never null)
+         */
+        public String getCssClass(String componentPrefix, String separator) {
+            return componentPrefix + separator + cssModifier;
         }
 
         /**
@@ -71,7 +116,7 @@ public class Alert extends Div {
          * @return the modifier class name (never null)
          */
         public String getCssClass() {
-            return cssClass;
+            return getCssClass("alert");
         }
     }
 

@@ -1,0 +1,118 @@
+# EditorConfig — https://editorconfig.org
+# IntelliJ IDEA respects this file automatically when EditorConfig support is enabled
+# (File → Settings → Editor → Code Style → Enable EditorConfig support)
+root = true
+
+# ── Defaults for all files ─────────────────────────────────────────────────────
+[*]
+charset                  = utf-8
+end_of_line              = lf
+insert_final_newline     = true
+trim_trailing_whitespace = true
+indent_style             = space
+indent_size              = 4
+
+# ── Java ───────────────────────────────────────────────────────────────────────
+[*.java]
+indent_style             = space
+indent_size              = 4
+tab_width                = 4
+max_line_length          = 160
+
+# IntelliJ-specific: continuation indent (e.g. wrapped parameters, chained calls)
+ij_java_continuation_indent_size = 8
+
+# Blank lines
+ij_java_blank_lines_after_class_header            = 0
+ij_java_blank_lines_before_class_end              = 0
+ij_java_blank_lines_around_field                  = 0
+ij_java_blank_lines_around_method                 = 1
+ij_java_blank_lines_around_class                  = 1
+
+# Imports
+ij_java_imports_layout = *,|,javax.**,|,java.**,|,$*
+
+# Braces placement
+ij_java_class_brace_style    = end_of_line
+ij_java_method_brace_style   = end_of_line
+ij_java_other_brace_style    = end_of_line
+
+# Wrapping: method declaration parameters
+ij_java_method_parameters_wrap                       = chop_down_if_long
+ij_java_align_multiline_parameters                   = true
+ij_java_method_parameters_new_line_after_left_paren  = false
+ij_java_method_parameters_right_paren_on_new_line    = false
+
+# Wrapping: method call arguments
+ij_java_call_parameters_wrap                      = chop_down_if_long
+ij_java_align_multiline_parameters_in_calls       = true
+
+# Wrapping: chained method calls
+ij_java_method_call_chain_wrap = chop_down_if_long
+
+# Wrapping: extends/implements list
+ij_java_extends_list_wrap                 = wrap_as_needed
+ij_java_align_multiline_extends_list      = true
+
+# Wrapping: throws list
+ij_java_throws_list_wrap             = wrap_as_needed
+ij_java_align_multiline_throws_list  = true
+
+# Wrapping: ternary operations
+ij_java_ternary_operation_wrap                = chop_down_if_long
+ij_java_align_multiline_ternary_operation     = true
+
+# Wrapping: binary expressions
+ij_java_binary_operation_wrap          = chop_down_if_long
+ij_java_align_multiline_binary_operation = true
+
+# Spacing
+ij_java_space_before_comma  = false
+ij_java_space_after_comma   = true
+ij_java_space_around_assignment_operators = true
+
+# Annotation formatting
+ij_java_annotation_parameter_wrap = chop_down_if_long
+
+# Keep existing single-line methods / lambdas on one line
+ij_java_keep_simple_methods_in_one_line  = true
+ij_java_keep_simple_lambdas_in_one_line  = true
+ij_java_keep_simple_classes_in_one_line  = false
+
+# ── XML / Maven POM ────────────────────────────────────────────────────────────
+[*.xml]
+indent_style = space
+indent_size  = 4
+max_line_length = 200
+
+# ── JSON ───────────────────────────────────────────────────────────────────────
+[*.json]
+indent_style = space
+indent_size  = 2
+
+# ── YAML ───────────────────────────────────────────────────────────────────────
+[*.{yml,yaml}]
+indent_style = space
+indent_size  = 2
+
+# ── TypeScript / JavaScript ────────────────────────────────────────────────────
+[*.{ts,tsx,js,jsx}]
+indent_style = space
+indent_size  = 2
+max_line_length = 120
+
+# ── CSS / SCSS ─────────────────────────────────────────────────────────────────
+[*.{css,scss,less}]
+indent_style = space
+indent_size  = 2
+
+# ── Properties ────────────────────────────────────────────────────────────────
+[*.properties]
+indent_style = space
+indent_size  = 4
+
+# ── Markdown ───────────────────────────────────────────────────────────────────
+[*.md]
+trim_trailing_whitespace = false
+max_line_length          = off
+

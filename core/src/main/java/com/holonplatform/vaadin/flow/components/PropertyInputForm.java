@@ -170,5 +170,13 @@ public interface PropertyInputForm extends PropertyInputGroup, ValueComponent<Pr
 		return builder(HorizontalLayoutBuilder.create().build(), properties)
 				.composer(Composable.componentContainerComposer());
 	}
+	void setAutoRequiredIndicators(boolean autoRequiredIndicators);
+
+	/**
+	 * Get whether automatic required indicators are enabled.
+	 *
+	 * @return whether automatic required indicators are enabled
+	 */
+	boolean isAutoRequiredIndicators();
 
 }

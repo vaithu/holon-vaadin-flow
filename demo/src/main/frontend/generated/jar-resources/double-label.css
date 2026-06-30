@@ -47,10 +47,6 @@
     align-items: flex-start;
 }
 
-.double-label--align-center {
-    align-items: center;
-}
-
 .double-label--grow {
     flex-grow: 1;
     flex-basis: auto;

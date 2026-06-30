@@ -2,9 +2,10 @@ package com.holonplatform.vaadin.flow.components.builders;
 
 import com.holonplatform.vaadin.flow.internal.components.builders.DefaultHeaderConfigurator;
 import com.holonplatform.vaadin.flow.vaadinplus.Layout;
+import com.holonplatform.vaadin.flow.vaadinplus.components.Breadcrumb;
 import com.holonplatform.vaadin.flow.vaadinplus.components.BreadcrumbItem;
 import com.holonplatform.vaadin.flow.vaadinplus.components.Header;
-import com.holonplatform.vaadin.flow.vaadinplus.utilities.HeadingLevel;
+import com.iyensoft.vaadin.flow.enums.HeadingLevel;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.menubar.MenuBar;
 import com.vaadin.flow.component.tabs.Tab;
@@ -38,6 +39,7 @@ public interface HeaderConfigurator<C extends HeaderConfigurator<C>> extends Com
     C hidePrefixOnDesktop(boolean hidePrefixOnDesktop);
 
     C breadcrumb(BreadcrumbItem... items);
+    C breadcrumb(Breadcrumb breadcrumb);
 
     C details(Component... components);
 
@@ -61,6 +63,8 @@ public interface HeaderConfigurator<C extends HeaderConfigurator<C>> extends Com
     C tabs(Tabs tabs);
 
     C withoutBorder();
+
+    C withoutColumnGap();
 
     Layout getColumnLayout();
     Layout getRowLayout();

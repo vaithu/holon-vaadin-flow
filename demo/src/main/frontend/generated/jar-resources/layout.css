@@ -255,9 +255,8 @@
 
 
 /* ============================================================
-   Responsive Display / Visibility
-   ============================================================ */
-.hidden      { display: none; }
+    Responsive Display / Visibility
+    ============================================================ */
 .block       { display: block; }
 .inline      { display: inline; }
 .inline-flex { display: inline-flex; }

@@ -75,6 +75,12 @@ public abstract class AbstractSheetConfigurator<C extends SheetConfigurator<C>>
     }
 
     @Override
+    public C header(com.holonplatform.vaadin.flow.vaadinplus.components.Header header) {
+        getComponent().setHeader(header);
+        return getConfigurator();
+    }
+
+    @Override
     public C description(SheetDescription description) {
         getComponent().setDescription(description);
         return getConfigurator();
@@ -155,6 +161,12 @@ public abstract class AbstractSheetConfigurator<C extends SheetConfigurator<C>>
     @Override
     public C onClose(Runnable onClose) {
         getComponent().setOnClose(onClose);
+        return getConfigurator();
+    }
+
+    @Override
+    public C footer(com.holonplatform.vaadin.flow.vaadinplus.components.Footer footer) {
+        getComponent().setFooter(footer);
         return getConfigurator();
     }
 

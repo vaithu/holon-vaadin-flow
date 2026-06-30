@@ -15,7 +15,6 @@ public class DelegatingSecurityRunnable implements Runnable {
     private final Runnable delegate;
     private final SecurityContext securityContext;
 
-    @SuppressWarnings("null")
     public DelegatingSecurityRunnable(Runnable delegate) {
         this(delegate, SecurityContextHolder.getContext());
     }

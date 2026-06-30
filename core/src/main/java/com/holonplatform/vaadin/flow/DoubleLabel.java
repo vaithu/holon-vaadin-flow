@@ -41,12 +41,10 @@ public class DoubleLabel extends Div {
     /** Aligns both spans to the left (flex-start). */
     public void setAlignLeft() {
         addClassName("double-label--align-left");
-        removeClassName("double-label--align-center");
     }
 
     /** Aligns both spans to the centre (default). */
     public void setAlignCenter() {
-        addClassName("double-label--align-center");
         removeClassName("double-label--align-left");
     }
 

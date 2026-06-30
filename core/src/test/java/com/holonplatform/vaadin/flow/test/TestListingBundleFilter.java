@@ -30,6 +30,7 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
+import java.lang.reflect.Field;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -88,8 +89,35 @@ class TestListingBundleFilter extends AbstractSessionTest {
                 .fetch((q, text, filter, sort) -> Stream.empty())
                 .build();
 
-        assertNotNull(bundle.filterPanel(),
-                "filterPanel() must not be null when withFilterPanel() was called");
+        assertTrue(bundle.getFilterPanelOptional().isPresent(),
+                "filter panel must be present when withFilterPanel() was called");
+    }
+
+    @Test
+    void withFilterPanel_usesConfiguredVisibleColumns() {
+        var bundle = Components.listing(Product.class)
+                .columns("name", "price")
+                .withFilterPanel()
+                .fetch((q, text, filter, sort) -> Stream.empty())
+                .build();
+
+        var panel = bundle.getFilterPanelOptional().orElseThrow();
+        assertEquals(List.of("name", "price"), filterPanelPropertyNames(panel),
+                "advanced search must only include the configured visible columns");
+    }
+
+    @Test
+    void withFilterPanel_excludesHiddenColumns() {
+        var bundle = Components.listing(Product.class)
+                .columns("name", "price", "category")
+                .hidden("price")
+                .withFilterPanel()
+                .fetch((q, text, filter, sort) -> Stream.empty())
+                .build();
+
+        var panel = bundle.getFilterPanelOptional().orElseThrow();
+        assertEquals(List.of("name", "category"), filterPanelPropertyNames(panel),
+                "advanced search must not include hidden columns");
     }
 
     @Test
@@ -98,8 +126,8 @@ class TestListingBundleFilter extends AbstractSessionTest {
                 .fetch((q, text, sort) -> Stream.empty())
                 .build();
 
-        assertNull(bundle.filterPanel(),
-                "filterPanel() must be null when withFilterPanel() was NOT called");
+        assertTrue(bundle.getFilterPanelOptional().isEmpty(),
+                "filter panel must be absent when withFilterPanel() was NOT called");
     }
 
     // ────────────────────────────────────────────────────────────────────────
@@ -147,7 +175,7 @@ class TestListingBundleFilter extends AbstractSessionTest {
                 })
                 .build();
 
-        DynamicFilterPanel<Product> filterPanel = bundle.filterPanel();
+        DynamicFilterPanel<Product> filterPanel = bundle.getFilterPanelOptional().orElseThrow();
         assertNotNull(filterPanel, "filter panel must be present");
 
         // Before any filter: getQueryFilter() must return empty
@@ -199,7 +227,7 @@ class TestListingBundleFilter extends AbstractSessionTest {
                 })
                 .build();
 
-        DynamicFilterPanel<Product> filterPanel = bundle.filterPanel();
+        DynamicFilterPanel<Product> filterPanel = bundle.getFilterPanelOptional().orElseThrow();
 
         // Apply filter programmatically
         QueryFilter nameFilter = QueryFilter.eq(
@@ -233,7 +261,7 @@ class TestListingBundleFilter extends AbstractSessionTest {
                 .fetch((q, text, filter, sort) -> Stream.empty())
                 .build();
 
-        DynamicFilterPanel<Product> panel = bundle.filterPanel();
+        DynamicFilterPanel<Product> panel = bundle.getFilterPanelOptional().orElseThrow();
         panel.applyFilterProgrammatically(
                 QueryFilter.eq(PathProperty.create("name", String.class), "X"));
 
@@ -271,7 +299,7 @@ class TestListingBundleFilter extends AbstractSessionTest {
                 .fetch((q, text, filter, sort) -> Stream.empty())
                 .build();
 
-        DynamicFilterPanel<Product> panel = bundle.filterPanel();
+        DynamicFilterPanel<Product> panel = bundle.getFilterPanelOptional().orElseThrow();
 
         // Use the toolbar Div as the Signal.effect owner (lightweight, no side-effects).
         // The Selector is a child of toolbar; we attach the toolbar to the UI to make
@@ -331,7 +359,7 @@ class TestListingBundleFilter extends AbstractSessionTest {
                 .fetch((q, text, filter, sort) -> Stream.empty())
                 .build();
 
-        DynamicFilterPanel<Product> panel = bundle.filterPanel();
+        DynamicFilterPanel<Product> panel = bundle.getFilterPanelOptional().orElseThrow();
         QueryFilter name     = QueryFilter.eq(PathProperty.create("name",    String.class), "Laptop");
         QueryFilter category = QueryFilter.eq(PathProperty.create("category", String.class), "Electronics");
 
@@ -362,7 +390,7 @@ class TestListingBundleFilter extends AbstractSessionTest {
                 .fetch((q, text, filter, sort) -> Stream.empty())
                 .build();
 
-        DynamicFilterPanel<Product> panel = bundle.filterPanel();
+        DynamicFilterPanel<Product> panel = bundle.getFilterPanelOptional().orElseThrow();
         AtomicInteger fireCount = new AtomicInteger(0);
         panel.addFilterChangeListener(e -> fireCount.incrementAndGet());
 
@@ -391,6 +419,19 @@ class TestListingBundleFilter extends AbstractSessionTest {
 
         assertNotNull(bundle.selector(),
                 "selector must not be null when fetch callback was provided");
+    }
+
+    @SuppressWarnings("unchecked")
+    private static List<String> filterPanelPropertyNames(DynamicFilterPanel<?> panel) {
+        try {
+            Field availableProps = DynamicFilterPanel.class.getDeclaredField("availableProps");
+            availableProps.setAccessible(true);
+            List<DynamicFilterPanel.PropInfo> props = (List<DynamicFilterPanel.PropInfo>) availableProps.get(panel);
+            return props.stream().map(DynamicFilterPanel.PropInfo::name).toList();
+        } catch (ReflectiveOperationException e) {
+            fail("Unable to inspect DynamicFilterPanel properties via reflection", e);
+            return List.of();
+        }
     }
 }
 

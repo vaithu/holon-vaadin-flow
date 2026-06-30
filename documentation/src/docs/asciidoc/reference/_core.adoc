@@ -381,6 +381,21 @@ The `Components` API structure:
 |Builders for grid type components to list data. See <<Listing>>.
 |===
 
+==== Component UX/UI standard
+
+New reusable UI components in this module should follow a small, consistent set of UX rules:
+
+* Prefer semantic components with a single clear role, such as header, footer, panel, dialog, or listing.
+* Prefer slot-based composition for structure: header, content, actions, meta, footer, and similar regions.
+* Keep the Java API declarative and small: create, configure, and compose, but do not hide layout logic in complex builders.
+* Keep all visual styling in external CSS files, and use class names or theme hooks instead of inline style logic.
+* Provide accessible defaults: proper landmarks, meaningful labels, predictable tab order, and keyboard-friendly interactions.
+* Make responsive behavior explicit and conservative: stack on small screens, expand progressively on larger screens, and avoid layout surprises.
+* Use background, border, and emphasis as semantic states, not as ad-hoc styling knobs.
+* Prefer a thin builder/configurator pair for reusable components, with the component itself remaining the source of truth.
+
+When a new component does not clearly improve UX or reduce complexity, it should not be added as a separate standard component.
+
 ==== Component builders structure
 
 Each component builder API is composed by a set of specific builders, each related to a specific feature of the component. The feature builders are independent from the specific UI component to build, thus providing a common API which makes component configuration simple and intuitive.

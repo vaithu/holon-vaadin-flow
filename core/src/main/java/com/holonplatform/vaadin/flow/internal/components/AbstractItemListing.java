@@ -2563,7 +2563,6 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
      *
      * @param <T> Item type
      */
-    @SuppressWarnings("serial")
     static class ItemListingPropertySet<T> implements PropertySet<T> {
 
         private final Map<String, PropertyDefinition<T, ?>> definitions;
@@ -3497,7 +3496,7 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
         @Override
         public C statusColumn(P property, String available) {
 
-            return renderer(property, new ComponentRenderer<>(() -> UIUtils.Icons.createStatusIcon(available)));
+            return renderer(property, new ComponentRenderer<>(() -> UIUtils.Icon.createStatusIcon(available)));
         }
 
         /*

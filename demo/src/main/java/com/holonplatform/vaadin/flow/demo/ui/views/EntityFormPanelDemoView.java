@@ -36,6 +36,9 @@ import java.util.List;
  *   <li>Pre-populated form — editing an existing entity via {@code setBean()}</li>
  *   <li>{@code configure()} — exclude fields, read-only fields, custom validators</li>
  *   <li>PropertySet mode — form driven by {@link PropertySet}</li>
+ *   <li>Stretch last row — incomplete final rows expand to full width</li>
+ *   <li>Div grid mode — responsive CSS grid using {@code responsiveSteps()}</li>
+ *   <li>Div grid mode — compare {@code stretchLastRow(true)} vs {@code false}</li>
  *   <li>Cancel in Dialog — EntityFormPanel inside a {@link Dialog}</li>
  *   <li>Components API — using {@code Components.entityFormPanel()} shortcut</li>
  * </ol>
@@ -60,6 +63,7 @@ public class EntityFormPanelDemoView extends Div {
         private String lastName;
         private String department;
         private String email;
+        private String notes;
 
         public Employee() {}
 
@@ -78,6 +82,8 @@ public class EntityFormPanelDemoView extends Div {
         public void   setDepartment(String v)  { this.department = v; }
         public String getEmail()               { return email; }
         public void   setEmail(String v)       { this.email = v; }
+        public String getNotes()               { return notes; }
+        public void   setNotes(String v)       { this.notes = v; }
     }
 
     // ── Bean 2: annotated product with validators ─────────────────────────────
@@ -169,6 +175,8 @@ public class EntityFormPanelDemoView extends Div {
                 editExistingEntityExample(),
                 configureExample(),
                 propertySetModeExample(),
+            divGridThreeColumnsExample(),
+            divGridTwoColumnsExample(),
                 inDialogExample(),
                 componentsApiExample()
         ).build();
@@ -463,7 +471,122 @@ public class EntityFormPanelDemoView extends Div {
     }
 
     // ─────────────────────────────────────────────────────────────────────────
-    // Example 7 — EntityFormPanel inside a Dialog (Cancel closes the dialog)
+    // Example 7 — Div grid mode: 5 fields, desktop(3), stretchLastRow(true)
+    // ─────────────────────────────────────────────────────────────────────────
+
+    private DemoExample divGridThreeColumnsExample() {
+        var result = resultSpan();
+
+        var panel = EntityFormPanel.<Employee>beanDiv(Employee.class)
+                .properties("firstName", "lastName", "department", "email", "notes")
+                .responsiveSteps(steps -> steps.mobile(1).desktop(3))
+                .stretchLastRow(true)
+            .configure(fb -> {
+                fb.property("firstName").ifPresent(p -> fb.configure(inner -> inner.required(p)));
+                fb.property("firstName").ifPresent(p -> fb.configure(inner -> inner.withValidator((PathProperty<String>) p, Validator.notBlank())));
+                fb.property("lastName").ifPresent(p -> fb.configure(inner -> inner.required(p)));
+                fb.property("lastName").ifPresent(p -> fb.configure(inner -> inner.withValidator((PathProperty<String>) p, Validator.notBlank())));
+                fb.property("email").ifPresent(p -> fb.configure(inner -> inner.required(p)));
+                fb.property("email").ifPresent(p -> fb.configure(inner -> inner.withValidator((PathProperty<String>) p, Validator.notBlank())));
+            })
+                .saveButton(
+                        btn -> btn.primary().text("Save Employee"),
+                        emp -> {
+                            showSuccess("Saved: " + emp.getFirstName());
+                            result.setText("✓ desktop(3) with stretchLastRow(true)");
+                        })
+                .clearButton(btn -> btn.text("Reset"))
+                .build();
+
+        var wrapper = new Div(panel, result);
+        return new DemoExample("7 — Div grid mode (5 fields, desktop(3), stretchLastRow(true))", wrapper, """
+                // Div-backed form: mobile(1), desktop(3)
+                // 5 fields total:
+                // - desktop(3): first row gets 3 fields
+                // - second row gets 2 fields, stretched evenly across the row
+                // - firstName, lastName and email are required, so the built-in red star is shown
+                // - the same fields also validate inline
+
+                EntityFormPanel<Employee> panel = EntityFormPanel.<Employee>beanDiv(Employee.class)
+                    .properties("firstName", "lastName", "department", "email", "notes")
+                    .responsiveSteps(steps -> steps.mobile(1).desktop(3))
+                    .stretchLastRow(true)
+                    .configure(fb -> {
+                        fb.property("firstName").ifPresent(p -> fb.configure(inner -> inner.required(p)));
+                        fb.property("firstName").ifPresent(p -> fb.configure(inner -> inner.withValidator((PathProperty<String>) p, Validator.notBlank())));
+                        fb.property("lastName").ifPresent(p -> fb.configure(inner -> inner.required(p)));
+                        fb.property("lastName").ifPresent(p -> fb.configure(inner -> inner.withValidator((PathProperty<String>) p, Validator.notBlank())));
+                        fb.property("email").ifPresent(p -> fb.configure(inner -> inner.required(p)));
+                        fb.property("email").ifPresent(p -> fb.configure(inner -> inner.withValidator((PathProperty<String>) p, Validator.notBlank())));
+                    })
+                    .saveButton(btn -> btn.primary().text("Save"), emp -> service.save(emp))
+                    .clearButton(btn -> btn.text("Reset"))
+                    .build();
+
+                // Equivalent facade shortcut:
+                Components.<Employee>entityFormPanelDiv(Employee.class)
+                    .properties("firstName", "lastName", "department", "email", "notes")
+                    .responsiveSteps(steps -> steps.mobile(1).desktop(3))
+                    .stretchLastRow(true)
+                    .saveButton(btn -> btn.primary().text("Save"), emp -> service.save(emp))
+                    .clearButton(btn -> btn.text("Reset"))
+                    .build();
+                """);
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // Example 8 — Div grid mode: 5 fields, desktop(2), stretchLastRow(false)
+    // ─────────────────────────────────────────────────────────────────────────
+
+    private DemoExample divGridTwoColumnsExample() {
+        var result = resultSpan();
+
+        var panel = Components.<Employee>entityFormPanelDiv(Employee.class)
+                .properties("firstName", "lastName", "department", "email", "notes")
+                .responsiveSteps(steps -> steps.mobile(1).desktop(2))
+                .stretchLastRow(false)
+            .configure(fb -> {
+                fb.property("firstName").ifPresent(p -> fb.configure(inner -> inner.required(p)));
+                fb.property("firstName").ifPresent(p -> fb.configure(inner -> inner.withValidator((PathProperty<String>) p, Validator.notBlank())));
+                fb.property("email").ifPresent(p -> fb.configure(inner -> inner.required(p)));
+                fb.property("email").ifPresent(p -> fb.configure(inner -> inner.withValidator((PathProperty<String>) p, Validator.notBlank())));
+            })
+                .saveButton(
+                        btn -> btn.primary().text("Save Employee"),
+                        emp -> {
+                            showSuccess("Saved: " + emp.getFirstName());
+                            result.setText("✗ desktop(2) without stretchLastRow");
+                        })
+                .clearButton(btn -> btn.text("Reset"))
+                .build();
+
+        var wrapper = new Div(panel, result);
+        return new DemoExample("8 — Div grid mode (5 fields, desktop(2), stretchLastRow(false))", wrapper, """
+                // Div-backed form: mobile(1), desktop(2)
+                // 5 fields total:
+                // - desktop(2): rows become 2 + 2 + 1
+                // - stretchLastRow(false): the last field keeps the base half-width span
+                // - firstName and email are required, so the built-in red star is shown
+                // - the same fields also validate inline
+
+                Components.<Employee>entityFormPanelDiv(Employee.class)
+                    .properties("firstName", "lastName", "department", "email", "notes")
+                    .responsiveSteps(steps -> steps.mobile(1).desktop(2))
+                    .stretchLastRow(false)
+                    .configure(fb -> {
+                        fb.property("firstName").ifPresent(p -> fb.configure(inner -> inner.required(p)));
+                        fb.property("firstName").ifPresent(p -> fb.configure(inner -> inner.withValidator((PathProperty<String>) p, Validator.notBlank())));
+                        fb.property("email").ifPresent(p -> fb.configure(inner -> inner.required(p)));
+                        fb.property("email").ifPresent(p -> fb.configure(inner -> inner.withValidator((PathProperty<String>) p, Validator.notBlank())));
+                    })
+                    .saveButton(btn -> btn.primary().text("Save"), emp -> service.save(emp))
+                    .clearButton(btn -> btn.text("Reset"))
+                    .build();
+                """);
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // Example 9 — EntityFormPanel inside a Dialog (Cancel closes the dialog)
     // ─────────────────────────────────────────────────────────────────────────
 
     private DemoExample inDialogExample() {
@@ -496,7 +619,7 @@ public class EntityFormPanelDemoView extends Div {
         });
 
         var wrapper = new Div(openBtn, result);
-        return new DemoExample("7 — Inside a Dialog (Cancel closes, Save closes on success)", wrapper, """
+        return new DemoExample("9 — Inside a Dialog (Cancel closes, Save closes on success)", wrapper, """
                 var openBtn = new Button("Open Create Employee Dialog");
                 openBtn.addClickListener(e -> {
                     var dialog = new Dialog();
@@ -521,7 +644,7 @@ public class EntityFormPanelDemoView extends Div {
     }
 
     // ─────────────────────────────────────────────────────────────────────────
-    // Example 8 — Components API shortcut
+    // Example 10 — Components API shortcut
     // ─────────────────────────────────────────────────────────────────────────
 
     private DemoExample componentsApiExample() {
@@ -548,7 +671,7 @@ public class EntityFormPanelDemoView extends Div {
                 .build();
 
         var wrapper = new Div(panel, result);
-        return new DemoExample("8 — Components API (Components.entityFormPanel)", wrapper, """
+        return new DemoExample("10 — Components API (Components.entityFormPanel)", wrapper, """
                 // All three factory methods are available via Components:
 
                 // Bean mode:

@@ -60,9 +60,11 @@ class TestGridHeaderBuilder {
 
         header.updateActionsVisibility(2);
 
+        // The heading element (H2) lives in column → columnLine.
+        // We look for any component whose element text is "Items" (works for H2 and Span alike).
         Component heading = header.getColumnLayout().getChildren()
                 .flatMap(Component::getChildren)
-                .filter(component -> component instanceof Span span && "Items".equals(span.getText()))
+                .filter(component -> "Items".equals(component.getElement().getText()))
                 .findFirst()
                 .orElseThrow(() -> new AssertionError("Expected the header title component to exist"));
 

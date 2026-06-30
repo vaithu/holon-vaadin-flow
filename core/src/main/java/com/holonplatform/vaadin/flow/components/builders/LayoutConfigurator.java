@@ -3,7 +3,7 @@ package com.holonplatform.vaadin.flow.components.builders;
 import com.holonplatform.vaadin.flow.internal.components.builders.DefaultLayoutConfigurator;
 import com.holonplatform.vaadin.flow.internal.lumo.*;
 import com.holonplatform.vaadin.flow.vaadinplus.Layout;
-import com.iyensoft.vaadin.flow.utils.responsive.ViewMode;
+import com.iyensoft.vaadin.flow.enums.ViewMode;
 import com.vaadin.flow.component.Component;
 
 public interface LayoutConfigurator<C extends LayoutConfigurator<C>> extends ComponentConfigurator<C>,

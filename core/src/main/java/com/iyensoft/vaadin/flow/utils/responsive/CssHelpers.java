@@ -1,5 +1,6 @@
 package com.iyensoft.vaadin.flow.utils.responsive;
 
+import com.iyensoft.vaadin.flow.enums.ViewMode;
 import com.vaadin.flow.component.Component;
 
 import java.util.List;

@@ -30,7 +30,7 @@ import com.holonplatform.vaadin.flow.vaadinplus.ResponsiveDiv;
  *   <li>Image avatar</li>
  *   <li>AvatarColor enum — all 7 semantic colour tokens</li>
  *   <li>AvatarColor.forId — deterministic colour assignment from an entity id</li>
- *   <li>Alert.Variant background — IconBadge-style tinted look</li>
+ *   <li>Semantic variant background — IconBadge-style tinted look</li>
  *   <li>Holon i18n — Localizable name and abbreviation with deferred resolution</li>
  *   <li>Accessibility — aria-label (string &amp; Localizable)</li>
  *   <li>Size variants (xsmall → xlarge)</li>
@@ -53,7 +53,7 @@ public class AvatarDemoView extends Div {
                 "Avatar is a graphical representation of a person or entity. " +
                 "The Holon fluent builder wraps the Vaadin Avatar and AvatarGroup components with " +
                 "Holon Platform i18n (Localizable), the AvatarColor semantic enum, " +
-                "IconBadge-style tinted backgrounds via Alert.Variant, " +
+                "IconBadge-style tinted backgrounds via the shared semantic variant API, " +
                 "full accessibility support (aria-label), and deferred localization.");
 
         var examples = ResponsiveDiv.flex().column().gapL().build();
@@ -210,7 +210,7 @@ public class AvatarDemoView extends Div {
                 .withThemeVariants(AvatarVariant.LUMO_LARGE)
                 .build());
 
-        return new DemoExample("IconBadge-style tinted background — variant(Alert.Variant)", row, """
+        return new DemoExample("IconBadge-style tinted background — shared variant API", row, """
                 // Switch the avatar background to the same semantic palette as IconBadge.
                 // Overrides --vaadin-avatar-background and --vaadin-avatar-abbreviation-color
                 // using CSS custom properties — no inline styles.

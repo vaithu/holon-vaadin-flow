@@ -1,0 +1,29 @@
+/* -----------------------------------------------------------------------
+ * Base widget panel
+ * ----------------------------------------------------------------------- */
+
+.iyen-panel {
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    gap: 1rem;
+}
+
+.iyen-panel--bordered {
+    border-width: 1px;
+}
+
+.iyen-panel.iyen-panel--no-border,
+.iyen-panel.panel--no-border,
+.iyen-panel.iyen-panel--no-border.iyen-panel--bordered,
+.iyen-panel.panel--no-border.iyen-panel--bordered {
+    border: none;
+}
+
+
+@media (max-width: 640px) {
+    .iyen-panel {
+        gap: 0.875rem;
+    }
+
+}

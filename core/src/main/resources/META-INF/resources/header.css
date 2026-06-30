@@ -3,15 +3,23 @@
  * ----------------------------------------------------------------------- */
 
 .iyen-header {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    width: 100%;
-    box-sizing: border-box;
+    /* 1. Make it stay at the top during scroll */
+  position: sticky;
+  top: 0;
+  z-index: 10; /* Ensure it stays above content */
+  
+  /* 2. Add a subtle shadow ONLY when scrolling or keep it clean */
+  /* transition: box-shadow 0.2s; */
+  
+  /* 3. Improve Spacing */
+  display: flex;
+  flex-direction: column;
+  padding: 1rem 1.5rem; /* Slightly more horizontal padding for alignment */
+  gap: 0.5rem; /* Control space between breadcrumbs and title row */
 }
 
 .iyen-header--bordered {
-    border-block-end: 1px solid var(--border-default, #e4e4e7);
+    border-block-end: var(--border-default, 1px solid #e4e4e7);
 }
 
 .iyen-header.header--no-border,
@@ -31,14 +39,20 @@
  * Main header row: prefix | heading/details | actions
  * ----------------------------------------------------------------------- */
 
+/* 4. Ensure the main row handles space well */
 .iyen-header__row {
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-    gap: 0.5rem;
-    width: 100%;
-    box-sizing: border-box;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  min-height: 3rem; /* Prevents jumping if content is empty */
+}
+
+/* 5. Responsive adjustment */
+@media (max-width: 768px) {
+  .iyen-header {
     padding: 0.75rem 1rem;
+    height: auto; /* Allow it to shrink on mobile */
+  }
 }
 
 .iyen-header__row--padded {
@@ -99,6 +113,10 @@
     gap: 0.35rem;
     min-width: 0;
     width: 100%;
+}
+
+.iyen-header__column--without-gap {
+    gap: 0;
 }
 
 .iyen-header__column-line {

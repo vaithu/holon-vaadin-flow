@@ -181,8 +181,9 @@ public class DefaultChatService implements ChatService {
     public List<ChatMessage> findMessagesBefore(String roomId, Instant before, int limit) {
         if (limit <= 0) throw new IllegalArgumentException("limit must be > 0");
         var filter = MSG_ROOM_ID.eq(roomId).and(MSG_CREATED_AT.lt(before)).and(MSG_DELETED.eq(false));
-        return messages.findSlice(filter, MSG_CREATED_AT.desc(), limit, 0)
-                .sorted(Comparator.comparing(ChatMessage::getCreatedAt)).toList();
+        // Returns newest-first (DESC) as per ChatService contract.
+        // LiveChat.loadOlderMessages() reverses the result to display oldest-first.
+        return messages.findSlice(filter, MSG_CREATED_AT.desc(), limit, 0).toList();
     }
 
     @Override

@@ -1,23 +1,16 @@
 package com.iyensoft.vaadin.flow.internal.components.builders;
 
-import com.iyensoft.vaadin.flow.components.IyenPanel;
+import com.iyensoft.vaadin.flow.components.Panel;
 import com.iyensoft.vaadin.flow.components.builders.PanelBuilder;
-import com.vaadin.flow.component.Component;
 
-public class DefaultPanelBuilder
-        extends AbstractPanelConfigurator<PanelBuilder>
-        implements PanelBuilder {
+public class DefaultPanelBuilder extends AbstractPanelConfigurator<PanelBuilder> implements PanelBuilder{
 
-    public DefaultPanelBuilder(IyenPanel component) {
+    public DefaultPanelBuilder(Panel component) {
         super(component);
     }
 
-    public DefaultPanelBuilder(Component... components) {
-        super(new IyenPanel(components));
-    }
-
     @Override
-    public IyenPanel build() {
+    public Panel build() {
         return getComponent();
     }
 
@@ -25,4 +18,5 @@ public class DefaultPanelBuilder
     protected PanelBuilder getConfigurator() {
         return this;
     }
+    
 }

@@ -9,7 +9,6 @@
     </parent>
 
     <artifactId>holon-vaadin-flow-demo</artifactId>
-        <version>10.0.2-SNAPSHOT</version>
 
     <name>${project.groupId}:${project.artifactId}</name>
     <description>Holon Vaadin Flow â€“ interactive component showcase</description>
@@ -75,6 +74,11 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-persistence</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
         </dependency>
 
         <!-- Holon JPA Datastore â€” auto-configures a Datastore from Spring's EntityManagerFactory.

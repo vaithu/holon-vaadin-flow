@@ -69,7 +69,6 @@ import java.util.function.Supplier;
  * @see #runnableConfigurer(Runnable)
  */
 @Component("flowui_UiAsyncTasks")
-@SuppressWarnings("null")
 public class UiAsyncTasks {
 
     private static final Logger log = LoggerFactory.getLogger(UiAsyncTasks.class);

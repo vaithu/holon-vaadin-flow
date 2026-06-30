@@ -1,6 +1,7 @@
 package com.holonplatform.vaadin.flow.test;
 
 import com.holonplatform.vaadin.flow.components.builders.ButtonBuilder;
+import com.iyensoft.vaadin.flow.enums.ButtonPreset;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import org.junit.jupiter.api.Nested;
@@ -24,7 +25,7 @@ class TestButtonBuilder {
 
     @Test
     void createDelBtn_returnsNonNull() {
-        assertNotNull(ButtonBuilder.createDelBtn());
+        assertNotNull(ButtonBuilder.create().preset(ButtonPreset.DELETE).build());
     }
 
     // =========================================================================
@@ -39,10 +40,11 @@ class TestButtonBuilder {
 
     @Test
     void build_delBtn_hasPrimaryAndErrorThemeVariants() {
-        Button btn = ButtonBuilder.createDelBtn().build();
+        Button btn = ButtonBuilder.create().preset(ButtonPreset.DELETE).build();
         assertNotNull(btn);
-        assertTrue(btn.getThemeNames().contains("primary"));
-        assertTrue(btn.getThemeNames().contains("error"));
+        // DELETE preset applies the "error" destructive theme variant only (not "primary").
+        assertTrue(btn.getThemeNames().contains("error"),
+                "DELETE preset must have 'error' theme variant");
     }
 
     // =========================================================================

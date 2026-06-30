@@ -3,7 +3,7 @@ package com.holonplatform.vaadin.flow.internal.components.builders;
 import com.holonplatform.vaadin.flow.components.builders.LayoutConfigurator;
 import com.holonplatform.vaadin.flow.internal.lumo.*;
 import com.holonplatform.vaadin.flow.vaadinplus.Layout;
-import com.iyensoft.vaadin.flow.utils.responsive.ViewMode;
+import com.iyensoft.vaadin.flow.enums.ViewMode;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasEnabled;
 import com.vaadin.flow.component.HasSize;

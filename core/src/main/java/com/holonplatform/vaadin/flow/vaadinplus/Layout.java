@@ -14,6 +14,9 @@ import java.util.HashMap;
 @StyleSheet("context://toolbar.css")
 @StyleSheet("context://menu.css")
 @StyleSheet("context://mobile-grid.css")
+@StyleSheet("context://master-detail-v2.css")
+@StyleSheet("context://document-row-lit-renderer.css")
+@StyleSheet("context://mobile-list-lit-renderer.css")
 public class Layout extends Div {
 
     private AlignItems alignItems;

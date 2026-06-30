@@ -52,6 +52,11 @@ public class ProductService {
         return helper.findOne(ID_PROP.eq(id));
     }
 
+    /** Returns the first product (by default sort order) for detail panel pre-population. */
+    public Optional<Product> findFirst() {
+        return helper.findFirst();
+    }
+
     public List<Product> findAll() {
         return helper.getDatastore()
                 .query(TARGET)

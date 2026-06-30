@@ -239,6 +239,9 @@ public abstract class AbstractComposablePropertyForm<C extends Component, E exte
 					}
 				}
 			});
+			if (component instanceof Input<?> input && input.isRequired()) {
+				input.setRequired(true);
+			}
 		}
 	}
 

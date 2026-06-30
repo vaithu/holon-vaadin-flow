@@ -185,6 +185,18 @@ class TestAvatarBuilder {
     }
 
     @Test
+    void builder_variant_replacesPreviousBadgeClass() {
+        Avatar avatar = AvatarBuilder.create("Test")
+                .variant(Alert.Variant.WARNING)
+                .variant(Alert.Variant.SUCCESS)
+                .build();
+
+        assertTrue(avatar.getClassNames().contains("avatar--badge"));
+        assertTrue(avatar.getClassNames().contains("avatar--badge-success"));
+        assertFalse(avatar.getClassNames().contains("avatar--badge-warning"));
+    }
+
+    @Test
     void builder_variant_default_addsBadgeDefaultClass() {
         Avatar avatar = AvatarBuilder.create("Def").variant(Alert.Variant.DEFAULT).build();
         assertTrue(avatar.getClassNames().contains("avatar--badge-default"));

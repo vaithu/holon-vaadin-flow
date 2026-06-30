@@ -118,6 +118,24 @@ public interface BeanPropertyInputFormBuilder<C extends Component, T> {
     Optional<PathProperty<?>> property(String fieldName);
 
     /**
+     * Select the bean fields to render and define their order.
+     * <p>
+     * Only the named fields are rendered, in the exact order provided. Fields not
+     * listed here are omitted from the form.
+     * </p>
+     * <p>
+     * The selected fields still honor {@link #excludeFields(String...)} and the
+     * default hiding rules for {@link com.holonplatform.core.beans.Identifier}
+     * and {@link com.holonplatform.core.beans.Version} fields unless overridden by
+     * {@link #showIdentifiers()} / {@link #showVersions()}.
+     * </p>
+     *
+     * @param fieldNames bean field names to render, in order (not null)
+     * @return this builder
+     */
+    BeanPropertyInputFormBuilder<C, T> properties(String... fieldNames);
+
+    /**
      * Apply additional configuration to the underlying {@link PropertyInputFormBuilder}.
      *
      * <p>

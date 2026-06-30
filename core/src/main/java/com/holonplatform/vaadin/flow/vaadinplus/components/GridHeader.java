@@ -4,7 +4,7 @@ import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.vaadin.flow.components.builders.LabelBuilder;
 import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
 import com.holonplatform.vaadin.flow.vaadinplus.utilities.Font;
-import com.holonplatform.vaadin.flow.vaadinplus.utilities.HeadingLevel;
+import com.iyensoft.vaadin.flow.enums.HeadingLevel;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.grid.Grid;
@@ -177,7 +177,7 @@ public class GridHeader extends Header {
     private void configureSelectionCount() {
         selectionCount.addClassName(SELECTION_COUNT_CLASS);
         setSelectionCountVisible(false);
-        if (this.titleComponent == null) {
+        if (this.titleComponent != null || !hasVisibleTitle()) {
             this.titleComponent = createTitleComponent();
         }
         hideHeadingColumn();
@@ -221,7 +221,7 @@ public class GridHeader extends Header {
     }
 
     private void updateNoTitleState() {
-        if (hasVisibleTitle()) {
+        if (hasVisibleTitle() && !title.isBlank()) {
             removeClassName(NO_TITLE_CLASS);
         } else {
             addClassName(NO_TITLE_CLASS);
@@ -229,7 +229,7 @@ public class GridHeader extends Header {
     }
 
     private boolean hasVisibleTitle() {
-        return labelBuilder != null || (title != null && !title.isBlank());
+        return labelBuilder != null || (title != null );
     }
 
 }

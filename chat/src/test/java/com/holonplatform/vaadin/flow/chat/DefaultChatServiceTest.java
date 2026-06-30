@@ -322,6 +322,181 @@ class DefaultChatServiceTest {
     }
 
     // ================================================================== //
+    // Membership
+    // ================================================================== //
+
+    @Nested
+    @DisplayName("Membership")
+    class MembershipTests {
+
+        @BeforeEach
+        void seedRoom() {
+            service.saveRoom(ChatRoom.channel("ch1", "general", null));
+        }
+
+        @Test
+        @DisplayName("joinRoom makes user a member; isMember returns true")
+        void joinRoom_thenIsMember() {
+            service.joinRoom("alice", "ch1");
+            assertThat(service.isMember("alice", "ch1")).isTrue();
+        }
+
+        @Test
+        @DisplayName("joinRoom is idempotent — calling twice does not create duplicate")
+        void joinRoom_idempotent() {
+            service.joinRoom("alice", "ch1");
+            service.joinRoom("alice", "ch1");
+            assertThat(service.countMembers("ch1")).isEqualTo(1);
+        }
+
+        @Test
+        @DisplayName("leaveRoom removes membership; isMember returns false")
+        void leaveRoom_removesMembership() {
+            service.joinRoom("alice", "ch1");
+            service.leaveRoom("alice", "ch1");
+            assertThat(service.isMember("alice", "ch1")).isFalse();
+        }
+
+        @Test
+        @DisplayName("leaveRoom is idempotent when user is not a member")
+        void leaveRoom_notMember_noOp() {
+            service.leaveRoom("ghost", "ch1"); // should not throw
+            assertThat(service.isMember("ghost", "ch1")).isFalse();
+        }
+
+        @Test
+        @DisplayName("isMember returns false for non-member")
+        void isMember_nonMember_returnsFalse() {
+            assertThat(service.isMember("nobody", "ch1")).isFalse();
+        }
+
+        @Test
+        @DisplayName("countMembers returns correct count across multiple users")
+        void countMembers_multipleUsers() {
+            service.joinRoom("alice", "ch1");
+            service.joinRoom("bob", "ch1");
+            service.joinRoom("carol", "ch1");
+            assertThat(service.countMembers("ch1")).isEqualTo(3);
+        }
+
+        @Test
+        @DisplayName("findMembership returns the record when user is a member")
+        void findMembership_returnsPresentWhenMember() {
+            service.joinRoom("alice", "ch1");
+            assertThat(service.findMembership("alice", "ch1")).isPresent();
+        }
+
+        @Test
+        @DisplayName("findMembership returns empty when user has not joined")
+        void findMembership_returnsEmptyWhenNotJoined() {
+            assertThat(service.findMembership("alice", "ch1")).isEmpty();
+        }
+
+        @Test
+        @DisplayName("findRoomMembers returns all members in join order")
+        void findRoomMembers_returnsAll() {
+            service.joinRoom("alice", "ch1");
+            service.joinRoom("bob", "ch1");
+            assertThat(service.findRoomMembers("ch1")).hasSize(2);
+        }
+
+        @Test
+        @DisplayName("findJoinedRooms returns only rooms the user joined")
+        void findJoinedRooms_returnsCorrectRooms() {
+            service.saveRoom(ChatRoom.channel("ch2", "tech", null));
+            service.joinRoom("alice", "ch1");
+            // alice did NOT join ch2
+            List<ChatRoom> joined = service.findJoinedRooms("alice");
+            assertThat(joined).hasSize(1).first().extracting(ChatRoom::getId).isEqualTo("ch1");
+        }
+    }
+
+    // ================================================================== //
+    // Invitations
+    // ================================================================== //
+
+    @Nested
+    @DisplayName("Invitations")
+    class InvitationTests {
+
+        @BeforeEach
+        void seedRoom() {
+            service.saveRoom(ChatRoom.group("grp1", "Project Alpha", null));
+        }
+
+        @Test
+        @DisplayName("inviteToRoom creates PENDING invitation")
+        void inviteToRoom_createsPendingInvitation() {
+            ChatInvitation inv = service.inviteToRoom("grp1", "Project Alpha", "alice", "Alice", "bob");
+            assertThat(inv).isNotNull();
+            assertThat(inv.checkPending()).isTrue();
+            assertThat(inv.getInviteeId()).isEqualTo("bob");
+        }
+
+        @Test
+        @DisplayName("inviteToRoom is idempotent — second call returns existing PENDING invitation")
+        void inviteToRoom_idempotent_returnsSame() {
+            ChatInvitation first  = service.inviteToRoom("grp1", "Project Alpha", "alice", "Alice", "bob");
+            ChatInvitation second = service.inviteToRoom("grp1", "Project Alpha", "alice", "Alice", "bob");
+            assertThat(first.getId()).isEqualTo(second.getId());
+        }
+
+        @Test
+        @DisplayName("findPendingInvitations returns only PENDING invitations for invitee")
+        void findPendingInvitations_returnsPendingForInvitee() {
+            service.inviteToRoom("grp1", "Project Alpha", "alice", "Alice", "bob");
+            List<ChatInvitation> pending = service.findPendingInvitations("bob");
+            assertThat(pending).hasSize(1).first().extracting(ChatInvitation::getRoomId).isEqualTo("grp1");
+        }
+
+        @Test
+        @DisplayName("findPendingInvitations returns empty when no pending invitations")
+        void findPendingInvitations_emptyWhenNone() {
+            assertThat(service.findPendingInvitations("nobody")).isEmpty();
+        }
+
+        @Test
+        @DisplayName("acceptInvitation changes status to ACCEPTED and adds membership")
+        void acceptInvitation_changesStatusAndJoinsRoom() {
+            ChatInvitation inv = service.inviteToRoom("grp1", "Project Alpha", "alice", "Alice", "bob");
+            Optional<ChatInvitation> accepted = service.acceptInvitation(inv.getId());
+            assertThat(accepted).isPresent();
+            assertThat(accepted.get().checkAccepted()).isTrue();
+            assertThat(service.isMember("bob", "grp1")).isTrue();
+        }
+
+        @Test
+        @DisplayName("acceptInvitation returns empty for non-existent invitation")
+        void acceptInvitation_nonExistent_returnsEmpty() {
+            assertThat(service.acceptInvitation("ghost-id")).isEmpty();
+        }
+
+        @Test
+        @DisplayName("declineInvitation changes status to DECLINED without creating membership")
+        void declineInvitation_changesStatusNoMembership() {
+            ChatInvitation inv = service.inviteToRoom("grp1", "Project Alpha", "alice", "Alice", "carol");
+            Optional<ChatInvitation> declined = service.declineInvitation(inv.getId());
+            assertThat(declined).isPresent();
+            assertThat(declined.get().checkDeclined()).isTrue();
+            assertThat(service.isMember("carol", "grp1")).isFalse();
+        }
+
+        @Test
+        @DisplayName("declineInvitation returns empty for non-existent invitation")
+        void declineInvitation_nonExistent_returnsEmpty() {
+            assertThat(service.declineInvitation("ghost-id")).isEmpty();
+        }
+
+        @Test
+        @DisplayName("findRoomInvitations returns all invitations for the room")
+        void findRoomInvitations_returnsAll() {
+            service.inviteToRoom("grp1", "Project Alpha", "alice", "Alice", "bob");
+            service.inviteToRoom("grp1", "Project Alpha", "alice", "Alice", "carol");
+            assertThat(service.findRoomInvitations("grp1")).hasSize(2);
+        }
+    }
+
+    // ================================================================== //
     // Builder
     // ================================================================== //
 
@@ -349,10 +524,11 @@ class DefaultChatServiceTest {
      * Pure in-memory stub implementation of {@link ChatService} used in tests.
      */
     static class InMemoryChatService implements ChatService {
-        private final java.util.Map<String, ChatRoom> rooms = new java.util.LinkedHashMap<>();
-        private final java.util.Map<String, ChatMessage> messages = new java.util.LinkedHashMap<>();
-        private final java.util.Map<String, ChatReadReceipt> receipts = new java.util.LinkedHashMap<>();
-        private final java.util.Map<String, ChatRoomMember> members = new java.util.LinkedHashMap<>();
+        private final java.util.Map<String, ChatRoom>        rooms       = new java.util.LinkedHashMap<>();
+        private final java.util.Map<String, ChatMessage>     messages    = new java.util.LinkedHashMap<>();
+        private final java.util.Map<String, ChatReadReceipt> receipts    = new java.util.LinkedHashMap<>();
+        private final java.util.Map<String, ChatRoomMember>  members     = new java.util.LinkedHashMap<>();
+        private final java.util.Map<String, ChatInvitation>  invitations = new java.util.LinkedHashMap<>();
 
         @Override public List<ChatRoom> findAllChannels() {
             return rooms.values().stream()
@@ -478,6 +654,56 @@ class DefaultChatServiceTest {
             return (int) members.values().stream()
                     .filter(m -> m.getRoomId().equals(roomId))
                     .count();
+        }
+
+        // ── Invitations ────────────────────────────────────────────────────────
+
+        @Override public ChatInvitation inviteToRoom(String roomId, String roomName,
+                                                     String inviterId, String inviterName,
+                                                     String inviteeId) {
+            // Idempotent: return existing PENDING invite if present
+            return invitations.values().stream()
+                    .filter(i -> i.getRoomId().equals(roomId)
+                            && i.getInviteeId().equals(inviteeId)
+                            && i.checkPending())
+                    .findFirst()
+                    .orElseGet(() -> {
+                        ChatInvitation inv = ChatInvitation.create(
+                                roomId, roomName, inviterId, inviterName, inviteeId);
+                        invitations.put(inv.getId(), inv);
+                        return inv;
+                    });
+        }
+
+        @Override public List<ChatInvitation> findPendingInvitations(String inviteeId) {
+            return invitations.values().stream()
+                    .filter(i -> i.getInviteeId().equals(inviteeId) && i.checkPending())
+                    .sorted(java.util.Comparator.comparing(ChatInvitation::getCreatedAt).reversed())
+                    .toList();
+        }
+
+        @Override public List<ChatInvitation> findRoomInvitations(String roomId) {
+            return invitations.values().stream()
+                    .filter(i -> i.getRoomId().equals(roomId))
+                    .sorted(java.util.Comparator.comparing(ChatInvitation::getCreatedAt).reversed())
+                    .toList();
+        }
+
+        @Override public Optional<ChatInvitation> acceptInvitation(String invitationId) {
+            ChatInvitation inv = invitations.get(invitationId);
+            if (inv == null) return Optional.empty();
+            inv.setStatus(ChatInvitation.Status.ACCEPTED.name());
+            inv.setRespondedAt(Instant.now());
+            joinRoom(inv.getInviteeId(), inv.getRoomId());
+            return Optional.of(inv);
+        }
+
+        @Override public Optional<ChatInvitation> declineInvitation(String invitationId) {
+            ChatInvitation inv = invitations.get(invitationId);
+            if (inv == null) return Optional.empty();
+            inv.setStatus(ChatInvitation.Status.DECLINED.name());
+            inv.setRespondedAt(Instant.now());
+            return Optional.of(inv);
         }
     }
 }

@@ -366,41 +366,6 @@ add(bundle.filterPanel(), bundle.toolbar(), bundle.grid(), bundle.footer());
 - `ChartJs` (`holon-vaadin-flow-chartjs`) – fluent builder for Chart.js charts via `ChartJs.builder()`
 - `VaadinCalendar` (`holon-vaadin-flow-calendar`) – server-side FullCalendar 6 wrapper; `CalendarView`: `MONTH`, `WEEK`, `DAY`, `AGENDA`; `EventColor` enum (Google Calendar palette); `CalendarGroup` for category filtering; sidebar with mini-month/search/group toggle; key lifecycle events: `addCalendarReadyListener`, `addEventCreatedListener`, `addEventUpdatedListener`, `addEventDeletedListener`; navigation: `today()`, `next()`, `previous()`, `navigateTo(date)`, `setView(CalendarView)`; theming via CSS custom properties (`--vaadin-calendar-primary`, etc.). Canonical demo: `CalendarDemoView.java`.
 
-### ZohoView Pattern
-Implement `ZohoView<T>` for desktop/mobile split-view CRUD screens:
-```java
-public class MyView implements ZohoView<MyBean> {
-    public ZohoBuilder createDesktopView() { ... }
-    public ZohoBuilder createMobileView() { ... }
-}
-```
-Uses `GridMainView<T>` (listing) + `GridDetailView<T>` (form) pair. `SearchBarBuilder` (`com.holonplatform.vaadin.flow.components.builders.SearchBarBuilder`) integrates with `ZohoView` via `GridMainView.createSearchBarBuilder()` – fluent API for a debounced search `HorizontalLayout`. Canonical demo: `ZohoViewDemoView.java`.
-
-### MasterDetailLayout Pattern
-`MasterDetailLayout<T>` (`com.iyensoft.vaadin.flow.components`) – signal-driven reactive master-detail layout:
-- **Mobile**: row tap opens a full-screen `Sheet` slide-in. Hardware back/swipe closes it.
-- **Tablet/Desktop**: side-by-side via `IyenResponsiveLayout`; detail built once on first selection.
-- URL sync: selected item ID written to `?id=` via `history.replaceState` without Vaadin navigation.
-- `withDetailSync(owner, handler)` – lifecycle-bound reactive sync called on selection change *or* after `notifyDataChanged()`.
-- `restoreSelection(idStr)` – restore from URL query param in `@OnShow`.
-- `autoSelectFirst(bool)` – selects first row automatically when entering tablet/desktop.
-- Loads `master-details.css` + `master-detail-layout.css`.
-
-```java
-MasterDetailLayout<Contact> layout = MasterDetailLayout.<Contact>builder()
-    .masterBuilder(myMasterBuilder)
-    .detailContentProvider(contact -> new Component[]{ new ContactForm(contact) })
-    .idExtractor(c -> String.valueOf(c.getId()))
-    .itemLoader(id -> service.findById(Long.parseLong(id)))
-    .autoSelectFirst(true)
-    .onDataChanged(() -> grid.getDataProvider().refreshAll())
-    .build();
-
-// In the detail form:
-layout.withDetailSync(formBody, contact -> nameField.setValue(contact.getName()));
-layout.notifyDataChanged(); // call after save to re-sync detail + refresh grid
-```
-Canonical demo: `MasterDetailLayoutDemoView.java`.
 
 ### Utility Components
 - **`LazyComponent`** – defers child rendering until first attach: `new LazyComponent(() -> heavyComponent())`
@@ -524,21 +489,6 @@ Auto-applies `ViewMode`/`Orientation` tags from actual browser window size; re-t
 Responsive.apply(root);  // adds vm-<mode>, data-view-prefix, portrait/landscape classes
 Responsive.stop(root);   // removes listeners + responsive classes
 ```
-
-### `IyenResponsiveLayout` (`com.iyensoft.vaadin.flow.utils.responsive`)
-Reactive master-detail layout that recomposes itself when the viewport changes:
-- MOBILE/MOBILE_PORTRAIT/MOBILE_LANDSCAPE → master panel only
-- TABLET and above → master + optional separator + detail panel (same component instances, no re-render)
-- Exposes a readonly `Signal<ViewMode>` via `viewModeSignal()` for reactive observers
-- Subscribe via `addModeChangeListener(Consumer<ViewMode>)` (receives current mode immediately)
-```java
-IyenResponsiveLayout layout = new IyenResponsiveLayout(masterBuilder, detailBuilder)
-    .withSeparator(SeparatorColor.LIGHT);   // optional colored separator
-layout.addModeChangeListener(mode -> toolbar.setVisible(mode != ViewMode.MOBILE));
-```
-CSS hooks: `iyen-mobile` / `iyen-desktop` on the root element; `iyen-md-row` on the inner row container.
-
----
 
 ## Navigation
 

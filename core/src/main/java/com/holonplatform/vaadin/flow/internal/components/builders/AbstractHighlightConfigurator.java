@@ -19,7 +19,7 @@ import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.vaadin.flow.components.builders.HighlightConfigurator;
 import com.holonplatform.vaadin.flow.vaadinplus.components.Highlight;
 import com.holonplatform.vaadin.flow.vaadinplus.utilities.Font;
-import com.holonplatform.vaadin.flow.vaadinplus.utilities.HeadingLevel;
+import com.iyensoft.vaadin.flow.enums.HeadingLevel;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasEnabled;
 import com.vaadin.flow.component.HasSize;

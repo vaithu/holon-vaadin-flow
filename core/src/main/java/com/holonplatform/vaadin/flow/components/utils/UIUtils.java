@@ -3,8 +3,12 @@ package com.holonplatform.vaadin.flow.components.utils;
 import com.holonplatform.core.property.PropertyBox;
 import com.holonplatform.core.property.PropertySet;
 import com.holonplatform.vaadin.flow.HasOptionsBar;
-import com.holonplatform.vaadin.flow.components.*;
-import com.holonplatform.vaadin.flow.components.builders.*;
+import com.holonplatform.vaadin.flow.components.BeanListing;
+import com.holonplatform.vaadin.flow.components.Components;
+import com.holonplatform.vaadin.flow.components.HasComponent;
+import com.holonplatform.vaadin.flow.components.PropertyInputForm;
+import com.holonplatform.vaadin.flow.components.builders.ButtonConfigurator;
+import com.holonplatform.vaadin.flow.components.builders.LabelBuilder;
 import com.holonplatform.vaadin.flow.components.css.CSSUtility;
 import com.holonplatform.vaadin.flow.components.css.WhiteSpace;
 import com.holonplatform.vaadin.flow.internal.components.support.BreakPoint;
@@ -13,7 +17,7 @@ import com.holonplatform.vaadin.flow.vaadinplus.KeyValuePair;
 import com.holonplatform.vaadin.flow.vaadinplus.KeyValuePairs;
 import com.holonplatform.vaadin.flow.vaadinplus.Layout;
 import com.holonplatform.vaadin.flow.vaadinplus.components.Separator;
-import com.iyensoft.vaadin.flow.utils.responsive.ViewMode;
+import com.iyensoft.vaadin.flow.enums.ViewMode;
 import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -26,12 +30,9 @@ import com.vaadin.flow.component.contextmenu.SubMenu;
 import com.vaadin.flow.component.details.Details;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
-import com.vaadin.flow.component.grid.GridMultiSelectionModel;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.grid.dataview.GridLazyDataView;
 import com.vaadin.flow.component.html.*;
-import com.vaadin.flow.component.html.ListItem;
-import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.menubar.MenuBar;
 import com.vaadin.flow.component.menubar.MenuBarVariant;
@@ -57,7 +58,6 @@ import com.vaadin.flow.data.provider.Query;
 import com.vaadin.flow.data.renderer.LitRenderer;
 import com.vaadin.flow.data.renderer.NumberRenderer;
 import com.vaadin.flow.data.renderer.Renderer;
-import com.vaadin.flow.data.selection.MultiSelectionEvent;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.function.ValueProvider;
 import com.vaadin.flow.router.BeforeEnterEvent;
@@ -121,12 +121,6 @@ public class UIUtils {
             """;
 
     private static NumberFormat currencyFormat = NumberFormat.getCurrencyInstance();
-
-    public static Button addNewItemButton() {
-        return Components.button().newButton()
-            
-                .build();
-    }
 
     public static com.holonplatform.vaadin.flow.components.Input<String> createSearchField() {
         return Components.input.string()
@@ -1007,7 +1001,7 @@ public class UIUtils {
             prefix = "+";
         }
 
-        Icon i = icon.create();
+        com.vaadin.flow.component.icon.Icon i = icon.create();
         i.addClassNames("box-border", "padding-xsmall");
 
         String balance = currencyFormat.format(accountBalance);
@@ -1138,7 +1132,7 @@ public class UIUtils {
     }
 
     public static void setTabErrorIcon(Tab tab, boolean partHasErrors) {
-        Component currentIcon = tab.getChildren().filter(child -> child instanceof Icon).findAny().orElse(null);
+        Component currentIcon = tab.getChildren().filter(child -> child instanceof com.vaadin.flow.component.icon.Icon).findAny().orElse(null);
 
         if (partHasErrors && currentIcon == null) {
             tab.add(VaadinIcon.EXCLAMATION.create());
@@ -1246,7 +1240,7 @@ public class UIUtils {
     public static void showFailureDialog(String title, String errMessage) {
         ConfirmDialog dialog = new ConfirmDialog();
 
-        Icon errorIcon = new Icon(VaadinIcon.EXCLAMATION_CIRCLE_O);
+        com.vaadin.flow.component.icon.Icon errorIcon = new com.vaadin.flow.component.icon.Icon(VaadinIcon.EXCLAMATION_CIRCLE_O);
         errorIcon.setSize("2.5em");
 
         H2 headerMessage = Components.h2().text("Creation failed").build();
@@ -1415,7 +1409,7 @@ public class UIUtils {
         Notification.show("Failed to update the data. Check again that all values are valid");
     }
 
-    public static BulkActionBuilder createBulkActionBuilder(GridMultiSelectionModel<?> gridMultiSelectionModel) {
+    /*public static BulkActionBuilder createBulkActionBuilder(GridMultiSelectionModel<?> gridMultiSelectionModel) {
         return BulkActionBuilder.create()
                 .selectAll(BooleanInputBuilder.create()
                         .withValueChangeListener(event -> {
@@ -1449,7 +1443,7 @@ public class UIUtils {
 
         showHideSearchBarAndBulkActionBar(selectedItems, labelBuilder, bulkActionBuilder, searchBarBuilder);
 
-    }
+    }*/
 
     public static class OptionsBar implements HasOptionsBar {
 
@@ -1462,25 +1456,25 @@ public class UIUtils {
 
         @Override
         public MenuItem importEntity(MenuBar menuBar) {
-            MenuItem menuItem = Icons.createIconItem(menuBar, LumoIcon.DOWNLOAD, "Import", "Import").menuItem();
+            MenuItem menuItem = Icon.createIconItem(menuBar, LumoIcon.DOWNLOAD, "Import", "Import").menuItem();
             return menuItem;
         }
 
         @Override
         public MenuItem exportEntity(MenuBar menuBar) {
-            MenuItem menuItem = Icons.createIconItem(menuBar, LumoIcon.UPLOAD, "Export", "Export").menuItem();
+            MenuItem menuItem = Icon.createIconItem(menuBar, LumoIcon.UPLOAD, "Export", "Export").menuItem();
             return menuItem;
         }
 
         @Override
         public MenuItem refreshList(MenuBar menuBar) {
-            MenuItem menuItem = Icons.createIconItem(menuBar, VaadinIcon.REFRESH, "Refresh", "Refresh").menuItem();
+            MenuItem menuItem = Icon.createIconItem(menuBar, VaadinIcon.REFRESH, "Refresh", "Refresh").menuItem();
             return menuItem;
         }
 
         @Override
         public MenuItem advancedSearch(MenuBar menuBar) {
-            MenuItem menuItem = Icons.createIconItem(menuBar, LumoIcon.SEARCH, "Search", "Advanced Search").menuItem();
+            MenuItem menuItem = Icon.createIconItem(menuBar, LumoIcon.SEARCH, "Search", "Advanced Search").menuItem();
             return menuItem;
         }
     }
@@ -1496,12 +1490,12 @@ public class UIUtils {
     }
 
     public static int parseMinColumn(FormLayout.ResponsiveStep step) {
-        String columns = StringUtils.substringAfter(step.toJson().toString(), "\"columns\":");
-        columns = StringUtils.substringBefore(columns, ",");
-        /*if (columns.endsWith("px")) {
-            return Integer.parseInt(columns.replace("px", ""));
-        }*/
-        return Integer.parseInt(columns); // Default to 0 if not a pixel value
+        String minWidth = StringUtils.substringAfter(step.toJson().toString(), ":");
+        minWidth = StringUtils.substringBetween(minWidth, "\"", "\"");
+        if (minWidth.endsWith("px")) {
+            return Integer.parseInt(minWidth.replace("px", ""));
+        }
+        return 0; // Default to 0 if not a pixel value
     }
 
     public static List<FormLayout.ResponsiveStep> updateColumnValues(List<FormLayout.ResponsiveStep> steps, int sumOfAllColumnsSize) {
@@ -1708,7 +1702,7 @@ public class UIUtils {
 
         public static Button createButton(String text, VaadinIcon icon,
                                               ButtonVariant... variants) {
-            Icon i = new Icon(icon);
+            com.vaadin.flow.component.icon.Icon i = new com.vaadin.flow.component.icon.Icon(icon);
             i.addClassName("icon-size-small");
             Button button = Components.button().text(text).build();
             button.setPrefixComponent(i);
@@ -1740,7 +1734,7 @@ public class UIUtils {
 
         public static Button createCloseButton() {
             Button closeBtn = Components.button()
-                    .icon(Icons.createCloseIcon())
+                    .icon(Icon.createCloseIcon())
                     .tertiaryInline()
                     .build();
             closeBtn.addThemeVariants(ButtonVariant.LUMO_ICON);
@@ -1838,9 +1832,6 @@ public class UIUtils {
             return createButton(text, icon, ButtonVariant.LUMO_SMALL);
         }
 
-        public static Button createRefreshButton() {
-            return ButtonBuilder.create().refresh().build();
-        }
 
     }
 
@@ -1848,100 +1839,100 @@ public class UIUtils {
 
         private  Badge() {}
 
-        public static Icon badgeIcon(VaadinIcon vaadinIcon, String ariaLabel) {
-            return Icons.createIconBadge(vaadinIcon, ariaLabel, "badge");
+        public static com.vaadin.flow.component.icon.Icon badgeIcon(VaadinIcon vaadinIcon, String ariaLabel) {
+            return Icon.createIconBadge(vaadinIcon, ariaLabel, "badge");
         }
 
-        public static Icon badgeIconSuceess(VaadinIcon vaadinIcon, String ariaLabel) {
-            return Icons.createIconBadge(vaadinIcon, ariaLabel, "badge success");
+        public static com.vaadin.flow.component.icon.Icon badgeIconSuceess(VaadinIcon vaadinIcon, String ariaLabel) {
+            return Icon.createIconBadge(vaadinIcon, ariaLabel, "badge success");
         }
 
-        public static Icon badgeIconError(VaadinIcon vaadinIcon, String ariaLabel) {
-            return Icons.createIconBadge(vaadinIcon, ariaLabel, "badge error");
+        public static com.vaadin.flow.component.icon.Icon badgeIconError(VaadinIcon vaadinIcon, String ariaLabel) {
+            return Icon.createIconBadge(vaadinIcon, ariaLabel, "badge error");
         }
 
-        public static Icon badgeIconContrast(VaadinIcon vaadinIcon, String ariaLabel) {
-            return Icons.createIconBadge(vaadinIcon, ariaLabel, "badge contrast");
+        public static com.vaadin.flow.component.icon.Icon badgeIconContrast(VaadinIcon vaadinIcon, String ariaLabel) {
+            return Icon.createIconBadge(vaadinIcon, ariaLabel, "badge contrast");
         }
 
-        public static Icon badgeIconPrimary(VaadinIcon vaadinIcon, String ariaLabel) {
-            return Icons.createIconBadge(vaadinIcon, ariaLabel, "badge primary");
+        public static com.vaadin.flow.component.icon.Icon badgeIconPrimary(VaadinIcon vaadinIcon, String ariaLabel) {
+            return Icon.createIconBadge(vaadinIcon, ariaLabel, "badge primary");
         }
 
-        public static Icon badgeIconPrimarySuccess(VaadinIcon vaadinIcon, String ariaLabel) {
-            return Icons.createIconBadge(vaadinIcon, ariaLabel, "badge success primary");
+        public static com.vaadin.flow.component.icon.Icon badgeIconPrimarySuccess(VaadinIcon vaadinIcon, String ariaLabel) {
+            return Icon.createIconBadge(vaadinIcon, ariaLabel, "badge success primary");
         }
 
-        public static Icon badgeIconPrimaryError(VaadinIcon vaadinIcon, String ariaLabel) {
-            return Icons.createIconBadge(vaadinIcon, ariaLabel, "badge error primary");
+        public static com.vaadin.flow.component.icon.Icon badgeIconPrimaryError(VaadinIcon vaadinIcon, String ariaLabel) {
+            return Icon.createIconBadge(vaadinIcon, ariaLabel, "badge error primary");
         }
 
-        public static Icon badgeIconPrimaryContrast(VaadinIcon vaadinIcon, String ariaLabel) {
-            return Icons.createIconBadge(vaadinIcon, ariaLabel, "badge contrast primary");
+        public static com.vaadin.flow.component.icon.Icon badgeIconPrimaryContrast(VaadinIcon vaadinIcon, String ariaLabel) {
+            return Icon.createIconBadge(vaadinIcon, ariaLabel, "badge contrast primary");
         }
 
-        public static Icon badgeIconSmall(VaadinIcon vaadinIcon, String ariaLabel) {
-            return Icons.createIconBadge(vaadinIcon, ariaLabel, "badge small");
+        public static com.vaadin.flow.component.icon.Icon badgeIconSmall(VaadinIcon vaadinIcon, String ariaLabel) {
+            return Icon.createIconBadge(vaadinIcon, ariaLabel, "badge small");
         }
 
-        public static Icon badgeIconSmallSuccess(VaadinIcon vaadinIcon, String ariaLabel) {
-            return Icons.createIconBadge(vaadinIcon, ariaLabel, "badge success small");
+        public static com.vaadin.flow.component.icon.Icon badgeIconSmallSuccess(VaadinIcon vaadinIcon, String ariaLabel) {
+            return Icon.createIconBadge(vaadinIcon, ariaLabel, "badge success small");
         }
 
-        public static Icon badgeIconSmallError(VaadinIcon vaadinIcon, String ariaLabel) {
-            return Icons.createIconBadge(vaadinIcon, ariaLabel, "badge error smalle");
+        public static com.vaadin.flow.component.icon.Icon badgeIconSmallError(VaadinIcon vaadinIcon, String ariaLabel) {
+            return Icon.createIconBadge(vaadinIcon, ariaLabel, "badge error smalle");
         }
 
-        public static Icon badgeIconSmallContrast(VaadinIcon vaadinIcon, String ariaLabel) {
-            return Icons.createIconBadge(vaadinIcon, ariaLabel, "badge contrast small");
+        public static com.vaadin.flow.component.icon.Icon badgeIconSmallContrast(VaadinIcon vaadinIcon, String ariaLabel) {
+            return Icon.createIconBadge(vaadinIcon, ariaLabel, "badge contrast small");
         }
 
-        public static Icon badgeIconPrimarySmall(VaadinIcon vaadinIcon, String ariaLabel) {
-            return Icons.createIconBadge(vaadinIcon, ariaLabel, "badge small primary");
+        public static com.vaadin.flow.component.icon.Icon badgeIconPrimarySmall(VaadinIcon vaadinIcon, String ariaLabel) {
+            return Icon.createIconBadge(vaadinIcon, ariaLabel, "badge small primary");
         }
 
-        public static Icon badgeIconPrimarySmallSuccess(VaadinIcon vaadinIcon, String ariaLabel) {
-            return Icons.createIconBadge(vaadinIcon, ariaLabel, "badge success small primary");
+        public static com.vaadin.flow.component.icon.Icon badgeIconPrimarySmallSuccess(VaadinIcon vaadinIcon, String ariaLabel) {
+            return Icon.createIconBadge(vaadinIcon, ariaLabel, "badge success small primary");
         }
 
-        public static Icon badgeIconPrimarySmallError(VaadinIcon vaadinIcon, String ariaLabel) {
-            return Icons.createIconBadge(vaadinIcon, ariaLabel, "badge error small primary");
+        public static com.vaadin.flow.component.icon.Icon badgeIconPrimarySmallError(VaadinIcon vaadinIcon, String ariaLabel) {
+            return Icon.createIconBadge(vaadinIcon, ariaLabel, "badge error small primary");
         }
 
-        public static Icon badgeIconPrimarySmallContrast(VaadinIcon vaadinIcon, String ariaLabel) {
-            return Icons.createIconBadge(vaadinIcon, ariaLabel, "badge contrast small primary");
+        public static com.vaadin.flow.component.icon.Icon badgeIconPrimarySmallContrast(VaadinIcon vaadinIcon, String ariaLabel) {
+            return Icon.createIconBadge(vaadinIcon, ariaLabel, "badge contrast small primary");
         }
 
-        public static Icon badgeIconPill(VaadinIcon vaadinIcon, String ariaLabel) {
-            return Icons.createIconBadge(vaadinIcon, ariaLabel, "badge pill");
+        public static com.vaadin.flow.component.icon.Icon badgeIconPill(VaadinIcon vaadinIcon, String ariaLabel) {
+            return Icon.createIconBadge(vaadinIcon, ariaLabel, "badge pill");
         }
 
-        public static Icon badgeIconPillSuccess(VaadinIcon vaadinIcon, String ariaLabel) {
-            return Icons.createIconBadge(vaadinIcon, ariaLabel, "badge success pill");
+        public static com.vaadin.flow.component.icon.Icon badgeIconPillSuccess(VaadinIcon vaadinIcon, String ariaLabel) {
+            return Icon.createIconBadge(vaadinIcon, ariaLabel, "badge success pill");
         }
 
-        public static Icon badgeIconPillError(VaadinIcon vaadinIcon, String ariaLabel) {
-            return Icons.createIconBadge(vaadinIcon, ariaLabel, "badge error pill");
+        public static com.vaadin.flow.component.icon.Icon badgeIconPillError(VaadinIcon vaadinIcon, String ariaLabel) {
+            return Icon.createIconBadge(vaadinIcon, ariaLabel, "badge error pill");
         }
 
-        public static Icon badgeIconPillContrast(VaadinIcon vaadinIcon, String ariaLabel) {
-            return Icons.createIconBadge(vaadinIcon, ariaLabel, "badge contrast pill");
+        public static com.vaadin.flow.component.icon.Icon badgeIconPillContrast(VaadinIcon vaadinIcon, String ariaLabel) {
+            return Icon.createIconBadge(vaadinIcon, ariaLabel, "badge contrast pill");
         }
 
-        public static Icon badgeIconPillPrimary(VaadinIcon vaadinIcon, String ariaLabel) {
-            return Icons.createIconBadge(vaadinIcon, ariaLabel, "badge primary pill");
+        public static com.vaadin.flow.component.icon.Icon badgeIconPillPrimary(VaadinIcon vaadinIcon, String ariaLabel) {
+            return Icon.createIconBadge(vaadinIcon, ariaLabel, "badge primary pill");
         }
 
-        public static Icon badgeIconPillPrimarySuccess(VaadinIcon vaadinIcon, String ariaLabel) {
-            return Icons.createIconBadge(vaadinIcon, ariaLabel, "badge success primary pill");
+        public static com.vaadin.flow.component.icon.Icon badgeIconPillPrimarySuccess(VaadinIcon vaadinIcon, String ariaLabel) {
+            return Icon.createIconBadge(vaadinIcon, ariaLabel, "badge success primary pill");
         }
 
-        public static Icon badgeIconPillPrimaryError(VaadinIcon vaadinIcon, String ariaLabel) {
-            return Icons.createIconBadge(vaadinIcon, ariaLabel, "badge error primary pill");
+        public static com.vaadin.flow.component.icon.Icon badgeIconPillPrimaryError(VaadinIcon vaadinIcon, String ariaLabel) {
+            return Icon.createIconBadge(vaadinIcon, ariaLabel, "badge error primary pill");
         }
 
-        public static Icon badgeIconPillPrimaryContrast(VaadinIcon vaadinIcon, String ariaLabel) {
-            return Icons.createIconBadge(vaadinIcon, ariaLabel, "badge contrast primary pill");
+        public static com.vaadin.flow.component.icon.Icon badgeIconPillPrimaryContrast(VaadinIcon vaadinIcon, String ariaLabel) {
+            return Icon.createIconBadge(vaadinIcon, ariaLabel, "badge contrast primary pill");
         }
 
         public static Span createBadge(int value) {
@@ -1952,30 +1943,30 @@ public class UIUtils {
         }
     }
 
-    public static final class Icons {
+    public static final class Icon {
 
-        private  Icons() {}
+        private Icon() {}
 
         public record MenuItemComponent(MenuItem menuItem, Text text) { }
 
         /****************************************/
     //    https://github.com/fredpena/vaadin-i18n/blob/main/src/main/java/dev/fredpena/app/views/MainLayout.java
         public static MenuItemComponent createIconItem(MenuBar menu, VaadinIcon iconName, String label, String ariaLabel) {
-            return createIconItem(menu, new Icon(iconName), label, ariaLabel, false);
+            return createIconItem(menu, new com.vaadin.flow.component.icon.Icon(iconName), label, ariaLabel, false);
         }
 
         public static MenuItemComponent createIconItem(MenuBar menu, LumoIcon iconName, String label, String ariaLabel) {
-            Icon i = new Icon("lumo", iconName.toString().toLowerCase());
+            com.vaadin.flow.component.icon.Icon i = new com.vaadin.flow.component.icon.Icon("lumo", iconName.toString().toLowerCase());
             return createIconItem(menu, i, label, ariaLabel, false);
         }
 
         @SuppressWarnings("unused") // kept for future use
         private static MenuItemComponent createIconItem(HasMenuItems menu, String iconName, String label) {
-            Icon icon = new Icon("vaadin", iconName);
+            com.vaadin.flow.component.icon.Icon icon = new com.vaadin.flow.component.icon.Icon("vaadin", iconName);
             return createIconItem(menu, icon, label, null, false);
         }
 
-        private static MenuItemComponent createIconItem(HasMenuItems menu, Icon component, String label, String ariaLabel, boolean isChild) {
+        private static MenuItemComponent createIconItem(HasMenuItems menu, com.vaadin.flow.component.icon.Icon component, String label, String ariaLabel, boolean isChild) {
             if (isChild) {
                 component.addClassName("margin-right-medium");
             }
@@ -1997,58 +1988,58 @@ public class UIUtils {
             return image;
         }
 
-        public static Icon createPrimaryIcon(VaadinIcon icon) {
-            Icon i = new Icon(icon);
+        public static com.vaadin.flow.component.icon.Icon createPrimaryIcon(VaadinIcon icon) {
+            com.vaadin.flow.component.icon.Icon i = new com.vaadin.flow.component.icon.Icon(icon);
             i.addClassName("icon-size-small");
             return i;
         }
 
-        public static Icon createSecondaryIcon(VaadinIcon icon) {
-            Icon i = new Icon(icon);
+        public static com.vaadin.flow.component.icon.Icon createSecondaryIcon(VaadinIcon icon) {
+            com.vaadin.flow.component.icon.Icon i = new com.vaadin.flow.component.icon.Icon(icon);
             i.addClassName("icon-size-large");
             setTextColor("color-text-secondary", i);
             return i;
         }
 
-        public static Icon createTertiaryIcon(VaadinIcon icon) {
-            Icon i = new Icon(icon);
+        public static com.vaadin.flow.component.icon.Icon createTertiaryIcon(VaadinIcon icon) {
+            com.vaadin.flow.component.icon.Icon i = new com.vaadin.flow.component.icon.Icon(icon);
             setTextColor("color-text-tertiary", i);
             return i;
         }
 
-        public static Icon createDisabledIcon(VaadinIcon icon) {
-            Icon i = new Icon(icon);
+        public static com.vaadin.flow.component.icon.Icon createDisabledIcon(VaadinIcon icon) {
+            com.vaadin.flow.component.icon.Icon i = new com.vaadin.flow.component.icon.Icon(icon);
             setTextColor("color-text-disabled", i);
             return i;
         }
 
-        public static Icon createSuccessIcon(VaadinIcon icon) {
-            Icon i = new Icon(icon);
+        public static com.vaadin.flow.component.icon.Icon createSuccessIcon(VaadinIcon icon) {
+            com.vaadin.flow.component.icon.Icon i = new com.vaadin.flow.component.icon.Icon(icon);
             setTextColor("color-text-success", i);
             return i;
         }
 
-        public static Icon createErrorIcon(VaadinIcon icon) {
-            Icon i = new Icon(icon);
+        public static com.vaadin.flow.component.icon.Icon createErrorIcon(VaadinIcon icon) {
+            com.vaadin.flow.component.icon.Icon i = new com.vaadin.flow.component.icon.Icon(icon);
             setTextColor("color-text-error", i);
             return i;
         }
 
-        public static Icon createSmallIcon(VaadinIcon icon) {
-            Icon i = new Icon(icon);
+        public static com.vaadin.flow.component.icon.Icon createSmallIcon(VaadinIcon icon) {
+            com.vaadin.flow.component.icon.Icon i = new com.vaadin.flow.component.icon.Icon(icon);
             i.addClassName("icon-size-small");
             return i;
         }
 
-        public static Icon createLargeIcon(VaadinIcon icon) {
-            Icon i = new Icon(icon);
+        public static com.vaadin.flow.component.icon.Icon createLargeIcon(VaadinIcon icon) {
+            com.vaadin.flow.component.icon.Icon i = new com.vaadin.flow.component.icon.Icon(icon);
             i.addClassName("icon-size-large");
             return i;
         }
 
-        public static Icon createIcon(String iconSize, String color,
-                                          VaadinIcon icon) {
-            Icon i = new Icon(icon);
+        public static com.vaadin.flow.component.icon.Icon createIcon(String iconSize, String color,
+                                                                     VaadinIcon icon) {
+            com.vaadin.flow.component.icon.Icon i = new com.vaadin.flow.component.icon.Icon(icon);
             i.addClassNames(iconSize, color);
             setTextColor(color, i);
             return i;
@@ -2056,7 +2047,7 @@ public class UIUtils {
 
         public static MenuItem createIconItem(HasMenuItems menu, LumoIcon iconName, String label, String ariaLabel,
                                               boolean isChild) {
-            Icon icon = new Icon("lumo", iconName.toString().toLowerCase());
+            com.vaadin.flow.component.icon.Icon icon = new com.vaadin.flow.component.icon.Icon("lumo", iconName.toString().toLowerCase());
             MenuItem item = menu.addItem(icon, null);
             item.setAriaLabel(ariaLabel);
 
@@ -2068,7 +2059,7 @@ public class UIUtils {
 
         public static MenuItem createIconItem(HasMenuItems menu, VaadinIcon iconName, String label, String ariaLabel,
                                               ComponentEventListener<ClickEvent<MenuItem>> clickListener) {
-            Icon icon = new Icon(iconName);
+            com.vaadin.flow.component.icon.Icon icon = new com.vaadin.flow.component.icon.Icon(iconName);
             icon.addClassName("icon-size-small");
             MenuItem item = menu.addItem(icon, clickListener);
             item.setAriaLabel(ariaLabel);
@@ -2080,23 +2071,23 @@ public class UIUtils {
             return item;
         }
 
-        public static Icon createTrashIcon() {
+        public static com.vaadin.flow.component.icon.Icon createTrashIcon() {
             return createIcon("icon-size-small", "color-text-error", VaadinIcon.TRASH);
         }
 
-        public static Icon createEditIcon() {
+        public static com.vaadin.flow.component.icon.Icon createEditIcon() {
             return createIcon("icon-size-small", "color-text-primary", VaadinIcon.EDIT);
         }
 
-        public static Icon createCloseIcon() {
-            final Icon closeIcon = VaadinIcon.CLOSE_SMALL.create();
+        public static com.vaadin.flow.component.icon.Icon createCloseIcon() {
+            final com.vaadin.flow.component.icon.Icon closeIcon = VaadinIcon.CLOSE_SMALL.create();
             closeIcon.addClassName("icon-size-small");
             closeIcon.addClassName("color-text-primary");
             return closeIcon;
         }
 
-        private static Icon createIconBadge(VaadinIcon vaadinIcon, String ariaLabel, String theme) {
-            Icon icon = vaadinIcon.create();
+        private static com.vaadin.flow.component.icon.Icon createIconBadge(VaadinIcon vaadinIcon, String ariaLabel, String theme) {
+            com.vaadin.flow.component.icon.Icon icon = vaadinIcon.create();
             icon.addClassName("padding-xsmall");
             // Accessible label
             icon.getElement().setAttribute("aria-label", ariaLabel);
@@ -2106,9 +2097,9 @@ public class UIUtils {
             return icon;
         }
 
-        public static Icon createStatusIcon(String status) {
+        public static com.vaadin.flow.component.icon.Icon createStatusIcon(String status) {
             boolean isAvailable = "Available".equals(status);
-            Icon icon;
+            com.vaadin.flow.component.icon.Icon icon;
             if (isAvailable) {
                 icon = VaadinIcon.CHECK.create();
                 icon.getElement().getThemeList().add("badge success");
@@ -2120,8 +2111,8 @@ public class UIUtils {
             return icon;
         }
 
-        public static Icon createIcon(VaadinIcon vaadinIcon) {
-            Icon icon = vaadinIcon.create();
+        public static com.vaadin.flow.component.icon.Icon createIcon(VaadinIcon vaadinIcon) {
+            com.vaadin.flow.component.icon.Icon icon = vaadinIcon.create();
             icon.addClassName("color-text-primary");
             icon.setSize("20px");
             return icon;
@@ -2129,7 +2120,7 @@ public class UIUtils {
 
         public static HorizontalLayout createIconMenuItem(VaadinIcon vaadinIcon, String text) {
 
-            Icon icon = new Icon(vaadinIcon);
+            com.vaadin.flow.component.icon.Icon icon = new com.vaadin.flow.component.icon.Icon(vaadinIcon);
             icon.addClassName("color-text-primary");
             icon.setSize("15px");
 
@@ -2145,7 +2136,7 @@ public class UIUtils {
 
         public static MenuItem createIconItem(MenuBar menu, VaadinIcon iconName,
                                                   String ariaLabel) {
-            Icon icon = new Icon(iconName);
+            com.vaadin.flow.component.icon.Icon icon = new com.vaadin.flow.component.icon.Icon(iconName);
             MenuItem item = menu.addItem(icon);
             item.setAriaLabel(ariaLabel);
 

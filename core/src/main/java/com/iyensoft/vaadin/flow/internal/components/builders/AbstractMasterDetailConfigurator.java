@@ -1,1095 +1,648 @@
 package com.iyensoft.vaadin.flow.internal.components.builders;
-import com.holonplatform.core.i18n.Localizable;
-import com.holonplatform.vaadin.flow.components.Components;
-import com.holonplatform.vaadin.flow.components.ListingBundle;
-import com.holonplatform.vaadin.flow.components.ListingBundleBuilder;
-import com.holonplatform.vaadin.flow.internal.components.builders.AbstractHeaderConfigurator;
-import com.holonplatform.vaadin.flow.internal.lumo.SeparatorColor;
-import com.holonplatform.vaadin.flow.vaadinplus.Layout;
-import com.holonplatform.vaadin.flow.vaadinplus.ResponsiveDiv;
-import com.holonplatform.vaadin.flow.vaadinplus.components.Empty;
-import com.holonplatform.vaadin.flow.vaadinplus.components.GridHeader;
-import com.holonplatform.vaadin.flow.vaadinplus.components.Header;
-import com.holonplatform.vaadin.flow.vaadinplus.components.Separator;
-import com.holonplatform.vaadin.flow.vaadinplus.utilities.Color;
-import com.iyensoft.vaadin.flow.components.builders.MasterDetailConfigurator;
-import com.iyensoft.vaadin.flow.internal.components.masterdetail.SelectionHighlighter;
-import com.iyensoft.vaadin.flow.utils.responsive.ViewMode;
-import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.ComponentEventListener;
-import com.vaadin.flow.component.dependency.StyleSheet;
-import com.vaadin.flow.component.grid.Grid;
-import com.vaadin.flow.component.grid.ItemClickEvent;
-import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.component.icon.VaadinIcon;
-import com.vaadin.flow.component.tabs.Tabs;
-import com.vaadin.flow.data.provider.Query;
-import com.vaadin.flow.data.renderer.Renderer;
-import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
-import java.util.*;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.function.Supplier;
-import java.util.stream.Stream;
+
+import com.holonplatform.core.property.PropertyBox;
+import com.holonplatform.core.property.PropertySet;
+import com.holonplatform.vaadin.flow.components.ListingBundle;
+import com.holonplatform.vaadin.flow.components.builders.FooterConfigurator;
+import com.holonplatform.vaadin.flow.components.builders.HeaderConfigurator;
+import com.holonplatform.vaadin.flow.internal.components.builders.AbstractComponentConfigurator;
+import com.holonplatform.vaadin.flow.internal.components.builders.AbstractListingBundleConfigurer;
+import com.holonplatform.vaadin.flow.vaadinplus.components.Footer;
+import com.holonplatform.vaadin.flow.vaadinplus.components.Header;
+import com.holonplatform.vaadin.flow.vaadinplus.components.Sheet;
+import com.iyensoft.vaadin.flow.components.DetailSyncAware;
+import com.iyensoft.vaadin.flow.components.MasterDetailLayout;
+import com.iyensoft.vaadin.flow.components.builders.MasterDetailConfigurator;
+import com.iyensoft.vaadin.flow.enums.ViewMode;
+import com.iyensoft.vaadin.flow.internal.components.masterdetail.SelectionHighlighter;
+import com.iyensoft.vaadin.flow.internal.components.masterdetail.UrlSelectionSync;
+import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.HasEnabled;
+import com.vaadin.flow.component.HasSize;
+import com.vaadin.flow.component.HasStyle;
+import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.shared.HasTooltip;
+
 /**
- * Abstract implementation of {@link MasterDetailConfigurator}.
+ * Abstract base for all {@link MasterDetailConfigurator} implementations.
  *
- * <p>This class extends {@link Layout} — it contains the shared builder logic and also acts
- * as the resulting component. Call {@link #build()} to wire the internal structure, then content
- * this instance to a parent layout.
- * All operational methods ({@link #notifyDataChanged()}, {@link #clearSelection()}, etc.) are
- * available directly on this instance both before and after {@link #build()}.</p>
- *
- * <p>No CSS classes or stylesheets are applied; styling is left entirely to the caller.</p>
+ * <p>Wraps a {@link MasterDetailLayout} directly. Concrete subclasses return
+ * {@link #getComponent()} from {@code build()} (the Panel pattern).</p>
  *
  * @param <T> item type
- * @param <C> parent configurator type
+ * @param <C> self type
  */
-@StyleSheet("context://master-detail-v2.css")
-public abstract class AbstractMasterDetailConfigurator<T, C extends MasterDetailConfigurator<T, C>> extends Layout implements MasterDetailConfigurator<T, C> {
+public abstract class AbstractMasterDetailConfigurator<T, C extends MasterDetailConfigurator<T, C>>
+        extends AbstractComponentConfigurator<MasterDetailLayout<T>, C>
+        implements MasterDetailConfigurator<T, C> {
 
-    protected abstract C getConfigurator();
+    /** Bean type supplied at construction time; {@code null} for PropertySet builders. */
+    private final Class<T> beanType;
 
-    private final ListingBundleBuilder<T> listingBundleBuilder;
+    /** PropertySet supplied at construction time; {@code null} for bean-typed builders. */
+    private final PropertySet<?> propertySet;
 
-    private Function<T, Optional<T>> detailLoader;
-    private Function<T, String> idExtractor;
-    private Function<String, Optional<T>> itemLoader;
-    private boolean deepLinkRequested;
-    private boolean autoShowFirst;
-    private int selectionDebounceMillis;
-    private int detailCacheSize = 1;
-    private boolean scrollToSelected;
-    private boolean clearDetailOnPageChange;
-    private boolean prefetchAdjacent;
-    private final List<Runnable> dataChangedListeners = new ArrayList<>();
-    private final List<Consumer<T>> itemChangedListeners = new ArrayList<>();
-    private final List<Map.Entry<Component, Consumer<T>>> syncHandlers = new ArrayList<>();
+    /** Viewport mode; when mobile the detail panel is not added to the DOM at build time. */
+    private ViewMode viewMode;
 
-    private Header masterHeader;
-    private boolean separatorVisible;
-    private SeparatorColor separatorColor; // stored; applied by caller via CSS
-    private Header detailHeader;
-    private DefaultDetailTabsNode detailTabs;
-    private final List<Component> detailContentComponents = new ArrayList<>();
-    private final List<Component> detailFooterComponents = new ArrayList<>();
-    private boolean mobileMasterOnly;
-    private String mobileSheetTitle;
-    private Separator separatorComponent;
-    private ListingBundle<T> configuredListingBundle;
+    /** Optional Sheet to wrap the detail panel in on mobile. */
+    private Sheet mobileSheet;
 
-    private final Map<Object, T> detailCache = new LinkedHashMap<>(16, 0.75f, true) {
-        @Override
-        protected boolean removeEldestEntry(Map.Entry<Object, T> eldest) {
-            return size() > Math.max(1, detailCacheSize);
+    /** Optional override for the CSS part name used by SelectionHighlighter. */
+    private String highlightPartName;
+
+    /** Optional per-item accent CSS class provider. */
+    private Function<T, String> accentColorProvider;
+
+    /** Bean-typed constructor. */
+    protected AbstractMasterDetailConfigurator(MasterDetailLayout<T> component, Class<T> beanType) {
+        super(component);
+        this.beanType = beanType;
+        this.propertySet = null;
+    }
+
+    /** PropertySet-typed constructor (item type is {@code PropertyBox}). */
+    protected AbstractMasterDetailConfigurator(MasterDetailLayout<T> component, PropertySet<?> propertySet) {
+        super(component);
+        this.beanType = null;
+        this.propertySet = propertySet;
+    }
+
+    // ── MasterDetailConfigurator API ──────────────────────────────────────────
+
+    @Override
+    public C withHighlightPartName(String partName) {
+        this.highlightPartName = partName;
+        return getConfigurator();
+    }
+
+    @Override
+    public C withAccentColorProvider(Function<T, String> cssClassProvider) {
+        this.accentColorProvider = cssClassProvider;
+        return getConfigurator();
+    }
+
+    @Override
+    public C viewMode(ViewMode viewMode) {
+        this.viewMode = viewMode;
+        return getConfigurator();
+    }
+
+    @Override
+    public C withMobileSheet(Sheet sheet) {
+        this.mobileSheet = sheet;
+        return getConfigurator();
+    }
+
+    @Override
+    public C withMobileSheet(Sheet.Side side) {
+        this.mobileSheet = Sheet.builder(side).build();
+        return getConfigurator();
+    }
+
+    /** Returns the configured mobile Sheet, or {@code null} if none. */
+    private Sheet getMobileSheet() {
+        return mobileSheet;
+    }
+
+    @Override
+    public C withDetailSync(Consumer<T> handler) {
+        getComponent().addSyncDispatcher(handler);
+        return getConfigurator();
+    }
+
+    /** Returns {@code true} when a mobile ViewMode has been set. */
+    boolean isMobile() {
+        return viewMode != null && viewMode.isMobile();
+    }
+
+    @Override
+    public C lazyDetail(Consumer<MasterDetailConfigurator.DetailOptions<T>> setup) {
+        if (!isMobile() || mobileSheet == null) {
+            // Non-mobile or no Sheet: execute setup eagerly at build time.
+            DefaultDetailOptions<T> opts = new DefaultDetailOptions<>(new Div());
+            setup.accept(opts);
+            wireDetailDiv(opts.getDiv(), opts.getSyncHandlers(), getComponent());
+            return getConfigurator();
         }
-    };
 
-    private Grid<T> builtGrid;
-    private SelectionHighlighter<T> selectionHighlighter;
-    private T currentItem;
-    private Object currentItemKey;
-    private boolean autoSelectFired;
-    private long lastSyncAt;
+        // Mobile + Sheet: truly lazy — nothing allocated until first tap.
+        //
+        // IMPORTANT: extract all captures into locals so the lambda holds NO implicit
+        // reference to this configurator. Without this, the configurator would be pinned
+        // in heap for the entire session lifetime — a significant leak at scale.
+        // After first tap, setupRef and nodeRef are nulled so the consumer lambda and the
+        // DefaultDetailOptions (and any view-level captures) are immediately eligible for GC.
+        final Sheet localSheet = mobileSheet;
+        final MasterDetailLayout<T> layout = getComponent();
+        final List<Consumer<Object>> dispatchers = new ArrayList<>();
+        final boolean[] initialized = { false };
 
-    // Exposed via getListingBundle / getMasterDiv / getDetailDiv
-    private ListingBundle<T> builtBundle;
-    private Layout masterPanel;
-    private Layout detailPanel;
+        @SuppressWarnings("unchecked")
+        final Consumer<MasterDetailConfigurator.DetailOptions<T>>[] setupRef = new Consumer[]{ setup };
+        @SuppressWarnings("unchecked")
+        final DefaultDetailOptions<T>[] nodeRef = new DefaultDetailOptions[]{ new DefaultDetailOptions<>(new Div()) };
 
-    // â��€â”€ Inner node singletons â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+        layout.addSyncDispatcher(item -> {
+            if (!initialized[0]) {
+                initialized[0] = true;
+                // ▶ Only here are the detail components constructed (first tap).
+                setupRef[0].accept(nodeRef[0]);
+                collectSyncAware(nodeRef[0].getDiv(), dispatchers);
+                dispatchers.addAll(nodeRef[0].getSyncHandlers());
 
-    private final DefaultMasterViewNode masterNode = new DefaultMasterViewNode();
-    private final DefaultDefaultViewNode defaultViewNode = new DefaultDefaultViewNode();
-    private final DefaultSeparatorNode separatorNode = new DefaultSeparatorNode();
-    private final DefaultDetailNode detailNode = new DefaultDetailNode();
+                // Distribute to Sheet slots (same logic as wireMobileSheet).
+                Header dh   = nodeRef[0].getDetailHeader();
+                Footer df   = nodeRef[0].getDetailFooter();
+                List<Component> body = nodeRef[0].getBodyComponents();
+                if (dh != null) {
+                    dh.addActions(localSheet.getCloseButton());
+                    localSheet.setHeader(dh);
+                }
+                if (!body.isEmpty()) {
+                    localSheet.setContent(body.toArray(new Component[0]));
+                }
+                if (df != null) {
+                    localSheet.setFooter(df);
+                }
 
-    // â”€â”€ Constructor â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-
-    public AbstractMasterDetailConfigurator(Class<T> beanType) {
-        this.listingBundleBuilder = Components.listing(Objects.requireNonNull(beanType, "beanType must not be null"));
-    }
-
-    @Override
-    public MasterNode<T, C> masterView() {
-        return masterNode;
-    }
-
-    @Override
-    public MasterDetailConfigurator.DefaultViewNode<T, C> defaultView() {
-        separatorVisible = true;
-        return defaultViewNode;
-    }
-
-    @Override
-    public MasterDetailConfigurator.DefaultViewNode<T, C> defaultView(MasterNode<T, ?> master) {
-        if (master != null) {
-            master.add();
-        }
-        return defaultView();
-    }
-
-    @Override
-    public C detailLoader(Function<T, Optional<T>> detailLoader) {
-        this.detailLoader = detailLoader;
-        return getConfigurator();
-    }
-
-    @Override
-    public C deepLink() {
-        this.deepLinkRequested = true;
-        return getConfigurator();
-    }
-
-    @Override
-    public C deepLink(Function<T, String> idExtractor, Function<String, Optional<T>> itemLoader) {
-        return itemId(idExtractor, itemLoader).deepLink();
-    }
-
-    @Override
-    public C itemId(Function<T, String> idExtractor, Function<String, Optional<T>> itemLoader) {
-        this.idExtractor = idExtractor;
-        this.itemLoader = itemLoader;
-        return getConfigurator();
-    }
-
-    @Override
-    public C autoShowFirst() {
-        return autoShowFirst(true);
-    }
-
-    @Override
-    public C autoShowFirst(boolean auto) {
-        this.autoShowFirst = auto;
-        return getConfigurator();
-    }
-
-    @Override
-    public C selectionDebounce(int millis) {
-        this.selectionDebounceMillis = Math.max(0, millis);
-        return getConfigurator();
-    }
-
-    @Override
-    public C detailCacheSize(int size) {
-        this.detailCacheSize = Math.max(1, size);
-        return getConfigurator();
-    }
-
-    @Override
-    public C scrollToSelected(boolean scrollToSelected) {
-        this.scrollToSelected = scrollToSelected;
-        return getConfigurator();
-    }
-
-    @Override
-    public C clearDetailOnPageChange(boolean clearDetailOnPageChange) {
-        this.clearDetailOnPageChange = clearDetailOnPageChange;
-        return getConfigurator();
-    }
-
-    @Override
-    public C prefetchAdjacent(boolean prefetchAdjacent) {
-        this.prefetchAdjacent = prefetchAdjacent;
-        return getConfigurator();
-    }
-
-    @Override
-    public C onDataChanged(Runnable listener) {
-        if (listener != null) {
-            dataChangedListeners.add(listener);
-        }
-        return getConfigurator();
-    }
-
-    @Override
-    public C onItemChanged(Consumer<T> listener) {
-        if (listener != null) {
-            itemChangedListeners.add(listener);
-        }
-        return getConfigurator();
-    }
-
-    @Override
-    public C withDetailSync(Component owner, Consumer<T> handler) {
-        Objects.requireNonNull(owner, "withDetailSync: owner must not be null");
-        Objects.requireNonNull(handler, "withDetailSync: handler must not be null");
-        syncHandlers.add(Map.entry(owner, handler));
-        return getConfigurator();
-    }
-
-    @Override
-    public C mobileSheetTitle(String title) {
-        this.mobileSheetTitle = title;
-        return getConfigurator();
-    }
-
-    @Override
-    public C mobileMasterOnly(boolean mobileMasterOnly) {
-        setMobileMasterOnly(mobileMasterOnly);
-        return getConfigurator();
-    }
-
-    protected void setMobileMasterOnly(boolean mobileMasterOnly) {
-        this.mobileMasterOnly = mobileMasterOnly;
-    }
-
-    public C build() {
-        ListingBundle<T> bundle = configuredListingBundle != null ? configuredListingBundle : listingBundleBuilder.build();
-        this.builtBundle = bundle;
-        this.builtGrid = extractGrid(bundle);
-        this.builtGrid.addClassName("mdl-master-grid");
-        this.separatorComponent = null;
-        this.selectionHighlighter = new SelectionHighlighter<>(builtGrid,
-                idExtractor != null ? idExtractor : Function.identity());
-
-        // Resolve tabs content container into the detail content list
-        if (detailTabs != null) {
-            Component tabsContent = detailTabs.getContentContainer();
-            if (tabsContent != null && !detailContentComponents.contains(tabsContent)) {
-                detailContentComponents.addFirst(tabsContent);
+                layout.add(localSheet);
+                // Release one-shot state so GC can collect early.
+                nodeRef[0] = null;
+                setupRef[0] = null;
             }
+            dispatchers.forEach(h -> h.accept(item));
+            localSheet.open();
+        });
+        return getConfigurator();
+    }
+
+    /**
+     * Collects all {@link DetailSyncAware} dispatchers from {@code div} and merges the
+     * explicit {@code syncHandlers} list, then registers them all on {@code layout} and
+     * appends {@code div} as a direct child.
+     */
+    private static <T> void wireDetailDiv(Div div,
+                                          List<Consumer<Object>> syncHandlers,
+                                          MasterDetailLayout<T> layout) {
+        List<Consumer<Object>> dispatchers = new ArrayList<>();
+        collectSyncAware(div, dispatchers);
+        dispatchers.addAll(syncHandlers);
+        dispatchers.forEach(h -> layout.addSyncDispatcher(item -> h.accept(item)));
+        layout.add(div);
+    }
+
+    @Override
+    public C withUrlSync(Function<T, String> idExtractor,
+                         Function<String, Optional<T>> itemLoader) {
+        getComponent().setUrlSync(UrlSelectionSync.<T>builder()
+                .idExtractor(idExtractor)
+                .itemLoader(itemLoader)
+                .build());
+        return getConfigurator();
+    }
+
+    @Override
+    public C mobile(Div master) {
+        getComponent().add(master);
+        return getConfigurator();
+    }
+
+    @Override
+    public C desktop(Div master, Div detail) {
+        getComponent().add(master, detail);
+        return getConfigurator();
+    }
+
+    @Override
+    public C master(Consumer<MasterDetailConfigurator.MasterOptions<T>> configure) {
+        DefaultMasterOptions<T> opts = new DefaultMasterOptions<>(new Div(), getComponent(), beanType, propertySet, highlightPartName, accentColorProvider);
+        configure.accept(opts);
+        opts.wire();
+        return getConfigurator();
+    }
+
+    @Override
+    public C detail(Consumer<MasterDetailConfigurator.DetailOptions<T>> configure) {
+        DefaultDetailOptions<T> opts = new DefaultDetailOptions<>(new Div());
+        configure.accept(opts);
+        if (isMobile()) {
+            Sheet sheet = getMobileSheet();
+            if (sheet != null) {
+                wireMobileSheet(opts, sheet);
+            } else {
+                // No Sheet: register explicit handlers only; nothing is attached to DOM.
+                opts.getSyncHandlers().forEach(h ->
+                        getComponent().addSyncDispatcher(item -> h.accept(item)));
+            }
+        } else {
+            wireDetailDiv(opts.getDiv(), opts.getSyncHandlers(), getComponent());
         }
+        return getConfigurator();
+    }
 
-        // Fallback empty state when no detail content was registered
-        if (detailContentComponents.isEmpty()) {
-            detailContentComponents.add(Empty.builder()
-                    .title("Select an item")
-                    .description("Choose a row in the master list to view details.")
-                    .build());
-        }
+    /**
+     * Wires a fully-configured detail panel into a mobile {@link Sheet}.
+     *
+     * <p>Maps the three logical slots of the detail panel to the three Sheet slots:</p>
+     * <ul>
+     *   <li>detail {@code Header}  → {@code sheet.setHeader(...)} + injects the Sheet's own
+     *       close button so the user can dismiss the Sheet</li>
+     *   <li>body components (non-Header, non-Footer children) → {@code sheet.setContent(...)}</li>
+     *   <li>detail {@code Footer}  → {@code sheet.setFooter(...)}</li>
+     * </ul>
+     *
+     * <p>If no detail header was configured the Sheet keeps its built-in back/close header.</p>
+     */
+    private void wireMobileSheet(DefaultDetailOptions<T> opts, Sheet sheet) {
+        List<Consumer<Object>> dispatchers = new ArrayList<>();
+        collectSyncAware(opts.getDiv(), dispatchers);
+        dispatchers.addAll(opts.getSyncHandlers());
 
-        this.masterPanel = Components.layout()
-                .styleName("master-view")
-                .build();
-        masterPanel.setWidthFull();
-        Layout masterContent = Components.layout()
-                .styleName("master-view-content")
-                .build();
-        masterContent.setWidthFull();
-
-        if (masterHeader != null) masterPanel.add(masterHeader);
-
-        GridHeader bundleHeader = bundle.header();
-        if (bundleHeader != null) {
-            masterPanel.add(bundleHeader);
-        }
-
-        Component masterToolbar = bundle.toolbar();
-        if (masterToolbar.isVisible()) {
-            masterContent.add(masterToolbar);
-        }
-
-        builtGrid.setWidthFull();
-        masterContent.add(builtGrid);
-        masterContent.setFlexGrow(builtGrid);
-
-        Component bundleFooter = bundle.footer();
-        if (bundleFooter != null) {
-            masterContent.add(bundleFooter);
-        }
-
-        masterPanel.add(masterContent);
-        masterPanel.setFlexGrow(masterContent);
-
-        this.detailPanel = Components.layout()
-                .styleName("detail-view")
-                .build();
-        detailPanel.setWidthFull();
-        Layout detailContent = Components.layout()
-                .styleName("detail-view-content")
-                .build();
-        detailContent.setWidthFull();
+        Header detailHeader = opts.getDetailHeader();
+        Footer detailFooter = opts.getDetailFooter();
+        List<Component> body = opts.getBodyComponents();
 
         if (detailHeader != null) {
-            detailContent.add(detailHeader);
-            if (detailTabs != null) detailHeader.setTabs(detailTabs.getTabs());
+            // Preserve close UX: inject the Sheet's own close button into the custom header.
+            detailHeader.addActions(sheet.getCloseButton());
+            sheet.setHeader(detailHeader);
+        }
+        if (!body.isEmpty()) {
+            sheet.setContent(body.toArray(new Component[0]));
+        }
+        if (detailFooter != null) {
+            sheet.setFooter(detailFooter);
         }
 
-        detailContent.add(detailContentComponents.toArray(Component[]::new));
-        if (!detailFooterComponents.isEmpty()) {
-            detailContent.add(detailFooterComponents.toArray(Component[]::new));
+        dispatchers.forEach(h -> getComponent().addSyncDispatcher(item -> h.accept(item)));
+        getComponent().addSyncDispatcher(__ -> sheet.open());
+        getComponent().add(sheet);
+    }
+
+    // ── AbstractComponentConfigurator plumbing ────────────────────────────────
+
+    @Override
+    protected Optional<HasEnabled> hasEnabled() {
+        return Optional.ofNullable(getComponent());
+    }
+
+    @Override
+    protected Optional<HasSize> hasSize() {
+        return Optional.ofNullable(getComponent());
+    }
+
+    @Override
+    protected Optional<HasStyle> hasStyle() {
+        return Optional.ofNullable(getComponent());
+    }
+
+    @Override
+    protected Optional<HasTooltip> hasTooltip() {
+        return Optional.empty();
+    }
+
+    // ── Inner: AbstractPanelOptions ───────────────────────────────────────────
+
+    /**
+     * Shared base for {@link DefaultMasterOptions} and {@link DefaultDetailOptions}.
+     * <p>Holds the panel {@link Div} and the explicit sync-handler list, and provides
+     * the Consumer-based {@code header/footer/content/styleName} methods so neither
+     * subclass duplicates that logic.
+     */
+    private static abstract class AbstractPanelOptions<SELF> {
+
+        protected final Div div;
+        protected final List<Consumer<Object>> syncHandlers = new ArrayList<>();
+
+        AbstractPanelOptions(Div div) {
+            this.div = div;
         }
 
-        detailPanel.add(detailContent);
-        detailPanel.setFlexGrow(detailContent);
+        protected abstract SELF self();
 
-        if (mobileMasterOnly) {
-            addClassName("mdl-mobile-master-only");
-        }
-
-        if (separatorVisible) {
-            separatorComponent = Separator.builder()
-                    .orientation(Separator.Orientation.VERTICAL)
-                    .styleName("separator")
-                    .color(Color.Background.CONTRAST_90)
-                    .decorative(true)
-                    .build();
-            if (separatorColor != null) {
-                separatorComponent.addClassName(separatorColor.getClassName());
+        public SELF header(Consumer<HeaderConfigurator<?>> configure) {
+            if (configure != null) {
+                Header h = new Header("");
+                configure.accept(HeaderConfigurator.configure(h));
+                div.addComponentAsFirst(h);
             }
-            this.add(masterPanel, separatorComponent, detailPanel);
-        } else {
-            this.add(masterPanel, detailPanel);
+            return self();
         }
 
-        if (mobileSheetTitle != null && !mobileSheetTitle.isBlank()) {
-            getElement().setAttribute("data-mobile-sheet-title", mobileSheetTitle);
+        public SELF footer(Consumer<FooterConfigurator<?>> configure) {
+            if (configure != null) {
+                Footer f = new Footer();
+                configure.accept(FooterConfigurator.configure(f));
+                div.add(f);
+            }
+            return self();
         }
 
-        builtGrid.addItemClickListener(event -> handleItemClick(event.getItem()));
-
-        if (deepLinkRequested || autoShowFirst) {
-            addAttachListener(event -> event.getUI().getElement()
-                    .executeJs("return window.location.search")
-                    .then(String.class, search -> {
-                        String id = deepLinkRequested ? extractIdQueryParameter(search) : null;
-                        if (id != null && !id.isBlank() && itemLoader != null) {
-                            autoSelectFired = true;
-                            restoreSelection(id);
-                            return;
-                        }
-                        if (autoShowFirst && !autoSelectFired) {
-                            autoSelectFired = true;
-                            selectFirst();
-                        }
-                    }));
+        public SELF content(Component... components) {
+            if (components != null) div.add(components);
+            return self();
         }
 
+        public SELF styleName(String... styleNames) {
+            if (styleNames != null) div.addClassNames(styleNames);
+            return self();
+        }
 
-        if (clearDetailOnPageChange || prefetchAdjacent) {
-            var bar = bundle.bar();
-            if (bar != null) {
-                bar.addPageChangeListener(page -> {
-                    if (clearDetailOnPageChange) clearSelection();
-                    if (prefetchAdjacent) prefetchPage(page, bar.getPageSize());
+        Div getDiv() { return div; }
+        List<Consumer<Object>> getSyncHandlers() { return syncHandlers; }
+    }
+
+    // ── Inner: DefaultMasterOptions ───────────────────────────────────────────
+
+    /**
+     * Consumer-receivable master panel options. Extends {@link AbstractPanelOptions}
+     * for shared header/footer/content/styleName logic. Wires the listing + selection
+     * machinery after the consumer has fully configured it.
+     */
+    private static final class DefaultMasterOptions<T>
+            extends AbstractPanelOptions<MasterDetailConfigurator.MasterOptions<T>>
+            implements MasterDetailConfigurator.MasterOptions<T> {
+
+        private final MasterDetailLayout<T> layout;
+        private final Class<T> beanType;
+        private final PropertySet<?> propertySet;
+        private final String highlightPartName;
+        private final Function<T, String> accentColorProvider;
+        private Function<T, ?> selectionKeyExtractor;
+        private ListingBundle<?> builtBundle;
+
+        DefaultMasterOptions(Div div, MasterDetailLayout<T> layout,
+                             Class<T> beanType, PropertySet<?> propertySet,
+                             String highlightPartName, Function<T, String> accentColorProvider) {
+            super(div);
+            this.layout = layout;
+            this.beanType = beanType;
+            this.propertySet = propertySet;
+            this.highlightPartName = highlightPartName;
+            this.accentColorProvider = accentColorProvider;
+            div.addClassNames("master-view", "master-view-content");
+        }
+
+        @Override
+        protected MasterDetailConfigurator.MasterOptions<T> self() { return this; }
+
+        @Override
+        public MasterDetailConfigurator.MasterOptions<T> listing(
+                Consumer<MasterDetailConfigurator.ListingOptions<T>> configure) {
+            MasterDetailConfigurator.ListingOptions<T> opts = createListingOptions();
+            configure.accept(opts);
+            builtBundle = extractBundle(opts);
+            div.add(builtBundle);
+            return this;
+        }
+
+        @SuppressWarnings("unchecked")
+        private MasterDetailConfigurator.ListingOptions<T> createListingOptions() {
+            if (propertySet != null) {
+                return (MasterDetailConfigurator.ListingOptions<T>)
+                        new DefaultPropertyBoxListingOptions(propertySet);
+            }
+            if (beanType == null) {
+                throw new IllegalStateException(
+                        "No bean type or PropertySet configured. " +
+                        "Use MasterDetailBuilder.create(BeanClass.class) or " +
+                        "MasterDetailBuilder.create(PropertySet) to enable listing().");
+            }
+            return new DefaultBeanListingOptions<>(beanType);
+        }
+
+        @SuppressWarnings("unchecked")
+        private ListingBundle<T> extractBundle(MasterDetailConfigurator.ListingOptions<T> opts) {
+            if (opts instanceof DefaultBeanListingOptions<?> bean) {
+                return ((DefaultBeanListingOptions<T>) bean).build();
+            }
+            if (opts instanceof DefaultPropertyBoxListingOptions pb) {
+                return (ListingBundle<T>) pb.build();
+            }
+            throw new IllegalStateException("Unknown ListingOptions: " + opts.getClass());
+        }
+
+        @Override
+        public MasterDetailConfigurator.MasterOptions<T> selectionKey(Function<T, ?> keyExtractor) {
+            this.selectionKeyExtractor = keyExtractor;
+            return this;
+        }
+
+        @Override
+        public MasterDetailConfigurator.MasterOptions<T> card() {
+            div.addClassName("card");
+            return this;
+        }
+
+        /**
+         * Called by {@code master(Consumer)} after the consumer exits.
+         * At this point {@code selectionKeyExtractor} is fully set, so the highlighter
+         * is wired correctly regardless of call order within the lambda.
+         *
+         * <p>Key-extractor resolution order (first wins):</p>
+         * <ol>
+         *   <li>Explicit {@link #selectionKey} configured by the caller.</li>
+         *   <li>Auto-detected bean identifier field ({@code @Id}, {@code @Identifier},
+         *       or field named {@code id}) — ensures value-based comparison when the
+         *       managed fetch callback re-fetches and returns new object instances.</li>
+         *   <li>Object identity ({@code Function.identity()}) as last resort.</li>
+         * </ol>
+         */
+        @SuppressWarnings("unchecked")
+        void wire() {
+            if (builtBundle != null) {
+                ListingBundle<T> typedBundle = (ListingBundle<T>) builtBundle;
+                // Required: CSS rules in master-detail-v2.css target
+                // .mdl-master-grid::part(first-column-cell mdl-selected) — without this class on
+                // the grid element the SelectionHighlighter's part-name generator has no effect.
+                typedBundle.listing().getComponent().addClassName("mdl-master-grid");
+
+                // Resolve effective key extractor.
+                Function<T, ?> effectiveKey = selectionKeyExtractor;
+                if (effectiveKey == null && beanType != null) {
+                    effectiveKey = detectIdentifierExtractor(beanType);
+                }
+
+                SelectionHighlighter<T> highlighter =
+                        new SelectionHighlighter<>(typedBundle.listing(), effectiveKey, highlightPartName);
+                layout.setMasterBundle(typedBundle);
+                layout.setMasterHighlighter(highlighter);
+
+                typedBundle.listing().addItemClickListener(event -> {
+                    highlighter.setHighlighted(event.getItem());
+                    if (accentColorProvider != null) {
+                        layout.setAccentClass(accentColorProvider.apply(event.getItem()));
+                    }
+                    layout.dispatchSync(event.getItem());
                 });
             }
+            layout.add(div);
         }
 
-        // Register the default data refresh policy.
-        dataChangedListeners.add(this::refreshData);
-
-        ResponsiveDiv.configure(this)
-                .styleName("master-detail-container")
-                .elevated();
-
-        return getConfigurator();
-    }
-
-    @Override
-    public void notifyDataChanged() {
-        dataChangedListeners.forEach(Runnable::run);
-    }
-
-    private void refreshData() {
-        if (builtGrid == null) {
-            return;
-        }
-        if (currentItem != null) {
-            builtGrid.getDataProvider().refreshItem(currentItem);
-            return;
-        }
-        builtGrid.getDataProvider().refreshAll();
-    }
-
-    @Override
-    public void refreshItem(T item) {
-        if (builtGrid == null || item == null) {
-            return;
-        }
-        builtGrid.getDataProvider().refreshItem(item);
-    }
-
-    @Override
-    public void refreshCurrentItem() {
-        refreshItem(currentItem);
-    }
-
-    @Override
-    public void clearSelection() {
-        if (builtGrid != null) builtGrid.deselectAll();
-        if (selectionHighlighter != null) selectionHighlighter.setHighlighted(null);
-        currentItem = null;
-        currentItemKey = null;
-        if (deepLinkRequested && idExtractor != null) {
-            clearBrowserId();
-        }
-    }
-
-    @Override
-    @SuppressWarnings({"unchecked", "rawtypes"})
-    public void selectFirst() {
-        if (builtGrid == null) return;
-        builtGrid.getDataProvider()
-                .fetch(new Query(0, 1, null, null, null))
-                .findFirst()
-                .ifPresent(item -> activateItem((T) item, true, false, false));
-    }
-
-    @Override
-    public void restoreSelection(String idStr) {
-        if (itemLoader == null || idStr == null || idStr.isBlank()) return;
-        autoSelectFired = true;
-        itemLoader.apply(idStr).ifPresent(item -> activateItem(item, true, true, true));
-    }
-
-    @Override
-    public void clickItem(T item) {
-        activateItem(item, scrollToSelected, false, false);
-    }
-
-    @Override
-    public java.util.Optional<ListingBundle<T>> getListingBundle() {
-        return java.util.Optional.ofNullable(builtBundle);
-    }
-
-    @Override
-    public java.util.Optional<Div> getMasterDiv() {
-        return java.util.Optional.ofNullable(masterPanel);
-    }
-
-    @Override
-    public java.util.Optional<Div> getDetailDiv() {
-        return java.util.Optional.ofNullable(detailPanel);
-    }
-
-    @Override
-    public Optional<Header> getMasterHeader() {
-        return Optional.ofNullable(masterHeader);
-    }
-
-    @Override
-    public Optional<Separator> getSeparatorComponent() {
-        return Optional.ofNullable(separatorComponent);
-    }
-
-    @Override
-    public Optional<Header> getDetailHeader() {
-        return Optional.ofNullable(detailHeader);
-    }
-
-    @Override
-    public Optional<Tabs> getDetailTabs() {
-        return detailTabs != null ? Optional.of(detailTabs.getTabs()) : Optional.empty();
-    }
-
-    @Override
-    public List<Component> getDetailContentComponents() {
-        return List.copyOf(detailContentComponents);
-    }
-
-    @Override
-    public List<Component> getDetailFooterComponents() {
-        return List.copyOf(detailFooterComponents);
-    }
-
-    @Override
-    public Component getComponent() {
-        return this;
-    }
-
-    private void handleItemClick(T item) {
-        activateItem(item, scrollToSelected, false, false);
-    }
-
-    private void activateItem(T item, boolean ensureVisible, boolean skipDetailLoader, boolean bypassCache) {
-        if (item == null) return;
-
-        long now = System.currentTimeMillis();
-        if (selectionDebounceMillis > 0 && currentItem != null && now - lastSyncAt < selectionDebounceMillis) {
-            return;
-        }
-        lastSyncAt = now;
-
-        T resolved = resolveDetailItem(item, skipDetailLoader, bypassCache);
-        currentItem = resolved;
-        currentItemKey = itemKey(resolved);
-
-        // Apply the left-accent highlight to the clicked row
-        selectionHighlighter.setHighlighted(resolved);
-
-        if (ensureVisible) {
-            scrollResolvedItemIntoView(resolved);
-        }
-
-        // Always fire sync handlers â€” they populate the detail panel content
-        syncHandlers.forEach(entry -> entry.getValue().accept(resolved));
-        itemChangedListeners.forEach(listener -> listener.accept(resolved));
-
-        if (deepLinkRequested && idExtractor != null) {
-            updateBrowserId(resolved);
-        }
-    }
-
-    private void scrollResolvedItemIntoView(T item) {
-        if (builtGrid == null || item == null) {
-            return;
-        }
-
-        try {
-            builtGrid.scrollToItem(item);
-        } catch (Exception ignored) {
-            // Grid item scrolling is best-effort only.
-        }
-
-        Object targetKey = idExtractor != null ? idExtractor.apply(item) : item;
-        if (targetKey == null) {
-            return;
-        }
-
-        int total = -1;
-        try {
-            total = builtGrid.getDataProvider().size(new Query<>());
-        } catch (Exception ignored) {
-            // Some lazy providers may not support count queries reliably.
-        }
-
-        final int batchSize = 200;
-        int offset = 0;
-        while (total < 0 || offset < total) {
-            List<T> batch;
-            try (Stream<T> stream = builtGrid.getDataProvider().fetch(new Query<>(offset, batchSize, null, null, null))) {
-                batch = stream.toList();
-            }
-
-            if (batch.isEmpty()) {
-                break;
-            }
-
-                for (T candidate : batch) {
-                Object candidateKey = idExtractor != null ? idExtractor.apply(candidate) : candidate;
-                if (Objects.equals(targetKey, candidateKey)) {
-                    return;
+        /**
+         * Detects the identifier field of {@code beanType} by checking, in order:
+         * <ol>
+         *   <li>Fields annotated with {@code @Identifier} (Holon Platform).</li>
+         *   <li>Fields annotated with {@code @Id} (JPA).</li>
+         *   <li>Fields named {@code id} (convention).</li>
+         * </ol>
+         * Walks the class hierarchy.  Returns {@code null} when nothing is found, so
+         * {@link SelectionHighlighter} falls back to {@code Function.identity()}.
+         */
+        private static <B> Function<B, ?> detectIdentifierExtractor(Class<B> beanType) {
+            Class<?> cls = beanType;
+            while (cls != null && cls != Object.class) {
+                for (java.lang.reflect.Field field : cls.getDeclaredFields()) {
+                    if (isIdentifierField(field)) {
+                        field.setAccessible(true);
+                        java.lang.reflect.Field captured = field;
+                        return item -> {
+                            try { return captured.get(item); }
+                            catch (IllegalAccessException e) { return item; }
+                        };
+                    }
                 }
+                cls = cls.getSuperclass();
             }
-
-            offset += batch.size();
-            if (batch.size() < batchSize) {
-                break;
-            }
-        }
-    }
-
-    private T resolveDetailItem(T item, boolean skipDetailLoader, boolean bypassCache) {
-        Object cacheKey = itemKey(item);
-        if (!bypassCache && currentItem != null && Objects.equals(cacheKey, currentItemKey)) {
-            return currentItem;
-        }
-        if (!bypassCache && cacheKey != null && detailCache.containsKey(cacheKey)) {
-            return detailCache.get(cacheKey);
-        }
-
-        T resolved = item;
-        if (!skipDetailLoader && detailLoader != null) {
-            resolved = detailLoader.apply(item).orElse(item);
-        }
-
-        if (cacheKey != null) {
-            detailCache.put(cacheKey, resolved);
-        }
-        return resolved;
-    }
-
-    private void prefetchPage(int page, int pageSize) {
-        if (builtGrid == null || pageSize <= 0) return;
-        int offset = Math.max(0, (page - 1) * pageSize);
-        int limit = Math.clamp(pageSize, 1, 4);
-        try (Stream<T> stream = builtGrid.getDataProvider().fetch(
-                new Query<>(offset, pageSize, null, null, null))) {
-            stream.limit(limit).forEach(this::prefetchResolvedItem);
-        }
-    }
-
-    private void prefetchResolvedItem(T item) {
-        Object cacheKey = itemKey(item);
-        if (cacheKey != null && detailCache.containsKey(cacheKey)) {
-            return;
-        }
-        T resolved = detailLoader != null ? detailLoader.apply(item).orElse(item) : item;
-        if (cacheKey != null) {
-            detailCache.put(cacheKey, resolved);
-        }
-    }
-
-    private Object itemKey(T item) {
-        if (item == null) {
             return null;
         }
-        return idExtractor != null ? idExtractor.apply(item) : item;
+
+        private static boolean isIdentifierField(java.lang.reflect.Field field) {
+            for (java.lang.annotation.Annotation a : field.getAnnotations()) {
+                String name = a.annotationType().getSimpleName();
+                if ("Id".equals(name) || "Identifier".equals(name)) return true;
+            }
+            return "id".equalsIgnoreCase(field.getName());
+        }
     }
 
+    // ── Inner: DefaultDetailOptions ───────────────────────────────────────────
+
+    /**
+     * Consumer-receivable detail panel options. Extends {@link AbstractPanelOptions}
+     * for shared header/footer/content/styleName logic.
+     *
+     * <p>Overrides {@link #header} and {@link #footer} to capture references so that
+     * {@link AbstractMasterDetailConfigurator#wireMobileSheet} can distribute them
+     * to the correct {@link Sheet} slots (header / content / footer).</p>
+     */
+    private static final class DefaultDetailOptions<T>
+            extends AbstractPanelOptions<MasterDetailConfigurator.DetailOptions<T>>
+            implements MasterDetailConfigurator.DetailOptions<T> {
+
+        private Header detailHeader;
+        private Footer detailFooter;
+
+        DefaultDetailOptions(Div div) {
+            super(div);
+            div.addClassNames("detail-view","detail-view-content");
+        }
+
+        @Override
+        protected MasterDetailConfigurator.DetailOptions<T> self() { return this; }
+
+        /** Overrides base to also capture the {@link Header} reference. */
+        @Override
+        public MasterDetailConfigurator.DetailOptions<T> header(Consumer<HeaderConfigurator<?>> configure) {
+            if (configure != null) {
+                Header h = new Header("");
+                configure.accept(HeaderConfigurator.configure(h));
+                div.addComponentAsFirst(h);
+                this.detailHeader = h;
+            }
+            return self();
+        }
+
+        /** Overrides base to also capture the {@link Footer} reference. */
+        @Override
+        public MasterDetailConfigurator.DetailOptions<T> footer(Consumer<FooterConfigurator<?>> configure) {
+            if (configure != null) {
+                Footer f = new Footer();
+                configure.accept(FooterConfigurator.configure(f));
+                div.add(f);
+                this.detailFooter = f;
+            }
+            return self();
+        }
+
+        @Override
+        @SuppressWarnings("unchecked")
+        public MasterDetailConfigurator.DetailOptions<T> withDetailSync(Consumer<T> handler) {
+            if (handler != null) {
+                syncHandlers.add(item -> handler.accept((T) item));
+            }
+            return this;
+        }
+
+        Header getDetailHeader() { return detailHeader; }
+        Footer getDetailFooter() { return detailFooter; }
+
+        /**
+         * Returns children of the wrapper div that are neither the detail {@link Header}
+         * nor the detail {@link Footer} — i.e. the "body" content components.
+         */
+        List<Component> getBodyComponents() {
+            return div.getChildren()
+                    .filter(c -> !(c instanceof Header) && !(c instanceof Footer))
+                    .toList();
+        }
+    }
+
+    // ── Inner: DefaultBeanListingOptions ─────────────────────────────────────
+
+    private static final class DefaultBeanListingOptions<T>
+            extends AbstractListingBundleConfigurer<T, MasterDetailConfigurator.ListingOptions<T>>
+            implements MasterDetailConfigurator.ListingOptions<T> {
+
+        DefaultBeanListingOptions(Class<T> beanType) {
+            super(beanType);
+        }
+
+        @Override
+        protected MasterDetailConfigurator.ListingOptions<T> getConfigurator() { return this; }
+
+        ListingBundle<T> build() { return buildBundle(); }
+    }
+
+    // ── Inner: DefaultPropertyBoxListingOptions ───────────────────────────────
+
+    /**
+     * Slim adapter for PropertySet-backed master listings inside a master-detail context.
+     * All fluent configuration is handled by {@link AbstractPropertyBoxListingAdapter};
+     * only the class-specific {@link #build()} terminal is defined here.
+     */
+    private static final class DefaultPropertyBoxListingOptions
+            extends AbstractPropertyBoxListingAdapter<MasterDetailConfigurator.ListingOptions<PropertyBox>>
+            implements MasterDetailConfigurator.ListingOptions<PropertyBox> {
+
+        DefaultPropertyBoxListingOptions(PropertySet<?> propertySet) {
+            super(propertySet);
+        }
+
+        @Override
+        protected MasterDetailConfigurator.ListingOptions<PropertyBox> self() { return this; }
+
+        ListingBundle<PropertyBox> build() { return buildBundle(); }
+    }
+
+    // ── collectSyncAware ──────────────────────────────────────────────────────
+
+    /**
+     * Scans {@code root} and its descendants for {@link DetailSyncAware} instances,
+     * appending a typed dispatch {@link Consumer} for each one to {@code out}.
+     */
     @SuppressWarnings("unchecked")
-    private Grid<T> extractGrid(ListingBundle<T> bundle) {
-        return (Grid<T>) bundle.listing().getComponent();
-    }
-
-    private static String extractIdQueryParameter(String search) {
-        if (search == null || search.isBlank()) return null;
-        String query = search.startsWith("?") ? search.substring(1) : search;
-        for (String pair : query.split("&")) {
-            int index = pair.indexOf('=');
-            if (index < 0) {
-                if ("id".equals(pair)) return "";
-                continue;
-            }
-            if ("id".equals(pair.substring(0, index))) {
-                return URLDecoder.decode(pair.substring(index + 1), StandardCharsets.UTF_8);
-            }
-        }
-        return null;
-    }
-
-    private void updateBrowserId(T item) {
-        if (item == null || idExtractor == null) return;
-        String id = idExtractor.apply(item);
-        if (id == null || id.isBlank()) return;
-        getUI().ifPresent(ui -> ui.getPage().executeJs(
-                "const url = new URL(window.location.href);" +
-                        "url.searchParams.set('id', $0);" +
-                        "history.replaceState({}, '', url.toString());",
-                id));
-    }
-
-    private void clearBrowserId() {
-        getUI().ifPresent(ui -> ui.getPage().executeJs(
-                "const url = new URL(window.location.href);" +
-                        "url.searchParams.delete('id');" +
-                        "history.replaceState({}, '', url.toString());"));
-    }
-
-    private final class DefaultMasterViewNode implements MasterNode<T, C> {
-
-        @Override
-        public MasterDetailConfigurator.HeaderNode<T, C> header() {
-            if (masterHeader == null) {
-                masterHeader = new Header("");
-            }
-            return new DefaultHeaderNode(masterHeader);
-        }
-
-        @Override
-        public C header(Header header) {
-            masterHeader = Objects.requireNonNull(header, "header must not be null");
-            return AbstractMasterDetailConfigurator.this.getConfigurator();
-        }
-
-        @Override
-        public MasterDetailConfigurator.ListingBundleNode<T, C> listingBundle() {
-            return new DefaultListingBundleNode(listingBundleBuilder);
-        }
-
-        @Override
-        public C listingBundle(ListingBundle<T> listingBundle) {
-            configuredListingBundle = Objects.requireNonNull(listingBundle, "listingBundle must not be null");
-            return AbstractMasterDetailConfigurator.this.getConfigurator();
-        }
-
-
-
-        @Override
-        public C add() {
-            return AbstractMasterDetailConfigurator.this.getConfigurator();
-        }
-    }
-
-    private final class DefaultDefaultViewNode implements MasterDetailConfigurator.DefaultViewNode<T, C> {
-
-        @Override
-        public SeparatorNode<C> separator() {
-            separatorVisible = true;
-            return separatorNode;
-        }
-
-        @Override
-        public DetailNode<T, C> detail() {
-            return detailNode;
-        }
-
-        @Override
-        public C master(Header header, ListingBundle<T> listingBundle) {
-            masterHeader = Objects.requireNonNull(header, "header must not be null");
-            configuredListingBundle = Objects.requireNonNull(listingBundle, "listingBundle must not be null");
-            separatorVisible = true;
-            return AbstractMasterDetailConfigurator.this.getConfigurator();
-        }
-
-        @Override
-        public C add() {
-            return AbstractMasterDetailConfigurator.this.getConfigurator();
-        }
-    }
-
-    private final class DefaultHeaderNode extends AbstractHeaderConfigurator<HeaderNode<T, C>>
-            implements MasterDetailConfigurator.HeaderNode<T, C> {
-
-        private DefaultHeaderNode(Header header) {
-            super(header);
-        }
-
-        @Override
-        protected DefaultHeaderNode getConfigurator() {
-            return this;
-        }
-
-        @Override
-        public MasterDetailConfigurator.HeaderNode<T, C> withoutBorder() {
-            getComponent().withoutBorder();
-            return this;
-        }
-
-        @Override
-        public MasterNode<T, C> add() {
-            return masterNode;
-        }
-    }
-
-    private final class DefaultListingBundleNode implements MasterDetailConfigurator.ListingBundleNode<T, C> {
-
-        private final ListingBundleBuilder<T> delegate;
-
-        private DefaultListingBundleNode(ListingBundleBuilder<T> delegate) {
-            this.delegate = delegate;
-        }
-
-        @Override
-        public MasterDetailConfigurator.ListingBundleNode<T, C> columns(String... cols) {
-            delegate.columns(cols);
-            return this;
-        }
-
-        @Override
-        public MasterDetailConfigurator.ListingBundleNode<T, C> mobileViewColumn(Renderer<T> renderer) {
-            delegate.mobileViewColumn(renderer);
-            return this;
-        }
-
-        @Override
-        public MasterDetailConfigurator.ListingBundleNode<T, C> mobileViewHeader(String text) {
-            delegate.mobileViewHeader(text);
-            return this;
-        }
-
-        @Override
-        public MasterDetailConfigurator.ListingBundleNode<T, C> mobileViewHeader(Component component) {
-            delegate.mobileViewHeader(component);
-            return this;
-        }
-
-        @Override
-        public MasterDetailConfigurator.ListingBundleNode<T, C> hidden(String... cols) {
-            delegate.hidden(cols);
-            return this;
-        }
-
-        @Override
-        public MasterDetailConfigurator.ListingBundleNode<T, C> header(String column, String label) {
-            delegate.header(column, label);
-            return this;
-        }
-
-        @Override
-        public MasterDetailConfigurator.ListingBundleNode<T, C> header(String column, Localizable localizable) {
-            delegate.header(column, localizable);
-            return this;
-        }
-
-        @Override
-        public MasterDetailConfigurator.ListingBundleNode<T, C> header(String column, String defaultLabel, String messageCode) {
-            delegate.header(column, defaultLabel, messageCode);
-            return this;
-        }
-
-        @Override
-        public MasterDetailConfigurator.ListingBundleNode<T, C> pageSizes(Integer... sizes) {
-            delegate.pageSizes(sizes);
-            return this;
-        }
-
-        @Override
-        public MasterDetailConfigurator.ListingBundleNode<T, C> defaultPageSize(int size) {
-            delegate.defaultPageSize(size);
-            return this;
-        }
-
-        @Override
-        public MasterDetailConfigurator.ListingBundleNode<T, C> search(String placeholder) {
-            delegate.search(placeholder);
-            return this;
-        }
-
-        @Override
-        public MasterDetailConfigurator.ListingBundleNode<T, C> search(Localizable localizable) {
-            delegate.search(localizable);
-            return this;
-        }
-
-        @Override
-        public MasterDetailConfigurator.ListingBundleNode<T, C> search(String defaultPlaceholder, String messageCode) {
-            delegate.search(defaultPlaceholder, messageCode);
-            return this;
-        }
-
-        @Override
-        public MasterDetailConfigurator.ListingBundleNode<T, C> withFilterPanel() {
-            delegate.withFilterPanel();
-            return this;
-        }
-
-        @Override
-        public MasterDetailConfigurator.ListingBundleNode<T, C> advancedSearchLabel(String label) {
-            delegate.advancedSearchLabel(label);
-            return this;
-        }
-
-        @Override
-        public MasterDetailConfigurator.ListingBundleNode<T, C> retainFilterValues(boolean retain) {
-            delegate.retainFilterValues(retain);
-            return this;
-        }
-
-        @Override
-        public MasterDetailConfigurator.ListingBundleNode<T, C> multiSelect() {
-            delegate.multiSelect();
-            return this;
-        }
-
-        @Override
-        public MasterDetailConfigurator.ListingBundleNode<T, C> onItemClickListener(ViewMode viewMode, ComponentEventListener<ItemClickEvent<T>> listener) {
-            delegate.onItemClickListener(viewMode,listener);
-            return this;
-        }
-
-        @Override
-        public MasterDetailConfigurator.ListingBundleNode<T, C> gridHeader(String title) {
-            delegate.gridHeader(title);
-            return this;
-        }
-
-        @Override
-        public MasterDetailConfigurator.ListingBundleNode<T, C> gridHeader(Component... components) {
-            delegate.gridHeader(components);
-            return this;
-        }
-
-        @Override
-        public MasterDetailConfigurator.ListingBundleNode<T, C> paginated() {
-            delegate.paginated();
-            return this;
-        }
-
-        @Override
-        public MasterDetailConfigurator.ListingBundleNode<T, C> virtualScroll() {
-            delegate.virtualScroll();
-            return this;
-        }
-
-        @Override
-        public MasterDetailConfigurator.ListingBundleNode<T, C> paginated(boolean paginated) {
-            delegate.paginated(paginated);
-            return this;
-        }
-
-        @Override
-        public MasterDetailConfigurator.ListingBundleNode<T, C> autoCreateColumns(boolean autoCreate) {
-            delegate.autoCreateColumns(autoCreate);
-            return this;
-        }
-
-        @Override
-        public MasterDetailConfigurator.ListingBundleNode<T, C> importAction(Runnable action) {
-            delegate.importAction(action);
-            return this;
-        }
-
-        @Override
-        public MasterDetailConfigurator.ListingBundleNode<T, C> exportAction(Runnable action) {
-            delegate.exportAction(action);
-            return this;
-        }
-
-        @Override
-        public MasterDetailConfigurator.ListingBundleNode<T, C> withMenuAction(String label, Runnable action) {
-            delegate.withMenuAction(label, action);
-            return this;
-        }
-
-        @Override
-        public MasterDetailConfigurator.ListingBundleNode<T, C> withMenuAction(VaadinIcon icon, String label, Runnable action) {
-            delegate.withMenuAction(icon, label, action);
-            return this;
-        }
-
-        @Override
-        public MasterDetailConfigurator.ListingBundleNode<T, C> fetch(ListingBundleBuilder.FetchCallback<T> callback) {
-            delegate.fetch(callback);
-            return this;
-        }
-
-        @Override
-        public MasterDetailConfigurator.ListingBundleNode<T, C> fetch(ListingBundleBuilder.FilteredFetchCallback<T> callback) {
-            delegate.fetch(callback);
-            return this;
-        }
-
-        @Override
-        public MasterDetailConfigurator.ListingBundleNode<T, C> fetch(ListingBundleBuilder.ColumnAwareFilteredFetchCallback<T> cb) {
-            delegate.fetch(cb);
-            return this;
-        }
-
-        @Override
-        public MasterDetailConfigurator.ListingBundleNode<T, C> viewModeSupplier(Supplier<ViewMode> supplier) {
-            delegate.viewModeSupplier(supplier);
-            return this;
-        }
-
-        @Override
-        public MasterNode<T, C> add() {
-            return masterNode;
-        }
-    }
-
-    private final class DefaultSeparatorNode implements SeparatorNode<C> {
-
-        @Override
-        public SeparatorNode<C> visible(boolean visible) {
-            separatorVisible = visible;
-            return this;
-        }
-
-        @Override
-        public SeparatorNode<C> color(SeparatorColor color) {
-            separatorColor = color;
-            return this;
-        }
-
-        @Override
-        public C add() {
-            return AbstractMasterDetailConfigurator.this.getConfigurator();
-        }
-    }
-
-    private final class DefaultDetailNode implements DetailNode<T, C> {
-
-        @Override
-        public MasterDetailConfigurator.DetailHeaderNode<T, C> header() {
-            if (detailHeader == null) {
-                detailHeader = new Header("");
-            }
-            return new DefaultDetailHeaderNode(detailHeader);
-        }
-
-        @Override
-        public MasterDetailConfigurator.DetailTabsNode<T, C> tabs() {
-            if (detailTabs == null) {
-                detailTabs = new DefaultDetailTabsNode();
-            }
-            return detailTabs;
-        }
-
-        @Override
-        public MasterDetailConfigurator.DetailContentNode<T, C> content() {
-            return new DefaultDetailContentNode();
-        }
-
-        @Override
-        public MasterDetailConfigurator.DetailFooterNode<T, C> footer() {
-            return new DefaultDetailFooterNode();
-        }
-
-        @Override
-        public DetailNode<T, C> withDetailSync(Component owner, Consumer<T> handler) {
-            AbstractMasterDetailConfigurator.this.withDetailSync(owner, handler);
-            return this;
-        }
-
-        @Override
-        public C add() {
-            return AbstractMasterDetailConfigurator.this.getConfigurator();
-        }
-    }
-
-    private final class DefaultDetailHeaderNode extends AbstractHeaderConfigurator<MasterDetailConfigurator.DetailHeaderNode<T, C>>
-            implements MasterDetailConfigurator.DetailHeaderNode<T, C> {
-
-        private DefaultDetailHeaderNode(Header header) {
-            super(header);
-        }
-
-        @Override
-        protected DefaultDetailHeaderNode getConfigurator() {
-            return this;
-        }
-
-        @Override
-        public MasterDetailConfigurator.DetailHeaderNode<T, C> withoutBorder() {
-            getComponent().withoutBorder();
-            return this;
-        }
-
-        @Override
-        public DetailNode<T, C> add() {
-            return detailNode;
-        }
-    }
-
-    private final class DefaultDetailTabsNode extends AbstractLazyTabsConfigurator<MasterDetailConfigurator.DetailTabsNode<T, C>>
-            implements MasterDetailConfigurator.DetailTabsNode<T, C> {
-
-        private DefaultDetailTabsNode() {
-            super(new Tabs());
-        }
-
-        @Override
-        protected DefaultDetailTabsNode getConfigurator() {
-            return this;
-        }
-
-        @Override
-        public DetailNode<T, C> add() {
-            return detailNode;
-        }
-    }
-
-    private final class DefaultDetailContentNode implements MasterDetailConfigurator.DetailContentNode<T, C> {
-
-        @Override
-        public MasterDetailConfigurator.DetailContentNode<T, C> content(Component... components) {
-            if (components != null) {
-                for (Component component : components) {
-                    if (component != null) {
-                        detailContentComponents.add(component);
-                    }
-                }
-            }
-            return this;
-        }
-
-        @Override
-        public DetailNode<T, C> add() {
-            return detailNode;
-        }
-    }
-
-    private final class DefaultDetailFooterNode implements MasterDetailConfigurator.DetailFooterNode<T, C> {
-
-        @Override
-        public MasterDetailConfigurator.DetailFooterNode<T, C> content(Component... components) {
-            if (components != null) {
-                for (Component component : components) {
-                    if (component != null) {
-                        detailFooterComponents.add(component);
-                    }
-                }
-            }
-            return this;
-        }
-
-        @Override
-        public DetailNode<T, C> add() {
-            return detailNode;
-        }
+    private static void collectSyncAware(Component root, List<Consumer<Object>> out) {
+        if (root instanceof DetailSyncAware<?> aware) {
+            out.add(item -> ((DetailSyncAware<Object>) aware).onItemSelected(item));
+        }
+        root.getChildren().forEach(child -> collectSyncAware(child, out));
     }
 }

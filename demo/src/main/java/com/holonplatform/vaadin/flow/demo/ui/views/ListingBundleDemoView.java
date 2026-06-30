@@ -306,7 +306,7 @@ public class ListingBundleDemoView extends Div {
         // Demonstrate typed access to individual pieces
         ItemListing<Product, ?>             listing = bundle.listing();
         ItemListingPaginationBar<Product,?> bar     = bundle.bar();
-        TextField                           search  = bundle.search();
+        TextField                           search  = bundle.getSearchOptional().orElse(null);
 
         assert listing != null;
         assert bar     != null;

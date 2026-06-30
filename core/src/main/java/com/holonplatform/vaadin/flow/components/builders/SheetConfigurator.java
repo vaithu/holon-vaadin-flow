@@ -17,6 +17,8 @@ package com.holonplatform.vaadin.flow.components.builders;
 
 import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.vaadin.flow.internal.components.builders.DefaultSheetConfigurator;
+import com.holonplatform.vaadin.flow.vaadinplus.components.Footer;
+import com.holonplatform.vaadin.flow.vaadinplus.components.Header;
 import com.holonplatform.vaadin.flow.vaadinplus.components.Sheet;
 import com.holonplatform.vaadin.flow.vaadinplus.components.SheetDescription;
 import com.holonplatform.vaadin.flow.vaadinplus.components.SheetTitle;
@@ -80,6 +82,15 @@ public interface SheetConfigurator<C extends SheetConfigurator<C>>
      * @return this configurator for chaining
      */
     C title(Localizable localizable);
+
+    /**
+     * Sets a custom header component for the sheet.
+     * Replaces the default compact header built by {@link Sheet}.
+     *
+     * @param header the header component to display above the content (not null)
+     * @return this configurator for chaining
+     */
+    C header(Header header);
 
     // -----------------------------------------------------------------------
     // Description
@@ -259,6 +270,14 @@ public interface SheetConfigurator<C extends SheetConfigurator<C>>
      * @return this configurator for chaining
      */
     C onClose(Runnable onClose);
+
+    /**
+     * Sets a custom footer component for the sheet.
+     *
+     * @param footer the footer component to display below the content (not null)
+     * @return this configurator for chaining
+     */
+    C footer(Footer footer);
 
     // -----------------------------------------------------------------------
     // Configure factory

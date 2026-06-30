@@ -5,9 +5,10 @@ import com.holonplatform.vaadin.flow.components.builders.ButtonConfigurator;
 import com.holonplatform.vaadin.flow.components.builders.HeaderConfigurator;
 import com.holonplatform.vaadin.flow.components.css.CSSUtility;
 import com.holonplatform.vaadin.flow.vaadinplus.Layout;
+import com.holonplatform.vaadin.flow.vaadinplus.components.Breadcrumb;
 import com.holonplatform.vaadin.flow.vaadinplus.components.BreadcrumbItem;
 import com.holonplatform.vaadin.flow.vaadinplus.components.Header;
-import com.holonplatform.vaadin.flow.vaadinplus.utilities.HeadingLevel;
+import com.iyensoft.vaadin.flow.enums.HeadingLevel;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasEnabled;
 import com.vaadin.flow.component.HasSize;
@@ -74,6 +75,12 @@ public abstract class AbstractHeaderConfigurator<C extends HeaderConfigurator<C>
     @Override
     public C breadcrumb(BreadcrumbItem... items) {
         getComponent().setBreadcrumb(items);
+        return getConfigurator();
+    }
+
+    @Override
+    public C breadcrumb(Breadcrumb breadcrumb) {
+        getComponent().setBreadcrumb(breadcrumb);
         return getConfigurator();
     }
 
@@ -183,6 +190,12 @@ public abstract class AbstractHeaderConfigurator<C extends HeaderConfigurator<C>
         // Inline CSS forbidden — use a CSS class instead (see layout.css)
         getComponent().addClassName("header--no-border");
         return getConfigurator();
+    }
+
+    @Override
+    public C withoutColumnGap() {
+       getComponent().withoutColumnGap();
+       return getConfigurator();
     }
 
     @Override

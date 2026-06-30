@@ -1,0 +1,130 @@
+/*
+ * status-badge.css
+ *
+ * Non-interactive status pill with a coloured dot prefix and semantic tinted background.
+ * Matches the design in the screenshots: "● Posted", "● Partial receipt", "● In progress", etc.
+ *
+ * BEM root: .st-badge
+ *
+ * Structure:
+ *   .st-badge              — pill root (<span>, inline-flex)
+ *   .st-badge::before      — coloured dot (6 × 6 px, background: currentColor)
+ *
+ * Variant modifiers (set background + text colour together):
+ *   .st-badge--success     — green    (posted, reconciled, completed)
+ *   .st-badge--warning     — amber    (partial, pending, caution)
+ *   .st-badge--danger      — red      (error, rejected, failed)
+ *   .st-badge--info        — blue     (in progress, processing)
+ *   .st-badge--violet      — violet   (quality check, review)
+ *   (no modifier)          — gray     (neutral: counts, metadata, misc)
+ *
+ * Token dependency: --ok-light/--ok, --warn-light/--warn, --err-light/--err,
+ *                   --brand-50/--brand-700, --accent-violet-soft/--accent-violet,
+ *                   --zinc-100, --text-secondary,
+ *                   --font-size-sm, --font-weight-medium, --radius-full
+ */
+
+/* ── Root pill ──────────────────────────────────────────────────────────── */
+
+.st-badge {
+    display:       inline-flex;
+    align-items:   center;
+    gap:           6px;
+    padding:       3px 10px 3px 8px;
+    border-radius: var(--radius-full, 9999px);
+    background:    var(--zinc-100, #eef1f6);
+    font-size:     var(--font-size-sm, 0.75rem);
+    font-weight:   500;
+    line-height:   1.4;
+    color:         var(--text-secondary, #5b6878);
+    white-space:   nowrap;
+    user-select:   none;
+}
+
+/* ── Dot prefix (::before draws a 6×6 circle in currentColor) ────────────
+ * Using currentColor means the dot automatically matches the text colour
+ * of whatever variant is applied — no per-variant dot rule needed.
+ * ─────────────────────────────────────────────────────────────────────── */
+
+.st-badge::before {
+    content:       '';
+    display:       inline-block;
+    flex-shrink:   0;
+    width:         6px;
+    height:        6px;
+    border-radius: 50%;
+    background:    currentColor;
+}
+
+/* ── Variant: success (green) ────────────────────────────────────────────
+ * Use for: Posted, Reconciled, Approved, Completed, Active
+ * ─────────────────────────────────────────────────────────────────────── */
+
+.st-badge--success {
+    background: var(--ok-light, #e6f5ee);
+    color:      var(--ok, #2e9a6a);
+}
+
+/* ── Variant: warning (amber) ────────────────────────────────────────────
+ * Use for: Partial, Pending, On hold, Caution
+ * ─────────────────────────────────────────────────────────────────────── */
+
+.st-badge--warning {
+    background: var(--warn-light, #fbf3dc);
+    color:      var(--warn, #b8860b);
+}
+
+/* ── Variant: danger (red) ───────────────────────────────────────────────
+ * Use for: Failed, Rejected, Error, Cancelled
+ * ─────────────────────────────────────────────────────────────────────── */
+
+.st-badge--danger {
+    background: var(--err-light, #fbe7e4);
+    color:      var(--err, #c0392b);
+}
+
+/* ── Variant: info (blue) ────────────────────────────────────────────────
+ * Use for: In progress, Processing, Draft, Scheduled
+ * ───────────────���─────────────────────────────────────────────────────── */
+
+.st-badge--info {
+    background: var(--brand-50, #e6f1fb);
+    color:      var(--brand-700, #0a5fb8);
+}
+
+/* ── Variant: violet ─────────────────────────────────────────────────────
+ * Use for: Quality check, Under review, Flagged
+ * ─────────────────────────────────────────────────────────────────────── */
+
+.st-badge--violet {
+    background: var(--accent-violet-soft, #eceefd);
+    color:      var(--accent-violet, #6f7afc);
+}
+
+/* ── Size modifiers ──────────────────────────────────────────────────────
+ * Default is already "small" (12px, 3px vertical padding).
+ * .st-badge--md raises it to match a normal form element row.
+ * ─────────────────────────────────────────────────────────────────────── */
+
+.st-badge--md {
+    font-size:  var(--font-size-base, 0.8125rem);
+    padding:    4px 12px 4px 10px;
+    gap:        7px;
+}
+
+.st-badge--md::before {
+    width:  7px;
+    height: 7px;
+}
+
+/* ── Meta row — wrapping flex container for multiple badges ──────────────
+ * <div class="st-badge-row"> … </div>
+ * ─────────────────────────────────────────────────────────────────────── */
+
+.st-badge-row {
+    display:   flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--sp-2, 8px);
+}
+

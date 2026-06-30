@@ -6,7 +6,6 @@ import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.html.Pre;
-import com.vaadin.flow.component.tabs.Tabs;
 
 /**
  * Reusable demo card that renders a named example with a two-tab toggle:
@@ -37,14 +36,16 @@ public class DemoExample extends ResponsiveDiv {
 
         Div container = ResponsiveDiv.flex().column().gapM().marginS().build();
 
-        Tabs tabs = Components.lazyTabs()
+        // Keep the builder reference so we can access getContentContainer() after configuration.
+        // withContainer() creates an internal SyncableContentContainer (copying CSS classes from
+        // the passed div) and all tab content is placed there — not in the original div.
+        var lazyTabs = Components.lazyTabs()
                 .withContainer(container)
                 .withLazyTab("Preview", () -> preview)
-                .withLazyTab("Code", () -> codePane)
-                .build();
+                .withLazyTab("Code", () -> codePane);
 
         ResponsiveDiv.configure(this)
-                        .add(heading, tabs,container);
+                .add(heading, lazyTabs.getTabs(), lazyTabs.getContentContainer());
     }
 
     // ── Helpers ──────────────────────────────────────────────────────────────

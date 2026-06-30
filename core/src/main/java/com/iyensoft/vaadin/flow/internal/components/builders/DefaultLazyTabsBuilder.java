@@ -1,7 +1,6 @@
 package com.iyensoft.vaadin.flow.internal.components.builders;
 
 import com.iyensoft.vaadin.flow.components.builders.LazyTabsBuilder;
-import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.tabs.Tabs;
 
 public class DefaultLazyTabsBuilder

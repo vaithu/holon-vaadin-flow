@@ -1,378 +1,185 @@
 package com.iyensoft.vaadin.flow.components;
 
-import com.holonplatform.vaadin.flow.vaadinplus.Layout;
-import com.holonplatform.vaadin.flow.vaadinplus.components.Sheet;
-import com.iyensoft.vaadin.flow.components.builders.IyenDetailBuilder;
-import com.iyensoft.vaadin.flow.components.builders.IyenMasterBuilder;
-import com.iyensoft.vaadin.flow.components.builders.MasterDetailBuilder;
-import com.iyensoft.vaadin.flow.internal.components.masterdetail.ResponsiveDetailHost;
-import com.iyensoft.vaadin.flow.internal.components.masterdetail.SelectionController;
+import com.holonplatform.vaadin.flow.components.Components;
+import com.holonplatform.vaadin.flow.components.ListingBundle;
+import com.iyensoft.vaadin.flow.enums.ViewMode;
 import com.iyensoft.vaadin.flow.internal.components.masterdetail.SelectionHighlighter;
 import com.iyensoft.vaadin.flow.internal.components.masterdetail.UrlSelectionSync;
-import com.iyensoft.vaadin.flow.utils.responsive.IyenResponsiveLayout;
-import com.iyensoft.vaadin.flow.utils.responsive.ViewMode;
-import com.vaadin.flow.component.AttachEvent;
-import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.DetachEvent;
-import com.vaadin.flow.component.dependency.StyleSheet;
-import com.vaadin.flow.component.grid.Grid;
-import com.vaadin.flow.data.provider.DataProvider;
-import com.vaadin.flow.data.provider.Query;
-import com.vaadin.flow.shared.Registration;
+import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.dom.Element;
 import com.vaadin.flow.signals.Signal;
+import com.vaadin.flow.signals.local.ValueSignal;
 
-import java.io.Serial;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 /**
- * Reactive, signal-driven master-detail layout for any item type {@code T}.
+ * A master-detail layout component that owns all selection and sync state.
  *
- * <h3>Architecture</h3>
- * <p>This class is a thin orchestrator. The real work is done by four collaborators:</p>
+ * <p>Build via {@link com.iyensoft.vaadin.flow.components.builders.MasterDetailBuilder#create()}.
+ * Configure an existing instance via
+ * {@link com.iyensoft.vaadin.flow.components.builders.MasterDetailConfigurator#configure(MasterDetailLayout)}.</p>
+ *
+ * <p>Post-build runtime operations:</p>
  * <ul>
- *   <li>{@link SelectionController}  — owns the selection signal and {@code dataVersion}
- *       counter, exposes {@code withDetailSync} for reactive form binding.</li>
- *   <li>{@link SelectionHighlighter} — manages the {@code mdl-selected} CSS part on
- *       the currently selected grid row.</li>
- *   <li>{@link ResponsiveDetailHost} — places detail components in the desktop slot
- *       or the mobile {@link Sheet} depending on viewport, with build-once caching.</li>
- *   <li>{@link UrlSelectionSync}     — pushes / clears / restores the selection via
- *       the {@code ?id=} URL query parameter using {@code history.replaceState}.</li>
+ *   <li>{@link #selectFirst(ViewMode)} — auto-open first row on desktop</li>
+ *   <li>{@link #restoreFromUrl(String)} — restore deep-link selection</li>
+ *   <li>{@link #pushUrlState(Element, Object, ViewMode)} / {@link #clearUrlState(Element, ViewMode)} — URL sync</li>
+ *   <li>{@link #notifyDataChanged()} — re-fire sync after a save</li>
+ *   <li>{@link #clearSelection()} — reset highlight and signal</li>
+ *   <li>{@link #selectionSignal()} — reactive {@link Signal} for the selected item</li>
  * </ul>
  *
- * <h3>Responsive behaviour</h3>
- * <ul>
- *   <li><b>MOBILE</b> — master fills the viewport. Selecting a row opens a {@link Sheet}
- *       that slides in from the right, fully covering the screen. The browser History API
- *       means the hardware back button (Android) / swipe-back (iOS) closes it naturally.</li>
- *   <li><b>TABLET / DESKTOP</b> — master and detail sit side by side via
- *       {@link IyenResponsiveLayout}. Detail content is built once on first selection
- *       and remains in the DOM; updates flow through {@link #withDetailSync} effects.</li>
- * </ul>
- *
- * <h3>URL synchronisation</h3>
- * <p>Add a {@code @QueryParameter}-annotated field to the host view and call
- * {@link #restoreSelection(String)} from {@code @OnShow}.</p>
- *
- * <h3>Auto-refresh</h3>
- * <p>Call {@link #notifyDataChanged()} from the detail view after a save; all registered
- * {@code onDataChanged} listeners are invoked synchronously on the Vaadin UI thread.</p>
- *
- * @param <T> the type of item displayed in the master grid
- * @see MasterDetailBuilder
+ * @param <T> the item type of the master listing
  */
-@StyleSheet("context://master-details.css")
-@StyleSheet("context://master-detail-layout.css")
-public class MasterDetailLayout<T> extends Layout {
+public class MasterDetailLayout<T> extends Div {
 
-    @Serial
-    private static final long serialVersionUID = 1L;
+    private static final String CLASS_NAME = "master-detail-container";
 
-    // -- Vaadin components ---------------------------------------------------
-    private final Grid<T> grid;
-    private final IyenResponsiveLayout responsiveLayout;
+    // ── Runtime state ───────────────────────────────────────────────────────────
 
-    // -- Collaborators -------------------------------------------------------
-    private final SelectionController<T>  selectionController;
-    private final SelectionHighlighter<T> highlighter;
-    private final ResponsiveDetailHost    host;
-    private final UrlSelectionSync<T>     urlSync;
+    private final List<Consumer<T>> syncDispatchers = new ArrayList<>();
+    private T currentItem;
+    private ListingBundle<T> masterBundle;
+    private SelectionHighlighter<T> masterHighlighter;
+    private UrlSelectionSync<T> urlSync;
+    private ValueSignal<T> selectedSignal;  // null until first selectionSignal() call
+    private String currentAccentClass;       // tracks the active mdl-accent--* class
 
-    // -- Config (immutable) --------------------------------------------------
-    private final Function<T, Component[]> detailContentProvider;
-    private final boolean autoSelectFirst;
+    // ── Constructor ─────────────────────────────────────────────────────────────
 
-    // -- Lifecycle-scoped state ---------------------------------------------
-    private Registration selectionEffectReg;
-    private Registration modeChangeReg;
+    public MasterDetailLayout() {
 
-    /** Guards {@code applySelection} from clobbering URL {@code ?id=} on first run. */
-    private boolean initialEffectRun = true;
+        Components.configure(this)
+                .styleName(CLASS_NAME)
+                .elementConfiguration(element -> element.setAttribute("role", "group"));
+    }
 
-    /** Ensures auto-select first runs at most once per attach cycle. */
-    private boolean autoSelectFired = false;
+    // ── Setup methods — called by the configurator during build phase ───────────
 
-    // -------------------------------------------------------------------------
-    // Constructor
-    // -------------------------------------------------------------------------
+    /** Registers a detail-sync handler. Called by {@code DefaultDetailNode.add()}. */
+    public void addSyncDispatcher(Consumer<T> dispatcher) {
+        syncDispatchers.add(dispatcher);
+    }
 
-    public MasterDetailLayout(
-            IyenMasterBuilder masterBuilder,
-            Layout detailContainer,
-            Layout dynamicContentSlot,
-            Grid<T> grid,
-            Function<T, Component[]> detailContentProvider,
-            Function<T, String> idExtractor,
-            Function<String, Optional<T>> itemLoader,
-            String mobileSheetTitle,
-            List<Runnable> dataChangedListeners,
-            boolean autoSelectFirst) {
+    /** Stores the master listing bundle for {@link #selectFirst} and {@link #notifyDataChanged}. */
+    public void setMasterBundle(ListingBundle<T> bundle) {
+        this.masterBundle = bundle;
+    }
 
-        this.grid                  = grid;
-        this.detailContentProvider = detailContentProvider;
-        this.autoSelectFirst       = autoSelectFirst;
+    /** Stores the row highlighter for selection visual feedback. */
+    public void setMasterHighlighter(SelectionHighlighter<T> highlighter) {
+        this.masterHighlighter = highlighter;
+    }
 
-        addClassName("mdl-root");
-
-        this.responsiveLayout = new IyenResponsiveLayout(
-                masterBuilder,
-                IyenDetailBuilder.create(detailContainer));
-        responsiveLayout.addClassName("mdl-responsive-host");
-        add(responsiveLayout);
-
-        Sheet mobileSheet = Sheet.builder(Sheet.Side.RIGHT)
-                .title(mobileSheetTitle != null ? mobileSheetTitle : "Details")
-                .fullscreenOnMobile(true)
-                .backButton(true)
-                .closeButton(true)
-                .build();
-
-        this.selectionController = new SelectionController<>(dataChangedListeners);
-        this.highlighter         = new SelectionHighlighter<>(grid);
-        this.host                = new ResponsiveDetailHost(dynamicContentSlot, mobileSheet);
-        this.urlSync             = new UrlSelectionSync<>(idExtractor, itemLoader);
-
-        mobileSheet.setOnClose(this::onMobileSheetClosed);
-
-        // Bridge grid ITEM CLICK → highlighter + selection signal + detail update.
-        // Detail view updates are driven exclusively by row clicks (real or
-        // programmatic via {@link #clickItem(T)}); plain selection changes
-        // (keyboard arrows, {@link #select(T)}, etc.) do NOT update the detail.
-        grid.addItemClickListener(event -> handleClick(event.getItem()));
+    /** Wires URL {@code ?id=} sync. Called by {@code withUrlSync(...)}. */
+    public void setUrlSync(UrlSelectionSync<T> urlSync) {
+        this.urlSync = urlSync;
     }
 
     /**
-     * Internal click-handler: accent highlight + detail update.
-     * Invoked by the grid itemClickListener and by {@link #clickItem(T)}.
+     * Swaps the active accent CSS class on this container.
+     * Called by the item-click listener when {@code withAccentColorProvider} is configured.
+     * Removes the previous accent class (if any) and adds the new one.
      *
-     * <p>Does NOT call {@code grid.select(item)} — clicking a row to open
-     * its detail is not the same as selecting it.  Selection (checkboxes in
-     * multi-select, row highlight in single-select) is a separate concern
-     * owned by the consumer via the grid's selection model.  The accent
-     * highlight is provided by {@link SelectionHighlighter} via CSS parts.</p>
+     * @param cssClass the CSS class to apply, or {@code null} to revert to the default variable
      */
-    private void handleClick(T item) {
-        if (item == null) return;
-        highlighter.setHighlighted(item);
-        selectionController.set(Optional.of(item));
-    }
-
-    // -------------------------------------------------------------------------
-    // Public API
-    // -------------------------------------------------------------------------
-
-    /**
-     * Registers a lifecycle-bound reactive sync handler invoked whenever the
-     * selected item changes <em>or</em> {@link #notifyDataChanged()} is called.
-     */
-    public void withDetailSync(Component owner, Consumer<T> handler) {
-        selectionController.withDetailSync(owner, handler);
-    }
-
-    /** Read-only view of the selection signal; use inside {@link Signal#effect}. */
-    public Signal<Optional<T>> selectionSignal() {
-        return selectionController.selectionSignal();
+    public void setAccentClass(String cssClass) {
+        if (currentAccentClass != null) {
+            removeClassName(currentAccentClass);
+        }
+        currentAccentClass = cssClass;
+        if (cssClass != null && !cssClass.isBlank()) {
+            addClassName(cssClass);
+        }
     }
 
     /**
-     * Programmatically flips the grid's selection to {@code item}. <b>Does not</b>
-     * update the detail view, the accent highlight, or the selection signal —
-     * those are click-only side-effects (see {@link #clickItem(T)}).
-     *
-     * <p>Use this for purely visual / keyboard-equivalent selection changes
-     * (e.g. wiring an external "select all" toolbar action). To programmatically
-     * trigger a full row activation that also opens the detail panel, use
-     * {@link #clickItem(T)}.</p>
-     *
-     * <p>No-op if {@code item} is {@code null}.</p>
+     * Fires all registered sync handlers with the given item.
+     * Called by the item-click listener registered in {@code DefaultMasterNode}.
      */
-    public void select(T item) {
-        if (item != null) grid.select(item);
+    public void dispatchSync(T item) {
+        currentItem = item;
+        if (selectedSignal != null) selectedSignal.set(item);
+        syncDispatchers.forEach(d -> d.accept(item));
+    }
+
+    // ── Runtime operations ──────────────────────────────────────────────────────
+
+    /**
+     * Selects and displays the first item of the master listing. Desktop only — no-op on mobile.
+     *
+     * @param mode the current viewport mode (never auto-detected)
+     */
+    public void selectFirst(ViewMode mode) {
+        if (mode == null || mode.isMobile() || masterBundle == null) return;
+        masterBundle.listing().getFirstItem().ifPresent(item -> {
+            if (masterHighlighter != null) masterHighlighter.setHighlighted(item);
+            dispatchSync(item);
+        });
     }
 
     /**
-     * Simulates a row click programmatically: applies the accent highlight
-     * and updates the detail panel via the selection signal.
-     *
-     * <p>This is the entry-point that {@link #selectFirst()},
-     * {@link #restoreSelection(String)}, and any "open this item now" caller
-     * (e.g. a freshly-created row in a CRUD view) should use. Plain
-     * {@link #select(T)} does NOT open the detail.</p>
-     *
-     * <p>No-op if {@code item} is {@code null}.</p>
+     * Writes {@code ?id=<id>} to the browser URL via {@code history.replaceState}.
+     * Desktop only — no-op when {@code mode} is mobile.
      */
-    public void clickItem(T item) {
-        handleClick(item);
+    public void pushUrlState(Element host, T item, ViewMode mode) {
+        if (urlSync != null) urlSync.pushId(host, item, mode);
     }
 
-    /** Selects the first item from the grid's data provider AND opens its detail. */
-    @SuppressWarnings({"unchecked", "rawtypes"})
-    public void selectFirst() {
-        DataProvider raw = grid.getDataProvider();
-        raw.fetch(new Query(0, 1, null, null, null))
-                .findFirst()
-                .ifPresent(item -> clickItem((T) item));
+    /**
+     * Removes the {@code ?id=} parameter from the browser URL.
+     * Desktop only — no-op when {@code mode} is mobile.
+     */
+    public void clearUrlState(Element host, ViewMode mode) {
+        if (urlSync != null) urlSync.clearId(host, mode);
     }
 
-    /** Clears the current selection, accent highlight, and detail panel. */
+    /**
+     * Looks up the item by {@code id} (using the loader from {@code withUrlSync})
+     * and selects it — fires highlight + all sync handlers.
+     * No-op if URL sync was not configured or {@code id} is blank.
+     */
+    public void restoreFromUrl(String id) {
+        if (urlSync == null) return;
+        urlSync.restore(id, item -> {
+            if (masterHighlighter != null) masterHighlighter.setHighlighted(item);
+            dispatchSync(item);
+        });
+    }
+
+    /**
+     * Clears the current selection: un-highlights the master row and resets the
+     * reactive signal to {@code null}. Does not touch the URL.
+     */
     public void clearSelection() {
-        grid.deselectAll();
-        highlighter.setHighlighted(null);
-        selectionController.clear();
+        currentItem = null;
+        if (masterHighlighter != null) masterHighlighter.setHighlighted(null);
+        if (selectedSignal != null) selectedSignal.set(null);
     }
 
     /**
-     * Restores selection from a URL query parameter value, opening the detail
-     * panel for the matched item. No-op if {@code idStr} is blank or no
-     * {@code itemLoader} was configured.
-     */
-    public void restoreSelection(String idStr) {
-        if (!urlSync.isEnabled()) return;
-        autoSelectFired = true; // URL takes precedence over auto-select
-        urlSync.restore(idStr, this::clickItem);
-    }
-
-    /**
-     * Signals a data change from the detail view (e.g. after a save).
-     * Bumps the data version (re-runs every {@link #withDetailSync} effect)
-     * and invokes registered {@code onDataChanged} listeners.
+     * Re-fires all detail-sync handlers with the currently selected item.
+     * Also refreshes the master listing row so it reflects any persisted changes.
+     * No-op if nothing has been selected yet.
      */
     public void notifyDataChanged() {
-        selectionController.notifyDataChanged();
-    }
-
-    /** Registers a listener called when {@link #notifyDataChanged()} is invoked. */
-    public Registration addDataChangedListener(Runnable listener) {
-        Runnable removal = selectionController.addDataChangedListener(listener);
-        return removal::run;
-    }
-
-    /** Exposes the underlying responsive layout for advanced customisation. */
-    public IyenResponsiveLayout getResponsiveLayout() {
-        return responsiveLayout;
-    }
-
-    // -------------------------------------------------------------------------
-    // Static factories
-    // -------------------------------------------------------------------------
-
-    /** Creates a new {@link MasterDetailBuilder}. */
-    public static <T> MasterDetailBuilder<T> builder() {
-        return MasterDetailBuilder.create();
-    }
-
-    /** Internal factory — invoked exclusively by {@code DefaultMasterDetailBuilder}. */
-    public static <T> MasterDetailLayout<T> create(
-            IyenMasterBuilder masterBuilder,
-            Layout detailContainer,
-            Layout dynamicContentSlot,
-            Grid<T> grid,
-            Function<T, Component[]> detailContentProvider,
-            Function<T, String> idExtractor,
-            Function<String, Optional<T>> itemLoader,
-            String mobileSheetTitle,
-            List<Runnable> dataChangedListeners,
-            boolean autoSelectFirst) {
-        return new MasterDetailLayout<>(masterBuilder, detailContainer, dynamicContentSlot,
-                grid, detailContentProvider, idExtractor, itemLoader,
-                mobileSheetTitle, dataChangedListeners, autoSelectFirst);
-    }
-
-    // -------------------------------------------------------------------------
-    // Lifecycle
-    // -------------------------------------------------------------------------
-
-    @Override
-    protected void onAttach(AttachEvent attachEvent) {
-        super.onAttach(attachEvent);
-        // onAttach can fire more than once (re-attach, test utilities).
-        // Cancel prior subscriptions before registering new ones.
-        disposeRegistrations();
-        initialEffectRun = true;
-        autoSelectFired  = false;
-        selectionEffectReg = Signal.effect(this, this::applySelection);
-        modeChangeReg      = responsiveLayout.addModeChangeListener(this::onModeChanged);
-    }
-
-    @Override
-    protected void onDetach(DetachEvent detachEvent) {
-        disposeRegistrations();
-        host.onOwnerDetach();
-        super.onDetach(detachEvent);
-    }
-
-    private void disposeRegistrations() {
-        if (selectionEffectReg != null) {
-            selectionEffectReg.remove();
-            selectionEffectReg = null;
-        }
-        if (modeChangeReg != null) {
-            modeChangeReg.remove();
-            modeChangeReg = null;
+        if (currentItem == null) return;
+        dispatchSync(currentItem);
+        if (masterBundle != null) {
+            try { masterBundle.listing().refreshItem(currentItem); }
+            catch (UnsupportedOperationException ignored) {}
         }
     }
-
-    // -------------------------------------------------------------------------
-    // Reactive logic — the only state machine
-    // -------------------------------------------------------------------------
 
     /**
-     * Single source of truth for "given the current (selection × mode), where
-     * should the detail go?"  Driven by {@link Signal#effect}.
+     * Returns the reactive signal holding the currently selected item
+     * ({@code null} = nothing selected).
+     * Lazily initialized — zero overhead until the first subscriber.
      */
-    private void applySelection() {
-        Optional<T> selection = selectionController.read(); // reactive read
-        ViewMode mode = responsiveLayout.getCurrentMode();
-
-        // Mode is null until the first window-size event arrives.
-        if (mode == null) {
-            initialEffectRun = false;
-            return;
-        }
-
-        if (selection.isEmpty()) {
-            host.hide();
-            // Don't clear ?id= on the very first run — restoreSelection() may yet fire.
-            if (!initialEffectRun) urlSync.clearId(getElement());
-            initialEffectRun = false;
-            return;
-        }
-
-        initialEffectRun = false;
-        T item = selection.get();
-        host.place(item, mode, detailContentProvider);
-        urlSync.pushId(getElement(), item);
-    }
-
-    /** Viewport transition handler — runs outside reactive context, uses peek(). */
-    private void onModeChanged(ViewMode newMode) {
-        T currentItem = selectionController.peek().orElse(null);
-        host.onModeChanged(newMode, currentItem, detailContentProvider);
-
-        // Auto-select once when entering desktop with no current selection.
-        if (autoSelectFirst
-                && !autoSelectFired
-                && !isMobile(newMode)
-                && currentItem == null) {
-            autoSelectFired = true;
-            selectFirst();
-        }
-    }
-
-    /** Sheet onClose callback: deselect + clear URL. */
-    private void onMobileSheetClosed() {
-        grid.deselectAll();
-        selectionController.clear();
-        urlSync.clearId(getElement());
-    }
-
-    private static boolean isMobile(ViewMode mode) {
-        return mode == ViewMode.MOBILE
-                || mode == ViewMode.MOBILE_PORTRAIT
-                || mode == ViewMode.MOBILE_LANDSCAPE;
+    public Signal<T> selectionSignal() {
+        if (selectedSignal == null) selectedSignal = new ValueSignal<>(null);
+        return selectedSignal;
     }
 }
-

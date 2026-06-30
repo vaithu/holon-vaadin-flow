@@ -9,7 +9,6 @@
     </parent>
 
     <artifactId>holon-vaadin-flow-chat</artifactId>
-        <version>10.0.2-SNAPSHOT</version>
 
     <name>${project.groupId}:${project.artifactId}</name>
     <description>Holon Vaadin Flow Chat â€“ real-time MS Teams-like chat components with DB-backed persistence</description>

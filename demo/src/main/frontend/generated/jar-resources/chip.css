@@ -1,0 +1,167 @@
+/*
+ * chip.css
+ *
+ * Interactive pill-shaped filter chip — the "Chip" and "ChipGroup" components.
+ *
+ * Token dependency:  --brand-50/100/500/700, --zinc-100/200/300, --surface-0,
+ *                    --text-primary, --text-secondary, --text-tertiary,
+ *                    --font-size-sm, --font-size-xs, --radius-full,
+ *                    --sp-2, --sp-3, --comp-focus-ring, --transition-fast
+ * All tokens are defined per-brand in brand-*.css files (e.g. brand-blue-clean.css).
+ *
+ * Classes:
+ *   .chip-group          — flex row container for a set of chips
+ *   .chip-group--wrap    — allows chips to wrap to the next line
+ *   .chip-btn            — individual chip (renders as <button>)
+ *   .chip-btn--active    — selected/on state (blue tint + brand text)
+ *   .chip-btn--sm        — smaller chip variant (height 22px)
+ *   .chip-btn--lg        — larger chip variant (height 32px)
+ *   .chip-count          — optional trailing count label inside a chip
+ */
+
+/* ── Container ──────────────────────────────────────────────────────────── */
+
+.chip-group {
+    display:     flex;
+    align-items: center;
+    gap:         var(--sp-2, 8px);
+}
+
+.chip-group--wrap {
+    flex-wrap: wrap;
+}
+
+/* ── Base chip ──────────────────────────────────────────────────────────── */
+
+.chip-btn {
+    display:         inline-flex;
+    align-items:     center;
+    gap:             6px;
+    height:          28px;
+    padding:         0 var(--sp-3, 12px);
+    border-radius:   var(--radius-full, 9999px);
+    border:          1px solid var(--zinc-200, #e4e9f0);
+    background:      var(--surface-0, #ffffff);
+    font-family:     inherit;
+    font-size:       var(--font-size-sm, 0.75rem);
+    font-weight:     500;
+    color:           var(--text-primary, #0f1b2d);
+    cursor:          pointer;
+    white-space:     nowrap;
+    user-select:     none;
+    text-decoration: none;
+    outline:         none;
+    transition:      background var(--transition-fast, 120ms ease),
+                     border-color var(--transition-fast, 120ms ease),
+                     color var(--transition-fast, 120ms ease);
+}
+
+/* Count suffix: muted, slightly smaller */
+.chip-count {
+    font-size:   var(--font-size-xs, 0.6875rem);
+    font-weight: 400;
+    color:       var(--text-tertiary, #8a96a6);
+    transition:  color var(--transition-fast, 120ms ease);
+}
+
+/* ── Hover ──────────────────────────────────────────────────────────────── */
+
+.chip-btn:hover {
+    background:    var(--zinc-50, #f8fafc);
+    border-color:  var(--zinc-300, #cfd6e3);
+}
+
+/* ── Focus (keyboard navigation) ────────────────────────────────────────── */
+
+.chip-btn:focus-visible {
+    box-shadow: var(--comp-focus-ring,
+                    0 0 0 2px #ffffff,
+                    0 0 0 4px var(--brand-500, #1576d3));
+}
+
+/* ── Active / selected (on state) ───────────────────────────────────────── */
+
+.chip-btn--active {
+    background:    var(--brand-50, #e6f1fb);
+    color:         var(--brand-500, #1576d3);
+    border-color:  var(--brand-50, #e6f1fb);
+}
+
+.chip-btn--active .chip-count {
+    color: var(--brand-500, #1576d3);
+}
+
+.chip-btn--active:hover {
+    background:   var(--brand-100, #cce3f7);
+    border-color: var(--brand-100, #cce3f7);
+    color:        var(--brand-700, #0a5fb8);
+}
+
+.chip-btn--active:hover .chip-count {
+    color: var(--brand-700, #0a5fb8);
+}
+
+/* ── Disabled ────────────────────────────────────────────────────────────── */
+
+.chip-btn:disabled,
+.chip-btn[disabled] {
+    opacity:        0.45;
+    cursor:         not-allowed;
+    pointer-events: none;
+}
+
+/* ── Size variants ──────────────────────────────────────────────────────── */
+
+.chip-btn--sm {
+    height:    22px;
+    padding:   0 var(--sp-2, 8px);
+    font-size: var(--font-size-xs, 0.6875rem);
+    gap:       4px;
+}
+
+.chip-btn--lg {
+    height:    32px;
+    padding:   0 var(--sp-3, 12px);
+    font-size: var(--font-size-base, 0.8125rem);
+}
+
+/* ── vaadin-button chip variant ─────────────────────────────────────────
+ * Use ButtonConfigurator.chip() / chipActive(boolean) to add these classes.
+ * The [theme~="tertiary"] selector ensures these rules take precedence over
+ * Vaadin's built-in button part styles without using !important.
+ * ─────────────────────────────────────────────────────────────────────── */
+
+vaadin-button.btn--chip[theme~="tertiary"]::part(button) {
+    height:          28px;
+    min-height:      28px;
+    padding:         0 var(--sp-3, 12px);
+    border-radius:   var(--radius-full, 9999px);
+    border:          1px solid var(--zinc-200, #e4e9f0);
+    background:      var(--surface-0, #ffffff);
+    font-size:       var(--font-size-sm, 0.75rem);
+    font-weight:     500;
+    color:           var(--text-primary, #0f1b2d);
+    box-shadow:      none;
+    gap:             6px;
+    transition:      background var(--transition-fast, 120ms ease),
+                     border-color var(--transition-fast, 120ms ease),
+                     color var(--transition-fast, 120ms ease);
+}
+
+vaadin-button.btn--chip[theme~="tertiary"]::part(button):hover {
+    background:   var(--zinc-50, #f8fafc);
+    border-color: var(--zinc-300, #cfd6e3);
+}
+
+vaadin-button.btn--chip.btn--chip-active[theme~="tertiary"]::part(button) {
+    background:   var(--brand-50, #e6f1fb);
+    color:        var(--brand-500, #1576d3);
+    border-color: var(--brand-50, #e6f1fb);
+}
+
+vaadin-button.btn--chip.btn--chip-active[theme~="tertiary"]::part(button):hover {
+    background:   var(--brand-100, #cce3f7);
+    border-color: var(--brand-100, #cce3f7);
+    color:        var(--brand-700, #0a5fb8);
+}
+

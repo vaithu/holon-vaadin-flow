@@ -1,0 +1,163 @@
+[INFO] Scanning for projects...
+[WARNING] 
+[WARNING] Some problems were encountered while building the effective model for com.holon-platform.vaadin:holon-vaadin-flow-demo:jar:10.0.2-SNAPSHOT
+[WARNING] 'build.plugins.plugin.version' for org.springframework.boot:spring-boot-maven-plugin is missing. @ line 111, column 21
+[WARNING] 
+[WARNING] It is highly recommended to fix these problems because they threaten the stability of your build.
+[WARNING] 
+[WARNING] For this reason, future Maven versions might no longer support building such malformed projects.
+[WARNING] 
+[INFO] 
+[INFO] ------------< com.holon-platform.vaadin:holon-vaadin-flow >-------------
+[INFO] Building com.holon-platform.vaadin:holon-vaadin-flow 10.0.2-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- jacoco:0.8.12:prepare-agent (pre-unit-test) @ holon-vaadin-flow ---
+[INFO] surefireArgLine set to -javaagent:C:\\Users\\sxp267\\.m2\\repository\\org\\jacoco\\org.jacoco.agent\\0.8.12\\org.jacoco.agent-0.8.12-runtime.jar=destfile=C:\\Users\\sxp267\\IdeaProjects\\holon-vaadin-flow\\core\\target\\coverage-reports\\jacoco-ut.exec
+[INFO] 
+[INFO] --- remote-resources:3.1.0:process (default) @ holon-vaadin-flow ---
+[INFO] Preparing remote bundle com.holon-platform:holon-shared:1.0.6
+[INFO] Copying 6 resources from 1 bundle.
+[INFO] 
+[INFO] --- resources:3.4.0:resources (default-resources) @ holon-vaadin-flow ---
+[INFO] Copying 56 resources from src\main\resources to target\classes
+[INFO] Copying 6 resources from target\maven-shared-archive-resources to target\classes
+[INFO] 
+[INFO] --- compiler:3.15.0:compile (default-compile) @ holon-vaadin-flow ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.4.0:testResources (default-testResources) @ holon-vaadin-flow ---
+[INFO] Copying 4 resources from src\test\resources to target\test-classes
+[INFO] Copying 6 resources from target\maven-shared-archive-resources to target\test-classes
+[INFO] 
+[INFO] --- compiler:3.15.0:testCompile (default-testCompile) @ holon-vaadin-flow ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- surefire:3.5.2:test (default-test) @ holon-vaadin-flow ---
+[INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running com.holonplatform.vaadin.flow.internal.components.builders.DefaultListingBundleBuilderTest
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 6.756 s -- in com.holonplatform.vaadin.flow.internal.components.builders.DefaultListingBundleBuilderTest
+[INFO] 
+[INFO] Results:
+[INFO] 
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0
+[INFO] 
+[INFO] 
+[INFO] --- jacoco:0.8.12:report (post-unit-test) @ holon-vaadin-flow ---
+[INFO] Loading execution data file C:\Users\sxp267\IdeaProjects\holon-vaadin-flow\core\target\coverage-reports\jacoco-ut.exec
+[INFO] Analyzed bundle 'com.holon-platform.vaadin:holon-vaadin-flow' with 1058 classes
+[WARNING] Classes in bundle 'com.holon-platform.vaadin:holon-vaadin-flow' do not match with execution data. For report generation the same class files must be used as at runtime.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/components/builders/DefaultSheetConfigurator does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/components/builders/AlertDialogConfigurator does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/vaadinplus/components/IconBadge does not match.
+[WARNING] Execution data for class com/iyensoft/vaadin/flow/utils/responsive/WindowSizeTracker does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/vaadinplus/components/AlertAction does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/components/builders/AbstractNotificationConfigurator does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/components/builders/AbstractAlertConfigurator does not match.
+[WARNING] Execution data for class com/iyensoft/vaadin/flow/internal/components/builders/AbstractLazyTabsConfigurator does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/vaadinplus/components/DynamicFilterPanel$1 does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/vaadinplus/components/DynamicFilterPanel$PropInfo does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/vaadinplus/components/PaginationEllipsis does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/components/PropertyListing does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/components/builders/AlertDialogBuilder does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/components/builders/AbstractSplitLayoutConfigurator does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/components/AbstractItemListing$DefaultItemListingBinder does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/components/builders/DefaultColumnBuilder does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/components/utils/UIUtils does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/vaadinplus/components/AlertDialog does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/components/Components$view does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/components/DefaultDialog does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/components/DefaultPropertyListing$DefaultDatastorePropertyListingBuilder does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/components/builders/DefaultRowBuilder does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/components/builders/AlertModalConfigurator does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/vaadinplus/components/DynamicFilterPanel$FilterRow does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/vaadinplus/components/Tag does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/components/builders/SheetBuilder does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/components/builders/DefaultSheetBuilder does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/components/AbstractItemListing$ItemListingPropertySet does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/components/builders/SheetConfigurator does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/components/builders/AlertConfigurator does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/vaadinplus/components/Alert$Variant does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/vaadinplus/components/SheetDescription does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/DefaultInputPropertyRenderer does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/components/builders/AbstractIconBadgeConfigurator does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/components/Components$listing does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/components/builders/AbstractAlertModalConfigurator does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/components/DialogValidationStatusHandler does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/components/builders/DefaultSplitLayoutBuilder does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/vaadinplus/components/EntityFormPanel$LayoutMode does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/vaadinplus/components/Empty does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/components/builders/AbstractAlertDialogConfigurator does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/components/DefaultBeanListing$DefaultDatastoreBeanListingBuilder does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/components/DefaultPropertyListing$DefaultDatastoreLazyPropertyListingBuilder does not match.
+[WARNING] Execution data for class com/iyensoft/vaadin/flow/internal/components/builders/AbstractMobileGridColumnConfigurator does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/vaadinplus/components/InputOTPSeparator does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/vaadinplus/components/BreadcrumbPage does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/vaadinplus/components/EntityFormPanel does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/components/builders/AbstractAvatarConfigurator does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/components/builders/AvatarConfigurator does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/vaadinplus/components/EntityFormPanel$GridStep does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/components/builders/AbstractSheetConfigurator does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/vaadinplus/components/AlertDialog$Size does not match.
+[WARNING] Execution data for class com/iyensoft/vaadin/flow/internal/components/builders/AbstractSideNavConfigurator does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/components/DefaultPropertyListing does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/components/builders/DefaultAlertBuilder does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/DoubleLabel does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/components/DefaultPropertyListing$DefaultPropertyListingBuilder does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/components/Components$utils does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/components/builders/DefaultAlertDialogBuilder does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/components/builders/SplitLayoutBuilder does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/components/builders/DefaultAlertModalBuilder does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/vaadinplus/components/DynamicFilterPanel$RowConnector does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/vaadinplus/components/AlertModal does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/vaadinplus/components/Sheet$Side does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/vaadinplus/components/IconBadge$Size does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/components/builders/AlertModalBuilder does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/components/Components$input does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/vaadinplus/components/SheetTitle does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/components/builders/DefaultIconBadgeBuilder does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/vaadinplus/components/AlertTitle does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/components/Components$dialog does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/vaadinplus/components/Sheet does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/components/builders/DefaultFormLayoutBuilder does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/vaadinplus/components/BreadcrumbSeparator does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/components/builders/IconBadgeBuilder does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/components/RangeInputField does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/components/builders/AbstractDivConfigurator does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/components/DefaultKanbanBoard$DefaultKanbanBoardBuilder does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/vaadinplus/components/InputOTP does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/components/builders/AbstractHeaderConfigurator does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/vaadinplus/components/DynamicFilterPanel does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/components/builders/DefaultAlertConfigurator does not match.
+[WARNING] Execution data for class com/iyensoft/vaadin/flow/internal/components/builders/AbstractTabsConfigurator does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/components/AbstractItemListing$ItemListingPropertyDefinition does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/vaadinplus/components/AlertDialog$Alignment does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/vaadinplus/components/Highlight does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/components/builders/AbstractFlexLayoutConfigurator does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/components/builders/DefaultFormResponsiveStepBuilder does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/vaadinplus/components/AlertDescription does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/vaadinplus/components/Alert does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/components/builders/PropertyListingConfigurator does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/components/ListItem does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/vaadinplus/components/BreadcrumbEllipsis does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/vaadinplus/components/EntityFormPanel$DefaultDivBeanBuilder does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/components/builders/AlertBuilder does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/components/AbstractItemListing$DefaultItemListingColumnBuilder does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/components/DefaultBeanListing$DefaultDatastoreBeanListingBuilder$2 does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/vaadinplus/components/EntityFormPanel$DefaultBeanBuilder does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/components/DefaultKanbanBoard does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/components/builders/AbstractTabConfigurator does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/components/builders/DefaultAlertDialogConfigurator does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/internal/components/AbstractDatastorePropertyListingBuilder does not match.
+[WARNING] Execution data for class com/holonplatform/vaadin/flow/vaadinplus/components/Header does not match.
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  01:44 min
+[INFO] Finished at: 2026-06-17T23:20:37-04:00
+[INFO] ------------------------------------------------------------------------

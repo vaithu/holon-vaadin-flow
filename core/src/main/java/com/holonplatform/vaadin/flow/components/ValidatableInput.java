@@ -64,7 +64,7 @@ public interface ValidatableInput<T> extends Input<T>, Validatable {
 	default Optional<T> getValueIfValid() {
 		try {
 			return Optional.ofNullable(getValue());
-		} catch (@SuppressWarnings("unused") ValidationException e) {
+		} catch ( ValidationException e) {
 			return Optional.empty();
 		}
 	}

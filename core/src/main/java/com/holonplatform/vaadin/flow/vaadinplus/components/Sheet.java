@@ -18,7 +18,7 @@ package com.holonplatform.vaadin.flow.vaadinplus.components;
 import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.vaadin.flow.components.Components;
 import com.holonplatform.vaadin.flow.components.builders.SheetBuilder;
-import com.holonplatform.vaadin.flow.vaadinplus.utilities.HeadingLevel;
+import com.iyensoft.vaadin.flow.enums.HeadingLevel;
 import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -53,7 +53,8 @@ import java.util.function.Supplier;
  *       │    ├── prefix  → back Button (.sheet__btn-back)
  *       │    ├── column  → SheetTitle heading + SheetDescription details
  *       │    └── actions → close Button (.sheet__btn-close)
- *       └── Content (.sheet__content)        — arbitrary user content
+ *       ├── Content (.sheet__content)        — arbitrary user content
+ *       └── Footer  (.sheet__footer)         — optional action / meta row
  * </pre>
  *
  * <p>Both nav buttons are shown by default and can be hidden via
@@ -140,10 +141,11 @@ public class Sheet extends Div {
 
     private final Div    handle;
     /** Header component: prefix = back button, column = title/description, actions = close button. */
-    private final Header header;
+    private Header header;
     private final Button backButton;
     private final Button closeButton;
     private final Div    contentSlot;
+    private final Div    panel;
 
     // -----------------------------------------------------------------------
     // State
@@ -158,10 +160,12 @@ public class Sheet extends Div {
     private boolean historyEntryPushed   = false;
     private boolean backdropVisible      = true;
     private boolean belowHeader          = false;
+    private boolean customHeaderVisible   = false;
 
     private Supplier<Component[]> lazyContentSupplier;
     private Runnable onOpenCallback;
     private Runnable onCloseCallback;
+    private Footer footer;
 
     // -----------------------------------------------------------------------
     // Constructors
@@ -185,7 +189,7 @@ public class Sheet extends Div {
         backdrop.addClickListener(e -> { if (closeOnBackdropClick) close(); });
 
         // Panel — the visible sliding surface
-        Div panel = Components.div().styleName("sheet__panel").build();
+        this.panel = Components.div().styleName("sheet__panel").build();
 
         // Handle — drag indicator (visual only, BOTTOM sheets on mobile)
         this.handle = Components.div().styleName("sheet__handle").build();
@@ -201,15 +205,12 @@ public class Sheet extends Div {
         this.closeButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY_INLINE, ButtonVariant.LUMO_ICON);
 
         // Header: prefix = back, column = title+description, actions = close
-        this.header = new Header("", HeadingLevel.NONE);
-        this.header.addClassName("sheet__header");
-        this.header.setPrefix(backButton);
-        this.header.setActions(closeButton);
+        this.header = createDefaultHeader();
 
         // Content slot — holds arbitrary user components
         this.contentSlot = Components.div().styleName("sheet__content").build();
 
-        panel.add(handle, header, contentSlot);
+        rebuildPanel();
         add(backdrop, panel);
 
         setSide(side);
@@ -333,6 +334,7 @@ public class Sheet extends Div {
      * @param title the title component, or {@code null} to remove
      */
     public void setTitle(SheetTitle title) {
+        ensureHeader();
         this.currentTitle = title;
         header.setHeading(title != null ? title : HeadingLevel.NONE.getComponent(""));
         syncHeaderVisibility();
@@ -359,6 +361,7 @@ public class Sheet extends Div {
      * @param description the description component, or {@code null} to remove
      */
     public void setDescription(SheetDescription description) {
+        ensureHeader();
         this.currentDescription = description;
         if (description != null) {
             header.setDetails(description);
@@ -389,6 +392,28 @@ public class Sheet extends Div {
         this.lazyContentSupplier = null;
         contentSlot.removeAll();
         if (components != null) contentSlot.add(components);
+    }
+
+    /**
+     * Replaces the sheet header shown above the content.
+     *
+     * <p>Passing {@code null} restores the default compact sheet header.</p>
+     */
+    public void setHeader(Header header) {
+        this.header = header != null ? header : createDefaultHeader();
+        this.customHeaderVisible = header != null;
+        rebuildPanel();
+        syncHeaderVisibility();
+    }
+
+    /**
+     * Replaces the sheet footer shown below the content.
+     *
+     * <p>Passing {@code null} removes the footer slot entirely.</p>
+     */
+    public void setFooter(Footer footer) {
+        this.footer = footer;
+        rebuildPanel();
     }
 
     public void clearContent() {
@@ -496,6 +521,14 @@ public class Sheet extends Div {
     public boolean isShowCloseButton() { return closeButton.isVisible(); }
 
     /**
+     * Returns the Sheet's built-in close {@link Button}.
+     *
+     * <p>Useful when a custom header is supplied via {@link #setHeader(Header)}: the caller
+     * can embed this button inside the custom header so close functionality is preserved.</p>
+     */
+    public Button getCloseButton() { return closeButton; }
+
+    /**
      * Sets a lazy-content supplier invoked exactly once on the first {@link #open()} call.
      * The DOM tree is reused on subsequent opens; the supplier is discarded after first use.
      *
@@ -521,8 +554,38 @@ public class Sheet extends Div {
 
     /** Hides the header entirely when there is nothing to show inside it. */
     private void syncHeaderVisibility() {
-        header.setVisible(currentTitle != null || currentDescription != null
+        header.setVisible(customHeaderVisible
+                || currentTitle != null || currentDescription != null
                 || backButton.isVisible() || closeButton.isVisible());
+    }
+
+    private Header createDefaultHeader() {
+        Header defaultHeader = new Header("", HeadingLevel.NONE);
+        defaultHeader.addClassName("sheet__header");
+        defaultHeader.setPrefix(backButton);
+        defaultHeader.setActions(closeButton);
+        return defaultHeader;
+    }
+
+    private void ensureHeader() {
+        if (header == null) {
+            header = createDefaultHeader();
+            customHeaderVisible = false;
+            rebuildPanel();
+        }
+    }
+
+    private void rebuildPanel() {
+        panel.removeAll();
+        panel.add(handle);
+        if (header != null) {
+            panel.add(header);
+        }
+        panel.add(contentSlot);
+        if (footer != null) {
+            footer.addClassName("sheet__footer");
+            panel.add(footer);
+        }
     }
 
     private String ensureId() {

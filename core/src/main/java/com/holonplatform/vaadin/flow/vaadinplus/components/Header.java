@@ -6,7 +6,7 @@ import com.holonplatform.vaadin.flow.internal.lumo.Gap;
 import com.holonplatform.vaadin.flow.vaadinplus.Layout;
 import com.holonplatform.vaadin.flow.vaadinplus.utilities.Color;
 import com.holonplatform.vaadin.flow.vaadinplus.utilities.Font;
-import com.holonplatform.vaadin.flow.vaadinplus.utilities.HeadingLevel;
+import com.iyensoft.vaadin.flow.enums.HeadingLevel;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasTheme;
 import com.vaadin.flow.component.avatar.Avatar;
@@ -27,6 +27,7 @@ public class Header extends Layout implements HasTheme {
     private static final String CLASS_TOP_ROW = "iyen-header__top-row";
     private static final String CLASS_TOP_ROW_AVATAR = "iyen-header__top-row--avatar";
     private static final String CLASS_COLUMN = "iyen-header__column";
+    private static final String CLASS_COLUMN_NO_GAP = "iyen-header__column--without-gap";
     private static final String CLASS_COLUMN_LINE = "iyen-header__column-line";
     private static final String CLASS_PREFIX = "iyen-header__prefix";
     private static final String CLASS_PREFIX_AVATAR = "iyen-header__prefix--avatar";
@@ -181,6 +182,13 @@ public class Header extends Layout implements HasTheme {
         refreshColumn();
     }
 
+    public Component[] getActionsComponents() {
+        if (actions == null) {
+            return new Component[0];
+        }
+        return actions.getChildren().toArray(Component[]::new);
+    }
+
     public void addActions(Component... components) {
         if (isEmpty(components)) {
             return;
@@ -320,6 +328,10 @@ public class Header extends Layout implements HasTheme {
 
     public void withoutBorder() {
         setBordered(false);
+    }
+
+    public void withoutColumnGap() {
+        getColumnLayout().addClassName(CLASS_COLUMN_NO_GAP);
     }
 
     // noinspection UnusedDeclaration

@@ -18,7 +18,6 @@ package com.holonplatform.vaadin.flow.navigator.test.data;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.router.RouterLayout;
 
-@SuppressWarnings("serial")
 public class NoAuthLayout extends Div implements RouterLayout {
 
 }

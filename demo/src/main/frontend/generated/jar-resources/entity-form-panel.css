@@ -24,8 +24,6 @@
     display        : flex;
     flex-direction : column;
     gap            : var(--space-4, 1rem);
-    width          : 100%;
-    box-sizing     : border-box;
 }
 
 /* --------------------------------------------------------------------------
@@ -68,74 +66,37 @@
 .entity-form-panel__btn-cancel   { order: 2; }
 
 /* --------------------------------------------------------------------------
-   Focus ring for Save (primary).
-   Target the HOST so !important beats the shadow-DOM theme contribution.
+   Last-row stretch helpers
    -------------------------------------------------------------------------- */
-vaadin-button.entity-form-panel__btn-save[focus-ring] {
-    box-shadow: 0 0 0 2px var(--surface-0, #ffffff),
-                0 0 0 4px var(--color-primary, #3b82f6) !important;
+.entity-form-panel__span-1,
+.entity-form-panel__span-2,
+.entity-form-panel__span-3,
+.entity-form-panel__span-4,
+.entity-form-panel__span-5,
+.entity-form-panel__span-6,
+.entity-form-panel__span-7,
+.entity-form-panel__span-8,
+.entity-form-panel__span-9,
+.entity-form-panel__span-10,
+.entity-form-panel__span-11,
+.entity-form-panel__span-12 {
+    justify-self : stretch;
+    width        : 100%;
+    box-sizing   : border-box;
 }
 
-/* --------------------------------------------------------------------------
-   Clear & Cancel — secondary outlined buttons.
-
-   The EntityFormPanel Java constructor strips the `theme` attribute from these
-   two buttons.  Without a `theme` attribute the shell-theme "default outlined"
-   style applies automatically (white background, box-shadow border ring,
-   micro-lift elevation).  The rules below refine each button semantically:
-
-     • Clear (Reset) → soft-warning amber tint  (unsaved data will be discarded)
-     • Cancel        → neutral gray tint         (non-destructive dismiss)
-   -------------------------------------------------------------------------- */
-
-/* ── Cancel — neutral gray (non-destructive dismiss) ────────────────────── */
-vaadin-button.entity-form-panel__btn-cancel::part(button) {
-    background-color : var(--surface-1, #f4f4f5);
-    transition       : background-color 120ms ease;
-}
-
-vaadin-button.entity-form-panel__btn-cancel:not([disabled])::part(button):hover {
-    background-color : var(--zinc-200, #e4e4e7);
-}
-
-vaadin-button.entity-form-panel__btn-cancel:not([disabled])::part(button):active {
-    background-color : var(--zinc-300, #d4d4d8);
-}
-
-/* ── Clear (Reset) — soft-warning amber tint ─────────────────────────────
-   Signals that clicking WILL discard unsaved work without a confirmation.
-   Amber == "pause and think" — not as alarming as red, but clearly not neutral.
-   -------------------------------------------------------------------------- */
-vaadin-button.entity-form-panel__btn-clear::part(button) {
-    background-color : color-mix(in srgb, var(--warn, #f59e0b) 8%, transparent);
-    border-color     : color-mix(in srgb, var(--warn, #f59e0b) 30%, transparent) !important;
-    color            : var(--amber-700, #b45309);
-    transition       : background-color 120ms ease, border-color 120ms ease;
-}
-
-vaadin-button.entity-form-panel__btn-clear:not([disabled])::part(button):hover {
-    background-color : color-mix(in srgb, var(--warn, #f59e0b) 15%, transparent);
-    border-color     : color-mix(in srgb, var(--warn, #f59e0b) 50%, transparent) !important;
-}
-
-vaadin-button.entity-form-panel__btn-clear:not([disabled])::part(button):active {
-    background-color : color-mix(in srgb, var(--warn, #f59e0b) 22%, transparent);
-}
-
-/* Focus ring for Clear uses amber rather than brand-500 to stay in semantic family */
-vaadin-button.entity-form-panel__btn-clear[focus-ring] {
-    box-shadow: 0 0 0 2px var(--surface-0, #ffffff),
-                0 0 0 4px var(--warn, #f59e0b) !important;
-    outline: none !important;
-}
-
-/* ── Focus ring — keyboard-only ([focus-ring] set by Vaadin JS) ─────────── */
-vaadin-button.entity-form-panel__btn-clear[focus-ring],
-vaadin-button.entity-form-panel__btn-cancel[focus-ring] {
-    box-shadow: 0 0 0 2px var(--surface-0, #ffffff),
-                0 0 0 4px var(--brand-500, #3b82f6) !important;
-    outline: none !important;
-}
+.entity-form-panel__span-1  { grid-column: span 1 !important; }
+.entity-form-panel__span-2  { grid-column: span 2 !important; }
+.entity-form-panel__span-3  { grid-column: span 3 !important; }
+.entity-form-panel__span-4  { grid-column: span 4 !important; }
+.entity-form-panel__span-5  { grid-column: span 5 !important; }
+.entity-form-panel__span-6  { grid-column: span 6 !important; }
+.entity-form-panel__span-7  { grid-column: span 7 !important; }
+.entity-form-panel__span-8  { grid-column: span 8 !important; }
+.entity-form-panel__span-9  { grid-column: span 9 !important; }
+.entity-form-panel__span-10 { grid-column: span 10 !important; }
+.entity-form-panel__span-11 { grid-column: span 11 !important; }
+.entity-form-panel__span-12 { grid-column: span 12 !important; }
 
 /* --------------------------------------------------------------------------
    Responsive — mobile  (≤ 480 px)

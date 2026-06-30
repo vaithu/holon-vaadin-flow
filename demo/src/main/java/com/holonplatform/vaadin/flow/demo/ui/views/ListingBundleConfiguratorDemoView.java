@@ -73,14 +73,14 @@ public class ListingBundleConfiguratorDemoView extends Div {
         var cfg = ListingBundleConfigurator.configure(bundle);
 
         GridHeader  grid    = bundle.header();
-        TextField   search  = cfg.getSearchField();   // from ListingBundleConfigurator
-        Div         toolbar = cfg.getToolbar();
-        Div         footer  = cfg.getFooter();
+        TextField   search  = cfg.getSearchOptional().orElse(null);   // from ListingBundleConfigurator
+        Div         toolbar = cfg.toolbar();
+        Div         footer  = cfg.footer();
 
         // Prove they are the same instances exposed by the bundle
         var bundleHeader = bundle.header();
         assert grid    == bundleHeader;
-        assert search  == bundle.search();
+        assert search  == bundle.getSearchOptional().orElse(null);
 
         var info = new Span(
                 "header=" + (grid != null) + ", "
@@ -92,7 +92,7 @@ public class ListingBundleConfiguratorDemoView extends Div {
 
         return new DemoExample(
                 "1. Retrieve header / search / toolbar / footer from the bundle",
-                new Div(info, bundle.header(), bundle.toolbar(), bundle.grid(), bundle.footer()),
+                new Div(info, bundle),
                 """
                 ListingBundle<Product> bundle = Components.listing(Product.class)
                     .gridHeader("Products")
@@ -104,10 +104,10 @@ public class ListingBundleConfiguratorDemoView extends Div {
                 // Configurator gives typed access to every assembled part
                 var cfg = ListingBundleConfigurator.configure(bundle);
 
-                GridHeader grid    = bundle.header();       // same live instance
-                TextField  search  = cfg.getSearchField();   // == bundle.search()  (may be null)
-                Div        toolbar = cfg.getToolbar();       // == bundle.toolbar()
-                Div        footer  = cfg.getFooter();        // == bundle.footer()
+                GridHeader grid    = bundle.header();                             // same live instance
+                TextField  search  = cfg.getSearchOptional().orElse(null);   // == bundle.getSearchOptional() (may be null)
+                Div        toolbar = cfg.toolbar();                           // == bundle.toolbar()
+                Div        footer  = cfg.footer();                            // == bundle.footer()
                 """);
     }
 
@@ -130,7 +130,7 @@ public class ListingBundleConfiguratorDemoView extends Div {
 
         return new DemoExample(
                 "2. Restyle the heading via inherited HeaderConfigurator methods",
-                new Div(bundle.header(), bundle.toolbar(), bundle.grid(), bundle.footer()),
+                new Div(bundle),
                 """
                 // All Header* methods are inherited — they delegate to the live bundle header()
                 ListingBundleConfigurator.configure(bundle)
@@ -168,7 +168,7 @@ public class ListingBundleConfiguratorDemoView extends Div {
 
         return new DemoExample(
                 "3. Selection context actions + row click via the chained configurator",
-                new Div(bundle.header(), bundle.toolbar(), bundle.grid(), bundle.footer()),
+                new Div(bundle),
                 """
                 // Stop the grid from selecting the row when the user clicks it
                 bundle.listing().setSelectionMode(Selectable.SelectionMode.NONE);

@@ -2,7 +2,7 @@ package com.holonplatform.vaadin.flow.internal.components;
 
 import com.holonplatform.vaadin.flow.components.Components;
 import com.holonplatform.vaadin.flow.components.SingleSelect;
-import com.holonplatform.vaadin.flow.enums.Timeline;
+import com.iyensoft.vaadin.flow.enums.Timeline;
 import com.holonplatform.vaadin.flow.internal.DateRange;
 import com.holonplatform.vaadin.flow.internal.DateRangeField;
 import com.vaadin.flow.component.Component;

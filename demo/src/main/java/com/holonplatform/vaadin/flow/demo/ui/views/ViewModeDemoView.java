@@ -9,7 +9,7 @@ import com.holonplatform.vaadin.flow.vaadinplus.ResponsiveDiv;
 import com.holonplatform.vaadin.flow.vaadinplus.components.Alert;
 import com.holonplatform.vaadin.flow.vaadinplus.components.Highlight;
 import com.holonplatform.vaadin.flow.vaadinplus.utilities.Font;
-import com.iyensoft.vaadin.flow.utils.responsive.ViewMode;
+import com.iyensoft.vaadin.flow.enums.ViewMode;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;

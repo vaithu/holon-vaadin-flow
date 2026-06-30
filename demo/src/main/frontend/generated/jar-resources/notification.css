@@ -67,18 +67,9 @@ vaadin-button.notification__close-btn::part(button):hover {
  * <vaadin-notification-card> so ::part(overlay) can be targeted here.
  * -----------------------------------------------------------------------*/
 
-vaadin-notification-card[theme~="n-error"]::part(overlay) {
-    border-radius: 0.5rem;
-}
-
-vaadin-notification-card[theme~="n-success"]::part(overlay) {
-    border-radius: 0.5rem;
-}
-
-vaadin-notification-card[theme~="n-warning"]::part(overlay) {
-    border-radius: 0.5rem;
-}
-
+vaadin-notification-card[theme~="n-error"]::part(overlay),
+vaadin-notification-card[theme~="n-success"]::part(overlay),
+vaadin-notification-card[theme~="n-warning"]::part(overlay),
 vaadin-notification-card[theme~="n-primary"]::part(overlay) {
     border-radius: 0.5rem;
 }

@@ -22,6 +22,7 @@ import com.holonplatform.core.i18n.LocalizationContext;
 import com.holonplatform.core.property.Property;
 import com.holonplatform.core.property.PropertyBox;
 import com.holonplatform.core.property.PropertySet;
+import com.holonplatform.vaadin.flow.internal.components.builders.DefaultListingBundleBuilder;
 import com.holonplatform.vaadin.flow.components.Composable.Composer;
 import com.holonplatform.vaadin.flow.components.builders.*;
 import com.holonplatform.vaadin.flow.components.builders.ButtonConfigurator.BaseButtonConfigurator;
@@ -59,7 +60,7 @@ import com.holonplatform.vaadin.flow.vaadinplus.KeyValueItem;
 import com.holonplatform.vaadin.flow.vaadinplus.KeyValueList;
 import com.holonplatform.vaadin.flow.vaadinplus.Layout;
 import com.holonplatform.vaadin.flow.vaadinplus.components.*;
-import com.iyensoft.vaadin.flow.components.IyenPanel;
+import com.iyensoft.vaadin.flow.components.Panel;
 import com.iyensoft.vaadin.flow.components.builders.*;
 import com.iyensoft.vaadin.flow.internal.components.builders.MobileGridColumnBuilder;
 import com.vaadin.flow.component.ClickNotifier;
@@ -76,6 +77,7 @@ import com.vaadin.flow.component.contextmenu.MenuItem;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.*;
+import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.listbox.ListBox;
 import com.vaadin.flow.component.listbox.MultiSelectListBox;
 import com.vaadin.flow.component.menubar.MenuBar;
@@ -548,6 +550,22 @@ public interface Components {
         return HeaderBuilder.create(labelBuilder);
     }
 
+    static FooterBuilder footer() {
+        return FooterBuilder.create();
+    }
+
+    static FooterConfigurator.BaseFooterConfigurator footer(com.holonplatform.vaadin.flow.vaadinplus.components.Footer footer) {
+        return FooterConfigurator.configure(footer);
+    }
+
+    static BreadcrumbBuilder breadcrumb() {
+        return BreadcrumbBuilder.create();
+    }
+
+    static BreadcrumbBuilder breadcrumb(Breadcrumb breadcrumb) {
+        return BreadcrumbBuilder.create(breadcrumb);
+    }
+
     static MobileGridColumnBuilder mobileGridColumn() {
         return MobileGridColumnBuilder.create();
     }
@@ -708,7 +726,7 @@ public interface Components {
      * @param icon the VaadinIcon to display (not null)
      * @return a new {@link IconBadgeBuilder}
      */
-    static IconBadgeBuilder iconBadge(com.vaadin.flow.component.icon.VaadinIcon icon) {
+    static IconBadgeBuilder iconBadge(Icon icon) {
         return IconBadgeBuilder.create(icon);
     }
 
@@ -725,7 +743,7 @@ public interface Components {
      * @param variant the semantic color variant (null = neutral)
      * @return a new {@link IconBadgeBuilder}
      */
-    static IconBadgeBuilder iconBadge(com.vaadin.flow.component.icon.VaadinIcon icon, Alert.Variant variant) {
+    static IconBadgeBuilder iconBadge(Icon icon, Alert.Variant variant) {
         return IconBadgeBuilder.create(icon, variant);
     }
 
@@ -737,7 +755,7 @@ public interface Components {
      * @param size    the size preset (not null)
      * @return a new {@link IconBadgeBuilder}
      */
-    static IconBadgeBuilder iconBadge(com.vaadin.flow.component.icon.VaadinIcon icon, Alert.Variant variant, IconBadge.Size size) {
+    static IconBadgeBuilder iconBadge(Icon icon, Alert.Variant variant, IconBadge.Size size) {
         return IconBadgeBuilder.create(icon, variant, size);
     }
 
@@ -989,38 +1007,6 @@ public interface Components {
 
     }
 
-    static ZohoBuilder zoho() {
-        return ZohoBuilder.create();
-    }
-
-    static ZohoBuilder zoho(boolean mobile) {
-        return ZohoBuilder.create(mobile);
-    }
-
-    static IyenMasterBuilder master() {
-        return IyenMasterBuilder.create();
-    }
-
-    static IyenDetailBuilder detail() {
-        return IyenDetailBuilder.create();
-    }
-
-    static IyenMasterBuilder master(Layout layout) {
-        return IyenMasterBuilder.create(layout);
-    }
-
-    static IyenDetailBuilder detail(Layout layout) {
-        return IyenDetailBuilder.create(layout);
-    }
-
-    static IyenViewBuilder iyenView() {
-        return IyenViewBuilder.create();
-    }
-
-    static IyenViewBuilder iyenView(Layout layout) {
-        return IyenViewBuilder.create(layout);
-    }
-
     static CardBuilder card() {
         return CardBuilder.create();
     }
@@ -1033,16 +1019,92 @@ public interface Components {
         return ColumnBuilder.create();
     }
 
-   /* static DefaultXPanel panel() {
-        return new DefaultXPanel();
-    }*/
-
-    static PanelBuilder panel(Component... components) {
-        return PanelBuilder.create(components);
+    static PanelBuilder panel() {
+        return PanelBuilder.create();
     }
 
-    static PanelBuilder panel() {
-        return PanelBuilder.create(new IyenPanel());
+    static PanelBuilder panel(Panel panel) {
+        return PanelBuilder.create(panel);
+    }
+
+    /**
+     * Creates a typed {@link MasterDetailBuilder} for the given bean type.
+     * Enables no-arg {@code listing()}, type-witness-free {@code withSelectionKey},
+     * and uncast {@code withDetailSync} lambdas.
+     *
+     * <pre>{@code
+     * MasterDetailLayout<Order> mdl = Components.masterDetail(Order.class)
+     *     .master()
+     *         .listing().fetch((q, t) -> service.fetch(q)).add()
+     *         .withSelectionKey(Order::getId).add()
+     *     .detail()
+     *         .withDetailSync(o -> populate(o)).add()
+     *     .build();
+     * mdl.selectFirst(viewMode);
+     * mdl.notifyDataChanged();
+     * }</pre>
+     *
+     * @param <T>      item type
+     * @param beanType bean class (not null)
+     * @return a new typed {@link MasterDetailBuilder}
+     */
+    static <T> MasterDetailBuilder<T> masterDetail(Class<T> beanType) {
+        return MasterDetailBuilder.create(beanType);
+    }
+
+    /**
+     * Creates a {@link MasterDetailBuilder} backed by a Holon {@link PropertySet}.
+     * The item type is fixed to {@link PropertyBox}; enables no-arg {@code .master().listing()}
+     * which constructs a {@link PropertyListing} from the supplied property set.
+     *
+     * <pre>{@code
+     * MasterDetailLayout<PropertyBox> mdl = Components.masterDetail(PRODUCT_SET)
+     *     .master()
+     *         .listing()
+     *             .search("Search…")
+     *             .fetch((q, text, sort) -> datastore.query(TARGET)
+     *                 .restrict(q.getLimit(), q.getOffset())
+     *                 .stream(PRODUCT_SET))
+     *             .add()
+     *         .withSelectionKey(pb -> pb.getValue(ID))
+     *         .add()
+     *     .detail()
+     *         .withDetailSync(pb -> populate(pb))
+     *         .add()
+     *     .build();
+     * }</pre>
+     *
+     * @param propertySet the Holon property set that drives the listing (not null)
+     * @return a new {@link MasterDetailBuilder}{@code <PropertyBox>}
+     */
+    static MasterDetailBuilder<PropertyBox> masterDetail(PropertySet<?> propertySet) {
+        return MasterDetailBuilder.create(propertySet);
+    }
+
+    /**
+     * Creates a {@link PanelConfigurator.BasePanelConfigurator} for the given
+     * {@link Panel} instance.
+     *
+     * <pre>{@code
+     * Panel panel = new Panel();
+     * Components.configure(panel)
+     *     .header()
+     *         .heading("Deployment status")
+     *         .details(new Span("Last updated just now"))
+     *         .actions(new Button("Open details"), new Button("Archive"))
+     *         .add()
+     *     .content(new Div(new Span("Body content")))
+     *     .footer()
+     *         .meta(new Span("Status: Ready"))
+     *         .add();
+     * }</pre>
+     *
+     * @param panel the panel to configure (not null)
+     * @return a configurator for the provided panel
+     * @since 10.0.0
+     */
+    static com.iyensoft.vaadin.flow.components.builders.PanelConfigurator.BasePanelConfigurator configure(Panel panel) {
+        return com.iyensoft.vaadin.flow.components.builders.PanelConfigurator.configure(panel);
     }
 
 
@@ -1065,7 +1127,6 @@ public interface Components {
         return ButtonBuilder.create().text(text).onClick(clickListener).build();
     }
 
-    
 
     /**
      * Create a {@link Button} with given localizable text and given
@@ -1144,18 +1205,6 @@ public interface Components {
 
     static DefaultOptionsButtonBuilder optionsButton() {
         return new DefaultOptionsButtonBuilder();
-    }
-
-    static BulkActionBuilder bulkActionBar() {
-        return BulkActionBuilder.create();
-    }
-
-    static DivBuilder div() {
-        return DivBuilder.create();
-    }
-
-    static FormHeaderBuilder formHeader() {
-        return FormHeaderBuilder.create();
     }
 
     static DefaultFormFooter formFooter() {
@@ -2095,9 +2144,6 @@ public interface Components {
             return Input.stringArea();
         }
 
-        static SearchBarBuilder searchBar() {
-            return SearchBarBuilder.create();
-        }
 
         static DefaultTimeline timeline() {
             return new DefaultTimeline();
@@ -3232,20 +3278,27 @@ public interface Components {
 
     /**
      * Creates a fluent {@link ListingBundleBuilder} that assembles a fully pre-wired
-     * {@link ListingBundle} â€” listing, pagination bar, page-size selector, optional
-     * search field, and optional filter panel â€” in a single chained call.
+     * {@link ListingBundle} &mdash; listing, pagination bar, page-size selector, optional
+     * search field, and optional filter panel &mdash; in a single chained call.
+     *
+     * <p>{@link ListingBundle} extends {@link com.vaadin.flow.component.Composite Composite&lt;Div&gt;} and
+     * self-assembles toolbar, grid, and footer in its constructor &mdash; just add the bundle
+     * directly to your view layout:</p>
      *
      * <pre>{@code
      * var bundle = Components.listing(Product.class)
      *     .columns("id", "name", "category", "price")
      *     .pageSizes(10, 25, 50)
-     *     .search("Search productsâ€¦")
-     *     .fetch((q, text) -> service.fetch(q.getOffset(), q.getLimit(), text))
+     *     .search("Search products…")
+     *     .fetch((q, text) -> service.fetch(q, text))
      *     .build();
      *
-     * content(bundle.toolbar(),   // [Show 10â–¾ entries]  [ðŸ” Searchâ€¦]
-     *     bundle.grid(),
-     *     bundle.footer());   // [Previous] [1] [2] [Next]
+     * add(bundle);  // toolbar + grid + footer are already assembled inside the bundle
+     *
+     * // Only call toolbar()/grid()/footer() individually when you need to place the
+     * // three pieces in different layout slots (e.g. toolbar in an AppLayout header):
+     * // add(bundle.toolbar());
+     * // setContent(bundle.grid());
      * }</pre>
      *
      * @param beanType the bean class to introspect for columns (not null)
@@ -3254,7 +3307,7 @@ public interface Components {
      * @since 10.0.1
      */
     static <T> ListingBundleBuilder<T> listing(Class<T> beanType) {
-        return new ListingBundleBuilder<>(beanType);
+        return new DefaultListingBundleBuilder<>(beanType);
     }
 
     /**
@@ -3263,17 +3316,17 @@ public interface Components {
      *
      * <pre>{@code
      * var bundle = Components.listing(NAME, CATEGORY, PRICE, STATUS)
-     *     .header(NAME, "Product Name")
-     *     .header(PRICE, "Price (â‚¬)")
+     *     .header(NAME,  "Product Name")
+     *     .header(PRICE, "Price (€)")
      *     .pageSizes(10, 25, 50)
-     *     .search("Searchâ€¦")
-     *     .fetch((q, text) -> service.fetch(q.getOffset(), q.getLimit(), text))
+     *     .search("Search products…")
+     *     .fetch((q, text) -> service.fetch(q, text))
      *     .build();
      *
-     * content(bundle.toolbar(), bundle.grid(), bundle.footer());
+     * add(bundle);  // toolbar + grid + footer are already assembled inside the bundle
      * }</pre>
      *
-     * @param properties the properties to display as columns (not null)
+     * @param properties the properties to display as listing columns (not null)
      * @return a new {@link PropertyListingBundleBuilder}
      * @since 10.0.1
      */
@@ -3389,6 +3442,33 @@ public interface Components {
     }
 
     /**
+     * Creates an {@link EntityFormPanel.BeanBuilder} for a bean-driven form panel
+     * using the given layout mode.
+     *
+     * @param <T>        bean type
+     * @param beanClass  the bean class to introspect (not null)
+     * @param layoutMode the layout mode to use (not null)
+     * @return a new {@link EntityFormPanel.BeanBuilder}
+     * @since 10.0.0
+     */
+    static <T> EntityFormPanel.BeanBuilder<T> entityFormPanel(Class<T> beanClass, EntityFormPanel.LayoutMode layoutMode) {
+        return EntityFormPanel.bean(beanClass).layout(layoutMode);
+    }
+
+    /**
+     * Creates an {@link EntityFormPanel.DivBeanBuilder} for a bean-driven form
+     * panel using a {@link com.vaadin.flow.component.html.Div} grid container.
+     *
+     * @param <T>       bean type
+     * @param beanClass the bean class to introspect (not null)
+     * @return a new {@link EntityFormPanel.DivBeanBuilder}
+     * @since 10.0.0
+     */
+    static <T> EntityFormPanel.DivBeanBuilder<T> entityFormPanelDiv(Class<T> beanClass) {
+        return EntityFormPanel.beanDiv(beanClass);
+    }
+
+    /**
      * Creates an {@link EntityFormPanel.PropertyBuilder} for a form panel driven by
      * the given {@link PropertySet}.
      *
@@ -3409,6 +3489,31 @@ public interface Components {
     }
 
     /**
+     * Creates an {@link EntityFormPanel.PropertyBuilder} for a property-set driven
+     * form panel using the given layout mode.
+     *
+     * @param propertySet the property set that defines the form fields (not null)
+     * @param layoutMode  the layout mode to use (not null)
+     * @return a new {@link EntityFormPanel.PropertyBuilder}
+     * @since 10.0.0
+     */
+    static EntityFormPanel.PropertyBuilder entityFormPanel(PropertySet<?> propertySet, EntityFormPanel.LayoutMode layoutMode) {
+        return EntityFormPanel.properties(propertySet).layout(layoutMode);
+    }
+
+    /**
+     * Creates an {@link EntityFormPanel.DivPropertyBuilder} for a property-set
+     * driven form panel using a {@link com.vaadin.flow.component.html.Div} grid container.
+     *
+     * @param propertySet the property set that defines the form fields (not null)
+     * @return a new {@link EntityFormPanel.DivPropertyBuilder}
+     * @since 10.0.0
+     */
+    static EntityFormPanel.DivPropertyBuilder entityFormPanelDiv(PropertySet<?> propertySet) {
+        return EntityFormPanel.propertiesDiv(propertySet);
+    }
+
+    /**
      * Creates an {@link EntityFormPanel.PropertyBuilder} for a form panel driven by
      * the given properties (varargs).
      *
@@ -3426,6 +3531,31 @@ public interface Components {
      */
     static EntityFormPanel.PropertyBuilder entityFormPanel(Property<?>... properties) {
         return EntityFormPanel.properties(properties);
+    }
+
+    /**
+     * Creates an {@link EntityFormPanel.PropertyBuilder} for a property-list driven
+     * form panel using the given layout mode.
+     *
+     * @param layoutMode the layout mode to use (not null)
+     * @param properties the properties that define the form fields (not null)
+     * @return a new {@link EntityFormPanel.PropertyBuilder}
+     * @since 10.0.0
+     */
+    static EntityFormPanel.PropertyBuilder entityFormPanel(EntityFormPanel.LayoutMode layoutMode, Property<?>... properties) {
+        return EntityFormPanel.properties(properties).layout(layoutMode);
+    }
+
+    /**
+     * Creates an {@link EntityFormPanel.DivPropertyBuilder} for a property-list
+     * driven form panel using a {@link com.vaadin.flow.component.html.Div} grid container.
+     *
+     * @param properties the properties that define the form fields (not null)
+     * @return a new {@link EntityFormPanel.DivPropertyBuilder}
+     * @since 10.0.0
+     */
+    static EntityFormPanel.DivPropertyBuilder entityFormPanelDiv(Property<?>... properties) {
+        return EntityFormPanel.propertiesDiv(properties);
     }
 
     // -----------------------------------------------------------------------
@@ -3500,151 +3630,112 @@ public interface Components {
         return com.holonplatform.vaadin.flow.vaadinplus.components.LineItemGrid.builder();
     }
 
+    static DivBuilder div() {
+        return DivBuilder.create();
+    }
+
+    static MasterBuilder master() {
+        return MasterBuilder.create();
+    }
+
+    static DetailBuilder detail() {
+        return DetailBuilder.create();
+    }
+
     // -----------------------------------------------------------------------
-    // MasterDetailLayout
+    // StatusBadge
     // -----------------------------------------------------------------------
 
     /**
-     * Creates a new {@link com.iyensoft.vaadin.flow.components.builders.MasterDetailBuilder}
-     * for a reactive signal-driven master-detail layout.
-     *
-     * <p>On <b>mobile</b> viewports the detail opens as a full-screen
-     * {@link com.holonplatform.vaadin.flow.vaadinplus.components.Sheet} slide-in;
-     * on <b>tablet/desktop</b> master and detail sit side by side.</p>
+     * Creates a neutral (gray) {@link StatusBadge} — a non-interactive dot-prefix status pill.
      *
      * <pre>{@code
-     * MasterDetailLayout<Order> layout = Components.<Order>masterDetail()
-     *     .masterGrid(orderGrid)
-     *     .detailContent(order -> new Component[]{ new OrderDetailForm(order) })
-     *     .itemId(o -> String.valueOf(o.getId()),
-     *             id -> orderService.findById(Long.parseLong(id)))
-     *     .onDataChanged(() -> orderGrid.getDataProvider().refreshAll())
-     *     .autoSelectFirst(true)
-     *     .build();
+     * Components.statusBadge("ASN: NW-2281")
      * }</pre>
      *
-     * @param <T> the item type displayed in the master grid
-     * @return a new {@link com.iyensoft.vaadin.flow.components.builders.MasterDetailBuilder}
+     * @param label badge label text (not null)
+     * @return a new {@link StatusBadge} with {@link StatusBadge.Variant#DEFAULT}
      * @since 10.0.0
      */
-    static <T> com.iyensoft.vaadin.flow.components.builders.MasterDetailBuilder<T> masterDetail() {
-        return com.iyensoft.vaadin.flow.components.builders.MasterDetailBuilder.create();
+    static StatusBadge statusBadge(String label) {
+        return StatusBadge.of(label);
     }
 
     /**
-     * Creates a new {@link com.iyensoft.vaadin.flow.components.builders.MasterDetailBuilder}
-     * with the master-grid item type supplied as a {@link Class} argument so the
-     * compiler can infer {@code T} at the call site without a type witness.
-     *
-     * <p>Equivalent to {@link #masterDetail()} â€” the {@code itemType} argument is
-     * used only to drive generic-type inference, not at runtime.</p>
+     * Creates a {@link StatusBadge} with a semantic colour variant.
      *
      * <pre>{@code
-     * MasterDetailLayout<Order> layout = Components.masterDetail(Order.class)
-     *     .masterGrid(orderGrid)
-     *     .detailContent(o -> new Component[]{ new OrderDetailForm(o) })
+     * Components.statusBadge("Posted",          StatusBadge.Variant.SUCCESS)
+     * Components.statusBadge("Partial receipt", StatusBadge.Variant.WARNING)
+     * Components.statusBadge("In progress",     StatusBadge.Variant.INFO)
+     * Components.statusBadge("Quality check",   StatusBadge.Variant.VIOLET)
+     * }</pre>
+     *
+     * @param label   badge label text (not null)
+     * @param variant semantic colour variant
+     * @return a new {@link StatusBadge}
+     * @since 10.0.0
+     */
+    static StatusBadge statusBadge(String label, StatusBadge.Variant variant) {
+        return StatusBadge.of(label, variant);
+    }
+
+    // -----------------------------------------------------------------------
+    // Chip / ChipGroup
+    // -----------------------------------------------------------------------
+
+    /**
+     * Creates a label-only {@link Chip} — an interactive pill-shaped filter chip.
+     *
+     * <pre>{@code
+     * Components.chip("All").active(true)
+     * }</pre>
+     *
+     * @param label chip label text (not null)
+     * @return a new {@link Chip}
+     * @since 10.0.0
+     */
+    static Chip chip(String label) {
+        return Chip.of(label);
+    }
+
+    /**
+     * Creates a {@link Chip} with a trailing numeric count badge.
+     *
+     * <pre>{@code
+     * Components.chip("All", 2418).active(true)
+     * Components.chip("Open", 14)
+     * }</pre>
+     *
+     * @param label chip label text (not null)
+     * @param count count badge value
+     * @return a new {@link Chip}
+     * @since 10.0.0
+     */
+    static Chip chip(String label, long count) {
+        return Chip.of(label, count);
+    }
+
+    /**
+     * Creates a new empty {@link ChipGroup} — a mutually exclusive toggle group of {@link Chip}s.
+     *
+     * <pre>{@code
+     * Components.chipGroup()
+     *     .addChip(Components.chip("All",       2418), true)
+     *     .addChip(Components.chip("Open",        14))
+     *     .addChip(Components.chip("Posted",    2376))
+     *     .addChip(Components.chip("QC Issues",    3))
+     *     .onSelect(e -> applyFilter(e.getLabel()))
      *     .build();
      * }</pre>
      *
-     * @param itemType the master grid item type (used only for type inference)
-     * @param <T>      the master grid item type
-     * @return a new {@link com.iyensoft.vaadin.flow.components.builders.MasterDetailBuilder}
-     * @since 10.0.3
+     * @return a new {@link ChipGroup}
+     * @since 10.0.0
      */
-    @SuppressWarnings("unused")
-    static <T> com.iyensoft.vaadin.flow.components.builders.MasterDetailBuilder<T> masterDetail(Class<T> itemType) {
-        return com.iyensoft.vaadin.flow.components.builders.MasterDetailBuilder.create();
+    static ChipGroup chipGroup() {
+        return ChipGroup.create();
     }
 
-    /**
-     * Creates a new {@link com.iyensoft.vaadin.flow.components.builders.MasterDetailConfigurator}
-     * for the nested master/header/grid-header/listing-bundle/detail builder chain.
-     *
-     * <pre>{@code
-     * MasterDetailLayout<Product> layout = Components.masterDetailV2(Product.class)
-     *     .master().listingBundle()
-     *         .columns("name", "category", "price")
-     *         .search("Search productsâ€¦")
-     *         .fetch(...)
-     *         .content()
-     *     .detail().content().content(detailBody).content()
-     *     .build();
-     * }</pre>
-     *
-     * @param itemType the bean class used to build the master listing bundle
-     * @param <T> the item type displayed in the master grid
-     * @return a new {@link com.iyensoft.vaadin.flow.components.builders.MasterDetailConfigurator}
-     * @since 10.0.4
-     */
-    @SuppressWarnings("unused")
-    static <T> com.iyensoft.vaadin.flow.components.builders.MasterDetailConfigurator<T, ?> masterDetailV2(Class<T> itemType) {
-        return new com.iyensoft.vaadin.flow.internal.components.builders.DefaultMasterDetailConfigurator<>(itemType);
-    }
-
-    /**
-     * Creates a mobile-first {@link com.iyensoft.vaadin.flow.components.builders.MasterDetailConfigurator}
-     * variant that keeps only the master panel on small screens and renders the full
-     * master + separator + detail composition on larger screens.
-     *
-     * <p>This is the variant to use when the mobile experience should stay focused on
-     * the list, while desktop/tablet continue to show the full split layout.</p>
-     *
-     * @param itemType the bean class used to build the master listing bundle
-     * @param <T> the item type displayed in the master grid
-     * @return a new mobile-master configurator
-     * @since 10.0.4
-     */
-    @SuppressWarnings("unused")
-    static <T> com.iyensoft.vaadin.flow.components.builders.MasterDetailConfigurator<T, ?> masterDetailMobile(Class<T> itemType) {
-        var cfg = new com.iyensoft.vaadin.flow.internal.components.builders.DefaultMasterDetailConfigurator<>(itemType);
-        cfg.mobileMasterOnly(true);
-        return cfg;
-    }
-
-    /**
-     * Creates a new {@link com.iyensoft.vaadin.flow.components.builders.BundleMasterDetailBuilder}
-     * pre-wired with the given {@link ListingBundle} as the entire left (master) panel.
-     *
-     * <p>This is the simplified entry point when you are already using
-     * {@link #listing(Class)} to build the master grid. The bundle's
-     * {@link com.holonplatform.vaadin.flow.vaadinplus.components.GridHeader GridHeader},
-     * search field, and {@link com.holonplatform.vaadin.flow.components.ItemListing ItemListing}
-     * are wired automatically â€” no need to call {@code masterHeader/masterSearch/masterGrid}
-     * separately.</p>
-     *
-     * <pre>{@code
-     * ListingBundle<Product> bundle = Components.listing(Product.class)
-     *     .columns("name", "price").hidden("id")
-     *     .gridHeader("Products")
-     *     .search("Searchâ€¦")
-     *     .fetch(...)
-     *     .build();
-     *
-     * MasterDetailLayout<Product> layout = Components.masterDetail(bundle)
-     *     .detailTitle("Product Details")
-     *     .detailActions(saveBtn, deleteBtn)
-     *     .detailTabs(tabSheet)
-     *     .detailContent(p -> new Component[]{ formBody })
-     *     .detailFooter(archiveBtn)
-     *     .withDetailSync(formBody, p -> nameField.setValue(p.getName()))
-     *     .itemId(p -> String.valueOf(p.getId()), id -> service.findById(Long.parseLong(id)))
-     *     .mobileSheetTitle("Product Details")
-     *     .autoSelectFirst(false)
-     *     .onDataChanged(() -> bundle.listing().getDataProvider().refreshAll())
-     *     .build();
-     *
-     * content(layout);
-     * }</pre>
-     *
-     * @param <T>    the item type displayed in the master grid
-     * @param bundle the listing bundle to use as the master panel (not null)
-     * @return a new {@link com.iyensoft.vaadin.flow.components.builders.BundleMasterDetailBuilder}
-     * @since 10.0.2
-     */
-    static <T> com.iyensoft.vaadin.flow.components.builders.BundleMasterDetailBuilder<T> masterDetail(
-            ListingBundle<T> bundle) {
-        return com.iyensoft.vaadin.flow.components.builders.BundleMasterDetailBuilder.create(bundle);
-    }
 
 }
 

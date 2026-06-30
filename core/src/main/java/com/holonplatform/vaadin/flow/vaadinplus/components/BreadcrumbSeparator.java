@@ -1,6 +1,7 @@
 package com.holonplatform.vaadin.flow.vaadinplus.components;
 
 import com.holonplatform.vaadin.flow.components.Components;
+import com.iyensoft.vaadin.flow.enums.MaterialSymbol;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.html.ListItem;
 import com.vaadin.flow.component.html.Span;

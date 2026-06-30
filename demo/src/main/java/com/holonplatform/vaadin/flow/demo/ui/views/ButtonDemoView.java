@@ -3,6 +3,7 @@ package com.holonplatform.vaadin.flow.demo.ui.views;
 import com.holonplatform.vaadin.flow.components.builders.ButtonBuilder;
 import com.holonplatform.vaadin.flow.demo.ui.DemoExample;
 import com.holonplatform.vaadin.flow.demo.ui.DemoMainLayout;
+import com.iyensoft.vaadin.flow.enums.ButtonPreset;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.Paragraph;
@@ -87,14 +88,12 @@ public class ButtonDemoView extends Div {
     }
 
     private DemoExample deleteButtonExample() {
-        var deleteBtn = ButtonBuilder.createDelBtn()
-                .text("Delete")
+        var deleteBtn = ButtonBuilder.create().preset(ButtonPreset.DELETE)
                 .onClick(e -> Notification.show("Deleted"))
                 .build();
 
         return new DemoExample("Delete Button", deleteBtn, """
-                ButtonBuilder.createDelBtn()
-                    .text("Delete")
+                ButtonBuilder.create().preset(ButtonPreset.DELETE)
                     .onClick(e -> Notification.show("Deleted"))
                     .build();""");
     }

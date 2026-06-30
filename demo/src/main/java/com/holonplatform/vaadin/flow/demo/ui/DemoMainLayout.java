@@ -125,7 +125,6 @@ public final class DemoMainLayout extends AppLayout {
         nav.withNavItem("Responsive")
                 .prefixComponent(VaadinIcon.MOBILE.create())
                 .withItems(
-                        new SideNavItem("IyenResponsive", IyenResponsiveDemoView.class, VaadinIcon.MOBILE.create()),
                         new SideNavItem("ResponsiveDiv",  ResponsiveDivDemoView.class,  VaadinIcon.RESIZE_V.create()),
                         new SideNavItem("ResponsiveDivSlot",  ResponsiveDivSlotDemoView.class,  VaadinIcon.RESIZE_V.create()),
                         new SideNavItem("ViewMode",       ViewModeDemoView.class,       VaadinIcon.DESKTOP.create())
@@ -167,10 +166,11 @@ public final class DemoMainLayout extends AppLayout {
                         new SideNavItem("LineItemGrid",   LineItemGridDemoView.class,    VaadinIcon.GRID_BIG_O.create()),
                         new SideNavItem("PawnItemGrid",   PawnItemGridDemoView.class,    VaadinIcon.MONEY.create()),
                         new SideNavItem("ListingBundle",  ListingBundleDemoView.class,   VaadinIcon.DATABASE.create()),
-                        new SideNavItem("BulkAction",     BulkActionDemoView.class,      VaadinIcon.CHECK_SQUARE.create()),
                         new SideNavItem("FilterPanel",    FilterPanelDemoView.class,     VaadinIcon.FILTER.create()),
-                        new SideNavItem("SearchBar",      SearchBarDemoView.class,       VaadinIcon.SEARCH.create()),
-                        new SideNavItem("Chart of Accounts", ChartOfAccountsDemoView.class, VaadinIcon.BOOK.create())
+                        new SideNavItem("Chart of Accounts", ChartOfAccountsDemoView.class, VaadinIcon.BOOK.create()),
+                        new SideNavItem("MasterDetail (Products)", MasterDetailDemoV2.class,      VaadinIcon.SPLIT.create()),
+                        new SideNavItem("MasterDetail (Bills AP)", BillsMasterDetailView.class,   VaadinIcon.FILE_TEXT.create()),
+                        new SideNavItem("MasterDetail (Orders)",   OrdersMasterDetailView.class,  VaadinIcon.CART.create())
                 )
                 .add();
 
@@ -220,9 +220,9 @@ public final class DemoMainLayout extends AppLayout {
                         new SideNavItem("KeyValueList",  KeyValueListDemoView.class, VaadinIcon.LIST_UL.create()),
                         new SideNavItem("DoubleLabel",   DoubleLabelDemoView.class,  VaadinIcon.TEXT_LABEL.create()),
                         new SideNavItem("PriceList",     PriceListDemoView.class,    VaadinIcon.MONEY.create()),
-                        new SideNavItem("ListItem",      ListItemDemoView.class,     VaadinIcon.LIST_UL.create()),
+                        new SideNavItem("ListItem",          ListItemDemoView.class,            VaadinIcon.LIST_UL.create()),
+                        new SideNavItem("LitRendererBuilder", LitRendererBuilderDemoView.class,  VaadinIcon.CODE.create()),
                         new SideNavItem("Header",        HeaderDemoView.class,       VaadinIcon.HEADER.create()),
-                        new SideNavItem("FormHeader",    FormHeaderDemoView.class,   VaadinIcon.TEXT_LABEL.create()),
                         new SideNavItem("GridHeader",    GridHeaderDemoView.class,   VaadinIcon.GRID_BIG.create()),
                         new SideNavItem("ComponentView", ComponentViewDemoView.class,VaadinIcon.EYE.create()),
                         new SideNavItem("Preview",       PreviewDemoView.class,      VaadinIcon.PICTURE.create()),
@@ -262,6 +262,8 @@ public final class DemoMainLayout extends AppLayout {
                         new SideNavItem("Badge",          BadgeDemoView.class,         VaadinIcon.TAG.create()),
                         new SideNavItem("IconBadge",      IconBadgeDemoView.class,     VaadinIcon.CIRCLE.create()),
                         new SideNavItem("Tag",            TagDemoView.class,           VaadinIcon.TAGS.create()),
+                        new SideNavItem("StatusBadge",    StatusBadgeDemoView.class,   VaadinIcon.DOT_CIRCLE.create()),
+                        new SideNavItem("Chip",           ChipDemoView.class,          VaadinIcon.FILTER.create()),
                         new SideNavItem("Avatar",         AvatarDemoView.class,        VaadinIcon.USER.create()),
                         new SideNavItem("MaterialSymbol", MaterialSymbolDemoView.class,VaadinIcon.STAR.create())
                 )
@@ -271,8 +273,9 @@ public final class DemoMainLayout extends AppLayout {
         nav.withNavItem("Containers")
                 .prefixComponent(VaadinIcon.COPY.create())
                 .withItems(
-                        new SideNavItem("Card",          CardDemoView.class,          VaadinIcon.COPY.create()),
-                        new SideNavItem("Panel",         PanelDemoView.class,         VaadinIcon.COG.create()),
+                        new SideNavItem("Card",                     CardDemoView.class,                     VaadinIcon.COPY.create()),
+                        new SideNavItem("Panel",                    PanelDemoView.class,                    VaadinIcon.COG.create()),
+                        new SideNavItem("MasterDetailConfigurator", MasterDetailConfiguratorDemoView.class, VaadinIcon.SPLIT.create()),
                         new SideNavItem("Details",       DetailsDemoView.class,       VaadinIcon.ANGLE_DOWN.create()),
                         new SideNavItem("Accordion",     AccordionDemoView.class,     VaadinIcon.ALIGN_JUSTIFY.create()),
                         new SideNavItem("LazyComponent", LazyComponentDemoView.class, VaadinIcon.HOURGLASS.create()),
@@ -284,19 +287,8 @@ public final class DemoMainLayout extends AppLayout {
         nav.withNavItem("Patterns")
                 .prefixComponent(VaadinIcon.BOLT.create())
                 .withItems(
-                        new SideNavItem("ZohoView",           ZohoViewDemoView.class,           VaadinIcon.VIEWPORT.create()),
-                        new SideNavItem("MasterDetailLayout", MasterDetailLayoutDemoView.class, VaadinIcon.SPLIT.create()),
-                        new SideNavItem("IyenView", IyenView.class, VaadinIcon.COFFEE.create()),
                         new SideNavItem("ViewComponent",      ViewComponentDemoView.class,      VaadinIcon.SITEMAP.create()),
                         new SideNavItem("Signals",            SignalsDemoView.class,            VaadinIcon.BOLT.create())
-                )
-                .add();
-
-        // ── Modules ───────────────────────────────────────────────────────────
-        nav.withNavItem("Modules")
-                .prefixComponent(VaadinIcon.PACKAGE.create())
-                .withItems(
-                        new SideNavItem("Customer Module", CustomerDemoView.class, VaadinIcon.USERS.create())
                 )
                 .add();
 

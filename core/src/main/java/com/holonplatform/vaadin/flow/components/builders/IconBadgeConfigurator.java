@@ -46,6 +46,14 @@ public interface IconBadgeConfigurator<C extends IconBadgeConfigurator<C>>
      */
     C icon(Component icon);
 
+    /**
+     * Sets the optional text label shown next to the icon.
+     *
+     * @param text the text to display, or {@code null} / blank to clear
+     * @return this configurator
+     */
+    C text(String text);
+
     // -----------------------------------------------------------------------
     // Configure factory
     // -----------------------------------------------------------------------

@@ -32,11 +32,13 @@ class TestDoubleLabel {
 
     @Test
     void testSetAlignCenter() {
+        // Center is the default: setAlignCenter() removes the left-alignment modifier.
+        // No explicit "double-label--align-center" class is added (CSS default handles it).
         var dl = new DoubleLabel("Top", "Bottom");
         dl.setAlignLeft();
         dl.setAlignCenter();
-        assertTrue(dl.getClassNames().contains("double-label--align-center"));
-        assertFalse(dl.getClassNames().contains("double-label--align-left"));
+        assertFalse(dl.getClassNames().contains("double-label--align-left"),
+                "setAlignCenter() must remove the left-alignment modifier");
     }
 
     @Test

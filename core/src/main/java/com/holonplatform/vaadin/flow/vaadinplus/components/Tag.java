@@ -4,6 +4,7 @@ import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.vaadin.flow.components.Components;
 import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
 import com.holonplatform.vaadin.flow.vaadinplus.utilities.Color;
+import com.iyensoft.vaadin.flow.enums.MaterialSymbol;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.avatar.Avatar;

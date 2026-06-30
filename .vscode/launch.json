@@ -3,17 +3,10 @@
     "configurations": [
         {
             "type": "java",
-            "name": "DemoApplication",
-            "request": "launch",
-            "mainClass": "com.holonplatform.vaadin.flow.demo.DemoApplication",
-            "projectName": "holon-vaadin-flow-demo"
-        },
-        {
-            "type": "java",
             "name": "Debug using Hotswap Agent",
             "request": "launch",
             "javaExec": "C:\\Users\\sxp267\\.vaadin\\jdk\\jbrsdk-25-windows-x64-b176.4\\bin\\java.exe",
-            "mainClass": "com.holonplatform.vaadin.flow.spring.boot.test.demo.ChartJsDemoApplication",
+            "mainClass": "com.holonplatform.vaadin.flow.demo.DemoApplication",
             "vmArgs": "--add-opens java.base/sun.nio.ch=ALL-UNNAMED --add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.lang.reflect=ALL-UNNAMED --add-opens java.base/java.io=ALL-UNNAMED --add-opens java.base/sun.security.action=ALL-UNNAMED --add-opens java.desktop/java.beans=ALL-UNNAMED --add-opens java.desktop/com.sun.beans=ALL-UNNAMED --add-opens java.desktop/com.sun.beans.introspect=ALL-UNNAMED --add-opens java.desktop/com.sun.beans.util=ALL-UNNAMED --add-opens java.base/jdk.internal.loader=ALL-UNNAMED -XX:+AllowEnhancedClassRedefinition -XX:+ClassUnloading -javaagent:C:\\Users\\sxp267\\.vaadin\\vscode-plugin\\hotswap-agent.jar"
         }
     ]

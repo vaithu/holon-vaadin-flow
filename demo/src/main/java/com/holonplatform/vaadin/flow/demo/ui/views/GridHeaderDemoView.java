@@ -6,7 +6,7 @@ import com.holonplatform.vaadin.flow.vaadinplus.components.GridHeader;
 import com.holonplatform.vaadin.flow.vaadinplus.components.Header;
 import com.holonplatform.vaadin.flow.vaadinplus.utilities.Color;
 import com.holonplatform.vaadin.flow.vaadinplus.utilities.Font;
-import com.holonplatform.vaadin.flow.vaadinplus.utilities.HeadingLevel;
+import com.iyensoft.vaadin.flow.enums.HeadingLevel;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;

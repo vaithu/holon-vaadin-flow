@@ -1,17 +1,21 @@
 package com.holonplatform.vaadin.flow.vaadinplus;
 
 import com.holonplatform.vaadin.flow.components.utils.UIUtils;
-import com.holonplatform.vaadin.flow.enums.ColSpan;
-import com.iyensoft.vaadin.flow.utils.responsive.ViewMode;
+import com.iyensoft.vaadin.flow.enums.ColSpan;
+import com.iyensoft.vaadin.flow.enums.ViewMode;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.page.WindowSize;
+import com.vaadin.flow.shared.Registration;
 import com.vaadin.flow.signals.Signal;
 
 import java.util.EnumMap;
 import java.util.Map;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
+
+import com.iyensoft.vaadin.flow.utils.responsive.WindowSizeTracker;
 
 /**
  * A responsive container {@link Div} with a fluent builder API covering the five
@@ -73,6 +77,7 @@ import java.util.function.Supplier;
  * @since 10.0.0
  */
 @StyleSheet("context://layout.css")
+@StyleSheet("context://utilities.css")
 public class ResponsiveDiv extends Div {
 
     protected ResponsiveDiv() {
@@ -97,6 +102,19 @@ public class ResponsiveDiv extends Div {
      */
     public static GridBuilder grid() {
         return new GridBuilder();
+    }
+
+    /**
+     * Starts a mode-switching container that renders one child for mobile-sized viewports
+     * and a different child for desktop-sized viewports.
+     *
+     * <p>The suppliers are resolved lazily and only once per branch. The currently selected
+     * branch is swapped in response to viewport resize events, so the caller can reuse the
+     * same master component instance across both branches while deferring the desktop detail
+     * subtree until a desktop viewport is actually active.
+     */
+    public static ModeSwitchBuilder modeSwitch() {
+        return new ModeSwitchBuilder();
     }
 
     /**
@@ -131,6 +149,101 @@ public class ResponsiveDiv extends Div {
 
         private DivConfigurator(Div existing) {
             super(existing);
+        }
+    }
+
+    /**
+     * Responsive container that swaps between a mobile branch and a desktop branch.
+     */
+    public static final class ModeSwitchBuilder extends BaseBuilder<ModeSwitchBuilder, ResponsiveDiv> {
+
+        private Supplier<Component> mobileSupplier;
+        private Supplier<Component> desktopSupplier;
+        private Component mobileComponent;
+        private Component desktopComponent;
+        private ViewMode currentMode;
+        private Registration resizeRegistration;
+        private Consumer<ViewMode> modeChangeListener;
+
+        private ModeSwitchBuilder() {
+        }
+
+        public ModeSwitchBuilder mobile(Supplier<Component> supplier) {
+            this.mobileSupplier = supplier;
+            return this;
+        }
+
+        public ModeSwitchBuilder desktop(Supplier<Component> supplier) {
+            this.desktopSupplier = supplier;
+            return this;
+        }
+
+        public ModeSwitchBuilder onModeChange(Consumer<ViewMode> listener) {
+            this.modeChangeListener = listener;
+            return this;
+        }
+
+        @Override
+        public ResponsiveDiv build() {
+            div.addAttachListener(event -> {
+                if (resizeRegistration != null) {
+                    resizeRegistration.remove();
+                }
+                resizeRegistration = WindowSizeTracker.track(event.getUI(), div, this::applyMode);
+            });
+
+            div.addDetachListener(event -> {
+                if (resizeRegistration != null) {
+                    resizeRegistration.remove();
+                    resizeRegistration = null;
+                }
+            });
+
+            return div;
+        }
+
+        private void applyMode(ViewMode mode) {
+            if (mode == null) {
+                return;
+            }
+
+            ViewMode target = isDesktopMode(mode) ? ViewMode.DESKTOP : ViewMode.MOBILE;
+            if (target == currentMode && !div.getChildren().toList().isEmpty()) {
+                return;
+            }
+
+            currentMode = target;
+            div.removeAll();
+
+            Component branch = target == ViewMode.MOBILE ? resolveMobile() : resolveDesktop();
+            if (branch != null) {
+                div.add(branch);
+            }
+
+            if (modeChangeListener != null) {
+                modeChangeListener.accept(target);
+            }
+        }
+
+        private Component resolveMobile() {
+            if (mobileComponent == null && mobileSupplier != null) {
+                mobileComponent = mobileSupplier.get();
+            }
+            return mobileComponent;
+        }
+
+        private Component resolveDesktop() {
+            if (desktopComponent == null && desktopSupplier != null) {
+                desktopComponent = desktopSupplier.get();
+            }
+            return desktopComponent;
+        }
+
+        private static boolean isDesktopMode(ViewMode mode) {
+            return mode == ViewMode.TABLET
+                    || mode == ViewMode.DESKTOP
+                    || mode == ViewMode.LARGE_DESKTOP
+                    || mode == ViewMode.ULTRA_WIDE;
         }
     }
 

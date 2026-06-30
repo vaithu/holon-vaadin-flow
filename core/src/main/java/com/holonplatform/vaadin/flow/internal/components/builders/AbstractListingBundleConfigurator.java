@@ -6,9 +6,12 @@ import com.holonplatform.vaadin.flow.components.builders.ListingBundleConfigurat
 import com.holonplatform.vaadin.flow.vaadinplus.components.DynamicFilterPanel;
 import com.holonplatform.vaadin.flow.vaadinplus.components.GridHeader;
 import com.vaadin.flow.component.ComponentEventListener;
+import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.ItemClickEvent;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.textfield.TextField;
+
+import java.util.Optional;
 
 /**
  * Abstract base for {@link ListingBundleConfigurator} implementations.
@@ -60,23 +63,28 @@ public abstract class AbstractListingBundleConfigurator<T, C extends ListingBund
     }
 
     @Override
-    public TextField getSearchField() {
-        return bundle.search();
+    public Grid<T> grid() {
+        return bundle.grid();
     }
 
     @Override
-    public DynamicFilterPanel<T> getFilterPanel() {
-        return bundle.filterPanel();
-    }
-
-    @Override
-    public Div getToolbar() {
+    public Div toolbar() {
         return bundle.toolbar();
     }
 
     @Override
-    public Div getFooter() {
+    public Div footer() {
         return bundle.footer();
+    }
+
+    @Override
+    public Optional<TextField> getSearchOptional() {
+        return bundle.getSearchOptional();
+    }
+
+    @Override
+    public Optional<DynamicFilterPanel<T>> getFilterPanelOptional() {
+        return bundle.getFilterPanelOptional();
     }
 }
 

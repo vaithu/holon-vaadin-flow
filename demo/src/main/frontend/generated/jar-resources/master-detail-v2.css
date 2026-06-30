@@ -1,20 +1,92 @@
 /*
  * master-detail-v2.css
  *
- * Clean, mobile-first layout and grid selection styling for
- * DefaultMasterDetailBuilderV2.
+ * Mobile-first layout + grid selection styling for MasterDetailBuilder.
+ *
+ * Selection highlight strategy
+ * ────────────────────────────
+ * Vaadin's Grid.setPartNameGenerator adds a custom part name ("mdl-selected") to
+ * each <td> cell in the selected row.  The SelectionHighlighter uses this to drive
+ * the highlight (background tint on all cells + left accent bar on first cell).
+ *
+ * Dynamic accent colour
+ * ─────────────────────
+ * --mdl-selected-accent and --mdl-selected-bg are CSS custom properties defined on
+ * .master-detail-container.  Swap them per-item by adding a pre-defined accent class
+ * (e.g. "mdl-accent--success") to the container via Java — the builder wires this
+ * automatically when withAccentColorProvider(...) is configured.
+ *
+ * Key rules:
+ *   1. RESET  — suppress vaadin-shell-theme.css's built-in selection indicator.
+ *   2. ACCENT — set background on cells via ::part(mdl-selected); left accent bar
+ *               via box-shadow on ::part(first-column-cell mdl-selected).
+ *   3. ORDER  — reset rules appear first; accent rules appear second.
  */
 
 .master-detail-container {
     --mdl-selected-accent: #1864ff;
-    --mdl-selected-bg: rgba(24, 100, 255, 0.12);
-    --mdl-selected-hover-bg: rgba(24, 100, 255, 0.18);
+    --mdl-selected-bg: rgba(24, 100, 255, 0.08);
+    --mdl-selected-hover-bg: rgba(24, 100, 255, 0.15);
 
     display: flex;
     flex-direction: column;
     width: 100%;
     height: 100%;
     min-width: 0;
+    padding-left: unset;
+}
+
+/* ── Pre-defined accent colour variants ──────────────────────────────────────
+ *
+ * Applied dynamically to .master-detail-container by withAccentColorProvider().
+ * Java assigns only the class name; CSS owns every colour value.
+ *
+ * Usage (Java):
+ *   .withAccentColorProvider(item -> switch (item.getStatus()) {
+ *       case ACTIVE  -> MasterDetailAccent.SUCCESS.cssClass();
+ *       case OVERDUE -> MasterDetailAccent.DANGER.cssClass();
+ *       default      -> MasterDetailAccent.DEFAULT.cssClass();
+ *   })
+ *
+ * Custom colours:
+ *   Add your own CSS class anywhere in your stylesheet:
+ *   .my-purple { --mdl-selected-accent: #7c3aed; --mdl-selected-bg: rgba(124,58,237,0.08); }
+ *   Then return "my-purple" from the provider.
+ */
+
+.mdl-accent--blue {
+    --mdl-selected-accent: #1864ff;
+    --mdl-selected-bg: rgba(24, 100, 255, 0.08);
+}
+
+.mdl-accent--success {
+    --mdl-selected-accent: var(--success, #16a34a);
+    --mdl-selected-bg: rgba(22, 163, 74, 0.08);
+}
+
+.mdl-accent--warning {
+    --mdl-selected-accent: var(--warning, #d97706);
+    --mdl-selected-bg: rgba(217, 119, 6, 0.08);
+}
+
+.mdl-accent--danger {
+    --mdl-selected-accent: var(--error, #dc2626);
+    --mdl-selected-bg: rgba(220, 38, 38, 0.08);
+}
+
+.mdl-accent--info {
+    --mdl-selected-accent: var(--info, #0891b2);
+    --mdl-selected-bg: rgba(8, 145, 178, 0.08);
+}
+
+.mdl-accent--purple {
+    --mdl-selected-accent: #7c3aed;
+    --mdl-selected-bg: rgba(124, 58, 237, 0.08);
+}
+
+.mdl-accent--gray {
+    --mdl-selected-accent: #6b7280;
+    --mdl-selected-bg: rgba(107, 114, 128, 0.08);
 }
 
 .master-view,
@@ -27,11 +99,16 @@
     display: flex;
     flex-direction: column;
     height: 100%;
+    background: var(--surface-0);
 }
 
 .detail-view {
     display: none;
     padding-left: 0;
+}
+
+.detail-view-content > .iyen-header {
+  padding-bottom: 0;
 }
 
 .separator {
@@ -44,38 +121,104 @@
 .master-view-content {
     display: flex;
     flex-direction: column;
-    padding-right: 1%;
+    /*padding-right: 1%;*/
 }
 
-.master-detail-container.mdl-mobile-master-only .detail-view,
-.master-detail-container.mdl-mobile-master-only .separator {
+/* Force compact pagination inside the master view, even on wide screens. */
+.master-detail-container .master-view-content .listing-footer {
+    flex-direction: row;
+    align-items: stretch;
+    justify-content: flex-start;
+    gap: 0.5rem;
+}
+
+.master-detail-container .master-view-content .listing-pagination-bar .pagination__nav-label {
     display: none;
 }
+
+.master-detail-container .master-view-content .listing-pagination-bar .pagination__item:has(.pagination__link:not(.pagination__link--active)) {
+    display: none;
+}
+
+.master-detail-container .master-view-content .listing-pagination-bar .pagination__item:has(.pagination__ellipsis) {
+    display: none;
+}
+
+.master-detail-container .master-view-content .listing-pagination-bar .pagination__link--active {
+    min-width: 2.5rem;
+    font-size: 0.875rem;
+}
+
 
 .mdl-master-grid {
     flex: 1 1 auto;
     min-height: 0;
     width: 100%;
-    border-radius: 0%;
+    border-radius: 0;
     padding-right: 1%;
+    height: 100%;
 }
 
 /* Remove outer border */
-vaadin-grid.mdl-master-grid {
+.mdl-master-grid {
     border: none !important;
 }
 
-vaadin-grid.mdl-master-grid::part(mdl-selected) {
-    box-shadow: inset 4px 0 0 var(--mdl-selected-accent, #378add);
-    background-color: var(--mdl-selected-bg, #e6f1fb);
+/* ── SELECTION RESET ─────────────────────────────────────────────────────── */
+
+.mdl-master-grid::part(selected-row) {
+    border-left: none;
 }
 
-vaadin-grid.mdl-master-grid::part(selected-row),
-vaadin-grid.mdl-master-grid::part(selected-row-cell) {
-    border-left: none !important;
-    box-shadow: none !important;
+.mdl-master-grid::part(selected-row-cell) {
+    --vaadin-grid-cell-background: transparent;
+    color: inherit;
+    font-weight: inherit;
+    box-shadow: none;
 }
 
+/* ── CUSTOM SELECTION INDICATOR ─────────────────────────────────────────── */
+
+/*
+ * Background tint — ::part(mdl-selected) is propagated by Vaadin Grid to every
+ * cell in the selected row.  background-color on cells via ::part() overrides
+ * Vaadin's shadow-internal background styles.
+ */
+.mdl-master-grid::part(mdl-selected) {
+    background-color: var(--mdl-selected-bg, rgba(24, 100, 255, 0.08));
+}
+
+/*
+ * Left accent bar via box-shadow on the first cell.
+ *
+ * WHY first-column-cell, not row:
+ *   Vaadin's setPartNameGenerator propagates custom part names (e.g. "mdl-selected")
+ *   to <td> cells only — the <tr> row element never receives them.
+ *   ::part(row mdl-selected) therefore never matches.
+ *   ::part(first-column-cell mdl-selected) correctly targets the first cell of the
+ *   selected row, which has both the built-in "first-column-cell" part and our
+ *   custom "mdl-selected" part.
+ *
+ * WHY box-shadow, not border-left:
+ *   box-shadow: inset does not affect the element's box model (no layout shift),
+ *   and is reliable on <td> elements regardless of border-collapse mode.
+ *
+ * Colour is driven by --mdl-selected-accent, defined on .master-detail-container.
+ * Override it per-view by adding a CSS class to the layout and redefining the
+ * variable — Java code only assigns the class name, CSS owns the colour:
+ *
+ *   Java:  layout.addClassName("green-highlight");
+ *   CSS:   .green-highlight { --mdl-selected-accent: var(--ok, #16a34a); }
+ */
+vaadin-grid.mdl-master-grid::part(first-column-cell mdl-selected) {
+    box-shadow: inset 4px 0 0 var(--mdl-selected-accent, #1864ff);
+}
+
+.listing-bundle {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
 
 @media (min-width: 768px) {
     .master-detail-container {
@@ -85,7 +228,7 @@ vaadin-grid.mdl-master-grid::part(selected-row-cell) {
 
     .master-view {
         max-width: 378px;
-        flex: 1 1 300px;/* grow: 1, shrink: 1, basis: 300px */
+        flex: 1 1 300px;
         overflow: auto;
     }
 
@@ -97,8 +240,7 @@ vaadin-grid.mdl-master-grid::part(selected-row-cell) {
     .detail-view {
         display: block;
         flex: 2 1 500px;
-        /* Grows twice as fast as the master view */
         overflow: auto;
-        padding-left: 1rem;
     }
 }
+

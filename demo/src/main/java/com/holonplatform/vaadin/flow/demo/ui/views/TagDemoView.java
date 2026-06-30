@@ -2,7 +2,7 @@ package com.holonplatform.vaadin.flow.demo.ui.views;
 
 import com.holonplatform.vaadin.flow.demo.ui.DemoExample;
 import com.holonplatform.vaadin.flow.demo.ui.DemoMainLayout;
-import com.holonplatform.vaadin.flow.vaadinplus.components.MaterialSymbol;
+import com.iyensoft.vaadin.flow.enums.MaterialSymbol;
 import com.holonplatform.vaadin.flow.vaadinplus.components.Tag;
 import com.holonplatform.vaadin.flow.vaadinplus.utilities.Color;
 import com.vaadin.flow.component.avatar.Avatar;

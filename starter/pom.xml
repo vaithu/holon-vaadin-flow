@@ -8,7 +8,6 @@
 	</parent>
 
 	<artifactId>holon-starter-vaadin-flow</artifactId>
-		<version>10.0.2-SNAPSHOT</version>
 
 	<name>${project.groupId}:${project.artifactId}</name>
 	<description>Holon Vaadin Flow Spring Boot starter using Tomcat</description>

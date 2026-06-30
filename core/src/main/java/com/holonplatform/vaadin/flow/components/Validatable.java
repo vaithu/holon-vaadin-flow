@@ -51,7 +51,7 @@ public interface Validatable {
 	default boolean isValid() {
 		try {
 			validate();
-		} catch (@SuppressWarnings("unused") ValidationException e) {
+		} catch ( ValidationException e) {
 			return false;
 		}
 		return true;

@@ -24,7 +24,6 @@ import com.vaadin.flow.router.ErrorParameter;
 import com.vaadin.flow.router.HasErrorParameter;
 import com.vaadin.flow.theme.NoTheme;
 
-@SuppressWarnings("serial")
 @Tag(Tag.DIV)
 @NoTheme
 public class TestNavigationError extends Component implements HasErrorParameter<Exception> {

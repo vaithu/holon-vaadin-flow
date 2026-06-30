@@ -74,9 +74,9 @@ public class LiveChatDemoView extends Div implements BeforeEnterObserver {
 
     // ── Spring-injected singleton service (JPA / H2 backed) ──────────────────
 
-    private final DemoChatPersistenceService chatService;
+    private final transient DemoChatPersistenceService chatService;
 
-    private DemoUser currentUser;
+    private transient DemoUser currentUser;
 
     public LiveChatDemoView(DemoChatPersistenceService chatService) {
         this.chatService = chatService;

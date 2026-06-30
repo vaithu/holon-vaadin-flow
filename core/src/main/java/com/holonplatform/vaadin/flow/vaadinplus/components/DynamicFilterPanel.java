@@ -15,40 +15,53 @@
  */
 package com.holonplatform.vaadin.flow.vaadinplus.components;
 
+import java.io.Serial;
+import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
+import java.util.stream.Stream;
+
 import com.holonplatform.core.Registration;
 import com.holonplatform.core.beans.BeanPropertySet;
 import com.holonplatform.core.internal.utils.TypeUtils;
-import com.holonplatform.core.property.*;
+import com.holonplatform.core.property.PathProperty;
+import com.holonplatform.core.property.Property;
+import com.holonplatform.core.property.PropertyBox;
+import com.holonplatform.core.property.PropertySet;
+import com.holonplatform.core.property.StringProperty;
 import com.holonplatform.core.query.QueryFilter;
-import com.holonplatform.vaadin.flow.components.FilterInput;
 import com.holonplatform.vaadin.flow.components.Components;
+import com.holonplatform.vaadin.flow.components.FilterInput;
 import com.holonplatform.vaadin.flow.components.FilterInputGroup;
 import com.holonplatform.vaadin.flow.components.Input;
 import com.holonplatform.vaadin.flow.components.events.FilterChangeListener;
-import com.holonplatform.vaadin.flow.components.Components;
 import com.holonplatform.vaadin.flow.components.utils.BeanUtils;
 import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
 import com.holonplatform.vaadin.flow.internal.components.events.DefaultFilterChangeEvent;
+import com.iyensoft.vaadin.flow.enums.FilterOperator;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasPlaceholder;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.combobox.MultiSelectComboBox;
 import com.vaadin.flow.component.dependency.StyleSheet;
+import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
-import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.component.timepicker.TimePicker;
 import com.vaadin.flow.data.provider.CallbackDataProvider;
 import com.vaadin.flow.data.provider.DataProvider;
-
-import java.io.Serial;
-import java.util.*;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
-import java.util.stream.Stream;
 
 /**
  * A dynamic, row-based filter builder component that implements {@link FilterInputGroup}.
@@ -286,6 +299,61 @@ public class DynamicFilterPanel<T> extends Div implements FilterInputGroup {
         return new DynamicFilterPanel<>(fromProperties(it));
     }
 
+    // ── Dialog Utilities ──────────────────────────────────────────────────
+
+    /**
+     * Makes a {@link Dialog} resizable and draggable by the header.
+     *
+     * <p>Enables users to:
+     * <ul>
+     *   <li>Resize the dialog by dragging its bottom-right corner</li>
+     *   <li>Drag the dialog by its header area</li>
+     * </ul>
+     *
+     * <p><strong>Usage:</strong>
+     * <pre>{@code
+     * Dialog dialog = new Dialog();
+     * dialog.add(filterPanel);
+     * DynamicFilterPanel.makeDialogResizableAndDraggable(dialog);
+     * dialog.open();
+     * }</pre>
+     *
+     * @param dialog the dialog to enhance (not null)
+     */
+    public static void makeDialogResizableAndDraggable(Dialog dialog) {
+        Objects.requireNonNull(dialog, "dialog must not be null");
+        dialog.getElement().executeJs(
+            "const dlg = this;" +
+            "const header = dlg.querySelector('[part=header]');" +
+            "if (!header) return;" +
+            "let isDragging = false;" +
+            "let startX = 0, startY = 0, startLeft = 0, startTop = 0;" +
+            "header.style.cursor = 'grab';" +
+            "header.addEventListener('mousedown', (e) => {" +
+            "  isDragging = true;" +
+            "  startX = e.clientX;" +
+            "  startY = e.clientY;" +
+            "  startLeft = dlg.style.left ? parseInt(dlg.style.left) : dlg.offsetLeft;" +
+            "  startTop = dlg.style.top ? parseInt(dlg.style.top) : dlg.offsetTop;" +
+            "  header.style.cursor = 'grabbing';" +
+            "  e.preventDefault();" +
+            "});" +
+            "document.addEventListener('mousemove', (e) => {" +
+            "  if (!isDragging) return;" +
+            "  const dX = e.clientX - startX;" +
+            "  const dY = e.clientY - startY;" +
+            "  dlg.style.left = (startLeft + dX) + 'px';" +
+            "  dlg.style.top = (startTop + dY) + 'px';" +
+            "});" +
+            "document.addEventListener('mouseup', () => {" +
+            "  isDragging = false;" +
+            "  header.style.cursor = 'grab';" +
+            "});" +
+            "dlg.style.resize = 'both';" +
+            "dlg.style.overflow = 'auto';"
+        );
+    }
+
     // ── Configuration ─────────────────────────────────────────────────────
 
     /**
@@ -437,17 +505,18 @@ public class DynamicFilterPanel<T> extends Div implements FilterInputGroup {
     }
 
     /**
-     * Programmatically applies the given {@link QueryFilter}, bypassing the UI rows.
+     * Programmatically applies the given {@link QueryFilter} without changing the row UI.
      *
-     * <p>Use this to restore a previously saved filter state or for testing. The filter is
-     * stored as the "applied" filter and all registered {@link FilterChangeListener}s are
-     * notified (including any {@link Signal}-based wiring from
-     * {@link com.holonplatform.vaadin.flow.components.ItemListingPageSizeSelector}).</p>
+     * <p>This is useful when restoring a previously persisted filter state or when driving
+     * the panel from tests. The filter is stored as the current applied filter, the active
+     * filter snapshot is cleared, and all registered {@link FilterChangeListener}s are
+     * notified.</p>
      *
-     * <p>The filter panel's row UI is <strong>not</strong> updated — this method only affects
-     * the applied filter returned by {@link #getQueryFilter()}.</p>
+     * <p><strong>Note:</strong> this method does not synchronize the visual filter rows with the
+     * supplied filter. It only updates the committed filter returned by {@link #getQueryFilter()}.
+     * If you need the UI to reflect a filter expression, rebuild the rows explicitly.</p>
      *
-     * @param filter the filter to apply, or {@code null} to clear
+     * @param filter the filter to apply, or {@code null} to clear the current filter
      */
     public void applyFilterProgrammatically(QueryFilter filter) {
         QueryFilter prev = appliedFilter;
@@ -843,8 +912,8 @@ public class DynamicFilterPanel<T> extends Div implements FilterInputGroup {
                 case NOT_EQUALS   -> Optional.of(QueryFilter.eq(sp, sVal).not());
                 case CONTAINS     -> Optional.of(sp.containsIgnoreCase(sVal));   // typed fluent API
                 case NOT_CONTAINS -> Optional.of(sp.containsIgnoreCase(sVal).not());
-                case STARTS_WITH  -> Optional.of(sp.startsWith(sVal));
-                case ENDS_WITH    -> Optional.of(sp.endsWith(sVal));
+                case STARTS_WITH  -> Optional.of(sp.startsWithIgnoreCase(sVal));
+                case ENDS_WITH    -> Optional.of(sp.endsWithIgnoreCase(sVal));
                 default           -> Optional.empty();
             };
         }
@@ -972,6 +1041,11 @@ public class DynamicFilterPanel<T> extends Div implements FilterInputGroup {
      * a hand-rolled switch, with correct per-type defaults (e.g. {@code emptyValuesAsNull}
      * for String inputs so {@code val1Supplier.get()} reliably returns {@code null} on clear).
      * Falls back to a plain text field for unrecognised types.
+     *
+     * <p><strong>LocalTime handling:</strong> For LocalTime properties, creates a combined
+     * date+time picker (DatePicker + TimePicker) displayed horizontally. The filter uses
+     * the selected date at midnight (00:00) combined with the selected time. Users can
+     * filter by specific times across any date context.</p>
      */
     @SuppressWarnings("unchecked")
     static Input<?> createInput(Class<?> rawType) {
@@ -987,10 +1061,27 @@ public class DynamicFilterPanel<T> extends Div implements FilterInputGroup {
             return Input.builder(cb).build();
         }
 
+        // LocalTime: create a combined date+time picker returning LocalDateTime
+        // (date at selected date, time at selected time).
+        if (LocalTime.class.equals(type)) {
+            return createLocalTimeInput();
+        }
+
         Optional<Input<Object>> created = Input.create((Class<Object>) type);
         return created.isPresent()
                 ? created.get()
                 : Input.string().placeholder("Enter a value").build();
+    }
+
+    /**
+     * Creates a time input for LocalTime properties.
+     * Returns a TimePicker wrapped as an Input<LocalTime>.
+     */
+    private static Input<LocalTime> createLocalTimeInput() {
+        TimePicker timePicker = new TimePicker();
+        timePicker.setPlaceholder("Time");
+        timePicker.addClassName("filter-panel__time-input");
+        return Input.builder(timePicker).build();
     }
 
     /**
@@ -1119,6 +1210,8 @@ public class DynamicFilterPanel<T> extends Div implements FilterInputGroup {
 
             Button removeBtn = Components.button()
                     .icon(VaadinIcon.CLOSE_SMALL)
+                    .error()
+                    .tooltip("Remove selected filter")
                     .styleName("filter-panel__remove")
                     .withClickListener(e -> onRemove.accept(this))
                     .build();
@@ -1324,8 +1417,19 @@ public class DynamicFilterPanel<T> extends Div implements FilterInputGroup {
                 applyInputPlaceholder(to);
                 from.getComponent().addClassName("filter-panel__value-input");
                 to.getComponent().addClassName("filter-panel__value-input");
-                Span sep = Components.span().text("–").styleName("filter-panel__between-sep").build();
-                valueContainer.add(from.getComponent(), sep, to.getComponent());
+                
+                // Create a grouped container for BETWEEN inputs
+                var betweenContainer = Components.div()
+                    .styleName("filter-panel__between-container")
+                    .build();
+                betweenContainer.add(from.getComponent());
+                
+                var sep = Components.span().text("–").styleName("filter-panel__between-sep").build();
+                betweenContainer.add(sep);
+                
+                betweenContainer.add(to.getComponent());
+                valueContainer.add(betweenContainer);
+                
                 val1Supplier  = from::getValue;
                 val2Supplier  = to::getValue;
                 filterSupplier = () -> buildFilter(selectedProp, selectedOp,

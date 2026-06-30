@@ -203,6 +203,7 @@
 }
 
 /* ---------- typing indicator wrapper ---------- */
+.live-chat__typing {
     padding: 0 var(--live-chat-gap);
     min-height: 24px;
     flex-shrink: 0;

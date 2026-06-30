@@ -46,11 +46,18 @@ class TestAlert {
 
     @Test
     void variant_getCssClass_returnsCorrectModifierClass() {
+        assertEquals("default", Alert.Variant.DEFAULT.getCssModifier());
+        assertTrue(Alert.Variant.DEFAULT.isDefault());
+        assertFalse(Alert.Variant.SUCCESS.isDefault());
+
         assertEquals("alert--default",     Alert.Variant.DEFAULT.getCssClass());
         assertEquals("alert--destructive", Alert.Variant.DESTRUCTIVE.getCssClass());
         assertEquals("alert--warning",     Alert.Variant.WARNING.getCssClass());
         assertEquals("alert--success",     Alert.Variant.SUCCESS.getCssClass());
         assertEquals("alert--info",        Alert.Variant.INFO.getCssClass());
+
+        assertEquals("icon-badge--success", Alert.Variant.SUCCESS.getCssClass("icon-badge"));
+        assertEquals("avatar--badge-warning", Alert.Variant.WARNING.getCssClass("avatar--badge", "-"));
     }
 
     // =========================================================================

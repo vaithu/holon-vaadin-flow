@@ -95,6 +95,7 @@ public abstract class AbstractNumberFieldInputBuilder<T extends Number, C extend
 		getComponent().setAutocorrect(false);
 		getComponent().setAutocomplete(Autocomplete.OFF);
 		getComponent().setClearButtonVisible(true);
+		getComponent().addThemeVariants(TextFieldVariant.LUMO_ALIGN_RIGHT);
 
 		autocompleteConfigurator = new DefaultHasAutocompleteConfigurator(getComponent());
 		prefixAndSuffixConfigurator = new DefaultHasPrefixAndSuffixConfigurator(getComponent(), getComponent());

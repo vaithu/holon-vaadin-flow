@@ -1,0 +1,91 @@
+[INFO] Scanning for projects...
+[WARNING] 
+[WARNING] Some problems were encountered while building the effective model for com.holon-platform.vaadin:holon-vaadin-flow-demo:jar:10.0.2-SNAPSHOT
+[WARNING] 'build.plugins.plugin.version' for org.springframework.boot:spring-boot-maven-plugin is missing. @ line 112, column 21
+[WARNING] 
+[WARNING] It is highly recommended to fix these problems because they threaten the stability of your build.
+[WARNING] 
+[WARNING] For this reason, future Maven versions might no longer support building such malformed projects.
+[WARNING] 
+[INFO] 
+[INFO] ------------< com.holon-platform.vaadin:holon-vaadin-flow >-------------
+[INFO] Building com.holon-platform.vaadin:holon-vaadin-flow 10.0.2-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clean:3.2.0:clean (default-clean) @ holon-vaadin-flow ---
+[INFO] Deleting C:\Users\sxp267\IdeaProjects\holon-vaadin-flow\core\target
+[INFO] 
+[INFO] --- jacoco:0.8.12:prepare-agent (pre-unit-test) @ holon-vaadin-flow ---
+[INFO] surefireArgLine set to -javaagent:C:\\Users\\sxp267\\.m2\\repository\\org\\jacoco\\org.jacoco.agent\\0.8.12\\org.jacoco.agent-0.8.12-runtime.jar=destfile=C:\\Users\\sxp267\\IdeaProjects\\holon-vaadin-flow\\core\\target\\coverage-reports\\jacoco-ut.exec
+[INFO] 
+[INFO] --- remote-resources:3.1.0:process (default) @ holon-vaadin-flow ---
+[INFO] Preparing remote bundle com.holon-platform:holon-shared:1.0.6
+[INFO] Copying 6 resources from 1 bundle.
+[INFO] 
+[INFO] --- resources:3.4.0:resources (default-resources) @ holon-vaadin-flow ---
+[INFO] Copying 56 resources from src\main\resources to target\classes
+[INFO] Copying 6 resources from target\maven-shared-archive-resources to target\classes
+[INFO] 
+[INFO] --- compiler:3.15.0:compile (default-compile) @ holon-vaadin-flow ---
+[INFO] Recompiling the module because of changed source code.
+[INFO] Compiling 974 source files with javac [debug release 21] to target\classes
+[INFO] Annotation processing is enabled because one or more processors were found
+  on the class path. A future release of javac may disable annotation processing
+  unless at least one processor is specified by name (-processor), or a search
+  path is specified (--processor-path, --processor-module-path), or annotation
+  processing is enabled explicitly (-proc:only, -proc:full).
+  Use -Xlint:-options to suppress this message.
+  Use -proc:none to disable annotation processing.
+[INFO] Some messages have been simplified; recompile with -Xdiags:verbose to get full output
+[INFO] -------------------------------------------------------------
+[WARNING] COMPILATION WARNING : 
+[INFO] -------------------------------------------------------------
+[WARNING] /C:/Users/sxp267/IdeaProjects/holon-vaadin-flow/core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/EntityFormPanel.java:[437,70] unchecked cast
+  required: L
+  found:    com.vaadin.flow.component.Component
+[WARNING] /C:/Users/sxp267/IdeaProjects/holon-vaadin-flow/core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/EntityFormPanel.java:[1171,51] unchecked call to accept(T) as a member of the raw type java.util.function.Consumer
+[WARNING] /C:/Users/sxp267/IdeaProjects/holon-vaadin-flow/core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/EntityFormPanel.java:[1689,51] unchecked call to accept(T) as a member of the raw type java.util.function.Consumer
+[INFO] 3 warnings 
+[INFO] -------------------------------------------------------------
+[INFO] -------------------------------------------------------------
+[ERROR] COMPILATION ERROR : 
+[INFO] -------------------------------------------------------------
+[ERROR] /C:/Users/sxp267/IdeaProjects/holon-vaadin-flow/core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/EntityFormPanel.java:[1566,26] com.holonplatform.vaadin.flow.vaadinplus.components.EntityFormPanel.DefaultPropertyBuilder is not abstract and does not override abstract method <C>withPostProcessor(com.holonplatform.core.operation.TriConsumer<C,com.holonplatform.core.property.Property<?>,com.holonplatform.vaadin.flow.components.Input<?>>) in com.holonplatform.vaadin.flow.vaadinplus.components.EntityFormPanel.PropertyBuilder
+[ERROR] /C:/Users/sxp267/IdeaProjects/holon-vaadin-flow/core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/EntityFormPanel.java:[1595,32] name clash: configure(java.util.function.Consumer<com.holonplatform.vaadin.flow.components.builders.PropertyInputFormBuilder<com.vaadin.flow.component.formlayout.FormLayout>>) in com.holonplatform.vaadin.flow.vaadinplus.components.EntityFormPanel.DefaultPropertyBuilder and configure(java.util.function.Consumer<com.holonplatform.vaadin.flow.components.builders.PropertyInputFormBuilder<C>>) in com.holonplatform.vaadin.flow.vaadinplus.components.EntityFormPanel.PropertyBuilder have the same erasure, yet neither overrides the other
+[ERROR] /C:/Users/sxp267/IdeaProjects/holon-vaadin-flow/core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/EntityFormPanel.java:[1594,9] method does not override or implement a method from a supertype
+[ERROR] /C:/Users/sxp267/IdeaProjects/holon-vaadin-flow/core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/EntityFormPanel.java:[1601,32] name clash: initializer(java.util.function.Consumer<com.vaadin.flow.component.formlayout.FormLayout>) in com.holonplatform.vaadin.flow.vaadinplus.components.EntityFormPanel.DefaultPropertyBuilder and initializer(java.util.function.Consumer<C>) in com.holonplatform.vaadin.flow.vaadinplus.components.EntityFormPanel.PropertyBuilder have the same erasure, yet neither overrides the other
+[ERROR] /C:/Users/sxp267/IdeaProjects/holon-vaadin-flow/core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/EntityFormPanel.java:[1600,9] method does not override or implement a method from a supertype
+[ERROR] /C:/Users/sxp267/IdeaProjects/holon-vaadin-flow/core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/EntityFormPanel.java:[1631,32] name clash: withPostProcessor(com.holonplatform.core.operation.TriConsumer<com.vaadin.flow.component.formlayout.FormLayout,com.holonplatform.core.property.Property<?>,com.holonplatform.vaadin.flow.components.Input<?>>) in com.holonplatform.vaadin.flow.vaadinplus.components.EntityFormPanel.DefaultPropertyBuilder and withPostProcessor(com.holonplatform.core.operation.TriConsumer<C,com.holonplatform.core.property.Property<?>,com.holonplatform.vaadin.flow.components.Input<?>>) in com.holonplatform.vaadin.flow.vaadinplus.components.EntityFormPanel.PropertyBuilder have the same erasure, yet neither overrides the other
+[ERROR] /C:/Users/sxp267/IdeaProjects/holon-vaadin-flow/core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/EntityFormPanel.java:[1630,9] method does not override or implement a method from a supertype
+[ERROR] /C:/Users/sxp267/IdeaProjects/holon-vaadin-flow/core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/EntityFormPanel.java:[1682,56] cannot find symbol
+  symbol:   variable properties
+  location: class com.holonplatform.vaadin.flow.vaadinplus.components.EntityFormPanel.DefaultPropertyBuilder
+[ERROR] /C:/Users/sxp267/IdeaProjects/holon-vaadin-flow/core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/EntityFormPanel.java:[1693,40] incompatible types: com.vaadin.flow.component.html.Div cannot be converted to com.vaadin.flow.component.formlayout.FormLayout
+[INFO] 9 errors 
+[INFO] -------------------------------------------------------------
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  57.738 s
+[INFO] Finished at: 2026-06-14T10:59:31-04:00
+[INFO] ------------------------------------------------------------------------
+[ERROR] Failed to execute goal org.apache.maven.plugins:maven-compiler-plugin:3.15.0:compile (default-compile) on project holon-vaadin-flow: Compilation failure: Compilation failure: 
+[ERROR] /C:/Users/sxp267/IdeaProjects/holon-vaadin-flow/core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/EntityFormPanel.java:[1566,26] com.holonplatform.vaadin.flow.vaadinplus.components.EntityFormPanel.DefaultPropertyBuilder is not abstract and does not override abstract method <C>withPostProcessor(com.holonplatform.core.operation.TriConsumer<C,com.holonplatform.core.property.Property<?>,com.holonplatform.vaadin.flow.components.Input<?>>) in com.holonplatform.vaadin.flow.vaadinplus.components.EntityFormPanel.PropertyBuilder
+[ERROR] /C:/Users/sxp267/IdeaProjects/holon-vaadin-flow/core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/EntityFormPanel.java:[1595,32] name clash: configure(java.util.function.Consumer<com.holonplatform.vaadin.flow.components.builders.PropertyInputFormBuilder<com.vaadin.flow.component.formlayout.FormLayout>>) in com.holonplatform.vaadin.flow.vaadinplus.components.EntityFormPanel.DefaultPropertyBuilder and configure(java.util.function.Consumer<com.holonplatform.vaadin.flow.components.builders.PropertyInputFormBuilder<C>>) in com.holonplatform.vaadin.flow.vaadinplus.components.EntityFormPanel.PropertyBuilder have the same erasure, yet neither overrides the other
+[ERROR] /C:/Users/sxp267/IdeaProjects/holon-vaadin-flow/core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/EntityFormPanel.java:[1594,9] method does not override or implement a method from a supertype
+[ERROR] /C:/Users/sxp267/IdeaProjects/holon-vaadin-flow/core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/EntityFormPanel.java:[1601,32] name clash: initializer(java.util.function.Consumer<com.vaadin.flow.component.formlayout.FormLayout>) in com.holonplatform.vaadin.flow.vaadinplus.components.EntityFormPanel.DefaultPropertyBuilder and initializer(java.util.function.Consumer<C>) in com.holonplatform.vaadin.flow.vaadinplus.components.EntityFormPanel.PropertyBuilder have the same erasure, yet neither overrides the other
+[ERROR] /C:/Users/sxp267/IdeaProjects/holon-vaadin-flow/core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/EntityFormPanel.java:[1600,9] method does not override or implement a method from a supertype
+[ERROR] /C:/Users/sxp267/IdeaProjects/holon-vaadin-flow/core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/EntityFormPanel.java:[1631,32] name clash: withPostProcessor(com.holonplatform.core.operation.TriConsumer<com.vaadin.flow.component.formlayout.FormLayout,com.holonplatform.core.property.Property<?>,com.holonplatform.vaadin.flow.components.Input<?>>) in com.holonplatform.vaadin.flow.vaadinplus.components.EntityFormPanel.DefaultPropertyBuilder and withPostProcessor(com.holonplatform.core.operation.TriConsumer<C,com.holonplatform.core.property.Property<?>,com.holonplatform.vaadin.flow.components.Input<?>>) in com.holonplatform.vaadin.flow.vaadinplus.components.EntityFormPanel.PropertyBuilder have the same erasure, yet neither overrides the other
+[ERROR] /C:/Users/sxp267/IdeaProjects/holon-vaadin-flow/core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/EntityFormPanel.java:[1630,9] method does not override or implement a method from a supertype
+[ERROR] /C:/Users/sxp267/IdeaProjects/holon-vaadin-flow/core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/EntityFormPanel.java:[1682,56] cannot find symbol
+[ERROR]   symbol:   variable properties
+[ERROR]   location: class com.holonplatform.vaadin.flow.vaadinplus.components.EntityFormPanel.DefaultPropertyBuilder
+[ERROR] /C:/Users/sxp267/IdeaProjects/holon-vaadin-flow/core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/EntityFormPanel.java:[1693,40] incompatible types: com.vaadin.flow.component.html.Div cannot be converted to com.vaadin.flow.component.formlayout.FormLayout
+[ERROR] -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException

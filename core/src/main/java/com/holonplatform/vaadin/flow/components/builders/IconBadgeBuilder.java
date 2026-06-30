@@ -3,7 +3,7 @@ package com.holonplatform.vaadin.flow.components.builders;
 import com.holonplatform.vaadin.flow.internal.components.builders.DefaultIconBadgeBuilder;
 import com.holonplatform.vaadin.flow.vaadinplus.components.Alert;
 import com.holonplatform.vaadin.flow.vaadinplus.components.IconBadge;
-import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.icon.Icon;
 
 /**
  * Fluent builder for {@link IconBadge} components.
@@ -48,7 +48,7 @@ public interface IconBadgeBuilder
      * @param icon the VaadinIcon to display (not null)
      * @return a new {@link IconBadgeBuilder}
      */
-    static IconBadgeBuilder create(VaadinIcon icon) {
+    static IconBadgeBuilder create(Icon icon) {
         return new DefaultIconBadgeBuilder(icon, null, IconBadge.Size.DEFAULT);
     }
 
@@ -59,7 +59,7 @@ public interface IconBadgeBuilder
      * @param variant the semantic color variant (null = neutral)
      * @return a new {@link IconBadgeBuilder}
      */
-    static IconBadgeBuilder create(VaadinIcon icon, Alert.Variant variant) {
+    static IconBadgeBuilder create(Icon icon, Alert.Variant variant) {
         return new DefaultIconBadgeBuilder(icon, variant, IconBadge.Size.DEFAULT);
     }
 
@@ -71,7 +71,7 @@ public interface IconBadgeBuilder
      * @param size    the size preset (not null)
      * @return a new {@link IconBadgeBuilder}
      */
-    static IconBadgeBuilder create(VaadinIcon icon, Alert.Variant variant, IconBadge.Size size) {
+    static IconBadgeBuilder create(Icon icon, Alert.Variant variant, IconBadge.Size size) {
         return new DefaultIconBadgeBuilder(icon, variant, size);
     }
 }

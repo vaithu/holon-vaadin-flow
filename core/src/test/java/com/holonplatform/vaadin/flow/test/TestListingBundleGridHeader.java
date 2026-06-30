@@ -18,6 +18,7 @@ package com.holonplatform.vaadin.flow.test;
 import com.holonplatform.vaadin.flow.components.Components;
 import com.holonplatform.vaadin.flow.components.ListingBundle;
 import com.holonplatform.vaadin.flow.vaadinplus.components.GridHeader;
+import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import org.junit.jupiter.api.Test;
 
@@ -61,6 +62,19 @@ class TestListingBundleGridHeader {
     }
 
     @Test
+    void standaloneBundle_addsHeaderAsChildWhenConfigured() {
+        ListingBundle<Product> bundle = Components.listing(Product.class)
+                .gridHeader("Products")
+                .fetch((q, text, sort) -> Stream.empty())
+                .build();
+
+        GridHeader header = bundle.header();
+        assertNotNull(header);
+        assertSame(header, bundle.header(), "bundle.header() should return the cached header instance");
+        assertTrue(isAttachedToBundle(bundle, header), "standalone ListingBundle must add its non-null GridHeader as a child");
+    }
+
+    @Test
     void gridHeader_contextActionsWithoutTitle_doNotCreateHeader() {
         var deleteButton = new Button("Delete");
 
@@ -77,6 +91,17 @@ class TestListingBundleGridHeader {
         var current = button.getParent().orElse(null);
         while (current != null) {
             if (current == header) {
+                return true;
+            }
+            current = current.getParent().orElse(null);
+        }
+        return false;
+    }
+
+    private static boolean isAttachedToBundle(ListingBundle<?> bundle, Component child) {
+        var current = child.getParent().orElse(null);
+        while (current != null) {
+            if (current == bundle) {
                 return true;
             }
             current = current.getParent().orElse(null);

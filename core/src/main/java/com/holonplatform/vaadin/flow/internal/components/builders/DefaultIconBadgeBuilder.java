@@ -3,6 +3,7 @@ package com.holonplatform.vaadin.flow.internal.components.builders;
 import com.holonplatform.vaadin.flow.components.builders.IconBadgeBuilder;
 import com.holonplatform.vaadin.flow.vaadinplus.components.Alert;
 import com.holonplatform.vaadin.flow.vaadinplus.components.IconBadge;
+import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 
 /**
@@ -12,9 +13,9 @@ public class DefaultIconBadgeBuilder
         extends AbstractIconBadgeConfigurator<IconBadgeBuilder>
         implements IconBadgeBuilder {
 
-    public DefaultIconBadgeBuilder(VaadinIcon icon, Alert.Variant variant, IconBadge.Size size) {
+    public DefaultIconBadgeBuilder(Icon icon, Alert.Variant variant, IconBadge.Size size) {
         super(new IconBadge(
-                icon != null ? icon.create() : VaadinIcon.CIRCLE.create(),
+                icon != null ? icon : VaadinIcon.CIRCLE.create(),
                 variant,
                 size != null ? size : IconBadge.Size.DEFAULT));
     }

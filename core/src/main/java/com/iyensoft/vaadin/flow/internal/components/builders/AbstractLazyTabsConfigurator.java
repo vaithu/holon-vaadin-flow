@@ -7,6 +7,7 @@ import com.holonplatform.vaadin.flow.components.utils.UIUtils;
 import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
 import com.holonplatform.vaadin.flow.internal.components.builders.AbstractLocalizableComponentConfigurator;
 import com.iyensoft.vaadin.flow.components.builders.LazyTabsConfigurator;
+import com.iyensoft.vaadin.flow.components.DetailSyncAware;
 import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Span;
@@ -20,6 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -39,6 +41,9 @@ public abstract class AbstractLazyTabsConfigurator<C extends LazyTabsConfigurato
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractLazyTabsConfigurator.class);
 
+    /** Maximum number of tab components kept alive in the LRU cache per configurator instance. */
+    private static final int CACHE_MAX_SIZE = 5;
+
     /**
      * Factories for tab content.
      * Semantics: supplier.get() returns a component instance (new or reused according to supplier policy).
@@ -46,16 +51,25 @@ public abstract class AbstractLazyTabsConfigurator<C extends LazyTabsConfigurato
     private final Map<Tab, Supplier<Component>> tabSupplierMap = new HashMap<>();
 
     /**
-     * Cache of realized components when caching is enabled.
+     * LRU cache of realized components when caching is enabled.
+     * Access-order iteration ensures the least recently viewed tab is evicted first
+     * when the cache reaches {@link #CACHE_MAX_SIZE}. Evicted components are garbage-collected;
+     * revisiting an evicted tab rebuilds via the supplier and immediately applies the
+     * buffered item via {@link com.iyensoft.vaadin.flow.components.DetailSyncAware#onItemSelected}.
      */
-    private final Map<Tab, Component> cachedComponents = new HashMap<>();
+    private final Map<Tab, Component> cachedComponents = new LinkedHashMap<>(CACHE_MAX_SIZE, 0.75f, true) {
+        @Override
+        protected boolean removeEldestEntry(Map.Entry<Tab, Component> eldest) {
+            return size() > CACHE_MAX_SIZE;
+        }
+    };
 
     private Tab currentTab;
 
     private boolean enableCaching = false;
 
     // Display area
-    private  Div contentContainer ;
+    private Div contentContainer;
 
     public Tabs getTabs() {
         return getComponent();
@@ -154,6 +168,13 @@ public abstract class AbstractLazyTabsConfigurator<C extends LazyTabsConfigurato
         if (content != null) {
             contentContainer.removeAll();
             contentContainer.add(content);
+            // For cache-ON SaaS usage: apply buffered item to newly-shown component
+            if (contentContainer instanceof SyncableContentContainer scc
+                    && scc.getLastItem() != null
+                    && content instanceof DetailSyncAware<?> aware) {
+                //noinspection unchecked
+                ((DetailSyncAware<Object>) aware).onItemSelected(scc.getLastItem());
+            }
         }
 
         currentTab = tab;
@@ -425,11 +446,58 @@ public abstract class AbstractLazyTabsConfigurator<C extends LazyTabsConfigurato
 
     @Override
     public C withContainer(Div div) {
-        this.contentContainer = div;
-        this.contentContainer.setSizeFull();
+        if (div instanceof SyncableContentContainer existing) {
+            this.contentContainer = existing;
+        } else {
+            // Wrap in SyncableContentContainer so DetailSyncAware relay works in master-detail
+            SyncableContentContainer scc = new SyncableContentContainer();
+            div.getClassNames().forEach(scc::addClassName);
+            if (scc.getClassNames().isEmpty()) {
+                scc.addClassName("tab-container");
+            }
+            this.contentContainer = scc;
+        }
         // Keep the content area in sync with the selected tab
         getComponent().addSelectedChangeListener(e -> switchToTab(e.getSelectedTab()));
         return getConfigurator();
+    }
+
+    // ── SaaS-scale DetailSyncAware relay ─────────────────────────────────────
+
+    /**
+     * Content container that implements {@link DetailSyncAware} to act as a relay
+     * between the master-detail sync dispatcher and individual tab content components.
+     * <p>
+     * Discovered automatically by {@code scanAndRegister()} when the container is
+     * in the Vaadin component tree. Buffers the last selected item so that lazily-built
+     * tab components receive the correct item immediately upon construction.
+     * <p>
+     * Recommended usage for SaaS applications with high concurrent user counts:
+     * enable caching via {@link #cacheEnabled()} so each tab component is built once
+     * per session and updated in-place via {@link DetailSyncAware#onItemSelected}.
+     */
+    private static class SyncableContentContainer extends Div implements DetailSyncAware<Object> {
+
+        private Object lastItem;
+
+        SyncableContentContainer() {
+        }
+
+        @Override
+        public void onItemSelected(Object item) {
+            this.lastItem = item;
+            // Relay to the currently-visible tab content component
+            getChildren().findFirst().ifPresent(child -> {
+                if (child instanceof DetailSyncAware<?> aware) {
+                    //noinspection unchecked
+                    ((DetailSyncAware<Object>) aware).onItemSelected(item);
+                }
+            });
+        }
+
+        Object getLastItem() {
+            return lastItem;
+        }
     }
 }
 

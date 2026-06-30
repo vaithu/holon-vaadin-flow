@@ -1,6 +1,6 @@
 package com.holonplatform.vaadin.flow.test;
 
-import com.iyensoft.vaadin.flow.utils.responsive.ViewMode;
+import com.iyensoft.vaadin.flow.enums.ViewMode;
 import com.iyensoft.vaadin.flow.utils.responsive.WindowSizeTracker;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.html.Div;

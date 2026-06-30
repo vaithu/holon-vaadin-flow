@@ -24,6 +24,7 @@ import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.contextmenu.ContextMenu;
+import com.vaadin.flow.component.contextmenu.MenuItem;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridSortOrder;
@@ -41,7 +42,9 @@ import com.vaadin.flow.data.provider.SortDirection;
 import com.vaadin.flow.theme.lumo.LumoIcon;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Assembled result of {@code ListingBundleBuilder#build()} or
@@ -50,28 +53,39 @@ import java.util.List;
  * <p>Works identically for both {@link BeanListing} and {@link PropertyListing} — the
  * {@link #listing()} accessor returns the underlying {@link ItemListing} in both cases.</p>
  *
+ * <p>{@code ListingBundle} extends {@link com.vaadin.flow.component.Composite Composite&lt;Div&gt;} and
+ * self-assembles toolbar, grid, and footer in its constructor — just add the bundle directly to your
+ * view layout:</p>
+ *
  * <pre>{@code
- * // Bean listing
+ * // Bean listing — just add the bundle; toolbar + grid + footer are already assembled inside it
  * var bundle = Components.listing(Product.class)
  *     .columns("id", "name", "category", "price")
  *     .search("Search products…")
- *     .fetch((q, text) -> service.fetch(q.getOffset(), q.getLimit(), text))
+ *     .fetch((q, text, sort) -> service.fetch(q, text, sort))
  *     .build();
+ *
+ * add(bundle);  // that's all — no need to call toolbar()/grid()/footer() manually
  *
  * // Property listing
  * var bundle = Components.listing(NAME, CATEGORY, PRICE)
  *     .header(NAME, "Product Name")
  *     .search("Search…")
- *     .fetch((q, text) -> service.fetch(q.getOffset(), q.getLimit(), text))
+ *     .fetch((q, text, sort) -> service.fetch(q, text, sort))
  *     .build();
  *
- * content(bundle.toolbar(), bundle.grid(), bundle.footer());
+ * add(bundle);
+ *
+ * // Only call toolbar()/grid()/footer() individually when you need to place the three
+ * // pieces in different slots of your layout (e.g. toolbar inside an AppLayout header):
+ * add(bundle.toolbar());
+ * setContent(bundle.grid());
  * }</pre>
  *
  * @param <T> item type ({@code Product} for BeanListing; {@code PropertyBox} for PropertyListing)
  * @since 10.0.1
  */
-public final class ListingBundle<T> {
+public final class ListingBundle<T> extends Div {
 
     /**
      * An extra item contributed to the options menu via
@@ -102,6 +116,8 @@ public final class ListingBundle<T> {
     /** Optional export action; when {@code null} the Export menu item is hidden. */
     private final Runnable                          exportAction;
     private final String                            advancedSearchLabel;
+    /** Explicit column keys supplied by the builder via {@code columns(...)}. */
+    private final List<String>                      columnKeys;
     /**
      * When {@code true} (default) the filter dialog retains its values between
      * open/close cycles.  When {@code false} the panel is reset every time the
@@ -112,29 +128,40 @@ public final class ListingBundle<T> {
     private final String                            gridHeaderTitle;
     /** Context actions to show in the GridHeader when rows are selected. */
     private final Component[]                       gridHeaderContextComponents;
-    /** Column keys for sort/show-hide dialogs. */
-    private final List<String>                      columnKeys;
+    /** Cached standalone grid header component, created lazily. */
+    private GridHeader                              gridHeader;
     /** Lazily-created dialog that hosts the {@link DynamicFilterPanel}. Created once on first call to {@link #toolbar()}. */
     private Dialog                                  filterDialog;
+    /** Trigger component that opens the options menu. */
+    private Component                               filterOptionsTrigger;
+    /** The Advanced Search menu item, when rendered. */
+    private MenuItem                                advancedSearchMenuItem;
+    /** Small badge shown when filters are active. */
+    private Span                                    filterIndicatorBadge;
+    /** Prevent duplicate filter-change listener registration. */
+    private boolean                                 filterIndicatorListenerRegistered;
     /** Whether the grid is currently in paginated mode (true) or default virtual scroll mode (false). Default is virtual scroll. */
     private boolean                                 paginatedMode;
+    /** Cached toolbar div so repeated access returns the same instance. */
+    private Div                                     toolbarDiv;
     /** Cached footer div so visibility can be toggled. */
     private Div                                     footerDiv;
 
-    ListingBundle(ItemListing<T, ?>                listing,
-                  ItemListingPaginationBar<T, ?>    bar,
-                  ItemListingPageSizeSelector<T, ?> selector,
-                  TextField                         search,
-                  DynamicFilterPanel<T>             filterPanel,
-                  List<MenuAction>                  menuActions,
-                  Runnable                          importAction,
-                  Runnable                          exportAction,
-                  String                            advancedSearchLabel,
-                  boolean                           retainFilterValues,
-                  String                            gridHeaderTitle,
-                  Component[]                       gridHeaderContextComponents,
-                  List<String>                      columnKeys,
-                  boolean                           paginatedMode) {
+    public ListingBundle(ItemListing<T, ?>                listing,
+                         ItemListingPaginationBar<T, ?>    bar,
+                         ItemListingPageSizeSelector<T, ?> selector,
+                         TextField                         search,
+                         DynamicFilterPanel<T>             filterPanel,
+                         List<MenuAction>                  menuActions,
+                         Runnable                          importAction,
+                         Runnable                          exportAction,
+                         String                            advancedSearchLabel,
+                         boolean                           retainFilterValues,
+                         String                            gridHeaderTitle,
+                         Component[]                       gridHeaderContextComponents,
+                         List<String>                      columnKeys,
+                         boolean                           paginatedMode) {
+        super();
         this.listing             = listing;
         this.bar                 = bar;
         this.selector            = selector;
@@ -144,10 +171,10 @@ public final class ListingBundle<T> {
         this.importAction        = importAction;
         this.exportAction        = exportAction;
         this.advancedSearchLabel = advancedSearchLabel != null ? advancedSearchLabel : "Advanced Search";
+        this.columnKeys          = columnKeys != null ? List.copyOf(columnKeys) : List.of();
         this.retainFilterValues  = retainFilterValues;
         this.gridHeaderTitle     = gridHeaderTitle;
         this.gridHeaderContextComponents = gridHeaderContextComponents != null ? gridHeaderContextComponents.clone() : null;
-        this.columnKeys          = columnKeys != null ? columnKeys : List.of();
         this.paginatedMode       = paginatedMode;
 
         // When explicitly starting in paginated mode, switch the selector (which defaults to
@@ -159,6 +186,16 @@ public final class ListingBundle<T> {
         // Make the grid fill its container by default — avoids every view having
         // to set width/flex manually. The rule lives in pagination.css.
         listing.getComponent().addClassName("listing-bundle-grid");
+
+        var header = header();
+        if (header != null) {
+            add(header);
+        }
+        add(toolbar(), listing.getComponent(), footer());
+
+        Components.configure(this)
+                .styleName("listing-bundle");
+
     }
 
     // ── Accessors ──────────────────────────────────────────────────────────
@@ -172,30 +209,34 @@ public final class ListingBundle<T> {
     /** The pagination bar. */
     public ItemListingPaginationBar<T, ?> bar() { return bar; }
 
+    /** The underlying grid component. */
+    @SuppressWarnings("unchecked")
+    public Grid<T> grid() {
+        return (Grid<T>) listing.getComponent();
+    }
+
+    /** The toolbar container. */
+    public Div toolbar() {
+        return createToolbar();
+    }
+
+    /** The footer container. */
+    public Div footer() {
+        return createFooter();
+    }
+
+    /** Optional access to the search field. */
+    public Optional<TextField> getSearchOptional() {
+        return Optional.ofNullable(search);
+    }
+
+    /** Optional access to the filter panel. */
+    public Optional<DynamicFilterPanel<T>> getFilterPanelOptional() {
+        return Optional.ofNullable(filterPanel);
+    }
+
     /** The page-size selector (also owns the data binding in managed-fetch mode). */
     public ItemListingPageSizeSelector<T, ?> selector() { return selector; }
-
-    /**
-     * The search {@link TextField}, or {@code null} if
-     * {@code ListingBundleBuilder#search(String)} was not called.
-     */
-    public TextField search() { return search; }
-
-    /**
-     * The {@link DynamicFilterPanel}, or {@code null} if
-     * {@code ListingBundleBuilder#withFilterPanel()} was not called.
-     *
-     * <p><strong>Note:</strong> when both a search field and a filter panel are configured,
-     * the panel is rendered inside a {@link Dialog} managed by {@link #toolbar()}.
-     * Do <em>not</em> content this component manually to the layout — the dialog is opened
-     * automatically via the filter options button in the toolbar.
-     * You may still use this reference for programmatic access (e.g. listening to filter
-     * changes or calling {@code resetAll()}).</p>
-     */
-    public DynamicFilterPanel<T> filterPanel() { return filterPanel; }
-
-    /** Convenience: returns the underlying Vaadin Grid component. */
-    public Component grid() { return listing.getComponent(); }
 
     /**
      * Adds an item click listener to the grid and applies a pointer cursor CSS class
@@ -228,6 +269,7 @@ public final class ListingBundle<T> {
      */
     public GridHeader header() {
         if (gridHeaderTitle == null) return null;
+        if (gridHeader != null) return gridHeader;
 
         // ── Single options menu (⚙ button + ContextMenu) ──────────────────
         // Using Button+ContextMenu instead of MenuBar avoids the MenuBar overflow
@@ -237,17 +279,30 @@ public final class ListingBundle<T> {
         menuButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY, ButtonVariant.LUMO_ICON);
         menuButton.getElement().setAttribute("title", "Grid options");
         menuButton.addClassName("listing-header__options");
+
+        filterIndicatorBadge = new Span();
+        filterIndicatorBadge.addClassName("listing-filter-indicator");
+
+        var menuTrigger = new Div(menuButton, filterIndicatorBadge);
+        menuTrigger.addClassName("listing-filter-trigger");
+        filterOptionsTrigger = menuTrigger;
+
         var subMenu = new ContextMenu(menuButton);
         subMenu.setOpenOnClick(true);
 
-        // columnKeys is populated only when the builder's .columns(...) was called explicitly.
-        // Auto-generated bean columns must NOT trigger column-management menu items.
-        boolean hasExplicitColumns = !columnKeys.isEmpty();
+        updateFilterIndicator();
+        registerFilterIndicatorListener();
+
+        var managedColumns = managedColumns(listingGrid());
+
+        // Only show column-management actions when there is more than one managed column.
+        // When explicit columns were provided, they define the sort/show-hide universe.
+        boolean hasColumnManagement = managedColumns.size() > 1;
 
         // Sort (opens dialog — indicated by "...")
-        if (hasExplicitColumns) {
+        if (hasColumnManagement) {
             subMenu.addItem(createMenuItemContent(VaadinIcon.SORT, "Sort…"))
-                    .addClickListener(e -> openSortDialog((Grid<T>) listing.getComponent()));
+                    .addClickListener(e -> openSortDialog(listingGrid(), managedColumns));
         }
 
         // Refresh
@@ -274,14 +329,12 @@ public final class ListingBundle<T> {
         }
 
         // Reset column widths / Show-Hide — only when real columns exist
-        if (hasExplicitColumns) {
+        if (hasColumnManagement) {
             subMenu.addItem(createMenuItemContent(VaadinIcon.ARROWS_LONG_H, "Reset column widths"))
-                    .addClickListener(e -> listing.getAllColumns().stream()
-                            .filter(col -> col.getKey() != null)
-                            .forEach(col -> col.setAutoWidth(true)));
+                    .addClickListener(e -> managedColumns.forEach(col -> col.setAutoWidth(true)));
 
             subMenu.addItem(createMenuItemContent(VaadinIcon.EYE, "Show/Hide columns…"))
-                    .addClickListener(e -> openShowHideColumnsDialog());
+                    .addClickListener(e -> openShowHideColumnsDialog(managedColumns));
         }
 
         // Toggle paginated / default (virtual scroll) view.
@@ -311,8 +364,10 @@ public final class ListingBundle<T> {
             var sep2 = subMenu.addItem("");
             sep2.setEnabled(false);
             sep2.addClassName("listing-menu-separator");
-            subMenu.addItem(createMenuItemContent(VaadinIcon.FILTER, advancedSearchLabel + "…"))
-                    .addClickListener(e -> getOrCreateFilterDialog().open());
+            advancedSearchMenuItem = subMenu.addItem(createMenuItemContent(VaadinIcon.FILTER, advancedSearchLabel + "…"));
+            advancedSearchMenuItem.addClickListener(e -> getOrCreateFilterDialog().open());
+            advancedSearchMenuItem.addClassName("listing-menu-item--filter");
+            advancedSearchMenuItem.setCheckable(true);
         }
 
         // Extra menu actions — separator only added when there are items to separate
@@ -334,9 +389,9 @@ public final class ListingBundle<T> {
             search.addClassName("listing-header__search");
             actionComponents.add(search);
         }
-        actionComponents.add(menuButton);
+        actionComponents.add(menuTrigger);
 
-        GridHeader gridHeader = Components.gridHeader(gridHeaderTitle)
+        gridHeader = Components.gridHeader(gridHeaderTitle)
                 .listing((BeanListing<?>) listing)
                 .styleName("listing-header")
                 .build();
@@ -359,7 +414,49 @@ public final class ListingBundle<T> {
         return layout;
     }
 
-    private void openSortDialog(Grid<T> grid) {
+    private void registerFilterIndicatorListener() {
+        if (filterPanel == null || filterIndicatorListenerRegistered) {
+            return;
+        }
+
+        filterIndicatorListenerRegistered = true;
+        filterPanel.addFilterChangeListener(event -> updateFilterIndicator());
+    }
+
+    private void updateFilterIndicator() {
+        if (filterIndicatorBadge == null) {
+            return;
+        }
+
+        boolean hasFilters = filterPanel != null && filterPanel.isAnyActive();
+        filterIndicatorBadge.setVisible(hasFilters);
+        filterIndicatorBadge.setText(hasFilters ? String.valueOf(Math.max(filterPanel.getActiveFilterCount(), 1)) : "");
+
+        if (advancedSearchMenuItem != null) {
+            advancedSearchMenuItem.setCheckable(true);
+            advancedSearchMenuItem.setChecked(hasFilters);
+            advancedSearchMenuItem.getElement().setAttribute("aria-pressed", String.valueOf(hasFilters));
+            advancedSearchMenuItem.getElement().setAttribute("data-filter-active", String.valueOf(hasFilters));
+            if (hasFilters) {
+                advancedSearchMenuItem.addClassName("listing-menu-item--filter-active");
+            } else {
+                advancedSearchMenuItem.removeClassName("listing-menu-item--filter-active");
+            }
+        }
+
+        if (filterOptionsTrigger != null) {
+            filterOptionsTrigger.getElement().setAttribute("title", hasFilters
+                    ? "Grid options, filters applied"
+                    : "Grid options");
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private Grid<T> listingGrid() {
+        return (Grid<T>) listing.getComponent();
+    }
+
+    private void openSortDialog(Grid<T> grid, List<Grid.Column<T>> availableColumns) {
         var dialog = new Dialog();
         dialog.setHeaderTitle("Sort");
         dialog.setWidth("min(500px, 90vw)");
@@ -368,10 +465,6 @@ public final class ListingBundle<T> {
         sortRows.setPadding(false);
         sortRows.setSpacing(true);
         sortRows.setWidthFull();
-
-        List<Grid.Column<T>> availableColumns = grid.getColumns().stream()
-                .filter(col -> col.getKey() != null)
-                .toList();
 
         // Each sort row: column combo + direction combo + remove button
         record SortRow(ComboBox<String> columnCombo, ComboBox<String> directionCombo, Div container) {}
@@ -524,7 +617,7 @@ public final class ListingBundle<T> {
         dialog.open();
     }
 
-    private void openShowHideColumnsDialog() {
+    private void openShowHideColumnsDialog(List<Grid.Column<T>> managedColumns) {
         var dialog = new Dialog();
         dialog.setHeaderTitle("Show/Hide Columns");
         dialog.setWidth("min(400px, 90vw)");
@@ -533,14 +626,12 @@ public final class ListingBundle<T> {
         content.setPadding(false);
         content.setSpacing(true);
 
-        listing.getAllColumns().stream()
-                .filter(tColumn -> tColumn.getKey() != null)
-                .forEach(col -> {
-                    var cb = new Checkbox(col.getKey());
-                    cb.setValue(col.isVisible());
-                    cb.addValueChangeListener(e -> col.setVisible(e.getValue()));
-                    content.add(cb);
-                });
+        managedColumns.forEach(col -> {
+            var cb = new Checkbox(col.getKey());
+            cb.setValue(col.isVisible());
+            cb.addValueChangeListener(e -> col.setVisible(e.getValue()));
+            content.add(cb);
+        });
 
         dialog.add(content);
 
@@ -551,18 +642,20 @@ public final class ListingBundle<T> {
     }
 
     /**
-     * Builds a toolbar {@link Div}.
+     * Builds and caches the toolbar {@link Div}.
      *
      * <p>When {@code gridHeader(String)} is configured, all controls (page-size selector,
-     * search, filter) are rendered inside the {@link #header()} — the toolbar is empty
-     * and hidden via CSS.</p>
+     * search, filter) are rendered inside the {@link #header()} — the toolbar remains part
+     * of the composite but is hidden via CSS.</p>
      *
      * <p>When no gridHeader is set, the toolbar includes the page-size selector on the left
      * and a right-aligned group with search + filter options button.</p>
-     *
-     * <p>Returns a new {@link Div} on each call.</p>
      */
-    public Div toolbar() {
+    private Div createToolbar() {
+        if (toolbarDiv != null) {
+            return toolbarDiv;
+        }
+
         var toolbarRow = new Div();
         toolbarRow.addClassName("listing-toolbar");
 
@@ -579,7 +672,9 @@ public final class ListingBundle<T> {
             var rightGroup = new Div();
             rightGroup.addClassName("listing-toolbar__right");
 
-            if (search != null) rightGroup.add(search);
+            if (search != null)  {
+                rightGroup.add(search);
+            }
 
             if (filterPanel != null) {
                 var menuBar = new MenuBar();
@@ -591,8 +686,10 @@ public final class ListingBundle<T> {
                 var subMenu = triggerItem.getSubMenu();
 
                 // "Advanced Search" — opens the filter dialog
-                subMenu.addItem(advancedSearchLabel)
-                        .addClickListener(e -> getOrCreateFilterDialog().open());
+                advancedSearchMenuItem = subMenu.addItem(advancedSearchLabel);
+                advancedSearchMenuItem.addClickListener(e -> getOrCreateFilterDialog().open());
+                advancedSearchMenuItem.addClassName("listing-menu-item--filter");
+                advancedSearchMenuItem.setCheckable(true);
 
                 // Extra items contributed by the builder
                 for (MenuAction action : menuActions) {
@@ -602,13 +699,24 @@ public final class ListingBundle<T> {
                     subMenu.addItem(content).addClickListener(e -> action.action().run());
                 }
 
-                rightGroup.add(menuBar);
+                filterIndicatorBadge = new Span();
+                filterIndicatorBadge.addClassName("listing-filter-indicator");
+
+                var menuTrigger = new Div(menuBar, filterIndicatorBadge);
+                menuTrigger.addClassName("listing-filter-trigger");
+                filterOptionsTrigger = menuTrigger;
+
+                updateFilterIndicator();
+                registerFilterIndicatorListener();
+
+                rightGroup.add(menuTrigger);
             }
 
             toolbarRow.add(rightGroup);
         }
 
-        return toolbarRow;
+        toolbarDiv = toolbarRow;
+        return toolbarDiv;
     }
 
     /**
@@ -670,12 +778,11 @@ public final class ListingBundle<T> {
     }
 
     /**
-     * Builds a footer {@link Div} with the page-size selector on the left
+     * Builds and caches the footer {@link Div} with the page-size selector on the left
      * and the pagination bar on the right.
      * Applies the {@code listing-footer} CSS class from core {@code pagination.css}.
-     * Returns a new {@link Div} on each call.
      */
-    public Div footer() {
+    private Div createFooter() {
         if (footerDiv != null) return footerDiv;
         footerDiv = new Div();
         footerDiv.addClassName("listing-footer");
@@ -686,6 +793,29 @@ public final class ListingBundle<T> {
         }
         footerDiv.add(bar);
         return footerDiv;
+    }
+
+    private List<Grid.Column<T>> managedColumns(Grid<T> grid) {
+        var columnsByKey = new LinkedHashMap<String, Grid.Column<T>>();
+        for (Grid.Column<T> column : grid.getColumns()) {
+            String key = column.getKey();
+            if (key != null) {
+                columnsByKey.putIfAbsent(key, column);
+            }
+        }
+
+        if (!columnKeys.isEmpty()) {
+            var explicitColumns = new ArrayList<Grid.Column<T>>(columnKeys.size());
+            for (String key : columnKeys) {
+                Grid.Column<T> column = columnsByKey.get(key);
+                if (column != null) {
+                    explicitColumns.add(column);
+                }
+            }
+            return explicitColumns;
+        }
+
+        return new ArrayList<>(columnsByKey.values());
     }
 }
 

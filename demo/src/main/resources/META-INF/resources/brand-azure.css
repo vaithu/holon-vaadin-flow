@@ -70,7 +70,10 @@
      ║  §10  SIDEBAR: Blue canvas + blue active        ← was navy     ║
      ║                                                                  ║
      ║  Sections 1-2, 4-8 are identical to brand-override-example.css ║
-     ╚══════════════════════════════════════════════════════════════════╝ */
+     ╚══════════════════════════════════════════════════════════════════╝
+     */
+
+/*
  *
  *  HOW TO ACTIVATE — swap one line in your AppShellConfigurator:
  *    @StyleSheet(Lumo.STYLESHEET)

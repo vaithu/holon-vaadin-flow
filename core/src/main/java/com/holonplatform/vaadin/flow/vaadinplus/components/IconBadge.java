@@ -4,8 +4,11 @@ import com.holonplatform.vaadin.flow.components.builders.IconBadgeBuilder;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
+
+import java.io.Serial;
 
 /**
  * Circular tinted icon badge — a {@link Div} wrapper that renders a vaadin-icon
@@ -14,8 +17,9 @@ import com.vaadin.flow.component.icon.VaadinIcon;
  *
  * <p>DOM structure:</p>
  * <pre>
- * &lt;div class="icon-badge icon-badge--{variant} [icon-badge--{size}]"&gt;
+ * &lt;div class="icon-badge icon-badge--{variant} [icon-badge--{size}] [icon-badge--has-text]"&gt;
  *   &lt;vaadin-icon icon="…"/&gt;
+ *   &lt;span class="icon-badge__text"&gt;…&lt;/span&gt;
  * &lt;/div&gt;
  * </pre>
  *
@@ -39,6 +43,7 @@ import com.vaadin.flow.component.icon.VaadinIcon;
 @StyleSheet("context://utilities.css")
 public class IconBadge extends Div {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     // -----------------------------------------------------------------------
@@ -60,7 +65,7 @@ public class IconBadge extends Div {
      * @param icon the VaadinIcon to display (not null)
      * @return a new {@link IconBadgeBuilder}
      */
-    public static IconBadgeBuilder builder(VaadinIcon icon) {
+    public static IconBadgeBuilder builder(Icon icon) {
         return IconBadgeBuilder.create(icon);
     }
 
@@ -68,7 +73,7 @@ public class IconBadge extends Div {
      * Obtain an {@link IconBadgeBuilder} pre-configured with icon and variant.
      *
      * <pre>{@code
-     * IconBadge badge = IconBadge.builder(VaadinIcon.CHECK_CIRCLE, Alert.Variant.SUCCESS)
+     * IconBadge badge = IconBadge.builder(VaadinIcon.CHECK_CIRCLE.create(), Alert.Variant.SUCCESS)
      *     .size(IconBadge.Size.LG)
      *     .build();
      * }</pre>
@@ -77,20 +82,33 @@ public class IconBadge extends Div {
      * @param variant the semantic color variant (null = neutral)
      * @return a new {@link IconBadgeBuilder}
      */
-    public static IconBadgeBuilder builder(VaadinIcon icon, Alert.Variant variant) {
+    public static IconBadgeBuilder builder(Icon icon, Alert.Variant variant) {
         return IconBadgeBuilder.create(icon, variant);
     }
 
     /**
      * Obtain a fully-specified {@link IconBadgeBuilder}.
      *
-     * @param icon    the VaadinIcon to display (not null)
+     * @param icon    the Icon to display (not null)
      * @param variant the semantic color variant (null = neutral)
      * @param size    the size preset (not null)
      * @return a new {@link IconBadgeBuilder}
      */
-    public static IconBadgeBuilder builder(VaadinIcon icon, Alert.Variant variant, Size size) {
+    public static IconBadgeBuilder builder(Icon icon, Alert.Variant variant, Size size) {
         return IconBadgeBuilder.create(icon, variant, size);
+    }
+
+    /**
+     * Convenience factory for creating a badge with icon, variant, size and text.
+     *
+     * @param icon the icon to display (not null)
+     * @param variant the semantic color variant (null = neutral)
+     * @param size the size preset (not null)
+     * @param text the text to display, or {@code null} / blank to keep icon-only mode
+     * @return a new {@link IconBadgeBuilder}
+     */
+    public static IconBadgeBuilder builder(Icon icon, Alert.Variant variant, Size size, String text) {
+        return IconBadgeBuilder.create(icon, variant, size).text(text);
     }
 
     // -----------------------------------------------------------------------
@@ -101,15 +119,19 @@ public class IconBadge extends Div {
      * Size preset for the badge circle.
      *
      * <ul>
+     *   <li>{@link #XS}      — 1.75 rem / 28 px — dense inline chips</li>
      *   <li>{@link #DEFAULT} — 2.75 rem / 44 px — matches AlertDialog header icon</li>
      *   <li>{@link #SM}      — 2 rem   / 32 px — compact, for inline / list use</li>
      *   <li>{@link #LG}      — 3.5 rem / 56 px — hero / empty-state use</li>
+     *   <li>{@link #XL}      — 4.5 rem / 72 px — large status / dashboard use</li>
      * </ul>
      */
     public enum Size {
+        XS("icon-badge--xs"),
         DEFAULT(null),
         SM("icon-badge--sm"),
-        LG("icon-badge--lg");
+        LG("icon-badge--lg"),
+        XL("icon-badge--xl");
 
         private final String cssClass;
 
@@ -127,8 +149,11 @@ public class IconBadge extends Div {
     // Internal state
     // -----------------------------------------------------------------------
 
-    private String currentVariantClass;
+    private final Div iconSlot;
+    private final Span textSlot;
+    private Alert.Variant currentVariant;
     private String currentSizeClass;
+    private String currentText = "";
 
     // -----------------------------------------------------------------------
     // Constructors
@@ -162,8 +187,17 @@ public class IconBadge extends Div {
      */
     public IconBadge(Component icon, Alert.Variant variant, Size size) {
         addClassName("icon-badge");
+        this.iconSlot = new Div();
+        this.textSlot = new Span();
+
+        iconSlot.addClassName("icon-badge__icon");
+        iconSlot.add(icon);
+
+        textSlot.addClassName("icon-badge__text");
+        textSlot.setVisible(false);
+
+        add(iconSlot, textSlot);
         getElement().setAttribute("aria-hidden", "true");
-        add(icon);
         setVariant(variant);
         setSize(size != null ? size : Size.DEFAULT);
     }
@@ -246,14 +280,7 @@ public class IconBadge extends Div {
      * @return the current {@link Alert.Variant}, or {@code null}
      */
     public Alert.Variant getVariant() {
-        return currentVariantClass == null ? null :
-               switch (currentVariantClass) {
-                   case "icon-badge--destructive" -> Alert.Variant.DESTRUCTIVE;
-                   case "icon-badge--warning"     -> Alert.Variant.WARNING;
-                   case "icon-badge--success"     -> Alert.Variant.SUCCESS;
-                   case "icon-badge--info"        -> Alert.Variant.INFO;
-                   default                        -> Alert.Variant.DEFAULT;
-               };
+        return currentVariant;
     }
 
     /**
@@ -262,22 +289,70 @@ public class IconBadge extends Div {
      * @param variant the new variant ({@code null} or {@link Alert.Variant#DEFAULT} = neutral)
      */
     public void setVariant(Alert.Variant variant) {
-        if (currentVariantClass != null) {
-            removeClassName(currentVariantClass);
-            currentVariantClass = null;
+        if (currentVariant != null && !currentVariant.isDefault()) {
+            removeClassName(currentVariant.getCssClass("icon-badge"));
         }
-        if (variant != null && variant != Alert.Variant.DEFAULT) {
-            currentVariantClass = switch (variant) {
-                case DESTRUCTIVE -> "icon-badge--destructive";
-                case WARNING     -> "icon-badge--warning";
-                case SUCCESS     -> "icon-badge--success";
-                case INFO        -> "icon-badge--info";
-                default          -> null;
-            };
-            if (currentVariantClass != null) {
-                addClassName(currentVariantClass);
-            }
+        currentVariant = (variant != null && !variant.isDefault()) ? variant : null;
+        if (currentVariant != null) {
+            addClassName(currentVariant.getCssClass("icon-badge"));
         }
+    }
+
+    // -----------------------------------------------------------------------
+    // Text API
+    // -----------------------------------------------------------------------
+
+    /**
+     * Returns the current badge text.
+     *
+     * @return the current text, never {@code null}
+     */
+    @Override
+    public String getText() {
+        return currentText;
+    }
+
+    /**
+     * Sets or clears the badge text.
+     *
+     * <p>When text is present, the badge switches to a pill-like layout and is no
+     * longer aria-hidden. Passing {@code null} or blank text clears the text slot
+     * and restores the icon-only circular badge.</p>
+     *
+     * @param text the new text, or {@code null} / blank to clear
+     */
+    @Override
+    public void setText(String text) {
+        String normalized = text != null && !text.isBlank() ? text : "";
+        this.currentText = normalized;
+        textSlot.setText(normalized);
+        textSlot.setVisible(!normalized.isEmpty());
+
+        if (normalized.isEmpty()) {
+            removeClassName("icon-badge--has-text");
+            getElement().setAttribute("aria-hidden", "true");
+        } else {
+            addClassName("icon-badge--has-text");
+            getElement().removeAttribute("aria-hidden");
+        }
+    }
+
+    /**
+     * Clears any badge text and restores the icon-only layout.
+     */
+    public void clearText() {
+        setText(null);
+    }
+
+    /**
+     * Fluent shortcut to set the badge text.
+     *
+     * @param text the text to display, or {@code null} / blank to clear
+     * @return this badge instance
+     */
+    public IconBadge text(String text) {
+        setText(text);
+        return this;
     }
 
     // -----------------------------------------------------------------------
@@ -292,10 +367,21 @@ public class IconBadge extends Div {
     public Size getBadgeSize() {
         if (currentSizeClass == null) return Size.DEFAULT;
         return switch (currentSizeClass) {
+            case "icon-badge--xs" -> Size.XS;
             case "icon-badge--sm" -> Size.SM;
             case "icon-badge--lg" -> Size.LG;
+            case "icon-badge--xl" -> Size.XL;
             default               -> Size.DEFAULT;
         };
+    }
+
+    /**
+     * Returns whether badge text is currently visible.
+     *
+     * @return true if text is present
+     */
+    public boolean hasText() {
+        return !currentText.isEmpty();
     }
 
     /**
@@ -328,8 +414,8 @@ public class IconBadge extends Div {
      * @param icon the replacement icon (not null)
      */
     public void setIcon(Icon icon) {
-        removeAll();
-        add(icon);
+        iconSlot.removeAll();
+        iconSlot.add(icon);
     }
 
     /**
