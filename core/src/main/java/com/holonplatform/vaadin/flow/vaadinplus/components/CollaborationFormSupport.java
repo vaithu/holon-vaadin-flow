@@ -1,6 +1,7 @@
 package com.holonplatform.vaadin.flow.vaadinplus.components;
 
 import com.holonplatform.vaadin.flow.components.Components;
+import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
 import com.vaadin.collaborationengine.CollaborationAvatarGroup;
 import com.vaadin.collaborationengine.CollaborationBinder;
 import com.vaadin.collaborationengine.CollaborationEngine;
@@ -509,7 +510,7 @@ public final class CollaborationFormSupport<T> implements Serializable {
 
     private Button buildToggleButton() {
         Button btn = Components.button()
-                .text("Collaborate")
+                .text("Collaborate", "collab.collaborate")
                 .icon(VaadinIcon.USERS)
                 .tertiary()
                 .styleName(CLASS_INACTIVE)
@@ -519,14 +520,14 @@ public final class CollaborationFormSupport<T> implements Serializable {
         Signal.effect(btn, () -> {
             boolean on = enabledSignal.get();
             if (on) {
-                btn.setText("Stop sharing");
+                btn.setText(LocalizationProvider.localize("Stop sharing", "collab.stop_sharing"));
                 btn.setIcon(VaadinIcon.USER.create());
                 btn.removeThemeVariants(ButtonVariant.LUMO_TERTIARY);
                 btn.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
                 btn.removeClassName(CLASS_INACTIVE);
                 btn.addClassName(CLASS_ACTIVE);
             } else {
-                btn.setText("Collaborate");
+                btn.setText(LocalizationProvider.localize("Collaborate", "collab.collaborate"));
                 btn.setIcon(VaadinIcon.USERS.create());
                 btn.removeThemeVariants(ButtonVariant.LUMO_PRIMARY);
                 btn.addThemeVariants(ButtonVariant.LUMO_TERTIARY);

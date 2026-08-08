@@ -16,7 +16,9 @@
 package com.holonplatform.vaadin.flow.vaadinplus.components;
 
 import com.holonplatform.core.Validator;
+import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.core.operation.TriConsumer;
+import com.holonplatform.core.property.PathProperty;
 import com.holonplatform.core.property.Property;
 import com.holonplatform.core.property.PropertyBox;
 import com.holonplatform.core.property.PropertySet;
@@ -36,6 +38,7 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.html.Span;
 
 import java.io.Serial;
 import java.util.ArrayList;
@@ -44,6 +47,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Objects;
 import java.util.function.Consumer;
+
+import static com.holonplatform.core.internal.utils.FormatUtils.toSentenceCase;
 
 /**
  * A full-featured form panel that wraps a {@link BeanPropertyInputForm} or a
@@ -147,18 +152,155 @@ public class EntityFormPanel<T> extends Div {
     private static final long serialVersionUID = 1L;
 
     // -----------------------------------------------------------------------
+    // Input width-tier system — driven by @Column(length) / @Size(max)
+    // -----------------------------------------------------------------------
+
+    /**
+     * Resolved input-width tier driven by {@code @Column(length)} or {@code @Size(max)}.
+     * Applied in bean-mode only when {@code columnLengthAwareWidth(true)} is set.
+     *
+     * <p>Instead of constraining the input with {@code max-width} (which leaves blank space
+     * inside the grid cell), the tier controls the <strong>column span</strong> allocated to
+     * the field so the input always fills 100% of its (tier-sized) cell.</p>
+     *
+     * <ul>
+     *   <li>{@code XS} / {@code SM} — smallest useful unit: 1 column</li>
+     *   <li>{@code MD}              — medium: 2 columns (or full row when max ≤ 2)</li>
+     *   <li>{@code UNCONSTRAINED}   — full row: all available columns</li>
+     * </ul>
+     */
+    private enum FieldWidthTier {
+        UNCONSTRAINED,
+        XS,
+        SM,
+        MD;
+
+        static FieldWidthTier of(int columnLength) {
+            if (columnLength <= 0 || columnLength > 100) return UNCONSTRAINED;
+            if (columnLength <= 10) return XS;
+            if (columnLength <= 30) return SM;
+            return MD;
+        }
+
+        /**
+         * Returns the number of form-layout columns this tier should occupy,
+         * capped by the supplied {@code maxColumns}.
+         *
+         * <pre>
+         * maxColumns=3 : XS→1  SM→1  MD→2  UNCONSTRAINED→3
+         * maxColumns=2 : XS→1  SM→1  MD→2  UNCONSTRAINED→2
+         * maxColumns=1 : everything→1
+         * </pre>
+         */
+        int formColspan(int maxColumns) {
+            return switch (this) {
+                case XS, SM      -> 1;
+                case MD          -> Math.clamp((int) Math.ceil(maxColumns * 2.0 / 3), 1, maxColumns);
+                case UNCONSTRAINED -> maxColumns;
+            };
+        }
+
+        /**
+         * Returns the 12-column CSS-grid span for this tier at a given column count.
+         *
+         * <pre>
+         * maxColumns=3 : XS→4  SM→4  MD→8  UNCONSTRAINED→12
+         * maxColumns=2 : XS→6  SM→6  MD→12 UNCONSTRAINED→12
+         * maxColumns=1 : everything→12
+         * </pre>
+         */
+        int gridSpan(int maxColumns) {
+            int tileColumns = switch (this) {
+                case XS, SM      -> 1;
+                case MD          -> Math.clamp(maxColumns, 1, (int) Math.ceil(maxColumns * 2.0 / 3));
+                case UNCONSTRAINED -> maxColumns;
+            };
+            return Math.max(1, Math.round(12.0f * tileColumns / maxColumns));
+        }
+    }
+
+    /**
+     * Resolves the effective column length for a bean field via annotation reflection.
+     *
+     * <p><strong>Resolution order (first match wins at each tier):</strong></p>
+     * <ol>
+     *   <li>{@code @Column(length=N)} where N &gt; 0 and N ≠ 255 — authoritative schema width;
+     *       255 is the JPA spec default and is skipped to avoid false positives.</li>
+     *   <li>{@code @Size(max=N)} where N ≠ {@link Integer#MAX_VALUE} — Bean Validation string length.</li>
+     *   <li>{@code @Max(value=N)} / {@code @Min(value=N)} — numeric bounds; the digit count of the
+     *       boundary value is used as the effective length (e.g. {@code @Max(9999)} → 4 chars → XS).
+     *       Negative {@code @Min} values add one extra char for the minus sign.</li>
+     * </ol>
+     *
+     * <p>Uses annotation reflection (no compile-time dependency on JPA or Bean Validation APIs).
+     * Walks the class hierarchy for inherited fields. Returns {@code 0} if undeterminable.</p>
+     *
+     * @param beanClass the entity / bean class to inspect
+     * @param fieldName the simple field name (e.g. {@code "firstName"})
+     * @return resolved length, or {@code 0} if not determinable
+     */
+    private static int resolveColumnLength(Class<?> beanClass, String fieldName) {
+        Class<?> cls = beanClass;
+        while (cls != null && cls != Object.class) {
+            try {
+                java.lang.reflect.Field f = cls.getDeclaredField(fieldName);
+                int sizeMax   = 0;  // from @Size(max)
+                int numDigits = 0;  // from @Max / @Min digit count
+
+                for (java.lang.annotation.Annotation ann : f.getAnnotations()) {
+                    String name = ann.annotationType().getSimpleName();
+                    try {
+                        switch (name) {
+                            case "Column" -> {
+                                int len = (int) ann.annotationType().getMethod("length").invoke(ann);
+                                if (len > 0 && len != 255) return len; // authoritative; skip JPA default
+                            }
+                            case "Size" -> {
+                                int max = (int) ann.annotationType().getMethod("max").invoke(ann);
+                                if (max != Integer.MAX_VALUE) sizeMax = max;
+                            }
+                            case "Max" -> {
+                                long val = (long) ann.annotationType().getMethod("value").invoke(ann);
+                                if (val < Long.MAX_VALUE) {
+                                    numDigits = Math.max(numDigits, Long.toString(val).length());
+                                }
+                            }
+                            case "Min" -> {
+                                long val = (long) ann.annotationType().getMethod("value").invoke(ann);
+                                int digits = Long.toString(Math.abs(val)).length() + (val < 0 ? 1 : 0);
+                                numDigits = Math.max(numDigits, digits);
+                            }
+                            default -> { /* other annotations ignored */ }
+                        }
+                    } catch (Exception ignored) {}
+                }
+
+                if (sizeMax > 0) return sizeMax;       // @Size beats @Min/@Max
+                if (numDigits > 0) return numDigits;   // @Min/@Max fallback
+                break; // field found — stop climbing
+            } catch (NoSuchFieldException e) {
+                cls = cls.getSuperclass();
+            } catch (Exception e) {
+                break;
+            }
+        }
+        return 0;
+    }
+
+    // -----------------------------------------------------------------------
     // Internal state
     // -----------------------------------------------------------------------
 
     private final PropertyInputForm form;
     private final Button saveButton;
-    private final Button saveAndNewButton;  // null when not configured
+    private final Button saveAndNewButton;
     private final Button clearButton;
-    private final Button cancelButton;      // null when not configured
-    private final boolean stretchLastRow;
-    private final LayoutMode layoutMode;
-    private final List<FormLayout.ResponsiveStep> responsiveSteps;
+    private final Button cancelButton;
     private final List<TriConsumer<Component, Property<?>, Input<?>>> postProcessors;
+    /** Stored so that {@link #setReadOnly} can toggle its visibility at runtime. */
+    private final Div footer;
+    /** Bean class for {@link FieldWidthTier} resolution; {@code null} in PropertySet-mode. */
+    private final Class<?> beanClass;
 
     // -----------------------------------------------------------------------
     // Private constructor — use factory methods to create instances
@@ -174,26 +316,34 @@ public class EntityFormPanel<T> extends Div {
             LayoutMode layoutMode,
             boolean stretchLastRow,
             List<FormLayout.ResponsiveStep> responsiveSteps,
-            List<TriConsumer<Component, Property<?>, Input<?>>> postProcessors) {
+            List<TriConsumer<Component, Property<?>, Input<?>>> postProcessors,
+            String title,
+            boolean bordered,
+            boolean showFooter,
+            Class<?> beanClass,
+            boolean autoLabels) {
 
         this.form = form;
         this.saveButton = saveBtn;
         this.saveAndNewButton = saveAndNewBtn;
         this.clearButton = clearBtn;
         this.cancelButton = cancelBtn;
-        this.stretchLastRow = stretchLastRow;
-        this.layoutMode = layoutMode;
-        this.responsiveSteps = responsiveSteps;
         this.postProcessors = postProcessors;
+        this.beanClass = beanClass;
 
         addClassName("entity-form-panel");
+        if (bordered) {
+            addClassName("entity-form-panel--bordered");
+        }
 
-        // ── Form body ──────────────────────────────────────────────────────
+        if (title != null && !title.isBlank()) {
+            Div titleDiv = new Div(new Span(title));
+            titleDiv.addClassName("entity-form-panel__title");
+            add(titleDiv);
+        }
+
         Div body = Components.div().add(form.getComponent()).styleName("entity-form-panel__body").build();
 
-        // ── Auto-focus first field on attach so users can type immediately ─
-        // and so that Holon's focusNextDocumentElement() traversal naturally
-        // leads back to this component's Save button on the last field.
         form.getComponent().addAttachListener(e ->
                 form.getElements()
                         .findFirst()
@@ -203,70 +353,57 @@ public class EntityFormPanel<T> extends Div {
                             }
                         }));
 
-        // ── Footer ────────────────────────────────────────────────────────
-        // DOM ORDER IS INTENTIONAL:
-        //   Save → SaveAndNew → Clear → Cancel
-        //
-        // When the user presses Enter on the LAST form field, Holon's
-        // focusNextDocumentElement() walks forward in the DOM from that field
-        // and lands on the first focusable element — the Save button.
-        // Pressing Enter on the focused Save button then triggers it natively.
-        //
-        // VISUAL ORDER (via CSS `order` property) is the opposite:
-        //   [Clear] [Cancel]        [SaveAndNew] [Save]
-        // so secondary actions are on the left and primary on the right.
-        Div footer = Components.div().styleName("entity-form-panel__footer").build();
+        this.footer = Components.div().styleName("entity-form-panel__footer").build();
 
-        // 1. Save — DOM first → keyboard Enter on last field reaches it first
-        saveBtn.addClassName("entity-form-panel__btn-save");
-        saveBtn.addClickListener(e -> {
-            try {
-                T value = valueSupplier.get();   // validates; throws ValidationException if invalid
-                saveAction.accept(value);
-            } catch (Validator.ValidationException ignored) {
-                // Form already shows inline errors; no extra action needed.
-            }
-        });
-        footer.add(saveBtn);
-
-        // 2. SaveAndNew — DOM second (optional)
-        if (saveAndNewBtn != null) {
-            saveAndNewBtn.addClassName("entity-form-panel__btn-save-new");
-            saveAndNewBtn.addClickListener(e -> {
+        if (showFooter && saveBtn != null) {
+            saveBtn.addClassName("entity-form-panel__btn-save");
+            saveBtn.addClickListener(e -> {
                 try {
-                    T value = valueSupplier.get();      // Step 1: validate
-                    saveAndNewAction.accept(value);     // Step 2: persist
-                    form.clear();                       // Step 3: clear ONLY on full success
+                    T value = valueSupplier.get();
+                    saveAction.accept(value);
                 } catch (Validator.ValidationException ignored) {
-                    // Validation failed — inline errors shown; form NOT cleared.
                 }
             });
-            footer.add(saveAndNewBtn);
+            footer.add(saveBtn);
+
+            if (saveAndNewBtn != null) {
+                saveAndNewBtn.addClassName("entity-form-panel__btn-save-new");
+                saveAndNewBtn.addClickListener(e -> {
+                    try {
+                        T value = valueSupplier.get();
+                        saveAndNewAction.accept(value);
+                        form.clear();
+                    } catch (Validator.ValidationException ignored) {
+                    }
+                });
+                footer.add(saveAndNewBtn);
+            }
+
+            clearBtn.addClassName("entity-form-panel__btn-clear");
+            clearBtn.getElement().removeAttribute("theme");
+            clearBtn.addClickListener(e -> form.clear());
+            footer.add(clearBtn);
+
+            if (cancelBtn != null) {
+                cancelBtn.addClassName("entity-form-panel__btn-cancel");
+                cancelBtn.getElement().removeAttribute("theme");
+                cancelBtn.addClickListener(e -> cancelAction.run());
+                footer.add(cancelBtn);
+            }
+        } else if (!showFooter && saveAndNewBtn != null) {
+            saveAndNewBtn.addClassName("entity-form-panel__btn-save-new");
         }
 
-        // 3. Clear — CSS `margin-inline-end: auto` pushes it visually to the far left.
-        //    Strip the theme attribute: EntityFormPanel owns the visual style of secondary
-        //    actions.  Leaving theme="tertiary" (or any variant) from the developer's config
-        //    would make the button invisible as plain text.  Without a theme attribute the
-        //    shell-theme "default outlined" style applies, and entity-form-panel.css adds the
-        //    surface tint and hover states on top.
-        clearBtn.addClassName("entity-form-panel__btn-clear");
-        clearBtn.getElement().removeAttribute("theme");
-        clearBtn.addClickListener(e -> form.clear());
-        footer.add(clearBtn);
-
-        // 4. Cancel — DOM last (optional). Same theme-strip rationale as Clear above.
-        if (cancelBtn != null) {
-            cancelBtn.addClassName("entity-form-panel__btn-cancel");
-            cancelBtn.getElement().removeAttribute("theme");
-            cancelBtn.addClickListener(e -> cancelAction.run());
-            footer.add(cancelBtn);
+        if (showFooter) {
+            add(body, footer);
+        } else {
+            add(body);
         }
-
-        add(body, footer);
 
         form.compose();
-        applyDefaultLabels(form);
+        if (autoLabels) {
+            applyDefaultLabels(form);
+        }
 
         if (this.postProcessors != null && !this.postProcessors.isEmpty()) {
             form.getBindings().forEach(binding ->
@@ -274,11 +411,57 @@ public class EntityFormPanel<T> extends Div {
                             postProcessor.accept(form.getComponent(), binding.getProperty(), binding.getElement())));
         }
 
-        if (this.layoutMode == LayoutMode.GRID) {
-            applyGridDivLayout((Div) form.getComponent(), form, this.responsiveSteps, this.stretchLastRow);
-        } else if (this.stretchLastRow) {
-            applyStretchLastRow((FormLayout) form.getComponent(), form);
+        // ── Width-tier column-span (bean-mode only) ───────────────────────
+        // When columnLengthAwareWidth is on (beanClass != null), each field is
+        // assigned a proportional column span so the input still fills 100% of
+        // its (tier-sized) cell — no max-width gaps.
+        //
+        //   FORM mode → setColspan() on the FormLayout
+        //   GRID mode → tier-based col-span-N CSS classes via applyGridDivLayout
+        if (layoutMode == LayoutMode.GRID) {
+            // Build tier map once; empty when columnLengthAwareWidth is off (beanClass == null).
+            java.util.Map<Component, FieldWidthTier> tierMap = beanClass != null
+                    ? buildTierMap(form)
+                    : java.util.Collections.emptyMap();
+            applyGridDivLayout((Div) form.getComponent(), form, responsiveSteps, stretchLastRow, tierMap);
+        } else {
+            // FORM mode
+            if (this.beanClass != null) {
+                // Build component → tier map and apply FormLayout column spans.
+                java.util.Map<Component, FieldWidthTier> tierMap = buildTierMap(form);
+                FormLayout fl = (FormLayout) form.getComponent();
+                int maxColumns = fl.getResponsiveSteps().stream()
+                        .mapToInt(s -> {
+                            var j = s.toJson();
+                            return j != null && j.has("columns") ? Math.max(1, j.get("columns").asInt(1)) : 1;
+                        })
+                        .max().orElse(1);
+
+                if (maxColumns > 1) {
+                    tierMap.forEach((component, tier) -> {
+                        int span = tier.formColspan(maxColumns);
+                        if (span > 1) fl.setColspan(component, span);
+                    });
+                }
+            }
+
+            if (stretchLastRow) {
+                applyStretchLastRow((FormLayout) form.getComponent(), form);
+            }
         }
+    }
+
+    /** Builds component → FieldWidthTier map from form bindings. */
+    private java.util.Map<Component, FieldWidthTier> buildTierMap(PropertyInputForm form) {
+        java.util.Map<Component, FieldWidthTier> map = new java.util.IdentityHashMap<>();
+        form.getBindings().forEach(binding -> {
+            Property<?> prop = binding.getProperty();
+            if (prop instanceof PathProperty<?> pp && beanClass != null) {
+                int colLen = resolveColumnLength(beanClass, pp.relativeName());
+                map.put(binding.getElement().getComponent(), FieldWidthTier.of(colLen));
+            }
+        });
+        return map;
     }
 
     private static void applyDefaultLabels(PropertyInputForm form) {
@@ -288,7 +471,7 @@ public class EntityFormPanel<T> extends Div {
                 String current = hasLabel.getLabel();
                 String rawName = property.getName();
                 if (current == null || current.isBlank() || current.equals(rawName)) {
-                    hasLabel.setLabel(toPascalCase(rawName));
+                    hasLabel.setLabel(toSentenceCase(rawName));
                 }
             });
         });
@@ -328,33 +511,13 @@ public class EntityFormPanel<T> extends Div {
         }
     }
 
-    private static String toPascalCase(String name) {
-        if (name == null || name.isBlank()) {
-            return "";
-        }
 
-        StringBuilder sb = new StringBuilder(name.length());
-        boolean capitalizeNext = true;
-        for (int i = 0; i < name.length(); i++) {
-            char ch = name.charAt(i);
-            if (ch == '_' || ch == '-' || ch == ' ') {
-                capitalizeNext = true;
-                continue;
-            }
-            if (capitalizeNext) {
-                sb.append(Character.toUpperCase(ch));
-                capitalizeNext = false;
-            } else {
-                sb.append(ch);
-            }
-        }
-        return sb.toString();
-    }
 
     private static void applyGridDivLayout(Div layout,
                                            PropertyInputForm form,
                                            List<FormLayout.ResponsiveStep> responsiveSteps,
-                                           boolean stretchLastRow) {
+                                           boolean stretchLastRow,
+                                           java.util.Map<Component, FieldWidthTier> tierMap) {
 
         layout.addClassName("entity-form-panel__grid");
         layout.addClassNames("grid", "grid-cols-12", "gap-m");
@@ -367,17 +530,29 @@ public class EntityFormPanel<T> extends Div {
             return;
         }
 
+        final boolean hasTiers = tierMap != null && !tierMap.isEmpty();
         final List<GridStep> steps = normalizeGridSteps(responsiveSteps);
+
         for (GridStep step : steps) {
             final String prefix = step.prefix();
             final int columns = Math.max(1, step.columns());
             final int baseSpan = spanFor(columns);
 
             for (int index = 0; index < children.size(); index++) {
-                final int rowStart = (index / columns) * columns;
-                final int rowSize = Math.min(columns, children.size() - rowStart);
-                final int span = stretchLastRow && rowSize < columns ? spanFor(rowSize) : baseSpan;
-                addGridSpanClass(children.get(index), prefix, span);
+                Component child = children.get(index);
+
+                if (hasTiers) {
+                    // Tier-based span: short fields get fewer columns, long fields get more.
+                    // All inputs still fill 100% of their cell.
+                    FieldWidthTier tier = tierMap.getOrDefault(child, FieldWidthTier.UNCONSTRAINED);
+                    addGridSpanClass(child, prefix, tier.gridSpan(columns));
+                } else {
+                    // Equal spans (default): every field occupies the same number of columns.
+                    final int rowStart = index / columns * columns;
+                    final int rowSize = Math.min(columns, children.size() - rowStart);
+                    final int span = stretchLastRow && rowSize < columns ? spanFor(rowSize) : baseSpan;
+                    addGridSpanClass(child, prefix, span);
+                }
             }
         }
     }
@@ -447,6 +622,136 @@ public class EntityFormPanel<T> extends Div {
     }
 
     private record GridStep(String prefix, int columns) {
+    }
+
+    /** Internal holder for a field-name bind call. */
+    private record FieldBinding(String fieldName, Input<?> input) {}
+
+    /** Internal holder for a typed {@link PathProperty} bind call. */
+    private record PathPropertyBinding<V>(PathProperty<V> property, Input<V> input) {}
+
+    /** Internal holder for a {@code required(fieldName, message)} call. */
+    private record RequiredBinding(String fieldName, String message) {}
+
+    /**
+     * Applies stored {@link FieldBinding}s to the given form builder.
+     * Each binding looks up the property by field name and, if found, replaces
+     * the default auto-generated input with the supplied one.
+     */
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    private static <T, C extends Component> void applyFieldBindings(
+            BeanPropertyInputFormBuilder<C, T> beanFormBuilder,
+            List<FieldBinding> fieldBindings) {
+        if (fieldBindings == null || fieldBindings.isEmpty()) return;
+        for (FieldBinding binding : fieldBindings) {
+            beanFormBuilder.property(binding.fieldName()).ifPresent(p -> {
+                final Input input = binding.input();
+                beanFormBuilder.configure(f -> f.bind((Property) p, prop -> input));
+            });
+        }
+    }
+
+    /**
+     * Applies stored {@link PathPropertyBinding}s to the given form builder.
+     * Binds each typed {@link PathProperty} directly without a name lookup.
+     */
+    private static <T, C extends Component> void applyPathPropertyBindings(
+            BeanPropertyInputFormBuilder<C, T> beanFormBuilder,
+            List<PathPropertyBinding<?>> pathPropertyBindings) {
+        if (pathPropertyBindings == null || pathPropertyBindings.isEmpty()) return;
+        for (PathPropertyBinding<?> binding : pathPropertyBindings) {
+            applyPathPropertyBinding(beanFormBuilder, binding);
+        }
+    }
+
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    private static <T, V, C extends Component> void applyPathPropertyBinding(
+            BeanPropertyInputFormBuilder<C, T> beanFormBuilder,
+            PathPropertyBinding<V> binding) {
+        final Input input = binding.input();
+        beanFormBuilder.configure(f -> f.bind((Property) binding.property(), prop -> input));
+    }
+
+    /**
+     * Applies stored {@link RequiredBinding}s to the given form builder.
+     * Each binding marks the field as required with the supplied literal message,
+     * bypassing the generic {@code holon.common.validation.message.required} key.
+     */
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    private static <T, C extends Component> void applyRequiredBindings(
+            BeanPropertyInputFormBuilder<C, T> beanFormBuilder,
+            List<RequiredBinding> requiredBindings) {
+        if (requiredBindings == null || requiredBindings.isEmpty()) return;
+        for (RequiredBinding binding : requiredBindings) {
+            beanFormBuilder.property(binding.fieldName()).ifPresent(p ->
+                beanFormBuilder.configure(f -> f.required((Property) p, binding.message())));
+        }
+    }
+
+    /**
+     * Scans {@code beanClass} for {@code @NotBlank} / {@code @NotNull} / {@code @NotEmpty}
+     * annotations and wires each field through the builder-level {@code required()} API so that:
+     * <ul>
+     *   <li>Custom messages (e.g. {@code @NotBlank(message = "Email is required")}) are forwarded
+     *       verbatim — no {@code holon.common.validation.message.required} key lookup occurs.</li>
+     *   <li>Fields using the default Jakarta message key fall back to Holon's default required message.</li>
+     *   <li>Fields already covered by an explicit {@code .required(fieldName, message)} call are skipped.</li>
+     * </ul>
+     * Called instead of {@code panel.setAutoRequiredIndicators(true)} for bean-mode builders.
+     */
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    private static <T, C extends Component> void applyAutoRequiredFromAnnotations(
+            BeanPropertyInputFormBuilder<C, T> beanFormBuilder,
+            Class<T> beanClass,
+            List<RequiredBinding> explicitRequiredBindings) {
+
+        final java.util.Set<String> explicitFields =
+                explicitRequiredBindings == null || explicitRequiredBindings.isEmpty()
+                ? java.util.Set.of()
+                : explicitRequiredBindings.stream()
+                        .map(RequiredBinding::fieldName)
+                        .collect(java.util.stream.Collectors.toSet());
+
+        Class<?> cls = beanClass;
+        while (cls != null && cls != Object.class) {
+            for (java.lang.reflect.Field field : cls.getDeclaredFields()) {
+                final String fieldName = field.getName();
+                if (explicitFields.contains(fieldName)) {
+                    continue; // explicit required() call already handles this field
+                }
+                Optional<java.lang.annotation.Annotation> requiredAnnotation = java.util.Arrays
+                        .stream(field.getAnnotations())
+                        .filter(ann -> {
+                            final String annSimpleName = ann.annotationType().getSimpleName();
+                            return annSimpleName.equals("NotBlank") || annSimpleName.equals("NotNull")
+                                    || annSimpleName.equals("NotEmpty");
+                        })
+                        .findFirst();
+                if (requiredAnnotation.isPresent()) {
+                    java.lang.annotation.Annotation ann = requiredAnnotation.get();
+                    String rawMessage = null;
+                    try {
+                        rawMessage = (String) ann.annotationType().getMethod("message").invoke(ann);
+                    } catch (Exception ignored) {
+                    }
+
+                    final boolean isDefaultKey = rawMessage == null
+                            || rawMessage.startsWith("{jakarta.")
+                            || rawMessage.startsWith("{javax.");
+
+                    final String customMessage = isDefaultKey ? null : rawMessage;
+
+                    beanFormBuilder.property(fieldName).ifPresent(p -> {
+                        if (customMessage != null) {
+                            beanFormBuilder.configure(f -> f.required((Property) p, Localizable.of(customMessage)));
+                        } else {
+                            beanFormBuilder.configure(f -> f.required((Property) p));
+                        }
+                    });
+                }
+            }
+            cls = cls.getSuperclass();
+        }
     }
 
     // -----------------------------------------------------------------------
@@ -551,6 +856,102 @@ public class EntityFormPanel<T> extends Div {
         }
         throw new IllegalStateException(
                 "EntityFormPanel#setBean is only supported when the underlying form is bean-based");
+    }
+
+    /**
+     * Triggers form validation and returns {@code true} if the form is valid.
+     * <p>
+     * Use this in wizard / multi-step contexts when the wizard's Next button
+     * drives navigation instead of the form's own Save button.
+     * Validation errors are shown inline — the same behaviour as pressing Save.
+     * </p>
+     *
+     * @return {@code true} if the form passed validation, {@code false} otherwise
+     */
+    public boolean validate() {
+        try {
+            form.getValue();
+            return true;
+        } catch (Validator.ValidationException e) {
+            return false;
+        }
+    }
+
+    /**
+     * Returns the current form values as a new bean instance, running validation.
+     * <p>
+     * Use in wizard / multi-step contexts to read values from a {@code noFooter()}
+     * panel (which has no Save button to trigger the write-back). Builds a fresh
+     * instance of the bean class and writes all field values into it.
+     * </p>
+     *
+     * @return current bean value
+     * @throws com.holonplatform.core.Validator.ValidationException if the form is invalid
+     * @throws IllegalStateException if the underlying form is not bean-based
+     */
+    @SuppressWarnings("unchecked")
+    public T getBean() {
+        return getBean(true);
+    }
+
+    /**
+     * Returns the current form values as a new bean instance.
+     * <p>
+     * Set {@code validate = false} to skip validation (e.g. on a review/summary step
+     * where showing partial data is acceptable).
+     * </p>
+     *
+     * @param validate {@code true} to run validation, {@code false} to skip it
+     * @return current bean value
+     * @throws com.holonplatform.core.Validator.ValidationException if {@code validate} is
+     *         {@code true} and the form is invalid
+     * @throws IllegalStateException if the underlying form is not bean-based
+     */
+    @SuppressWarnings("unchecked")
+    public T getBean(boolean validate) {
+        if (form instanceof BeanPropertyInputForm<?> bpif) {
+            return ((BeanPropertyInputForm<T>) bpif).getBean(validate);
+        }
+        throw new IllegalStateException(
+                "EntityFormPanel#getBean is only supported when the underlying form is bean-based");
+    }
+
+    /**
+     * Switch the panel into or out of <em>read-only</em> mode.
+     *
+     * <p>When {@code true}:
+     * <ul>
+     *   <li>Every input bound to the form is set read-only.</li>
+     *   <li>The button footer (Save / Clear / …) is hidden.</li>
+     *   <li>The CSS modifier class {@code entity-form-panel--readonly} is applied to the
+     *       root element so the host page can tune the visual appearance.</li>
+     * </ul>
+     *
+     * <p>When {@code false} all three effects are reversed.  Note that if the panel was
+     * originally built with {@link BeanBuilder#readOnly()} / {@link BeanBuilder#noFooter()},
+     * the footer was never added to the DOM; toggling back to {@code false} will make the
+     * inputs editable but the footer will remain absent.</p>
+     *
+     * @param readOnly {@code true} to enter read-only mode, {@code false} to leave it
+     */
+    public void setReadOnly(boolean readOnly) {
+        if (readOnly) {
+            addClassName("entity-form-panel--readonly");
+        } else {
+            removeClassName("entity-form-panel--readonly");
+        }
+        form.getElements().forEach(input -> input.setReadOnly(readOnly));
+        footer.setVisible(!readOnly);
+    }
+
+    /**
+     * Returns {@code true} when the panel is currently in read-only mode.
+     *
+     * @return whether read-only mode is active
+     * @see #setReadOnly(boolean)
+     */
+    public boolean isReadOnly() {
+        return hasClassName("entity-form-panel--readonly");
     }
 
     // -----------------------------------------------------------------------
@@ -748,6 +1149,76 @@ public class EntityFormPanel<T> extends Div {
         <C extends Component> BeanBuilder<T> withPostProcessor(TriConsumer<C, Property<?>, Input<?>> postProcessor);
 
         /**
+         * Mark a specific bean field as required with a <strong>literal</strong> validation
+         * error message, bypassing Holon's generic {@code holon.common.validation.message.required}
+         * message-key lookup.
+         *
+         * <p>Use this instead of {@code autoRequiredIndicators(true)} whenever you need
+         * per-field required messages. The field gains the required asterisk indicator
+         * and the supplied message is shown verbatim when the field is left empty.</p>
+         *
+         * <pre>{@code
+         * EntityFormPanel.bean(ContactBean.class)
+         *     .required("firstName", "First name is required")
+         *     .required("lastName",  "Last name is required")
+         *     .required("email",     "Email is required")
+         *     .noFooter()
+         *     .build();
+         * }</pre>
+         *
+         * @param fieldName bean field name (not null)
+         * @param message   literal error message shown when the field is empty (not null)
+         * @return this
+         */
+        BeanBuilder<T> required(String fieldName, String message);
+
+        /**
+         * Bind a specific bean field to a pre-built {@link Input}, replacing the default
+         * auto-generated input for that field.
+         *
+         * <p>This is the short form of the nested
+         * {@code configure(fb -> fb.configure(f -> { fb.property(fieldName).ifPresent(...) }))}
+         * pattern. If {@code fieldName} does not match any field in the bean class the call
+         * is silently ignored.</p>
+         *
+         * <pre>{@code
+         * EntityFormPanel.<CompanyBean>bean(CompanyBean.class)
+         *     .bind("industry",  Input.singleSelect(String.class).items("Technology", "Finance").build())
+         *     .bind("companySize", Input.singleSelect(String.class).items("1–10", "11–50", "51+").build())
+         *     .noFooter()
+         *     .build();
+         * }</pre>
+         *
+         * @param fieldName bean field name (not null)
+         * @param input     the input to use for that field (not null)
+         * @return this
+         */
+        BeanBuilder<T> bind(String fieldName, Input<?> input);
+
+        /**
+         * Bind a specific bean field to a pre-built {@link Input} using a typed
+         * {@link PathProperty} reference, replacing the default auto-generated input.
+         *
+         * <p>Use this overload when you have a static property constant (e.g.
+         * {@code Customer.NAME}, {@code CompanyBean.INDUSTRY}) and want compile-time
+         * type safety:</p>
+         *
+         * <pre>{@code
+         * EntityFormPanel.<CompanyBean>bean(CompanyBean.class)
+         *     .bind(CompanyBean.INDUSTRY,
+         *           Input.singleSelect(String.class).items("Technology", "Finance").build())
+         *     .noFooter()
+         *     .build();
+         * }</pre>
+         *
+         * @param <V>      property value type
+         * @param property the typed {@link PathProperty} (not null)
+         * @param input    the input to use for that property (not null)
+         * @return this
+         */
+        <V> BeanBuilder<T> bind(PathProperty<V> property, Input<V> input);
+
+        /**
          * Configure the <strong>mandatory</strong> Save button and its action.
          * <p>
          * The action receives the validated bean after the form passes validation.
@@ -797,11 +1268,106 @@ public class EntityFormPanel<T> extends Div {
                                     Runnable onCancel);
 
         /**
+         * Suppress the button footer entirely.
+         * <p>
+         * Use this in wizard / multi-step contexts where navigation is driven by
+         * an external component (e.g. {@code WizardFrame}). Validation is still
+         * triggered externally via {@code getForm().getValue()}.
+         * When this is set, {@code saveButton()} and {@code clearButton()} become
+         * optional and calling them has no effect.
+         *
+         * @return this
+         */
+        BeanBuilder<T> noFooter();
+
+        /**
+         * Set an optional title displayed above the form body.
+         *
+         * @param title the title text (null or blank = no title)
+         * @return this
+         */
+        BeanBuilder<T> title(String title);
+
+        /**
+         * Wrap the panel in a card-like border with padding and rounded corners.
+         *
+         * @param bordered whether to show the border
+         * @return this
+         */
+        BeanBuilder<T> bordered(boolean bordered);
+
+        /**
+         * Enable annotation-driven input-width sizing ({@code @Column(length)}, {@code @Size(max)},
+         * {@code @Min}/{@code @Max}).
+         *
+         * <p>When {@code true}, each input receives a CSS modifier class ({@code --xs}/{@code --sm}/{@code --md})
+         * that constrains its {@code max-width} proportionally to the declared column length.
+         *
+         * <p>Default is {@code false} — all inputs fill their full form-cell width, producing a
+         * consistent grid layout. Set to {@code true} only when you intentionally want narrow inputs
+         * for short fields (e.g. a 2-char country code next to a long address in a compact form).</p>
+         *
+         * @param enable {@code true} to activate annotation-driven width tiers
+         * @return this
+         */
+        BeanBuilder<T> columnLengthAwareWidth(boolean enable);
+
+        /**
+         * Automatically derive sentence-case labels from field names for inputs
+         * that have no explicit label set.
+         * <p>Default: {@code false} — labels are left exactly as provided.</p>
+         *
+         * @param autoLabels {@code true} to enable automatic label generation
+         * @return this
+         */
+        BeanBuilder<T> autoLabels(boolean autoLabels);
+
+        /**
+         * Build the panel in <em>read-only</em> mode.
+         *
+         * <p>Calling this method is equivalent to calling {@link #noFooter()} and then
+         * invoking {@link EntityFormPanel#setReadOnly(boolean) setReadOnly(true)} on the
+         * resulting panel.  The mandatory {@code saveButton} / {@code clearButton} calls
+         * are therefore not required when this flag is set.</p>
+         *
+         * <pre>{@code
+         * EntityFormPanel<Customer> detail = EntityFormPanel.<Customer>bean(Customer.class)
+         *     .autoLabels(true)
+         *     .readOnly()
+         *     .build();
+         * detail.setBean(customer);   // populate fields for display
+         * }</pre>
+         *
+         * @return this
+         */
+        BeanBuilder<T> readOnly();
+
+        /**
+         * Pre-populate the form with an initial bean value immediately after build.
+         *
+         * <p>Equivalent to calling {@link EntityFormPanel#setBean(Object)} right after
+         * {@link #build()}, but keeps the intent in the builder chain:</p>
+         *
+         * <pre>{@code
+         * EntityFormPanel<Product> form = EntityFormPanel.<Product>bean(Product.class)
+         *     .autoLabels(true)
+         *     .withBean(product)          // pre-populate on creation
+         *     .saveButton(b -> b.text("Save"), this::onSave)
+         *     .clearButton(b -> b.text("Clear"))
+         *     .build();
+         * }</pre>
+         *
+         * @param bean the bean instance to load into the form (may be {@code null} — no-op)
+         * @return this
+         */
+        BeanBuilder<T> withBean(T bean);
+
+        /**
          * Build the {@link EntityFormPanel}.
          *
          * @return a fully configured {@link EntityFormPanel}
          * @throws IllegalStateException if the mandatory Save or Clear button has not
-         *                               been configured
+         *                               been configured (and {@link #noFooter()} was not called)
          */
         EntityFormPanel<T> build();
     }
@@ -834,6 +1400,15 @@ public class EntityFormPanel<T> extends Div {
 
         DivBeanBuilder<T> withPostProcessor(TriConsumer<Div, Property<?>, Input<?>> postProcessor);
 
+        /** Binds a field by name to a pre-built input; see {@link BeanBuilder#bind}. */
+        DivBeanBuilder<T> bind(String fieldName, Input<?> input);
+
+        /** Marks a field as required with a literal message; see {@link BeanBuilder#required}. */
+        DivBeanBuilder<T> required(String fieldName, String message);
+
+        /** Binds a typed property reference to a pre-built input; see {@link BeanBuilder#bind}. */
+        <V> DivBeanBuilder<T> bind(PathProperty<V> property, Input<V> input);
+
         DivBeanBuilder<T> saveButton(Consumer<ButtonConfigurator.BaseButtonConfigurator> config,
                                      Consumer<T> onSave);
 
@@ -844,6 +1419,34 @@ public class EntityFormPanel<T> extends Div {
 
         DivBeanBuilder<T> cancelButton(Consumer<ButtonConfigurator.BaseButtonConfigurator> config,
                                        Runnable onCancel);
+
+        /**
+         * Suppress the button footer entirely.
+         * @return this
+         * @see BeanBuilder#noFooter()
+         */
+        DivBeanBuilder<T> noFooter();
+
+        /** @see BeanBuilder#title(String) */
+        DivBeanBuilder<T> title(String title);
+
+        /** @see BeanBuilder#bordered(boolean) */
+        DivBeanBuilder<T> bordered(boolean bordered);
+
+        /** @see BeanBuilder#columnLengthAwareWidth(boolean) */
+        DivBeanBuilder<T> columnLengthAwareWidth(boolean enable);
+
+        /** @see BeanBuilder#autoLabels(boolean) */
+        DivBeanBuilder<T> autoLabels(boolean autoLabels);
+
+        /** @see BeanBuilder#readOnly() */
+        DivBeanBuilder<T> readOnly();
+
+        /**
+         * Pre-populate the form with an initial bean value immediately after build.
+         * @see BeanBuilder#withBean(Object)
+         */
+        DivBeanBuilder<T> withBean(T bean);
 
         EntityFormPanel<T> build();
     }
@@ -954,11 +1557,37 @@ public class EntityFormPanel<T> extends Div {
                                      Runnable onCancel);
 
         /**
+         * Suppress the button footer entirely.
+         * @return this
+         * @see BeanBuilder#noFooter()
+         */
+        PropertyBuilder noFooter();
+
+        /** @see BeanBuilder#title(String) */
+        PropertyBuilder title(String title);
+
+        /** @see BeanBuilder#bordered(boolean) */
+        PropertyBuilder bordered(boolean bordered);
+
+        /**
+         * Automatically derive sentence-case labels from property names for inputs
+         * that have no explicit label set.
+         * <p>Default: {@code false} — labels are left exactly as provided.</p>
+         *
+         * @param autoLabels {@code true} to enable automatic label generation
+         * @return this
+         */
+        PropertyBuilder autoLabels(boolean autoLabels);
+
+        /** @see BeanBuilder#readOnly() */
+        PropertyBuilder readOnly();
+
+        /**
          * Build the {@link EntityFormPanel}.
          *
          * @return a fully configured {@link EntityFormPanel}
          * @throws IllegalStateException if the mandatory Save or Clear button has not
-         *                               been configured
+         *                               been configured (and {@link #noFooter()} was not called)
          */
         EntityFormPanel<PropertyBox> build();
     }
@@ -998,11 +1627,28 @@ public class EntityFormPanel<T> extends Div {
         DivPropertyBuilder cancelButton(Consumer<ButtonConfigurator.BaseButtonConfigurator> config,
                                         Runnable onCancel);
 
+        /**
+         * Suppress the button footer entirely.
+         * @return this
+         * @see BeanBuilder#noFooter()
+         */
+        DivPropertyBuilder noFooter();
+
+        /** @see BeanBuilder#title(String) */
+        DivPropertyBuilder title(String title);
+
+        /** @see BeanBuilder#bordered(boolean) */
+        DivPropertyBuilder bordered(boolean bordered);
+
+        /** @see BeanBuilder#autoLabels(boolean) */
+        DivPropertyBuilder autoLabels(boolean autoLabels);
+
+        /** @see BeanBuilder#readOnly() */
+        DivPropertyBuilder readOnly();
+
         EntityFormPanel<PropertyBox> build();
     }
 
-    // -----------------------------------------------------------------------
-    // Internal: FormValueSupplier
     // -----------------------------------------------------------------------
 
     /**
@@ -1043,6 +1689,12 @@ public class EntityFormPanel<T> extends Div {
         private LayoutMode layoutMode = LayoutMode.FORM;
 
         private final List<TriConsumer<Component, Property<?>, Input<?>>> postProcessors = new ArrayList<>();
+        /** Field name → Input overrides registered via {@link #bind(String, Input)}. */
+        private final List<FieldBinding> fieldBindings = new ArrayList<>();
+        /** PathProperty → Input overrides registered via {@link #bind(PathProperty, Input)}. */
+        private final List<PathPropertyBinding<?>> pathPropertyBindings = new ArrayList<>();
+        /** Field name → required message overrides registered via {@link #required(String, String)}. */
+        private final List<RequiredBinding> requiredBindings = new ArrayList<>();
 
         private Consumer<ButtonConfigurator.BaseButtonConfigurator> saveBtnConfig;
         private Consumer<T> saveAction;
@@ -1054,13 +1706,20 @@ public class EntityFormPanel<T> extends Div {
 
         private Consumer<ButtonConfigurator.BaseButtonConfigurator> cancelBtnConfig;
         private Runnable cancelAction;
+        private boolean noFooter;
+        private boolean readOnly;
+        private String title;
+        private boolean bordered;
+        /** Default false — inputs fill their full cell width for a consistent grid layout. */
+        private boolean columnLengthAwareWidth = false;
+        private boolean autoLabels = false;
+        private T initialBean;
 
         DefaultBeanBuilder(Class<T> beanClass) {
             this.beanClass = beanClass;
         }
 
         @Override
-        @SuppressWarnings({"rawtypes", "unchecked"})
         public <C extends Component> BeanBuilder<T> configure(Consumer<BeanPropertyInputFormBuilder<C, T>> config) {
             this.formConfig = (Consumer) config;
             return this;
@@ -1110,6 +1769,24 @@ public class EntityFormPanel<T> extends Div {
         }
 
         @Override
+        public BeanBuilder<T> bind(String fieldName, Input<?> input) {
+            this.fieldBindings.add(new FieldBinding(fieldName, input));
+            return this;
+        }
+
+        @Override
+        public <V> BeanBuilder<T> bind(PathProperty<V> property, Input<V> input) {
+            this.pathPropertyBindings.add(new PathPropertyBinding<>(property, input));
+            return this;
+        }
+
+        @Override
+        public BeanBuilder<T> required(String fieldName, String message) {
+            this.requiredBindings.add(new RequiredBinding(fieldName, message));
+            return this;
+        }
+
+        @Override
         public BeanBuilder<T> saveButton(Consumer<ButtonConfigurator.BaseButtonConfigurator> config,
                                          Consumer<T> onSave) {
             this.saveBtnConfig = config;
@@ -1140,14 +1817,59 @@ public class EntityFormPanel<T> extends Div {
         }
 
         @Override
+        public BeanBuilder<T> noFooter() {
+            this.noFooter = true;
+            return this;
+        }
+
+        @Override
+        public BeanBuilder<T> title(String title) {
+            this.title = title;
+            return this;
+        }
+
+        @Override
+        public BeanBuilder<T> bordered(boolean bordered) {
+            this.bordered = bordered;
+            return this;
+        }
+
+        @Override
+        public BeanBuilder<T> columnLengthAwareWidth(boolean enable) {
+            this.columnLengthAwareWidth = enable;
+            return this;
+        }
+
+        @Override
+        public BeanBuilder<T> autoLabels(boolean autoLabels) {
+            this.autoLabels = autoLabels;
+            return this;
+        }
+
+        @Override
+        public BeanBuilder<T> readOnly() {
+            this.readOnly = true;
+            this.noFooter = true;
+            return this;
+        }
+
+        @Override
+        public BeanBuilder<T> withBean(T bean) {
+            this.initialBean = bean;
+            return this;
+        }
+
+        @Override
         public EntityFormPanel<T> build() {
-            if (saveBtnConfig == null || saveAction == null) {
-                throw new IllegalStateException(
-                        "EntityFormPanel: saveButton(config, action) is mandatory — call saveButton(...)");
-            }
-            if (clearBtnConfig == null) {
-                throw new IllegalStateException(
-                        "EntityFormPanel: clearButton(config) is mandatory — call clearButton(...)");
+            if (!noFooter) {
+                if (saveBtnConfig == null || saveAction == null) {
+                    throw new IllegalStateException(
+                            "EntityFormPanel: saveButton(config, action) is mandatory — call saveButton(...) or noFooter()");
+                }
+                if (clearBtnConfig == null) {
+                    throw new IllegalStateException(
+                            "EntityFormPanel: clearButton(config) is mandatory — call clearButton(...) or noFooter()");
+                }
             }
 
                 if (layoutMode == LayoutMode.GRID) {
@@ -1168,7 +1890,14 @@ public class EntityFormPanel<T> extends Div {
                 final List<FormLayout.ResponsiveStep> responsiveSteps = buildResponsiveSteps(responsiveStepsConfig);
 
                 if (formConfig != null) {
-                    (formConfig).accept(beanFormBuilder);
+                    formConfig.accept(beanFormBuilder);
+                }
+
+                applyFieldBindings(beanFormBuilder, fieldBindings);
+                applyPathPropertyBindings(beanFormBuilder, pathPropertyBindings);
+                applyRequiredBindings(beanFormBuilder, requiredBindings);
+                if (autoRequiredIndicators) {
+                    applyAutoRequiredFromAnnotations(beanFormBuilder, beanClass, requiredBindings);
                 }
 
                 if (initializer != null) {
@@ -1180,16 +1909,22 @@ public class EntityFormPanel<T> extends Div {
                 EntityFormPanel<T> panel = new EntityFormPanel<>(
                     beanForm,
                     beanForm::getBean,
-                    makeButton(saveBtnConfig), saveAction,
+                    noFooter ? null : makeButton(saveBtnConfig), noFooter ? null : saveAction,
                     saveAndNewBtnConfig != null ? makeButton(saveAndNewBtnConfig) : null, saveAndNewAction,
-                    makeButton(clearBtnConfig),
+                    noFooter ? null : makeButton(clearBtnConfig),
                     cancelBtnConfig != null ? makeButton(cancelBtnConfig) : null, cancelAction,
                     LayoutMode.GRID,
                     stretchLastRow,
                     responsiveSteps,
-                    postProcessors
+                    postProcessors,
+                    title,
+                    bordered,
+                    !noFooter,
+                    columnLengthAwareWidth ? beanClass : null,
+                    autoLabels
                 );
-                panel.setAutoRequiredIndicators(autoRequiredIndicators);
+                if (readOnly) panel.setReadOnly(true);
+                if (initialBean != null) panel.setBean(initialBean);
                 return panel;
                 }
 
@@ -1208,6 +1943,13 @@ public class EntityFormPanel<T> extends Div {
             // Developer config is applied after defaults so it can selectively override.
             if (formConfig != null) {
                 formConfig.accept(beanFormBuilder);
+            }
+
+            applyFieldBindings(beanFormBuilder, fieldBindings);
+            applyPathPropertyBindings(beanFormBuilder, pathPropertyBindings);
+            applyRequiredBindings(beanFormBuilder, requiredBindings);
+            if (autoRequiredIndicators) {
+                applyAutoRequiredFromAnnotations(beanFormBuilder, beanClass, requiredBindings);
             }
 
             Consumer<FormLayout> layoutInitializer = initializer != null ? layout -> initializer.accept(layout) : null;
@@ -1231,16 +1973,23 @@ public class EntityFormPanel<T> extends Div {
             EntityFormPanel<T> panel = new EntityFormPanel<>(
                     beanForm,
                     valueSupplier,
-                    makeButton(saveBtnConfig), saveAction,
+                    noFooter ? null : makeButton(saveBtnConfig), noFooter ? null : saveAction,
                     saveAndNewBtnConfig != null ? makeButton(saveAndNewBtnConfig) : null, saveAndNewAction,
-                    makeButton(clearBtnConfig),
+                    noFooter ? null : makeButton(clearBtnConfig),
                     cancelBtnConfig != null ? makeButton(cancelBtnConfig) : null, cancelAction,
                     LayoutMode.FORM,
                     stretchLastRow,
                     List.of(),
-                    postProcessors
+                    postProcessors,
+                    title,
+                    bordered,
+                    !noFooter,
+                    null,  // PropertySet-mode: no bean class for width-tier resolution
+                    autoLabels
             );
             panel.setAutoRequiredIndicators(autoRequiredIndicators);
+            if (readOnly) panel.setReadOnly(true);
+            if (initialBean != null) panel.setBean(initialBean);
             return panel;
         }
     }
@@ -1262,6 +2011,12 @@ public class EntityFormPanel<T> extends Div {
         private boolean autoRequiredIndicators;
 
         private final List<TriConsumer<Component, Property<?>, Input<?>>> postProcessors = new ArrayList<>();
+        /** Field name → Input overrides registered via {@link #bind(String, Input)}. */
+        private final List<FieldBinding> fieldBindings = new ArrayList<>();
+        /** PathProperty → Input overrides registered via {@link #bind(PathProperty, Input)}. */
+        private final List<PathPropertyBinding<?>> pathPropertyBindings = new ArrayList<>();
+        /** Field name → required message overrides registered via {@link #required(String, String)}. */
+        private final List<RequiredBinding> requiredBindings = new ArrayList<>();
 
         private Consumer<ButtonConfigurator.BaseButtonConfigurator> saveBtnConfig;
         private Consumer<T> saveAction;
@@ -1273,6 +2028,14 @@ public class EntityFormPanel<T> extends Div {
 
         private Consumer<ButtonConfigurator.BaseButtonConfigurator> cancelBtnConfig;
         private Runnable cancelAction;
+        private boolean noFooter;
+        private boolean readOnly;
+        private String title;
+        private boolean bordered;
+        /** Default false — inputs fill their full cell width for a consistent grid layout. */
+        private boolean columnLengthAwareWidth = false;
+        private boolean autoLabels = false;
+        private T initialBean;
 
         DefaultDivBeanBuilder(Class<T> beanClass) {
             this.beanClass = beanClass;
@@ -1321,6 +2084,24 @@ public class EntityFormPanel<T> extends Div {
         }
 
         @Override
+        public DivBeanBuilder<T> bind(String fieldName, Input<?> input) {
+            this.fieldBindings.add(new FieldBinding(fieldName, input));
+            return this;
+        }
+
+        @Override
+        public <V> DivBeanBuilder<T> bind(PathProperty<V> property, Input<V> input) {
+            this.pathPropertyBindings.add(new PathPropertyBinding<>(property, input));
+            return this;
+        }
+
+        @Override
+        public DivBeanBuilder<T> required(String fieldName, String message) {
+            this.requiredBindings.add(new RequiredBinding(fieldName, message));
+            return this;
+        }
+
+        @Override
         public DivBeanBuilder<T> saveButton(Consumer<ButtonConfigurator.BaseButtonConfigurator> config,
                                             Consumer<T> onSave) {
             this.saveBtnConfig = config;
@@ -1351,14 +2132,59 @@ public class EntityFormPanel<T> extends Div {
         }
 
         @Override
+        public DivBeanBuilder<T> noFooter() {
+            this.noFooter = true;
+            return this;
+        }
+
+        @Override
+        public DivBeanBuilder<T> title(String title) {
+            this.title = title;
+            return this;
+        }
+
+        @Override
+        public DivBeanBuilder<T> bordered(boolean bordered) {
+            this.bordered = bordered;
+            return this;
+        }
+
+        @Override
+        public DivBeanBuilder<T> columnLengthAwareWidth(boolean enable) {
+            this.columnLengthAwareWidth = enable;
+            return this;
+        }
+
+        @Override
+        public DivBeanBuilder<T> autoLabels(boolean autoLabels) {
+            this.autoLabels = autoLabels;
+            return this;
+        }
+
+        @Override
+        public DivBeanBuilder<T> readOnly() {
+            this.readOnly = true;
+            this.noFooter = true;
+            return this;
+        }
+
+        @Override
+        public DivBeanBuilder<T> withBean(T bean) {
+            this.initialBean = bean;
+            return this;
+        }
+
+        @Override
         public EntityFormPanel<T> build() {
-            if (saveBtnConfig == null || saveAction == null) {
-                throw new IllegalStateException(
-                        "EntityFormPanel: saveButton(config, action) is mandatory — call saveButton(...)");
-            }
-            if (clearBtnConfig == null) {
-                throw new IllegalStateException(
-                        "EntityFormPanel: clearButton(config) is mandatory — call clearButton(...)");
+            if (!noFooter) {
+                if (saveBtnConfig == null || saveAction == null) {
+                    throw new IllegalStateException(
+                            "EntityFormPanel: saveButton(config, action) is mandatory — call saveButton(...) or noFooter()");
+                }
+                if (clearBtnConfig == null) {
+                    throw new IllegalStateException(
+                            "EntityFormPanel: clearButton(config) is mandatory — call clearButton(...) or noFooter()");
+                }
             }
 
             Div content = new Div();
@@ -1379,6 +2205,13 @@ public class EntityFormPanel<T> extends Div {
                 formConfig.accept(beanFormBuilder);
             }
 
+            applyFieldBindings(beanFormBuilder, fieldBindings);
+            applyPathPropertyBindings(beanFormBuilder, pathPropertyBindings);
+            applyRequiredBindings(beanFormBuilder, requiredBindings);
+            if (autoRequiredIndicators) {
+                applyAutoRequiredFromAnnotations(beanFormBuilder, beanClass, requiredBindings);
+            }
+
             if (initializer != null) {
                 beanFormBuilder.configure(fb -> fb.initializer(layout -> {
                     layout.addClassNames("entity-form-panel__grid", "grid", "grid-cols-12", "gap-m");
@@ -1393,16 +2226,22 @@ public class EntityFormPanel<T> extends Div {
             EntityFormPanel<T> panel = new EntityFormPanel<>(
                     beanForm,
                     beanForm::getBean,
-                    makeButton(saveBtnConfig), saveAction,
+                    noFooter ? null : makeButton(saveBtnConfig), noFooter ? null : saveAction,
                     saveAndNewBtnConfig != null ? makeButton(saveAndNewBtnConfig) : null, saveAndNewAction,
-                    makeButton(clearBtnConfig),
+                    noFooter ? null : makeButton(clearBtnConfig),
                     cancelBtnConfig != null ? makeButton(cancelBtnConfig) : null, cancelAction,
-                        LayoutMode.GRID,
+                    LayoutMode.GRID,
                     stretchLastRow,
                     responsiveSteps,
-                    postProcessors
+                    postProcessors,
+                    title,
+                    bordered,
+                    !noFooter,
+                    columnLengthAwareWidth ? beanClass : null,
+                    autoLabels
             );
-            panel.setAutoRequiredIndicators(autoRequiredIndicators);
+            if (readOnly) panel.setReadOnly(true);
+            if (initialBean != null) panel.setBean(initialBean);
             return panel;
         }
     }
@@ -1433,6 +2272,11 @@ public class EntityFormPanel<T> extends Div {
 
         private Consumer<ButtonConfigurator.BaseButtonConfigurator> cancelBtnConfig;
         private Runnable cancelAction;
+        private boolean noFooter;
+        private boolean readOnly;
+        private String title;
+        private boolean bordered;
+        private boolean autoLabels = false;
 
         DefaultDivPropertyBuilder(PropertySet<?> propertySet) {
             this.propertySet = propertySet;
@@ -1505,14 +2349,47 @@ public class EntityFormPanel<T> extends Div {
         }
 
         @Override
+        public DivPropertyBuilder noFooter() {
+            this.noFooter = true;
+            return this;
+        }
+
+        @Override
+        public DivPropertyBuilder title(String title) {
+            this.title = title;
+            return this;
+        }
+
+        @Override
+        public DivPropertyBuilder bordered(boolean bordered) {
+            this.bordered = bordered;
+            return this;
+        }
+
+        @Override
+        public DivPropertyBuilder autoLabels(boolean autoLabels) {
+            this.autoLabels = autoLabels;
+            return this;
+        }
+
+        @Override
+        public DivPropertyBuilder readOnly() {
+            this.readOnly = true;
+            this.noFooter = true;
+            return this;
+        }
+
+        @Override
         public EntityFormPanel<PropertyBox> build() {
-            if (saveBtnConfig == null || saveAction == null) {
-                throw new IllegalStateException(
-                        "EntityFormPanel: saveButton(config, action) is mandatory — call saveButton(...)");
-            }
-            if (clearBtnConfig == null) {
-                throw new IllegalStateException(
-                        "EntityFormPanel: clearButton(config) is mandatory — call clearButton(...)");
+            if (!noFooter) {
+                if (saveBtnConfig == null || saveAction == null) {
+                    throw new IllegalStateException(
+                            "EntityFormPanel: saveButton(config, action) is mandatory — call saveButton(...) or noFooter()");
+                }
+                if (clearBtnConfig == null) {
+                    throw new IllegalStateException(
+                            "EntityFormPanel: clearButton(config) is mandatory — call clearButton(...) or noFooter()");
+                }
             }
 
             final Property<?>[] properties = propertySet.stream().toArray(Property[]::new);
@@ -1545,16 +2422,22 @@ public class EntityFormPanel<T> extends Div {
             EntityFormPanel<PropertyBox> panel = new EntityFormPanel<>(
                     propertyForm,
                     propertyForm::getValue,
-                    makeButton(saveBtnConfig), saveAction,
+                    noFooter ? null : makeButton(saveBtnConfig), noFooter ? null : saveAction,
                     saveAndNewBtnConfig != null ? makeButton(saveAndNewBtnConfig) : null, saveAndNewAction,
-                    makeButton(clearBtnConfig),
+                    noFooter ? null : makeButton(clearBtnConfig),
                     cancelBtnConfig != null ? makeButton(cancelBtnConfig) : null, cancelAction,
-                        LayoutMode.GRID,
+                    LayoutMode.GRID,
                     stretchLastRow,
                     responsiveSteps,
-                    postProcessors
+                    postProcessors,
+                    title,
+                    bordered,
+                    !noFooter,
+                    null,  // PropertySet-mode: no bean class for width-tier resolution
+                    autoLabels
             );
             panel.setAutoRequiredIndicators(autoRequiredIndicators);
+            if (readOnly) panel.setReadOnly(true);
             return panel;
         }
     }
@@ -1587,6 +2470,11 @@ public class EntityFormPanel<T> extends Div {
 
         private Consumer<ButtonConfigurator.BaseButtonConfigurator> cancelBtnConfig;
         private Runnable cancelAction;
+        private boolean noFooter;
+        private boolean readOnly;
+        private String title;
+        private boolean bordered;
+        private boolean autoLabels = false;
 
         DefaultPropertyBuilder(PropertySet<?> propertySet) {
             this.propertySet = propertySet;
@@ -1667,14 +2555,47 @@ public class EntityFormPanel<T> extends Div {
         }
 
         @Override
+        public PropertyBuilder noFooter() {
+            this.noFooter = true;
+            return this;
+        }
+
+        @Override
+        public PropertyBuilder title(String title) {
+            this.title = title;
+            return this;
+        }
+
+        @Override
+        public PropertyBuilder bordered(boolean bordered) {
+            this.bordered = bordered;
+            return this;
+        }
+
+        @Override
+        public PropertyBuilder autoLabels(boolean autoLabels) {
+            this.autoLabels = autoLabels;
+            return this;
+        }
+
+        @Override
+        public PropertyBuilder readOnly() {
+            this.readOnly = true;
+            this.noFooter = true;
+            return this;
+        }
+
+        @Override
         public EntityFormPanel<PropertyBox> build() {
-            if (saveBtnConfig == null || saveAction == null) {
-                throw new IllegalStateException(
-                        "EntityFormPanel: saveButton(config, action) is mandatory — call saveButton(...)");
-            }
-            if (clearBtnConfig == null) {
-                throw new IllegalStateException(
-                        "EntityFormPanel: clearButton(config) is mandatory — call clearButton(...)");
+            if (!noFooter) {
+                if (saveBtnConfig == null || saveAction == null) {
+                    throw new IllegalStateException(
+                            "EntityFormPanel: saveButton(config, action) is mandatory — call saveButton(...) or noFooter()");
+                }
+                if (clearBtnConfig == null) {
+                    throw new IllegalStateException(
+                            "EntityFormPanel: clearButton(config) is mandatory — call clearButton(...) or noFooter()");
+                }
             }
 
             if (layoutMode == LayoutMode.GRID) {
@@ -1703,20 +2624,24 @@ public class EntityFormPanel<T> extends Div {
                 EntityFormPanel<PropertyBox> panel = new EntityFormPanel<>(
                     propertyForm,
                     propertyForm::getValue,
-                    makeButton(saveBtnConfig), saveAction,
+                    noFooter ? null : makeButton(saveBtnConfig), noFooter ? null : saveAction,
                     saveAndNewBtnConfig != null ? makeButton(saveAndNewBtnConfig) : null, saveAndNewAction,
-                    makeButton(clearBtnConfig),
+                    noFooter ? null : makeButton(clearBtnConfig),
                     cancelBtnConfig != null ? makeButton(cancelBtnConfig) : null, cancelAction,
                     LayoutMode.GRID,
                     stretchLastRow,
                     responsiveSteps,
-                    postProcessors
+                    postProcessors,
+                    title,
+                    bordered,
+                    !noFooter,
+                    null,  // PropertySet-mode: no bean class for width-tier resolution
+                    autoLabels
                 );
                 panel.setAutoRequiredIndicators(autoRequiredIndicators);
+                if (readOnly) panel.setReadOnly(true);
                 return panel;
             }
-
-            // Build the PropertyInputForm with default ENTER navigation enabled.
             PropertyInputFormBuilder<FormLayout> formBuilder =
                     PropertyInputForm.formLayout(propertySet)
                             .enterMovesFocusToNext(true)     // Enter → next field
@@ -1748,23 +2673,23 @@ public class EntityFormPanel<T> extends Div {
             EntityFormPanel<PropertyBox> panel = new EntityFormPanel<>(
                     propertyForm,
                     valueSupplier,
-                    makeButton(saveBtnConfig), saveAction,
+                    noFooter ? null : makeButton(saveBtnConfig), noFooter ? null : saveAction,
                     saveAndNewBtnConfig != null ? makeButton(saveAndNewBtnConfig) : null, saveAndNewAction,
-                    makeButton(clearBtnConfig),
+                    noFooter ? null : makeButton(clearBtnConfig),
                     cancelBtnConfig != null ? makeButton(cancelBtnConfig) : null, cancelAction,
                     LayoutMode.FORM,
                     stretchLastRow,
                     List.of(),
-                    postProcessors
+                    postProcessors,
+                    title,
+                    bordered,
+                    !noFooter,
+                    null,  // PropertySet-mode: no bean class for width-tier resolution
+                    autoLabels
             );
             panel.setAutoRequiredIndicators(autoRequiredIndicators);
+            if (readOnly) panel.setReadOnly(true);
             return panel;
         }
     }
 }
-
-
-
-
-
-

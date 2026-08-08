@@ -15,6 +15,7 @@
  */
 package com.holonplatform.vaadin.flow.internal.components;
 
+import java.io.Serial;
 import com.holonplatform.core.Registration;
 import com.holonplatform.core.internal.utils.ObjectUtils;
 import com.holonplatform.vaadin.flow.components.HasLabel;
@@ -40,6 +41,7 @@ import java.util.Optional;
  */
 public class SingleSelectInputAdapter<T> implements SingleSelect<T> {
 
+	@Serial
 	private static final long serialVersionUID = -2059845261833011783L;
 
 	private final List<SelectionListener<T>> selectionListeners = new ArrayList<>();

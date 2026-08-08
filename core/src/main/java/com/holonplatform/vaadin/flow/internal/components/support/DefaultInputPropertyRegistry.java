@@ -15,6 +15,7 @@
  */
 package com.holonplatform.vaadin.flow.internal.components.support;
 
+import java.io.Serial;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -32,6 +33,7 @@ import com.holonplatform.vaadin.flow.components.Input;
  */
 public class DefaultInputPropertyRegistry implements InputPropertyRegistry {
 
+	@Serial
 	private static final long serialVersionUID = 163876909431298588L;
 
 	private final Map<Property<?>, Input<?>> components = new LinkedHashMap<>();

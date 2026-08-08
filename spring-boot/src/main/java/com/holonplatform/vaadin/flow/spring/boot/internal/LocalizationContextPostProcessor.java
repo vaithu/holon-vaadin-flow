@@ -15,6 +15,7 @@
  */
 package com.holonplatform.vaadin.flow.spring.boot.internal;
 
+import java.io.Serial;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
@@ -72,6 +73,7 @@ public class LocalizationContextPostProcessor extends AbstractInitializer
 
 	static class SessionLocalizationChangeReflector implements LocalizationChangeListener {
 
+		@Serial
 		private static final long serialVersionUID = 7336953791954450518L;
 
 		/*
@@ -93,6 +95,7 @@ public class LocalizationContextPostProcessor extends AbstractInitializer
 
 	static class UILocalizationChangeReflector implements LocalizationChangeListener {
 
+		@Serial
 		private static final long serialVersionUID = 6723782844437508012L;
 
 		/*

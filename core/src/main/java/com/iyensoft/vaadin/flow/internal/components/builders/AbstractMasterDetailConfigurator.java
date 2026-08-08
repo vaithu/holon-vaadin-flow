@@ -102,7 +102,7 @@ public abstract class AbstractMasterDetailConfigurator<T, C extends MasterDetail
 
     @Override
     public C withMobileSheet(Sheet.Side side) {
-        this.mobileSheet = Sheet.builder(side).build();
+        this.mobileSheet = Sheet.builder(side).fullscreenOnMobile(true).build();
         return getConfigurator();
     }
 

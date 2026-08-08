@@ -11,6 +11,7 @@ public class DefaultPanelBuilder extends AbstractPanelConfigurator<PanelBuilder>
 
     @Override
     public Panel build() {
+        applyPostProcessors();
         return getComponent();
     }
 
@@ -18,5 +19,5 @@ public class DefaultPanelBuilder extends AbstractPanelConfigurator<PanelBuilder>
     protected PanelBuilder getConfigurator() {
         return this;
     }
-    
+
 }

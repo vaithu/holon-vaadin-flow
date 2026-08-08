@@ -15,6 +15,7 @@
  */
 package com.holonplatform.vaadin.flow.internal.components;
 
+import java.io.Serial;
 import com.holonplatform.core.Registration;
 import com.holonplatform.core.internal.utils.ConversionUtils;
 import com.holonplatform.core.internal.utils.ObjectUtils;
@@ -48,6 +49,7 @@ import java.util.stream.Collectors;
  */
 public class MultiSelectInputAdapter<T, ITEM, C extends Component> implements MultiSelect<T> {
 
+	@Serial
 	private static final long serialVersionUID = -238233555416654435L;
 
 	private final List<SelectionListener<T>> selectionListeners = new ArrayList<>();

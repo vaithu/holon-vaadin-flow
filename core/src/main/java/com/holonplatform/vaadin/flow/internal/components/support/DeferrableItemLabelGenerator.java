@@ -15,6 +15,7 @@
  */
 package com.holonplatform.vaadin.flow.internal.components.support;
 
+import java.io.Serial;
 import java.util.Collections;
 import java.util.Map;
 
@@ -28,6 +29,7 @@ import com.vaadin.flow.component.ItemLabelGenerator;
 public class DeferrableItemLabelGenerator<ITEM>
 		implements ItemLabelGenerator<ITEM>, ComponentEventListener<AttachEvent> {
 
+	@Serial
 	private static final long serialVersionUID = -4341268920830268761L;
 
 	private final Map<ITEM, Localizable> itemCaptions;

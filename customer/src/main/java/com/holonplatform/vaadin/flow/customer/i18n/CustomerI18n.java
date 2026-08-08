@@ -172,9 +172,13 @@ public final class CustomerI18n {
 
     // ── Field labels ──────────────────────────────────────────────────────────
     public static final String FIELD_DISPLAY_NAME  = "customer.field.display_name";
+    /** Placeholder hint for the display name field (e.g. "Auto-derived from name if left blank"). */
+    public static final String FIELD_DISPLAY_NAME_PLACEHOLDER = "customer.field.display_name.placeholder";
     public static final String FIELD_TYPE          = "customer.field.type";
     public static final String FIELD_STATUS        = "customer.field.status";
     public static final String FIELD_CUSTOMER_CODE = "customer.field.customer_code";
+    /** Placeholder hint for the customer code field (e.g. "e.g. CUST-001"). */
+    public static final String FIELD_CUSTOMER_CODE_PLACEHOLDER = "customer.field.customer_code.placeholder";
     public static final String FIELD_PAYMENT_TERMS = "customer.field.payment_terms";
     public static final String FIELD_SALUTATION    = "customer.field.salutation";
     public static final String FIELD_FIRST_NAME    = "customer.field.first_name";

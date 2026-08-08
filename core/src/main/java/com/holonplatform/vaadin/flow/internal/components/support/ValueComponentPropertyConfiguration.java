@@ -47,7 +47,7 @@ public interface ValueComponentPropertyConfiguration<T, V extends ValueComponent
 	 * Set whether the property is hidden.
 	 * @param hidden whether the property is hidden
 	 */
-	public void setHidden(boolean hidden);
+	void setHidden(boolean hidden);
 
 	/**
 	 * Get the property renderer, if available.

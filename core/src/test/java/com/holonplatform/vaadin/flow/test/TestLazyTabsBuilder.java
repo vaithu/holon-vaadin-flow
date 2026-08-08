@@ -105,14 +105,12 @@ class TestLazyTabsBuilder {
         LazyTabsBuilder builder = LazyTabsBuilder.create()
                 .withContainer(container)
                 .withEagerTab("Y", new Span("Y"));
-        // withContainer() wraps the provided Div in a SyncableContentContainer for
-        // DetailSyncAware relay. getContentContainer() returns that wrapper, which
-        // contains the original Div as a child.
+        // withContainer() stores the passed Div directly as the content container so that
+        // tab content is rendered into the caller's own DOM element (not a hidden off-DOM wrapper).
         assertNotNull(builder.getContentContainer(),
                 "getContentContainer() must return a non-null container");
-        assertTrue(builder.getContentContainer().getChildren()
-                        .anyMatch(c -> c == container),
-                "The wrapper returned by getContentContainer() must contain the original Div");
+        assertSame(container, builder.getContentContainer(),
+                "getContentContainer() must return the same Div that was passed to withContainer()");
     }
 
     @Test

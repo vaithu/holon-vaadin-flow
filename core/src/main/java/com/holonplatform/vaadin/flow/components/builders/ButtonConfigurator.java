@@ -18,6 +18,7 @@ package com.holonplatform.vaadin.flow.components.builders;
 import com.holonplatform.vaadin.flow.components.events.ClickEvent;
 import com.holonplatform.vaadin.flow.components.events.ClickEventListener;
 import com.iyensoft.vaadin.flow.enums.ButtonPreset;
+import com.iyensoft.vaadin.flow.enums.ButtonSize;
 import com.holonplatform.vaadin.flow.internal.components.builders.DefaultButtonConfigurator;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -72,6 +73,19 @@ public interface ButtonConfigurator<C extends ButtonConfigurator<C>> extends Com
 	C small();
 
 	C normal();
+
+	/**
+	 * Sets the button size via a {@link ButtonSize}, replacing the whole-button size
+	 * (font-size, padding, min-height) defined in {@code buttons.css}.
+	 * <ul>
+	 *   <li>{@link ButtonSize#SMALL}  → compact, 2rem height</li>
+	 *   <li>{@link ButtonSize#NORMAL} → default shell-theme size (~36px)</li>
+	 *   <li>{@link ButtonSize#LARGE}  → spacious, 3.25rem height</li>
+	 * </ul>
+	 * @param size button size (not null)
+	 * @return this
+	 */
+	C size(ButtonSize size);
 
 	C tertiaryInline();
 

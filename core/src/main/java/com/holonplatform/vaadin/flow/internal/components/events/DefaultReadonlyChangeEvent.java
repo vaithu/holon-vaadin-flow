@@ -15,6 +15,7 @@
  */
 package com.holonplatform.vaadin.flow.internal.components.events;
 
+import java.io.Serial;
 import com.holonplatform.vaadin.flow.components.Input;
 import com.holonplatform.vaadin.flow.components.events.ReadonlyChangeEvent;
 
@@ -25,6 +26,7 @@ import com.holonplatform.vaadin.flow.components.events.ReadonlyChangeEvent;
  */
 public class DefaultReadonlyChangeEvent implements ReadonlyChangeEvent {
 
+	@Serial
 	private static final long serialVersionUID = -6549504107493604726L;
 	
 	private final Input<?> source;

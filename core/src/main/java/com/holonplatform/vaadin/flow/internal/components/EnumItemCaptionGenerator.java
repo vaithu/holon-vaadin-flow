@@ -15,6 +15,7 @@
  */
 package com.holonplatform.vaadin.flow.internal.components;
 
+import java.io.Serial;
 import com.holonplatform.vaadin.flow.components.builders.ItemSetConfigurator.ItemCaptionGenerator;
 import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
 import com.holonplatform.vaadin.flow.internal.components.support.DefaultEnumCaptionRegistry;
@@ -28,6 +29,7 @@ import com.holonplatform.vaadin.flow.internal.components.support.DefaultEnumCapt
  */
 public class EnumItemCaptionGenerator<E extends Enum<E>> implements ItemCaptionGenerator<E> {
 
+	@Serial
 	private static final long serialVersionUID = -6778505462268286279L;
 
 	/*

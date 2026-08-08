@@ -77,7 +77,7 @@ public enum Unit {
 	 * Constructor
 	 * @param symbol Unit symbol
 	 */
-	private Unit(String symbol) {
+	Unit(String symbol) {
 		this.symbol = symbol;
 	}
 
@@ -100,7 +100,7 @@ public enum Unit {
 	 * @return The given unit or the default one (Unit{@link #PIXELS}) if <code>null</code>
 	 */
 	public static Unit orDefault(Unit unit) {
-		return (unit != null) ? unit : Unit.PIXELS;
+		return (unit != null) ? unit : PIXELS;
 	}
 
 	/**
@@ -110,7 +110,7 @@ public enum Unit {
 	 */
 	public static Optional<Unit> getUnitFromSymbol(String symbol) {
 		if (symbol != null) {
-			for (Unit unit : Unit.values()) {
+			for (Unit unit : values()) {
 				if (symbol.equals(unit.getSymbol())) {
 					return Optional.of(unit);
 				}

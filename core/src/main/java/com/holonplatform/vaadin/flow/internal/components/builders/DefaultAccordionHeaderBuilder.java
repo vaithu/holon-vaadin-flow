@@ -5,6 +5,7 @@ import com.holonplatform.vaadin.flow.components.Components;
 import com.holonplatform.vaadin.flow.components.builders.ButtonConfigurator;
 import com.holonplatform.vaadin.flow.components.builders.HasAccordionHeaderConfigurator;
 import com.holonplatform.vaadin.flow.components.builders.LabelBuilder;
+import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.contextmenu.ContextMenu;
 import com.vaadin.flow.component.icon.VaadinIcon;
@@ -28,14 +29,14 @@ public class DefaultAccordionHeaderBuilder
                 .iconConfigurator(VaadinIcon.PLUS)
                 .styleNames("icon-size-small")
                 .add()
-                .text("Add New ")
+                .text(LocalizationProvider.localize("Add New ", "accordion.add_new"))
                 .iconAfterText(false)
                 .build();
 
         statusButton = Components.button()
                 .iconAfterText(true)
                 .icon(VaadinIcon.CHEVRON_DOWN)
-                .text("Status: All")
+                .text(LocalizationProvider.localize("Status: All", "accordion.status_all"))
                 .build();
 
         getComponent().setWidthFull();

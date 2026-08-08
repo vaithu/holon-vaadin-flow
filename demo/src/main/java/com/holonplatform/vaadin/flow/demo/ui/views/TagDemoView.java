@@ -2,13 +2,13 @@ package com.holonplatform.vaadin.flow.demo.ui.views;
 
 import com.holonplatform.vaadin.flow.demo.ui.DemoExample;
 import com.holonplatform.vaadin.flow.demo.ui.DemoMainLayout;
-import com.iyensoft.vaadin.flow.enums.MaterialSymbol;
 import com.holonplatform.vaadin.flow.vaadinplus.components.Tag;
 import com.holonplatform.vaadin.flow.vaadinplus.utilities.Color;
 import com.vaadin.flow.component.avatar.Avatar;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.Paragraph;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.holonplatform.vaadin.flow.vaadinplus.ResponsiveDiv;
@@ -20,7 +20,7 @@ import com.holonplatform.vaadin.flow.vaadinplus.ResponsiveDiv;
  * <p>Covers:
  * <ol>
  *   <li>Simple text tags (all Color.Text variants)</li>
- *   <li>With MaterialSymbol icon prefix</li>
+ *   <li>With VaadinIcon icon prefix</li>
  *   <li>With VaadinIcon prefix</li>
  *   <li>With Avatar prefix</li>
  *   <li>Semantic status chips (Active, Warning, Error, Neutral)</li>
@@ -81,19 +81,19 @@ public class TagDemoView extends Div {
         var row = new Div();
         row.addClassName("tag-row");
 
-        row.add(new Tag(MaterialSymbol.CHECK_CIRCLE, "Verified",   Color.Text.SUCCESS));
-        row.add(new Tag(MaterialSymbol.WARNING,      "Deprecated", Color.Text.ERROR));
-        row.add(new Tag(MaterialSymbol.INFO,         "Preview",    Color.Text.PRIMARY));
-        row.add(new Tag(MaterialSymbol.STAR,         "Featured",   Color.Text.HEADER));
-        row.add(new Tag(MaterialSymbol.LOCK,         "Private",    Color.Text.SECONDARY));
-        row.add(new Tag(MaterialSymbol.LABEL,        "Beta",       Color.Text.TERTIARY));
+        row.add(new Tag(VaadinIcon.CHECK_CIRCLE, "Verified",   Color.Text.SUCCESS));
+        row.add(new Tag(VaadinIcon.WARNING,      "Deprecated", Color.Text.ERROR));
+        row.add(new Tag(VaadinIcon.EXCLAMATION_CIRCLE, "Preview", Color.Text.PRIMARY));
+        row.add(new Tag(VaadinIcon.STAR,         "Featured",   Color.Text.HEADER));
+        row.add(new Tag(VaadinIcon.LOCK,         "Private",    Color.Text.SECONDARY));
+        row.add(new Tag(VaadinIcon.TAG,          "Beta",       Color.Text.TERTIARY));
 
-        return new DemoExample("With MaterialSymbol Prefix", row, """
-                // Pass a MaterialSymbol enum value as the icon prefix.
-                new Tag(MaterialSymbol.CHECK_CIRCLE, "Verified",   Color.Text.SUCCESS);
-                new Tag(MaterialSymbol.WARNING,      "Deprecated", Color.Text.ERROR);
-                new Tag(MaterialSymbol.INFO,         "Preview",    Color.Text.PRIMARY);
-                new Tag(MaterialSymbol.LOCK,         "Private",    Color.Text.SECONDARY);
+        return new DemoExample("With VaadinIcon Prefix", row, """
+                // Pass a VaadinIcon enum value as the icon prefix.
+                new Tag(VaadinIcon.CHECK_CIRCLE, "Verified",   Color.Text.SUCCESS);
+                new Tag(VaadinIcon.WARNING,      "Deprecated", Color.Text.ERROR);
+                new Tag(VaadinIcon.EXCLAMATION_CIRCLE, "Preview", Color.Text.PRIMARY);
+                new Tag(VaadinIcon.LOCK,         "Private",    Color.Text.SECONDARY);
                 """);
     }
 
@@ -122,14 +122,14 @@ public class TagDemoView extends Div {
         row.addClassName("tag-row");
 
         // Status chips using semantic modifier classes for background colour
-        record Status(String label, MaterialSymbol icon, Color.Text color, String modifier) {}
+        record Status(String label, VaadinIcon icon, Color.Text color, String modifier) {}
         var statuses = java.util.List.of(
-                new Status("Active",      MaterialSymbol.CHECK_CIRCLE, Color.Text.SUCCESS,   "tag--success"),
-                new Status("Pending",     MaterialSymbol.PENDING,      Color.Text.PRIMARY,   "tag--info"),
-                new Status("Warning",     MaterialSymbol.WARNING,       Color.Text.ERROR,     "tag--warning"),
-                new Status("Inactive",    MaterialSymbol.CANCEL,        Color.Text.SECONDARY, "tag--neutral"),
-                new Status("Processing",  MaterialSymbol.SYNC,          Color.Text.PRIMARY,   "tag--info"),
-                new Status("Archived",    MaterialSymbol.ARCHIVE,       Color.Text.TERTIARY,  "tag--neutral")
+                new Status("Active",      VaadinIcon.CHECK_CIRCLE, Color.Text.SUCCESS,   "tag--success"),
+                new Status("Pending",     VaadinIcon.CLOCK,        Color.Text.PRIMARY,   "tag--info"),
+                new Status("Warning",     VaadinIcon.WARNING,      Color.Text.ERROR,     "tag--warning"),
+                new Status("Inactive",    VaadinIcon.CLOSE,        Color.Text.SECONDARY, "tag--neutral"),
+                new Status("Processing",  VaadinIcon.REFRESH,      Color.Text.PRIMARY,   "tag--info"),
+                new Status("Archived",    VaadinIcon.INBOX,        Color.Text.TERTIARY,  "tag--neutral")
         );
 
         for (var s : statuses) {
@@ -140,13 +140,13 @@ public class TagDemoView extends Div {
 
         return new DemoExample("Semantic Status Chips", row, """
                 // Combine Color.Text with a semantic background modifier.
-                Tag active = new Tag(MaterialSymbol.CHECK_CIRCLE, "Active", Color.Text.SUCCESS);
+                Tag active = new Tag(VaadinIcon.CHECK_CIRCLE, "Active", Color.Text.SUCCESS);
                 active.addClassName("tag--success");
 
-                Tag pending = new Tag(MaterialSymbol.PENDING, "Pending", Color.Text.PRIMARY);
+                Tag pending = new Tag(VaadinIcon.CLOCK, "Pending", Color.Text.PRIMARY);
                 pending.addClassName("tag--info");
 
-                Tag warning = new Tag(MaterialSymbol.WARNING, "Warning", Color.Text.ERROR);
+                Tag warning = new Tag(VaadinIcon.WARNING, "Warning", Color.Text.ERROR);
                 warning.addClassName("tag--warning");
                 """);
     }

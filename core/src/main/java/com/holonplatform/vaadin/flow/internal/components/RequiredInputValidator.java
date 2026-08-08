@@ -15,6 +15,7 @@
  */
 package com.holonplatform.vaadin.flow.internal.components;
 
+import java.io.Serial;
 import com.holonplatform.core.Validator;
 import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.core.internal.utils.ObjectUtils;
@@ -29,13 +30,14 @@ import com.holonplatform.vaadin.flow.components.ValueHolder;
  */
 public class RequiredInputValidator<T> implements Validator<T> {
 
+	@Serial
 	private static final long serialVersionUID = -3267748749995125176L;
 
 	/**
 	 * Default validation error message for required fields.
 	 */
 	public static final Localizable DEFAULT_REQUIRED_ERROR = Localizable.builder().message("Value is required")
-			.messageCode(com.holonplatform.core.Validator.DEFAULT_MESSAGE_CODE_PREFIX + "required").build();
+			.messageCode(DEFAULT_MESSAGE_CODE_PREFIX + "required").build();
 
 	private final ValueHolder<T, ?> valueHolder;
 	private final Localizable message;

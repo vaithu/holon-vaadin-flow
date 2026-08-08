@@ -16,6 +16,7 @@
 package com.holonplatform.vaadin.flow.components;
 
 import com.holonplatform.core.internal.utils.ObjectUtils;
+import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
 import com.holonplatform.vaadin.flow.vaadinplus.components.*;
 import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.grid.Grid;
@@ -28,7 +29,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.function.IntConsumer;
 
 /**
  * Paginated navigation bar for {@link ItemListing}, built on the shadcn/ui-inspired
@@ -56,6 +56,16 @@ import java.util.function.IntConsumer;
  * @since 10.0.0
  */
 public class ItemListingPaginationBar<T, P> extends Pagination {
+
+    // -----------------------------------------------------------------------
+    // PageChangeListener
+    // -----------------------------------------------------------------------
+
+    /** Serializable functional interface for page-change notifications. */
+    @FunctionalInterface
+    public interface PageChangeListener extends Serializable {
+        void onPageChanged(int page);
+    }
 
     // -----------------------------------------------------------------------
     // Constants
@@ -94,7 +104,8 @@ public class ItemListingPaginationBar<T, P> extends Pagination {
     }
 
     private static final StatusTextProvider DEFAULT_STATUS_TEXT_PROVIDER =
-            (currentPage, totalPages) -> "Page " + currentPage + " of " + totalPages;
+            (currentPage, totalPages) -> LocalizationProvider.localize(
+                    "Page {0} of {1}", "pagination.status_text", currentPage, totalPages);
 
     // -----------------------------------------------------------------------
     // State
@@ -160,7 +171,7 @@ public class ItemListingPaginationBar<T, P> extends Pagination {
      * Used by {@link ItemListingPageSizeSelector} to update the page offset
      * in the wrapped fetch callback (true page-based data swap).
      */
-    private final List<IntConsumer> pageChangeListeners = new ArrayList<>();
+    private final List<PageChangeListener> pageChangeListeners = new ArrayList<>();
 
     // -----------------------------------------------------------------------
     // Constructor
@@ -184,7 +195,6 @@ public class ItemListingPaginationBar<T, P> extends Pagination {
     @Override
     protected void onAttach(AttachEvent attachEvent) {
         super.onAttach(attachEvent);
-        // In managed-fetch mode (pageChangeListeners registered by ItemListingPageSizeSelector)
         // the look-ahead fetch will update hasNextPage → setHasNextPage() → re-render.
         // Skip refreshState() to avoid a spurious COUNT(*) against the data provider's
         // count callback (which in managed mode just returns currentPageSz, giving totalPages=1).
@@ -195,7 +205,6 @@ public class ItemListingPaginationBar<T, P> extends Pagination {
         // the look-ahead fetch will correct it immediately.
         renderPages();
     }
-
     // -----------------------------------------------------------------------
     // Navigation
     // -----------------------------------------------------------------------
@@ -350,14 +359,14 @@ public class ItemListingPaginationBar<T, P> extends Pagination {
      * @return registration to remove the listener
      * @since 10.0.1
      */
-    public Registration addPageChangeListener(IntConsumer listener) {
+    public Registration addPageChangeListener(PageChangeListener listener) {
         ObjectUtils.argumentNotNull(listener, "Page change listener must not be null");
         pageChangeListeners.add(listener);
         return () -> pageChangeListeners.remove(listener);
     }
 
     private void firePageChangeListeners(int page) {
-        pageChangeListeners.forEach(l -> l.accept(page));
+        pageChangeListeners.forEach(l -> l.onPageChanged(page));
     }
 
     // -----------------------------------------------------------------------

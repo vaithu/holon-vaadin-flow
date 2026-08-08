@@ -45,32 +45,32 @@ public interface SideNavConfigurator<C extends SideNavConfigurator<C>>
 
     /* ---------- Item builders ---------- */
 
-    SideNavItemBuilder withNavItem(String label);
+    SideNavItemBuilder<C> withNavItem(String label);
 
-    SideNavItemBuilder withNavItem(String label, Class<? extends Component> view);
+    SideNavItemBuilder<C> withNavItem(String label, Class<? extends Component> view);
 
-    SideNavItemBuilder withNavItem(
+    SideNavItemBuilder<C> withNavItem(
             String label,
             Class<? extends Component> view,
             Component prefixComponent
     );
 
-    SideNavItemBuilder withNavItem(
+    SideNavItemBuilder<C> withNavItem(
             String label,
             Class<? extends Component> view,
             RouteParameters routeParameters
     );
 
-    SideNavItemBuilder withNavItem(
+    SideNavItemBuilder<C> withNavItem(
             String label,
             Class<? extends Component> view,
             RouteParameters routeParameters,
             Component prefixComponent
     );
 
-    SideNavItemBuilder withNavItem(String label, String path);
+    SideNavItemBuilder<C> withNavItem(String label, String path);
 
-    SideNavItemBuilder withNavItem(
+    SideNavItemBuilder<C> withNavItem(
             String label,
             String path,
             Component prefixComponent
@@ -79,27 +79,27 @@ public interface SideNavConfigurator<C extends SideNavConfigurator<C>>
     // ── Localizable withNavItem overloads ─────────────────────────────────────
 
     /** Creates a nav item with a localizable label. */
-    SideNavItemBuilder withNavItem(Localizable label);
+    SideNavItemBuilder<C> withNavItem(Localizable label);
 
     /** Creates a nav item with a localizable label navigating to the given view. */
-    SideNavItemBuilder withNavItem(Localizable label, Class<? extends Component> view);
+    SideNavItemBuilder<C> withNavItem(Localizable label, Class<? extends Component> view);
 
     /** Creates a nav item with a localizable label, view, and prefix component. */
-    SideNavItemBuilder withNavItem(
+    SideNavItemBuilder<C> withNavItem(
             Localizable label,
             Class<? extends Component> view,
             Component prefixComponent
     );
 
     /** Creates a nav item with a localizable label, view, and route parameters. */
-    SideNavItemBuilder withNavItem(
+    SideNavItemBuilder<C> withNavItem(
             Localizable label,
             Class<? extends Component> view,
             RouteParameters routeParameters
     );
 
     /** Creates a nav item with a localizable label, view, route parameters, and prefix component. */
-    SideNavItemBuilder withNavItem(
+    SideNavItemBuilder<C> withNavItem(
             Localizable label,
             Class<? extends Component> view,
             RouteParameters routeParameters,
@@ -107,10 +107,10 @@ public interface SideNavConfigurator<C extends SideNavConfigurator<C>>
     );
 
     /** Creates a nav item with a localizable label and explicit path string. */
-    SideNavItemBuilder withNavItem(Localizable label, String path);
+    SideNavItemBuilder<C> withNavItem(Localizable label, String path);
 
     /** Creates a nav item with a localizable label, path, and prefix component. */
-    SideNavItemBuilder withNavItem(
+    SideNavItemBuilder<C> withNavItem(
             Localizable label,
             String path,
             Component prefixComponent

@@ -87,7 +87,7 @@ public interface DivConfigurator<C extends DivConfigurator<C>> extends HasCompon
         return styleName(display.getClassName());
     }
 
-    C withPostProcessor(Consumer<DivConfigurator<C>> postProcessor);
+    C configure(Consumer<DivConfigurator<C>> configurator);
     /**
      * Get a new {@link DivConfigurator} for given component.
      *
@@ -101,7 +101,7 @@ public interface DivConfigurator<C extends DivConfigurator<C>> extends HasCompon
     /**
      * Base configurator.
      */
-    public interface BaseDivConfigurator extends DivConfigurator<BaseDivConfigurator> {
+    interface BaseDivConfigurator extends DivConfigurator<BaseDivConfigurator> {
 
     }
 

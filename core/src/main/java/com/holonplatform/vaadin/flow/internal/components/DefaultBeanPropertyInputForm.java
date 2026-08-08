@@ -20,7 +20,6 @@ import com.holonplatform.core.Validator.ValidationException;
 import com.holonplatform.core.beans.BeanProperty;
 import com.holonplatform.core.beans.BeanPropertySet;
 import com.holonplatform.core.beans.Ignore;
-import com.holonplatform.core.i18n.Caption;
 import com.holonplatform.core.internal.utils.ObjectUtils;
 import com.holonplatform.core.property.PathProperty;
 import com.holonplatform.core.property.Property;
@@ -83,7 +82,7 @@ public class DefaultBeanPropertyInputForm<T> implements BeanPropertyInputForm<T>
             delegate.setValue(null, false);
             return;
         }
-        PropertyBox box = PropertyBox.builder(beanPropertySet).build();
+        PropertyBox box = PropertyBox.builder(beanPropertySet).invalidAllowed(true).build();
         beanPropertySet.read(box, bean);
         // Populate only the properties present in the delegate form
         delegate.setValue(box, false);
@@ -161,6 +160,11 @@ public class DefaultBeanPropertyInputForm<T> implements BeanPropertyInputForm<T>
     @Override
     public void validate() throws ValidationException {
         delegate.validate();
+    }
+
+    @Override
+    public void validateInput(Property<?> property) throws ValidationException {
+        delegate.validateInput(property);
     }
 
     @Override
@@ -322,7 +326,6 @@ public class DefaultBeanPropertyInputForm<T> implements BeanPropertyInputForm<T>
         }
 
         @Override
-        @SuppressWarnings({"rawtypes", "unchecked"})
         public BeanPropertyInputForm<T> build() {
 
             // 1. Build the filtered, ordered list of PathProperties.
@@ -372,7 +375,6 @@ public class DefaultBeanPropertyInputForm<T> implements BeanPropertyInputForm<T>
 
             // 4. Apply annotation-driven configuration.
             for (PathProperty<?> prop : orderedProperties) {
-                asBeanProperty(prop).ifPresent(beanProperty -> applyCaptionAnnotation(fb, beanProperty, prop));
                 if (isAutoHidden(prop)) {
                     fb.hidden(prop);
                 }
@@ -432,24 +434,6 @@ public class DefaultBeanPropertyInputForm<T> implements BeanPropertyInputForm<T>
                     .map(bp -> (!showIdentifiers && bp.isIdentifier()) || (!showVersions && bp.isVersion()))
                     .orElse(false);
         }
-
-        private void applyCaptionAnnotation(PropertyInputFormBuilder<C> builder, BeanProperty<?> beanProperty,
-                                            PathProperty<?> property) {
-            beanProperty.getAnnotation(Caption.class).ifPresent(caption -> {
-                String value = caption.value();
-                String messageCode = caption.messageCode();
-                if (!messageCode.isEmpty()) {
-                    builder.propertyCaption(property, value, messageCode);
-                } else if (!value.isEmpty()) {
-                    builder.propertyCaption(property, value);
-                }
-            });
-        }
     }
 }
-
-
-
-
-
 

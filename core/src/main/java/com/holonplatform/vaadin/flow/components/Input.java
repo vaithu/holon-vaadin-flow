@@ -1,12 +1,12 @@
 /*
  * Copyright 2000-2017 Holon TDCN.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -74,9 +74,9 @@ import java.util.function.Function;
  * The actual UI {@link Component} which represents the input component can be
  * obtained through {@link #getComponent()}.
  * </p>
- * 
+ *
  * @param <T> Value type
- * 
+ *
  * @since 5.2.0
  */
 public interface Input<T> extends ValueHolder<T, ValueChangeEvent<T>>, ValueComponent<T> {
@@ -101,7 +101,7 @@ public interface Input<T> extends ValueHolder<T, ValueChangeEvent<T>>, ValueComp
 	 * @return a registration for the listener, which provides the <em>remove</em>
 	 *         operation
 	 */
-	public Registration addReadonlyChangeListener(ReadonlyChangeListener listener);
+	Registration addReadonlyChangeListener(ReadonlyChangeListener listener);
 
 	/**
 	 * Gets whether the field is <em>required</em>, i.e. a <em>required
@@ -109,7 +109,7 @@ public interface Input<T> extends ValueHolder<T, ValueChangeEvent<T>>, ValueComp
 	 * @return <code>true</code> if the field as required, <code>false</code>
 	 *         otherwise
 	 */
-	public boolean isRequired();
+	boolean isRequired();
 
 	/**
 	 * Sets whether the <em>required indicator</em> symbol is visible.
@@ -916,15 +916,15 @@ public interface Input<T> extends ValueHolder<T, ValueChangeEvent<T>>, ValueComp
 	/**
 	 * A convenience interface with a fixed {@link Input} rendering type to use a
 	 * {@link Input} {@link PropertyRenderer} as a functional interface.
-	 * 
+	 *
 	 * @param <T> Property type
 	 */
 	@FunctionalInterface
-	public interface InputPropertyRenderer<T> extends PropertyRenderer<Input<T>, T> {
+	interface InputPropertyRenderer<T> extends PropertyRenderer<Input<T>, T> {
 
 		/*
 		 * (non-Javadoc)
-		 * 
+		 *
 		 * @see com.holonplatform.core.property.PropertyRenderer#getRenderType()
 		 */
 		@SuppressWarnings("unchecked")
@@ -947,15 +947,15 @@ public interface Input<T> extends ValueHolder<T, ValueChangeEvent<T>>, ValueComp
 
 	/**
 	 * Input field/component property handler.
-	 * 
+	 *
 	 * @param <P> Property value type
 	 * @param <T> Input value type
 	 * @param <V> {@link HasValue} type
 	 * @param <C> {@link Component} type
-	 * 
+	 *
 	 * @see HasValueInputBuilder
 	 */
-	public interface PropertyHandler<P, T, V extends HasValue<?, T>, C extends Component>
+	interface PropertyHandler<P, T, V extends HasValue<?, T>, C extends Component>
 			extends BiFunction<V, C, P>, TriConsumer<V, C, P> {
 
 		/**
@@ -979,7 +979,7 @@ public interface Input<T> extends ValueHolder<T, ValueChangeEvent<T>>, ValueComp
 	/**
 	 * Exception used to notify Input values conversion errors.
 	 */
-	public static class InputValueConversionException extends RuntimeException {
+	class InputValueConversionException extends RuntimeException {
 
 		@Serial
 		private static final long serialVersionUID = 905052787299053218L;
@@ -988,7 +988,7 @@ public interface Input<T> extends ValueHolder<T, ValueChangeEvent<T>>, ValueComp
 			super(message);
 		}
 
-		public InputValueConversionException(String message, Throwable cause) {
+		InputValueConversionException(String message, Throwable cause) {
 			super(message, cause);
 		}
 

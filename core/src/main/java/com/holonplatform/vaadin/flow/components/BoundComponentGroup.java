@@ -67,7 +67,7 @@ public interface BoundComponentGroup<P, C extends HasComponent> extends Componen
 	 * 
 	 * @since 5.2.0
 	 */
-	public interface Binding<P, C extends HasComponent> extends Serializable {
+	interface Binding<P, C extends HasComponent> extends Serializable {
 
 		/**
 		 * Get the property which identifies the component within the group.

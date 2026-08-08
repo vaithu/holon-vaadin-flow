@@ -15,6 +15,7 @@
  */
 package com.holonplatform.vaadin.flow.navigator.internal;
 
+import java.io.Serial;
 import java.util.function.Consumer;
 
 import com.holonplatform.core.i18n.Localizable;
@@ -46,6 +47,7 @@ import com.vaadin.flow.server.VaadinService;
  */
 public class DefaultNavigationLink extends RouterLink implements NavigationLink {
 
+	@Serial
 	private static final long serialVersionUID = 4803506635049908107L;
 
 	private static final PropertyDescriptor<String, String> HREF = PropertyDescriptors.attributeWithDefault("href", "",
@@ -80,6 +82,7 @@ public class DefaultNavigationLink extends RouterLink implements NavigationLink 
 	 */
 	public static class DefaultBuilder extends AbstractNavigationURLBuilder<Builder> implements Builder {
 
+		@Serial
 		private static final long serialVersionUID = -5401663411127131171L;
 
 		private final DefaultNavigationLink instance;

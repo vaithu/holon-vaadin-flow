@@ -15,6 +15,7 @@
  */
 package com.holonplatform.vaadin.flow.vaadinplus.components;
 
+import java.io.Serial;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.html.Div;
 
@@ -24,19 +25,20 @@ import com.vaadin.flow.component.html.Div;
  * <p>Renders as:</p>
  * <pre>
  * &lt;div class="carousel__item" role="group" aria-roledescription="slide"&gt;
- *   … user content …
+ *   â€¦ user content â€¦
  * &lt;/div&gt;
  * </pre>
  *
  * <p>By default each item occupies 100 % of the viewport width (horizontal)
  * or height (vertical). Use {@link #setBasis(String)} to create multi-item
- * views — e.g. {@code setBasis("33.333%")} shows three slides at once.</p>
+ * views â€” e.g. {@code setBasis("33.333%")} shows three slides at once.</p>
  *
  * @see Carousel
  * @see CarouselContent
  */
 public class CarouselItem extends Div {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     // -----------------------------------------------------------------------
@@ -70,9 +72,9 @@ public class CarouselItem extends Div {
      *
      * <p>Examples:
      * <ul>
-     *   <li>{@code "100%"} – one slide at a time (default)</li>
-     *   <li>{@code "50%"} – two slides at a time</li>
-     *   <li>{@code "33.333%"} – three slides at a time</li>
+     *   <li>{@code "100%"} â€“ one slide at a time (default)</li>
+     *   <li>{@code "50%"} â€“ two slides at a time</li>
+     *   <li>{@code "33.333%"} â€“ three slides at a time</li>
      * </ul>
      *
      * @param basis a valid CSS length or percentage string (not null)
@@ -91,4 +93,3 @@ public class CarouselItem extends Div {
         getElement().setAttribute("aria-roledescription", "slide");
     }
 }
-

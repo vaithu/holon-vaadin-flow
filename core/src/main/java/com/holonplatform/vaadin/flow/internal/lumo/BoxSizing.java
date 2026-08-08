@@ -6,7 +6,7 @@ public enum BoxSizing {
 
     private final String className;
 
-    private BoxSizing(String className) {
+    BoxSizing(String className) {
         this.className = className;
     }
 

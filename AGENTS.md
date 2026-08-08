@@ -1,581 +1,537 @@
-# Vaadin Full‑Stack Enterprise Agent
+# Holon Platform — Coding Rules for LLMs
 
-## Role & Mission
+> **Read this file before writing any Java code that touches Vaadin, Spring, or data access in this project. These rules are non-negotiable.**
 
-You are a **Senior Full‑Stack Java Architect and Vaadin Expert**, specializing in:
-
-- **Vaadin 25.2 (Flow)**
-- **Spring Boot 4.1.0**
-- **Java 21 (LTS)**
-- **Spring Data JPA / Hibernate**
-- **Aura theme (Vaadin base theme)**
-- **Enterprise‑grade internationalized applications**
-
-Your mission is to help developers build **production‑ready, scalable, maintainable full‑stack applications** using **Vaadin + Spring Boot + JPA**, with **clean architecture**, **strict styling separation**, and **full internationalization (i18n)**.
-
-You must always think and respond **as an experienced enterprise architect**, not a quick code generator.
+This project runs on the **Holon Platform** (https://holon-platform.com). Holon is a Java ecosystem built *on top of* Vaadin, Spring and JPA that adds a Property model, a Datastore API, an Auth API, a Navigator API, and a fluent builder layer over Vaadin Flow components. **In this project we always go through Holon — never around it.**
 
 ---
 
-## Architectural Principles
+## 1. The single most important rule
 
-Always follow these principles:
+> **Use Holon Platform modules. Do not use raw Vaadin core components, raw Spring Security boilerplate, raw JPA EntityManager, or raw BeanPropertyRetriever-style code when a Holon equivalent exists.**
 
-- Clean layered architecture  
-  `UI → Service → Repository → Database`
-- No business logic in Vaadin views
-- No repository access from UI
-- DTOs between UI and service layers
-- Constructor injection only
-- Stateless services where feasible
-- Clear separation of concerns
+If you catch yourself writing `new com.vaadin.flow.component.button.Button(...)` for ordinary UI work, or `new com.vaadin.flow.component.textfield.TextField()`, or assembling a `SecurityFilterChain` from scratch, or hand-rolling an `EntityManagerFactory`, **stop and use the Holon builder/equivalent instead**.
 
-Deviations must be explicitly justified.
+You may only drop down to a raw Vaadin/Spring/JPA API when:
+1. The user explicitly asks for it, OR
+2. Holon genuinely has no abstraction for that one concern (rare — ask first).
 
 ---
 
-## Technology Rules
+## 2. Scope — when these rules apply
 
-### Java 21
-- Prefer records for DTOs
-- Prefer immutable objects
-- Use pattern matching where appropriate
-- Use streams only when they improve readability
-- Avoid legacy Java 8 idioms
+Apply these rules whenever the task involves **any** of:
+- Building a Vaadin-based UI
+- Wiring up authentication / authorization / login flows
+- Defining or querying persistent data
+- Navigating between views / pages
+- Configuring a Spring Boot application in this repo
+- Adding or modifying a Maven dependency that has a Holon equivalent
 
-### Spring Boot 4.1.0
-- Use Spring Boot starters
-- Use `@Service` and `@Transactional` properly
-- REST APIs only when explicitly requested
-- Configuration via `application.yml`
-- No field injection
-
-### Spring Data JPA
-- Use `JpaRepository`
-- Prefer derived queries and JPQL
-- Avoid native queries unless unavoidable
-- Avoid `FetchType.EAGER` by default
-- Paginate large datasets
-- Keep entities persistence‑focused
-
-### Vaadin 25.2
-- Use Vaadin Flow (server‑side only)
-- Prefer:
-    - `Grid`, `FormLayout`, `SplitLayout`, `Dialog`
-    - `Binder` for validation
-    - `DataProvider` / `CallbackDataProvider`
-- Use:
-    - `@Route`
-    - `MainLayout`
-    - `AppShellConfigurator`
-- Ensure accessibility and responsive behavior
-- Mobile‑friendly design
-- All components must follow Holon Fluent Builder pattern for readability and maintainability
-- The canonical rules live in `.claude/` and must be followed for all generated code
-- The skills are located here `.claude/skills` and needs to be read every time you create any new code 
-- UX is your utmost priority; always ask "Is this the best user experience for this feature to yourself?" before generating code
-- Always prefer holon components and utilities over raw Vaadin components; if a needed component doesn't exist in Vaadin also, create it in the `core` module following existing patterns and styling rules
+If the task is unrelated (e.g. a CLI util, a test harness with no UI, an unrelated microservice), you may ignore this file.
 
 ---
 
-## Theme & Styling Rules (STRICT – NON‑NEGOTIABLE)
+## 3. Module map — pick the right artifact
 
-### Base Theme
-- **Aura is the base Vaadin theme**
-- Aura provides only neutral structural defaults
-- No application‑specific styling should rely on Vaadin built‑in themes
+Group ids and artifact ids below are exact. Versions shown are the **latest stable releases in the local Maven repo as of 2026-07-10**; always cross-check against the local Maven repo (see §10) and prefer the highest version already cached locally.
 
-### Core Styling Rule (VERY IMPORTANT)
+**Current baseline versions:**
+- `holon-core` modules: **10.0.0** (`com.holon-platform.core`)
+- `holon-vaadin-flow` modules: **10.0.0** (`com.holon-platform.vaadin`) — dev snapshot is `10.0.3-SNAPSHOT`
+- `holon-datastore-jdbc` / `holon-datastore-jpa`: **10.0.0**
+- Vaadin: **25.2.1** · Spring Boot: **4.1.0** · Java: **25**
 
-**Java code must NEVER define, compute, or imply CSS properties.**
+### 3.1 Core (`com.holon-platform.core`)
 
-Java code may only:
-- Assign **predefined CSS class names**
-- Structure the component hierarchy
+| Concern | Artifact id |
+|---|---|
+| Property model, PropertySet, PropertyBox, Validator, Context, converters | `holon-core` |
+| HTTP / REST client (`RestClient`, `HttpRequest`, `HttpResponse`) | `holon-http` |
+| Async HTTP | `holon-async-http` |
+| Async Datastore | `holon-async-datastore` |
+| Auth API (Realm, Account, Authenticator, Authorizer, AuthContext) | `holon-auth` |
+| JWT auth | `holon-auth-jwt` |
+| Spring integration for core | `holon-spring` |
+| Spring Security integration | `holon-spring-security` |
+| Spring Boot auto-config | `holon-spring-boot` |
+| Base Spring Boot starter | `holon-starter` |
+| Spring Security starter | `holon-starter-security` |
+| Test starter | `holon-starter-test` |
 
-All visual styling must be implemented **externally in CSS files**.
+Core BOM (`com.holon-platform.core:holon-bom:10.0.0` — covers all core artifacts above):
+```xml
+<dependency>
+  <groupId>com.holon-platform.core</groupId>
+  <artifactId>holon-bom</artifactId>
+  <version>10.0.0</version>
+  <type>pom</type>
+  <scope>import</scope>
+</dependency>
+```
+
+Platform BOM (adds Spring / Spring Boot / Spring Security version management on top of core):
+```xml
+<dependency>
+  <groupId>com.holon-platform.core</groupId>
+  <artifactId>holon-bom-platform</artifactId>
+  <version>10.0.0</version>
+  <type>pom</type>
+  <scope>import</scope>
+</dependency>
+```
+
+### 3.2 Vaadin Flow (`com.holon-platform.vaadin`)
+
+| Concern | Artifact id |
+|---|---|
+| Holon + Vaadin Flow integration, Components API, input/listing builders | `holon-vaadin-flow` |
+| `Navigator` API (`@View`, `@QueryParameter`, `Navigator.get().navigateTo(...)`) | `holon-vaadin-flow-navigator` |
+| Spring integration for Vaadin Flow | `holon-vaadin-flow-spring` |
+| Spring Boot auto-config + servlet container | `holon-vaadin-flow-spring-boot` |
+| Spring Boot starter (recommended for new apps) | `holon-starter-vaadin-flow` |
+| Chart.js charts (`ChartJs` fluent builder) | `holon-vaadin-flow-chartjs` |
+| FullCalendar 6 (`VaadinCalendar` wrapper) | `holon-vaadin-flow-calendar` |
+| Chat UI components | `holon-vaadin-flow-chat` |
+| Customer domain components | `holon-vaadin-flow-customer` |
+| Test utilities | `holon-vaadin-flow-test` |
+| Vaadin Flow BOM | `holon-vaadin-flow-bom` |
+
+Vaadin Flow BOM (covers all `holon-vaadin-flow-*` artifacts above):
+```xml
+<dependency>
+  <groupId>com.holon-platform.vaadin</groupId>
+  <artifactId>holon-vaadin-flow-bom</artifactId>
+  <version>10.0.0</version>
+  <type>pom</type>
+  <scope>import</scope>
+</dependency>
+```
+
+### 3.3 Datastore backends (`com.holon-platform.jdbc` / `com.holon-platform.jpa`)
+
+| Concern | Artifact id | Group id |
+|---|---|---|
+| JDBC Datastore, SQL filters, transactions | `holon-datastore-jdbc` | `com.holon-platform.jdbc` |
+| JDBC starter with HikariCP | `holon-starter-jdbc-datastore-hikaricp` | `com.holon-platform.jdbc` |
+| JPA Datastore (`Datastore` over JPA) | `holon-datastore-jpa` | `com.holon-platform.jpa` |
+| JPA Datastore Spring Boot auto-config | `holon-datastore-jpa-spring-boot` | `com.holon-platform.jpa` |
+| JPA starter with Hibernate | `holon-starter-jpa-hibernate` | `com.holon-platform.jpa` |
+| JPA starter with EclipseLink | `holon-starter-jpa-eclipselink` | `com.holon-platform.jpa` |
+| QueryDSL over JPA Datastore | `holon-datastore-jpa-querydsl` | `com.holon-platform.jpa` |
+| MongoDB Datastore | `holon-datastore-mongo` | `com.holon-platform.mongo` |
+
+All JDBC/JPA modules are at version **10.0.0**.
+
+### 3.4 SaaS / Multi-tenant (`com.holon-platform.saas`)
+
+The tenant/SaaS framework modules have been extracted into a separate project (`holon-saas`). Use `com.holon-platform.saas:holon-saas-bom:1.0.0` for the SaaS BOM. Key modules:
+
+| Concern | Artifact id |
+|---|---|
+| SaaS starter for Vaadin Flow | `holon-starter-vaadin-flow-saas` |
+| Tenant core | `holon-vaadin-flow-tenant-core` |
+| Tenant data | `holon-vaadin-flow-tenant-data` |
+| Tenant security | `holon-vaadin-flow-tenant-security` |
+| Tenant users | `holon-vaadin-flow-tenant-users` |
+| Tenant admin | `holon-vaadin-flow-tenant-admin` |
+| Tenant audit | `holon-vaadin-flow-tenant-audit` |
+| Tenant billing | `holon-vaadin-flow-tenant-billing` |
+| Tenant onboarding | `holon-vaadin-flow-tenant-onboarding` |
+| Tenant settings | `holon-vaadin-flow-tenant-settings` |
+
+### 3.5 Recommended BOM import stack for new apps
+
+Import these three BOMs in order inside `<dependencyManagement>`:
+```xml
+<!-- 1. Spring Boot versions (Spring Framework, Spring Security, etc.) -->
+<dependency>
+  <groupId>org.springframework.boot</groupId>
+  <artifactId>spring-boot-dependencies</artifactId>
+  <version>4.1.0</version>
+  <type>pom</type>
+  <scope>import</scope>
+</dependency>
+<!-- 2. Vaadin component versions -->
+<dependency>
+  <groupId>com.vaadin</groupId>
+  <artifactId>vaadin-bom</artifactId>
+  <version>25.2.1</version>
+  <type>pom</type>
+  <scope>import</scope>
+</dependency>
+<!-- 3. Holon core + vaadin modules -->
+<dependency>
+  <groupId>com.holon-platform.core</groupId>
+  <artifactId>holon-bom</artifactId>
+  <version>10.0.0</version>
+  <type>pom</type>
+  <scope>import</scope>
+</dependency>
+<dependency>
+  <groupId>com.holon-platform.vaadin</groupId>
+  <artifactId>holon-vaadin-flow-bom</artifactId>
+  <version>10.0.0</version>
+  <type>pom</type>
+  <scope>import</scope>
+</dependency>
+```
+With these imported you do not pin versions for any Holon or Vaadin artifact.
 
 ---
 
-## CSS Usage Rules
+## 4. The import cheat-sheet
 
-### Forbidden
-- Inline CSS
-- `component.getStyle().set(...)`
-- CSS inside Java strings
-- Styling logic in Java code
-- `<style>` tags
-- Lumo utilities or Lumo tokens
+Use these package roots. Never invent your own — if a class you're about to write isn't covered below, grep the local Maven repo or ask the user.
 
-### Required
-- All CSS must be defined in external files under:
-  ```text
-  core/src/main/resources/META-INF/resources/
-    (flat — one file per component, no subdirectories)
-    e.g.: alert.css, alert-dialog.css, alert-modal.css, app-bar.css, app-shell.css,
-          breadcrumb.css, button-group.css, buttons.css, carousel.css,
-          component-view.css,
-          details-drawer.css, double-label.css, drawer.css, empty.css, entity-form-panel.css,
-          filter-panel.css, grid-header.css, h-dialog.css, header.css, highlight.css,
-          input-group.css, input-otp.css, kanban-board.css,
-          key-value-item.css, key-value-pair.css, layout.css, lazy-tabs.css, line-item-grid.css,
-          list-item.css, master-detail-layout.css, master-details.css, material-symbols.css,
-          menu.css, notification.css,
-          page-size-selector.css, pagination.css, preview.css, price-list.css, separator.css,
-          sheet.css, sidebar.css, stepper.css, tag.css, timeline.css, tokens.css,
-          toolbar.css, utilities.css, vaadin-shell-theme.css …
-  ```
-- Load CSS into components using `@StyleSheet("context://filename.css")` on the component class (see `Layout`, `Sidebar`, `KeyValuePairs` for examples)
-- Assign CSS class names exclusively via `component.addClassName(...)` using constants from:
-  - `CSSUtility` (`com.holonplatform.vaadin.flow.components.css.CSSUtility`) – 2000+ predefined class name strings
-  - `Color.Background` / `Color.Text` enums – semantic color class names (e.g., `Color.Background.PRIMARY.getClassName()`)
-  - `Font.Size` / `Font.Weight` / `Font.LineHeight` enums – typography class names
-  - `com.holonplatform.vaadin.flow.components.css.*` – additional helpers (`FontSize`, `TextColor`, `Shadow`, `Size`, `BadgeColor`, `BadgeShape`, `BadgeSize`, etc.)
-
----
-
-## Module Structure
-
-The project is a **10-module Maven multi-module build** rooted at `pom.xml` (version `10.0.0`, group `com.holon-platform.vaadin`):
-
-| Module | Artifact ID | Purpose |
-|--------|-------------|---------|
-| `core/` | `holon-vaadin-flow` | All UI components, builders, data, utilities |
-| `navigator/` | `holon-vaadin-flow-navigator` | `Navigator` API, `@QueryParameter`, `@OnShow` |
-| `spring/` | `holon-vaadin-flow-spring` | Spring integration |
-| `spring-boot/` | `holon-vaadin-flow-spring-boot` | Spring Boot auto-configuration, async tasks, security |
-| `starter/` | `holon-starter-vaadin-flow` | Spring Boot starter |
-| `chartjs/` | `holon-vaadin-flow-chartjs` | `ChartJs` component wrapping Chart.js |
-| `calendar/` | `holon-vaadin-flow-calendar` | `VaadinCalendar` component wrapping FullCalendar 6 |
-| `bom/` | `holon-vaadin-flow-bom` | Bill of Materials |
-| `documentation/` | `documentation-vaadin-flow` | Reference documentation |
-| `demo/` | *(no published artifact)* | Live component showcase; view sources under `demo/src/main/java/.../demo/ui/views/` serve as canonical usage examples |
-
-**Build command:** `mvn clean install`
-
-**Frontend hot-deploy:** Set `vaadin.frontend.hotdeploy=true` in `application.properties`. The pre-compiled frontend bundle lives in `src/main/bundles/` (root) and `demo/src/main/bundles/` and must be committed to VCS. Custom JS web components (`stepper-component.js`, `timeline-stepper.js`) live in `core/src/main/resources/META-INF/resources/frontend/`.
-
----
-
-## Source Namespaces
-
-The `core` module contains **two Java package namespaces**:
-
-- `com.holonplatform.vaadin.flow` – core Holon Platform components (main API surface)
-- `com.iyensoft.vaadin.flow` – iyensoft-specific extensions: `IyenPanel`, `CardBuilder`, `SideNavBuilder`, `TabsBuilder`, `LazyTabsBuilder`, `IyenViewBuilder`, `IyenMasterBuilder`, `IyenDetailBuilder`, `PanelBuilder`, `MasterDetailBuilder`
-
-Both are public API; iyensoft builders follow the same Holon Fluent Builder pattern.
-
----
-
-## Key Component Types
-
-Beyond the standard Vaadin components, this codebase provides:
-
-### vaadinplus Components
-
-**`com.holonplatform.vaadin.flow.vaadinplus`** (root):
-- **`Layout`** – base layout component (extends `Div`) with responsive grid/flex class assignment; auto-loads `layout.css`, `utilities.css`, `buttons.css`, `toolbar.css`, `menu.css` via `@StyleSheet`
-- **`Sidebar`** – slide-in panel with header, description, and closeable content area
-- **`KeyValuePairs` / `KeyValuePair`** – property display as `<dl>`; supports grid columns, `Breakpoint`, stripes, `Background` enum; loads `key-value-pair.css`
-- **`KeyValueList` / `KeyValueItem`** – flat 3-column CSS-grid key-value display (different from `KeyValuePairs`); uses `display:contents` on each row so all keys/seps/values align in a single parent grid; `KeyValueItem` supports `superText`, `subText`, `copyable(bool)`, divider line (`kv-divider`); loads `key-value-item.css`.
-  ```java
-  new KeyValueList()
-      .addItem(KeyValueItem.of("First name", "Jane"))
-      .addItem(KeyValueItem.builder().key("Token").value("abc-123").copyable(true).build());
-  ```
-- **`ResponsiveDiv`** – high-level responsive `Div` with a two-entry-point builder API covering the five universal layout patterns (stack→inline, 1-col→N-col grid, asymmetric split, responsive spacing, show/hide). Loads `layout.css`. Entry points: `ResponsiveDiv.flex()` / `ResponsiveDiv.grid()`.
-  ```java
-  // Pattern 1 — stacked mobile, side-by-side desktop
-  ResponsiveDiv hero = ResponsiveDiv.flex()
-      .column().gapS()
-      .desktop().row().gapL().alignCenter().end()
-      .add(textBlock, imageBlock)
-      .build();
-
-  // Pattern 2 — 1→2→3 column card grid
-  ResponsiveDiv cards = ResponsiveDiv.grid()
-      .mobile(1).tablet(2).desktop(3).gapM()
-      .add(card1, card2, card3)
-      .build();
-  ```
-
-**`com.holonplatform.vaadin.flow`** (root package – direct classes):
-- **`DoubleLabel`** – stacked two-line label (`<div>` with top/bottom `<span>`); modifier methods: `setAlignLeft()`, `setAlignCenter()`, `setFixedWidth()`, `setGrow()`, `setNoBorder()`; loads `double-label.css`
-- **`UnorderedPriceList`** – `<ul>` container for price rows (BEM root `.price-list`); loads `price-list.css`
-- **`PriceListItem`** – `<li>` row in `UnorderedPriceList` with time/label and price spans (`.price-list__item`); loads `price-list.css`
-
-**`com.holonplatform.vaadin.flow.vaadinplus.components`**:
-- **`Alert`** – contextual alert; `Alert.Variant`: `DEFAULT`, `DESTRUCTIVE`, `WARNING`, `SUCCESS`, `INFO`; builder: `Alert.builder(variant)`; loads `alert.css`
-- **`AlertDialog`, `AlertModal`** – dialog/modal wrappers for `Alert`; loads `alert-dialog.css`, `alert-modal.css`
-- **`AppBar`** – 3-slot (`start`/`middle`/`end`) responsive page header extending `<header>`; `addToStart()`, `addToMiddle()`, `addToEnd(int, Component)`; loads `app-bar.css`
-- **`Breadcrumb`** – accessible `<nav>` trail; sub-types: `BreadcrumbItem`, `BreadcrumbPage`, `BreadcrumbSeparator`, `BreadcrumbEllipsis`; use `addWithSeparators()` for auto-separators or `setSeparatorSupplier(() -> new BreadcrumbSeparator(icon))`; loads `breadcrumb.css`
-- **`ButtonGroup`** – visually unified `Button` container; adjacent borders merged, corner radius only on outermost edges; `Orientation.HORIZONTAL` (default) / `VERTICAL`; builder: `ButtonGroup.builder()`; loads `button-group.css`
-- **`Carousel`** – accessible CSS `scroll-snap` slideshow; sub-types: `CarouselContent`, `CarouselItem`, `CarouselPrevious`, `CarouselNext`; `Orientation.HORIZONTAL/VERTICAL`; `setLoop(bool)`; `addSlideChangeListener()`; builder: `Carousel.builder()` / `Carousel.builder(orientation)`; loads `carousel.css`
-- **`ComponentView`** – `<main>` page section; `addH2(text)`, `addPreview(components...)`; loads `component-view.css`
-- **`Drawer`, `Sheet`** – off-canvas panel patterns
-- **`Empty`** – empty-state placeholder with action/description
-- **`FlowStepper`, `TimelineStepper`** – multi-step wizards
-- **`GridHeader`, `Header`** – semantic header components
-- **`Highlight`** – KPI/metric card (prefix, heading, value, details, suffix slots); `setHeadingLevel(HeadingLevel)`, `setValueFontSize(Font.Size)`; loads `highlight.css`
-- **`IconBadge`** – circular tinted icon badge; `Alert.Variant` controls color; `Size.DEFAULT/SM/LG`; factory: `IconBadge.builder(icon, variant, size)` or `IconBadge.of(VaadinIcon, variant)`; styling via `utilities.css` (section 36)
-- **`InputGroup`** / **`InputGroupText`** – horizontal input-addon row; accepts Vaadin `Component`, Holon `Input<T>`, or `HasComponent`; fluent via `InputGroup.builder()`; modifier class `input-group--responsive` for stacking; loads `input-group.css`
-- **`InputOTP`** – one-time password input
-- **`MaterialSymbol`** – icon helper
-- **`Pagination`** – pagination bar
-- **`Preview`** – column-flex demo-content wrapper; loads `preview.css`
-- **`Separator`** – visual divider
-- **`Tag`** – label/badge chip
-- **`EntityFormPanel<T>`** – full-featured form panel wrapping `BeanPropertyInputForm` or `PropertyInputForm` with a standard Save / Clear / Save&New (optional) / Cancel (optional) footer. Auto-focuses first field on attach. Loads `entity-form-panel.css`. Factory methods:
-  ```java
-  // Bean mode
-  EntityFormPanel<Customer> panel = EntityFormPanel.<Customer>bean(Customer.class)
-      .configure(fb -> fb.excludeFields("id", "createdAt"))
-      .saveButton(btn -> btn.primary().withText("Save"), customer -> service.save(customer))
-      .clearButton(btn -> btn.withText("Reset"))
-      .cancelButton(btn -> btn.withText("Cancel"), () -> dialog.close())   // optional
-      .build();
-
-  // PropertySet mode
-  EntityFormPanel<PropertyBox> panel = EntityFormPanel.properties(NAME, EMAIL, PHONE)
-      .saveButton(btn -> btn.primary().withText("Save"), pb -> service.save(pb))
-      .clearButton(btn -> btn.withText("Reset"))
-      .build();
-  ```
-  > **Note:** do NOT call `.tertiary()` / `.primary()` on the Clear or Cancel button — the panel strips `theme` from those buttons automatically.
-- **`LineItemGrid`** – keyboard-centric inline spreadsheet for document line items (invoices, POs, quotes). Desktop: always-visible non-virtualized `Grid` with Enter-key column navigation. Mobile: CSS `@media` switches to a card list; tapping opens a `Sheet` for full mobile keyboard flow. Max 40 rows enforced. Loads `line-item-grid.css`.
-  ```java
-  LineItemGrid grid = LineItemGrid.builder()
-      .title("Items")
-      .withItemSuggestion("Laptop", "SKU-001", 1299.00)
-      .withTaxOption("GST 10%", 0.10)
-      .withInitialRows(2)
-      .build();
-  grid.setOnChangeListener(rows -> save(rows));
-  ```
-  Internal model: `LineItemRow` (qty × rate → amount). Canonical demo: `LineItemGridDemoView.java`.
-- **`DynamicFilterPanel<T>`** – row-based dynamic filter builder implementing `FilterInputGroup`; introspects a bean class or Holon `PropertySet` at construction time; each row has a property selector, type-aware operator selector, and adaptive value input; rows are AND-combined by default; loads `filter-panel.css`. Factory methods:
-  ```java
-  DynamicFilterPanel<Product>     panel  = DynamicFilterPanel.of(Product.class);
-  DynamicFilterPanel<PropertyBox> panel2 = DynamicFilterPanel.ofProperties(NAME, PRICE, STATUS);
-  DynamicFilterPanel<PropertyBox> panel3 = DynamicFilterPanel.ofPropertySet(propertySet);
-  ```
-  Key methods: `setMatchAll(bool)` (AND/OR mode), `setAdvancedMode(bool)` (per-row connectors + NOT), `addRow()`, `resetAll()`, `getQueryFilter()`, `isAnyActive()`, `toPredicate()` (in-memory `Predicate<T>`), `setItems(propName, list)` / `setLazyItems(propName, fetch, count)` (populate IN/NOT_IN multi-select).
-
-  **Datastore wiring** (production pattern — same API for both `BeanListing` and `PropertyListing`):
-  ```java
-  listing.setItems(panel, (query, filter) -> {
-      var q = datastore.query(TARGET).restrict(query.getLimit(), query.getOffset());
-      if (filter != null) q.filter(filter);
-      return q.stream(BeanProjection.of(Product.class));
-  });
-  listing.refreshOnFilterChange(panel);  // re-fetch on every Apply click
-  ```
-  **In-memory wiring:**
-  ```java
-  panel.addFilterChangeListener(e -> {
-      shown.clear();
-      shown.addAll(all.stream().filter(panel.toPredicate()).toList());
-      listing.getDataProvider().refreshAll();
-  });
-  ```
-  Canonical demo: `demo/src/main/java/.../demo/ui/views/FilterPanelDemoView.java`; also see `BeanListingDemoView` (examples 6–8).
-
-- **`FilterOperator`** (`com.holonplatform.vaadin.flow.vaadinplus.components`) – type-aware operator enum used by `DynamicFilterPanel`. Type dispatch via `FilterOperator.forType(Class)`:
-  - String: `EQUALS`, `NOT_EQUALS`, `IN`, `NOT_IN`, `CONTAINS`, `NOT_CONTAINS`, `STARTS_WITH`, `ENDS_WITH`, `IS_EMPTY`, `IS_NOT_EMPTY`
-  - Number: `EQUALS`, `NOT_EQUALS`, `GREATER_THAN`, `LESS_THAN`, `GREATER_OR_EQUALS`, `LESS_OR_EQUALS`, `BETWEEN`
-  - Date (`LocalDate`/`LocalDateTime`): `EQUALS`, `NOT_EQUALS`, `BEFORE`, `AFTER`, `ON_OR_BEFORE`, `ON_OR_AFTER`, `BETWEEN`
-  - Boolean/Enum: `EQUALS`, `NOT_EQUALS` (Enum also `IN`, `NOT_IN`)
-  - `DynamicFilterPanel.RowConnector` enum (advanced mode): `AND`, `OR`, `AND_NOT`, `OR_NOT`, `NAND`, `NOR`, `XOR`
-
-**`com.holonplatform.vaadin.flow.vaadinplus.utilities`**:
-- **`Font`** – `Font.Size`, `Font.Weight`, `Font.LineHeight` enums (CSS class name helpers)
-- **`Color`** – `Color.Background`, `Color.Text` enums (semantic color class names)
-- **`HeadingLevel`** – `H1`–`H6`, `NONE`; use with `Highlight.setHeadingLevel(HeadingLevel)` to swap the heading element level
-
-### Kanban Board (`com.holonplatform.vaadin.flow.components`)
-```java
-KanbanBoard<MyItem, Status> board = KanbanBoard.<MyItem, Status>builder()
-    .columns(columns)
-    .cardRenderer(renderer)
-    .itemColumnProvider(item -> item.getStatus())
-    .moveHandler(handler)
-    .build();
 ```
-Supports `KanbanDataProvider<T,C>`, `KanbanMoveHandler`, `KanbanCommentProvider`, `KanbanCountProvider`, and move audit trail.
+com.holonplatform.core.property.*         // StringProperty, NumericProperty, TemporalProperty, PropertySet, PropertyBox
+com.holonplatform.core.datastore.*        // Datastore, ConfigurableDatastore, DataTarget, QueryFilter
+com.holonplatform.core.validator.*        // Validator, ValidationException
+com.holonplatform.core.context.*          // Context, ContextScope
+com.holonplatform.core.i18n.*             // LocalizationContext
+com.holonplatform.core.auth.*             // AuthContext, Account, Authentication, Authorization
+com.holonplatform.core.http.*             // RestClient, HttpRequest, HttpResponse
 
-### Layout & List Primitives (`com.holonplatform.vaadin.flow.components`)
-- **`FlexBoxLayout`** – `FlexLayout` subclass with typed setter helpers (`setFlexDirection`, `setSpacing`, `setOverflow`, etc.); **exception**: this class uses `getStyle().set(...)` internally for layout-critical properties – do not use it as a pattern for new components.
-- **`ListItem`** – flex list item with primary/secondary labels and optional prefix/suffix slots; `setDividerVisible(bool)`, `setReverse(bool)`, `setWhiteSpace(WhiteSpace)`; loads `list-item.css`
-- **`DetailsDrawer`** – positioned side (`RIGHT`) or bottom (`BOTTOM`) drawer composed of header/content/footer sub-regions; `show()` / `hide()` toggle `details-drawer--open`; loads `details-drawer.css`
-- **`Badge`** – `<span>` chip using `theme` attribute; constructors accept `BadgeColor`, `BadgeSize`, `BadgeShape` from `com.holonplatform.vaadin.flow.components.css`
+com.holonplatform.vaadin.flow.components.* // Components.* (the main fluent builder factory)
+com.holonplatform.vaadin.flow.components.layout.*  // Holon layout builders
+com.holonplatform.vaadin.flow.components.input.*   // Input builders
+com.holonplatform.vaadin.flow.components.listing.* // Listing/Grid builders
+com.holonplatform.vaadin.flow.components.PropertyRenderer, ValueChangeEvent
+com.holonplatform.vaadin.flow.navigator.*  // Navigator, @View, @QueryParameter, ViewConfiguration
+com.holonplatform.vaadin.flow.data.*       // DataProvider wiring to Datastore
 
-### Grid Layout Builders (`com.holonplatform.vaadin.flow.components.builders`)
-12-column responsive grid helpers — use instead of raw CSS class strings for structured layouts.
-
-- **`RowBuilder`** – creates a 12-column `<div class="row">` host. Factory: `RowBuilder.create()`. Accepts `ColumnBuilder` instances or raw `Component`s. Responsive column counts:
-  ```java
-  RowBuilder.create()
-      .gridColumns(1)                     // base (mobile-first)
-      .gridColumns(ViewMode.TABLET, 2)    // md:grid-cols-2
-      .gridColumns(ViewMode.DESKTOP, 3)   // lg:grid-cols-3
-      .add(col1, col2, col3)
-      .build();
-  ```
-- **`ColumnBuilder`** – creates a `<div class="col">` child with `ColSpan`-based widths. Factory: `ColumnBuilder.create()`. Responsive spans via `.at(ViewMode, ColSpan)`:
-  ```java
-  ColumnBuilder.create()
-      .span(ColSpan.COL_12)               // base full-width
-      .at(ViewMode.DESKTOP, ColSpan.COL_8) // lg:col-span-8
-      .add(mainContent)
-  ```
-- **`ColSpan`** enum (`com.holonplatform.vaadin.flow.enums`) – `COL_1` through `COL_12`; `colSpan.getGridSpan()` returns the integer value.
-
-### Listing Bundle (`com.holonplatform.vaadin.flow.components`)
-Pre-wired assembly of `ItemListing` + `ItemListingPaginationBar` + `ItemListingPageSizeSelector` + optional `TextField` search + optional `DynamicFilterPanel`. Entry point: `Components.listing(...)`.
-
-```java
-// Bean listing
-var bundle = Components.listing(Product.class)
-    .columns("id", "name", "category", "price")
-    .pageSizes(10, 25, 50)
-    .search("Search products…")
-    .fetch((q, text) -> service.fetch(q.getOffset(), q.getLimit(), text))
-    .build();
-
-add(bundle.toolbar(),   // [Show 10▾]  [🔍 Search…]
-    bundle.grid(),
-    bundle.footer());   // [Previous] [1] [2] [Next]
-
-// With DynamicFilterPanel
-var bundle = Components.listing(Product.class)
-    .columns("id", "name", "price")
-    .withFilterPanel()
-    .fetch((q, text, filter) -> { ... })
-    .build();
-add(bundle.filterPanel(), bundle.toolbar(), bundle.grid(), bundle.footer());
-```
-
-`PropertyListingBundleBuilder` — identical API started via `Components.listing(Property<?>... properties)` or `Components.listing(PropertySet<?>)`. Canonical demo: `ListingBundleDemoView.java`.
-
-### Additional Builders (`com.holonplatform.vaadin.flow.components.builders`)
-- **`TabSheetBuilder`** – wraps Vaadin `TabSheet` with lazy tab support. Factory: `TabSheetBuilder.create()`. Supports `.withTab(Tab, LazyComponent)` for deferred rendering. Configurable via `TabSheetConfigurator`.
-- **`BulkActionBuilder`** – bulk selection action bar (select-all checkbox, selected count label, actions menu). Factory: `BulkActionBuilder.create()`. Configure via `BulkActionConfigurator`.
-
-### Charts & Calendar
-- `ChartJs` (`holon-vaadin-flow-chartjs`) – fluent builder for Chart.js charts via `ChartJs.builder()`
-- `VaadinCalendar` (`holon-vaadin-flow-calendar`) – server-side FullCalendar 6 wrapper; `CalendarView`: `MONTH`, `WEEK`, `DAY`, `AGENDA`; `EventColor` enum (Google Calendar palette); `CalendarGroup` for category filtering; sidebar with mini-month/search/group toggle; key lifecycle events: `addCalendarReadyListener`, `addEventCreatedListener`, `addEventUpdatedListener`, `addEventDeletedListener`; navigation: `today()`, `next()`, `previous()`, `navigateTo(date)`, `setView(CalendarView)`; theming via CSS custom properties (`--vaadin-calendar-primary`, etc.). Canonical demo: `CalendarDemoView.java`.
-
-
-### Utility Components
-- **`LazyComponent`** – defers child rendering until first attach: `new LazyComponent(() -> heavyComponent())`
-- **`OverviewHandler<T>`** – wraps `BeanDatastoreHelper<T>` + a container; renders a `KeyValuePairs` display for a `PropertyBox`
-- **`OperationResult`** (`com.holonplatform.vaadin.flow.util`) – chainable success/fail result: `OperationResult.success().then(runnable).otherwise(fallback).compose(() -> nextStep)`; also `OperationResult.fail()`
-- **`WebBrowserTools`** (`com.holonplatform.vaadin.flow.util`) – `preventBrowserTabClosing(ui)` / `allowBrowserTabClosing(ui)` via JS `beforeunload` listener
-- **`SignalBindings`** (`com.holonplatform.vaadin.flow.components.builders`) – binds Vaadin 25 `Signal<T>` reactive state to configurators; lifecycle-bound when target implements `SignalBindings.Owner`:
-  ```java
-  SignalBindings.bind(configurator, mySignal, value -> component.setText(value));
-  ```
-- **`ItemListingPaginationBar<T, P>`** (`com.holonplatform.vaadin.flow.components`) – extends `Pagination`; binds directly to an `ItemListing` for page-based navigation without virtual scroll.
-- **`ItemListingPageSizeSelector<T, P>`** (`com.holonplatform.vaadin.flow.components`) – "Show N entries" combo-box that updates listing page size; integrates with `ItemListingPaginationBar` via `withPaginationBar(bar)`; factory: `Components.pageSizeSelector(listing).withOptions(10, 25, 50).withDefaultSize(10).build()`; loads `page-size-selector.css`. Canonical demo: `BeanListingDemoView` example 10, `PageSizeSelectorDemoView.java`.
-- **`SearchBarBuilder`** (`com.holonplatform.vaadin.flow.components.builders`) – fluent builder for a debounced search `HorizontalLayout` with optional show/hide-columns button; `SearchBarBuilder.create().withValueChangeListener(e -> ...).withShowHideColumnsButton(listing).build()`. Canonical demo: `SearchBarDemoView.java`.
-
----
-
-## Data Layer
-
-This project uses the **Holon Platform `Datastore` API**, not Spring Data `JpaRepository` directly.
-
-### DefaultBeanCrud
-> **`DefaultBeanCrud` is `@Deprecated(forRemoval = true)`** since 10.0.0 — always use `BeanDatastoreHelper` for new code.
-
-### BeanDatastoreHelper
-Primary CRUD helper — typed façade over `BeanDatastoreUtils` from holon-core. Factory: `BeanDatastoreHelper.of(datastore, BeanClass.class)`.
-
-```java
-BeanDatastoreHelper<Product> products = BeanDatastoreHelper.of(datastore, Product.class);
-
-// single-bean writes — result carries the updated bean via getResult()
-products.insert(p);
-products.update(p);
-products.save(p);
-products.delete(p);
-products.refresh(p);
-
-// lazy streams — always close after use
-try (Stream<Product> all = products.findAll()) { all.forEach(this::process); }
-try (Stream<Product> filtered = products.findAll(filter)) { ... }
-try (Stream<Product> sorted   = products.findAll(filter, sort)) { ... }
-
-// single / top / page / slice
-Optional<Product> one  = products.findOne(filter);
-Optional<Product> first= products.findFirst();
-List<Product>     top  = products.findTop(5, filter, sort);
-List<Product>     page = products.findPage(0, 20);          // page index + page size
-List<Product>     slice= products.findSlice(filter, sort, 20, 40); // limit + offset
-
-// count / exists
-long    total = products.count();
-long    matching = products.count(filter);
-boolean any   = products.exists(filter);
-
-// bulk
-products.bulkInsert(List.of(p1, p2, p3));
-products.bulkUpdate(list);
-products.bulkSave(list);
-products.bulkDelete(list);
-products.bulkDelete(filter);
-products.bulkUpdate(filter).set("category", "SALE").execute();
-products.bulkUpdateProperty(filter, "category", "SALE");
-
-// transaction
-products.withTransaction((ds, tx) -> { ds.insert(p); tx.commit(); return null; });
-```
-
-### DatastoreDataProvider
-Use `DatastoreDataProvider` / `DatastoreLazyDataProvider` for Vaadin `DataProvider` integration with `PropertyListing` and `BeanListing`.
-
----
-
-## Responsive System
-
-Three layers of responsive tooling exist in this codebase:
-
-### `Breakpoint` enum (`com.holonplatform.vaadin.flow.internal.lumo`)
-Values: `SMALL`("sm"), `MEDIUM`("md"), `LARGE`("lg"), `XLARGE`("xl"), `XXLARGE`("2xl")
-
-### `ViewMode` enum (`com.iyensoft.vaadin.flow.utils.responsive`)
-Semantic names mapped to breakpoint prefixes: `MOBILE`(sm), `TABLET`(md), `DESKTOP`(lg), `LARGE_DESKTOP`(xl), `ULTRA_WIDE`(2xl); plus posture-aware mobile variants `MOBILE_PORTRAIT`(sm) and `MOBILE_LANDSCAPE`(sm).
-```java
-ViewMode.TABLET.applyTo(container);                           // adds "vm-tablet", data-view-prefix="md"
-ViewMode.DESKTOP.applyTo(container, "flex-row", "gap-x-m");  // adds prefixed utility classes
-ViewMode.applyAll(container, "flex-row", MOBILE, TABLET, DESKTOP);
-```
-
-### `ResponsivePlus` fluent DSL (`com.iyensoft.vaadin.flow.utils.responsive`)
-```java
-ResponsivePlus.on(container)
-    .sm().add("flex-col").end()
-    .lg().add("flex-row").end()
-    .apply();
-```
-
-### `ResponsiveDSL` (`com.iyensoft.vaadin.flow.utils.responsive`)
-Lower-level DSL underlying `ResponsivePlus`. Supports bundle registry, multi-scope, and semantic `ViewMode` tagging:
-```java
-ResponsiveDSL.on(container)
-    .sm().add("flex-col", "gap-s").end()
-    .lg().add("flex-row", "gap-m").end()
-    .apply();              // or .applyReplace() to swap, .remove() to undo
-
-// Named bundles for reuse across views:
-ResponsiveDSL.bundle("card-layout", plan ->
-    plan.sm().add("flex-col").end().lg().add("flex-row").end());
-ResponsiveDSL.on(container).use("card-layout").apply();
-```
-
-### `ResponsiveGridDSL` (`com.iyensoft.vaadin.flow.utils.responsive`)
-Prefix-first builder for CSS Grid utilities:
-```java
-ResponsiveGridDSL.on(container)
-    .sm().grid().gridCols(1).gap(ResponsiveDSL.Space.M).end()
-    .desktop().gridCols(3).end()
-    .apply();
-```
-
-### `Responsive` (`com.iyensoft.vaadin.flow.utils.responsive`)
-Auto-applies `ViewMode`/`Orientation` tags from actual browser window size; re-tags on resize/rotation:
-```java
-Responsive.apply(root);  // adds vm-<mode>, data-view-prefix, portrait/landscape classes
-Responsive.stop(root);   // removes listeners + responsive classes
-```
-
-## Navigation
-
-In the `navigator` module:
-
-```java
-// Inject query parameters directly into route view fields
-@Route("orders")
-public class OrdersView extends Div {
-    @QueryParameter
-    private Long id;
-
-    @QueryParameter(value = "status", required = false)
-    private String status;
-}
-
-// Programmatic navigation
-Navigator.get().navigateTo("orders");
-Navigator.get().navigation(OrdersView.class)
-    .withQueryParameter("id", 42L)
-    .navigate();
-```
-Use `@OnShow` to react after navigation parameters are injected (lifecycle callback fired once parameters are ready).
-
----
-
-## Async UI Tasks
-
-Use `UiAsyncTasks` (`com.holonplatform.vaadin.flow.spring.boot.jmix.asynctask`) for background work that must update the UI. It propagates the current Spring Security context to the worker thread automatically via `DelegatingSecuritySupplier` / `DelegatingSecurityRunnable`.
-
-```java
-@Autowired UiAsyncTasks uiAsyncTasks;
-
-uiAsyncTasks.supplierConfigurer(() -> service.loadData())
-    .withResultHandler(data -> grid.setItems(data))
-    .withExceptionHandler(ex -> Notification.show("Error: " + ex.getMessage()))
-    .withTimeout(30, TimeUnit.SECONDS)
-    .supplyAsync();
-```
-
-Configure in `application.yml`:
-```yaml
-jmix:
-  ui:
-    async-task:
-      default-timeout-sec: 300
-      executor-service:
-        maximum-pool-size: 10
+com.holonplatform.spring.*                // @PropertyPath, SpringPropertyBoxDatastoreBinder, etc.
+com.holonplatform.spring.security.*       // Holon Spring Security auto-config classes
 ```
 
 ---
 
-## Security Utilities
+## 5. Decision trees for common tasks
 
-Located in `com.holonplatform.vaadin.flow.spring.boot.jmix.flowui.sys`:
+### 5.1 "I need a form for entity X"
 
-- **`LogoutSupport`** (`@Component("flowui_LogoutSupport")`) – call `logout()` for both `AuthenticationContext`-based and fallback logout via page redirect
-- **`AppCookies`** – manage locale and remember-me cookies (`LAST_LOCALE`, `rememberMe`, etc.)
-- **`SessionHolder`** – multi-session tracking keyed by Spring Security principal
-- **`ExtendedClientDetailsProvider`** (`@Component("flowui_ExtendedClientDetailsProvider")`) – retrieves `ExtendedClientDetails` from the current `UI`; use `retrieveExtendedClientDetails(receiver)` to trigger async fetch or `getExtendedClientDetails()` if already cached
-- **`BeanUtil`** – static `autowireContext(applicationContext, instance)` to manually wire Spring beans into non-managed objects
+```
+Don't:   bind Vaadin TextField/ComboBox/DatePicker by hand
+Do:      Components.input.form(Entity.PROPERTY_SET)
+            .hide(Entity.ID)               // exclude auto-generated / read-only fields
+            .bind(datastore, Entity.TARGET) // optional: bind to a Datastore PropertyBox
+            .build();
+         → use Components.input.* fluent builders for any one-off field
+```
 
-**`VaadinSessionScope`** (`com.holonplatform.vaadin.flow.VaadinSessionScope`) – Holon `ContextScope` bound to `VaadinSession` (scope name: `"vaadin-session"`); use `VaadinSessionScope.get()` / `VaadinSessionScope.require()`
+### 5.2 "I need a grid/listing of X"
+
+```
+Don't:   Vaadin Grid<PropertyBox> + DataProvider manually
+Do:      Components.listing.properties(Entity.PROPERTY_SET)
+            .dataSource(datastore, Entity.TARGET)   // Holon wires the DataProvider
+            .fullSize()
+            .selectionMode(SelectionMode.SINGLE)
+            .build();
+```
+
+### 5.3 "I need to add a navigation between views"
+
+```
+Don't:   com.vaadin.flow.router.Route + Router.navigate(...)
+Do:      @View("path")           on the view class
+         @QueryParameter("id")   on a field for typed query params
+         Navigator.get().navigateTo("path")
+         Navigator.get().navigation(View.class).withQueryParameter("id", value).navigate()
+```
+
+### 5.4 "I need login / auth"
+
+```
+Don't:   hand-rolled SecurityFilterChain, UserDetailsService, DaoAuthenticationProvider
+Do:      define an AccountProvider, build a Realm with Authenticator + Authorizer,
+         expose AuthContext as a Spring bean (@SessionScope),
+         use holon-starter-security for auto-config,
+         use Account.authenticator(accountProvider) for credential validation,
+         Credentials.builder().secret(...).hashAlgorithm(...).build() for password handling.
+```
+
+### 5.5 "I need to persist data"
+
+```
+Don't:   EntityManager + JPQL strings + manual transaction management
+Do:      model entities as Holon Property sets (StringProperty/NumericProperty/...),
+         call datastore.<T>builder(Target).filter(...).build(...).insert()/update()/delete(),
+         let Holon's transaction support handle the boundary, or expose the JPA Datastore as
+         a Spring bean via holon-datastore-jpa + holon-spring-boot starter.
+```
+
+### 5.6 "I need to do a REST call"
+
+```
+Don't:   RestTemplate / new HttpURLConnection / raw WebClient boilerplate
+Do:      com.holonplatform.core.http.RestClient (or its async sibling in holon-async-http).
+```
 
 ---
 
-## CVE Management
+## 6. Don't / Do reference card
 
-Dependency versions in the root `pom.xml` carry explicit CVE overrides under `<dependencyManagement>`:
-
-| Library | Property | Notes |
-|---------|----------|-------|
-| H2 | `h2.version` (2.3.232) | CVE-2021-23463, CVE-2022-45868 |
-| AssertJ | `assertj.version` (3.27.7) | CVE-2026-24400 |
-| Spring Security | `spring-security.version` (6.5.10) | CVE-2026-22751 fixed in 6.5.10; compatible with Spring Boot 4.1 (6.5.x line) |
-| Logback | `logback.version` (1.5.32) | CVE-2026-1225 (no full fix yet) |
-| SnakeYAML | `snakeyaml.version` (2.3) | CVE-2022-1471 |
-| commons-lang3 | `commons-lang3.version` (3.18.0) | CVE-2025-48924 |
-
-> ⚠️ **CVE-2026-22746** (Spring Security – DaoAuthenticationProvider timing-attack bypass, LOW severity) has **no released fix** in any version as of the current date. Monitor for `spring-security 6.5.11+`.
-
-> ⚠️ **CVE-2026-22732** (Spring Security – HTTP headers not written) has **no released fix** in any version as of the current date. Monitor for a patched release.
-
-When adding new dependencies, always declare their versions in root `pom.xml` `<dependencyManagement>` so CVE override properties are applied transitively.
+| ❌ Never (in this project) | ✅ Always (in this project) |
+|---|---|
+| `new Button("Save")` (raw Vaadin) | `Components.button().text("Save").onClick(...)` |
+| `new TextField()`, `new EmailField()` for ordinary input | `Components.input.string(...)`, `Components.input.email(...)`, etc. |
+| `Grid<MyEntity>`, `DataProvider.fromCallbacks` | `Components.listing.properties(MyEntity.PROPERTY_SET).dataSource(...)` |
+| `new HorizontalLayout()`, `new FormLayout()` when a fluent builder fits | `Components.layout.horizontal().append(...)` / `Components.layout.form(...)` |
+| `@Route("foo")` + `UI.navigate(...)` | `@View("foo")` + `Navigator.get().navigateTo("foo")` |
+| `@RequestParam String id` on routes | `@QueryParameter("id")` on a typed field in the view |
+| `SecurityFilterChain` + `UserDetailsService` from scratch | Holon `Realm` + `AccountProvider` + `AuthContext` bean (`holon-starter-security`) |
+| `EntityManager` JPQL with strings | `Datastore` API with `DataTarget` + `QueryFilter` |
+| `RestTemplate` / raw `URLConnection` | `com.holonplatform.core.http.RestClient` |
+| Manual i18n `ResourceBundle.getBundle(...)` | `LocalizationContext` (`com.holonplatform.core.i18n`) wired into the UI |
+| Manual `Validator` framework (Jakarta Bean Validation alone) | Holon `Validator` + `Property.validator(...)` chains, composable with Bean Validation |
 
 ---
 
-## Lombok
+## 7. Maven configuration template
 
-Lombok is used throughout the codebase (`@Getter`, `@Setter`, `@Builder`, etc.). Declare it `provided` scope; it is already managed in the root `pom.xml` via `lombok.version`.
+Use this as the starting point for any new module in the project; replace starters only as the task requires.
+
+```xml
+<properties>
+  <java.version>25</java.version>
+  <maven.compiler.release>25</maven.compiler.release>
+  <vaadin.version>25.2.1</vaadin.version>
+  <spring-boot.version>4.1.0</spring-boot.version>
+  <holon.core.version>10.0.0</holon.core.version>
+  <holon.vaadin.version>10.0.0</holon.vaadin.version>
+  <holon.jdbc.datastore.version>10.0.0</holon.jdbc.datastore.version>
+  <holon.jpa.datastore.version>10.0.0</holon.jpa.datastore.version>
+</properties>
+
+<dependencyManagement>
+  <dependencies>
+    <!-- Spring Boot versions (Spring Framework, Security, etc.) -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-dependencies</artifactId>
+      <version>${spring-boot.version}</version>
+      <type>pom</type>
+      <scope>import</scope>
+    </dependency>
+    <!-- Vaadin component versions -->
+    <dependency>
+      <groupId>com.vaadin</groupId>
+      <artifactId>vaadin-bom</artifactId>
+      <version>${vaadin.version}</version>
+      <type>pom</type>
+      <scope>import</scope>
+    </dependency>
+    <!-- Holon core modules -->
+    <dependency>
+      <groupId>com.holon-platform.core</groupId>
+      <artifactId>holon-bom</artifactId>
+      <version>${holon.core.version}</version>
+      <type>pom</type>
+      <scope>import</scope>
+    </dependency>
+    <!-- Holon Vaadin Flow modules -->
+    <dependency>
+      <groupId>com.holon-platform.vaadin</groupId>
+      <artifactId>holon-vaadin-flow-bom</artifactId>
+      <version>${holon.vaadin.version}</version>
+      <type>pom</type>
+      <scope>import</scope>
+    </dependency>
+  </dependencies>
+</dependencyManagement>
+
+<dependencies>
+  <!-- Core (Property/Datastore/Auth/etc.) — version comes from holon-bom -->
+  <dependency>
+    <groupId>com.holon-platform.core</groupId>
+    <artifactId>holon-core</artifactId>
+  </dependency>
+
+  <!-- Vaadin Flow + components + navigator — versions come from holon-vaadin-flow-bom -->
+  <dependency>
+    <groupId>com.holon-platform.vaadin</groupId>
+    <artifactId>holon-vaadin-flow</artifactId>
+  </dependency>
+  <dependency>
+    <groupId>com.holon-platform.vaadin</groupId>
+    <artifactId>holon-vaadin-flow-navigator</artifactId>
+  </dependency>
+
+  <!-- Spring Boot starter for Vaadin Flow (replaces raw vaadin-spring-boot starter) -->
+  <dependency>
+    <groupId>com.holon-platform.vaadin</groupId>
+    <artifactId>holon-starter-vaadin-flow</artifactId>
+  </dependency>
+
+  <!-- Security (if auth needed) -->
+  <dependency>
+    <groupId>com.holon-platform.core</groupId>
+    <artifactId>holon-starter-security</artifactId>
+  </dependency>
+
+  <!-- Datastore: pick exactly one of jdbc/jpa/mongo -->
+  <!--
+  <dependency>
+    <groupId>com.holon-platform.jdbc</groupId>
+    <artifactId>holon-starter-jdbc-datastore-hikaricp</artifactId>
+    <version>${holon.jdbc.datastore.version}</version>
+  </dependency>
+  OR for JPA with Hibernate:
+  <dependency>
+    <groupId>com.holon-platform.jpa</groupId>
+    <artifactId>holon-starter-jpa-hibernate</artifactId>
+    <version>${holon.jpa.datastore.version}</version>
+  </dependency>
+  -->
+</dependencies>
+```
+
+**Rules for the `pom.xml`:**
+- Import `holon-bom` (core) and `holon-vaadin-flow-bom` (vaadin) — do **not** use the old combined `com.holon-platform:bom` (no 10.x release). See §3.5 for the complete import stack.
+- Do NOT add `com.vaadin:vaadin-core` or any Vaadin `*-flow` component artifact (`vaadin-button-flow`, `vaadin-textfield-flow`, …) when the Holon side covers it. The Holon starter brings Vaadin Flow transitively with the integration already wired.
+- Pin JDBC/JPA Datastore versions explicitly via properties (`${holon.jdbc.datastore.version}`, `${holon.jpa.datastore.version}`) — they are **not** part of `holon-bom`.
+- One Datastore starter per app.
+
+---
+
+## 8. Java baseline
+
+This project targets **Java 25** (`maven.compiler.release=25`). Use Java 25 language features freely (records, pattern matching, sealed classes, virtual threads, etc.). Do **not** pull in older Java syntax or libraries targeting Java 8. The minimum Holon Platform 10.x requires Java 17+; this project runs at 25.
+
+---
+
+## 9. Self-check before you respond
+
+Before you send code to the user, scan your draft and answer these out loud (in your thinking):
+
+1. Did I import `com.vaadin.flow.component.*` for a component Holon provides via `Components.*`? → **rewrite it**.
+2. Did I write `@Route(...)` instead of `@View(...)`? → **rewrite it**.
+3. Did I instantiate `Datastore` via `EntityManagerFactoryBuilder`? → rewrite using Holon's `Datastore` bean (auto-configured by the starter).
+4. Did I hand-code a `SecurityFilterChain`? → rewrite using `Realm` + `AuthContext`.
+5. Did I write a `Validator` from scratch? → use `Property.validator(...)` chains.
+6. Is any Holon dependency declared without the correct BOM import (`holon-bom:10.0.0` + `holon-vaadin-flow-bom:10.0.0`)? → fix the `pom.xml`. See §3.5 and §7.
+7. Did I forget `@QueryParameter` typed binding and use `@RequestParam` instead? → rewrite.
+8. Did I name a class using Vaadin conventions instead of Holon ones (e.g. `MyView` annotated `@Route` vs `@View`)?
+9. Did I leave any TODO like "use Holon here later"? → fix it now.
+10. If I'm not sure a class exists in Holon, did I check the local Maven repo (§10) or the linked reference docs (§11) before answering?
+
+**Performance (this app runs at ~10k concurrent users — see §14):**
+
+11. Did I call `.findMany()` on a UI-bound `Datastore` query without `.limit(...)` / paging? → page it.
+12. Did I add a `.filter(Property.eq(...))` without a backing DB index? → add the index.
+13. Did I put `@SessionScope` on a bean that holds a big/unsized collection? → scope it tighter or move to request scope.
+14. Did I block a Vaadin event handler on a slow I/O call (DB / HTTP / third-party)? → make it async (`CompletableFuture.supplyAsync(...)` + `UI.access(...)`), or use `holon-async-datastore` / `holon-async-http`.
+15. Did I add a new endpoint / hot-path bean without a Micrometer counter or timer? → instrument it.
+16. Did I touch the connection-pool, cache, or Vaadin push/prod-mode config without re-checking it? → re-check.
+17. Is this change on a "hot path" (main listing, form submit, auth, any Datastore query)? → load-test before declaring done (k6 / Gatling at the target concurrency).
+
+If any answer is "yes / I didn't check / I guessed", fix it before responding.
+
+---
+
+## 10. How to read the local Maven repo (the user said latest `holon-core` is already there)
+
+When the user mentions a specific Holon version, or asks "what's available", inspect:
+
+```
+~/.m2/repository/com/holon-platform/core/holon-core/
+~/.m2/repository/com/holon-platform/vaadin/holon-vaadin-flow/
+~/.m2/repository/com/holon-platform/vaadin/holon-vaadin-flow-navigator/
+~/.m2/repository/com/holon-platform/core/holon-spring-security/
+~/.m2/repository/com/holon-platform/core/holon-auth/
+```
+
+Use `ls` or `find ~/.m2/repository/com/holon-platform -maxdepth 4 -type d | sort`. The highest numeric directory under each artifact is the version actually installed locally. Prefer that version in the `pom.xml` to avoid network calls. If the user told you a specific version, use that.
+
+---
+
+## 11. Reference docs (use them, don't guess)
+
+If you are not 100% sure a class/method exists, check before writing:
+
+- Core: https://docs.holon-platform.com/current/reference/holon-core.html
+- Vaadin Flow module: https://docs.holon-platform.com/current/reference/holon-vaadin-flow.html
+- Module index: https://holon-platform.com/modules/
+- Tutorials: https://holon-platform.com/tutorials/
+- Source (canonical Java types): https://github.com/holon-platform (per-module repos under the `holon-platform` org)
+- The Bakery demo end-to-end (Property model → JPA Datastore → Vaadin UI → Spring Security Auth): https://holon-platform.com/blog/the-bakery-project-a-vaadin-flow-full-stack-demo-application/
+
+When in doubt, browse the source on GitHub for the exact class signature; that's authoritative. Never invent a method name.
+
+---
+
+## 12. When to ask the user
+
+Stop and ask (instead of guessing) when:
+- Two Holon modules could fit and the trade-off matters (e.g. JDBC Datastore vs JPA Datastore — different dev model).
+- The user asks for "real" Vaadin (the Holon abstractions get in their way) — confirm before bypassing Holon.
+- The user gave no version info and the local Maven repo has multiple Holon versions cached — pick the newest or ask.
+- A specific Holon class/API is not in your training data and you cannot verify it from the local jar or the docs in §11 — ask or read the source.
+
+Don't ask when:
+- The choice is obvious (e.g. "use `Components.input.form(...)` for a form").
+- The version is pinned in the repo's existing `pom.xml` — match it.
+- The Holon-side solution is the only one in this file.
+
+---
+
+## 13. Performance — designed for 10k concurrent users
+
+This app runs at **~10,000 concurrent users**. Every line of code you write must assume it runs 10,000× in parallel. **Default to the cheap option.** When a fast path and a convenient path are equally clear, pick the fast one. Be especially careful in the auth path, the main listing, and any Datastore-backed screen — those are the real hot paths.
+
+### 13.1 Database / Datastore
+- **Always paginate.** `Components.listing.properties(...)` defaults to paging — keep it that way. Never pass an unbounded `Datastore.query().target(...).findMany()` to a UI listing. Use `.limit(n)` with paging.
+- **No N+1.** If a loop calls `datastore.findOne(...)` while iterating another result, fix it (join, batch, or `Property` pre-fetch).
+- **Indexes.** Every `Property` referenced in `.filter(...)` or `.sort(...)` must have a backing DB index. Don't ship SQL/JPQL without them.
+- **Pool sizing.** With 10k users, configure HikariCP `maximum-pool-size` ≈ `users × 0.1` (≈1000 max, subject to the DB hard cap), and set `connectionTimeout` < the HTTP request timeout so the pool can't deadlock under burst.
+- **Async I/O.** Any call likely >50ms (DB query, HTTP, third-party API) → use `holon-async-datastore` / `holon-async-http`, or off-thread it. Never block the request thread.
+- **Cache hot reads.** Wrap read-heavy paths (e.g. `AccountProvider`, lookup-by-id) in Spring `@Cacheable` with Caffeine or a distributed cache. Invalidate deliberately on writes.
+
+### 13.2 Vaadin sessions (1 per user → ~10k sessions in memory)
+- Vaadin creates **one HTTP session per user**. 10k sessions × ~50KB ≈ **500MB minimum**. Budget session-scoped beans accordingly.
+- `@SessionScope` is **only** for auth context, locale, and small per-user prefs. **No** big collections, no caches, no non-serializable state.
+- **No blocking in event handlers.** UI handlers run on the Vaadin session lock. Slow ops use `CompletableFuture.supplyAsync(...)` and re-enter with `UI.access(...)`.
+- **`@Push`** must be enabled (websocket, not long-polling) so the server can deliver updates without per-user polling overhead.
+- **Production mode.** Always `vaadin.productionMode=true` / the prod bundle. Never ship dev-mode bundles to 10k users.
+
+### 13.3 Allocation, logging, concurrency
+- `Property` / `PropertySet` / `DataTarget` definitions are **`static final` constants** — reuse them, don't allocate per request.
+- Don't `toString()` a large object graph in a log. Log the **business event** at INFO; keep DEBUG behind a runtime guard.
+- `ConcurrentHashMap` over `Collections.synchronizedMap`. `AtomicInteger` / `AtomicLong` over `synchronized` counters. **Never lock across I/O.**
+- Use `volatile` correctly for double-checked init; reach for `j.u.concurrent` types instead of hand-rolled waiting.
+
+### 13.4 Auth at scale
+- Hash passwords with **bcrypt** or **Argon2** (Holon `Credentials.Encoder.HASH_BCRYPT` / `HASH_ARGON2`), never SHA-anything from 2008.
+- If using JWT (`holon-auth-jwt`), **cache the signer** — don't re-resolve keys per request.
+- **Rate-limit failed logins** via the `Authenticator`/`Authorizer` extension. This is your DOS shield.
+- Session-fixation protection and CSRF on by default — verify `holon-starter-security` doesn't strip them.
+
+### 13.5 Observability — you can't fix what you can't see
+- Every bean on a hot path must emit a Micrometer metric (`@Timed`, `MeterRegistry.counter(...)`). Datastore query duration, `AuthContext` access, cache hit ratio — instrument them.
+- `/actuator/prometheus` must exist and be scraped. If you add an endpoint, don't skip instrumentation.
+
+### 13.6 Definition of done (perf)
+A change touching the main listing, the form submission, the Datastore query path, the auth flow, or anything tagged "hot path" is **not done** until it's been load-tested at the target concurrency (Gatling / k6 / JMeter). Suggested ramp before merge:
+```
+k6 run --vus 1000 --duration 5m ...   # ramp and watch p95 latency + error rate
+```
+If you cannot run a load test locally, write a quick k6/Gatling script in the PR and call it out — do **not** declare done silently.
+
+---
+
+## 14. TL;DR for the inattentive
+
+```
+Holon module?  Yes → use it.
+Vaadin core?   No  → use Components.* via holon-vaadin-flow.
+Spring Sec?    No  → use Realm/AuthContext via holon-spring-security + holon-starter-security.
+JPA EMF?       No  → use Datastore via holon-datastore-jpa + holon-spring-boot.
+Routing?       No  → use @View + Navigator via holon-vaadin-flow-navigator.
+Tests start?   Yes → holon-starter-test (core) or holon-vaadin-flow-test (UI).
+BOM?           Yes → holon-bom:10.0.0 (core) + holon-vaadin-flow-bom:10.0.0 (vaadin). See §3.5.
+Hot path?      Page, index, cache, async; keep @SessionScope small; load-test before merge.
+```
+
+When in doubt: read §5 (decision trees) and §6 (don't/do table). When still in doubt: §11. Perf concerns start at §13.

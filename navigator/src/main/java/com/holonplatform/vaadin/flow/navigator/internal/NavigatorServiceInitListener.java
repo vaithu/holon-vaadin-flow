@@ -15,6 +15,7 @@
  */
 package com.holonplatform.vaadin.flow.navigator.internal;
 
+import java.io.Serial;
 import java.util.ServiceLoader;
 
 import com.holonplatform.core.internal.Logger;
@@ -36,6 +37,7 @@ import com.vaadin.flow.server.VaadinServiceInitListener;
  */
 public class NavigatorServiceInitListener implements VaadinServiceInitListener {
 
+	@Serial
 	private static final long serialVersionUID = 7465077536980858875L;
 
 	private static final Logger LOGGER = VaadinLogger.create();

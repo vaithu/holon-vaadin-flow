@@ -15,6 +15,7 @@
  */
 package com.holonplatform.vaadin.flow.internal.components;
 
+import java.io.Serial;
 import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
@@ -33,6 +34,7 @@ import com.vaadin.flow.component.Component;
  */
 public class ViewComponentAdapter<C extends Component, T> extends AbstractViewComponent<C, T> {
 
+	@Serial
 	private static final long serialVersionUID = -8212334069453034725L;
 
 	private final Function<T, C> componentProvider;

@@ -1,12 +1,14 @@
 package com.holonplatform.vaadin.flow.vaadinplus.components;
 
-import com.iyensoft.vaadin.flow.enums.MaterialSymbol;
+import java.io.Serial;
 import com.vaadin.flow.component.ClickEvent;
 import com.holonplatform.vaadin.flow.components.Components;
+import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.html.ListItem;
 import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.icon.VaadinIcon;
 
 /**
  * Ellipsis placeholder used to collapse the middle section of a long {@link Breadcrumb} trail.
@@ -18,7 +20,7 @@ import com.vaadin.flow.component.html.Span;
  *         aria-hidden="true"
  *         aria-label="More"
  *         role="presentation"&gt;
- *     &lt;span class="breadcrumb__ellipsis-icon"&gt;•••&lt;/span&gt;  &lt;!-- default --&gt;
+ *     &lt;span class="breadcrumb__ellipsis-icon"&gt;â€¢â€¢â€¢&lt;/span&gt;  &lt;!-- default --&gt;
  *   &lt;/span&gt;
  * &lt;/li&gt;
  * </pre>
@@ -27,7 +29,7 @@ import com.vaadin.flow.component.html.Span;
  * is too long for the available space. Typically you show the first and last items and collapse
  * the middle ones behind this component, which can reveal them via a dropdown or tooltip on click.</p>
  *
- * <p>Usage (static "…" indicator):</p>
+ * <p>Usage (static "â€¦" indicator):</p>
  * <pre>{@code
  * breadcrumb.addWithSeparators(
  *     new BreadcrumbItem("Home",         HomeView.class),
@@ -50,6 +52,7 @@ import com.vaadin.flow.component.html.Span;
  */
 public class BreadcrumbEllipsis extends ListItem {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     private final Span ellipsis;
@@ -59,24 +62,37 @@ public class BreadcrumbEllipsis extends ListItem {
     // -----------------------------------------------------------------------
 
     /**
-     * Creates an ellipsis with the default "•••" indicator.
+     * Creates an ellipsis with the default "â€¢â€¢â€¢" indicator.
      */
     public BreadcrumbEllipsis() {
         this((Component) null);
     }
 
     /**
-     * Creates an ellipsis using a {@link MaterialSymbol} icon.
+     * Creates an ellipsis using a {@link VaadinIcon} icon.
      *
-     * @param symbol the icon to use as the ellipsis indicator (not null)
+     * @param icon the icon to use as the ellipsis indicator (not null)
      */
-    public BreadcrumbEllipsis(MaterialSymbol symbol) {
-        this(symbol != null ? symbol.create("breadcrumb__ellipsis-icon") : null);
+    public BreadcrumbEllipsis(VaadinIcon icon) {
+        addClassName("breadcrumb__item");
+        this.ellipsis = Components.span().styleName("breadcrumb__ellipsis").build();
+        this.ellipsis.getElement().setAttribute("aria-hidden", "true");
+        this.ellipsis.getElement().setAttribute("aria-label",
+                LocalizationProvider.localize("More", "breadcrumb.ellipsis.aria_label"));
+        this.ellipsis.getElement().setAttribute("role", "presentation");
+        if (icon != null) {
+            var ic = icon.create();
+            ic.addClassName("breadcrumb__ellipsis-icon");
+            this.ellipsis.add(ic);
+        } else {
+            this.ellipsis.add(Components.span().text("â€¢â€¢â€¢").styleName("breadcrumb__ellipsis-icon").build());
+        }
+        add(this.ellipsis);
     }
 
     /**
      * Creates an ellipsis with a custom component as the indicator.
-     * Pass {@code null} to use the default "•••" glyph.
+     * Pass {@code null} to use the default "â€¢â€¢â€¢" glyph.
      *
      * @param customIcon the ellipsis indicator component, or {@code null} for the default
      */
@@ -85,13 +101,14 @@ public class BreadcrumbEllipsis extends ListItem {
 
         this.ellipsis = Components.span().styleName("breadcrumb__ellipsis").build();
         this.ellipsis.getElement().setAttribute("aria-hidden", "true");
-        this.ellipsis.getElement().setAttribute("aria-label", "More");
+        this.ellipsis.getElement().setAttribute("aria-label",
+                LocalizationProvider.localize("More", "breadcrumb.ellipsis.aria_label"));
         this.ellipsis.getElement().setAttribute("role", "presentation");
 
         if (customIcon != null) {
             this.ellipsis.add(customIcon);
         } else {
-            Span dots = Components.span().text("•••").styleName("breadcrumb__ellipsis-icon").build();
+            Span dots = Components.span().text("â€¢â€¢â€¢").styleName("breadcrumb__ellipsis-icon").build();
             this.ellipsis.add(dots);
         }
 
@@ -117,6 +134,5 @@ public class BreadcrumbEllipsis extends ListItem {
         this.ellipsis.addClickListener(listener);
     }
 }
-
 
 

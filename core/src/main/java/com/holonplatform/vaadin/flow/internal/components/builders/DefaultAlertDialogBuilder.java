@@ -39,6 +39,7 @@ public class DefaultAlertDialogBuilder
 
     @Override
     public AlertDialog build() {
+        applyPostProcessors();
         return getComponent();
     }
 }

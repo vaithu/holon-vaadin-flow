@@ -15,6 +15,7 @@
  */
 package com.holonplatform.vaadin.flow.internal.components;
 
+import java.io.Serial;
 import java.util.Set;
 
 import com.holonplatform.core.Registration;
@@ -31,6 +32,7 @@ import com.holonplatform.vaadin.flow.components.ValidatableMultiSelect;
 public class ValidatableMultiSelectAdapter<T> extends AbstractValidatableInputAdapter<Set<T>, MultiSelect<T>>
 		implements ValidatableMultiSelect<T> {
 
+	@Serial
 	private static final long serialVersionUID = -2291397152828158839L;
 
 	/**

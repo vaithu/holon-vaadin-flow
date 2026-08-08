@@ -151,7 +151,7 @@ public class ExampleListing {
 	}
 
 	public void listing7() {
-		PropertyBox itemToRefresh = null;
+		PropertyBox itemToRefresh = PropertyBox.builder(SUBJECT).build();
 		// tag::listing7[]
 		PropertyListing listing = PropertyListing.builder(SUBJECT).dataSource(getDataProvider()).build(); // <1>
 
@@ -383,7 +383,7 @@ public class ExampleListing {
 	}
 
 	public void listing22() {
-		PropertyBox myItem = null;
+		PropertyBox myItem = PropertyBox.builder(SUBJECT).build();
 		// tag::listing22[]
 		PropertyListing listing = PropertyListing.builder(SUBJECT) //
 				.selectionMode(SelectionMode.SINGLE) // <1>
@@ -406,7 +406,7 @@ public class ExampleListing {
 
 	@SuppressWarnings("null")
 	public void listing23() {
-		PropertyListing listing = null;
+		PropertyListing listing = PropertyListing.builder(SUBJECT).build();
 		// tag::listing23[]
 		PropertyListing.builder(SUBJECT) //
 				.editable() // <1>

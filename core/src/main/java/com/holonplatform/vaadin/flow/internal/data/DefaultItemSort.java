@@ -15,6 +15,7 @@
  */
 package com.holonplatform.vaadin.flow.internal.data;
 
+import java.io.Serial;
 import com.holonplatform.vaadin.flow.data.ItemSort;
 
 /**
@@ -26,6 +27,7 @@ import com.holonplatform.vaadin.flow.data.ItemSort;
  */
 public class DefaultItemSort<PROPERTY> implements ItemSort<PROPERTY> {
 
+	@Serial
 	private static final long serialVersionUID = 6547344951159124335L;
 
 	private final PROPERTY property;

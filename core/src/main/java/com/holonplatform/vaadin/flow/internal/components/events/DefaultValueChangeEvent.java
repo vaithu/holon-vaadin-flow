@@ -15,6 +15,7 @@
  */
 package com.holonplatform.vaadin.flow.internal.components.events;
 
+import java.io.Serial;
 import com.holonplatform.core.internal.utils.ObjectUtils;
 import com.holonplatform.vaadin.flow.components.ValueHolder;
 import com.holonplatform.vaadin.flow.components.ValueHolder.ValueChangeEvent;
@@ -28,6 +29,7 @@ import com.holonplatform.vaadin.flow.components.ValueHolder.ValueChangeEvent;
  */
 public class DefaultValueChangeEvent<V> implements ValueChangeEvent<V> {
 
+	@Serial
 	private static final long serialVersionUID = 1L;
 
 	private final ValueHolder<V, ?> source;

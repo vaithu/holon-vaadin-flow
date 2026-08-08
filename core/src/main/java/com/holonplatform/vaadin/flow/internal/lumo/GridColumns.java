@@ -16,7 +16,7 @@ public enum GridColumns {
 
     private final String className;
 
-    private GridColumns(String className) {
+    GridColumns(String className) {
         this.className = className;
     }
 

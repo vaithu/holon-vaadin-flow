@@ -21,7 +21,6 @@ import com.holonplatform.vaadin.flow.components.PropertyInputForm;
 import com.holonplatform.vaadin.flow.components.builders.ButtonBuilder;
 import com.holonplatform.vaadin.flow.components.builders.ButtonConfigurator;
 import com.holonplatform.vaadin.flow.components.builders.ButtonConfigurator.BaseButtonConfigurator;
-import com.holonplatform.vaadin.flow.components.builders.DialogBuilder;
 import com.holonplatform.vaadin.flow.components.builders.DialogBuilder.ConfirmDialogBuilder;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dialog.Dialog;
@@ -45,7 +44,7 @@ public class DefaultConfirmDialogBuilder extends AbstractClosableDialogConfigura
     public DefaultConfirmDialogBuilder() {
         super();
         this.okButton = ButtonBuilder.create()
-                .text(Localizable.of("OK", DialogBuilder.DEFAULT_OK_BUTTON_MESSAGE_CODE))
+                .text(Localizable.of("OK", DEFAULT_OK_BUTTON_MESSAGE_CODE))
                 .styleName("h-dialog__action-btn")
                 .withClickListener(e -> getComponent().attemptClose())
                 .build();
@@ -60,7 +59,7 @@ public class DefaultConfirmDialogBuilder extends AbstractClosableDialogConfigura
     public DefaultConfirmDialogBuilder(PropertyInputForm inputForm) {
         super();
         this.okButton = ButtonBuilder.create()
-                .text(Localizable.of("OK", DialogBuilder.DEFAULT_OK_BUTTON_MESSAGE_CODE))
+                .text(Localizable.of("OK", DEFAULT_OK_BUTTON_MESSAGE_CODE))
                 .styleName("h-dialog__action-btn")
                 .withClickListener(e -> {
                     if (inputForm.isValid()) getComponent().attemptClose();
@@ -74,7 +73,7 @@ public class DefaultConfirmDialogBuilder extends AbstractClosableDialogConfigura
 
     private Button buildCancelButton() {
         return ButtonBuilder.create()
-                .text(Localizable.of("Cancel", DialogBuilder.DEFAULT_DENY_BUTTON_MESSAGE_CODE))
+                .text(Localizable.of("Cancel", DEFAULT_DENY_BUTTON_MESSAGE_CODE))
                 .styleName("h-dialog__cancel-btn")
                 .withClickListener(e -> getComponent().attemptClose())
                 .build();

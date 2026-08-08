@@ -10,17 +10,24 @@ import com.holonplatform.core.query.QuerySort;
 import com.holonplatform.vaadin.flow.components.*;
 import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
 import com.holonplatform.vaadin.flow.vaadinplus.components.DynamicFilterPanel;
+import com.holonplatform.vaadin.flow.vaadinplus.components.Empty;
 import com.iyensoft.vaadin.flow.enums.ViewMode;
 import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.DetachEvent;
+import com.vaadin.flow.component.contextmenu.MenuItem;
+import com.vaadin.flow.component.contextmenu.SubMenu;
 import com.vaadin.flow.component.grid.ItemClickEvent;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.menubar.MenuBar;
+import com.vaadin.flow.component.menubar.MenuBarVariant;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.provider.CallbackDataProvider;
 import com.vaadin.flow.data.provider.QuerySortOrder;
+import com.vaadin.flow.data.renderer.ComponentRenderer;
+import com.vaadin.flow.data.renderer.LitRenderer;
 import com.vaadin.flow.data.renderer.Renderer;
 import com.vaadin.flow.dom.DomEventListener;
 import com.vaadin.flow.dom.Element;
@@ -77,6 +84,11 @@ public abstract class AbstractListingBundleConfigurer<T, C extends ListingBundle
     private Renderer<T> mobileColumnRenderer;
     private boolean mobileViewColumn;
     private String mobileViewHeaderText;
+    private Consumer<ItemListing<T, ?>> postProcessor;
+    private final List<ListingBundleConfigurer.RowAction<T>> rowActions = new ArrayList<>();
+    private boolean highPerformanceActions;
+    private Empty emptyState;
+    private Empty noResultsState;
 
     protected AbstractListingBundleConfigurer(Class<T> beanType) {
         this.beanType = Objects.requireNonNull(beanType, "beanType must not be null");
@@ -293,6 +305,78 @@ public abstract class AbstractListingBundleConfigurer<T, C extends ListingBundle
         return getConfigurator();
     }
 
+    @Override
+    public C withListingPostProcessor(Consumer<ItemListing<T, ?>> postProcessor) {
+        this.postProcessor = Objects.requireNonNull(postProcessor);
+        return getConfigurator();
+    }
+
+    @Override
+    public C withEditAction(Consumer<T> onEdit) {
+        rowActions.add(ListingBundleConfigurer.RowAction.of(VaadinIcon.EDIT, "Edit", Objects.requireNonNull(onEdit)));
+        return getConfigurator();
+    }
+
+    @Override
+    public C withDeleteAction(Consumer<T> onDelete) {
+        rowActions.add(ListingBundleConfigurer.RowAction.of(
+                VaadinIcon.TRASH, "Delete", Objects.requireNonNull(onDelete), true));
+        return getConfigurator();
+    }
+
+    @Override
+    public C withRowAction(VaadinIcon icon, String label, Consumer<T> handler) {
+        rowActions.add(ListingBundleConfigurer.RowAction.of(
+                icon,
+                Objects.requireNonNull(label),
+                Objects.requireNonNull(handler)));
+        return getConfigurator();
+    }
+
+    @Override
+    public C withRowAction(String label, Consumer<T> handler) {
+        rowActions.add(ListingBundleConfigurer.RowAction.of(
+                Objects.requireNonNull(label),
+                Objects.requireNonNull(handler)));
+        return getConfigurator();
+    }
+
+    @Override
+    public C withHighPerformanceActions() {
+        this.highPerformanceActions = true;
+        return getConfigurator();
+    }
+
+    @Override
+    public C emptyState(Empty emptyState) {
+        this.emptyState = Objects.requireNonNull(emptyState, "emptyState must not be null");
+        return getConfigurator();
+    }
+
+    @Override
+    public C emptyState() {
+        return emptyState(Empty.builder()
+                .icon(new Icon(VaadinIcon.INBOX))
+                .title(LocalizationProvider.localize("No items", "listing.empty_title"))
+                .description(LocalizationProvider.localize("There are no items to display.", "listing.empty_description"))
+                .build());
+    }
+
+    @Override
+    public C noResultsState(Empty noResultsState) {
+        this.noResultsState = Objects.requireNonNull(noResultsState, "noResultsState must not be null");
+        return getConfigurator();
+    }
+
+    @Override
+    public C noResultsState() {
+        return noResultsState(Empty.builder()
+                .icon(new Icon(VaadinIcon.SEARCH))
+                .title(LocalizationProvider.localize("No results found", "listing.no_results_title"))
+                .description(LocalizationProvider.localize("No records match the current search or filter criteria. Try adjusting your search.", "listing.no_results_description"))
+                .build());
+    }
+
     // ── Shared build logic ────────────────────────────────────────────────────
 
     /**
@@ -338,6 +422,15 @@ public abstract class AbstractListingBundleConfigurer<T, C extends ListingBundle
             }
         }
 
+        // ── Actions column ────────────────────────────────────────────────────
+        if (!rowActions.isEmpty()) {
+            if (highPerformanceActions) {
+                addHighPerformanceActionColumn(grid, List.copyOf(rowActions));
+            } else {
+                addActionColumn(grid, List.copyOf(rowActions));
+            }
+        }
+
         var bar = new ItemListingPaginationBar<>(listing);
 
         TextField search = null;
@@ -362,8 +455,7 @@ public abstract class AbstractListingBundleConfigurer<T, C extends ListingBundle
 
         var sb = (ItemListingPageSizeSelector.Builder) ItemListingPageSizeSelector.of(listing);
         sb.withOptions(new ArrayList<>(pageSizes));
-        int effectiveDefaultPageSize = paginatedMode ? defaultPageSize : Math.max(defaultPageSize, 50);
-        sb.withDefaultSize(effectiveDefaultPageSize);
+        sb.withDefaultSize(defaultPageSize);
         sb.withPaginationBar(bar);
 
         if (fetchCallback != null || filteredFetchCallback != null || columnAwareFilteredFetchCallback != null) {
@@ -372,15 +464,19 @@ public abstract class AbstractListingBundleConfigurer<T, C extends ListingBundle
                         "Use .fetch((q, text, filter, sort) -> ...) so the filter is applied to your query.");
             }
             final List<String> fColumns = List.copyOf(columns);
+            final ListingBundleConfigurer.FetchCallback<T> fCallback = this.fetchCallback;
+            final ListingBundleConfigurer.FilteredFetchCallback<T> fFiltered = this.filteredFetchCallback;
+            final ListingBundleConfigurer.ColumnAwareFilteredFetchCallback<T> fColAware = this.columnAwareFilteredFetchCallback;
+            final Class<T> fBeanType = this.beanType;
             CallbackDataProvider.FetchCallback<T, Void> wrappedFetch = q -> {
                 String text = fSearch != null ? fSearch.getValue() : "";
                 QueryFilter qf = fPanel != null ? fPanel.getQueryFilter().orElse(null) : null;
-                QuerySort sort = toQuerySort(q.getSortOrders());
-                if (columnAwareFilteredFetchCallback != null)
-                    return columnAwareFilteredFetchCallback.fetch(q, text, qf, sort, fColumns);
-                if (filteredFetchCallback != null)
-                    return filteredFetchCallback.fetch(q, text, qf, sort);
-                return fetchCallback.fetch(q, text, sort);
+                QuerySort sort = toQuerySort(q.getSortOrders(), fBeanType);
+                if (fColAware != null)
+                    return fColAware.fetch(q, text, qf, sort, fColumns);
+                if (fFiltered != null)
+                    return fFiltered.fetch(q, text, qf, sort);
+                return fCallback.fetch(q, text, sort);
             };
             sb.withLazyFetch(wrappedFetch, null);
         }
@@ -396,10 +492,125 @@ public abstract class AbstractListingBundleConfigurer<T, C extends ListingBundle
 
         ItemListingPageSizeSelector<T, ?> selector = sb.build();
 
-        return new ListingBundle<>(listing, bar, selector, search, panel,
+        // ── Post-processor ────────────────────────────────────────────────────
+        if (postProcessor != null) {
+            postProcessor.accept(listing);
+        }
+
+        ListingBundle<T> bundle = new ListingBundle<>(listing, bar, selector, search, panel,
                 menuActions, importAction, exportAction,
                 advancedSearchLabel, retainFilterValues,
-                gridHeaderTitle, gridHeaderContextComponents, columns, paginatedMode);
+                gridHeaderTitle, gridHeaderContextComponents, columns, paginatedMode,
+                emptyState, noResultsState);
+
+        // Wire item-count listener so the bundle can update empty-state visibility after each fetch.
+        if (emptyState != null || noResultsState != null) {
+            selector.setItemCountListener(bundle::onDataFetched);
+        }
+
+        return bundle;
+    }
+
+    /**
+     * Adds a frozen-to-end actions column to the grid.  Each row renders a
+     * {@code MenuBar} (tertiary-inline, icon-only) with an ellipsis trigger;
+     * clicking opens a sub-menu listing all registered {@link ListingBundleConfigurer.RowAction}s.
+     *
+     * <p><b>Cost:</b> O(rows) — one {@code MenuBar} instance per visible row.</p>
+     */
+    @SuppressWarnings("unchecked")
+    private void addActionColumn(com.vaadin.flow.component.grid.Grid<T> grid,
+                                 List<ListingBundleConfigurer.RowAction<T>> actions) {
+        var col = grid.addColumn(new ComponentRenderer<>(item -> {
+            MenuBar menuBar = new MenuBar();
+            menuBar.addThemeVariants(MenuBarVariant.LUMO_TERTIARY_INLINE);
+            menuBar.addClassName("action-column__menu");
+            MenuItem trigger = menuBar.addItem(new Icon(VaadinIcon.ELLIPSIS_DOTS_V));
+            SubMenu subMenu = trigger.getSubMenu();
+            for (ListingBundleConfigurer.RowAction<T> action : actions) {
+                MenuItem actionItem = subMenu.addItem(action.label(),
+                        e -> action.handler().accept(item));
+                if (action.icon() != null) {
+                    actionItem.addComponentAsFirst(new Icon(action.icon()));
+                }
+                if (action.destructive()) {
+                    actionItem.getElement().setAttribute("theme", "error");
+                }
+            }
+            return menuBar;
+        }));
+        col.setKey("__actions");
+        col.setHeader("");
+        col.setAutoWidth(true);
+        col.setFlexGrow(0);
+        col.setFrozenToEnd(true);
+        col.addClassName("action-column");
+    }
+
+    /**
+     * High-performance variant of the actions column.
+     *
+     * <p><b>Cost:</b> O(1) server-side — <em>zero</em> server-side components per row.
+     * The entire cell is rendered client-side by a {@code LitRenderer}: one icon button
+     * per registered action, each wired to its own {@code withFunction} handler.</p>
+     *
+     * <p><b>Correct Vaadin 25 {@code LitRenderer} pattern (from the official example):</b>
+     * <pre>{@code
+     * // Template: direct binding — no arrow-function wrapper
+     * @click="${action0}"
+     *
+     * // Java: item-only SerializableConsumer
+     * .withFunction("action0", item -> handler.accept(item))
+     * }</pre>
+     * An arrow-function wrapper {@code (e) => action0(...)} looks up {@code action0}
+     * as a closure variable in the browser scope, finds nothing, and silently does nothing.</p>
+     *
+     * <p><b>Visual:</b> renders individual icon buttons per row (e.g. [✏][🗑]) rather
+     * than a ⋮ dropdown.  For the ⋮ dropdown style omit {@code withHighPerformanceActions()}
+     * and use the default {@code ComponentRenderer} path.</p>
+     */
+    @SuppressWarnings("unchecked")
+    private void addHighPerformanceActionColumn(com.vaadin.flow.component.grid.Grid<T> grid,
+                                                List<ListingBundleConfigurer.RowAction<T>> actions) {
+        // Build the Lit template — one <vaadin-button> per action.
+        // Function names "action0", "action1", ... avoid any browser-global name collision.
+        StringBuilder tpl = new StringBuilder("<span class=\"action-column__wrap\">");
+        for (int i = 0; i < actions.size(); i++) {
+            ListingBundleConfigurer.RowAction<T> a = actions.get(i);
+            if (a.icon() != null) {
+                // EDIT → vaadin:edit,  ELLIPSIS_DOTS_V → vaadin:ellipsis-dots-v
+                String iconName = "vaadin:" + a.icon().name().toLowerCase().replace('_', '-');
+                // Destructive actions (e.g. Delete) get the "error" Lumo theme → red icon
+                String btnTheme = a.destructive() ? "icon tertiary error" : "icon tertiary";
+                tpl.append(String.format(
+                        "<vaadin-button theme=\"%s\" @click=\"${action%d}\" title=\"%s\">" +
+                        "<vaadin-icon icon=\"%s\"></vaadin-icon></vaadin-button>",
+                        btnTheme, i, a.label(), iconName));
+            } else {
+                String btnTheme = a.destructive() ? "tertiary error" : "tertiary";
+                tpl.append(String.format(
+                        "<vaadin-button theme=\"%s\" @click=\"${action%d}\">%s</vaadin-button>",
+                        btnTheme, i, a.label()));
+            }
+        }
+        tpl.append("</span>");
+
+        // Register one withFunction per action — the exact pattern from the Vaadin 25
+        // LitRenderer documentation. Each handler receives the row item directly.
+        LitRenderer<T> litRenderer = LitRenderer.of(tpl.toString());
+        for (int i = 0; i < actions.size(); i++) {
+            final ListingBundleConfigurer.RowAction<T> action = actions.get(i);
+            litRenderer = litRenderer.withFunction("action" + i,
+                    item -> action.handler().accept(item));
+        }
+
+        var col = grid.addColumn(litRenderer);
+        col.setKey("__actions");
+        col.setHeader("Actions");
+        col.setAutoWidth(true);
+        col.setFlexGrow(0);
+        col.setFrozenToEnd(true);
+        col.addClassName("action-column");
     }
 
     @SuppressWarnings({"rawtypes", "unchecked"})
@@ -499,7 +710,7 @@ public abstract class AbstractListingBundleConfigurer<T, C extends ListingBundle
         }
     }
 
-    private QuerySort toQuerySort(List<QuerySortOrder> sortOrders) {
+    private static QuerySort toQuerySort(List<QuerySortOrder> sortOrders, Class<?> beanType) {
         if (sortOrders == null || sortOrders.isEmpty()) return null;
         List<QuerySort> sorts = new ArrayList<>(sortOrders.size());
         for (QuerySortOrder order : sortOrders) {

@@ -11,14 +11,18 @@ import com.holonplatform.vaadin.flow.demo.data.entity.Product;
 import com.holonplatform.vaadin.flow.demo.data.service.ProductService;
 import com.holonplatform.vaadin.flow.demo.ui.DemoExample;
 import com.holonplatform.vaadin.flow.demo.ui.DemoMainLayout;
+import com.holonplatform.vaadin.flow.vaadinplus.components.Empty;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.Paragraph;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
 import java.math.BigDecimal;
+import java.util.stream.Stream;
+import java.util.stream.Stream;
 
 /**
  * Demo page for {@link com.holonplatform.vaadin.flow.components.ListingBundleBuilder} and
@@ -36,6 +40,8 @@ import java.math.BigDecimal;
  *   <li>Custom column headers</li>
  *   <li>PropertyBox variant via {@code Components.listing(PropertySet)}</li>
  *   <li>Accessing individual bundle components after build</li>
+ *   <li>Default empty state — shown when the dataset is genuinely empty</li>
+ *   <li>Both empty states — empty dataset vs search/filter that yields no results</li>
  * </ol>
  */
 @PageTitle("ListingBundle – Holon Demo")
@@ -51,7 +57,7 @@ public class ListingBundleDemoView extends Div {
     private static final PropertySet<?>           PB_SET      = PropertySet.of(PB_NAME, PB_CATEGORY, PB_PRICE, PB_ACTIVE);
 
     // ── Spring-injected service (Vaadin Spring manages route views as beans) ──
-    private final ProductService productService;
+    private final transient ProductService productService;
 
     public ListingBundleDemoView(ProductService productService) {
         this.productService = productService;
@@ -71,7 +77,9 @@ public class ListingBundleDemoView extends Div {
                 example4CustomPageSizes(),
                 example5CustomHeaders(),
                 example6PropertyBoxVariant(),
-                example7AccessComponents());
+                example7AccessComponents(),
+                example8EmptyState(),
+                example9BothEmptyStates());
     }
 
     // ── Example 1 — minimal bundle (no search, no filter panel) ─────────────
@@ -332,6 +340,102 @@ public class ListingBundleDemoView extends Div {
                 add(bundle.toolbar(),   // [Show 5▾ entries]  [🔍 Search…]
                     bundle.grid(),
                     bundle.footer());   // [Previous] [1] [2] [Next]
+                """);
+    }
+
+    // ── Example 8 — default empty state ──────────────────────────────────────
+    // The fetch callback always returns an empty stream, so the grid immediately
+    // shows the configured empty-state component instead of a blank grid.
+
+    private DemoExample example8EmptyState() {
+        var bundle = Components.listing(Product.class)
+                .columns("id", "name", "category", "price")
+                .pageSizes(5, 10)
+                .defaultPageSize(5)
+                .fetch((q, text, sort) -> Stream.empty())   // always empty → triggers emptyState
+                .emptyState()                               // default: INBOX icon + "No items"
+                .build();
+
+        return new DemoExample(
+                "8. Default empty state — shown when the dataset is genuinely empty",
+                bundle,
+                """
+                var bundle = Components.listing(Product.class)
+                    .columns("id", "name", "category", "price")
+                    .fetch((q, text, sort) -> Stream.empty())  // always empty → triggers emptyState
+                    .emptyState()   // activates the default: inbox icon + "No items"
+                    .build();
+
+                add(bundle);  // ListingBundle is a self-contained Div — just add it
+
+                // Custom empty state:
+                // .emptyState(Empty.builder()
+                //     .icon(new Icon(VaadinIcon.ARCHIVE))
+                //     .title("No products yet")
+                //     .description("Add your first product to get started.")
+                //     .action(new Button("Add product", e -> navigator.navigateTo(AddView.class)))
+                //     .build())
+                """);
+    }
+
+    // ── Example 9 — both empty states (empty dataset vs no-results) ───────────
+    // .emptyState()     → shown when no search/filter is active and the grid is empty
+    // .noResultsState() → shown when search text is entered but matches nothing
+    // Type "zzznomatch" in the search field to see the no-results state;
+    // clear the field to return to the empty-dataset state.
+
+    private DemoExample example9BothEmptyStates() {
+        var bundle = Components.listing(Product.class)
+                .columns("id", "name", "category", "price")
+                .pageSizes(5, 10)
+                .defaultPageSize(5)
+                .search("Search — type 'zzznomatch' to see no-results state…")
+                // Return real data only when the search text exactly matches a magic word so both
+                // empty states are reachable without adding a dedicated empty table.
+                .fetch((q, text, sort) -> text.isBlank()
+                        ? Stream.empty()                                                    // empty dataset
+                        : productService.fetch(q.getOffset(), q.getLimit(), text))          // real search
+                .emptyState(Empty.builder()
+                        .icon(new com.vaadin.flow.component.icon.Icon(VaadinIcon.INBOX))
+                        .title("No items")
+                        .description("The product catalogue is currently empty. Add your first product to get started.")
+                        .build())
+                .noResultsState(Empty.builder()
+                        .icon(new com.vaadin.flow.component.icon.Icon(VaadinIcon.SEARCH))
+                        .title("No results found")
+                        .description("No products match your search. Try different keywords or clear the search field.")
+                        .build())
+                .build();
+
+        return new DemoExample(
+                "9. Both empty states — empty dataset vs search returning no results",
+                bundle,
+                """
+                var bundle = Components.listing(Product.class)
+                    .columns("id", "name", "category", "price")
+                    .search("Search products…")
+                    .fetch((q, text, sort) -> text.isBlank()
+                            ? Stream.empty()                                        // triggers emptyState
+                            : productService.fetch(q.getOffset(), q.getLimit(), text))  // may trigger noResultsState
+                    // Shown when dataset is empty and NO search/filter is active:
+                    .emptyState(Empty.builder()
+                            .icon(new Icon(VaadinIcon.INBOX))
+                            .title("No items")
+                            .description("The product catalogue is currently empty.")
+                            .build())
+                    // Shown when search/filter is active but yields zero records:
+                    .noResultsState(Empty.builder()
+                            .icon(new Icon(VaadinIcon.SEARCH))
+                            .title("No results found")
+                            .description("No products match your search. Try different keywords.")
+                            .build())
+                    .build();
+
+                add(bundle);
+                // Detection is automatic — the bundle checks after every fetch whether:
+                //   count == 0 && no search/filter → emptyState
+                //   count == 0 && search or filter active → noResultsState
+                //   count > 0                      → grid (both empty states hidden)
                 """);
     }
 }

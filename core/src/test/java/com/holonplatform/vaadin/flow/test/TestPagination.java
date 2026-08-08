@@ -51,7 +51,8 @@ class TestPagination {
     @Test
     void pagination_hasAriaLabel() {
         Pagination p = new Pagination();
-        assertEquals("pagination", p.getElement().getAttribute("aria-label"));
+        // aria-label defaults to "Page navigation" (localizable; falls back to this English default)
+        assertEquals("Page navigation", p.getElement().getAttribute("aria-label"));
     }
 
     @Test

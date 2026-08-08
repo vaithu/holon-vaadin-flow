@@ -51,7 +51,7 @@ public interface SplitLayoutConfigurator<C extends SplitLayoutConfigurator<C>>
 
     }
 
-    public enum ToggleMode {
+    enum ToggleMode {
         PRIMARY_VISIBLE_ONLY,
         SECONDARY_VISIBLE_ONlY,
         BOTH_VISIBLE

@@ -1,5 +1,6 @@
 package com.holonplatform.vaadin.flow.spring.boot.test.demo;
 
+import java.io.Serial;
 import com.holonplatform.vaadin.flow.components.chartjs.ChartJs;
 import com.holonplatform.vaadin.flow.components.chartjs.ChartJsComponent;
 import com.holonplatform.vaadin.flow.components.chartjs.ChartType;
@@ -13,6 +14,7 @@ import com.vaadin.flow.router.Route;
 @Route("chartjs-demo")
 public class ChartJsDemoView extends VerticalLayout {
 
+	@Serial
 	private static final long serialVersionUID = 5634082114263453572L;
 
 	public ChartJsDemoView() {
@@ -34,4 +36,3 @@ public class ChartJsDemoView extends VerticalLayout {
 		add(chart);
 	}
 }
-

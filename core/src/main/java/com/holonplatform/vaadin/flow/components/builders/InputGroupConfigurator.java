@@ -163,7 +163,7 @@ public interface InputGroupConfigurator<P, T, G extends BoundComponentGroup<P, I
 	 * 
 	 * @since 5.2.0
 	 */
-	public interface PropertySetInputGroupConfigurator<G extends BoundComponentGroup<Property<?>, Input<?>>, C extends PropertySetInputGroupConfigurator<G, C>>
+	interface PropertySetInputGroupConfigurator<G extends BoundComponentGroup<Property<?>, Input<?>>, C extends PropertySetInputGroupConfigurator<G, C>>
 			extends InputGroupConfigurator<Property<?>, PropertyBox, G, C> {
 
 		/**
@@ -204,7 +204,7 @@ public interface InputGroupConfigurator<P, T, G extends BoundComponentGroup<P, I
 	 *
 	 * @since 5.5.7
 	 */
-	public interface BeanSetInputGroupConfigurator<T,G extends BoundComponentGroup<String, Input<?>>, C extends BeanSetInputGroupConfigurator<T,G, C>>
+	interface BeanSetInputGroupConfigurator<T,G extends BoundComponentGroup<String, Input<?>>, C extends BeanSetInputGroupConfigurator<T,G, C>>
 			extends InputGroupConfigurator<String, T, G, C> {
 
 		/**
@@ -246,7 +246,7 @@ public interface InputGroupConfigurator<P, T, G extends BoundComponentGroup<P, I
 	 * 
 	 * @since 5.2.0
 	 */
-	public interface BeanInputGroupConfigurator<T, G extends BoundComponentGroup<String, Input<?>>, C extends BeanInputGroupConfigurator<T, G, C>>
+	interface BeanInputGroupConfigurator<T, G extends BoundComponentGroup<String, Input<?>>, C extends BeanInputGroupConfigurator<T, G, C>>
 			extends InputGroupConfigurator<String, T, G, C> {
 
 		/**

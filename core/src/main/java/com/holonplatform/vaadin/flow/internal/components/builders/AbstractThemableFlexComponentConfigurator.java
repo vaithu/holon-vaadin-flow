@@ -250,8 +250,8 @@ public abstract class AbstractThemableFlexComponentConfigurator<L extends Compon
 	}
 
 	@Override
-	public C withPostProcessor(Consumer<FlexComponentConfigurator<C>> postProcessor) {
-		postProcessor.accept(this);
+	public C configure(Consumer<FlexComponentConfigurator<C>> configurator) {
+		configurator.accept(this);
 		return getConfigurator();
 	}
 }

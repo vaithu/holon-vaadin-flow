@@ -15,6 +15,7 @@
  */
 package com.holonplatform.vaadin.flow.navigator.internal.config;
 
+import java.io.Serial;
 import java.lang.reflect.Field;
 
 import com.holonplatform.core.internal.utils.ObjectUtils;
@@ -28,6 +29,7 @@ import com.holonplatform.vaadin.flow.navigator.internal.config.NavigationTargetC
 public class DefaultQueryParameterDefinition extends AbstractNavigationParameterDefinition
 		implements QueryParameterDefinition {
 
+	@Serial
 	private static final long serialVersionUID = 591184442885374074L;
 
 	private final String name;

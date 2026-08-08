@@ -145,6 +145,27 @@ vaadin-combo-box.filter-panel__op-sel::part(value) {
     animation : filter-value-in 0.15s ease;
 }
 
+/* ── Width-tier modifiers driven by @Column(length) / @Size(max) ──────────
+   Applied by DynamicFilterPanel alongside the base filter-panel__value-input
+   class. Tiers:
+     xs  1-10  chars  e.g. country code, status flag   →  max-width:  7 rem
+     sm  11-30 chars  e.g. short code, abbreviation    →  max-width: 14 rem
+     md  31-100 chars e.g. name, email                 →  max-width: 22 rem
+   Fields with columnLength=0 or >100 have no modifier (flex: 1 1 auto).
+   ────────────────────────────────────────────────────────────────────────── */
+.filter-panel__value-input--xs {
+    max-width : 7rem;
+    flex-grow : 0;
+}
+
+.filter-panel__value-input--sm {
+    max-width : 14rem;
+}
+
+.filter-panel__value-input--md {
+    max-width : 22rem;
+}
+
 .filter-panel__value-multi-select {
     flex      : 1 1 auto;
     min-width : 180px;

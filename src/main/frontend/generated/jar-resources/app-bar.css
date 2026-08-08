@@ -7,6 +7,10 @@
  *
  * Mobile  (< 640 px) — compact height (3 rem), tight padding.
  * Desktop (≥ 640 px) — standard height (3.5 rem), generous padding.
+ *
+ * Badge counter:
+ *   Uses a plain <div class="app-bar__badge-wrap"> wrapper (light DOM).
+ *   ::after on a regular div is never clipped by shadow-DOM overflow.
  */
 
 /* -----------------------------------------------------------------------
@@ -18,20 +22,17 @@
     align-items: center;
     gap: 0.5rem;
     width: 100%;
-    height: 3rem;                /* compact on mobile */
+    min-height: 3rem;
     box-sizing: border-box;
+    background: var(--surface-0, #ffffff);
     border-block-end: 1px solid var(--color-border, #e4e4e7);
     padding-inline: 0.75rem;
-    /* Respect iOS status bar / Dynamic Island */
     padding-block-start: env(safe-area-inset-top, 0);
-    /* NOTE: do NOT use position:sticky here — AppLayout's navbar slot is
-       already sticky/fixed; sticky inside a shadow-DOM slot has no effect
-       and can break stacking context. */
 }
 
 @media (min-width: 640px) {
     .app-bar {
-        height: 3.5rem;
+        min-height: 3.5rem;
         padding-inline: 1rem;
         gap: 1.5rem;
     }
@@ -44,7 +45,7 @@
 .app-bar__start {
     display: flex;
     align-items: center;
-    gap: 1rem;
+    gap: 0.5rem;
     overflow: hidden;
     flex-shrink: 1;
     min-width: 0;
@@ -75,54 +76,61 @@
 }
 
 /* -----------------------------------------------------------------------
- * Action icon buttons — end slot (notifications, lang, theme, etc.)
- *
- * SaaS reference pattern (Linear · GitHub · Vercel · Raycast):
- *   · 32 × 32 px square — icon-only, no label
- *   · 4 % black tint at rest — "clickable affordance" without being a box
- *   · 8 % fill + icon-to-primary on hover
- *   · Icon scales 1.1× for micro-interaction feedback
- *   · Red badge via [data-badge] attribute — no JS needed
- *   · 2 px focus ring on keyboard nav (accessibility)
+ * Action icon buttons — end slot
  * ----------------------------------------------------------------------- */
 
 .app-bar__action-btn {
-    --vaadin-button-background:    rgb(0 0 0 / 0.04);  /* barely-there resting tint  */
-    --vaadin-button-border-color:  transparent;
-    --vaadin-button-border-width:  0;
-    --vaadin-button-shadow:        none;
-    --vaadin-button-height:        2rem;
+    --vaadin-button-background:   transparent;
+    --vaadin-button-border-color: transparent;
+    --vaadin-button-border-width: 0;
+    --vaadin-button-shadow:       none;
+    --vaadin-button-height:       2rem;
     min-width:     2rem;
     border-radius: var(--radius-md, 8px);
     transition:    background var(--transition-fast, 120ms ease);
     box-shadow:    none;
 }
 
-/* Type+class wins over the :not() chain in vaadin-shell-theme.css */
 vaadin-button.app-bar__action-btn {
-    width:    2rem;
-    height:   2rem;
-    min-width: 2rem;
+    display:         inline-flex;
+    align-items:     center;
+    justify-content: center;
+    width:      2rem;
+    height:     2rem;
+    min-width:  2rem;
+    max-height: 2rem;
+    padding:    0;
     box-shadow: none;
-    position: relative;   /* anchor for ::after badge           */
-    overflow: visible;    /* allow ::after to extend outside bounds */
-    z-index:  0;          /* establish stacking context for badge  */
+    position:   relative;
+    overflow:   visible !important;
 }
 
-/* Icon — secondary tone at rest, primary on hover, subtle scale feedback */
-.app-bar__action-btn vaadin-icon {
-    width:  1.25rem;
-    height: 1.25rem;
-    color:  var(--text-secondary, #475569);
+/* WCAG 2.5.8 — expands tap area to ~44 px without inflating visual size */
+vaadin-button.app-bar__action-btn::before {
+    content:        '';
+    position:       absolute;
+    inset:          -0.375rem;
+    border-radius:  inherit;
+    pointer-events: auto;
+}
+
+/* Icon */
+vaadin-button.app-bar__action-btn vaadin-icon {
+    width:  1.125rem;
+    height: 1.125rem;
+    color:  var(--text-secondary, #64748b);
     transition:
         color     var(--transition-fast, 120ms ease),
         transform var(--transition-fast, 120ms ease);
-    flex-shrink: 0;
+    flex-shrink:    0;
+    pointer-events: none;
+    position:       relative;
+    z-index:        1;
 }
 
-/* Hover: deeper fill + brighter icon + scale nudge */
+/* Hover */
 vaadin-button.app-bar__action-btn:not([disabled]):hover {
-    --vaadin-button-background: rgb(0 0 0 / 0.08);
+    --vaadin-button-background: rgb(0 0 0 / 0.06);
     box-shadow: none;
 }
 
@@ -131,55 +139,62 @@ vaadin-button.app-bar__action-btn:not([disabled]):hover vaadin-icon {
     transform: scale(1.1);
 }
 
-/* Focus ring — keyboard accessibility.
-   [focus-ring] is set by Vaadin JS during Tab navigation only.
-   Universal rule in vaadin-shell-theme.css section 4b also handles this;
-   explicit rule here ensures no override from app-bar's own box-shadow reset. */
+/* Focus ring — [focus-ring] is set by Vaadin during keyboard navigation */
 vaadin-button.app-bar__action-btn[focus-ring] {
+    outline: none !important;
     box-shadow:
         0 0 0 2px var(--surface-0, #ffffff),
         0 0 0 4px var(--brand-500, #3b82f6) !important;
-    outline: none !important;
-}
-
-/* ── Notification badge ────────────────────────────────────────────
- * Usage in Java:  notifBtn.getElement().setAttribute("data-badge", "3");
- * Remove badge:   notifBtn.getElement().removeAttribute("data-badge");
- * Zero/empty:     badge hidden via [data-badge=""] rule below.
- * ─────────────────────────────────────────────────────────────────── */
-vaadin-button.app-bar__action-btn[data-badge]:not([data-badge=""])::after {
-    content:        attr(data-badge);
-    position:       absolute;
-    top:            -4px;
-    right:          -4px;
-    min-width:      16px;
-    height:         16px;
-    padding:        0 4px;
-    border-radius:  9999px;
-    background:     var(--err, #dc2626);
-    color:          #ffffff;
-    font-size:      0.5625rem;   /* 9px — tight, readable at small size */
-    font-weight:    700;
-    line-height:    16px;
-    text-align:     center;
-    box-sizing:     border-box;
-    pointer-events: none;
-    /* White halo separates badge ring from icon background */
-    box-shadow:     0 0 0 2px var(--surface-0, #ffffff);
-}
-
-/* Touch targets (WCAG 2.5.8 — 44 px) */
-.app-bar__start > vaadin-button,
-.app-bar__start > button,
-.app-bar__end > vaadin-button,
-.app-bar__end > button {
-    min-height: 2.75rem;
-    min-width: 2.75rem;
 }
 
 /* -----------------------------------------------------------------------
- * Global search — fills the middle slot up to a comfortable reading width
- * clamp: min 200px · preferred 40% of viewport · max 520px
+ * Notification badge wrapper
+ *
+ * The badge ::after lives on a plain <div class="app-bar__badge-wrap">
+ * that wraps the vaadin-button. A regular div is never subject to
+ * shadow-DOM or AppLayout navbar overflow clipping.
+ *
+ * Java (DefaultAppShellLayoutBuilder manages this automatically):
+ *   notifWrap.getElement().setAttribute("data-badge", "3");  // show
+ *   notifWrap.getElement().removeAttribute("data-badge");     // hide
+ *   notifWrap.getElement().setAttribute("data-badge", "");   // also hides
+ * ----------------------------------------------------------------------- */
+
+.app-bar__badge-wrap {
+    position:        relative;
+    display:         inline-flex;
+    align-items:     center;
+    justify-content: center;
+    flex-shrink:     0;
+}
+
+.app-bar__badge-wrap[data-badge]:not([data-badge=""])::after {
+    content:  attr(data-badge);
+    position: absolute;
+    top:   -5px;
+    right: -5px;
+
+    min-width:  17px;
+    height:     17px;
+    padding:    0 4px;
+    box-sizing: border-box;
+
+    border-radius:  9999px;
+    background:     var(--color-error, #dc2626);
+    color:          #fff;
+    font-size:      9px;
+    font-weight:    700;
+    line-height:    17px;
+    text-align:     center;
+    white-space:    nowrap;
+    pointer-events: none;
+    z-index:        10;
+
+    box-shadow: 0 0 0 2px var(--surface-0, #ffffff);
+}
+
+/* -----------------------------------------------------------------------
+ * Global search — fills the middle slot
  * ----------------------------------------------------------------------- */
 
 .app-bar__search {
@@ -187,6 +202,5 @@ vaadin-button.app-bar__action-btn[data-badge]:not([data-badge=""])::after {
 }
 
 .app-bar__search::part(input-field) {
-    border-radius: var(--radius-full, 9999px);  /* pill shape — visually distinct from form inputs */
+    border-radius: var(--radius-full, 9999px);
 }
-

@@ -15,6 +15,7 @@
  */
 package com.holonplatform.vaadin.flow.internal.components.events;
 
+import java.io.Serial;
 import java.util.List;
 
 import com.holonplatform.core.i18n.Localizable;
@@ -35,6 +36,7 @@ import com.holonplatform.vaadin.flow.components.ValidationStatusHandler.Status;
 public class DefaultGroupElementValidationStatusEvent<S, P, E extends HasComponent>
 		extends DefaultValidationStatusEvent<S> implements GroupElementValidationStatusEvent<S, P, E> {
 
+	@Serial
 	private static final long serialVersionUID = -6525450825356074007L;
 
 	private final P property;

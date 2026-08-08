@@ -15,6 +15,8 @@
  */
 package com.holonplatform.vaadin.flow.navigator.exceptions;
 
+import java.io.Serial;
+
 /**
  * Exception used to notify a forbidden navigation target error, when the user does not have the required authorizations
  * to access a navigation target.
@@ -23,6 +25,7 @@ package com.holonplatform.vaadin.flow.navigator.exceptions;
  */
 public class ForbiddenNavigationException extends RuntimeException {
 
+	@Serial
 	private static final long serialVersionUID = 7543955538077396665L;
 
 	/**

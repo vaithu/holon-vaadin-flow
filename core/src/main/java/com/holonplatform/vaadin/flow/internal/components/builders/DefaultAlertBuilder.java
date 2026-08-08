@@ -45,6 +45,7 @@ public class DefaultAlertBuilder
 
     @Override
     public Alert build() {
+        applyPostProcessors();
         return getComponent();
     }
 }

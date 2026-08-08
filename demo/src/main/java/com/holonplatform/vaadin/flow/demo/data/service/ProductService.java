@@ -251,7 +251,7 @@ public class ProductService {
 
         if (filter != null && textFilter != null) {
             filter = filter.and(textFilter);
-        } 
+        }
 
         return helper.findSlice(offset, limit, filter, sort,columns);
     }

@@ -3,6 +3,7 @@ package com.holonplatform.vaadin.flow.internal.components.builders;
 import com.holonplatform.vaadin.flow.components.Components;
 import com.holonplatform.vaadin.flow.components.builders.ButtonConfigurator;
 import com.holonplatform.vaadin.flow.components.builders.NotificationConfigurator;
+import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
 import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Div;
@@ -177,7 +178,7 @@ public abstract class AbstractNotificationConfigurator<C extends NotificationCon
                 .icon(new Icon("lumo", "cross"))
                 .styleName("btn--tertiary-inline")
                 .styleName("notification__close-btn")
-                .ariaLabel("Close")
+                .ariaLabel(LocalizationProvider.localize("Close", "notification.close_aria"))
                 .withClickListener(event -> close())
                 .build();
         return closeButton;

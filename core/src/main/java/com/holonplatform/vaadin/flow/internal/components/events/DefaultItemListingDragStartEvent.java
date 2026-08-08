@@ -15,6 +15,7 @@
  */
 package com.holonplatform.vaadin.flow.internal.components.events;
 
+import java.io.Serial;
 import java.util.List;
 
 import com.holonplatform.vaadin.flow.components.ItemListing;
@@ -30,6 +31,7 @@ import com.vaadin.flow.component.grid.dnd.GridDragStartEvent;
 public class DefaultItemListingDragStartEvent<T, P> extends AbstractItemListingDnDEvent<T, P>
 		implements ItemListingDragStartEvent<T, P> {
 
+	@Serial
 	private static final long serialVersionUID = -6033773919861214607L;
 	
 	private final GridDragStartEvent<T> event;

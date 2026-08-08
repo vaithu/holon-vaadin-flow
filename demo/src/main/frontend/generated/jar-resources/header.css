@@ -3,23 +3,29 @@
  * ----------------------------------------------------------------------- */
 
 .iyen-header {
-    /* 1. Make it stay at the top during scroll */
-  position: sticky;
-  top: 0;
-  z-index: 10; /* Ensure it stays above content */
-  
-  /* 2. Add a subtle shadow ONLY when scrolling or keep it clean */
-  /* transition: box-shadow 0.2s; */
-  
-  /* 3. Improve Spacing */
-  display: flex;
-  flex-direction: column;
-  padding: 1rem 1.5rem; /* Slightly more horizontal padding for alignment */
-  gap: 0.5rem; /* Control space between breadcrumbs and title row */
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    padding: 0.75rem 1rem;
+    gap: 0.5rem;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+@media (min-width: 640px) {
+    .iyen-header {
+        padding: 1rem 1.5rem;
+    }
+}
+
+.iyen-header.header--no-sticky {
+    position: static;
 }
 
 .iyen-header--bordered {
-    border-block-end: var(--border-default, 1px solid #e4e4e7);
+    border-block-end: 1px solid var(--border-default, #e4e4e7);
 }
 
 .iyen-header.header--no-border,
@@ -36,23 +42,16 @@
 }
 
 /* -----------------------------------------------------------------------
- * Main header row: prefix | heading/details | actions
+ * Main header row
  * ----------------------------------------------------------------------- */
 
-/* 4. Ensure the main row handles space well */
 .iyen-header__row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  min-height: 3rem; /* Prevents jumping if content is empty */
-}
-
-/* 5. Responsive adjustment */
-@media (max-width: 768px) {
-  .iyen-header {
-    padding: 0.75rem 1rem;
-    height: auto; /* Allow it to shrink on mobile */
-  }
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.5rem;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .iyen-header__row--padded {
@@ -69,9 +68,14 @@
     }
 }
 
+/* -----------------------------------------------------------------------
+ * Top row: prefix | column (heading + actions + details)
+ * ----------------------------------------------------------------------- */
+
 .iyen-header__top-row {
     display: flex;
     flex-direction: row;
+    flex-wrap: wrap;
     align-items: flex-start;
     gap: 0.75rem;
     width: 100%;
@@ -83,8 +87,9 @@
     gap: 0.5rem;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 640px) {
     .iyen-header__top-row {
+        flex-wrap: nowrap;
         gap: 1rem;
         align-items: center;
     }
@@ -93,6 +98,10 @@
         gap: 1rem;
     }
 }
+
+/* -----------------------------------------------------------------------
+ * Prefix (icon / avatar)
+ * ----------------------------------------------------------------------- */
 
 .iyen-header__prefix {
     display: flex;
@@ -105,6 +114,10 @@
 .iyen-header__prefix--avatar {
     align-self: center;
 }
+
+/* -----------------------------------------------------------------------
+ * Column: heading-line + details stacked vertically
+ * ----------------------------------------------------------------------- */
 
 .iyen-header__column {
     display: flex;
@@ -119,17 +132,40 @@
     gap: 0;
 }
 
+/* -----------------------------------------------------------------------
+ * Column-line: heading (left, grows) | actions (right, shrinks)
+ *
+ * Mobile-first: stacked column so a long heading or many action buttons
+ * never overflow.  On wider screens (>=640px) they sit side by side.
+ * ----------------------------------------------------------------------- */
+
 .iyen-header__column-line {
     display: flex;
-    align-items: center;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+    width: 100%;
     min-width: 0;
-    flex-wrap: wrap;
 }
 
-.iyen-header__column-line > :first-child {
-    min-width: 0;
-    margin-right: auto;
+@media (min-width: 640px) {
+    .iyen-header__column-line {
+        flex-direction: row;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 0.5rem 0.75rem;
+    }
+
+    /* heading grows and pushes actions to the far right */
+    .iyen-header__column-line > :first-child {
+        flex: 1 1 12rem;
+        min-width: 0;
+    }
 }
+
+/* -----------------------------------------------------------------------
+ * Details row below the heading
+ * ----------------------------------------------------------------------- */
 
 .iyen-header__details {
     display: flex;
@@ -142,18 +178,30 @@
 }
 
 /* -----------------------------------------------------------------------
- * Actions toolbar: stay inline while space allows, wrap when needed
+ * Actions toolbar
+ *
+ * Mobile: full-width, wrapping so every button stays reachable.
+ * Desktop (>=640px): shrink to content width, no wrapping.
  * ----------------------------------------------------------------------- */
 
 .iyen-header__actions {
     display: flex;
     align-items: center;
+    justify-content: flex-start;
     gap: 0.5rem;
     flex-wrap: wrap;
-    flex: 0 1 auto;
+    width: 100%;
     max-width: 100%;
     min-width: 0;
-    width: auto;
+}
+
+@media (min-width: 640px) {
+    .iyen-header__actions {
+        flex: 0 0 auto;
+        flex-wrap: nowrap;
+        width: auto;
+        justify-content: flex-end;
+    }
 }
 
 .iyen-header__actions--compact {
@@ -161,8 +209,26 @@
     margin-inline-start: auto;
 }
 
+@media (max-width: 639px) {
+    .iyen-header__actions--compact {
+        margin-inline-start: 0;
+        width: 100%;
+        justify-content: flex-start;
+    }
+}
+
 .iyen-header__actions > * {
     flex: 0 0 auto;
+}
+
+/* Mobile: buttons grow to fill rows equally so widths are consistent.
+ * 2 buttons → 50% each; 1 lone button → 100% (full-width).
+ * Visual hierarchy is maintained by the button's colour/variant, not its size. */
+@media (max-width: 639px) {
+    .iyen-header__actions > * {
+        flex: 1 1 auto;
+        min-width: 0;
+    }
 }
 
 .iyen-header__row--with-details {

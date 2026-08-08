@@ -39,7 +39,7 @@ public class DefaultSaveDialogBuilder extends AbstractDialogConfigurator<DialogB
         ObjectUtils.argumentNotNull(saveDialogCallback, "Save dialog callback must be not null");
 
         this.saveButton = ButtonBuilder.create()
-                .text(Localizable.of("Save", DialogBuilder.DEFAULT_SAVE_BUTTON_MESSAGE_CODE))
+                .text(Localizable.of("Save", DEFAULT_SAVE_BUTTON_MESSAGE_CODE))
                 .styleName("h-dialog__action-btn")
                 .withClickListener(e -> saveDialogCallback.onUserAnswer(true, isOkToClose -> {
                     if (isOkToClose) getComponent().attemptClose();
@@ -48,7 +48,7 @@ public class DefaultSaveDialogBuilder extends AbstractDialogConfigurator<DialogB
                 .build();
 
         this.denyButton = ButtonBuilder.create()
-                .text(Localizable.of("Cancel", DialogBuilder.DEFAULT_DENY_BUTTON_MESSAGE_CODE))
+                .text(Localizable.of("Cancel", DEFAULT_DENY_BUTTON_MESSAGE_CODE))
                 .styleName("h-dialog__cancel-btn")
                 .withClickListener(e -> getComponent().attemptClose())
                 .build();

@@ -20,6 +20,7 @@ import com.vaadin.flow.component.tabs.TabsVariant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -34,67 +35,44 @@ import java.util.function.Supplier;
  * {@link DeferrableLocalizationConfigurator} contract is satisfied: when deferred localization
  * is enabled, {@link Localizable} tab labels are applied on the first UI attach cycle;
  * otherwise they are resolved immediately at configuration time.
+ *
+ * <h3>Session serialization</h3>
+ * All mutable runtime state (supplier map, cache, selected tab, content container) is isolated
+ * in a {@link TabController} that implements {@link Serializable}. The
+ * {@code SelectedChangeListener} registered on the {@link Tabs} component captures only the
+ * controller — never {@code this} (the builder) — so the builder itself is never reachable from
+ * the Vaadin component tree and cannot block session serialization.
  */
 public abstract class AbstractLazyTabsConfigurator<C extends LazyTabsConfigurator<C> & DeferrableLocalizationConfigurator<C>>
         extends AbstractLocalizableComponentConfigurator<Tabs, C>
         implements LazyTabsConfigurator<C> {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractLazyTabsConfigurator.class);
-
-    /** Maximum number of tab components kept alive in the LRU cache per configurator instance. */
-    private static final int CACHE_MAX_SIZE = 5;
-
-    /**
-     * Factories for tab content.
-     * Semantics: supplier.get() returns a component instance (new or reused according to supplier policy).
-     */
-    private final Map<Tab, Supplier<Component>> tabSupplierMap = new HashMap<>();
-
-    /**
-     * LRU cache of realized components when caching is enabled.
-     * Access-order iteration ensures the least recently viewed tab is evicted first
-     * when the cache reaches {@link #CACHE_MAX_SIZE}. Evicted components are garbage-collected;
-     * revisiting an evicted tab rebuilds via the supplier and immediately applies the
-     * buffered item via {@link com.iyensoft.vaadin.flow.components.DetailSyncAware#onItemSelected}.
-     */
-    private final Map<Tab, Component> cachedComponents = new LinkedHashMap<>(CACHE_MAX_SIZE, 0.75f, true) {
-        @Override
-        protected boolean removeEldestEntry(Map.Entry<Tab, Component> eldest) {
-            return size() > CACHE_MAX_SIZE;
-        }
-    };
-
-    private Tab currentTab;
-
-    private boolean enableCaching = false;
-
-    // Display area
-    private Div contentContainer;
+    /** All mutable runtime state lives here; captured by the Tabs listener instead of the builder. */
+    private final TabController tabController = new TabController();
 
     public Tabs getTabs() {
         return getComponent();
     }
 
+    @Override
     public Div getContentContainer() {
-        return contentContainer;
+        return tabController.contentContainer;
     }
 
     public AbstractLazyTabsConfigurator(Tabs component) {
         super(component);
-
         getComponent().setWidthFull();
+        // Initialize a default content container so switchToTab is always safe to call,
+        // even when withContainer() is never invoked.
+        tabController.contentContainer = new SyncableContentContainer();
+        // Register the listener once here. withContainer() only swaps the container
+        // reference; it must NOT add another listener.
+        TabController tc = tabController;
+        getComponent().addSelectedChangeListener(e -> tc.switchToTab(e.getSelectedTab()));
     }
 
     // ── Deferred-localization helper ──────────────────────────────────────────
 
-    /**
-     * Creates a {@link Tab} whose label text respects the current deferred-localization flag.
-     * <ul>
-     *   <li>Deferred OFF (default): label resolved immediately, fallback to message().</li>
-     *   <li>Deferred ON: fallback message shown immediately; proper translation applied on
-     *       the first UI attach cycle via an {@code AttachListener} on the {@link Tab}.</li>
-     * </ul>
-     */
     private Tab createTab(Localizable label) {
         if (isDeferredLocalizationEnabled()) {
             Tab tab = new Tab(label.getMessage());
@@ -113,14 +91,9 @@ public abstract class AbstractLazyTabsConfigurator<C extends LazyTabsConfigurato
         return UIUtils.Badge.createBadge(value);
     }
 
-    /**
-     * Convenience wrapper: Tabs on the left + content on the right.
-     * Use this for vertical-orientation side-by-side layouts instead of
-     * assembling {@code getTabs()} + {@code getContentContainer()} manually.
-     */
     @Override
     public HorizontalLayout buildHorizontal() {
-        HorizontalLayout layout = Components.hl().add(getComponent(), contentContainer).build();
+        HorizontalLayout layout = Components.hl().add(getComponent(), tabController.contentContainer).build();
         layout.setPadding(false);
         layout.setSpacing(false);
         layout.setSizeFull();
@@ -132,73 +105,17 @@ public abstract class AbstractLazyTabsConfigurator<C extends LazyTabsConfigurato
         return getTabs().getSelectedTab();
     }
 
-    protected void switchToTab(Tab tab) {
-        if (tab == null) {
-            contentContainer.removeAll();
-            currentTab = null;
-            return;
-        }
-
-        // If caching is OFF, evict the content we are leaving
-        if (!enableCaching && currentTab != null) {
-            cachedComponents.remove(currentTab);
-        }
-
-        Component content = null;
-
-        // Only consult the cache when caching is enabled
-        if (enableCaching) {
-            content = cachedComponents.get(tab);
-        }
-
-        if (content == null) {
-            Supplier<Component> supplier = tabSupplierMap.get(tab);
-            if (supplier == null) {
-                // Fallback UI + warn
-                content = Components.div().add(Components.span().text("No content registered for this tab.").build()).build();
-                LOGGER.warn("No content supplier registered for tab: {}", safeLabel(tab));
-            } else {
-                content = supplier.get(); // create or return supplier-provided instance
-                if (enableCaching && content != null) {
-                    cachedComponents.put(tab, content);
-                }
-            }
-        }
-
-        if (content != null) {
-            contentContainer.removeAll();
-            contentContainer.add(content);
-            // For cache-ON SaaS usage: apply buffered item to newly-shown component
-            if (contentContainer instanceof SyncableContentContainer scc
-                    && scc.getLastItem() != null
-                    && content instanceof DetailSyncAware<?> aware) {
-                //noinspection unchecked
-                ((DetailSyncAware<Object>) aware).onItemSelected(scc.getLastItem());
-            }
-        }
-
-        currentTab = tab;
-    }
-
-    private static String safeLabel(Tab tab) {
-        try {
-            return tab.getLabel();
-        } catch (Exception e) {
-            return "(unlabeled)";
-        }
-    }
-
     // ── Configuration API ────────────────────────────────────────────────────
 
     @Override
     public C enableCache(boolean enableCache) {
-        this.enableCaching = enableCache;
+        tabController.enableCaching = enableCache;
         return getConfigurator();
     }
 
     @Override
     public C cacheEnabled() {
-        this.enableCaching = true;
+        tabController.enableCaching = true;
         return getConfigurator();
     }
 
@@ -236,7 +153,7 @@ public abstract class AbstractLazyTabsConfigurator<C extends LazyTabsConfigurato
     public C selectedIndex(int selectedIndex) {
         getComponent().setSelectedIndex(selectedIndex);
         Tab selected = getComponent().getSelectedTab();
-        if (selected != null) switchToTab(selected);
+        if (selected != null) tabController.switchToTab(selected);
         return getConfigurator();
     }
 
@@ -244,7 +161,7 @@ public abstract class AbstractLazyTabsConfigurator<C extends LazyTabsConfigurato
     public C selectedTab(Tab tab) {
         getTabs().setSelectedTab(tab);
         Tab selected = getComponent().getSelectedTab();
-        if (selected != null) switchToTab(selected);
+        if (selected != null) tabController.switchToTab(selected);
         return getConfigurator();
     }
 
@@ -259,7 +176,7 @@ public abstract class AbstractLazyTabsConfigurator<C extends LazyTabsConfigurato
         if (existing != null) {
             return selectedTab(existing);
         } else {
-            LOGGER.warn("No child Tab with label '{}'", tabTitle);
+            TabController.LOGGER.warn("No child Tab with label '{}'", tabTitle);
             return getConfigurator();
         }
     }
@@ -282,7 +199,7 @@ public abstract class AbstractLazyTabsConfigurator<C extends LazyTabsConfigurato
         // Register supplier BEFORE adding to Tabs: Tabs auto-selects the first
         // added tab and fires SelectedChangeEvent immediately, so the supplier
         // must already be present in the map when switchToTab is invoked.
-        tabSupplierMap.put(tab, () -> component);
+        tabController.getSupplierMap().put(tab, () -> component);
         getComponent().add(tab);
         return getConfigurator();
     }
@@ -359,7 +276,7 @@ public abstract class AbstractLazyTabsConfigurator<C extends LazyTabsConfigurato
     public C withLazyTab(Tab tab, Supplier<Component> factory) {
         Objects.requireNonNull(factory, "factory must not be null");
         // Register supplier BEFORE adding to Tabs for the same reason as withEagerTab.
-        tabSupplierMap.put(tab, factory);
+        tabController.getSupplierMap().put(tab, factory);
         getComponent().add(tab);
         return getConfigurator();
     }
@@ -446,20 +363,121 @@ public abstract class AbstractLazyTabsConfigurator<C extends LazyTabsConfigurato
 
     @Override
     public C withContainer(Div div) {
+        // Use the passed div directly as the content container so that the caller's
+        // DOM element receives tab content. Previously a new SyncableContentContainer
+        // was created here and the passed div was silently ignored — content was written
+        // into an off-DOM object. The listener is already registered in the constructor;
+        // do NOT add it again here.
         if (div instanceof SyncableContentContainer existing) {
-            this.contentContainer = existing;
+            tabController.contentContainer = existing;
         } else {
-            // Wrap in SyncableContentContainer so DetailSyncAware relay works in master-detail
-            SyncableContentContainer scc = new SyncableContentContainer();
-            div.getClassNames().forEach(scc::addClassName);
-            if (scc.getClassNames().isEmpty()) {
-                scc.addClassName("tab-container");
-            }
-            this.contentContainer = scc;
+            tabController.contentContainer = div;
         }
-        // Keep the content area in sync with the selected tab
-        getComponent().addSelectedChangeListener(e -> switchToTab(e.getSelectedTab()));
+        // Re-render the currently selected tab into the new container.
+        // This is a no-op when withContainer() is called before any tabs are added
+        // (selectedTab == null), and ensures correctness in the rare case it is called
+        // after tabs have already been added and auto-selected.
+        Tab current = getComponent().getSelectedTab();
+        if (current != null) {
+            tabController.switchToTab(current);
+        }
         return getConfigurator();
+    }
+
+    // ── Serializable runtime controller ──────────────────────────────────────
+
+    /**
+     * Holds all mutable runtime state for the tab-switching logic and is the only object
+     * captured by the {@link Tabs} {@code SelectedChangeListener}. Being {@link Serializable}
+     * ensures Vaadin session serialization works without pulling the builder into the graph.
+     */
+    private static final class TabController implements Serializable {
+
+        private static final Logger LOGGER = LoggerFactory.getLogger(TabController.class);
+        private static final int MAX_CACHE = 5;
+
+        /**
+         * Factories for tab content. Transient: Supplier lambdas are not guaranteed to be
+         * serializable. After session deserialization this map is null; switchToTab() handles
+         * that gracefully by showing a placeholder.
+         */
+        transient Map<Tab, Supplier<Component>> tabSupplierMap;
+
+        /** Returns the supplier map, initializing lazily if needed. */
+        Map<Tab, Supplier<Component>> getSupplierMap() {
+            if (tabSupplierMap == null) tabSupplierMap = new HashMap<>();
+            return tabSupplierMap;
+        }
+
+        /**
+         * LRU cache of realized components when caching is enabled.
+         * Access-order iteration ensures the least recently viewed tab is evicted first.
+         */
+        final Map<Tab, Component> cachedComponents = new LinkedHashMap<>(MAX_CACHE, 0.75f, true) {
+            @Override
+            protected boolean removeEldestEntry(Map.Entry<Tab, Component> eldest) {
+                return size() > MAX_CACHE;
+            }
+        };
+
+        Tab currentTab;
+        boolean enableCaching = false;
+        Div contentContainer;
+
+        void switchToTab(Tab tab) {
+            if (tab == null) {
+                contentContainer.removeAll();
+                currentTab = null;
+                return;
+            }
+
+            if (!enableCaching && currentTab != null) {
+                cachedComponents.remove(currentTab);
+            }
+
+            Component content = null;
+
+            if (enableCaching) {
+                content = cachedComponents.get(tab);
+            }
+
+            if (content == null) {
+                Supplier<Component> supplier = tabSupplierMap != null ? tabSupplierMap.get(tab) : null;
+                if (supplier == null) {
+                    content = Components.div()
+                            .add(Components.span().text(LocalizationProvider.localize(
+                                    "No content registered for this tab.", "tabs.no_content")).build())
+                            .build();
+                    LOGGER.warn("No content supplier registered for tab: {}", safeLabel(tab));
+                } else {
+                    content = supplier.get();
+                    if (enableCaching && content != null) {
+                        cachedComponents.put(tab, content);
+                    }
+                }
+            }
+
+            if (content != null) {
+                contentContainer.removeAll();
+                contentContainer.add(content);
+                if (contentContainer instanceof SyncableContentContainer scc
+                        && scc.getLastItem() != null
+                        && content instanceof DetailSyncAware<?> aware) {
+                    //noinspection unchecked
+                    ((DetailSyncAware<Object>) aware).onItemSelected(scc.getLastItem());
+                }
+            }
+
+            currentTab = tab;
+        }
+
+        private static String safeLabel(Tab tab) {
+            try {
+                return tab.getLabel();
+            } catch (Exception e) {
+                return "(unlabeled)";
+            }
+        }
     }
 
     // ── SaaS-scale DetailSyncAware relay ─────────────────────────────────────
@@ -467,14 +485,8 @@ public abstract class AbstractLazyTabsConfigurator<C extends LazyTabsConfigurato
     /**
      * Content container that implements {@link DetailSyncAware} to act as a relay
      * between the master-detail sync dispatcher and individual tab content components.
-     * <p>
-     * Discovered automatically by {@code scanAndRegister()} when the container is
-     * in the Vaadin component tree. Buffers the last selected item so that lazily-built
-     * tab components receive the correct item immediately upon construction.
-     * <p>
-     * Recommended usage for SaaS applications with high concurrent user counts:
-     * enable caching via {@link #cacheEnabled()} so each tab component is built once
-     * per session and updated in-place via {@link DetailSyncAware#onItemSelected}.
+     * Buffers the last selected item so that lazily-built tab components receive the
+     * correct item immediately upon construction.
      */
     private static class SyncableContentContainer extends Div implements DetailSyncAware<Object> {
 
@@ -486,7 +498,6 @@ public abstract class AbstractLazyTabsConfigurator<C extends LazyTabsConfigurato
         @Override
         public void onItemSelected(Object item) {
             this.lastItem = item;
-            // Relay to the currently-visible tab content component
             getChildren().findFirst().ifPresent(child -> {
                 if (child instanceof DetailSyncAware<?> aware) {
                     //noinspection unchecked

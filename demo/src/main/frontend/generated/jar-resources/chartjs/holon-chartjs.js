@@ -148,7 +148,7 @@ class HolonChartJs extends HTMLElement {
     });
   }
 
-  // ── property-upgrade helper ───────────────────────────────────────────────
+  // ── property-upgrade helper ─────────────────────────────────────────��─────
 
   _upgradePredefinedProperties() {
     this._upgradeProperty('chartType');
@@ -217,7 +217,7 @@ class HolonChartJs extends HTMLElement {
     });
   }
 
-  // ── palette / defaults helpers ────────────────────────────────────────────
+  // ── palette / defaults helpers (unchanged) ────────────────────────────────
 
   _applyDefaultPalette(data, chartType) {
     if (!data || !Array.isArray(data.datasets)) {

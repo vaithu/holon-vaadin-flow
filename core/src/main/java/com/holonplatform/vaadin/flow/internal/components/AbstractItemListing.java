@@ -142,7 +142,7 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
     private final transient Map<P, ItemListingColumn<P, T, ?>> propertyColumns = new HashMap<>();
 
     /**
-     * Reverse lookup: column key → property, kept in sync with {@code propertyColumns}.
+     * Reverse lookup: column key â†’ property, kept in sync with {@code propertyColumns}.
      * Enables O(1) reverse lookup in {@link #getProperty(String)} instead of an O(n) stream scan.
      */
     private final transient Map<String, P> columnKeyToProperty = new HashMap<>();
@@ -187,7 +187,7 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
      * Property editors
      */
     private final transient Map<P, Input<?>> editors = new LinkedHashMap<>();
-    private final transient Map<com.vaadin.flow.data.binder.Binder.Binding<T, ?>, P> editorBindings = new HashMap<>();
+    private final transient Map<Binder.Binding<T, ?>, P> editorBindings = new HashMap<>();
 
     /**
      * Property editor post-processors
@@ -225,7 +225,7 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
     private transient T oldEditorValue;
 
     /**
-     * Reusable editor value holder — cached once to avoid anonymous class allocation on every
+     * Reusable editor value holder â€” cached once to avoid anonymous class allocation on every
      * editor-save event.
      */
     private final EditorValueHolder editorValueHolder = new EditorValueHolder();
@@ -266,7 +266,7 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
     private Column<T> mobileColumn;
 
     /**
-     * Cached header / footer section wrappers — created once on first access, never re-created.
+     * Cached header / footer section wrappers â€” created once on first access, never re-created.
      */
     private transient EditableItemListingSection<P> cachedHeaderSection;
     private transient EditableItemListingSection<P> cachedFooterSection;
@@ -379,7 +379,7 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
 
     @Override
     public Optional<T> getItemAtIndex(int index) {
-        // Fetch once — getLazyDataView().getItem() may trigger a backend page fetch
+        // Fetch once â€” getLazyDataView().getItem() may trigger a backend page fetch
         T item = getGrid().getLazyDataView().getItem(index);
         return Optional.ofNullable(item);
     }
@@ -993,7 +993,7 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
 
     @Override
     public List<Column<T>> getAllColumns() {
-        return (getGrid().getColumns());
+        return getGrid().getColumns();
     }
 
     /**
@@ -2214,8 +2214,8 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
      * @return The editor binding
      */
     @SuppressWarnings({"unchecked", "rawtypes"})
-    protected com.vaadin.flow.data.binder.Binder.Binding<T, ?> configureAndBind(Binder<T> binder,
-                                                                                ItemListingColumn<P, T, ?> configuration, final Input<?> input) {
+    protected Binder.Binding<T, ?> configureAndBind(Binder<T> binder,
+                                                     ItemListingColumn<P, T, ?> configuration, final Input<?> input) {
         return configureInput(binder, (ItemListingColumn) configuration, input).bind(configuration.getColumnKey());
     }
 
@@ -2325,19 +2325,19 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
             errors = Collections.emptyList();
             // check unresolved
             if (binderStatus.getFieldValidationStatuses().stream().allMatch(
-                    s -> com.vaadin.flow.data.binder.BindingValidationStatus.Status.UNRESOLVED == s.getStatus())) {
+                    s -> BindingValidationStatus.Status.UNRESOLVED == s.getStatus())) {
                 groupStatus = Status.UNRESOLVED;
             } else {
                 groupStatus = Status.VALID;
             }
         }
 
-        // inputs — pre-sized for-loop avoids stream overhead in this frequently-called validation path
+        // inputs â€” pre-sized for-loop avoids stream overhead in this frequently-called validation path
         final var fieldStatuses = binderStatus.getFieldValidationStatuses();
         final List<GroupElementValidationStatusEvent<EditorComponentGroup<P, T>, P, Input<?>>> inputsValidationStatus =
                 new ArrayList<>(fieldStatuses.size());
         for (var vs : fieldStatuses) {
-            // Single map lookup — avoids redundant containsKey + get double traversal
+            // Single map lookup â€” avoids redundant containsKey + get double traversal
             final P property = editorBindings.get(vs.getBinding());
             if (property == null) continue;
             final Input<?> input = editors.get(property);
@@ -2375,7 +2375,7 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
      * @param value The new value
      */
     protected void fireValueChangeListeners(T value) {
-        // Use the pre-allocated EditorValueHolder — no anonymous class allocation per save
+        // Use the pre-allocated EditorValueHolder â€” no anonymous class allocation per save
         final GroupValueChangeEvent<T, P, Input<?>, EditorComponentGroup<P, T>> event = new DefaultGroupValueChangeEvent<>(
                 this, editorValueHolder, oldEditorValue, value, true);
         valueChangeListeners.forEach(l -> l.valueChange(event));
@@ -2485,15 +2485,15 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
      * @param selectionMode The selection mode (not null)
      * @return The Grid SelectionMode
      */
-    private static com.vaadin.flow.component.grid.Grid.SelectionMode asGridSelectionMode(SelectionMode selectionMode) {
+    private static Grid.SelectionMode asGridSelectionMode(SelectionMode selectionMode) {
         switch (selectionMode) {
             case MULTI:
-                return com.vaadin.flow.component.grid.Grid.SelectionMode.MULTI;
+            return Grid.SelectionMode.MULTI;
             case SINGLE:
-                return com.vaadin.flow.component.grid.Grid.SelectionMode.SINGLE;
+            return Grid.SelectionMode.SINGLE;
             case NONE:
             default:
-                return com.vaadin.flow.component.grid.Grid.SelectionMode.NONE;
+            return Grid.SelectionMode.NONE;
         }
     }
 
@@ -2592,6 +2592,7 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
      */
     private static class ItemListingPropertyDefinition<T, V> implements PropertyDefinition<T, V> {
 
+        @Serial
         private static final long serialVersionUID = 3723795023936471324L;
 
         private final PropertySet<T> propertySet;
@@ -2711,6 +2712,7 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
      */
     private static class DefaultItemListingBinder<T> extends Binder<T> {
 
+        @Serial
         private static final long serialVersionUID = -5155452231265408090L;
 
         public DefaultItemListingBinder(PropertySet<T> propertySet) {
@@ -2723,7 +2725,7 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
          * @see com.vaadin.flow.data.binder.Binder#validate()
          */
         @Override
-        public com.vaadin.flow.data.binder.BinderValidationStatus<T> validate() {
+        public BinderValidationStatus<T> validate() {
             // noop
             return new BinderValidationStatus<>(this, Collections.emptyList(), Collections.emptyList());
         }
@@ -3550,7 +3552,7 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
                               Function<com.holonplatform.core.query.QuerySort.SortDirection, Stream<ItemSort<P>>> sortProvider) {
             ObjectUtils.argumentNotNull(sortProvider, "Sort provider must be not null");
             instance.getColumnConfiguration(property).setSortOrderProvider(direction -> {
-                return sortProvider.apply(AbstractItemListing.convert(direction))
+                return sortProvider.apply(convert(direction))
                         .map(is -> new QuerySortOrder(instance.getColumnKey(is.getProperty()), direction));
             });
             return getConfigurator();
@@ -4697,7 +4699,7 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
         public ItemListingColumnBuilder<T, P, L, B> sortProvider(
                 Function<com.holonplatform.core.query.QuerySort.SortDirection, Stream<ItemSort<P>>> sortProvider) {
             listing.getColumnConfiguration(property).setSortOrderProvider(direction -> {
-                return sortProvider.apply(AbstractItemListing.convert(direction))
+                return sortProvider.apply(convert(direction))
                         .map(is -> new QuerySortOrder(listing.getColumnKey(is.getProperty()), direction));
             });
             return this;

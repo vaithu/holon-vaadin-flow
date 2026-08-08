@@ -71,28 +71,6 @@ vaadin-menu-bar.bulk-action__options-menu vaadin-menu-bar-button::part(base) {
     min-height: 2.75rem; /* WCAG 2.5.8 touch target */
 }
 
-/* -----------------------------------------------------------------------
- * Menu-toggle MenuBar — tertiary inline style
- * Replaces: menuBar.addThemeVariants(MenuBarVariant.LUMO_TERTIARY_INLINE)
- * Identical pattern to .bulk-action__options-menu above.
- * ----------------------------------------------------------------------- */
-
-.menu-bar--tertiary-inline::part(container) {
-    gap: 0;
-}
-
-vaadin-menu-bar.menu-bar--tertiary-inline vaadin-menu-bar-button::part(base) {
-    border: none;
-    box-shadow: none;
-    padding: 0.25rem;
-    min-height: 2.75rem; /* WCAG 2.5.8 */
-}
-
-vaadin-menu-bar.menu-bar--tertiary-inline vaadin-menu-bar-button::part(base):hover {
-    border-radius: 0.375rem;
-}
-
-
 /* ==========================================================================
    SideNav — host wrapper, search field, item colours, collapse behaviour
    ==========================================================================
@@ -126,9 +104,12 @@ vaadin-menu-bar.menu-bar--tertiary-inline vaadin-menu-bar-button::part(base):hov
  * has its own overflow:auto by default which creates a second scroll
  * container around sidenav-host.  Suppress it — vaadin-side-nav below is
  * the single scroll container for the nav list.
+ * Width is also driven here so collapse works even without vaadin-shell-theme.css.
  */
 vaadin-app-layout::part(drawer) {
-    overflow : hidden;
+    overflow   : hidden;
+    width      : var(--shell-nav-width, var(--sidenav-width, 220px));
+    transition : width 0.2s ease;
 }
 
 .sidenav-host vaadin-side-nav {
@@ -314,7 +295,21 @@ vaadin-side-nav-item[slot="children"][current]::part(link) {
 /* --------------------------------------------------------------------------
    Collapsed state  (.sidenav-host--collapsed)
    Width narrows to icon-rail; text hidden by overflow; search + label hide.
+
+   The DRAWER width is handled via the `sidenav-collapsed` class on
+   vaadin-app-layout (toggled by JS in AbstractSideNavConfigurator).
+   That overrides --shell-nav-width so the main content area expands
+   automatically — this is the only correct way to resize the drawer while
+   keeping AppLayout's layout engine in sync.
    -------------------------------------------------------------------------- */
+
+/* Narrowed drawer: override the nav-width token on the host element so the
+   shadow-DOM ::part(drawer) inherits the new value and the content area fills
+   the freed space automatically. */
+vaadin-app-layout.sidenav-collapsed {
+    --shell-nav-width: var(--sidenav-collapsed-width, 3.25rem);
+}
+
 .sidenav-host--collapsed {
     width : var(--sidenav-collapsed-width, 3.25rem);
 }

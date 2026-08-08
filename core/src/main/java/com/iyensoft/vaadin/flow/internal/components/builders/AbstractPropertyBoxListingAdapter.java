@@ -5,10 +5,12 @@ import com.holonplatform.core.property.PathProperty;
 import com.holonplatform.core.property.PropertyBox;
 import com.holonplatform.core.property.PropertySet;
 import com.holonplatform.vaadin.flow.components.Components;
+import com.holonplatform.vaadin.flow.components.ItemListing;
 import com.holonplatform.vaadin.flow.components.ListingBundle;
 import com.holonplatform.vaadin.flow.components.ListingBundleConfigurer;
 import com.holonplatform.vaadin.flow.components.PropertyListingBundleBuilder;
 import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
+import com.holonplatform.vaadin.flow.vaadinplus.components.Empty;
 import com.iyensoft.vaadin.flow.enums.ViewMode;
 import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.Component;
@@ -164,6 +166,25 @@ abstract class AbstractPropertyBoxListingAdapter<SELF> {
     public SELF mobileViewColumn(Renderer<PropertyBox> renderer)                                             { return self(); }
     public SELF mobileViewHeader(String text)                                                                { return self(); }
     public SELF mobileViewHeader(Component component)                                                        { return self(); }
+
+    // ── Row actions ───────────────────────────────────────────────────────────
+
+    public SELF withEditAction(Consumer<PropertyBox> onEdit)                            { delegate.withEditAction(onEdit);           return self(); }
+    public SELF withDeleteAction(Consumer<PropertyBox> onDelete)                        { delegate.withDeleteAction(onDelete);        return self(); }
+    public SELF withRowAction(VaadinIcon icon, String label, Consumer<PropertyBox> h)   { delegate.withRowAction(icon, label, h);     return self(); }
+    public SELF withRowAction(String label, Consumer<PropertyBox> h)                    { delegate.withRowAction(label, h);           return self(); }
+    public SELF withHighPerformanceActions()                                            { delegate.withHighPerformanceActions();      return self(); }
+
+    // ── Empty state ───────────────────────────────────────────────────────────
+
+    public SELF emptyState(Empty emptyState)       { delegate.emptyState(emptyState);    return self(); }
+    public SELF emptyState()                       { delegate.emptyState();              return self(); }
+    public SELF noResultsState(Empty noResults)    { delegate.noResultsState(noResults); return self(); }
+    public SELF noResultsState()                   { delegate.noResultsState();          return self(); }
+
+    // ── Post-processor ────────────────────────────────────────────────────────
+
+    public SELF withListingPostProcessor(Consumer<ItemListing<PropertyBox, ?>> postProcessor)  { delegate.withListingPostProcessor(postProcessor);  return self(); }
 
     // ── Size no-ops ───────────────────────────────────────────────────────────
 

@@ -1,5 +1,7 @@
 package com.holonplatform.vaadin.flow.vaadinplus.components;
 
+import com.holonplatform.core.i18n.Localizable;
+import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
 import com.vaadin.flow.component.ClickNotifier;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.Tag;
@@ -48,6 +50,9 @@ public class Chip extends Component implements ClickNotifier<Chip> {
     private final Span countSpan = new Span();
     private boolean    countAttached;
 
+    /** Stored localizable label; re-resolved on locale change. */
+    private Localizable labelLocalizable;
+
     // ── Constructors ──────────────────────────────────────────────────────
 
     /**
@@ -59,6 +64,8 @@ public class Chip extends Component implements ClickNotifier<Chip> {
         getClassNames().add(CSS_BASE);
         labelSpan.setText(label == null ? "" : label);
         getElement().appendChild(labelSpan.getElement());
+        // ARIA: button-as-toggle needs aria-pressed to communicate state
+        getElement().setAttribute("aria-pressed", "false");
     }
 
     // ── Factory methods ───────────────────────────────────────────────────
@@ -68,9 +75,32 @@ public class Chip extends Component implements ClickNotifier<Chip> {
         return new Chip(label);
     }
 
+    /** Creates a chip with a label only from a {@link Localizable} descriptor. */
+    public static Chip of(Localizable label) {
+        return new Chip(label);
+    }
+
     /** Creates a chip with a label and a numeric count badge. */
     public static Chip of(String label, long count) {
         return new Chip(label).withCount(count);
+    }
+
+    /** Creates a chip with a localizable label and a numeric count badge. */
+    public static Chip of(Localizable label, long count) {
+        return new Chip(label).withCount(count);
+    }
+
+    // ── Localizable constructor ───────────────────────────────────────────
+
+    /**
+     * Creates a chip whose label is resolved from a {@link Localizable} descriptor.
+     * The label is re-resolved on each locale change.
+     *
+     * @param label the localizable label (not null)
+     */
+    public Chip(Localizable label) {
+        this(resolve(label));
+        this.labelLocalizable = label;
     }
 
     // ── Configuration ─────────────────────────────────────────────────────
@@ -97,11 +127,13 @@ public class Chip extends Component implements ClickNotifier<Chip> {
 
     /**
      * Sets the active (selected) state — adds or removes {@code chip-btn--active}.
+     * Also updates {@code aria-pressed} so screen readers announce the toggle state.
      * @param active {@code true} to activate
      * @return this
      */
     public Chip active(boolean active) {
         getClassNames().set(CSS_ACTIVE, active);
+        getElement().setAttribute("aria-pressed", String.valueOf(active));
         return this;
     }
 
@@ -117,7 +149,23 @@ public class Chip extends Component implements ClickNotifier<Chip> {
 
     /** Updates the chip label text. */
     public void setLabel(String label) {
+        this.labelLocalizable = null;
         labelSpan.setText(label == null ? "" : label);
+    }
+
+    /**
+     * Updates the chip label from a {@link Localizable} descriptor.
+     * Re-resolved on each locale change.
+     *
+     * @param label the localizable label (not null)
+     */
+    public void setLabel(Localizable label) {
+        this.labelLocalizable = label;
+        labelSpan.setText(resolve(label));
+    }
+    private static String resolve(Localizable l) {
+        return LocalizationProvider.localize(l)
+                .orElseGet(() -> l.getMessage() != null ? l.getMessage() : "");
     }
 
     /** Applies the small size variant ({@code chip-btn--sm}: height 22 px). */

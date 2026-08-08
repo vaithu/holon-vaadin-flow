@@ -15,6 +15,7 @@
  */
 package com.holonplatform.vaadin.flow.navigator.internal;
 
+import java.io.Serial;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -33,6 +34,7 @@ import com.holonplatform.vaadin.flow.navigator.exceptions.InvalidNavigationParam
  */
 public class DefaultNavigationParameters implements NavigationParameters {
 
+	@Serial
 	private static final long serialVersionUID = -4884756428959813003L;
 
 	private final Map<String, List<String>> queryParameters;

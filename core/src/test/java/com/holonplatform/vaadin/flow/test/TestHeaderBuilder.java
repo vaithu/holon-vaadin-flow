@@ -197,6 +197,22 @@ class TestHeaderBuilder {
         assertTrue(header.getClassNames().contains("header--no-border"));
     }
 
+    @Test
+    void withoutSticky_addsClassName() {
+        Header header = HeaderBuilder.create("Clean Header")
+                .withoutSticky()
+                .build();
+        assertTrue(header.getClassNames().contains("header--no-sticky"));
+    }
+
+    @Test
+    void sticky_false_addsNoStickyClass() {
+        Header header = HeaderBuilder.create("Clean Header")
+                .sticky(false)
+                .build();
+        assertTrue(header.getClassNames().contains("header--no-sticky"));
+    }
+
     // =========================================================================
     // Configure static
     // =========================================================================

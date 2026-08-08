@@ -15,6 +15,7 @@
  */
 package com.holonplatform.vaadin.flow.internal.converters;
 
+import java.io.Serial;
 import com.holonplatform.core.internal.utils.ObjectUtils;
 import com.holonplatform.vaadin.flow.data.ItemConverter;
 import com.vaadin.flow.data.binder.Result;
@@ -31,6 +32,7 @@ import com.vaadin.flow.data.converter.Converter;
  */
 public class ItemConverterConverter<ITEM, T> implements Converter<ITEM, T> {
 
+	@Serial
 	private static final long serialVersionUID = 8754357108936048024L;
 
 	private final ItemConverter<T, ITEM> converter;

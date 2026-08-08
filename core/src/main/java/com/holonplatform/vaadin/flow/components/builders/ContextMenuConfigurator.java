@@ -193,7 +193,7 @@ public interface ContextMenuConfigurator<L extends EventListener, M extends Cont
 	 *
 	 * @since 5.2.0
 	 */
-	public interface MenuItemBuilder<L extends EventListener, M extends ContextMenuBase<M, I, S>,
+	interface MenuItemBuilder<L extends EventListener, M extends ContextMenuBase<M, I, S>,
 			I extends MenuItemBase<M, I, S>, S extends SubMenuBase<M, I, S>, B extends ContextMenuConfigurator<L, M, I, S, B>>
 			extends HasEnabledConfigurator<MenuItemBuilder<L, M, I, S, B>>,HasStyleConfigurator<MenuItemBuilder<L, M, I, S, B>>,
 			HasTextConfigurator<MenuItemBuilder<L, M, I, S, B>> {

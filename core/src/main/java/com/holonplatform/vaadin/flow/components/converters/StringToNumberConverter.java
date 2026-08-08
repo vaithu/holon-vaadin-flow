@@ -205,7 +205,7 @@ public interface StringToNumberConverter<T extends Number> extends Converter<Str
 	 * 
 	 * @param <T> Number type
 	 */
-	public interface Builder<T extends Number> {
+	interface Builder<T extends Number> {
 
 		/**
 		 * Set whether to allow negative numbers.

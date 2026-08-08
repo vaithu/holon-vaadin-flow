@@ -1,12 +1,12 @@
 /*
  * Copyright 2016-2018 Axioma srl.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -24,12 +24,15 @@ import com.vaadin.flow.component.shared.HasTooltip;
 import com.vaadin.flow.dom.DomEventListener;
 import com.vaadin.flow.dom.Element;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
 
 /**
  * Base {@link ComponentConfigurator}.
- * 
+ *
  * @param <C> Concrete component type
  * @param <B> Concrete configurator type
  */
@@ -45,6 +48,11 @@ public abstract class AbstractComponentConfigurator<C extends Component, B exten
 	private HasSizeConfigurator<?> sizeConfigurator;
 	private HasStyleConfigurator<?> styleConfigurator;
 	private HasEnabledConfigurator<?> enabledConfigurator;
+
+	/**
+	 * Registered post-processors, applied in order just before {@code build()} returns.
+	 */
+	private final List<Consumer<C>> postProcessors = new ArrayList<>();
 
 	/**
 	 * Constructor.
@@ -142,6 +150,38 @@ public abstract class AbstractComponentConfigurator<C extends Component, B exten
 	 */
 	protected C getComponent() {
 		return component;
+	}
+
+	/**
+	 * Register a post-processor to be applied on the built component just before {@code build()} returns.
+	 * Satisfies the {@link com.holonplatform.vaadin.flow.components.builders.ComponentBuilder#withBuildPostProcessor}
+	 * contract for all concrete builder subclasses.
+	 *
+	 * @param postProcessor Consumer to apply to the built component (not null)
+	 * @return this configurator
+	 */
+	public B withBuildPostProcessor(Consumer<C> postProcessor) {
+		Objects.requireNonNull(postProcessor, "Post-processor must not be null");
+		this.postProcessors.add(postProcessor);
+		return getConfigurator();
+	}
+
+	/**
+	 * Protected helper — adds a post-processor to the list without requiring subclasses to
+	 * access the private {@code postProcessors} field directly.
+	 */
+	protected final void addPostProcessor(Consumer<C> postProcessor) {
+		Objects.requireNonNull(postProcessor, "Post-processor must not be null");
+		this.postProcessors.add(postProcessor);
+	}
+
+	/**
+	 * Apply all registered post-processors to the component.
+	 * Concrete builder implementations must call this method at the end of their {@code build()} method,
+	 * before returning the component.
+	 */
+	protected void applyPostProcessors() {
+		postProcessors.forEach(pp -> pp.accept(getComponent()));
 	}
 
 	@Override

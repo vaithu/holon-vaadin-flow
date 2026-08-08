@@ -200,6 +200,14 @@ public interface PropertyInputGroup extends BoundComponentGroup<Property<?>, Inp
 	@Override
 	void validate() throws ValidationException;
 
+	/**
+	 * Validates only the {@link Input} bound to the given property, updating its validation error state.
+	 * Unlike {@link #validate()}, this does not touch any other input in the group.
+	 * @param property The property whose bound input should be validated (not null)
+	 * @throws ValidationException If the input value is not valid
+	 */
+	void validateInput(Property<?> property) throws ValidationException;
+
 	// ------- Builders
 
 	/**

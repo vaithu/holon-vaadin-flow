@@ -34,7 +34,7 @@ public interface PropertyListingBuilder extends PropertyListingConfigurator<Prop
 	 * 
 	 * @since 5.2.8
 	 */
-	public interface DatastorePropertyListingConfigurator
+	interface DatastorePropertyListingConfigurator
 			extends PropertyListingConfigurator<DatastorePropertyListingBuilder>,
 			DatastoreDataProviderConfigurator<PropertyBox, DatastorePropertyListingBuilder> {
 
@@ -45,7 +45,7 @@ public interface PropertyListingBuilder extends PropertyListingConfigurator<Prop
 	 * 
 	 * @since 5.2.0
 	 */
-	public interface DatastorePropertyListingBuilder extends DatastorePropertyListingConfigurator,
+	interface DatastorePropertyListingBuilder extends DatastorePropertyListingConfigurator,
 			ItemListingBuilder<PropertyBox, Property<?>, PropertyListing, DatastorePropertyListingBuilder> {
 
 	}

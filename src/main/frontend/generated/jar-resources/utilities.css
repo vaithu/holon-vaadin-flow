@@ -411,14 +411,17 @@ vaadin-grid.grid--wrap-cell-content::part(cell) {
  *
  *  Variants: icon-badge--default | --destructive | --warning | --success | --info
  *
- *  Size modifiers: icon-badge--sm (2rem) | icon-badge--lg (3.5rem)
+ *  Size modifiers: icon-badge--xs | --sm | (default) | --lg | --xl
+ *  Pill mode: add text via badge.setText("…") which adds icon-badge--has-text
  * ===================================================================== */
 
 .icon-badge {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width:  2.75rem;  /* 44 px — matches AlertDialog header icon size */
+    /* DEFAULT — 44px circle; font-size drives em-based pill dimensions */
+    font-size: 0.875rem;   /* 14px — sets the em baseline for this size */
+    width:  2.75rem;
     height: 2.75rem;
     border-radius: 50%;
     flex-shrink: 0;
@@ -433,6 +436,19 @@ vaadin-grid.grid--wrap-cell-content::part(cell) {
     height: 1.25rem;
     color: inherit;
     flex-shrink: 0;
+}
+
+/* Text slot — font-size is inherited from the wrapper (scales with size modifier) */
+.icon-badge__text {
+    font-size: 1em;        /* inherits the wrapper's font-size — scales uniformly */
+    line-height: 1;
+    white-space: nowrap;
+}
+
+.icon-badge__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 
 /* Variants */
@@ -461,8 +477,24 @@ vaadin-grid.grid--wrap-cell-content::part(cell) {
     color:            #7c3aed;
 }
 
-/* Size modifiers */
+/* -----------------------------------------------------------------------
+   Size modifiers — set font-size on the wrapper so that pill padding,
+   gap, min-width, and text all scale together via em units.
+   ----------------------------------------------------------------------- */
+
+.icon-badge--xs {
+    font-size: 0.625rem;   /* 10px */
+    width:  1.75rem;
+    height: 1.75rem;
+}
+.icon-badge--xs vaadin-icon,
+.icon-badge--xs svg {
+    width:  0.875rem;
+    height: 0.875rem;
+}
+
 .icon-badge--sm {
+    font-size: 0.75rem;    /* 12px */
     width:  2rem;
     height: 2rem;
 }
@@ -473,6 +505,7 @@ vaadin-grid.grid--wrap-cell-content::part(cell) {
 }
 
 .icon-badge--lg {
+    font-size: 1rem;       /* 16px */
     width:  3.5rem;
     height: 3.5rem;
 }
@@ -480,6 +513,71 @@ vaadin-grid.grid--wrap-cell-content::part(cell) {
 .icon-badge--lg svg {
     width:  1.75rem;
     height: 1.75rem;
+}
+
+.icon-badge--xl {
+    font-size: 1.125rem;   /* 18px */
+    width:  4.5rem;
+    height: 4.5rem;
+}
+.icon-badge--xl vaadin-icon,
+.icon-badge--xl svg {
+    width:  2rem;
+    height: 2rem;
+}
+
+/* -----------------------------------------------------------------------
+   Pill mode — turns the circular badge into an icon + label chip.
+   All spacing uses em so it scales with each size modifier automatically.
+   ----------------------------------------------------------------------- */
+
+.icon-badge--has-text {
+    width: auto;
+    min-width: 3.14em;          /* ~44px at DEFAULT 14px; scales per size */
+    height: auto;
+    padding: 0.286em 0.571em;   /* ~4px 8px at 14px; scales per size */
+    gap: 0.357em;               /* ~5px at 14px; scales per size */
+    border-radius: 9999px;
+}
+
+/* Ensure circular size overrides don't bleed into pill height */
+.icon-badge--xs.icon-badge--has-text,
+.icon-badge--sm.icon-badge--has-text,
+.icon-badge--lg.icon-badge--has-text,
+.icon-badge--xl.icon-badge--has-text {
+    width: auto;
+    height: auto;
+}
+
+.icon-badge--has-text .icon-badge__icon {
+    flex-shrink: 0;
+}
+
+/* Per-size pill overrides — em is relative to each size's font-size, so
+   these scale uniformly: icon, text, padding, and gap all move together. */
+
+.icon-badge--xs.icon-badge--has-text {
+    min-width: 2.8em;
+    padding: 0.2em 0.6em;
+    gap: 0.4em;
+}
+
+.icon-badge--sm.icon-badge--has-text {
+    min-width: 2.67em;
+    padding: 0.25em 0.667em;
+    gap: 0.5em;
+}
+
+.icon-badge--lg.icon-badge--has-text {
+    min-width: 3.5em;
+    padding: 0.286em 1em;
+    gap: 0.625em;
+}
+
+.icon-badge--xl.icon-badge--has-text {
+    min-width: 4em;
+    padding: 0.286em 1em;
+    gap: 0.667em;
 }
 
 /* Dark mode */

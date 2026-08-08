@@ -37,6 +37,7 @@ public class DefaultAvatarBuilder extends AbstractAvatarConfigurator<AvatarBuild
 
     @Override
     public Avatar build() {
+        applyPostProcessors();
         return getComponent();
     }
 }

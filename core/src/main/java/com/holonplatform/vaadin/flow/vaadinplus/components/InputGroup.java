@@ -15,10 +15,13 @@
  */
 package com.holonplatform.vaadin.flow.vaadinplus.components;
 
+import java.io.Serial;
+import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.vaadin.flow.components.HasComponent;
 import com.holonplatform.vaadin.flow.components.Input;
 import com.holonplatform.vaadin.flow.components.builders.InputGroupBuilder;
 import com.holonplatform.vaadin.flow.components.builders.InputGroupLayoutConfigurator;
+import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.html.Div;
@@ -41,7 +44,7 @@ import com.vaadin.flow.component.html.Div;
  *
  * <p>Children receive automatic border-radius and border-merging treatment
  * from {@code input-group.css}. Vaadin field variants ({@code vaadin-text-field},
- * {@code vaadin-date-picker}, {@code vaadin-button}, …) are all supported.
+ * {@code vaadin-date-picker}, {@code vaadin-button}, â€¦) are all supported.
  * Holon {@link Input} and any {@link HasComponent} wrapper are unwrapped to
  * their underlying {@link Component} on content.
  *
@@ -83,11 +86,14 @@ import com.vaadin.flow.component.html.Div;
  *
  * @see InputGroupText
  */
-@StyleSheet("context://material-symbols.css")
 @StyleSheet("context://input-group.css")
 public class InputGroup extends Div {
 
+    @Serial
     private static final long serialVersionUID = 1L;
+
+    /** Stored localizable aria-label; re-resolved on locale change. */
+    private Localizable ariaLabelLocalizable;
 
     // -----------------------------------------------------------------------
     // Constructors
@@ -98,6 +104,7 @@ public class InputGroup extends Div {
      */
     public InputGroup() {
         addClassName("input-group");
+        getElement().setAttribute("role", "group");
     }
 
     /**
@@ -114,7 +121,7 @@ public class InputGroup extends Div {
     }
 
     // -----------------------------------------------------------------------
-    // Add — Vaadin components
+    // Add â€” Vaadin components
     // -----------------------------------------------------------------------
 
     /**
@@ -136,7 +143,7 @@ public class InputGroup extends Div {
     }
 
     // -----------------------------------------------------------------------
-    // Add — Holon HasComponent / Input<T>
+    // Add â€” Holon HasComponent / Input<T>
     // -----------------------------------------------------------------------
 
     /**
@@ -190,27 +197,44 @@ public class InputGroup extends Div {
         }
     }
 
+    /**
+     * Sets the accessible name for this input group so assistive technology
+     * can announce what the combined control represents (e.g. "Search", "Price range").
+     *
+     * @param label the ARIA label (not null); pass {@code null} or blank to remove
+     */
+    public void setAriaLabel(String label) {
+        this.ariaLabelLocalizable = null;
+        if (label != null && !label.isBlank()) {
+            getElement().setAttribute("aria-label", label);
+        } else {
+            getElement().removeAttribute("aria-label");
+        }
+    }
+
+    /**
+     * Sets the accessible name from a {@link Localizable} descriptor.
+     * Resolved immediately and re-resolved on locale change.
+     *
+     * @param label the localizable accessible name (not null)
+     */
+    public void setAriaLabel(Localizable label) {
+        this.ariaLabelLocalizable = label;
+        applyAriaLabel();
+    }
+    private void applyAriaLabel() {
+        if (ariaLabelLocalizable == null) return;
+        String resolved = LocalizationProvider.localize(ariaLabelLocalizable)
+                .orElseGet(() -> ariaLabelLocalizable.getMessage() != null
+                        ? ariaLabelLocalizable.getMessage() : "");
+        if (!resolved.isBlank()) {
+            getElement().setAttribute("aria-label", resolved);
+        }
+    }
+
     // -----------------------------------------------------------------------
     // Remove
     // -----------------------------------------------------------------------
-
-    /**
-     * Removes the given components from this group.
-     *
-     * @param components the components to remove
-     */
-    @Override
-    public void remove(Component... components) {
-        super.remove(components);
-    }
-
-    /**
-     * Removes all child components from this group.
-     */
-    @Override
-    public void removeAll() {
-        super.removeAll();
-    }
 
     // -----------------------------------------------------------------------
     // Builder / configurator factories
@@ -248,7 +272,5 @@ public class InputGroup extends Div {
         return InputGroupLayoutConfigurator.configure(inputGroup);
     }
 }
-
-
 
 

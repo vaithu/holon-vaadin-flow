@@ -1,12 +1,12 @@
 /*
  * Copyright 2000-2017 Holon TDCN.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -15,6 +15,7 @@
  */
 package com.holonplatform.vaadin.flow.internal.components;
 
+import java.io.Serial;
 import com.holonplatform.core.Registration;
 import com.holonplatform.core.internal.utils.ObjectUtils;
 import com.holonplatform.vaadin.flow.components.HasLabel;
@@ -44,15 +45,16 @@ import java.util.function.Function;
 
 /**
  * Adapter to use a {@link HasValue} {@link Component} as an {@link Input}.
- * 
+ *
  * @param <T> Value type
  * @param <V> Concrete {@link HasValue} type
  * @param <C> Concrete {@link Component} type
- * 
+ *
  * @since 5.2.0
  */
 public class InputAdapter<T, V extends HasValue<?, T>, C extends Component> implements Input<T> {
 
+	@Serial
 	private static final long serialVersionUID = -2456516308895591627L;
 
 	/**
@@ -637,7 +639,7 @@ public class InputAdapter<T, V extends HasValue<?, T>, C extends Component> impl
 		ObjectUtils.argumentNotNull(listener, "ValueChangeListener must be not null");
 		return RegistrationAdapter.adapt(field.addValueChangeListener(
 				e -> listener.valueChange(new DefaultValueChangeEvent<>(this, e.getOldValue(), e.getValue(),
-						(e instanceof ComponentEvent) ? ((ComponentEvent<?>) e).isFromClient() : false))));
+                                                                        e instanceof ComponentEvent && ((ComponentEvent<?>) e).isFromClient()))));
 	}
 
 	/**

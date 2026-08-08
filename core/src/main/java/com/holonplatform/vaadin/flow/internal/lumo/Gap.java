@@ -9,7 +9,7 @@ public enum Gap {
 
     private final String className;
 
-    private Gap(String className) {
+    Gap(String className) {
         this.className = className;
     }
 

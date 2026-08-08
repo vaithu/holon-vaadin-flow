@@ -4,9 +4,9 @@
  * Mobile-first overlay-level (::part()) styles for AlertModal —
  * a dismissible notification dialog wrapping the Alert component.
  *
- * AlertModal calls getElement().getThemeList().add("alert-modal") so Vaadin
+ * AlertModal calls getElement().getThemeList().content("alert-modal") so Vaadin
  * Flow automatically mirrors the theme attribute from <vaadin-dialog> to
- * <vaadin-dialog-overlay>.  These ::part() selectors therefore apply only to
+ * <vaadin-dialog>.  These ::part() selectors therefore apply only to
  * AlertModal overlays and do not affect any other dialog.
  *
  * RESPONSIVE BEHAVIOUR
@@ -31,7 +31,7 @@
  * Backdrop — lighter scrim for a non-blocking notification feel
  * -------------------------------------------------------------------------- */
 
-vaadin-dialog-overlay[theme~="alert-modal"]::part(backdrop) {
+vaadin-dialog[theme~="alert-modal"]::part(backdrop) {
     transition: opacity 200ms ease;
 }
 
@@ -39,7 +39,7 @@ vaadin-dialog-overlay[theme~="alert-modal"]::part(backdrop) {
  * Overlay box — mobile: slides down from the top
  * -------------------------------------------------------------------------- */
 
-vaadin-dialog-overlay[theme~="alert-modal"]::part(overlay) {
+vaadin-dialog[theme~="alert-modal"]::part(overlay) {
     /* Pin to the top edge of the fixed overlay host */
     position: absolute;
     inset-block-start: 0;
@@ -63,8 +63,22 @@ vaadin-dialog-overlay[theme~="alert-modal"]::part(overlay) {
     /* Let the inner Alert's background colour show — no opaque overlay shell */
     background: transparent;
 
-    /* Slide-down entrance animation */
-    animation: alert-modal-slide-down 280ms cubic-bezier(0.32, 0.72, 0, 1);
+    /* Animation removed — Vaadin 25.2 fix: unconditional animation on ::part(overlay)
+     * replays during close when Vaadin adds [closing] to the overlay host, causing
+     * the entrance animation to run instead of the exit animation (glitch).
+     * Enter/exit animations are now gated on [opening] / [closing] states below. */
+}
+
+/* Mobile enter — slide down from top */
+@media (max-width: 639px) {
+    vaadin-dialog-overlay[theme~="alert-modal"][opening]::part(overlay) {
+        animation: alert-modal-slide-down 280ms cubic-bezier(0.32, 0.72, 0, 1);
+    }
+
+    /* Mobile exit — slide back up */
+    vaadin-dialog-overlay[theme~="alert-modal"][closing]::part(overlay) {
+        animation: alert-modal-slide-up 250ms cubic-bezier(0.4, 0, 0.6, 1);
+    }
 }
 
 @keyframes alert-modal-slide-down {
@@ -72,11 +86,16 @@ vaadin-dialog-overlay[theme~="alert-modal"]::part(overlay) {
     to   { transform: translateY(0);    }
 }
 
+@keyframes alert-modal-slide-up {
+    from { transform: translateY(0);     }
+    to   { transform: translateY(-100%); }
+}
+
 /* --------------------------------------------------------------------------
  * Content slot — padding owned by the inner Alert component
  * -------------------------------------------------------------------------- */
 
-vaadin-dialog-overlay[theme~="alert-modal"]::part(content) {
+vaadin-dialog[theme~="alert-modal"]::part(content) {
     padding: 0;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
@@ -89,12 +108,12 @@ vaadin-dialog-overlay[theme~="alert-modal"]::part(content) {
 
 @media (min-width: 640px) {
 
-    /* Control overlay width via the Vaadin 25.1 standard custom property */
-    vaadin-dialog-overlay[theme~="alert-modal"] {
+    /* Control overlay width via the Vaadin 25.2 standard custom property */
+    vaadin-dialog[theme~="alert-modal"] {
         --vaadin-dialog-overlay-width: min(90vw, 32rem);
     }
 
-    vaadin-dialog-overlay[theme~="alert-modal"]::part(overlay) {
+    vaadin-dialog[theme~="alert-modal"]::part(overlay) {
         /* Revert to normal centred positioning */
         position: relative;
         inset-block-start: auto;
@@ -110,6 +129,12 @@ vaadin-dialog-overlay[theme~="alert-modal"]::part(content) {
 
         padding-block-start: 0;
         background: transparent;
+        animation: none; /* prevent Lumo default open/close animations on desktop */
+    }
+
+    /* Desktop: suppress Lumo's default close animation explicitly */
+    vaadin-dialog-overlay[theme~="alert-modal"][opening]::part(overlay),
+    vaadin-dialog-overlay[theme~="alert-modal"][closing]::part(overlay) {
         animation: none;
     }
 }
@@ -124,13 +149,13 @@ vaadin-dialog-overlay[theme~="alert-modal"]::part(content) {
  */
 
 /* Mobile: only bottom corners rounded (matches overlay) */
-vaadin-dialog-overlay[theme~="alert-modal"]::part(content) .alert {
+vaadin-dialog[theme~="alert-modal"]::part(content) .alert {
     border-radius: 0 0 0.75rem 0.75rem;
 }
 
 /* Desktop: all four corners (matches overlay) */
 @media (min-width: 640px) {
-    vaadin-dialog-overlay[theme~="alert-modal"]::part(content) .alert {
+    vaadin-dialog[theme~="alert-modal"]::part(content) .alert {
         border-radius: 0.75rem;
     }
 }

@@ -1,0 +1,181 @@
+/* ============================================================
+   New Customer CRM Demo — new-customer-demo.css
+   BEM root: .ncd
+   ============================================================ */
+
+/* ── Page root ─────────────────────────────────────────── */
+.ncd {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  background: var(--lumo-contrast-5pct, #f5f5f5);
+}
+
+/* ── Page header ───────────────────────────────────────── */
+.ncd__page-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--lumo-space-m);
+  padding: var(--lumo-space-m) var(--lumo-space-l);
+  background: var(--lumo-base-color, #fff);
+  border-bottom: 1px solid var(--lumo-contrast-10pct);
+  flex-wrap: wrap;
+}
+
+.ncd__head-left {
+  display: flex;
+  flex-direction: column;
+  gap: var(--lumo-space-xs);
+}
+
+.ncd__head-title {
+  display: flex;
+  align-items: center;
+  gap: var(--lumo-space-s);
+  font-size: var(--lumo-font-size-l);
+  font-weight: 600;
+  color: var(--lumo-header-text-color, var(--lumo-body-text-color));
+}
+
+.ncd__head-sub {
+  font-size: var(--lumo-font-size-s);
+  color: var(--lumo-secondary-text-color);
+}
+
+.ncd__head-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--lumo-space-s);
+  flex-wrap: wrap;
+}
+
+/* ── Two-column body ───────────────────────────────────── */
+.ncd__body {
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: var(--lumo-space-l);
+  padding: var(--lumo-space-l);
+  padding-bottom: 88px; /* reserve space for sticky save bar */
+  align-items: start;
+}
+
+@media (max-width: 900px) {
+  .ncd__body {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ── Main column ───────────────────────────────────────── */
+.ncd__main {
+  display: flex;
+  flex-direction: column;
+  gap: var(--lumo-space-m);
+}
+
+/* ── Side column ───────────────────────────────────────── */
+.ncd__side {
+  display: flex;
+  flex-direction: column;
+  gap: var(--lumo-space-m);
+  position: sticky;
+  top: var(--lumo-space-m);
+}
+
+/* ── Avatar picker row (Step 1) ────────────────────────── */
+.ncd__av-pick {
+  display: flex;
+  align-items: center;
+  gap: var(--lumo-space-m);
+  padding: var(--lumo-space-m);
+  background: var(--lumo-contrast-5pct);
+  border-radius: var(--lumo-border-radius-m);
+  margin-bottom: var(--lumo-space-m);
+}
+
+.ncd__av-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.ncd__av-name {
+  font-weight: 600;
+  font-size: var(--lumo-font-size-m);
+}
+
+.ncd__av-sub {
+  font-size: var(--lumo-font-size-s);
+  color: var(--lumo-secondary-text-color);
+}
+
+.ncd__av-actions {
+  display: flex;
+  gap: var(--lumo-space-s);
+}
+
+/* ── Labeled field wrapper (for ChipGroup, AssignmentPickerRow) ── */
+.ncd__field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.ncd__field-label {
+  font-size: var(--lumo-font-size-s);
+  font-weight: 500;
+  color: var(--lumo-secondary-text-color);
+}
+
+/* ── Toggle row (boolean switch + label) ───────────────── */
+.ncd__toggle-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--lumo-space-s) 0;
+  border-bottom: 1px solid var(--lumo-contrast-10pct);
+  gap: var(--lumo-space-m);
+}
+
+.ncd__toggle-row:last-child {
+  border-bottom: none;
+}
+
+.ncd__toggle-label {
+  font-size: var(--lumo-font-size-m);
+  font-weight: 500;
+}
+
+.ncd__toggle-sub {
+  display: block;
+  font-size: var(--lumo-font-size-s);
+  color: var(--lumo-secondary-text-color);
+}
+
+/* ── Similar customers rows (side panel) ───────────────── */
+.ncd__sim-row {
+  display: flex;
+  align-items: center;
+  gap: var(--lumo-space-s);
+  padding: var(--lumo-space-s) var(--lumo-space-m);
+  border-radius: var(--lumo-border-radius-m);
+  cursor: pointer;
+  transition: background 150ms ease;
+}
+
+.ncd__sim-row:hover {
+  background: var(--lumo-contrast-5pct);
+}
+
+.ncd__sim-name {
+  display: block;
+  font-size: var(--lumo-font-size-s);
+  font-weight: 600;
+}
+
+.ncd__sim-sub {
+  display: block;
+  font-size: var(--lumo-font-size-xs);
+  color: var(--lumo-secondary-text-color);
+}

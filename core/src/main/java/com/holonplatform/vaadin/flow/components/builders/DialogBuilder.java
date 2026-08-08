@@ -117,20 +117,20 @@ public interface DialogBuilder<B extends DialogBuilder<B>> extends DialogConfigu
 	/**
 	 * Default <em>ok</em> confirm dialog button message code.
 	 */
-	public static final String DEFAULT_OK_BUTTON_MESSAGE_CODE = "com.holonplatform.vaadin.flow.components.dialog.button.ok";
-	public static final String DEFAULT_SAVE_BUTTON_MESSAGE_CODE = "com.holonplatform.vaadin.flow.components.dialog.button.save";
-	public static final String DEFAULT_DELETE_BUTTON_MESSAGE_CODE = "com.holonplatform.vaadin.flow.components.dialog.button.delete";
-	public static final String DEFAULT_SAVE_NEW_BUTTON_MESSAGE_CODE = "com.holonplatform.vaadin.flow.components.dialog.button.save.new";
+	String DEFAULT_OK_BUTTON_MESSAGE_CODE = "com.holonplatform.vaadin.flow.components.dialog.button.ok";
+	String DEFAULT_SAVE_BUTTON_MESSAGE_CODE = "com.holonplatform.vaadin.flow.components.dialog.button.save";
+	String DEFAULT_DELETE_BUTTON_MESSAGE_CODE = "com.holonplatform.vaadin.flow.components.dialog.button.delete";
+	String DEFAULT_SAVE_NEW_BUTTON_MESSAGE_CODE = "com.holonplatform.vaadin.flow.components.dialog.button.save.new";
 
 	/**
 	 * Default <em>confirm</em> question dialog button message code.
 	 */
-	public static final String DEFAULT_CONFIRM_BUTTON_MESSAGE_CODE = "com.holonplatform.vaadin.flow.components.dialog.button.confirm";
+	String DEFAULT_CONFIRM_BUTTON_MESSAGE_CODE = "com.holonplatform.vaadin.flow.components.dialog.button.confirm";
 
 	/**
 	 * Default <em>deny</em> question dialog button message code.
 	 */
-	public static final String DEFAULT_DENY_BUTTON_MESSAGE_CODE = "com.holonplatform.vaadin.flow.components.dialog.button.deny";
+	String DEFAULT_DENY_BUTTON_MESSAGE_CODE = "com.holonplatform.vaadin.flow.components.dialog.button.deny";
 
 	// ------- callbacks
 
@@ -138,7 +138,7 @@ public interface DialogBuilder<B extends DialogBuilder<B>> extends DialogConfigu
 	 * Question dialog user answer callback.
 	 */
 	@FunctionalInterface
-	public interface QuestionDialogCallback {
+	interface QuestionDialogCallback {
 
 		/**
 		 * Invoked when the user selected an answer in a question dialog.
@@ -153,7 +153,7 @@ public interface DialogBuilder<B extends DialogBuilder<B>> extends DialogConfigu
 	 * Delete dialog user answer callback.
 	 */
 	@FunctionalInterface
-	public interface DeleteDialogCallback {
+	interface DeleteDialogCallback {
 
 		/**
 		 * Invoked when the user selected an answer in a delete dialog.
@@ -168,7 +168,7 @@ public interface DialogBuilder<B extends DialogBuilder<B>> extends DialogConfigu
 	 * Save dialog user answer callback.
 	 */
 	@FunctionalInterface
-	public interface SaveDialogCallback {
+	interface SaveDialogCallback {
 
 		/**
 		 * Invoked when the user selected an answer in a save dialog.
@@ -187,7 +187,7 @@ public interface DialogBuilder<B extends DialogBuilder<B>> extends DialogConfigu
 	 *
 	 * @since 5.2.0
 	 */
-	public interface MessageDialogBuilder
+	interface MessageDialogBuilder
 			extends DialogBuilder<MessageDialogBuilder>, ClosableDialogConfigurator<MessageDialogBuilder> {
 
 	}
@@ -200,7 +200,7 @@ public interface DialogBuilder<B extends DialogBuilder<B>> extends DialogConfigu
 	 *
 	 * @since 5.2.0
 	 */
-	public interface ConfirmDialogBuilder
+	interface ConfirmDialogBuilder
 			extends DialogBuilder<ConfirmDialogBuilder>, ClosableDialogConfigurator<ConfirmDialogBuilder> {
 
 		/**
@@ -230,7 +230,7 @@ public interface DialogBuilder<B extends DialogBuilder<B>> extends DialogConfigu
 	 *
 	 * @since 5.2.0
 	 */
-	public interface QuestionDialogBuilder extends DialogBuilder<QuestionDialogBuilder> {
+	interface QuestionDialogBuilder extends DialogBuilder<QuestionDialogBuilder> {
 
 		/**
 		 * Provide a {@link Consumer} to create the default user <em>confirmation</em> button.
@@ -258,7 +258,7 @@ public interface DialogBuilder<B extends DialogBuilder<B>> extends DialogConfigu
 	 *
 	 * @since 5.5.4
 	 */
-	public interface DeleteDialogBuilder extends DialogBuilder<DeleteDialogBuilder> {
+	interface DeleteDialogBuilder extends DialogBuilder<DeleteDialogBuilder> {
 
 		/**
 		 * Provide a {@link Consumer} to create the default user <em>confirmation</em> button.
@@ -276,7 +276,7 @@ public interface DialogBuilder<B extends DialogBuilder<B>> extends DialogConfigu
 
 	}
 
-	public interface SaveAndNewDialogBuilder extends DialogBuilder<SaveAndNewDialogBuilder> {
+	interface SaveAndNewDialogBuilder extends DialogBuilder<SaveAndNewDialogBuilder> {
 
 		SaveAndNewDialogBuilder saveAndNewButtonConfigurator(Consumer<BaseButtonConfigurator> configurator);
 
@@ -290,7 +290,7 @@ public interface DialogBuilder<B extends DialogBuilder<B>> extends DialogConfigu
 	}
 
 
-	public interface SaveDialogBuilder extends DialogBuilder<SaveDialogBuilder> {
+	interface SaveDialogBuilder extends DialogBuilder<SaveDialogBuilder> {
 
 		SaveDialogBuilder saveButtonConfigurator(Consumer<BaseButtonConfigurator> configurator);
 

@@ -94,7 +94,7 @@ public interface HasIconConfigurator<C extends HasIconConfigurator<C>> {
 	 * 
 	 * @param <C> Parent configurator
 	 */
-	public interface IconConfigurator<C extends HasIconConfigurator<C>>
+	interface IconConfigurator<C extends HasIconConfigurator<C>>
 			extends HasStyleConfigurator<IconConfigurator<C>> {
 
 		/**

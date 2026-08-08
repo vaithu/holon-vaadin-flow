@@ -1,465 +1,562 @@
 package com.holonplatform.vaadin.flow.demo.ui.views;
 
 import com.holonplatform.vaadin.flow.components.Components;
-import com.holonplatform.vaadin.flow.demo.ui.DemoExample;
 import com.holonplatform.vaadin.flow.demo.ui.DemoMainLayout;
 import com.holonplatform.vaadin.flow.vaadinplus.KeyValueItem;
+import com.holonplatform.vaadin.flow.vaadinplus.KeyValueItem.Category;
+import com.holonplatform.vaadin.flow.vaadinplus.KeyValueItem.DeltaDirection;
+import com.holonplatform.vaadin.flow.vaadinplus.KeyValueItem.PillVariant;
 import com.holonplatform.vaadin.flow.vaadinplus.KeyValueList;
 import com.holonplatform.vaadin.flow.vaadinplus.ResponsiveDiv;
-import com.holonplatform.vaadin.flow.vaadinplus.components.Tag;
+import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;
+import com.vaadin.flow.component.html.H2;
+import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.html.Paragraph;
+import com.vaadin.flow.component.html.Pre;
 import com.vaadin.flow.component.html.Span;
-import com.vaadin.flow.component.icon.VaadinIcon;
-import com.vaadin.flow.component.notification.Notification;
-import com.vaadin.flow.component.orderedlayout.FlexComponent;
-import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
 /**
- * Demo page for {@link KeyValueList} and {@link KeyValueItem}.
+ * Demo page for {@link KeyValueList} / {@link KeyValueItem}.
  *
- * <p>Covers:
+ * <p>Five numbered pattern sections that pixel-perfectly replicate the Nexus
+ * key-value design reference:
  * <ol>
- *   <li>Basic text rows (constructor + factory)</li>
- *   <li>Component values (Tag badge, HorizontalLayout icon+text)</li>
- *   <li>Separator toggle</li>
- *   <li>Required indicator (CSS asterisk)</li>
- *   <li>Copyable values (monospace, user-select)</li>
- *   <li>Per-row dividers (CSS ::after)</li>
- *   <li>Mixed — user profile card</li>
- *   <li>Super text (above key) and sub text (below value)</li>
- *   <li>Bank statement pattern (super + sub + valueEnd on mobile)</li>
- *   <li>Value wrapping</li>
- *   <li>Click to navigate (setClickable + addClickListener)</li>
+ *   <li>Account Summary  — core row variants (text, mono, numeric, pill, text-wrap, muted)</li>
+ *   <li>Editable &amp; Assigned Values — identity values, hover-reveal edit buttons</li>
+ *   <li>Dashboard Summary Cards — delta trends, pills, 4-card responsive grid</li>
+ *   <li>Confirmation Step — dense rows, review banner</li>
+ *   <li>Widescreen Detail Layout — 2-column: detail card + activity side panel</li>
  * </ol>
  */
-@PageTitle("KeyValueList – Holon Demo")
+@PageTitle("KeyValueList Holon Demo")
 @Route(value = "key-value-list", layout = DemoMainLayout.class)
 public class KeyValueListDemoView extends Div {
 
     public KeyValueListDemoView() {
         addClassName("app-view");
+        getStyle()
+            .set("background", "#f8fafc")
+            .set("min-height", "100vh")
+            .set("padding", "2.5rem 1.5rem");
 
-        var title = new H1("KeyValueList");
-
-        var desc = new Paragraph(
-                "A 3-column CSS grid container (key | : | value) where each KeyValueItem " +
-                "uses display:contents, giving perfect column alignment across all rows " +
-                "without any JavaScript. Rich item API: copyable values, required " +
-                "indicators, component values, dividers, and a fluent builder.");
-
-        var examples = ResponsiveDiv.flex().column().gapL().build();
-
-        examples.add(basicExample());
-        examples.add(factoryMethodExample());
-        examples.add(componentValueExample());
-        examples.add(separatorToggleExample());
-        examples.add(requiredIndicatorExample());
-        examples.add(copyableValueExample());
-        examples.add(dividersExample());
-        examples.add(mixedExample());
-        examples.add(superSubTextExample());
-        examples.add(bankStatementExample());
-        examples.add(wrapExample());
-        examples.add(clickNavigationExample());
-
-        add(title, desc, examples);
-    }
-
-    // ── Example builders ────────────────────────────────────────────────────
-
-    private DemoExample basicExample() {
-        var list = new KeyValueList()
-                .addItem(new KeyValueItem("First name", "Jane"))
-                .addItem(new KeyValueItem("Last name",  "Smith"))
-                .addItem(new KeyValueItem("Email",      "jane.smith@example.com"))
-                .addItem(new KeyValueItem("Department", "Engineering"))
-                .addItem(new KeyValueItem("Location",   "Berlin, Germany"));
-
-        return new DemoExample("Basic Text Rows", list, """
-                new KeyValueList()
-                    .addItem(new KeyValueItem("First name", "Jane"))
-                    .addItem(new KeyValueItem("Last name",  "Smith"))
-                    .addItem(new KeyValueItem("Email",      "jane.smith@example.com"))
-                    .addItem(new KeyValueItem("Department", "Engineering"))
-                    .addItem(new KeyValueItem("Location",   "Berlin, Germany"));
-                """);
-    }
-
-    private DemoExample factoryMethodExample() {
-        // Using Components.keyValueList() and KeyValueItem.of() factories
-        var list = Components.keyValueList(
-                KeyValueItem.of("Company",   "Acme Corp"),
-                KeyValueItem.of("Industry",  "Technology"),
-                KeyValueItem.of("Founded",   "2005"),
-                KeyValueItem.of("Employees", "1,200"),
-                KeyValueItem.of("Website",   "acme.example.com")
+        var sections = new Div(
+            pageHeader(),
+            section("01", "Account Summary",
+                "Core row variants: text, monospace, numeric, pill, text-wrap, muted, and 2 px category accent bars.",
+                pattern01(), CODE_01),
+            section("02", "Editable & Assigned Values",
+                "Identity values with circular avatar initials, hover-to-reveal edit buttons, and read-only rows.",
+                pattern02(), CODE_02),
+            section("03", "Dashboard Summary Cards",
+                "Four summary cards with delta trend annotations and status pills in a responsive 2-column grid.",
+                pattern03(), CODE_03),
+            section("04", "Form Review \u2014 Confirmation Step",
+                "Dense compact rows for scanning key transfer details before final submission.",
+                pattern04(), CODE_04),
+            section("05", "Widescreen Detail Layout",
+                "Two-column pattern: primary detail card on the left, activity side panel on the right.",
+                pattern05(), CODE_05)
         );
+        sections.getStyle()
+            .set("display", "flex")
+            .set("flex-direction", "column")
+            .set("gap", "4rem")
+            .set("max-width", "900px")
+            .set("margin", "0 auto");
 
-        return new DemoExample("Factory Methods", list, """
-                // Components.keyValueList() pre-populates from varargs
-                Components.keyValueList(
-                    KeyValueItem.of("Company",   "Acme Corp"),
-                    KeyValueItem.of("Industry",  "Technology"),
-                    KeyValueItem.of("Founded",   "2005"),
-                    KeyValueItem.of("Employees", "1,200"),
-                    KeyValueItem.of("Website",   "acme.example.com")
-                );
-                """);
+        add(sections);
     }
 
-    private DemoExample componentValueExample() {
-        var statusItem = new KeyValueItem("Status", new Tag("Active"));
+    // -------------------------------------------------------------------------
+    // Page header
+    // -------------------------------------------------------------------------
 
-        // HorizontalLayout is an idiomatic flex-row component — no inline styles needed
-        var roleRow = new HorizontalLayout(VaadinIcon.USER.create(), new Span("Senior Engineer"));
-        roleRow.setAlignItems(FlexComponent.Alignment.CENTER);
-        roleRow.setPadding(false);
-        var roleItem = new KeyValueItem("Role", roleRow);
+    private Div pageHeader() {
+        var h1 = new H1("Key-Value Patterns");
+        h1.getStyle()
+            .set("font-size", "1.875rem")
+            .set("font-weight", "700")
+            .set("color", "#0f172a")
+            .set("margin", "0 0 0.5rem 0");
 
-        var planItem  = new KeyValueItem("Plan",         new Tag("Enterprise"));
-        var sinceItem = new KeyValueItem("Member since", "March 2022");
+        var sub = new Paragraph(
+            "Pixel-perfect implementation of the Nexus key-value design pattern. " +
+            "Flex-per-row architecture: 168 px fixed label, right-aligned value, 2 px absolute accent bar.");
+        sub.getStyle()
+            .set("font-size", "1rem")
+            .set("color", "#64748b")
+            .set("margin", "0")
+            .set("line-height", "1.6");
 
-        var list = new KeyValueList()
-                .addItem(statusItem)
-                .addItem(roleItem)
-                .addItem(planItem)
-                .addItem(sinceItem);
-
-        return new DemoExample("Component Values", list, """
-                // Pass any Vaadin Component as the value.
-                var statusItem = new KeyValueItem("Status", new Tag("Active"));
-
-                var roleRow = new HorizontalLayout(VaadinIcon.USER.create(), new Span("Senior Engineer"));
-                roleRow.setAlignItems(FlexComponent.Alignment.CENTER);
-                roleRow.setPadding(false);
-                var roleItem = new KeyValueItem("Role", roleRow);
-                """);
+        var div = new Div(h1, sub);
+        div.getStyle().set("margin-bottom", "0.5rem");
+        return div;
     }
 
-    private DemoExample separatorToggleExample() {
-        var withColon    = new KeyValueItem("With separator",    "Visible colon between key and value");
-        var withoutColon = new KeyValueItem("Without separator", "Colon hidden");
-        withoutColon.setShowSeparator(false);
+    // -------------------------------------------------------------------------
+    // Layout helpers
+    // -------------------------------------------------------------------------
 
-        var list = new KeyValueList()
-                .addItem(withColon)
-                .addItem(withoutColon);
+    /** Numbered section wrapper with label, h2, description, and a Preview / Code toggle. */
+    private Div section(String num, String title, String note, Component preview, String code) {
+        var numSpan = new Span(num);
+        numSpan.getStyle()
+            .set("font-size", "0.6875rem")
+            .set("font-weight", "700")
+            .set("color", "#7c3aed")
+            .set("letter-spacing", "0.12em")
+            .set("text-transform", "uppercase");
 
-        return new DemoExample("Separator Toggle", list, """
-                // Default: separator ":" is visible.
-                // Call setShowSeparator(false) to hide it per row.
-                var withColon    = new KeyValueItem("With separator",    "Visible");
-                var withoutColon = new KeyValueItem("Without separator", "Hidden");
-                withoutColon.setShowSeparator(false);
-                """);
+        var h2 = new H2(title);
+        h2.getStyle()
+            .set("font-size", "1.125rem")
+            .set("font-weight", "700")
+            .set("color", "#0f172a")
+            .set("margin", "0");
+
+        var labelRow = new Div(numSpan, h2);
+        labelRow.getStyle()
+            .set("display", "flex")
+            .set("align-items", "baseline")
+            .set("gap", "0.875rem")
+            .set("margin-bottom", "0.375rem");
+
+        var noteP = new Paragraph(note);
+        noteP.getStyle()
+            .set("font-size", "0.875rem")
+            .set("color", "#64748b")
+            .set("line-height", "1.6")
+            .set("margin", "0 0 1.25rem 0");
+
+        var sec = new Div();
+        sec.add(labelRow, noteP, previewWithCode(preview, code));
+        return sec;
     }
 
-    private DemoExample requiredIndicatorExample() {
-        var emailItem = KeyValueItem.builder()
-                .key("Email")
-                .value("jane.smith@example.com")
-                .required(true)
-                .build();
+    /**
+     * Wraps the live {@code preview} and its Java {@code code} snippet in a
+     * Preview / Code tab toggle, mirroring the shared {@code DemoExample} pattern
+     * used across the other demo views.
+     */
+    private Component previewWithCode(Component preview, String code) {
+        var pre = new Pre();
+        pre.getElement().setText(code);
+        pre.getStyle()
+            .set("margin", "0")
+            .set("padding", "1rem 1.25rem")
+            .set("font-size", "0.8125rem")
+            .set("line-height", "1.55")
+            .set("overflow", "auto")
+            .set("background", "#0f172a")
+            .set("color", "#e2e8f0")
+            .set("border-radius", "0.875rem")
+            .set("white-space", "pre");
+        var codePane = new Div(pre);
 
-        var phoneItem = KeyValueItem.builder()
-                .key("Phone")
-                .value("Not provided")
-                .required(false)
-                .build();
+        Div container = ResponsiveDiv.flex().column().gapM().marginS().build();
 
-        var notesItem = KeyValueItem.builder()
+        var lazyTabs = Components.lazyTabs()
+            .withContainer(container)
+            .withLazyTab("Preview", () -> preview)
+            .withLazyTab("Code", () -> codePane);
+
+        return new Div(lazyTabs.getTabs(), lazyTabs.getContentContainer());
+    }
+
+    /** Standard card wrapper with header row (title + meta). */
+    private Div card(String title, String meta, Component body) {
+        var h3 = new H3(title);
+        h3.getStyle()
+            .set("font-size", "0.875rem")
+            .set("font-weight", "700")
+            .set("color", "#0f172a")
+            .set("margin", "0");
+
+        var metaSpan = new Span(meta);
+        metaSpan.getStyle()
+            .set("font-size", "0.75rem")
+            .set("color", "#94a3b8");
+
+        var head = new Div(h3, metaSpan);
+        head.getStyle()
+            .set("display", "flex")
+            .set("align-items", "center")
+            .set("justify-content", "space-between")
+            .set("padding", "1rem 1.25rem")
+            .set("border-bottom", "1px solid #f1f5f9");
+
+        var card = new Div(head, body);
+        card.getStyle()
+            .set("background", "#fff")
+            .set("border", "1px solid #e2e8f0")
+            .set("border-radius", "0.875rem")
+            .set("overflow", "hidden")
+            .set("box-shadow", "0 1px 3px rgb(0 0 0 / 0.06), 0 1px 2px rgb(0 0 0 / 0.04)");
+        return card;
+    }
+
+    // -------------------------------------------------------------------------
+    // Pattern 01 — Account Summary
+    // -------------------------------------------------------------------------
+
+    private Component pattern01() {
+        var list = new KeyValueList();
+        list.addItem(KeyValueItem.of("Full name", "Marcus Whitfield"));
+        list.addItem(
+            KeyValueItem.of("Account number", "AC-4471-9902")
+                .setValueMono(true)
+                .setShowCopyButton(true));
+        list.addItem(
+            KeyValueItem.of("Current balance", "$18,240.55")
+                .setCategory(Category.FINANCIAL)
+                .setValueNumeric(true));
+        list.addItem(
+            KeyValueItem.pill("Account status", "Active", PillVariant.SUCCESS)
+                .setCategory(Category.STATUS));
+        list.addItem(
+            KeyValueItem.pill("Compliance flag", "Review pending", PillVariant.WARNING)
+                .setCategory(Category.ALERT));
+        list.addItem(
+            KeyValueItem.builder()
                 .key("Notes")
-                .value("Optional field — no asterisk shown")
-                .build();
-
-        var list = new KeyValueList()
-                .addItem(emailItem)
-                .addItem(phoneItem)
-                .addItem(notesItem);
-
-        return new DemoExample("Required Indicator", list, """
-                // required(true) adds data-required="true" on the key span.
-                // The CSS ::after inserts a red asterisk — purely visual, no validation.
-                KeyValueItem.builder()
-                    .key("Email")
-                    .value("jane.smith@example.com")
-                    .required(true)
-                    .build();
-                """);
+                .value("Client requested paper statements only \u2014 do not email. "
+                    + "Three failed login attempts on 15 Jun.")
+                .textWrap(true)
+                .build());
+        list.addItem(
+            KeyValueItem.of("Referred by", "Not provided")
+                .setValueMuted(true));
+        return card("Account Summary", "Last synced 2 min ago", list);
     }
 
-    private DemoExample copyableValueExample() {
-        var tokenItem = KeyValueItem.builder()
-                .key("API Token")
-                .value("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9")
-                .copyable(true)
-                .tooltip("Click to select and copy")
-                .build();
+    // -------------------------------------------------------------------------
+    // Pattern 02 — Editable & Assigned Values
+    // -------------------------------------------------------------------------
 
-        var secretItem = KeyValueItem.builder()
-                .key("Client Secret")
-                .value("sk_live_abc123xyz789")
-                .copyable(true)
-                .build();
-
-        var normalItem = KeyValueItem.of("Version", "10.0.0");
-
-        var list = new KeyValueList()
-                .addItem(tokenItem)
-                .addItem(secretItem)
-                .addItem(normalItem);
-
-        return new DemoExample("Copyable Values", list, """
-                // copyable(true) adds kv-copyable class → monospace, user-select:text.
-                // Pair with tooltip() for discoverability.
-                KeyValueItem.builder()
-                    .key("API Token")
-                    .value("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9")
-                    .copyable(true)
-                    .tooltip("Click to select and copy")
-                    .build();
-                """);
+    private Component pattern02() {
+        var list = new KeyValueList();
+        list.addItem(KeyValueItem.of("Account holder", "Marcus Whitfield").setEditable(true));
+        list.addItem(KeyValueItem.of("Contact email", "m.whitfield@example.com").setEditable(true));
+        list.addItem(KeyValueItem.of("Primary phone", "+1 (415) 555-0182").setEditable(true));
+        list.addItem(KeyValueItem.identity("Assigned advisor", "JC", "Jordan Cole").setEditable(true));
+        list.addItem(KeyValueItem.identity("Last modified by", "SP", "Sarah Patterson"));
+        list.addItem(KeyValueItem.of("Support tier", "Premium").setEditable(true));
+        return card("Client Record", "ID: ACC-0042", list);
     }
 
-    private DemoExample dividersExample() {
-        // divider() adds a full-width ::after line spanning all 3 grid columns
-        var list = new KeyValueList()
-                .addItem(KeyValueItem.builder().key("Monday").value("Team standup").divider(true).build())
-                .addItem(KeyValueItem.builder().key("Tuesday").value("Design review").divider(true).build())
-                .addItem(KeyValueItem.builder().key("Wednesday").value("Sprint planning").divider(true).build())
-                .addItem(KeyValueItem.builder().key("Thursday").value("Code review").divider(true).build())
-                .addItem(KeyValueItem.of("Friday", "Retrospective"));   // last row — no divider
+    // -------------------------------------------------------------------------
+    // Pattern 03 — Dashboard Summary Cards (2 x 2 grid)
+    // -------------------------------------------------------------------------
 
-        return new DemoExample("Per-Row Dividers", list, """
-                // divider(true) appends a full-width hr-like line below the row.
-                // Implemented via CSS ::after spanning grid-column: 1 / -1
-                // — no extra DOM element required.
-                KeyValueItem.builder().key("Monday").value("Team standup").divider(true).build()
-                // ...
-                KeyValueItem.of("Friday", "Retrospective")  // last row — no divider
-                """);
+    private Component pattern03() {
+        var grid = new Div();
+        grid.getStyle()
+            .set("display", "grid")
+            .set("grid-template-columns", "repeat(2, 1fr)")
+            .set("gap", "1rem");
+
+        grid.add(revenueCard());
+        grid.add(customerCard());
+        grid.add(operationsCard());
+        grid.add(riskCard());
+        return grid;
     }
 
-    private DemoExample mixedExample() {
-        var nameItem = KeyValueItem.builder()
-                .key("Name")
-                .value("Jane Smith")
-                .divider(true)
-                .build();
-
-        var emailItem = KeyValueItem.builder()
-                .key("Email")
-                .value("jane.smith@example.com")
-                .required(true)
-                .divider(true)
-                .build();
-
-        var tokenItem = KeyValueItem.builder()
-                .key("Token")
-                .value("abc-123-xyz-789")
-                .copyable(true)
-                .tooltip("Select to copy")
-                .divider(true)
-                .build();
-
-        var statusItem = new KeyValueItem("Status", new Tag("Active"));
-        statusItem.setShowSeparator(false);
-
-        var list = new KeyValueList()
-                .addItem(nameItem)
-                .addItem(emailItem)
-                .addItem(tokenItem)
-                .addItem(statusItem);
-
-        return new DemoExample("Mixed — User Profile Card", list, """
-                new KeyValueList()
-                    .addItem(KeyValueItem.builder()
-                        .key("Name").value("Jane Smith").divider(true).build())
-                    .addItem(KeyValueItem.builder()
-                        .key("Email").value("jane.smith@example.com")
-                        .required(true).divider(true).build())
-                    .addItem(KeyValueItem.builder()
-                        .key("Token").value("abc-123-xyz-789")
-                        .copyable(true).tooltip("Select to copy").divider(true).build())
-                    .addItem(new KeyValueItem("Status", new Tag("Active")));
-                """);
+    private Div revenueCard() {
+        var list = new KeyValueList().asSummary();
+        list.addItem(
+            KeyValueItem.withDelta("Monthly revenue", "$84,120", "+4.6%", DeltaDirection.UP)
+                .setCategory(Category.FINANCIAL));
+        list.addItem(
+            KeyValueItem.withDelta("Net profit", "$31,800", "+2.1%", DeltaDirection.UP)
+                .setCategory(Category.FINANCIAL));
+        list.addItem(
+            KeyValueItem.withDelta("Burn rate", "$12,400", "\u22126.2%", DeltaDirection.DOWN)
+                .setCategory(Category.ALERT));
+        return summaryCard("Revenue", "Jun 2026", list);
     }
 
-    private DemoExample superSubTextExample() {
-        var list = new KeyValueList()
-                .addItem(KeyValueItem.builder()
-                        .superText("Account holder")
-                        .key("Jane Smith")
-                        .value("EUR current account")
-                        .subText("Opened March 2022")
-                        .divider(true)
-                        .build())
-                .addItem(KeyValueItem.builder()
-                        .superText("IBAN")
-                        .key("DE89 3704 0044 0532 0130 00")
-                        .value("€ 12,450.00")
-                        .subText("Available balance")
-                        .build());
-
-        return new DemoExample("Super Text (above key) & Sub Text (below value)", list, """
-                // superText() renders small ALL-CAPS tertiary label above the key.
-                // subText()   renders small tertiary label below the value.
-                // Both are hidden when null / blank.
-                KeyValueItem.builder()
-                    .superText("Account holder")
-                    .key("Jane Smith")
-                    .value("EUR current account")
-                    .subText("Opened March 2022")
-                    .divider(true)
-                    .build()
-                """);
+    private Div customerCard() {
+        var list = new KeyValueList().asSummary();
+        list.addItem(
+            KeyValueItem.withDelta("Active customers", "4,821", "+312", DeltaDirection.UP));
+        list.addItem(
+            KeyValueItem.withDelta("Churn rate", "1.8%", "\u22120.3pt", DeltaDirection.DOWN));
+        list.addItem(
+            KeyValueItem.withDelta("NPS score", "72", "+5", DeltaDirection.UP)
+                .setCategory(Category.STATUS));
+        return summaryCard("Customers", "Trailing 30d", list);
     }
 
-    private DemoExample bankStatementExample() {
-        // Realistic bank-statement rows:
-        // - superText:  uppercase category label
-        // - key:        description / merchant
-        // - value:      amount (right-aligned on mobile via valueEnd)
-        // - subText:    running balance
-        // - divider:    row separator
-        var list = new KeyValueList()
-                .addItem(KeyValueItem.builder()
-                        .superText("income")
-                        .key("Salary — Acme Corp")
-                        .value("+€ 5,000.00")
-                        .subText("Balance: € 12,450.00")
-                        .valueEnd(true)
-                        .divider(true)
-                        .build())
-                .addItem(KeyValueItem.builder()
-                        .superText("rent")
-                        .key("Monthly rent")
-                        .value("−€ 1,200.00")
-                        .subText("Balance: € 11,250.00")
-                        .valueEnd(true)
-                        .divider(true)
-                        .build())
-                .addItem(KeyValueItem.builder()
-                        .superText("utilities")
-                        .key("Electricity & Gas — E.ON")
-                        .value("−€ 87.50")
-                        .subText("Balance: € 11,162.50")
-                        .valueEnd(true)
-                        .divider(true)
-                        .build())
-                .addItem(KeyValueItem.builder()
-                        .superText("subscription")
-                        .key("Streaming service")
-                        .value("−€ 14.99")
-                        .subText("Balance: € 11,147.51")
-                        .valueEnd(true)
-                        .build());
-
-        return new DemoExample("Bank Statement (super + sub + valueEnd)", list, """
-                // valueEnd(true) right-aligns the value column on MOBILE ONLY.
-                // On desktop the 3-column grid layout is unchanged.
-                KeyValueItem.builder()
-                    .superText("income")          // ALL-CAPS tertiary above key
-                    .key("Salary — Acme Corp")    // primary description
-                    .value("+€ 5,000.00")         // amount
-                    .subText("Balance: € 12,450") // running balance below
-                    .valueEnd(true)               // right-align amount on mobile
-                    .divider(true)
-                    .build()
-                """);
+    private Div operationsCard() {
+        var list = new KeyValueList().asSummary();
+        list.addItem(
+            KeyValueItem.pill("System health", "Operational", PillVariant.SUCCESS)
+                .setCategory(Category.STATUS));
+        list.addItem(
+            KeyValueItem.of("Avg response time", "142 ms")
+                .setValueNumeric(true));
+        list.addItem(
+            KeyValueItem.pill("Incidents open", "2 critical", PillVariant.DANGER)
+                .setCategory(Category.ALERT));
+        return summaryCard("Operations", "Live", list);
     }
 
-    private DemoExample wrapExample() {
-        var list = new KeyValueList()
-                .addItem(KeyValueItem.builder()
-                        .key("Notes")
-                        .value("This is a very long note that contains many words and should " +
-                               "wrap gracefully across multiple lines without overflowing its " +
-                               "container or breaking the grid layout.")
-                        .wrap(true)
-                        .divider(true)
-                        .build())
-                .addItem(KeyValueItem.builder()
-                        .key("No wrap (default)")
-                        .value("Short text fits on one line")
-                        .build());
-
-        return new DemoExample("Value Wrapping", list, """
-                // wrap(true) adds kv-wrap modifier — removes white-space:nowrap
-                // from key and adds overflow-wrap:break-word to value.
-                KeyValueItem.builder()
-                    .key("Notes")
-                    .value("Long text that wraps...")
-                    .wrap(true)
-                    .build()
-                """);
+    private Div riskCard() {
+        var list = new KeyValueList().asSummary();
+        list.addItem(
+            KeyValueItem.pill("Fraud alerts", "6 flagged", PillVariant.WARNING)
+                .setCategory(Category.ALERT));
+        list.addItem(
+            KeyValueItem.pill("Compliance", "Passed", PillVariant.SUCCESS)
+                .setCategory(Category.STATUS));
+        list.addItem(
+            KeyValueItem.of("Next audit", "30 Sep 2026")
+                .setCategory(Category.FINANCIAL));
+        return summaryCard("Risk & Compliance", "Q3 snapshot", list);
     }
 
-    private DemoExample clickNavigationExample() {
-        // What's needed for click-to-navigate:
-        //  1. setClickable(true)     — adds pointer cursor + hover/active CSS feedback
-        //  2. addClickListener(...)  — inherited from Div (ClickNotifier<Div>)
-        //  3. UI.getCurrent().navigate(TargetView.class)  — or Navigator API
+    /** Compact card wrapper for dashboard summary cards (no box-shadow, smaller head). */
+    private Div summaryCard(String title, String meta, Component body) {
+        var h3 = new H3(title);
+        h3.getStyle()
+            .set("font-size", "0.8125rem")
+            .set("font-weight", "700")
+            .set("color", "#0f172a")
+            .set("margin", "0");
 
-        var list = new KeyValueList()
-                .addItem(buildClickableRow("Dashboard",   "Overview of all metrics",       "dashboard"))
-                .addItem(buildClickableRow("Transactions","Recent payment history",         "transactions"))
-                .addItem(buildClickableRow("Settings",    "Profile and account preferences","settings"));
+        var metaSpan = new Span(meta);
+        metaSpan.getStyle()
+            .set("font-size", "0.6875rem")
+            .set("color", "#94a3b8");
 
-        return new DemoExample("Click to Navigate", list, """
-                // ① setClickable(true) — pointer cursor + hover/active highlight
-                // ② addClickListener() — inherited from Div via ClickNotifier<Div>
-                // ③ navigate inside the listener
+        var head = new Div(h3, metaSpan);
+        head.getStyle()
+            .set("display", "flex")
+            .set("align-items", "center")
+            .set("justify-content", "space-between")
+            .set("padding", "0.875rem 1.25rem")
+            .set("border-bottom", "1px solid #f1f5f9");
 
-                // Plain Vaadin navigation:
-                item.setClickable(true);
-                item.addClickListener(e ->
-                    UI.getCurrent().navigate(DetailView.class));
-
-                // Navigate with a route parameter:
-                item.addClickListener(e ->
-                    UI.getCurrent().navigate("orders/" + order.getId()));
-
-                // Holon Navigator API (supports @QueryParameter injection):
-                item.addClickListener(e ->
-                    Navigator.get()
-                        .navigation(DetailView.class)
-                        .withQueryParameter("id", entity.getId())
-                        .navigate());
-                """);
+        var card = new Div(head, body);
+        card.getStyle()
+            .set("background", "#fff")
+            .set("border", "1px solid #e2e8f0")
+            .set("border-radius", "0.875rem")
+            .set("overflow", "hidden");
+        return card;
     }
 
-    /** Helper: builds a clickable row that shows a notification simulating navigation. */
-    private KeyValueItem buildClickableRow(String title, String description, String route) {
-        var item = KeyValueItem.builder()
-                .key(title)
-                .value(description)
-                .clickable(true)
-                .divider(!route.equals("settings")) // no divider on last row
-                .build();
+    // -------------------------------------------------------------------------
+    // Pattern 04 — Confirmation Step
+    // -------------------------------------------------------------------------
 
-        // In a real view, replace with: UI.getCurrent().navigate(TargetView.class)
-        item.addClickListener(e ->
-                Notification.show("→ navigating to /" + route, 1500,
-                        Notification.Position.BOTTOM_CENTER));
-        return item;
+    private Component pattern04() {
+        // Review banner
+        var icon = new Span("\u2713");
+        icon.getStyle()
+            .set("display", "inline-flex")
+            .set("align-items", "center")
+            .set("justify-content", "center")
+            .set("width", "28px").set("height", "28px")
+            .set("border-radius", "50%")
+            .set("background", "#f0fdf4")
+            .set("color", "#16a34a")
+            .set("font-weight", "700")
+            .set("flex-shrink", "0");
+
+        var bannerTitle = new Span("Review your details");
+        bannerTitle.getStyle()
+            .set("font-size", "0.875rem")
+            .set("font-weight", "700")
+            .set("color", "#0f172a")
+            .set("display", "block");
+
+        var bannerSub = new Span("Please confirm everything looks correct before submitting.");
+        bannerSub.getStyle()
+            .set("font-size", "0.8125rem")
+            .set("color", "#64748b")
+            .set("display", "block");
+
+        var bannerText = new Div(bannerTitle, bannerSub);
+
+        var banner = new Div(icon, bannerText);
+        banner.getStyle()
+            .set("display", "flex")
+            .set("align-items", "center")
+            .set("gap", "0.875rem")
+            .set("background", "#f0fdf4")
+            .set("border", "1px solid #bbf7d0")
+            .set("border-radius", "0.875rem")
+            .set("padding", "1rem 1.25rem")
+            .set("margin-bottom", "0.875rem");
+
+        // Dense list inside a card
+        var list = new KeyValueList().asDense();
+        list.addItem(KeyValueItem.of("Transfer from", "Checking \u00b74471"));
+        list.addItem(
+            KeyValueItem.of("Transfer to", "Savings \u00b79902")
+                .setCategory(Category.FINANCIAL));
+        list.addItem(
+            KeyValueItem.of("Amount", "$5,000.00")
+                .setCategory(Category.FINANCIAL)
+                .setValueNumeric(true));
+        list.addItem(KeyValueItem.of("Transfer type", "Immediate"));
+        list.addItem(
+            KeyValueItem.of("Reference", "REF-20260615-001")
+                .setValueMono(true));
+        list.addItem(
+            KeyValueItem.pill("Fee", "No fee \u2014 included in Premium", PillVariant.SUCCESS));
+
+        var denseCard = card("Transfer Confirmation", "Step 3 of 3", list);
+
+        var wrap = new Div(banner, denseCard);
+        wrap.getStyle()
+            .set("display", "flex")
+            .set("flex-direction", "column");
+        return wrap;
     }
+
+    // -------------------------------------------------------------------------
+    // Pattern 05 — Widescreen Detail Layout
+    // -------------------------------------------------------------------------
+
+    private Component pattern05() {
+        // Left: primary detail card
+        var detail = new KeyValueList();
+        detail.addItem(KeyValueItem.of("Account type", "Premium Savings"));
+        detail.addItem(
+            KeyValueItem.of("Account number", "AC-4471-9902")
+                .setValueMono(true)
+                .setShowCopyButton(true));
+        detail.addItem(
+            KeyValueItem.of("Routing number", "021000021")
+                .setValueMono(true));
+        detail.addItem(KeyValueItem.of("Opened on", "14 Mar 2019"));
+        detail.addItem(
+            KeyValueItem.of("Interest rate", "4.75% APY")
+                .setCategory(Category.FINANCIAL)
+                .setValueNumeric(true));
+        detail.addItem(
+            KeyValueItem.of("Available balance", "$18,240.55")
+                .setCategory(Category.FINANCIAL)
+                .setValueNumeric(true));
+        detail.addItem(
+            KeyValueItem.pill("Status", "Active", PillVariant.SUCCESS)
+                .setCategory(Category.STATUS));
+        var leftCard = card("Account Details", "ACC-0042", detail);
+
+        // Right: activity side panel (asSummary — transparent, no card chrome)
+        var activity = new KeyValueList().asSummary();
+        activity.addItem(
+            KeyValueItem.builder()
+                .key("Jun 15").value("+$2,400.00").superText("DIRECT DEPOSIT")
+                .numeric(true).category(Category.STATUS).build());
+        activity.addItem(
+            KeyValueItem.builder()
+                .key("Jun 14").value("\u2212$340.00").superText("BILL PAYMENT")
+                .numeric(true).category(Category.ALERT).build());
+        activity.addItem(
+            KeyValueItem.builder()
+                .key("Jun 13").value("\u2212$84.50").superText("PURCHASE")
+                .numeric(true).build());
+        activity.addItem(
+            KeyValueItem.builder()
+                .key("Jun 12").value("+$5,000.00").superText("TRANSFER IN")
+                .numeric(true).category(Category.STATUS).build());
+        activity.addItem(
+            KeyValueItem.builder()
+                .key("Jun 10").value("\u2212$1,200.00").superText("WIRE OUT")
+                .numeric(true).category(Category.ALERT).build());
+        var rightCard = summaryCard("Recent Activity", "Last 5 transactions", activity);
+
+        // Two-column layout
+        var layout = new Div(leftCard, rightCard);
+        layout.getStyle()
+            .set("display", "grid")
+            .set("grid-template-columns", "1fr 320px")
+            .set("gap", "1.25rem")
+            .set("align-items", "start");
+        return layout;
+    }
+
+    // -------------------------------------------------------------------------
+    // Code snippets shown in the "Code" tab of each section
+    // -------------------------------------------------------------------------
+
+    private static final String CODE_01 = """
+        var list = new KeyValueList();
+        list.addItem(KeyValueItem.of("Full name", "Marcus Whitfield"));
+        list.addItem(KeyValueItem.of("Account number", "AC-4471-9902")
+                .setValueMono(true)
+                .setShowCopyButton(true));
+        list.addItem(KeyValueItem.of("Current balance", "$18,240.55")
+                .setCategory(Category.FINANCIAL)
+                .setValueNumeric(true));
+        list.addItem(KeyValueItem.pill("Account status", "Active", PillVariant.SUCCESS)
+                .setCategory(Category.STATUS));
+        list.addItem(KeyValueItem.pill("Compliance flag", "Review pending", PillVariant.WARNING)
+                .setCategory(Category.ALERT));
+        list.addItem(KeyValueItem.builder()
+                .key("Notes")
+                .value("Client requested paper statements only \u2014 do not email.")
+                .textWrap(true)
+                .build());
+        list.addItem(KeyValueItem.of("Referred by", "Not provided")
+                .setValueMuted(true));""";
+
+    private static final String CODE_02 = """
+        var list = new KeyValueList();
+        list.addItem(KeyValueItem.of("Account holder", "Marcus Whitfield").setEditable(true));
+        list.addItem(KeyValueItem.of("Contact email", "m.whitfield@example.com").setEditable(true));
+        list.addItem(KeyValueItem.of("Primary phone", "+1 (415) 555-0182").setEditable(true));
+        list.addItem(KeyValueItem.identity("Assigned advisor", "JC", "Jordan Cole").setEditable(true));
+        list.addItem(KeyValueItem.identity("Last modified by", "SP", "Sarah Patterson"));
+        list.addItem(KeyValueItem.of("Support tier", "Premium").setEditable(true));""";
+
+    private static final String CODE_03 = """
+        // Each card uses a compact summary list; four are placed in a 2 x 2 grid.
+        var list = new KeyValueList().asSummary();
+        list.addItem(KeyValueItem.withDelta("Monthly revenue", "$84,120", "+4.6%", DeltaDirection.UP)
+                .setCategory(Category.FINANCIAL));
+        list.addItem(KeyValueItem.withDelta("Net profit", "$31,800", "+2.1%", DeltaDirection.UP)
+                .setCategory(Category.FINANCIAL));
+        list.addItem(KeyValueItem.withDelta("Burn rate", "$12,400", "\u22126.2%", DeltaDirection.DOWN)
+                .setCategory(Category.ALERT));""";
+
+    private static final String CODE_04 = """
+        var list = new KeyValueList().asDense();
+        list.addItem(KeyValueItem.of("Transfer from", "Checking \u00b74471"));
+        list.addItem(KeyValueItem.of("Transfer to", "Savings \u00b79902")
+                .setCategory(Category.FINANCIAL));
+        list.addItem(KeyValueItem.of("Amount", "$5,000.00")
+                .setCategory(Category.FINANCIAL)
+                .setValueNumeric(true));
+        list.addItem(KeyValueItem.of("Transfer type", "Immediate"));
+        list.addItem(KeyValueItem.of("Reference", "REF-20260615-001")
+                .setValueMono(true));
+        list.addItem(KeyValueItem.pill("Fee", "No fee \u2014 included in Premium", PillVariant.SUCCESS));""";
+
+    private static final String CODE_05 = """
+        // Left: primary detail card
+        var detail = new KeyValueList();
+        detail.addItem(KeyValueItem.of("Account type", "Premium Savings"));
+        detail.addItem(KeyValueItem.of("Account number", "AC-4471-9902")
+                .setValueMono(true)
+                .setShowCopyButton(true));
+        detail.addItem(KeyValueItem.of("Available balance", "$18,240.55")
+                .setCategory(Category.FINANCIAL)
+                .setValueNumeric(true));
+        detail.addItem(KeyValueItem.pill("Status", "Active", PillVariant.SUCCESS)
+                .setCategory(Category.STATUS));
+
+        // Right: activity side panel (asSummary — transparent, no card chrome)
+        var activity = new KeyValueList().asSummary();
+        activity.addItem(KeyValueItem.builder()
+                .key("Jun 15").value("+$2,400.00").superText("DIRECT DEPOSIT")
+                .numeric(true).category(Category.STATUS).build());""";
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-

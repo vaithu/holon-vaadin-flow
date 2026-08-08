@@ -15,6 +15,7 @@
  */
 package com.holonplatform.vaadin.flow.vaadinplus.components;
 
+import java.io.Serial;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.textfield.TextField;
@@ -43,6 +44,7 @@ import com.vaadin.flow.data.value.ValueChangeMode;
  */
 public class InputOTPSlot extends Div {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     private final TextField input;
@@ -62,7 +64,7 @@ public class InputOTPSlot extends Div {
         this.input.setMaxLength(1);
         this.input.addClassName("input-otp__slot-input");
         this.input.setValueChangeMode(ValueChangeMode.EAGER);
-        // Aura built-in variant — centres text AND caret via the theme's own <input> styling.
+        // Aura built-in variant â€” centres text AND caret via the theme's own <input> styling.
         // In Vaadin 25 the native <input> is a light-DOM child, so ::part(value) is a no-op;
         // TextFieldVariant.ALIGN_CENTER is the correct theme-level hook.
         this.input.addThemeVariants(TextFieldVariant.ALIGN_CENTER);
@@ -96,6 +98,16 @@ public class InputOTPSlot extends Div {
     // Package-private API used by InputOTP
     // -----------------------------------------------------------------------
 
+    /**
+     * Sets the ARIA label for this slot (e.g. "Digit 1 of 6").
+     * Called by the parent {@link InputOTP} when slots are registered.
+     *
+     * @param label the accessible name (not null)
+     */
+    void setSlotAriaLabel(String label) {
+        input.getElement().setAttribute("aria-label", label);
+    }
+
     void setManager(InputOTP manager) {
         this.manager = manager;
     }
@@ -115,7 +127,7 @@ public class InputOTPSlot extends Div {
     public void setPattern(String pattern) {
         if (pattern != null) {
             // setAllowedCharPattern blocks invalid characters client-side, BEFORE they
-            // enter the input value — unlike setPattern(), which is HTML5 form validation
+            // enter the input value â€” unlike setPattern(), which is HTML5 form validation
             // and does nothing during typing.
             input.setAllowedCharPattern(pattern);
             // Keep the DOM attribute so tests and CSS attribute selectors still work
@@ -135,7 +147,7 @@ public class InputOTPSlot extends Div {
      * {@code input-otp.css}.
      *
      * <p>The listener is registered via {@code executeJs} so it fires entirely on the
-     * client — no server round-trip on each invalid keystroke.  The current pattern regex
+     * client â€” no server round-trip on each invalid keystroke.  The current pattern regex
      * is stored on the element ({@code el.__otpPattern}) and updated if
      * {@link #setPattern(String)} is called again with a different pattern.</p>
      */
@@ -186,5 +198,4 @@ public class InputOTPSlot extends Div {
         return input;
     }
 }
-
 

@@ -15,6 +15,7 @@
  */
 package com.holonplatform.vaadin.flow.navigator.internal.listeners;
 
+import java.io.Serial;
 import com.holonplatform.core.internal.utils.TypeUtils;
 import com.holonplatform.vaadin.flow.navigator.NavigationParameterMapper;
 import com.holonplatform.vaadin.flow.navigator.annotations.OnShow;
@@ -44,6 +45,7 @@ import java.util.*;
 public class DefaultNavigationTargetAfterNavigationListener extends AbstractNavigationTargetListener
 		implements AfterNavigationListener {
 
+	@Serial
 	private static final long serialVersionUID = 3389997906125447359L;
 
 	/*

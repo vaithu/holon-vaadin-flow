@@ -5,7 +5,7 @@ import com.holonplatform.vaadin.flow.vaadinplus.Layout;
 import com.vaadin.flow.component.Component;
 
 public class DefaultLayoutBuilder
-        extends AbstractLayoutConfigurator<LayoutBuilder>
+        extends AbstractLayoutConfigurator<Layout, LayoutBuilder>
         implements LayoutBuilder {
 
     public DefaultLayoutBuilder(Layout component) {

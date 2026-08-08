@@ -20,6 +20,7 @@ public class DefaultDetailBuilder
 
     @Override
     public Div build() {
+        applyPostProcessors();
         return getComponent();
     }
 }

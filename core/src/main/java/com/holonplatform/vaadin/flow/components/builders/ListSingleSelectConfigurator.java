@@ -103,7 +103,7 @@ public interface ListSingleSelectConfigurator<T, ITEM, B extends ListSingleSelec
 	 * @param <D>    Datastore data source configurator type
 	 * @param <C>    Concrete configurator type
 	 */
-	public interface ListSingleSelectInputConfigurator<T, ITEM, D extends DatastoreDataProviderConfigurator<ITEM, D>, C extends ListSingleSelectInputConfigurator<T, ITEM, D, C>>
+	interface ListSingleSelectInputConfigurator<T, ITEM, D extends DatastoreDataProviderConfigurator<ITEM, D>, C extends ListSingleSelectInputConfigurator<T, ITEM, D, C>>
 			extends ListSingleSelectConfigurator<T, ITEM, C>, HasBeanDatastoreDataProviderConfigurator<ITEM, D, C> {
 
 	}
@@ -116,7 +116,7 @@ public interface ListSingleSelectConfigurator<T, ITEM, B extends ListSingleSelec
 	 * @param <ITEM> Item type
 	 * @param <C>    Concrete configurator type
 	 */
-	public interface DatastoreListSingleSelectInputConfigurator<T, ITEM, C extends DatastoreListSingleSelectInputConfigurator<T, ITEM, C>>
+	interface DatastoreListSingleSelectInputConfigurator<T, ITEM, C extends DatastoreListSingleSelectInputConfigurator<T, ITEM, C>>
 			extends ListSingleSelectConfigurator<T, ITEM, C>, DatastoreDataProviderConfigurator<ITEM, C> {
 
 	}
@@ -128,7 +128,7 @@ public interface ListSingleSelectConfigurator<T, ITEM, B extends ListSingleSelec
 	 * @param <D> Datastore data source configurator type
 	 * @param <C> Concrete configurator type
 	 */
-	public interface PropertyListSingleSelectInputConfigurator<T, D extends DatastoreDataProviderConfigurator<PropertyBox, D>, C extends PropertyListSingleSelectInputConfigurator<T, D, C>>
+	interface PropertyListSingleSelectInputConfigurator<T, D extends DatastoreDataProviderConfigurator<PropertyBox, D>, C extends PropertyListSingleSelectInputConfigurator<T, D, C>>
 			extends ListSingleSelectConfigurator<T, PropertyBox, C>,
 			HasPropertyBoxDatastoreDataProviderConfigurator<D, C>, PropertySelectInputConfigurator<T, T, C> {
 
@@ -157,7 +157,7 @@ public interface ListSingleSelectConfigurator<T, ITEM, B extends ListSingleSelec
 	 * @param <T> Value type
 	 * @param <C> Concrete configurator type
 	 */
-	public interface DatastorePropertyListSingleSelectInputConfigurator<T, C extends DatastorePropertyListSingleSelectInputConfigurator<T, C>>
+	interface DatastorePropertyListSingleSelectInputConfigurator<T, C extends DatastorePropertyListSingleSelectInputConfigurator<T, C>>
 			extends ListSingleSelectConfigurator<T, PropertyBox, C>, DatastoreDataProviderSelectConfigurator<PropertyBox, C>,
 			PropertySelectInputConfigurator<T, T, C> {
 
@@ -171,7 +171,7 @@ public interface ListSingleSelectConfigurator<T, ITEM, B extends ListSingleSelec
 	 * @param <T>    Value type
 	 * @param <ITEM> Item type
 	 */
-	public interface ValidatableListSingleSelectInputBuilder<T, ITEM> extends
+	interface ValidatableListSingleSelectInputBuilder<T, ITEM> extends
 			ListSingleSelectInputConfigurator<T, ITEM, ValidatableDatastoreListSingleSelectInputBuilder<T, ITEM>, ValidatableListSingleSelectInputBuilder<T, ITEM>>,
 			BaseValidatableInputBuilder<T, ValidatableSingleSelect<T>, ValidatableListSingleSelectInputBuilder<T, ITEM>> {
 
@@ -184,7 +184,7 @@ public interface ListSingleSelectConfigurator<T, ITEM, B extends ListSingleSelec
 	 * @param <T>    Value type
 	 * @param <ITEM> Item type
 	 */
-	public interface ValidatableDatastoreListSingleSelectInputBuilder<T, ITEM> extends
+	interface ValidatableDatastoreListSingleSelectInputBuilder<T, ITEM> extends
 			DatastoreListSingleSelectInputConfigurator<T, ITEM, ValidatableDatastoreListSingleSelectInputBuilder<T, ITEM>>,
 			BaseValidatableInputBuilder<T, ValidatableSingleSelect<T>, ValidatableDatastoreListSingleSelectInputBuilder<T, ITEM>> {
 
@@ -196,7 +196,7 @@ public interface ListSingleSelectConfigurator<T, ITEM, B extends ListSingleSelec
 	 * @param <T>    Value type
 	 * @param <ITEM> Item type
 	 */
-	public interface ListSingleSelectInputBuilder<T, ITEM> extends
+	interface ListSingleSelectInputBuilder<T, ITEM> extends
 			ListSingleSelectInputConfigurator<T, ITEM, DatastoreListSingleSelectInputBuilder<T, ITEM>, ListSingleSelectInputBuilder<T, ITEM>>,
 			InputBuilder<T, ValueChangeEvent<T>, SingleSelect<T>, ValidatableSingleSelect<T>, ListSingleSelectInputBuilder<T, ITEM>, ValidatableListSingleSelectInputBuilder<T, ITEM>> {
 
@@ -209,7 +209,7 @@ public interface ListSingleSelectConfigurator<T, ITEM, B extends ListSingleSelec
 	 * @param <T>    Value type
 	 * @param <ITEM> Item type
 	 */
-	public interface DatastoreListSingleSelectInputBuilder<T, ITEM>
+	interface DatastoreListSingleSelectInputBuilder<T, ITEM>
 			extends DatastoreListSingleSelectInputConfigurator<T, ITEM, DatastoreListSingleSelectInputBuilder<T, ITEM>>,
 			InputBuilder<T, ValueChangeEvent<T>, SingleSelect<T>, ValidatableSingleSelect<T>, DatastoreListSingleSelectInputBuilder<T, ITEM>, ValidatableDatastoreListSingleSelectInputBuilder<T, ITEM>> {
 
@@ -223,7 +223,7 @@ public interface ListSingleSelectConfigurator<T, ITEM, B extends ListSingleSelec
 	 *
 	 * @param <T> Value type
 	 */
-	public interface ValidatablePropertyListSingleSelectInputBuilder<T> extends
+	interface ValidatablePropertyListSingleSelectInputBuilder<T> extends
 			PropertyListSingleSelectInputConfigurator<T, ValidatableDatastorePropertyListSingleSelectInputBuilder<T>, ValidatablePropertyListSingleSelectInputBuilder<T>>,
 			BaseValidatableInputBuilder<T, ValidatableSingleSelect<T>, ValidatablePropertyListSingleSelectInputBuilder<T>> {
 	}
@@ -234,7 +234,7 @@ public interface ListSingleSelectConfigurator<T, ITEM, B extends ListSingleSelec
 	 *
 	 * @param <T> Value type
 	 */
-	public interface ValidatableDatastorePropertyListSingleSelectInputBuilder<T> extends
+	interface ValidatableDatastorePropertyListSingleSelectInputBuilder<T> extends
 			DatastorePropertyListSingleSelectInputConfigurator<T, ValidatableDatastorePropertyListSingleSelectInputBuilder<T>>,
 			BaseValidatableInputBuilder<T, ValidatableSingleSelect<T>, ValidatableDatastorePropertyListSingleSelectInputBuilder<T>> {
 
@@ -245,7 +245,7 @@ public interface ListSingleSelectConfigurator<T, ITEM, B extends ListSingleSelec
 	 *
 	 * @param <T> Value type
 	 */
-	public interface PropertyListSingleSelectInputBuilder<T> extends
+	interface PropertyListSingleSelectInputBuilder<T> extends
 			PropertyListSingleSelectInputConfigurator<T, DatastorePropertyListSingleSelectInputBuilder<T>, PropertyListSingleSelectInputBuilder<T>>,
 			InputBuilder<T, ValueChangeEvent<T>, SingleSelect<T>, ValidatableSingleSelect<T>, PropertyListSingleSelectInputBuilder<T>, ValidatablePropertyListSingleSelectInputBuilder<T>> {
 	}
@@ -256,7 +256,7 @@ public interface ListSingleSelectConfigurator<T, ITEM, B extends ListSingleSelec
 	 *
 	 * @param <T> Value type
 	 */
-	public interface DatastorePropertyListSingleSelectInputBuilder<T> extends
+	interface DatastorePropertyListSingleSelectInputBuilder<T> extends
 			DatastorePropertyListSingleSelectInputConfigurator<T, DatastorePropertyListSingleSelectInputBuilder<T>>,
 			InputBuilder<T, ValueChangeEvent<T>, SingleSelect<T>, ValidatableSingleSelect<T>, DatastorePropertyListSingleSelectInputBuilder<T>, ValidatableDatastorePropertyListSingleSelectInputBuilder<T>> {
 

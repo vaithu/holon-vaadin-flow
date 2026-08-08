@@ -15,6 +15,8 @@
  */
 package com.holonplatform.vaadin.flow.vaadinplus.components;
 
+import java.io.Serial;
+import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.html.Nav;
 
@@ -37,13 +39,13 @@ import com.vaadin.flow.component.html.Nav;
  *
  * <p>Component hierarchy:</p>
  * <ul>
- *   <li>{@link Pagination} — {@code <nav>} landmark wrapper</li>
- *   <li>{@link PaginationContent} — {@code <ul>} flex container of items</li>
- *   <li>{@link PaginationItem} — {@code <li>} wrapper for each control</li>
- *   <li>{@link PaginationLink} — numbered page button</li>
- *   <li>{@link PaginationPrevious} — previous-page control</li>
- *   <li>{@link PaginationNext} — next-page control</li>
- *   <li>{@link PaginationEllipsis} — gap indicator ({@code …})</li>
+ *   <li>{@link Pagination} â€” {@code <nav>} landmark wrapper</li>
+ *   <li>{@link PaginationContent} â€” {@code <ul>} flex container of items</li>
+ *   <li>{@link PaginationItem} â€” {@code <li>} wrapper for each control</li>
+ *   <li>{@link PaginationLink} â€” numbered page button</li>
+ *   <li>{@link PaginationPrevious} â€” previous-page control</li>
+ *   <li>{@link PaginationNext} â€” next-page control</li>
+ *   <li>{@link PaginationEllipsis} â€” gap indicator ({@code â€¦})</li>
  * </ul>
  *
  * <p>All styling is defined in {@code pagination.css}. No inline styles or Lumo tokens.</p>
@@ -58,6 +60,7 @@ import com.vaadin.flow.component.html.Nav;
 @StyleSheet("context://pagination.css")
 public class Pagination extends Nav {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     private final PaginationContent content;
@@ -72,7 +75,8 @@ public class Pagination extends Nav {
     public Pagination() {
         addClassName("pagination");
         getElement().setAttribute("role", "navigation");
-        getElement().setAttribute("aria-label", "pagination");
+        getElement().setAttribute("aria-label",
+                LocalizationProvider.localize("Page navigation", "pagination.aria_label"));
         this.content = new PaginationContent();
         add(content);
     }
@@ -91,4 +95,3 @@ public class Pagination extends Nav {
         return content;
     }
 }
-

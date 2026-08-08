@@ -5,6 +5,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.Instant;
 import java.util.Objects;
@@ -22,6 +23,7 @@ import java.util.Objects;
 @Table(name = "chat_message")
 public class ChatMessage implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     @Id

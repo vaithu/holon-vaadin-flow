@@ -4,26 +4,38 @@ import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.vaadin.flow.components.Components;
 import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
 import com.holonplatform.vaadin.flow.vaadinplus.utilities.Color;
-import com.iyensoft.vaadin.flow.enums.MaterialSymbol;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.avatar.Avatar;
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
+import com.vaadin.flow.component.icon.VaadinIcon;
 
-@StyleSheet("context://material-symbols.css")
+/**
+ * A small labelled chip with an optional icon/avatar prefix.
+ *
+ * <p>All {@link Localizable} constructor/setter overloads resolve the string via
+ * {@link LocalizationProvider#localize(Localizable)} at call time. Because locale is
+ * fixed per session and components are recreated on navigation, no
+ * {@code LocaleChangeObserver} is required.</p>
+ */
 @StyleSheet("context://tag.css")
 public class Tag extends Span {
 
     private final Span prefix;
+    /** Text node stored so setText() updates only the text, not the prefix child. */
+    private final Text textNode;
     private Color.Text color;
 
     public Tag(Component prefix, String text, Color.Text color) {
         addClassName("tag");
         this.prefix = Components.span().styleName("tag__prefix").visible(false).build();
+        // Prefix is purely decorative - hide it from assistive technology
+        this.prefix.getElement().setAttribute("aria-hidden", "true");
         setPrefix(prefix);
-        add(this.prefix, new Text(text));
+        this.textNode = new Text(text != null ? text : "");
+        add(this.prefix, this.textNode);
         setTextColor(color);
     }
 
@@ -31,19 +43,19 @@ public class Tag extends Span {
         this(prefix, text, Color.Text.SECONDARY);
     }
 
-    public Tag(MaterialSymbol symbol, String text, Color.Text color) {
-        this(createIcon(symbol), text, color);
+    public Tag(VaadinIcon icon, String text, Color.Text color) {
+        this(icon.create(), text, color);
     }
 
-    public Tag(MaterialSymbol symbol, String text) {
-        this(symbol, text, Color.Text.SECONDARY);
+    public Tag(VaadinIcon icon, String text) {
+        this(icon, text, Color.Text.SECONDARY);
     }
 
     public Tag(String text) {
         this((Component) null, text, Color.Text.SECONDARY);
     }
 
-    // ── Localizable constructors ──────────────────────────────────────────────
+    // Localizable constructors - text resolved at construction time
 
     public Tag(Localizable text) {
         this((Component) null, resolve(text), Color.Text.SECONDARY);
@@ -57,23 +69,24 @@ public class Tag extends Span {
         this(prefix, resolve(text), color);
     }
 
-    public Tag(MaterialSymbol symbol, Localizable text) {
-        this(createIcon(symbol), resolve(text), Color.Text.SECONDARY);
+    public Tag(VaadinIcon icon, Localizable text) {
+        this(icon.create(), resolve(text), Color.Text.SECONDARY);
     }
 
-    public Tag(MaterialSymbol symbol, Localizable text, Color.Text color) {
-        this(createIcon(symbol), resolve(text), color);
+    public Tag(VaadinIcon icon, Localizable text, Color.Text color) {
+        this(icon.create(), resolve(text), color);
     }
 
-    // ── Text setter ───────────────────────────────────────────────────────────
+    // Text setters
 
-    /**
-     * Sets the tag label text from a {@link Localizable} descriptor.
-     *
-     * @param text localizable label (not null)
-     */
+    @Override
+    public void setText(String text) {
+        this.textNode.setText(text != null ? text : "");
+    }
+
+    /** Sets the tag label from a {@link Localizable} descriptor (resolved at call time). */
     public void setText(Localizable text) {
-        setText(resolve(text));
+        this.textNode.setText(resolve(text));
     }
 
     private static String resolve(Localizable l) {
@@ -81,13 +94,6 @@ public class Tag extends Span {
                 .orElseGet(() -> l.getMessage() != null ? l.getMessage() : "");
     }
 
-    private static Span createIcon(MaterialSymbol symbol) {
-        return symbol.create("tag__icon");
-    }
-
-    /**
-     * Sets the prefix.
-     */
     public void setPrefix(Component... components) {
         this.prefix.removeAll();
         if (components != null) {

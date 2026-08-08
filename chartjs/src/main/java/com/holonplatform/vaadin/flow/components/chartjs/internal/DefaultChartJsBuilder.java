@@ -29,6 +29,9 @@ import com.vaadin.flow.component.DetachEvent;
 import com.vaadin.flow.dom.Element;
 import com.vaadin.flow.dom.DomEventListener;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 import java.util.function.Consumer;
 
 /**
@@ -45,6 +48,9 @@ public class DefaultChartJsBuilder implements ChartJsBuilder {
 	private long explicitOptionsOrder = -1;
 	private long fluentDataOrder = -1;
 	private long fluentOptionsOrder = -1;
+
+	/** Post-processors applied just before {@code build()} returns. */
+	private final List<Consumer<ChartJsComponent>> postProcessors = new ArrayList<>();
 
 	public DefaultChartJsBuilder() {
 		this.component = new ChartJsComponent();
@@ -303,6 +309,13 @@ public class DefaultChartJsBuilder implements ChartJsBuilder {
 	}
 
 	@Override
+	public ChartJsBuilder withBuildPostProcessor(Consumer<ChartJsComponent> postProcessor) {
+		Objects.requireNonNull(postProcessor, "Post-processor must not be null");
+		this.postProcessors.add(postProcessor);
+		return this;
+	}
+
+	@Override
 	public ChartJsComponent build() {
 		if (fluentDataOrder > explicitDataOrder) {
 			component.setData(fluentDataBuilder.build());
@@ -310,6 +323,7 @@ public class DefaultChartJsBuilder implements ChartJsBuilder {
 		if (fluentOptionsOrder > explicitOptionsOrder) {
 			component.setOptions(fluentOptionsBuilder.build());
 		}
+		postProcessors.forEach(pp -> pp.accept(component));
 		return component;
 	}
 

@@ -5,6 +5,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.Instant;
 import java.util.Objects;
@@ -20,9 +21,10 @@ import java.util.UUID;
 @Table(name = "chat_read_receipt")
 public class ChatReadReceipt implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
-    /** Surrogate primary key — UUID assigned on construction. */
+    /** Surrogate primary key â€” UUID assigned on construction. */
     @Id
     @Column(name = "id", length = 255)
     private String id;
@@ -40,7 +42,7 @@ public class ChatReadReceipt implements Serializable {
     public ChatReadReceipt() {
     }
 
-    // ── Factory ────────────────────────────────────────────────────────────────
+    // â”€â”€ Factory â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
     /**
      * Creates or refreshes a read receipt with a new UUID primary key.
@@ -54,7 +56,7 @@ public class ChatReadReceipt implements Serializable {
         return r;
     }
 
-    // ── Getters / Setters ──────────────────────────────────────────────────────
+    // â”€â”€ Getters / Setters â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }

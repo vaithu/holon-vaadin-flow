@@ -15,6 +15,7 @@
  */
 package com.holonplatform.vaadin.flow.navigator.internal.config;
 
+import java.io.Serial;
 import com.holonplatform.core.internal.Logger;
 import com.holonplatform.core.internal.utils.ObjectUtils;
 import com.holonplatform.vaadin.flow.internal.VaadinLogger;
@@ -32,6 +33,7 @@ import java.util.WeakHashMap;
  */
 public class DefaultNavigationTargetConfigurationRegistry implements NavigationTargetConfigurationRegistry {
 
+	@Serial
 	private static final long serialVersionUID = -8266974913448585865L;
 
 	/**

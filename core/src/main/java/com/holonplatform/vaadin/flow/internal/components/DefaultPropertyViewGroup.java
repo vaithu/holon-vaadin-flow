@@ -15,6 +15,7 @@
  */
 package com.holonplatform.vaadin.flow.internal.components;
 
+import java.io.Serial;
 import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.stream.Stream;
@@ -45,6 +46,7 @@ import com.holonplatform.vaadin.flow.internal.components.support.ViewComponentPr
 public class DefaultPropertyViewGroup extends AbstractPropertySetGroup<ViewComponent<?>, PropertyViewGroup>
 		implements PropertyViewGroup {
 
+	@Serial
 	private static final long serialVersionUID = -2110591918893531742L;
 
 	/**

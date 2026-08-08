@@ -3,6 +3,7 @@ package com.holonplatform.vaadin.flow.internal.components.builders;
 import com.holonplatform.vaadin.flow.components.BeanListing;
 import com.holonplatform.vaadin.flow.components.Components;
 import com.holonplatform.vaadin.flow.components.builders.ShowAndHideColumns;
+import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -30,7 +31,8 @@ public class DefaultShowAndHideColumns<T> implements ShowAndHideColumns<T> {
 
     private void createPopOver(CheckboxGroup<String> group, HorizontalLayout footer) {
 
-        this.showHideBtn = Components.button().icon(VaadinIcon.GRID_H).ariaLabel("Show / hide columns").build();
+        this.showHideBtn = Components.button().icon(VaadinIcon.GRID_H)
+                .ariaLabel(LocalizationProvider.localize("Show / hide columns", "grid.show_hide_columns_aria")).build();
         this.showHideBtn.addThemeVariants(ButtonVariant.LUMO_ICON);
 
         this.popover = new Popover();
@@ -39,7 +41,8 @@ public class DefaultShowAndHideColumns<T> implements ShowAndHideColumns<T> {
         popover.setPosition(PopoverPosition.BOTTOM_END);
         popover.setTarget(this.showHideBtn );
 
-        Div heading = Components.div().add(Components.span().text("Configure columns").build()).build();
+        Div heading = Components.div().add(Components.span()
+                .text(LocalizationProvider.localize("Configure columns", "grid.configure_columns")).build()).build();
         heading.getStyle().set("font-weight", "600");
         heading.getStyle().set("padding", "var(--lumo-space-xs)");
 
@@ -51,10 +54,12 @@ public class DefaultShowAndHideColumns<T> implements ShowAndHideColumns<T> {
 
         group.setValue(defaultColumns);
 
-        Button showAll = Components.button().text("Show all").withClickListener(e -> group.setValue(new HashSet<>(allColumns))).build();
+        Button showAll = Components.button().text(LocalizationProvider.localize("Show all", "grid.show_all_columns"))
+                .withClickListener(e -> group.setValue(new HashSet<>(allColumns))).build();
         showAll.addThemeVariants(ButtonVariant.LUMO_SMALL);
 
-        Button reset = Components.button().text("Reset").withClickListener(e -> group.setValue(defaultColumns)).build();
+        Button reset = Components.button().text(LocalizationProvider.localize("Reset", "grid.reset_columns"))
+                .withClickListener(e -> group.setValue(defaultColumns)).build();
         reset.addThemeVariants(ButtonVariant.LUMO_SMALL);
 
         HorizontalLayout footer = Components.hl().add(showAll, reset).build();

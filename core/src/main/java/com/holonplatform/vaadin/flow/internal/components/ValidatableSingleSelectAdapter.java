@@ -15,6 +15,7 @@
  */
 package com.holonplatform.vaadin.flow.internal.components;
 
+import java.io.Serial;
 import java.util.Optional;
 
 import com.holonplatform.core.Registration;
@@ -31,6 +32,7 @@ import com.holonplatform.vaadin.flow.components.ValidatableSingleSelect;
 public class ValidatableSingleSelectAdapter<T> extends AbstractValidatableInputAdapter<T, SingleSelect<T>>
 		implements ValidatableSingleSelect<T> {
 
+	@Serial
 	private static final long serialVersionUID = -2291397152828158839L;
 
 	/**

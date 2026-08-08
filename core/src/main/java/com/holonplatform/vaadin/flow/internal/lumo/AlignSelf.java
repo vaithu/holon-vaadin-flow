@@ -10,7 +10,7 @@ public enum AlignSelf {
 
     private final String className;
 
-    private AlignSelf(String className) {
+    AlignSelf(String className) {
         this.className = className;
     }
 

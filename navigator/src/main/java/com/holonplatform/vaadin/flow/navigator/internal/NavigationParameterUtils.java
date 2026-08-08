@@ -15,6 +15,7 @@
  */
 package com.holonplatform.vaadin.flow.navigator.internal;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -39,6 +40,7 @@ import com.holonplatform.vaadin.flow.navigator.exceptions.InvalidNavigationParam
  */
 public final class NavigationParameterUtils implements Serializable {
 
+	@Serial
 	private static final long serialVersionUID = -4902803574414314795L;
 
 	private static final Pattern QUERY_PARAMETER_SEPARATOR_PATTERN = Pattern.compile("&");
@@ -181,18 +183,9 @@ public final class NavigationParameterUtils implements Serializable {
 	public static Map<String, List<String>> getQueryParameters(String queryPart) {
 		if (queryPart != null) {
 			return QUERY_PARAMETER_SEPARATOR_PATTERN.splitAsStream(queryPart.trim())
-					.map(s -> Arrays.copyOf(s.split("="), 2)).filter(pair -> {
-						if (pair.length < 2) {
-							return false;
-						}
-						if (pair[0] == null || pair[0].trim().equals("")) {
-							return false;
-						}
-						if (pair[1] == null || pair[1].trim().equals("")) {
-							return false;
-						}
-						return true;
-					}).collect(Collectors.groupingBy(s -> s[0], Collectors.mapping(s -> s[1], Collectors.toList())));
+					.map(s -> s.split("=", 2))
+					.filter(pair -> pair.length == 2 && !pair[0].trim().equals("") && !pair[1].trim().equals(""))
+					.collect(Collectors.groupingBy(s -> s[0], Collectors.mapping(s -> s[1], Collectors.toList())));
 		}
 		return Collections.emptyMap();
 	}

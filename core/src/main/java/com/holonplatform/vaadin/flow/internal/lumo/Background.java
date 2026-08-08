@@ -26,7 +26,7 @@ public enum Background {
 
     private final String className;
 
-    private Background(String className) {
+    Background(String className) {
         this.className = className;
     }
 

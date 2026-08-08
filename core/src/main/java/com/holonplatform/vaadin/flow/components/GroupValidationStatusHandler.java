@@ -51,7 +51,7 @@ public interface GroupValidationStatusHandler<S, P, E extends HasComponent> exte
 	 * @param <P> Property type
 	 * @param <E> Group element type
 	 */
-	public interface GroupValidationStatusEvent<S, P, E extends HasComponent> extends Serializable {
+	interface GroupValidationStatusEvent<S, P, E extends HasComponent> extends Serializable {
 
 		/**
 		 * Get the validation source.
@@ -166,7 +166,7 @@ public interface GroupValidationStatusHandler<S, P, E extends HasComponent> exte
 	 * @param <P> Property type
 	 * @param <E> Group element type
 	 */
-	public interface GroupElementValidationStatusEvent<S, P, E extends HasComponent> extends ValidationStatusEvent<S> {
+	interface GroupElementValidationStatusEvent<S, P, E extends HasComponent> extends ValidationStatusEvent<S> {
 
 		/**
 		 * Get the property which identifies the element within the group.

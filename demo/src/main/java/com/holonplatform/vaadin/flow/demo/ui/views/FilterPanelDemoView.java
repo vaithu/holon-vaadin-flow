@@ -20,6 +20,9 @@ import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import jakarta.persistence.Column;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -79,6 +82,90 @@ public class FilterPanelDemoView extends Div {
         public void setOrderDate(LocalDate d)      { this.orderDate = d; }
     }
 
+    // ── Demo bean for column-length width showcase ────────────────────────────
+
+    /**
+     * Bean with fields annotated with varied {@code @Column(length)} / {@code @Size(max)} /
+     * {@code @Min} / {@code @Max} values so the DynamicFilterPanel can demonstrate all
+     * automatic input-width resolution paths.
+     *
+     * <ul>
+     *   <li>{@code countryCode}   — {@code @Column(length=2)}   → XS  (~7 rem)</li>
+     *   <li>{@code refCode}       — {@code @Column(length=8)}   → XS  (~7 rem)</li>
+     *   <li>{@code lastName}      — {@code @Column(length=25)}  → SM  (~14 rem)</li>
+     *   <li>{@code email}         — {@code @Column(length=80)}  → MD  (~22 rem)</li>
+     *   <li>{@code score}         — {@code @Min(0) @Max(100)}   → XS  (3 digits → XS)</li>
+     *   <li>{@code yearBuilt}     — {@code @Min(1900) @Max(-9999)} → SM (4 digits → XS, negative sign → 5 → SM)</li>
+     *   <li>{@code description}   — {@code @Column(length=255)} → UNCONSTRAINED (255 = JPA default)</li>
+     *   <li>{@code notes}         — no annotation               → UNCONSTRAINED</li>
+     * </ul>
+     */
+    public static final class ContactRecord {
+
+        /** @Column(length=2) → tier XS */
+        @Column(length = 2)
+        private String countryCode;
+
+        /** @Column(length=8) → tier XS */
+        @Column(length = 8)
+        private String refCode;
+
+        /** @Column(length=25) → tier SM */
+        @Column(length = 25)
+        private String lastName;
+
+        /**
+         * @Column(length=80) → tier MD.
+         * Works equally well via @Size(max=80) — both annotations are supported.
+         */
+        @Column(length = 80)
+        private String email;
+
+        /**
+         * @Min(0) @Max(100) → XS.
+         * No @Column / @Size — resolved from numeric bounds.
+         * digit count of max (100) = 3 → XS tier (1-10).
+         */
+        @Min(0) @Max(100)
+        private Integer score;
+
+        /**
+         * @Min(-9999) @Max(9999) → SM.
+         * Negative @Min adds a sign char: abs(-9999)=4 digits + 1 sign = 5 → SM tier (11-30).
+         */
+        @Min(-9999) @Max(9999)
+        private Integer yearBuilt;
+
+        /**
+         * @Column(length=255) → UNCONSTRAINED.
+         * 255 is the JPA spec default and is skipped to avoid false positives.
+         */
+        @Column(length = 255)
+        private String description;
+
+        /** No annotation → UNCONSTRAINED */
+        private String notes;
+
+        public ContactRecord() {}
+
+        public String  getCountryCode()             { return countryCode; }
+        public void    setCountryCode(String v)     { this.countryCode = v; }
+        public String  getRefCode()                 { return refCode; }
+        public void    setRefCode(String v)         { this.refCode = v; }
+        public String  getLastName()                { return lastName; }
+        public void    setLastName(String v)        { this.lastName = v; }
+        public String  getEmail()                   { return email; }
+        public void    setEmail(String v)           { this.email = v; }
+        public Integer getScore()                   { return score; }
+        public void    setScore(Integer v)          { this.score = v; }
+        public Integer getYearBuilt()               { return yearBuilt; }
+        public void    setYearBuilt(Integer v)      { this.yearBuilt = v; }
+        public String  getDescription()             { return description; }
+        public void    setDescription(String v)     { this.description = v; }
+        public String  getNotes()                   { return notes; }
+        public void    setNotes(String v)           { this.notes = v; }
+    }
+
     private static final List<Order> ORDERS = List.of(
         new Order(1001, "Alice Martin",   "Laptop Pro",      1299.00, OrderStatus.DELIVERED,  LocalDate.of(2025, 1,  5)),
         new Order(1002, "Bob Chen",       "Wireless Mouse",    49.99, OrderStatus.SHIPPED,     LocalDate.of(2025, 1, 12)),
@@ -114,6 +201,7 @@ public class FilterPanelDemoView extends Div {
         examples.add(orModeExample());
         examples.add(dialogFilterExample());
         examples.add(mobileSheetFilterExample());
+        examples.add(columnLengthWidthExample());
 
         add(title, desc, examples);
     }
@@ -500,6 +588,65 @@ public class FilterPanelDemoView extends Div {
                             badge.setText(String.valueOf(count));
                             // ... refresh listing
                         });
+                        """);
+    }
+
+    /**
+     * 6. Column-length–aware input widths — all resolution paths.
+     *
+     * <p>Resolution order (first match per field wins):
+     * <ol>
+     *   <li>{@code @Column(length=N)} where N &gt; 0 and N ≠ 255</li>
+     *   <li>{@code @Size(max=N)} where N ≠ {@link Integer#MAX_VALUE}</li>
+     *   <li>{@code @Max} / {@code @Min} — digit count of the bound used as effective length</li>
+     *   <li>Fallback: UNCONSTRAINED (no annotation, or {@code @Column(length=255)})</li>
+     * </ol>
+     */
+    private DemoExample columnLengthWidthExample() {
+        var panel = DynamicFilterPanel.of(ContactRecord.class);
+
+        // Pre-add one row per field so all resolution paths are visible at once.
+        panel.addRow();
+        panel.addRow();
+        panel.addRow();
+        panel.addRow();
+        panel.addRow();
+        panel.addRow();
+        panel.addRow();
+        panel.addRow();
+
+        var hint = new Span(
+            "👆 Switch fields: " +
+            "countryCode / refCode → XS (@Column)  •  " +
+            "lastName → SM (@Column)  •  " +
+            "email → MD (@Column)  •  " +
+            "score → XS (@Max 100 = 3 digits)  •  " +
+            "yearBuilt → SM (@Min -9999 = 5 chars)  •  " +
+            "description (@Column 255) / notes → full width");
+
+        var wrapper = ResponsiveDiv.flex().column().gapS().add(panel, hint).build();
+
+        return new DemoExample(
+                "Column-Length–Aware Input Widths (@Column / @Size / @Min / @Max)",
+                wrapper, """
+                        // Resolution order per field (first non-default value wins):
+                        //   1. @Column(length=N)  where N > 0 and N != 255
+                        //   2. @Size(max=N)        where N != Integer.MAX_VALUE
+                        //   3. @Max(value=N) / @Min(value=N) — digit count of bound
+                        //   4. (none) / @Column(255) → UNCONSTRAINED
+                        //
+                        //   @Column(length = 2)    countryCode  → XS   (~7 rem)
+                        //   @Column(length = 8)    refCode      → XS   (~7 rem)
+                        //   @Column(length = 25)   lastName     → SM   (~14 rem)
+                        //   @Column(length = 80)   email        → MD   (~22 rem)
+                        //   @Min(0) @Max(100)      score        → XS   (3 digits)
+                        //   @Min(-9999) @Max(9999) yearBuilt    → SM   (5 chars incl. sign)
+                        //   @Column(length = 255)  description  → UNCONSTRAINED  (JPA default skipped)
+                        //   (no annotation)        notes        → UNCONSTRAINED
+
+                        var panel = DynamicFilterPanel.of(ContactRecord.class);
+                        panel.addRow();
+                        add(panel);
                         """);
     }
 }

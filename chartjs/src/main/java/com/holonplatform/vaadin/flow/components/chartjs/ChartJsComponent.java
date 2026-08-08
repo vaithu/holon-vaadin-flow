@@ -15,7 +15,9 @@
  */
 package com.holonplatform.vaadin.flow.components.chartjs;
 
+import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.core.internal.utils.ObjectUtils;
+import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
 import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasSize;
@@ -37,11 +39,17 @@ import com.vaadin.flow.component.dependency.JavaScript;
 @JavaScript(value = "context://chartjs/holon-chartjs.js")
 public class ChartJsComponent extends Component implements HasSize {
 
+	/** Stored localizable aria-label; re-resolved on locale change. */
+	private Localizable ariaLabelLocalizable;
+
 	/**
 	 * Constructor.
 	 */
 	public ChartJsComponent() {
 		super();
+		// Charts are visual elements; role="img" exposes them as images to AT.
+		// Set a default so the element is always announced as an image.
+		getElement().setAttribute("role", "img");
 	}
 
 	/**
@@ -116,6 +124,45 @@ public class ChartJsComponent extends Component implements HasSize {
 	 */
 	public void refresh() {
 		getElement().callJsFunction("refreshChart");
+	}
+
+	// -----------------------------------------------------------------------
+	// A11Y + I18N
+	// -----------------------------------------------------------------------
+
+	/**
+	 * Sets the accessible description of this chart for screen readers.
+	 * Example: {@code "Monthly revenue bar chart: Jan $12k, Feb $15k, Mar $11k"}.
+	 *
+	 * @param label the ARIA label describing the chart content (not null)
+	 */
+	public void setAriaLabel(String label) {
+		this.ariaLabelLocalizable = null;
+		if (label != null && !label.isBlank()) {
+			getElement().setAttribute("aria-label", label);
+		} else {
+			getElement().removeAttribute("aria-label");
+		}
+	}
+
+	/**
+	 * Sets the accessible description from a {@link Localizable} descriptor.
+	 * Re-resolved on each locale change.
+	 *
+	 * @param label the localizable accessible description (not null)
+	 */
+	public void setAriaLabel(Localizable label) {
+		this.ariaLabelLocalizable = label;
+		applyAriaLabel();
+	}
+	private void applyAriaLabel() {
+		if (ariaLabelLocalizable == null) return;
+		String resolved = LocalizationProvider.localize(ariaLabelLocalizable)
+				.orElseGet(() -> ariaLabelLocalizable.getMessage() != null
+						? ariaLabelLocalizable.getMessage() : "");
+		if (!resolved.isBlank()) {
+			getElement().setAttribute("aria-label", resolved);
+		}
 	}
 
 	/**

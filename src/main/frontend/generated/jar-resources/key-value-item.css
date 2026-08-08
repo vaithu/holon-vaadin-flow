@@ -1,339 +1,565 @@
-/*
- * key-value-item.css
+﻿/*
+ * key-value-item.css  -  Nexus theme
  *
- * Styles for KeyValueItem and KeyValueList components.
+ * Pixel-perfect implementation of the Nexus key-value design pattern.
+ * Architecture: flex-per-row (replaces CSS-grid/display:contents).
  *
  * Structure:
- *   .kv-list                  — 3-column CSS grid container
- *   .kv-item                  — display:contents — direct grid children:
- *     .kv-key-col             —   flex-col: [.kv-super?] + .kv-key   (col 1)
- *     .kv-sep                 —   ":" separator                       (col 2)
- *     .kv-value-col           —   flex-col: .kv-value + [.kv-sub?]   (col 3)
+ *   .kv-list         - flex-column card container (border, radius, shadow)
+ *   .kv-item         - flex-row; position:relative for the 2px accent stripe
+ *     .kv-key-col    - left label cell (168px fixed width)
+ *       .kv-super    - optional ALL-CAPS tertiary above the key
+ *       .kv-key      - primary label
+ *     .kv-sep        - optional colon (hidden by default; add .kv-show-sep to .kv-item)
+ *     .kv-value-col  - right value cell (flex:1, right-aligned)
+ *       .kv-value    - primary value
+ *       .kv-sub      - optional tertiary below the value
  *
- * Modifiers on .kv-item:
- *   .kv-divider    — full-width ::after line below the row
- *   .kv-value-end  — right-aligns value col on mobile only
- *   .kv-wrap       — allows key + value text to wrap
+ * List variants:
+ *   .kv-list--fields    - stacked label-above-value 2-column grid (field-display mode)
+ *   .kv-list.kv-summary - no card chrome (transparent, no border/shadow)
+ *   .kv-list.kv-dense   - compact row padding (all rows)
  *
- * Modifier on .kv-value:
- *   .kv-copyable   — monospace, user-select:text
+ * Item modifiers:
+ *   [data-cat="financial|status|alert"] - 2px absolute left accent stripe
+ *   .kv-clickable  - pointer cursor + hover highlight
+ *   .kv-divider    - explicit thicker border-bottom on this row
+ *   .kv-wrap       - allow key + value text to wrap
+ *   .kv-dense      - compact padding for this row only
+ *   .kv-show-sep   - reveal the colon separator
+ *   .kv-copyable   - reveal .kv-copy-btn on hover
+ *   .kv-editable   - reveal .kv-edit-btn on hover
  *
- * Mobile (<600px): separator hidden; grid collapses to 2 columns.
+ * Value modifiers (on .kv-value):
+ *   .kv-mono       - monospace, for IDs / codes
+ *   .kv-numeric    - monospace bold, for figures
+ *   .kv-muted      - low-contrast italic, for empty / N/A
+ *   .kv-text-wrap  - left-aligned wrapping text (notes, descriptions)
+ *   .kv-copyable   - monospace + user-select:text
  */
 
-/* -----------------------------------------------------------------------
- * Grid container
- * ----------------------------------------------------------------------- */
+/* =======================================================================
+ * 1. LIST CONTAINER
+ * ======================================================================= */
 
 .kv-list {
-    display: grid;
-    grid-template-columns:
-        max-content
-        0.5ch
-        1fr;
-
-    row-gap: var(--space-4, 1rem);
-    column-gap: var(--space-4, 1rem);
-    align-items: center;
-
-    padding: var(--space-4, 1rem) var(--space-5, 1.25rem);
-    background-color: var(--color-surface, #ffffff);
-    border: 1px solid rgb(0 0 0 / 0.08);
-    border-radius: var(--radius-l, 0.75rem);
+    display:          flex;
+    flex-direction:   column;
+    background:       var(--color-surface, #ffffff);
+    border:           1px solid var(--slate-200, #e2e8f0);
+    border-radius:    0.875rem;   /* 14px - matches Nexus card radius */
+    overflow:         hidden;     /* clips accent bars to the card corners */
     box-shadow:
         0 1px 3px rgb(0 0 0 / 0.06),
         0 1px 2px rgb(0 0 0 / 0.04);
+    max-width:        40rem;      /* 640px cap - prevents values flying to far-right edge */
+    width:            100%;
 }
 
-/* -----------------------------------------------------------------------
- * Row — display:contents flattens children into the parent grid
- * ----------------------------------------------------------------------- */
+/* =======================================================================
+ * 2. ROW
+ * ======================================================================= */
 
 .kv-item {
-    display: contents;
+    display:         flex;
+    align-items:     flex-start;
+    justify-content: space-between;
+    gap:             1rem;               /* 16px */
+    padding:         0.8125rem 1.25rem;  /* 13px 20px - Nexus row padding */
+    border-bottom:   1px solid var(--slate-100, #f1f5f9);
+    position:        relative;
 }
 
-/* -----------------------------------------------------------------------
- * Key column  (grid child 1)
- * ----------------------------------------------------------------------- */
+.kv-item:last-child {
+    border-bottom: none;
+}
+
+/* =======================================================================
+ * 3. CATEGORY ACCENT - 2px absolute left stripe (Nexus ::before pattern)
+ * ======================================================================= */
+
+.kv-item::before {
+    content:    "";
+    position:   absolute;
+    left: 0; top: 0; bottom: 0;
+    width:      2px;
+    background: transparent;
+}
+
+.kv-item[data-cat="financial"]::before {
+    background: var(--color-primary, #7c3aed);
+}
+
+.kv-item[data-cat="status"]::before {
+    background: var(--color-success, #16a34a);
+}
+
+.kv-item[data-cat="alert"]::before {
+    background: var(--color-warning, #d97706);
+}
+
+/* =======================================================================
+ * 4. KEY COLUMN (label side, fixed 168px)
+ * ======================================================================= */
 
 .kv-key-col {
-    display: flex;
+    display:        flex;
     flex-direction: column;
-    gap: 0.125rem;
+    gap:            0.125rem;
+    flex:           0 0 auto;
+    width:          10.5rem;   /* 168px - Nexus fixed label width */
+    padding-top:    1px;
 }
 
-/* Super text — small tertiary label above the key (e.g. "TRANSACTION TYPE") */
+/* Small ALL-CAPS tertiary above the key (e.g. "TRANSACTION TYPE") */
 .kv-super {
-    font-size: var(--font-size-xs, 0.75rem);
-    font-weight: 400;
-    color: var(--color-text-tertiary, rgb(0 0 0 / 0.45));
-    line-height: 1.3;
+    font-size:      0.6875rem;  /* 11px */
+    font-weight:    400;
+    color:          var(--slate-400, rgb(0 0 0 / 0.45));
     text-transform: uppercase;
     letter-spacing: 0.04em;
-    white-space: nowrap;
+    line-height:    1.3;
+    white-space:    nowrap;
 }
 
-/* Key label */
+/* Primary key label */
 .kv-key {
-    font-size: var(--font-size-sm, 0.875rem);
+    font-size:   0.8125rem;  /* 13px */
+    font-weight: 500;
+    color:       var(--slate-500, #64748b);
     line-height: 1.4;
-    white-space: nowrap;
+    display:     flex;
+    align-items: center;
+    gap:         0.4375rem;  /* 7px - icon slot */
 }
 
-/* Required indicator (asterisk via CSS ::after) */
+/* Required asterisk */
 .kv-key[data-required="true"]::after {
-    content: " *";
-    color: var(--color-error, #dc2626);
+    content:             " *";
+    color:               var(--color-error, #dc2626);
     margin-inline-start: 0.125rem;
 }
 
-/* -----------------------------------------------------------------------
- * Separator  (grid child 2)
- * ----------------------------------------------------------------------- */
+/* =======================================================================
+ * 5. SEPARATOR - hidden by default (Nexus design has no colon)
+ *    Add .kv-show-sep on .kv-item to reveal it.
+ * ======================================================================= */
 
 .kv-sep {
-    color: rgb(0 0 0 / 0.4);
-    font-weight: 400;
-    text-align: center;
-    align-self: center; /* always centred even when key-col / value-col are tall */
+    display: none;
 }
 
-/* -----------------------------------------------------------------------
- * Value column  (grid child 3)
- * ----------------------------------------------------------------------- */
+.kv-item.kv-show-sep .kv-sep {
+    display:     inline-flex;
+    align-items: center;
+    color:       rgb(0 0 0 / 0.4);
+    font-weight: 400;
+    padding-top: 2px;
+}
+
+/* =======================================================================
+ * 6. VALUE COLUMN (right side, right-aligned)
+ * ======================================================================= */
 
 .kv-value-col {
-    display: flex;
+    display:        flex;
     flex-direction: column;
-    gap: 0.125rem;
-    min-width: 0;
+    gap:            0.125rem;
+    flex:           1;
+    min-width:      0;
+    align-items:    flex-end;
+    text-align:     right;
 }
 
 /* Primary value */
 .kv-value {
-    font-size: var(--font-size-sm, 0.875rem);
-    font-weight: 500;
+    font-size:   0.84375rem;  /* 13.5px */
+    font-weight: 600;
+    color:       var(--slate-900, #0f172a);
+    text-align:  right;
+    min-width:   0;
+    word-break:  break-word;
     line-height: 1.4;
-    min-width: 0;
 }
 
 /* Empty / null values */
 .kv-value[data-empty="true"] {
     font-weight: 400;
-    opacity: 0.55;
+    opacity:     0.55;
 }
 
-/* Sub text — small tertiary label below the value (e.g. "Balance: $12,450") */
+/* Small tertiary below the value */
 .kv-sub {
-    font-size: var(--font-size-xs, 0.75rem);
+    font-size:   0.6875rem;  /* 11px */
     font-weight: 400;
-    color: var(--color-text-tertiary, rgb(0 0 0 / 0.45));
+    color:       var(--slate-400, rgb(0 0 0 / 0.45));
     line-height: 1.3;
+    text-align:  right;
 }
 
-/* Copyable value — monospace, selectable */
+/* =======================================================================
+ * 7. VALUE TYPE MODIFIERS (applied to .kv-value)
+ * ======================================================================= */
+
+/* Monospace - IDs, codes, account numbers */
+.kv-value.kv-mono {
+    font-family:    var(--font-mono, ui-monospace, monospace);
+    font-weight:    500;
+    letter-spacing: -0.01em;
+}
+
+/* Monospace bold - financial figures, counts */
+.kv-value.kv-numeric {
+    font-family: var(--font-mono, ui-monospace, monospace);
+    font-weight: 600;
+}
+
+/* Low-contrast italic - empty / "not provided" values */
+.kv-value.kv-muted {
+    color:       var(--slate-400, #94a3b8);
+    font-weight: 500;
+    font-style:  italic;
+}
+
+/* Left-aligned wrapping text - notes, descriptions */
+.kv-value.kv-text-wrap {
+    text-align:    left;
+    white-space:   normal;
+    word-break:    break-word;
+    overflow-wrap: break-word;
+    font-weight:   400;
+    color:         var(--slate-600, #475569);
+    line-height:   1.5;
+    margin-left:   auto;
+    max-width:     380px;
+}
+
+/* Old-style copyable value - monospace + user-select:text */
 .kv-value.kv-copyable {
     user-select: text;
-    cursor: text;
+    cursor:      text;
     font-family: var(--font-mono, ui-monospace, monospace);
-    font-size: var(--font-size-xs, 0.75rem);
+    font-size:   0.75rem;
+    font-weight: 500;
 }
 
-/* -----------------------------------------------------------------------
- * Modifier: kv-clickable — interactive row with pointer + hover feedback.
- *
- * Because .kv-item uses display:contents it has no box of its own, so
- * cursor and background must be applied to its three grid children.
- * :hover / :active DO fire on display:contents elements in all modern
- * browsers, so the parent selector still works as expected.
- * ----------------------------------------------------------------------- */
+/* =======================================================================
+ * 8. ROW MODIFIERS
+ * ======================================================================= */
 
-.kv-item.kv-clickable .kv-key-col,
-.kv-item.kv-clickable .kv-sep,
-.kv-item.kv-clickable .kv-value-col {
-    cursor: pointer;
-    transition: background-color 120ms ease;
-    border-radius: var(--radius-s, 0.25rem);
+/* Dense - compact padding for this row (9px vs 13px) */
+.kv-item.kv-dense {
+    padding-block: 0.5625rem;
 }
 
-.kv-item.kv-clickable:hover .kv-key-col,
-.kv-item.kv-clickable:hover .kv-sep,
-.kv-item.kv-clickable:hover .kv-value-col {
-    background-color: rgb(0 0 0 / 0.04);
-}
-
-.kv-item.kv-clickable:active .kv-key-col,
-.kv-item.kv-clickable:active .kv-sep,
-.kv-item.kv-clickable:active .kv-value-col {
-    background-color: rgb(0 0 0 / 0.08);
-}
-
-/* -----------------------------------------------------------------------
- * Modifier: kv-wrap — allow key and value text to wrap
- * ----------------------------------------------------------------------- */
-
+/* Wrap - allow text to wrap */
 .kv-item.kv-wrap .kv-key,
 .kv-item.kv-wrap .kv-super {
     white-space: normal;
-    word-break: break-word;
+    word-break:  break-word;
 }
 
 .kv-item.kv-wrap .kv-value,
 .kv-item.kv-wrap .kv-sub {
-    white-space: normal;
+    white-space:   normal;
     overflow-wrap: break-word;
-    word-break: break-word;
+    word-break:    break-word;
 }
 
-/* -----------------------------------------------------------------------
- * Modifier: kv-divider — full-width line below the row
- * ::after participates in the parent .kv-list grid (display:contents trick)
- * ----------------------------------------------------------------------- */
-
-.kv-item.kv-divider::after {
-    content: "";
-    display: block;
-    grid-column: 1 / -1;
-    border-bottom: 1px solid rgb(0 0 0 / 0.08);
-    margin-block: var(--space-1, 0.25rem);
+/* Divider - thicker/more prominent border-bottom */
+.kv-item.kv-divider {
+    border-bottom: 1px solid var(--slate-200, #e2e8f0);
 }
 
-/* -----------------------------------------------------------------------
- * Mobile (<600px) — 2-column: key | value, separator hidden
- * ----------------------------------------------------------------------- */
-
-@media (max-width: 600px) {
-
-    /* Collapse to 2 columns; separator is removed from flow via display:none */
-    .kv-list {
-        grid-template-columns: max-content 1fr;
-        column-gap: var(--space-3, 0.75rem);
-        row-gap: var(--space-2, 0.5rem);
-        padding: var(--space-3, 0.75rem) var(--space-4, 1rem);
-        border-radius: var(--radius-m, 0.5rem);
-    }
-
-    .kv-sep {
-        display: none;
-    }
-
-    .kv-key {
-        font-size: var(--font-size-xs, 0.75rem);
-        white-space: normal;
-    }
-
-    .kv-value {
-        font-size: var(--font-size-xs, 0.75rem);
-    }
-
-    /* kv-value-end: right-align value col at the trailing edge (mobile only) */
-    .kv-item.kv-value-end .kv-value-col {
-        text-align: end;
-        align-items: flex-end;
-    }
+/* Clickable - pointer cursor + hover/active feedback */
+.kv-item.kv-clickable {
+    cursor:     pointer;
+    transition: background-color 120ms ease;
 }
 
-/* -----------------------------------------------------------------------
- * Small mobile (<440px) — compact inline 2-column
+.kv-item.kv-clickable:hover {
+    background-color: rgb(0 0 0 / 0.025);
+}
+
+.kv-item.kv-clickable:active {
+    background-color: rgb(0 0 0 / 0.06);
+}
+
+/* =======================================================================
+ * 9. STATUS PILLS (.kv-pill.success | .warning | .danger | .neutral)
+ * ======================================================================= */
+
+.kv-pill {
+    display:       inline-flex;
+    align-items:   center;
+    gap:           5px;
+    font-size:     0.75rem;
+    font-weight:   700;
+    padding:       3px 10px 3px 8px;
+    border-radius: 999px;
+    white-space:   nowrap;
+    line-height:   1;
+}
+
+.kv-pill::before {
+    content:       "";
+    width:         6px;
+    height:        6px;
+    border-radius: 50%;
+    background:    currentColor;
+    flex-shrink:   0;
+}
+
+.kv-pill.success { background: #f0fdf4; color: #15803d; }
+.kv-pill.warning { background: #fffbeb; color: #b45309; }
+.kv-pill.danger  { background: #fef2f2; color: #b91c1c; }
+.kv-pill.neutral { background: rgb(0 0 0 / 0.06); color: #475569; }
+
+/* =======================================================================
+ * 10. DELTA / TREND ANNOTATION (.kv-delta.up | .down)
+ * ======================================================================= */
+
+.kv-delta {
+    font-size:   0.72rem;
+    font-weight: 700;
+    margin-left: 6px;
+    white-space: nowrap;
+}
+
+.kv-delta.up   { color: var(--color-success, #16a34a); }
+.kv-delta.down { color: var(--color-danger,  #dc2626); }
+
+/* =======================================================================
+ * 11. IDENTITY VALUE (.kv-identity > .kv-avatar + span)
+ * ======================================================================= */
+
+.kv-identity {
+    display:     inline-flex;
+    align-items: center;
+    gap:         8px;
+}
+
+.kv-avatar {
+    width:           22px;
+    height:          22px;
+    border-radius:   50%;
+    background:      var(--color-primary-light, #ede9fe);
+    color:           var(--color-primary-dark,  #5b21b6);
+    font-size:       0.625rem;
+    font-weight:     700;
+    display:         inline-flex;
+    align-items:     center;
+    justify-content: center;
+    flex-shrink:     0;
+    text-transform:  uppercase;
+    letter-spacing:  0.02em;
+}
+
+/* =======================================================================
+ * 12. COPY / EDIT AFFORDANCES (.kv-copy-btn | .kv-edit-btn)
+ * ======================================================================= */
+
+.kv-copy-btn,
+.kv-edit-btn {
+    opacity:         0;
+    width:           22px;
+    height:          22px;
+    border-radius:   6px;
+    border:          none;
+    display:         inline-flex;
+    align-items:     center;
+    justify-content: center;
+    cursor:          pointer;
+    transition:      opacity 0.12s ease, background 0.12s ease, color 0.12s ease;
+    flex-shrink:     0;
+    padding:         0;
+    margin-left:     6px;
+    vertical-align:  middle;
+}
+
+.kv-copy-btn { background: rgb(0 0 0 / 0.06); color: #64748b; }
+.kv-edit-btn { background: transparent;        color: #94a3b8; }
+
+.kv-item.kv-copyable:hover .kv-copy-btn,
+.kv-item.kv-editable:hover .kv-edit-btn { opacity: 1; }
+
+.kv-copy-btn:hover { background: #ede9fe; color: #6d28d9; }
+.kv-edit-btn:hover { background: transparent; color: #6d28d9; }
+
+/* =======================================================================
+ * 13. SUMMARY VARIANT (.kv-list.kv-summary)
+ *     No card chrome - for dashboard panels and nested sections.
+ * ======================================================================= */
+
+.kv-list.kv-summary {
+    background:    transparent;
+    border:        none;
+    border-radius: 0;
+    box-shadow:    none;
+    overflow:      visible;
+}
+
+/* =======================================================================
+ * 14. DENSE LIST (.kv-list.kv-dense)
+ *     Compact row padding for all rows (9px vs 13px).
+ * ======================================================================= */
+
+.kv-list.kv-dense .kv-item {
+    padding-block: 0.5625rem;
+}
+
+/* =======================================================================
+ * 15. FIELD DISPLAY VARIANT (.kv-list--fields)
  *
- * Avoids the "stacked" pattern that wastes vertical space on short values
- * (IDs, numbers, dates).  Instead keeps a tight label | value row identical
- * to iOS Settings / bank app detail patterns.
- *
- *   ID             2531
- *   Active         true
- *   Category       Electronics
- *   Created Date   2026-05-28
- *   Name           4K Adapter 2531
- *   Price          302.46
- * ----------------------------------------------------------------------- */
+ *     Stacked "label above value" 2-column grid.
+ *     Matches the UPS tracking / Stripe dashboard detail pattern.
+ * ======================================================================= */
 
-@media (max-width: 440px) {
+.kv-list--fields {
+    display:               grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    row-gap:               1.75rem;
+    column-gap:            2rem;
+    padding:               0;
+    background:            transparent;
+    border:                none;
+    border-radius:         0;
+    box-shadow:            none;
+    overflow:              visible;
+    text-align:            start;
+    max-width:             none;   /* field grid should fill its container */
+    width:                 100%;
+}
 
-    .kv-list {
-        /* Two natural columns: key wraps to content, value fills rest */
-        grid-template-columns: max-content 1fr;
-        column-gap: var(--space-2, 0.5rem);
-        row-gap: 0;
-        padding: var(--space-3, 0.75rem) var(--space-4, 1rem);
-        border-radius: var(--radius-m, 0.5rem);
+/* Each item is a stacked cell - flex-col */
+.kv-list--fields .kv-item {
+    display:        flex;
+    flex-direction: column;
+    gap:            0.3rem;
+    align-items:    flex-start;
+    min-width:      0;
+    padding:        0;
+    border-bottom:  none;
+    position:       static;
+    text-align:     start;
+}
+
+/* No accent bar in field mode */
+.kv-list--fields .kv-item::before { display: none; }
+
+.kv-list--fields .kv-sep    { display: none; }
+
+.kv-list--fields .kv-key-col {
+    width: auto;
+    flex:  none;
+}
+
+.kv-list--fields .kv-super {
+    font-size:      0.6875rem;
+    letter-spacing: 0.05em;
+    color:          rgb(0 0 0 / 0.4);
+}
+
+.kv-list--fields .kv-key {
+    font-size:   1rem;
+    font-weight: 600;
+    color:       var(--color-text-primary, #111827);
+    white-space: normal;
+    word-break:  break-word;
+    display:     block;
+}
+
+.kv-list--fields .kv-value-col {
+    align-items: flex-start;
+    text-align:  start;
+    min-width:   0;
+}
+
+.kv-list--fields .kv-value {
+    font-size:     0.9375rem;
+    font-weight:   400;
+    color:         rgb(107 114 128);
+    text-align:    start;
+    white-space:   normal;
+    word-break:    break-word;
+    overflow-wrap: break-word;
+}
+
+.kv-list--fields .kv-value[data-empty="true"] { opacity: 0.5; }
+
+.kv-list--fields .kv-sub {
+    font-size:  0.6875rem;
+    color:      rgb(0 0 0 / 0.45);
+    text-align: start;
+}
+
+.kv-list--fields .kv-item.kv-clickable {
+    cursor:        pointer;
+    transition:    background-color 120ms ease;
+    border-radius: 0.25rem;
+    padding:       0.25rem 0.375rem;
+    margin:        -0.25rem -0.375rem;
+}
+
+.kv-list--fields .kv-item.kv-clickable:hover { background-color: rgb(0 0 0 / 0.04); }
+
+.kv-list--fields .kv-key[data-required="true"]::after { color: var(--color-error, #dc2626); }
+
+@media (max-width: 639px) {
+    .kv-list--fields {
+        grid-template-columns: 1fr;
+        row-gap:               1.25rem;
     }
+}
 
-    /* Items stay as display:contents — keep global key-column alignment */
+/* =======================================================================
+ * 16. STANDALONE ITEM IN FIELD MODE (.kv-item--field)
+ * ======================================================================= */
+
+.kv-item--field {
+    display:        flex;
+    flex-direction: column;
+    gap:            0.3rem;
+    padding:        0;
+    border-bottom:  none;
+    position:       static;
+}
+
+.kv-item--field::before      { display: none; }
+.kv-item--field .kv-sep      { display: none; }
+
+.kv-item--field .kv-key-col { width: auto; flex: none; }
+
+.kv-item--field .kv-key {
+    font-size:   1rem;
+    font-weight: 600;
+    color:       var(--color-text-primary, #111827);
+    white-space: normal;
+    display:     block;
+}
+
+.kv-item--field .kv-value-col { align-items: flex-start; text-align: start; }
+
+.kv-item--field .kv-value {
+    font-size:   0.9375rem;
+    font-weight: 400;
+    color:       rgb(107 114 128);
+    text-align:  start;
+    white-space: normal;
+    word-break:  break-word;
+}
+
+/* =======================================================================
+ * 17. MOBILE RESPONSIVE (<480px)
+ * ======================================================================= */
+
+@media (max-width: 480px) {
     .kv-item {
-        display: contents;
+        padding: 0.625rem 0.875rem;
+        gap:     0.75rem;
     }
 
-    /* Separator: always hidden */
-    .kv-sep {
-        display: none;
-    }
-
-    /* Key col: add vertical padding here (not on .kv-item since it's display:contents) */
-    .kv-key-col {
-        padding-block: 0.45rem;
-        border-bottom: 1px solid rgb(0 0 0 / 0.06);
-        align-self: center;
-    }
-
-    /* Value col: mirror the same padding + divider */
-    .kv-value-col {
-        padding-block: 0.45rem;
-        border-bottom: 1px solid rgb(0 0 0 / 0.06);
-        align-self: center;
-    }
-
-    /* Last row: remove bottom border */
-    .kv-item:last-child .kv-key-col,
-    .kv-item:last-child .kv-value-col {
-        border-bottom: none;
-    }
-
-    /* Key: muted, slightly smaller */
-    .kv-key {
-        font-size: 0.75rem;
-        font-weight: 500;
-        color: var(--color-text-secondary, rgb(0 0 0 / 0.55));
-        white-space: normal;
-        line-height: 1.35;
-    }
-
-    /* Value: normal weight, same size as key for density */
-    .kv-value {
-        font-size: 0.8125rem;              /* 13px */
-        font-weight: 500;
-        line-height: 1.35;
-        overflow-wrap: break-word;
-        word-break: break-word;
-        white-space: normal;
-    }
-
-    .kv-sub {
-        font-size: 0.6875rem;
-    }
-
-    /* kv-value-end: right-align amount columns on small phones */
-    .kv-item.kv-value-end .kv-value-col {
-        text-align: end;
-        align-items: flex-end;
-    }
-
-    /* kv-divider: suppress ::after — border-bottom on cols replaces it */
-    .kv-item.kv-divider::after {
-        display: none;
-    }
-
-    /* Clickable rows */
-    .kv-item.kv-clickable .kv-key-col,
-    .kv-item.kv-clickable .kv-value-col {
-        cursor: pointer;
-        transition: background-color 120ms ease;
-    }
-
-    .kv-item.kv-clickable:hover .kv-key-col,
-    .kv-item.kv-clickable:hover .kv-value-col {
-        background-color: rgb(0 0 0 / 0.04);
-    }
+    .kv-key-col { width: 7.5rem; }   /* 120px on small phones */
+    .kv-key     { font-size: 0.75rem; }
+    .kv-value   { font-size: 0.8125rem; }
 }
-

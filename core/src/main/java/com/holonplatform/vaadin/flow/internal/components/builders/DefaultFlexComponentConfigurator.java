@@ -263,8 +263,8 @@ public class DefaultFlexComponentConfigurator<C extends Component>
 	}
 
 	@Override
-	public DefaultFlexComponentConfigurator<C> withPostProcessor(Consumer<FlexComponentConfigurator<DefaultFlexComponentConfigurator<C>>> postProcessor) {
-		postProcessor.accept(this);
+	public DefaultFlexComponentConfigurator<C> configure(Consumer<FlexComponentConfigurator<DefaultFlexComponentConfigurator<C>>> configurator) {
+		configurator.accept(this);
 		return this;
 	}
 }

@@ -1,0 +1,841 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Acme CRM — New Customer (Vaadin Mockup)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#f3f5f8;--surface:#fff;--surface-2:#f8fafc;--line:#e4e9f0;--line-soft:#eef1f6;--text:#0f1b2d;--text-mute:#5b6878;--text-dim:#8a96a6;--primary:#1576d3;--primary-soft:#e6f1fb;--primary-2:#0a5fb8;--success:#2e9a6a;--success-soft:#e6f5ee;--warn:#b8860b;--warn-soft:#fbf3dc;--danger:#c0392b;--danger-soft:#fbe7e4;--violet:#6f7afc;--violet-soft:#eceefd;--teal:#0d9488;--teal-soft:#d9f5f1;--gold:#d4a017;--gold-soft:#fdf3d1;--shadow-sm:0 1px 2px rgba(15,27,45,.04),0 1px 1px rgba(15,27,45,.03);--shadow-md:0 4px 14px -2px rgba(15,27,45,.06),0 2px 4px rgba(15,27,45,.04)}
+  *{box-sizing:border-box}html,body{margin:0;padding:0}body{font-family:'Outfit',system-ui,sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.45;-webkit-font-smoothing:antialiased}
+  .appbar{height:56px;background:var(--surface);border-bottom:1px solid var(--line);display:flex;align-items:center;padding:0 16px;gap:16px;position:sticky;top:0;z-index:5}
+  .brand{display:flex;align-items:center;gap:10px;min-width:240px}
+  .brand-mark{width:28px;height:28px;border-radius:6px;background:linear-gradient(135deg,var(--primary),#4a9be5);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:14px}
+  .brand-name{font-weight:600;font-size:15px;letter-spacing:-0.01em}
+  .brand-sub{color:var(--text-dim);font-size:12px;margin-left:4px}
+  .app-search{flex:1;max-width:520px;position:relative}
+  .app-search input{width:100%;height:36px;padding:0 12px 0 36px;background:var(--surface-2);border:1px solid var(--line);border-radius:8px;font:inherit;color:var(--text);outline:none}
+  .app-search input:focus{border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-soft)}
+  .app-search .ic{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--text-dim)}
+  .appbar-right{margin-left:auto;display:flex;align-items:center;gap:8px}
+  .icon-btn{width:36px;height:36px;border-radius:8px;border:none;background:transparent;color:var(--text-mute);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;position:relative}
+  .icon-btn:hover{background:var(--surface-2);color:var(--text)}
+  .icon-btn .dot{position:absolute;top:8px;right:9px;width:8px;height:8px;background:var(--danger);border-radius:50%;border:2px solid #fff}
+  .user-chip{display:flex;align-items:center;gap:10px;padding:4px 10px 4px 4px;border-radius:999px;border:1px solid var(--line);background:var(--surface)}
+  .avatar{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#ec6f9e,#c0392b);color:#fff;font-weight:600;font-size:11px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0}
+  .user-name{font-size:13px;font-weight:500}
+  .user-role{font-size:11px;color:var(--text-dim);margin-left:6px}
+  .layout{display:grid;grid-template-columns:64px 1fr;height:calc(100vh - 56px);min-height:920px}
+  .sidenav{background:var(--surface);border-right:1px solid var(--line);padding:14px 0;display:flex;flex-direction:column;align-items:center;gap:4px}
+  .nav-item{width:40px;height:40px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;color:var(--text-mute);cursor:pointer;position:relative}
+  .nav-item:hover{background:var(--surface-2);color:var(--text)}
+  .nav-item.active{background:var(--primary-soft);color:var(--primary)}
+  .nav-item.active::before{content:'';position:absolute;left:-8px;top:8px;bottom:8px;width:3px;background:var(--primary);border-radius:2px}
+  .nav-item .lbl{position:absolute;left:50px;top:50%;transform:translateY(-50%);background:#0f1b2d;color:#fff;font-size:11px;padding:4px 8px;border-radius:4px;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .15s;z-index:99}
+  .nav-item:hover .lbl{opacity:1}
+  .main{background:var(--bg);overflow-y:auto;padding:0;padding-bottom:80px}
+  .page-head{padding:22px 32px 14px;display:flex;align-items:flex-start;justify-content:space-between;gap:24px;background:var(--surface);border-bottom:1px solid var(--line)}
+  .bc{font-size:11px;color:var(--text-dim);font-family:'JetBrains Mono',monospace;margin-bottom:6px}
+  .bc .sep{color:var(--text-dim);margin:0 6px}
+  .bc a{color:var(--primary);text-decoration:none}
+  .welcome{font-size:24px;font-weight:600;letter-spacing:-0.01em;display:flex;align-items:center;gap:10px}
+  .welcome .badge{font-size:11px;font-weight:500;padding:3px 10px;border-radius:999px;background:var(--warn-soft);color:var(--warn);vertical-align:middle;letter-spacing:0.02em;display:inline-flex;align-items:center;gap:4px}
+  .greet-sub{color:var(--text-mute);font-size:13.5px;margin-top:4px}
+  .head-right{display:flex;gap:8px;align-items:center}
+  .btn{height:34px;padding:0 14px;border-radius:7px;border:1px solid var(--line);background:var(--surface);color:var(--text);font:500 13px 'Outfit';display:inline-flex;align-items:center;gap:6px;cursor:pointer;box-shadow:var(--shadow-sm)}
+  .btn:hover{background:var(--surface-2)}
+  .btn-primary{background:var(--primary);color:#fff;border-color:var(--primary)}
+  .btn-primary:hover{background:var(--primary-2);border-color:var(--primary-2)}
+  .btn-ghost{background:transparent;border-color:transparent;color:var(--text-mute);box-shadow:none}
+  .btn-ghost:hover{background:var(--surface-2);color:var(--text)}
+
+  /* Body */
+  .body{padding:24px 32px;display:grid;grid-template-columns:1fr 320px;gap:20px;align-items:flex-start}
+  .col-main{display:flex;flex-direction:column;gap:16px;min-width:0}
+  .col-side{display:flex;flex-direction:column;gap:16px}
+
+  /* Section / card */
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:10px;box-shadow:var(--shadow-sm);overflow:hidden}
+  .card-h{padding:12px 16px;border-bottom:1px solid var(--line-soft);display:flex;align-items:center;justify-content:space-between}
+  .card-h-left{display:flex;align-items:center;gap:8px}
+  .card-step{width:22px;height:22px;border-radius:50%;background:var(--primary-soft);color:var(--primary);font-size:11px;font-weight:600;display:inline-flex;align-items:center;justify-content:center}
+  .card-step.done{background:var(--success);color:#fff}
+  .card-title{font-size:14px;font-weight:600}
+  .card-sub{font-size:11.5px;color:var(--text-mute);font-weight:400;margin-top:1px;display:block}
+  .card-body{padding:16px}
+  .card-help{font-size:11px;color:var(--text-mute);font-weight:400;padding:10px 16px;background:var(--surface-2);border-top:1px solid var(--line-soft);display:flex;align-items:flex-start;gap:6px;line-height:1.5}
+
+  /* Form */
+  .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px 18px}
+  .form-grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px 18px}
+  .field{display:flex;flex-direction:column;gap:5px}
+  .field.full{grid-column:1/-1}
+  .label{display:flex;align-items:center;gap:5px;font-size:12px;font-weight:500;color:var(--text);line-height:1.3}
+  .label .req{color:var(--danger);font-size:11px}
+  .label .opt{color:var(--text-dim);font-size:10.5px;font-weight:400}
+  .label .help-ic{width:13px;height:13px;border-radius:50%;background:var(--surface-2);color:var(--text-mute);font-size:9px;font-weight:600;display:inline-flex;align-items:center;justify-content:center;cursor:help}
+  .input,.select,.textarea{height:34px;padding:0 12px;border:1px solid var(--line);border-radius:7px;background:var(--surface);color:var(--text);font:400 13px 'Outfit';outline:none;transition:border-color .15s,box-shadow .15s}
+  .input.code{font-family:'JetBrains Mono',monospace;font-size:12.5px}
+  .input:focus,.select:focus,.textarea:focus{border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-soft)}
+  .input::placeholder{color:var(--text-dim)}
+  .input.error{border-color:var(--danger);box-shadow:0 0 0 3px var(--danger-soft)}
+  .input.success{border-color:var(--success);box-shadow:0 0 0 3px var(--success-soft)}
+  .textarea{height:auto;min-height:72px;padding:8px 12px;resize:vertical;line-height:1.5}
+  .select{appearance:none;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238a96a6' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");background-repeat:no-repeat;background-position:right 10px center;padding-right:30px}
+  .input-icon{position:relative}
+  .input-icon .ic{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--text-dim);pointer-events:none}
+  .input-icon .input{padding-left:34px}
+  .input-icon .right{position:absolute;right:8px;top:50%;transform:translateY(-50%);display:flex;align-items:center;gap:4px}
+  .input-icon .right .check{color:var(--success)}
+  .help{font-size:11px;color:var(--text-dim);margin-top:2px;line-height:1.4}
+  .help.err{color:var(--danger)}
+  .help.ok{color:var(--success)}
+  .error-msg{font-size:11px;color:var(--danger);margin-top:2px;display:flex;align-items:center;gap:4px}
+
+  /* Toggle / switch */
+  .switch{position:relative;display:inline-block;width:34px;height:20px}
+  .switch input{opacity:0;width:0;height:0}
+  .switch .slider{position:absolute;cursor:pointer;inset:0;background:var(--line);border-radius:20px;transition:background .2s}
+  .switch .slider::before{content:'';position:absolute;height:16px;width:16px;left:2px;top:2px;background:#fff;border-radius:50%;transition:transform .2s;box-shadow:0 1px 2px rgba(0,0,0,0.1)}
+  .switch input:checked + .slider{background:var(--primary)}
+  .switch input:checked + .slider::before{transform:translateX(14px)}
+  .toggle-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--line-soft)}
+  .toggle-row:last-child{border-bottom:0}
+  .toggle-row .tl{font-size:12.5px;font-weight:500}
+  .toggle-row .sub{font-size:11px;color:var(--text-dim);margin-top:1px}
+
+  /* Radio group */
+  .radio-group{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+  .radio-card{position:relative;padding:10px 12px;border:1.5px solid var(--line);border-radius:8px;cursor:pointer;background:var(--surface);transition:all .15s}
+  .radio-card:hover{border-color:var(--primary)}
+  .radio-card.on{border-color:var(--primary);background:var(--primary-soft);box-shadow:0 0 0 2px var(--primary-soft)}
+  .radio-card input{position:absolute;opacity:0;pointer-events:none}
+  .radio-card .rc-ic{width:24px;height:24px;border-radius:6px;background:var(--surface-2);color:var(--text-mute);display:inline-flex;align-items:center;justify-content:center;margin-bottom:6px}
+  .radio-card.on .rc-ic{background:var(--primary);color:#fff}
+  .radio-card .rc-t{font-size:12.5px;font-weight:600}
+  .radio-card .rc-s{font-size:10.5px;color:var(--text-dim);margin-top:1px}
+
+  /* Chip picker */
+  .chip-picker{display:flex;flex-wrap:wrap;gap:6px}
+  .cp{font-size:11.5px;font-weight:500;padding:5px 10px;border-radius:999px;background:var(--surface-2);color:var(--text-mute);cursor:pointer;border:1px solid var(--line-soft);display:inline-flex;align-items:center;gap:5px;transition:all .15s}
+  .cp:hover{border-color:var(--primary);color:var(--text)}
+  .cp.on{background:var(--primary-soft);color:var(--primary);border-color:var(--primary)}
+  .cp.add{border-style:dashed;color:var(--text-dim)}
+
+  /* Avatar picker */
+  .av-pick{display:flex;align-items:center;gap:14px;padding:14px;background:var(--surface-2);border-radius:8px;margin-bottom:14px}
+  .av-pick-img{width:64px;height:64px;border-radius:12px;background:linear-gradient(135deg,#1576d3,#4a9be5);color:#fff;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;flex-shrink:0;box-shadow:var(--shadow-sm)}
+  .av-pick-info{flex:1}
+  .av-pick-name{font-size:14px;font-weight:600}
+  .av-pick-sub{font-size:11.5px;color:var(--text-mute);margin-top:1px}
+  .av-pick-actions{display:flex;gap:6px}
+  .av-pick-btn{height:28px;padding:0 10px;border-radius:6px;border:1px solid var(--line);background:var(--surface);color:var(--text-mute);font:500 11.5px 'Outfit';cursor:pointer;display:inline-flex;align-items:center;gap:4px}
+  .av-pick-btn:hover{color:var(--text)}
+
+  /* Side card — summary */
+  .summary{background:linear-gradient(135deg,#0f1b2d,#1a3554);color:#fff;border-radius:10px;padding:18px 20px;box-shadow:var(--shadow-md);position:relative;overflow:hidden}
+  .summary::after{content:'';position:absolute;top:0;right:0;bottom:0;width:50%;background:radial-gradient(circle at 100% 0%,rgba(21,118,211,0.15),transparent 60%);pointer-events:none}
+  .sum-eyebrow{font-size:10.5px;text-transform:uppercase;letter-spacing:.04em;color:rgba(255,255,255,0.55);font-weight:600;position:relative;z-index:1}
+  .sum-name{font-size:18px;font-weight:600;margin-top:6px;position:relative;z-index:1}
+  .sum-name .nm{color:#4a9be5}
+  .sum-sub{font-size:12px;color:rgba(255,255,255,0.65);margin-top:2px;position:relative;z-index:1}
+  .sum-stats{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:14px;position:relative;z-index:1}
+  .sum-stat{background:rgba(255,255,255,0.08);border-radius:6px;padding:8px 10px}
+  .sum-stat .l{font-size:9.5px;color:rgba(255,255,255,0.55);text-transform:uppercase;letter-spacing:.04em;font-weight:500}
+  .sum-stat .v{font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:600;margin-top:2px}
+  .sum-stat .v .ccy{font-size:10px;color:rgba(255,255,255,0.55);margin-right:2px;font-weight:500}
+  .sum-stat.pending .v{color:#fbbf24}
+
+  /* Steps in side */
+  .step-row{display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid var(--line-soft)}
+  .step-row:last-child{border-bottom:0}
+  .step-ic{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;font-size:11px;font-weight:600}
+  .step-ic.done{background:var(--success);color:#fff}
+  .step-ic.cur{background:var(--primary);color:#fff;box-shadow:0 0 0 3px var(--primary-soft)}
+  .step-ic.fut{background:var(--surface-2);color:var(--text-dim);border:1px solid var(--line)}
+  .step-text{font-size:12.5px;line-height:1.3}
+  .step-text b{font-weight:600}
+  .step-text.cur b{color:var(--primary)}
+  .step-text .sub{color:var(--text-dim);font-size:11px;margin-top:1px;display:block}
+
+  /* Owner / assignment picker */
+  .own-row{display:flex;align-items:center;gap:10px;padding:10px;background:var(--surface-2);border-radius:7px;cursor:pointer}
+  .own-row:hover{background:var(--surface-2);box-shadow:inset 0 0 0 1.5px var(--primary)}
+  .own-av{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#4a5fe8,#6f7afc);color:#fff;font-weight:600;font-size:12px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0}
+  .own-info{flex:1;min-width:0}
+  .own-name{font-size:13px;font-weight:600}
+  .own-role{font-size:11px;color:var(--text-mute);margin-top:1px}
+  .own-change{font-size:11px;color:var(--primary);font-weight:500;cursor:pointer}
+
+  /* Dupe warning */
+  .dupe{background:var(--warn-soft);border:1px solid var(--warn);border-radius:7px;padding:10px 12px;display:flex;align-items:flex-start;gap:8px;font-size:12px;color:#7d5a08;line-height:1.5;margin-top:8px}
+  .dupe svg{flex-shrink:0;margin-top:1px}
+
+  /* Sticky save bar */
+  .save-bar{position:fixed;bottom:0;left:64px;right:0;background:rgba(255,255,255,0.96);backdrop-filter:blur(12px);border-top:1px solid var(--line);padding:10px 32px;display:flex;justify-content:space-between;align-items:center;z-index:50;box-shadow:0 -2px 12px rgba(15,27,45,0.06)}
+  .save-status{display:flex;align-items:center;gap:10px;font-size:11.5px;color:var(--text-mute)}
+  .save-status .dot{width:6px;height:6px;border-radius:50%;background:var(--success);animation:dot-pulse 1.6s ease-in-out infinite}
+  @keyframes dot-pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+  .save-status .nm{color:var(--text);font-weight:500}
+  .save-actions{display:flex;gap:8px;align-items:center}
+  .save-progress{font-size:11.5px;color:var(--text-mute);display:flex;align-items:center;gap:6px}
+  .save-progress .bar{width:60px;height:4px;background:var(--line-soft);border-radius:2px;overflow:hidden}
+  .save-progress .bar .fill{height:100%;background:linear-gradient(90deg,var(--primary),#4a9be5);border-radius:2px}
+
+  .vaadin-tag{position:fixed;bottom:14px;right:16px;font-size:10.5px;color:var(--text-dim);background:var(--surface);border:1px solid var(--line);padding:4px 10px;border-radius:999px;box-shadow:var(--shadow-sm);display:inline-flex;align-items:center;gap:6px;z-index:9}
+  .vaadin-tag .vaadin-mark{width:12px;height:12px;border-radius:3px;background:linear-gradient(135deg,var(--primary),#4a9be5)}
+</style>
+</head>
+<body>
+
+<header class="appbar">
+  <div class="brand">
+    <div class="brand-mark">A</div>
+    <div><div class="brand-name">Acme CRM <span class="brand-sub">v3.4</span></div></div>
+  </div>
+  <div class="app-search">
+    <svg class="ic" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+    <input placeholder="Search customers, contacts, deals… (⌘K)" />
+  </div>
+  <div class="appbar-right">
+    <button class="icon-btn" title="Notifications">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+      <span class="dot"></span>
+    </button>
+    <div class="user-chip">
+      <span class="avatar">MS</span>
+      <span class="user-name">Maria Schmidt</span>
+      <span class="user-role">Account Executive</span>
+    </div>
+  </div>
+</header>
+
+<div class="layout">
+  <nav class="sidenav">
+    <div class="nav-item" title="Dashboard"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg><span class="lbl">Dashboard</span></div>
+    <div class="nav-item active" title="Customers"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg><span class="lbl">Customers</span></div>
+    <div class="nav-item" title="Deals"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></div>
+    <div class="nav-item" title="Quotes"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
+    <div class="nav-item" title="Sales orders"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg></div>
+    <div class="nav-item" title="Invoices"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></div>
+    <div class="nav-item" title="Pipeline"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+    <div class="nav-item" title="Reports"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div>
+    <div class="nav-item" title="Settings" style="margin-top:auto;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></div>
+  </nav>
+
+  <main class="main">
+
+    <div class="page-head">
+      <div>
+        <div class="bc"><a>CRM</a><span class="sep">›</span><a>Customers</a><span class="sep">›</span>New customer</div>
+        <div class="welcome">New customer<span class="badge">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          Unsaved draft
+        </span></div>
+        <div class="greet-sub">All required fields are marked with <span style="color:var(--danger)">*</span> · Last saved <b>2 sec ago</b> · Use ⌘S to save</div>
+      </div>
+      <div class="head-right">
+        <button class="btn btn-ghost"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>Discard</button>
+        <button class="btn">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+          Save as template
+        </button>
+        <button class="btn">Save &amp; add another</button>
+        <button class="btn btn-primary">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          Save customer
+        </button>
+      </div>
+    </div>
+
+    <div class="body">
+
+      <div class="col-main">
+
+        <!-- 1. Organization -->
+        <div class="card">
+          <div class="card-h">
+            <div class="card-h-left">
+              <span class="card-step cur">1</span>
+              <div>
+                <div class="card-title">Organization</div>
+                <span class="card-sub">The legal entity you're adding</span>
+              </div>
+            </div>
+            <span style="font-size:10.5px;color:var(--text-dim);font-weight:500">STEP 1 OF 6</span>
+          </div>
+          <div class="card-body">
+
+            <div class="av-pick">
+              <div class="av-pick-img" style="background:linear-gradient(135deg,#b08af0,#6f7afc)">AT</div>
+              <div class="av-pick-info">
+                <div class="av-pick-name">Atelier Tremblay</div>
+                <div class="av-pick-sub">Auto-generated from initials · will be shown across the CRM</div>
+              </div>
+              <div class="av-pick-actions">
+                <button class="av-pick-btn"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>Initials</button>
+                <button class="av-pick-btn"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>Upload logo</button>
+              </div>
+            </div>
+
+            <div class="form-grid-3">
+              <div class="field">
+                <label class="label">Account name <span class="req">*</span></label>
+                <input class="input" value="Atelier Tremblay" />
+                <div class="help ok">
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px;margin-right:2px"><polyline points="20 6 9 17 4 12"/></svg>
+                  Available · no duplicate
+                </div>
+              </div>
+              <div class="field">
+                <label class="label">Legal name</label>
+                <input class="input" value="Atelier Tremblay GmbH" placeholder="If different from account name" />
+              </div>
+              <div class="field">
+                <label class="label">Account ID</label>
+                <div class="input-icon">
+                  <input class="input code" value="AT-00287" readonly style="background:var(--surface-2);color:var(--text-mute)" />
+                </div>
+                <div class="help">Auto-assigned · cannot be changed</div>
+              </div>
+
+              <div class="field">
+                <label class="label">Type</label>
+                <select class="select">
+                  <option>Company</option>
+                  <option>Person</option>
+                  <option>Government</option>
+                  <option>Non-profit</option>
+                </select>
+              </div>
+              <div class="field">
+                <label class="label">Industry <span class="req">*</span></label>
+                <select class="select">
+                  <option>Design & Creative</option>
+                  <option>Healthcare</option>
+                  <option>Logistics</option>
+                  <option>Manufacturing</option>
+                  <option>Retail</option>
+                  <option>Technology</option>
+                </select>
+              </div>
+              <div class="field">
+                <label class="label">Segment</label>
+                <select class="select">
+                  <option>SMB</option>
+                  <option selected>Mid-market</option>
+                  <option>Enterprise</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label class="label">Website</label>
+                <div class="input-icon">
+                  <svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                  <input class="input" value="atelier-tremblay.de" />
+                </div>
+              </div>
+              <div class="field">
+                <label class="label">Phone</label>
+                <div class="input-icon">
+                  <svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                  <input class="input" value="+43 1 532 1840" />
+                </div>
+              </div>
+              <div class="field">
+                <label class="label">Employees</label>
+                <div class="input-icon">
+                  <svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                  <input class="input" value="12" />
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="card-help">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-top:1px;flex-shrink:0"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+            <span><b>Tip:</b> Account ID is system-generated and immutable. The legal name is used on invoices and tax documents — make sure it matches your records exactly.</span>
+          </div>
+        </div>
+
+        <!-- 2. Primary contact -->
+        <div class="card">
+          <div class="card-h">
+            <div class="card-h-left">
+              <span class="card-step cur">2</span>
+              <div>
+                <div class="card-title">Primary contact</div>
+                <span class="card-sub">The main person we communicate with</span>
+              </div>
+            </div>
+            <span style="font-size:10.5px;color:var(--text-dim);font-weight:500">STEP 2 OF 6</span>
+          </div>
+          <div class="card-body">
+            <div class="form-grid-3">
+              <div class="field">
+                <label class="label">First name <span class="req">*</span></label>
+                <input class="input" value="Klaus" />
+              </div>
+              <div class="field">
+                <label class="label">Last name <span class="req">*</span></label>
+                <input class="input" value="Weber" />
+              </div>
+              <div class="field">
+                <label class="label">Job title</label>
+                <input class="input" value="Managing Director" />
+              </div>
+
+              <div class="field">
+                <label class="label">Email (work) <span class="req">*</span></label>
+                <div class="input-icon">
+                  <svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                  <input class="input success" value="k.weber@atelier-tremblay.de" />
+                  <span class="right"><svg class="check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+                </div>
+                <div class="help ok">Domain verified · deliverability 98%</div>
+              </div>
+              <div class="field">
+                <label class="label">Email (personal)</label>
+                <div class="input-icon">
+                  <svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                  <input class="input" placeholder="optional" />
+                </div>
+              </div>
+              <div class="field">
+                <label class="label">Phone (mobile)</label>
+                <div class="input-icon">
+                  <svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+                  <input class="input" value="+43 664 123 4567" />
+                </div>
+              </div>
+
+              <div class="field">
+                <label class="label">Role</label>
+                <div class="chip-picker">
+                  <span class="cp on">★ Decision-maker</span>
+                  <span class="cp">Influencer</span>
+                  <span class="cp">End user</span>
+                  <span class="cp">Champion</span>
+                  <span class="cp">Gatekeeper</span>
+                </div>
+              </div>
+              <div class="field">
+                <label class="label">Language</label>
+                <select class="select">
+                  <option>German</option>
+                  <option>English</option>
+                  <option>French</option>
+                </select>
+              </div>
+              <div class="field">
+                <label class="label">Timezone</label>
+                <select class="select">
+                  <option>Europe/Vienna (CET, UTC+1)</option>
+                  <option>Europe/Berlin (CET, UTC+1)</option>
+                  <option>Europe/London (GMT, UTC+0)</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="toggle-row" style="margin-top:14px">
+              <div>
+                <div class="tl">Sync with LinkedIn</div>
+                <div class="sub">Auto-pull profile updates &amp; profile photo</div>
+              </div>
+              <label class="switch"><input type="checkbox" checked><span class="slider"></span></label>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. Address -->
+        <div class="card">
+          <div class="card-h">
+            <div class="card-h-left">
+              <span class="card-step cur">3</span>
+              <div>
+                <div class="card-title">Address</div>
+                <span class="card-sub">Billing &amp; shipping addresses</span>
+              </div>
+            </div>
+            <span style="font-size:10.5px;color:var(--text-dim);font-weight:500">STEP 3 OF 6</span>
+          </div>
+          <div class="card-body">
+            <div class="field full">
+              <label class="label">Street <span class="req">*</span></label>
+              <input class="input" value="Maximilianstraße 14" />
+            </div>
+            <div class="form-grid-3" style="margin-top:14px">
+              <div class="field">
+                <label class="label">Postal code <span class="req">*</span></label>
+                <input class="input" value="80539" />
+              </div>
+              <div class="field">
+                <label class="label">City <span class="req">*</span></label>
+                <input class="input" value="München" />
+              </div>
+              <div class="field">
+                <label class="label">Country <span class="req">*</span></label>
+                <select class="select">
+                  <option>🇩🇪 Germany</option>
+                  <option>🇦🇹 Austria</option>
+                  <option>🇨🇿 Czechia</option>
+                  <option>🇫🇷 France</option>
+                  <option>🇮🇹 Italy</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="toggle-row" style="margin-top:14px">
+              <div>
+                <div class="tl">Shipping address is different</div>
+                <div class="sub">For goods receipt &amp; deliveries</div>
+              </div>
+              <label class="switch"><input type="checkbox"><span class="slider"></span></label>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4. Financial & Tax -->
+        <div class="card">
+          <div class="card-h">
+            <div class="card-h-left">
+              <span class="card-step">4</span>
+              <div>
+                <div class="card-title">Financial &amp; tax</div>
+                <span class="card-sub">Invoicing setup · required for bill generation</span>
+              </div>
+            </div>
+            <span style="font-size:10.5px;color:var(--text-dim);font-weight:500">STEP 4 OF 6</span>
+          </div>
+          <div class="card-body">
+            <div class="form-grid-3">
+              <div class="field">
+                <label class="label">Tax ID / VAT <span class="req">*</span></label>
+                <input class="input code" value="DE 287 442 091" />
+                <div class="help ok">
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px;margin-right:2px"><polyline points="20 6 9 17 4 12"/></svg>
+                  VIES-validated · EU format ✓
+                </div>
+              </div>
+              <div class="field">
+                <label class="label">Currency</label>
+                <select class="select">
+                  <option>EUR · €</option>
+                  <option>USD · $</option>
+                  <option>GBP · £</option>
+                  <option>CZK · Kč</option>
+                </select>
+              </div>
+              <div class="field">
+                <label class="label">Payment terms</label>
+                <select class="select">
+                  <option>Due on receipt</option>
+                  <option>Net 14</option>
+                  <option selected>Net 30</option>
+                  <option>Net 45</option>
+                  <option>Net 60</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label class="label">Payment method</label>
+                <select class="select">
+                  <option>SEPA direct debit</option>
+                  <option>Bank transfer</option>
+                  <option>Credit card</option>
+                  <option>Check</option>
+                </select>
+              </div>
+              <div class="field">
+                <label class="label">Credit limit</label>
+                <div class="input-icon">
+                  <span class="right" style="left:10px;right:auto;color:var(--text-dim);font-family:'JetBrains Mono',monospace;font-size:12px">€</span>
+                  <input class="input" style="padding-left:24px" value="50,000" />
+                </div>
+              </div>
+              <div class="field">
+                <label class="label">Tax exemption</label>
+                <select class="select">
+                  <option>None</option>
+                  <option>Small business (§19 UStG)</option>
+                  <option>Reverse charge (B2B EU)</option>
+                  <option>Export (outside EU)</option>
+                </select>
+              </div>
+
+              <div class="field full">
+                <label class="label">Billing email <span class="req">*</span></label>
+                <div class="input-icon">
+                  <svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                  <input class="input" value="invoicing@atelier-tremblay.de" />
+                </div>
+                <div class="help">Invoices &amp; payment reminders will be sent here</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 5. Assignment & plan -->
+        <div class="card">
+          <div class="card-h">
+            <div class="card-h-left">
+              <span class="card-step">5</span>
+              <div>
+                <div class="card-title">Assignment &amp; plan</div>
+                <span class="card-sub">Who's responsible and what tier</span>
+              </div>
+            </div>
+            <span style="font-size:10.5px;color:var(--text-dim);font-weight:500">STEP 5 OF 6</span>
+          </div>
+          <div class="card-body">
+            <div class="form-grid-3">
+              <div class="field">
+                <label class="label">Account owner</label>
+                <div class="own-row">
+                  <span class="own-av" style="background:linear-gradient(135deg,#4a5fe8,#6f7afc)">MS</span>
+                  <div class="own-info">
+                    <div class="own-name">Maria Schmidt</div>
+                    <div class="own-role">Account Executive · me</div>
+                  </div>
+                  <span class="own-change">Change</span>
+                </div>
+              </div>
+              <div class="field">
+                <label class="label">Customer success mgr</label>
+                <div class="own-row">
+                  <span class="own-av" style="background:linear-gradient(135deg,#0d9488,#0f766e)">TB</span>
+                  <div class="own-info">
+                    <div class="own-name">Tom Bergmann</div>
+                    <div class="own-role">Senior CSM</div>
+                  </div>
+                  <span class="own-change">Change</span>
+                </div>
+              </div>
+              <div class="field">
+                <label class="label">Tier</label>
+                <div class="chip-picker">
+                  <span class="cp">Free</span>
+                  <span class="cp">Starter</span>
+                  <span class="cp on" style="background:var(--gold-soft);color:var(--gold);border-color:var(--gold)">★ Gold</span>
+                  <span class="cp">Platinum</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 6. Tags & notes -->
+        <div class="card">
+          <div class="card-h">
+            <div class="card-h-left">
+              <span class="card-step">6</span>
+              <div>
+                <div class="card-title">Tags, source &amp; notes</div>
+                <span class="card-sub">Optional but helps with segmentation</span>
+              </div>
+            </div>
+            <span style="font-size:10.5px;color:var(--text-dim);font-weight:500">STEP 6 OF 6</span>
+          </div>
+          <div class="card-body">
+            <div class="form-grid-3">
+              <div class="field full">
+                <label class="label">Tags</label>
+                <div class="chip-picker">
+                  <span class="cp on">Mid-market</span>
+                  <span class="cp on">Design</span>
+                  <span class="cp on">EU-based</span>
+                  <span class="cp on">High-touch</span>
+                  <span class="cp on">Renewal</span>
+                  <span class="cp add">+ Add tag</span>
+                </div>
+              </div>
+              <div class="field">
+                <label class="label">Lead source</label>
+                <select class="select">
+                  <option>Referral · Aisha Patel</option>
+                  <option>Website · contact form</option>
+                  <option>Inbound · webinar</option>
+                  <option>Outbound · cold call</option>
+                  <option>Event · trade show</option>
+                </select>
+              </div>
+              <div class="field">
+                <label class="label">Original campaign</label>
+                <select class="select">
+                  <option>Q1-2026 referral program</option>
+                  <option>None</option>
+                </select>
+              </div>
+              <div class="field">
+                <label class="label">First contact date</label>
+                <input class="input" value="2026-03-12" type="date" />
+              </div>
+            </div>
+
+            <div class="field full" style="margin-top:14px">
+              <label class="label">Internal notes</label>
+              <textarea class="textarea" rows="3" placeholder="Anything your team should know about this customer...">Referred by Aisha Patel (Lumen Health). Aisha mentioned they might be open to a 3-yr commit if we include a small SOC2 add-on. Worth a 1:1 with Tom B. before the QBR.</textarea>
+              <div class="help">Visible to your team only. Customers never see these notes.</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- SIDE COLUMN -->
+      <div class="col-side">
+
+        <!-- Live preview -->
+        <div class="summary">
+          <div class="sum-eyebrow">Live preview</div>
+          <div class="sum-name"><span class="nm">Atelier Tremblay</span> GmbH</div>
+          <div class="sum-sub">Design & Creative · Mid-market · ★ Gold</div>
+          <div class="sum-stats">
+            <div class="sum-stat pending">
+              <div class="l">Status</div>
+              <div class="v">Draft</div>
+            </div>
+            <div class="sum-stat">
+              <div class="l">Location</div>
+              <div class="v">DE · Munich</div>
+            </div>
+            <div class="sum-stat">
+              <div class="l">Currency</div>
+              <div class="v">EUR</div>
+            </div>
+            <div class="sum-stat">
+              <div class="l">Owner</div>
+              <div class="v">Maria</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Steps checklist -->
+        <div class="card">
+          <div class="card-h">
+            <div class="card-h-left">
+              <div class="card-title" style="font-size:13px">Setup checklist</div>
+            </div>
+          </div>
+          <div style="padding:6px 16px 12px">
+            <div class="step-row">
+              <span class="step-ic done">✓</span>
+              <div class="step-text"><b>Organization</b><span class="sub">Name, type, industry · saved</span></div>
+            </div>
+            <div class="step-row">
+              <span class="step-ic done">✓</span>
+              <div class="step-text"><b>Primary contact</b><span class="sub">Name, email verified</span></div>
+            </div>
+            <div class="step-row">
+              <span class="step-ic cur">3</span>
+              <div class="step-text cur><b>Address</b><span class="sub">In progress</span></div>
+            </div>
+            <div class="step-row">
+              <span class="step-ic fut">4</span>
+              <div class="step-text"><b>Financial &amp; tax</b><span class="sub">Required to invoice</span></div>
+            </div>
+            <div class="step-row">
+              <span class="step-ic fut">5</span>
+              <div class="step-text"><b>Assignment &amp; plan</b></div>
+            </div>
+            <div class="step-row">
+              <span class="step-ic fut">6</span>
+              <div class="step-text"><b>Tags &amp; notes</b><span class="sub">Optional</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Smart actions -->
+        <div class="card">
+          <div class="card-h">
+            <div class="card-h-left">
+              <div class="card-title" style="font-size:13px">After you save</div>
+            </div>
+          </div>
+          <div style="padding:8px 16px 14px;display:flex;flex-direction:column;gap:8px">
+            <div class="toggle-row" style="padding:6px 0;border:0">
+              <div><div class="tl" style="font-size:12.5px">Send welcome email</div><div class="sub">Auto-template to primary contact</div></div>
+              <label class="switch"><input type="checkbox" checked><span class="slider"></span></label>
+            </div>
+            <div class="toggle-row" style="padding:6px 0;border:0">
+              <div><div class="tl" style="font-size:12.5px">Create first deal</div><div class="sub">Open opportunity in pipeline</div></div>
+              <label class="switch"><input type="checkbox" checked><span class="slider"></span></label>
+            </div>
+            <div class="toggle-row" style="padding:6px 0;border:0">
+              <div><div class="tl" style="font-size:12.5px">Schedule kickoff call</div><div class="sub">30 min with Tom B. (CSM)</div></div>
+              <label class="switch"><input type="checkbox"><span class="slider"></span></label>
+            </div>
+            <div class="toggle-row" style="padding:6px 0;border:0">
+              <div><div class="tl" style="font-size:12.5px">Notify team on Slack</div><div class="sub">#sales channel</div></div>
+              <label class="switch"><input type="checkbox" checked><span class="slider"></span></label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recent similar -->
+        <div class="card">
+          <div class="card-h">
+            <div class="card-h-left">
+              <div class="card-title" style="font-size:13px">Similar customers</div>
+            </div>
+            <span class="card-link">All</span>
+          </div>
+          <div>
+            <div style="padding:10px 16px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--line-soft);cursor:pointer">
+              <span style="width:28px;height:28px;border-radius:6px;background:linear-gradient(135deg,#4ec3e0,#1576d3);color:#fff;font-weight:700;font-size:10px;display:inline-flex;align-items:center;justify-content:center">AT</span>
+              <div style="flex:1;min-width:0">
+                <div style="font-size:12.5px;font-weight:500">Atelier Tremblay (München)</div>
+                <div style="font-size:10.5px;color:var(--text-dim)">Existing · design</div>
+              </div>
+            </div>
+            <div style="padding:10px 16px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--line-soft);cursor:pointer">
+              <span style="width:28px;height:28px;border-radius:6px;background:linear-gradient(135deg,#f3a712,#b8860b);color:#fff;font-weight:700;font-size:10px;display:inline-flex;align-items:center;justify-content:center">BG</span>
+              <div style="flex:1;min-width:0">
+                <div style="font-size:12.5px;font-weight:500">BioGenetics Lab</div>
+                <div style="font-size:10.5px;color:var(--text-dim)">Berlin · R&amp;D · 18 users</div>
+              </div>
+            </div>
+            <div style="padding:10px 16px;display:flex;align-items:center;gap:10px;cursor:pointer">
+              <span style="width:28px;height:28px;border-radius:6px;background:linear-gradient(135deg,#b08af0,#6f7afc);color:#fff;font-weight:700;font-size:10px;display:inline-flex;align-items:center;justify-content:center">BO</span>
+              <div style="flex:1;min-width:0">
+                <div style="font-size:12.5px;font-weight:500">BlueOrbit Networks</div>
+                <div style="font-size:10.5px;color:var(--text-dim)">Berlin · tech</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sticky save bar -->
+    <div class="save-bar">
+      <div class="save-status">
+        <span class="dot"></span>
+        <span class="nm">Auto-saved</span>
+        <span>· 2 sec ago · 8/13 fields complete</span>
+      </div>
+      <div class="save-actions">
+        <div class="save-progress">
+          <span>Profile 62%</span>
+          <div class="bar"><div class="fill" style="width:62%"></div></div>
+        </div>
+        <button class="btn btn-ghost">Discard</button>
+        <button class="btn">Save &amp; add another</button>
+        <button class="btn btn-primary">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          Save customer
+        </button>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<div class="vaadin-tag">
+  <span class="vaadin-mark"></span>
+  Mock-up · Vaadin Flow · New Customer
+</div>
+
+</body>
+</html>

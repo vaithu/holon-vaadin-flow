@@ -15,6 +15,7 @@
  */
 package com.holonplatform.vaadin.flow.internal.converters;
 
+import java.io.Serial;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
@@ -31,6 +32,7 @@ import com.vaadin.flow.data.converter.Converter;
  */
 public abstract class AbstractLocaleSupportConverter<PRESENTATION, MODEL> implements Converter<PRESENTATION, MODEL> {
 
+	@Serial
 	private static final long serialVersionUID = 403136100747168679L;
 
 	public static final List<Character> REGEX_RESERVED = Arrays.asList('.', '<', '(', '[', '{', '\\', '^', '-', '=',

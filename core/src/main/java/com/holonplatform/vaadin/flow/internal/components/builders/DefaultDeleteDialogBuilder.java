@@ -43,7 +43,7 @@ public class DefaultDeleteDialogBuilder extends AbstractDialogConfigurator<Dialo
 		ObjectUtils.argumentNotNull(deleteDialogCallback, "Delete dialog callback must be not null");
 
 		this.confirmButton = ButtonBuilder.create()
-				.text(Localizable.of("Delete", DialogBuilder.DEFAULT_DELETE_BUTTON_MESSAGE_CODE))
+				.text(Localizable.of("Delete", DEFAULT_DELETE_BUTTON_MESSAGE_CODE))
 				.styleName("h-dialog__action-btn h-dialog__action-btn--destructive")
 				.withClickListener(e -> {
 					getComponent().attemptClose();
@@ -51,7 +51,7 @@ public class DefaultDeleteDialogBuilder extends AbstractDialogConfigurator<Dialo
 				})
 				.build();
 		this.denyButton = ButtonBuilder.create()
-				.text(Localizable.of("Cancel", DialogBuilder.DEFAULT_DENY_BUTTON_MESSAGE_CODE))
+				.text(Localizable.of("Cancel", DEFAULT_DENY_BUTTON_MESSAGE_CODE))
 				.styleName("h-dialog__cancel-btn")
 				.autofocus()
 				.withClickListener(e -> {

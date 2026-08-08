@@ -8,7 +8,7 @@ public enum LineClamp {
 
         private final String className;
 
-        private LineClamp(String className) {
+        LineClamp(String className) {
             this.className = className;
         }
 

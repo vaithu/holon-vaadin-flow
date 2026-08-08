@@ -44,7 +44,7 @@ public interface Composable {
 	 * @param <G> Elements group type
 	 */
 	@FunctionalInterface
-	public interface Composer<C extends HasElement, E extends HasComponent, G extends ComponentGroup<E>> {
+	interface Composer<C extends HasElement, E extends HasComponent, G extends ComponentGroup<E>> {
 
 		/**
 		 * Compose the components provided by given <code>source</code> group on the given <code>content</code> layout.

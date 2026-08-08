@@ -15,6 +15,7 @@
  */
 package com.holonplatform.vaadin.flow.internal.components;
 
+import java.io.Serial;
 import com.holonplatform.core.Validator;
 import com.holonplatform.core.Validator.ValidationException;
 import com.holonplatform.core.i18n.Localizable;
@@ -51,6 +52,7 @@ import java.util.stream.Collectors;
 public class DefaultPropertyInputForm<C extends Component>
 		extends AbstractComposablePropertyForm<C, Input<?>, PropertyInputGroup> implements PropertyInputForm {
 
+	@Serial
 	private static final long serialVersionUID = -4202049108110710744L;
 
 	private boolean enterMovesFocusToNext;
@@ -113,11 +115,20 @@ public class DefaultPropertyInputForm<C extends Component>
 			return;
 		}
 		if (isValidateOnEnterFocusMove()) {
-			try {
-				getComponentGroup().getValue(true);
-			} catch (ValidationException e) {
-				return;
-			}
+			// Validate only the currently focused field, not the entire form group
+			final boolean invalid = inputBindings.stream()
+					.filter(b -> b.getElement() == sourceInput)
+					.findFirst()
+					.map(binding -> {
+						try {
+							getComponentGroup().validateInput(binding.getProperty());
+							return false;
+						} catch (ValidationException e) {
+							return true;
+						}
+					})
+					.orElse(false);
+			if (invalid) return;
 		}
 		int index = -1;
 		for (int i = 0; i < inputBindings.size(); i++) {
@@ -265,6 +276,11 @@ public class DefaultPropertyInputForm<C extends Component>
 	@Override
 	public void validate() throws ValidationException {
 		getComponentGroup().validate();
+	}
+
+	@Override
+	public void validateInput(Property<?> property) throws ValidationException {
+		getComponentGroup().validateInput(property);
 	}
 
 	/*

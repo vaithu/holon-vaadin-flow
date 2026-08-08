@@ -15,6 +15,7 @@
  */
 package com.holonplatform.vaadin.flow.internal.components;
 
+import java.io.Serial;
 import com.holonplatform.vaadin.flow.components.Input;
 import com.holonplatform.vaadin.flow.components.ValidatableInput;
 
@@ -27,6 +28,7 @@ import com.holonplatform.vaadin.flow.components.ValidatableInput;
  */
 public class ValidatableInputAdapter<T> extends AbstractValidatableInputAdapter<T, Input<T>> {
 
+	@Serial
 	private static final long serialVersionUID = -2291397152828158839L;
 
 	/**

@@ -13,6 +13,7 @@ import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.html.Paragraph;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
@@ -72,6 +73,13 @@ public class CreateRoomDialog extends Dialog {
         setCloseOnOutsideClick(false);  // prevent accidental close mid-form
 
         add(buildHeader(), buildForm(), buildFooter());
+
+        // Accessible close button
+        Button closeBtn = new Button(VaadinIcon.CLOSE.create(), e -> close());
+        closeBtn.addThemeVariants(ButtonVariant.LUMO_TERTIARY, ButtonVariant.LUMO_ICON);
+        closeBtn.getElement().setAttribute("aria-label",
+                LocalizationProvider.localize("Close dialog", ChatI18N.INVITE_CLOSE_ARIA));
+        getHeader().add(closeBtn);
     }
 
     /** Registers a callback invoked after the room is successfully created. */

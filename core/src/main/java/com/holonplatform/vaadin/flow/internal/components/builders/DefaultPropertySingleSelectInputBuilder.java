@@ -104,7 +104,7 @@ public class DefaultPropertySingleSelectInputBuilder<T> extends AbstractProperty
 			if (item != null) {
 				return selectionProperty.present(item.getValue(selectionProperty));
 			}
-			return String.valueOf(item);
+			return "";
 		});
 		if (itemConverter instanceof PropertyItemConverter) {
 			this.propertyItemConverter = (PropertyItemConverter<T>) itemConverter;

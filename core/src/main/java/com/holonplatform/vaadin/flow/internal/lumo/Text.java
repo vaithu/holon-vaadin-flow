@@ -15,7 +15,7 @@ public enum Text {
 
     private final String className;
 
-    private Text(String className) {
+    Text(String className) {
         this.className = className;
     }
 

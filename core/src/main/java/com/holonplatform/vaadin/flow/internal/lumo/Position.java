@@ -9,7 +9,7 @@ public enum Position {
 
     private final String className;
 
-    private Position(String className) {
+    Position(String className) {
         this.className = className;
     }
 

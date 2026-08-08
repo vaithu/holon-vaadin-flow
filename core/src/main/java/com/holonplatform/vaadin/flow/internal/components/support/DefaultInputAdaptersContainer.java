@@ -15,6 +15,7 @@
  */
 package com.holonplatform.vaadin.flow.internal.components.support;
 
+import java.io.Serial;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -34,6 +35,7 @@ import com.holonplatform.vaadin.flow.components.support.InputAdaptersContainer;
  */
 public class DefaultInputAdaptersContainer<T> implements InputAdaptersContainer<T> {
 
+	@Serial
 	private static final long serialVersionUID = -7264567264012024353L;
 
 	private Map<Class<?>, Function<Input<T>, Object>> adapters;

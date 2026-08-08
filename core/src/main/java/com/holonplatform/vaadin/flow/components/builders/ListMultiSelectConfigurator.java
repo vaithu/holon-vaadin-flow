@@ -91,7 +91,7 @@ public interface ListMultiSelectConfigurator<T, ITEM, B extends ListMultiSelectC
 	 * @param <D>    Datastore data source configurator type
 	 * @param <C>    Concrete configurator type
 	 */
-	public interface ListMultiSelectInputConfigurator<T, ITEM, D extends DatastoreDataProviderConfigurator<ITEM, D>, C extends ListMultiSelectInputConfigurator<T, ITEM, D, C>>
+	interface ListMultiSelectInputConfigurator<T, ITEM, D extends DatastoreDataProviderConfigurator<ITEM, D>, C extends ListMultiSelectInputConfigurator<T, ITEM, D, C>>
 			extends ListMultiSelectConfigurator<T, ITEM, C>, HasBeanDatastoreDataProviderConfigurator<ITEM, D, C> {
 
 	}
@@ -104,7 +104,7 @@ public interface ListMultiSelectConfigurator<T, ITEM, B extends ListMultiSelectC
 	 * @param <ITEM> Item type param
 	 * @param <C>    Concrete configurator type
 	 */
-	public interface DatastoreListMultiSelectInputConfigurator<T, ITEM, C extends DatastoreListMultiSelectInputConfigurator<T, ITEM, C>>
+	interface DatastoreListMultiSelectInputConfigurator<T, ITEM, C extends DatastoreListMultiSelectInputConfigurator<T, ITEM, C>>
 			extends ListMultiSelectConfigurator<T, ITEM, C>, DatastoreDataProviderConfigurator<ITEM, C> {
 
 	}
@@ -116,7 +116,7 @@ public interface ListMultiSelectConfigurator<T, ITEM, B extends ListMultiSelectC
 	 * @param <D> Datastore data source configurator type
 	 * @param <C> Concrete configurator type
 	 */
-	public interface PropertyListMultiSelectInputConfigurator<T, D extends DatastoreDataProviderConfigurator<PropertyBox, D>, C extends PropertyListMultiSelectInputConfigurator<T, D, C>>
+	interface PropertyListMultiSelectInputConfigurator<T, D extends DatastoreDataProviderConfigurator<PropertyBox, D>, C extends PropertyListMultiSelectInputConfigurator<T, D, C>>
 			extends ListMultiSelectConfigurator<T, PropertyBox, C>,
 			HasPropertyBoxDatastoreDataProviderConfigurator<D, C>, PropertySelectInputConfigurator<Set<T>, T, C> {
 
@@ -145,7 +145,7 @@ public interface ListMultiSelectConfigurator<T, ITEM, B extends ListMultiSelectC
 	 * @param <T> Value type
 	 * @param <C> Concrete configurator type
 	 */
-	public interface DatastorePropertyListMultiSelectInputConfigurator<T, C extends DatastorePropertyListMultiSelectInputConfigurator<T, C>>
+	interface DatastorePropertyListMultiSelectInputConfigurator<T, C extends DatastorePropertyListMultiSelectInputConfigurator<T, C>>
 			extends ListMultiSelectConfigurator<T, PropertyBox, C>, DatastoreDataProviderSelectConfigurator<PropertyBox, C>,
 			PropertySelectInputConfigurator<Set<T>, T, C> {
 
@@ -159,7 +159,7 @@ public interface ListMultiSelectConfigurator<T, ITEM, B extends ListMultiSelectC
 	 * @param <T>    Value type
 	 * @param <ITEM> Item type
 	 */
-	public interface ValidatableListMultiSelectInputBuilder<T, ITEM> extends
+	interface ValidatableListMultiSelectInputBuilder<T, ITEM> extends
 			ListMultiSelectInputConfigurator<T, ITEM, ValidatableDatastoreListMultiSelectInputBuilder<T, ITEM>, ValidatableListMultiSelectInputBuilder<T, ITEM>>,
 			BaseValidatableInputBuilder<Set<T>, ValidatableMultiSelect<T>, ValidatableListMultiSelectInputBuilder<T, ITEM>> {
 
@@ -172,7 +172,7 @@ public interface ListMultiSelectConfigurator<T, ITEM, B extends ListMultiSelectC
 	 * @param <T>    Value type
 	 * @param <ITEM> Item type
 	 */
-	public interface ValidatableDatastoreListMultiSelectInputBuilder<T, ITEM> extends
+	interface ValidatableDatastoreListMultiSelectInputBuilder<T, ITEM> extends
 			DatastoreListMultiSelectInputConfigurator<T, ITEM, ValidatableDatastoreListMultiSelectInputBuilder<T, ITEM>>,
 			BaseValidatableInputBuilder<Set<T>, ValidatableMultiSelect<T>, ValidatableDatastoreListMultiSelectInputBuilder<T, ITEM>> {
 
@@ -184,7 +184,7 @@ public interface ListMultiSelectConfigurator<T, ITEM, B extends ListMultiSelectC
 	 * @param <T>    Value type
 	 * @param <ITEM> Item type
 	 */
-	public interface ListMultiSelectInputBuilder<T, ITEM> extends
+	interface ListMultiSelectInputBuilder<T, ITEM> extends
 			ListMultiSelectInputConfigurator<T, ITEM, DatastoreListMultiSelectInputBuilder<T, ITEM>, ListMultiSelectInputBuilder<T, ITEM>>,
 			InputBuilder<Set<T>, ValueChangeEvent<Set<T>>, MultiSelect<T>, ValidatableMultiSelect<T>, ListMultiSelectInputBuilder<T, ITEM>, ValidatableListMultiSelectInputBuilder<T, ITEM>> {
 
@@ -197,7 +197,7 @@ public interface ListMultiSelectConfigurator<T, ITEM, B extends ListMultiSelectC
 	 * @param <T>    Value type
 	 * @param <ITEM> Item type
 	 */
-	public interface DatastoreListMultiSelectInputBuilder<T, ITEM>
+	interface DatastoreListMultiSelectInputBuilder<T, ITEM>
 			extends DatastoreListMultiSelectInputConfigurator<T, ITEM, DatastoreListMultiSelectInputBuilder<T, ITEM>>,
 			InputBuilder<Set<T>, ValueChangeEvent<Set<T>>, MultiSelect<T>, ValidatableMultiSelect<T>, DatastoreListMultiSelectInputBuilder<T, ITEM>, ValidatableDatastoreListMultiSelectInputBuilder<T, ITEM>> {
 
@@ -211,7 +211,7 @@ public interface ListMultiSelectConfigurator<T, ITEM, B extends ListMultiSelectC
 	 *
 	 * @param <T> Value type
 	 */
-	public interface ValidatablePropertyListMultiSelectInputBuilder<T> extends
+	interface ValidatablePropertyListMultiSelectInputBuilder<T> extends
 			PropertyListMultiSelectInputConfigurator<T, ValidatableDatastorePropertyListMultiSelectInputBuilder<T>, ValidatablePropertyListMultiSelectInputBuilder<T>>,
 			BaseValidatableInputBuilder<Set<T>, ValidatableMultiSelect<T>, ValidatablePropertyListMultiSelectInputBuilder<T>> {
 
@@ -223,7 +223,7 @@ public interface ListMultiSelectConfigurator<T, ITEM, B extends ListMultiSelectC
 	 *
 	 * @param <T> Value type
 	 */
-	public interface ValidatableDatastorePropertyListMultiSelectInputBuilder<T> extends
+	interface ValidatableDatastorePropertyListMultiSelectInputBuilder<T> extends
 			DatastorePropertyListMultiSelectInputConfigurator<T, ValidatableDatastorePropertyListMultiSelectInputBuilder<T>>,
 			BaseValidatableInputBuilder<Set<T>, ValidatableMultiSelect<T>, ValidatableDatastorePropertyListMultiSelectInputBuilder<T>> {
 
@@ -234,7 +234,7 @@ public interface ListMultiSelectConfigurator<T, ITEM, B extends ListMultiSelectC
 	 *
 	 * @param <T> Value type
 	 */
-	public interface PropertyListMultiSelectInputBuilder<T> extends
+	interface PropertyListMultiSelectInputBuilder<T> extends
 			PropertyListMultiSelectInputConfigurator<T, DatastorePropertyListMultiSelectInputBuilder<T>, PropertyListMultiSelectInputBuilder<T>>,
 			InputBuilder<Set<T>, ValueChangeEvent<Set<T>>, MultiSelect<T>, ValidatableMultiSelect<T>, PropertyListMultiSelectInputBuilder<T>, ValidatablePropertyListMultiSelectInputBuilder<T>> {
 
@@ -246,7 +246,7 @@ public interface ListMultiSelectConfigurator<T, ITEM, B extends ListMultiSelectC
 	 *
 	 * @param <T> Value type
 	 */
-	public interface DatastorePropertyListMultiSelectInputBuilder<T> extends
+	interface DatastorePropertyListMultiSelectInputBuilder<T> extends
 			DatastorePropertyListMultiSelectInputConfigurator<T, DatastorePropertyListMultiSelectInputBuilder<T>>,
 			InputBuilder<Set<T>, ValueChangeEvent<Set<T>>, MultiSelect<T>, ValidatableMultiSelect<T>, DatastorePropertyListMultiSelectInputBuilder<T>, ValidatableDatastorePropertyListMultiSelectInputBuilder<T>> {
 

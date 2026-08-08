@@ -248,7 +248,6 @@
     gap             : 0.75rem;
     padding-block   : 0.5rem 0.625rem;
     width           : 100%;
-    border-bottom   : 1px solid var(--zinc-200, #e4e4e7);
     margin-bottom   : 0.25rem;
 }
 
@@ -259,6 +258,8 @@
     align-items          : center;
     gap                  : 0.375rem;
     margin-inline-start  : auto;   /* always push to far right */
+  flex-grow: 1;
+  justify-content: flex-end;
 }
 
 /* Search field: grows to fill available space on desktop */
@@ -377,20 +378,27 @@
     border-bottom : none;
 }
 
-/* Actions slot inside the header — search + filter + menu inline */
+/* Actions slot inside the header — search + filter + menu inline.
+   flex:1 1 auto makes the actions container fill the remaining header-row
+   width; justify-content:flex-end keeps all children right-aligned. */
 .listing-header .iyen-header__actions {
-    display     : flex;
-    flex-wrap   : nowrap;
-    align-items : center;
-    gap         : 0.375rem;
-    min-width   : 0;
+    display          : flex;
+    flex-wrap        : nowrap;
+    align-items      : center;
+    justify-content  : flex-end;
+    gap              : 0.375rem;
+    min-width        : 0;
+    flex             : 1 1 auto;
 }
 
-/* Search field inside actions */
-.listing-header__search {
+/* Search field inside actions.
+   High-specificity selector (0-3-0) overrides header.css rule
+   ".iyen-header__actions > * { flex: 0 0 auto }" (0-1-0) which would
+   otherwise prevent the field from growing. Desktop: half the actions width. */
+.listing-header .iyen-header__actions > .listing-header__search {
     flex      : 1 1 200px;
     min-width : 120px;
-    max-width : 400px;
+    width : 40%;
 }
 
 .listing-header__filter-btn {
@@ -406,7 +414,7 @@
         width     : 100%;
         flex-wrap : wrap;
     }
-    .listing-header__search {
+    .listing-header .iyen-header__actions > .listing-header__search {
         flex      : 1 1 auto;
         min-width : 0;
         max-width : 100%;
@@ -431,10 +439,38 @@
 
 /* ── Responsive: tablet ≤ 900 px ── */
 @media (max-width: 900px) and (min-width: 601px) {
-    .listing-header__search {
+    .listing-header .iyen-header__actions > .listing-header__search {
         flex      : 1 1 160px;
         max-width : 280px;
     }
+}
+
+/* ==========================================================================
+   Listing bundle grid area — wraps the grid + empty-state components so they
+   share the same flex slot inside .listing-bundle.
+   Only added to the DOM when emptyState() or noResultsState() is configured.
+   ========================================================================== */
+.listing-bundle-grid-area {
+    flex: 1 1 auto;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+/* Empty-state components inside the grid area inherit the grid's card appearance */
+.listing-bundle-grid-area > .empty {
+    flex: 1 1 auto;
+    min-height: 220px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--color-surface, #ffffff);
+    border: 1px solid rgb(0 0 0 / 0.08);
+    box-shadow: 0 1px 3px rgb(0 0 0 / 0.06),
+                0 1px 2px rgb(0 0 0 / 0.04);
+    overflow: hidden;
 }
 
 /* ==========================================================================
@@ -468,9 +504,6 @@
     cursor: pointer;
 }
 
-vaadin-text-field.listing-toolbar__search.listing-header__search {
-    flex-grow: 1;
-}
 
 /* ==========================================================================
    Compact pagination — small screens (≤ 480 px)

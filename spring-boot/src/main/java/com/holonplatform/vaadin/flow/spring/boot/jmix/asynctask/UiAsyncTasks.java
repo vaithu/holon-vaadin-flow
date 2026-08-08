@@ -27,7 +27,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.concurrent.*;
 import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 /**
@@ -77,7 +76,7 @@ public class UiAsyncTasks {
 
     private ExecutorService executorService;
 
-    private Function<Throwable, Void> defaultExceptionHandler;
+    private Consumer<Throwable> defaultExceptionHandler;
 
     private final UiAsyncTaskProperties uiAsyncTaskProperties;
 
@@ -133,11 +132,12 @@ public class UiAsyncTasks {
 
         public AbstractAsyncTaskConfigurer() {
             this.ui = UI.getCurrent();
+            this.exceptionHandler = defaultExceptionHandler;
         }
 
         protected void configureTimeout(CompletableFuture<Void> resultCompletableFuture) {
-            if (timeout > 0 && timeoutUnit != null) {
-                resultCompletableFuture.orTimeout(timeout, timeoutUnit);
+            if (timeout > 0) {
+                resultCompletableFuture.orTimeout(timeout, timeoutUnit != null ? timeoutUnit : TimeUnit.SECONDS);
             } else {
                 int defaultTimeoutSec = uiAsyncTaskProperties.getDefaultTimeoutSec();
                 if (defaultTimeoutSec > 0) {
@@ -147,14 +147,12 @@ public class UiAsyncTasks {
         }
 
         protected void configureExceptionHandler(CompletableFuture<Void> completableFuture) {
-            if (exceptionHandler != null) {
-                completableFuture.exceptionally(throwable -> {
-                    ui.access(() -> exceptionHandler.accept(throwable));
-                    return null;
-                });
-            } else {
-                completableFuture.exceptionally(defaultExceptionHandler);
-            }
+            Consumer<Throwable> handler = exceptionHandler;
+            completableFuture.whenComplete((result, throwable) -> {
+                if (throwable != null) {
+                    ui.access(() -> handler.accept(throwable));
+                }
+            });
         }
     }
 
@@ -293,18 +291,17 @@ public class UiAsyncTasks {
         return executorService;
     }
 
-    protected Function<Throwable, Void> createDefaultExceptionHandler() {
+    protected Consumer<Throwable> createDefaultExceptionHandler() {
         return throwable -> {
             if (throwable instanceof TimeoutException) {
                 log.error("UI async task finished on timeout");
             } else {
                 log.error("UI async task error", throwable);
             }
-            return null;
         };
     }
 
-    public void setDefaultExceptionHandler(Function<Throwable, Void> defaultExceptionHandler) {
+    public void setDefaultExceptionHandler(Consumer<Throwable> defaultExceptionHandler) {
         this.defaultExceptionHandler = defaultExceptionHandler;
     }
 }

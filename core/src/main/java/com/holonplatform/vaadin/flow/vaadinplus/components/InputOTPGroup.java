@@ -15,6 +15,7 @@
  */
 package com.holonplatform.vaadin.flow.vaadinplus.components;
 
+import java.io.Serial;
 import com.vaadin.flow.component.html.Div;
 
 import java.util.ArrayList;
@@ -34,7 +35,7 @@ import java.util.List;
  * </pre>
  *
  * <p>Mirrors the shadcn/ui {@code InputOTPGroup} element. Use multiple groups with an
- * {@link InputOTPSeparator} between them to create the classic {@code 3–3} or {@code 3–2–1}
+ * {@link InputOTPSeparator} between them to create the classic {@code 3â€“3} or {@code 3â€“2â€“1}
  * OTP patterns.
  *
  * <p>All visual styling is defined in {@code input-otp.css}.
@@ -45,6 +46,7 @@ import java.util.List;
  */
 public class InputOTPGroup extends Div {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     private final List<InputOTPSlot> slots = new ArrayList<>();
@@ -89,4 +91,3 @@ public class InputOTPGroup extends Div {
         return Collections.unmodifiableList(slots);
     }
 }
-

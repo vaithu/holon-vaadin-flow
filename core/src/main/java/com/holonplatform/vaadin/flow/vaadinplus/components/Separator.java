@@ -15,6 +15,7 @@
  */
 package com.holonplatform.vaadin.flow.vaadinplus.components;
 
+import java.io.Serial;
 import com.holonplatform.vaadin.flow.components.builders.SeparatorBuilder;
 import com.holonplatform.vaadin.flow.components.builders.SeparatorConfigurator;
 import com.holonplatform.vaadin.flow.vaadinplus.utilities.Color;
@@ -30,9 +31,9 @@ import com.vaadin.flow.component.html.Div;
  *
  * <p>Two usage modes:</p>
  * <ul>
- *   <li><strong>Meaningful</strong> (default) — renders with {@code role="separator"} and
+ *   <li><strong>Meaningful</strong> (default) â€” renders with {@code role="separator"} and
  *       {@code aria-orientation} so assistive technologies announce it as a thematic break.</li>
- *   <li><strong>Decorative</strong> — renders with {@code role="none"} and
+ *   <li><strong>Decorative</strong> â€” renders with {@code role="none"} and
  *       {@code aria-hidden="true"} when the separator is purely visual and should be
  *       invisible to screen readers.</li>
  * </ul>
@@ -78,10 +79,11 @@ import com.vaadin.flow.component.html.Div;
 @StyleSheet("context://separator.css")
 public class Separator extends Div {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     /**
-     * Separator thickness — maps to a CSS modifier class that overrides the
+     * Separator thickness â€” maps to a CSS modifier class that overrides the
      * {@code --separator-thickness} custom property used by both orientation rules.
      *
      * <pre>{@code
@@ -89,7 +91,7 @@ public class Separator extends Div {
      * }</pre>
      */
     public enum Thickness {
-        /** 1 px — the default. */
+        /** 1 px â€” the default. */
         THIN("separator--thickness-thin"),
         /** 2 px. */
         MEDIUM("separator--thickness-medium"),
@@ -109,7 +111,7 @@ public class Separator extends Div {
     }
 
     /**
-     * Separator orientation — maps directly to the WAI-ARIA {@code aria-orientation} values.
+     * Separator orientation â€” maps directly to the WAI-ARIA {@code aria-orientation} values.
      */
     public enum Orientation {
         /** A horizontal rule spanning the full width of its container. */
@@ -231,7 +233,7 @@ public class Separator extends Div {
      * Sets the separator colour by applying a predefined {@link Color.Background} CSS class.
      *
      * <p>Replaces any previously applied colour class. Pass {@code null} to revert to the
-     * default CSS colour ({@code var(--separator-color, …)}).</p>
+     * default CSS colour ({@code var(--separator-color, â€¦)}).</p>
      *
      * <pre>{@code
      * separator.setColor(Color.Background.PRIMARY);
@@ -341,4 +343,3 @@ public class Separator extends Div {
         return SeparatorConfigurator.configure(separator);
     }
 }
-

@@ -11,6 +11,7 @@ import com.holonplatform.vaadin.flow.components.builders.ButtonConfigurator;
 import com.holonplatform.vaadin.flow.components.builders.LabelBuilder;
 import com.holonplatform.vaadin.flow.components.css.CSSUtility;
 import com.holonplatform.vaadin.flow.components.css.WhiteSpace;
+import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
 import com.holonplatform.vaadin.flow.internal.components.support.BreakPoint;
 import com.holonplatform.vaadin.flow.internal.lumo.SeparatorColor;
 import com.holonplatform.vaadin.flow.vaadinplus.KeyValuePair;
@@ -270,27 +271,27 @@ public class UIUtils {
     public static void handleNoValuesFound(VerticalLayout container) {
         Components.configure(container)
                 .fullSize()
-                .add(UIUtils.createImage("no-values-found.png", "No values found"));
+                .add(createImage("no-values-found.png", "No values found"));
 
     }
 
     public static void handleNoValuesFound(Layout container) {
         Components.configure(container)
                 .fullSize()
-                .add(UIUtils.createImage("no-values-found.png", "No values found"));
+                .add(createImage("no-values-found.png", "No values found"));
 
     }
 
     public static void handleNoRecordsFound(VerticalLayout container) {
         Components.configure(container)
                 .fullSize()
-                .add(UIUtils.createNoRecordsFoundImage());
+                .add(createNoRecordsFoundImage());
     }
 
     public static void handleNoRecordsFound(Layout container) {
         Components.configure(container)
                 .fullSize()
-                .add(UIUtils.createNoRecordsFoundImage());
+                .add(createNoRecordsFoundImage());
     }
 
     public static Separator separator(SeparatorColor color) {
@@ -604,7 +605,7 @@ public class UIUtils {
 
     public static void addErrorHandling(Upload upload) {
         upload.addFileRejectedListener(e -> {
-            Notification.show(("File was rejected") + ": " + e.getErrorMessage());
+            Notification.show("File was rejected: " + e.getErrorMessage());
         });
     }
 
@@ -699,15 +700,13 @@ public class UIUtils {
         final List<Boolean> mobile = new ArrayList<>();
         Page page = attachEvent.getUI().getPage();
         page.retrieveExtendedClientDetails(details -> {
-            boolean b = details.getWindowInnerWidth() < 740;
-            if (b) {
-                mobile.add(b);
+            if (details.getWindowInnerWidth() < 740) {
+                mobile.add(Boolean.TRUE);
             }
         });
         page.addBrowserWindowResizeListener(e -> {
-            boolean b = e.getWidth() < 740;
-            if (b) {
-                mobile.add(b);
+            if (e.getWidth() < 740) {
+                mobile.add(Boolean.TRUE);
             }
         });
 
@@ -793,7 +792,7 @@ public class UIUtils {
 
         private void initializeUI() {
             setCancelable(true);
-            setConfirmText("Delete");
+            setConfirmText(LocalizationProvider.localize("Delete", "utils.delete_btn"));
         }
 
         public DeleteDialog(String headerTitle, String message) {
@@ -845,7 +844,7 @@ public class UIUtils {
         if (binder.hasChanges()) {
             final BeforeLeaveEvent.ContinueNavigationAction action = event.postpone();
             final ConfirmDialog dialog = new ConfirmDialog();
-            dialog.setText("Are you sure you want to leave? You have unsaved data.");
+            dialog.setText(LocalizationProvider.localize("Are you sure you want to leave? You have unsaved data.", "utils.leave_confirm"));
             dialog.setConfirmButton("Stay", e -> dialog.close());
             dialog.setCancelButton("Leave", e -> action.proceed());
             dialog.setCancelable(true);
@@ -872,7 +871,7 @@ public class UIUtils {
                     Checkbox checkbox = new Checkbox(header);
                     checkbox.setValue(column.isVisible());
                     checkbox.addValueChangeListener(e -> column.setVisible(e.getValue()));
-                    subMenu.addItem(checkbox, null);
+                    subMenu.addItem(checkbox, (ComponentEventListener<ClickEvent<MenuItem>>) null);
                 }
         );
 
@@ -995,7 +994,7 @@ public class UIUtils {
         welcomeText.addClassNames("font-weight-normal", "margin-none",
                 "color-text-secondary", "font-size-medium");
 
-        Span accountBalanceSpan = Components.span().text("Account Balance").build();
+        Span accountBalanceSpan = Components.span().text(LocalizationProvider.localize("Account Balance", "utils.account_balance")).build();
 
         if (accountBalance > 0) {
             prefix = "+";
@@ -1065,7 +1064,7 @@ public class UIUtils {
         }
 
         private void setButtonProperties() {
-            setText("Update");
+            setText(LocalizationProvider.localize("Update", "utils.update_btn"));
             addThemeVariants(ButtonVariant.LUMO_PRIMARY, ButtonVariant.LUMO_SUCCESS);
         }
 
@@ -1090,7 +1089,7 @@ public class UIUtils {
         }
 
         private void setButtonProperties() {
-            setText("Delete");
+            setText(LocalizationProvider.localize("Delete", "utils.delete_btn"));
             addThemeVariants(ButtonVariant.LUMO_PRIMARY, ButtonVariant.LUMO_ERROR);
         }
 
@@ -1198,9 +1197,7 @@ public class UIUtils {
                         "click",
                         e -> {
                             JsonNode detail = e.getEventData().get("event.detail");
-                            if (detail.asInt() > 1) {
-                                // double click, ignore
-                            } else {
+                            if (detail.asInt() <= 1) {
                                 action.get();
                             }
                         }
@@ -1243,7 +1240,7 @@ public class UIUtils {
         com.vaadin.flow.component.icon.Icon errorIcon = new com.vaadin.flow.component.icon.Icon(VaadinIcon.EXCLAMATION_CIRCLE_O);
         errorIcon.setSize("2.5em");
 
-        H2 headerMessage = Components.h2().text("Creation failed").build();
+        H2 headerMessage = Components.h2().text(LocalizationProvider.localize("Creation failed", "utils.creation_failed")).build();
         headerMessage.getStyle().set("font-family", "system-ui").set("font-weight", "900");
 
         HorizontalLayout headerLayout = Components.hl().add(errorIcon, headerMessage).build();
@@ -1351,12 +1348,10 @@ public class UIUtils {
      */
     public static boolean isTouchDevice() {
         final UI ui = UI.getCurrent();
-        if (ui != null && ui.getInternals() != null) {
-            if (ui.getInternals().getExtendedClientDetails() != null) {
-                return ui.getInternals().getExtendedClientDetails().isTouchDevice();
-            }
+        if (ui != null && ui.getInternals() != null && ui.getInternals().getExtendedClientDetails() != null) {
+            return ui.getInternals().getExtendedClientDetails().isTouchDevice();
         }
-        
+
         return false;
     }
 
@@ -1406,7 +1401,7 @@ public class UIUtils {
     }
 
     public static void notifyValidationException() {
-        Notification.show("Failed to update the data. Check again that all values are valid");
+        Notification.show(LocalizationProvider.localize("Failed to update the data. Check again that all values are valid", "utils.update_failed"));
     }
 
     /*public static BulkActionBuilder createBulkActionBuilder(GridMultiSelectionModel<?> gridMultiSelectionModel) {
@@ -1517,13 +1512,13 @@ public class UIUtils {
     }
 
     public static Image createNoRecordsFoundImage() {
-        return createImage("no-records-found.png", "No Records Found");
+        return createImage("no-records-found.png", LocalizationProvider.localize("No Records Found", "utils.no_records_found"));
     }
 
     public static Span createNoRecordsFoundSpan() {
         return Components.Badge
                 .badgeError()
-                .text("No Records Found")
+                .text(LocalizationProvider.localize("No Records Found", "utils.no_records_found"))
                 .build();
     }
 
@@ -1541,17 +1536,17 @@ public class UIUtils {
 
     public static BreakPoint getBreakPoint(int width) {
         if (width < 576) {
-            return BreakPoint.BREAKPOINT_XS;
+            return BREAKPOINT_XS;
         } else if (width < 768) {
-            return BreakPoint.BREAKPOINT_SM;
+            return BREAKPOINT_SM;
         } else if (width < 992) {
-            return BreakPoint.BREAKPOINT_MD;
+            return BREAKPOINT_MD;
         } else if (width < 1200) {
-            return BreakPoint.BREAKPOINT_LG;
+            return BREAKPOINT_LG;
         } else if (width < 1400) {
-            return BreakPoint.BREAKPOINT_XL;
+            return BREAKPOINT_XL;
         } else {
-            return BreakPoint.BREAKPOINT_XXL;
+            return BREAKPOINT_XXL;
         }
     }
 
@@ -1597,17 +1592,17 @@ public class UIUtils {
         final ViewMode[] viewMode = new ViewMode[1];
         ui.getPage().addBrowserWindowResizeListener(browserWindowResizeEvent -> {
 
-            if (UIUtils.getViewMode(browserWindowResizeEvent.getWidth()) == ViewMode.MOBILE) {
+            if (getViewMode(browserWindowResizeEvent.getWidth()) == ViewMode.MOBILE) {
                 viewMode[0] = ViewMode.MOBILE;
-            } else if (UIUtils.getViewMode(browserWindowResizeEvent.getWidth()) == ViewMode.DESKTOP) {
+            } else if (getViewMode(browserWindowResizeEvent.getWidth()) == ViewMode.DESKTOP) {
                 viewMode[0] = ViewMode.DESKTOP;
             }
 
         });
 
-        if (width != 0 && UIUtils.getViewMode(width) == ViewMode.MOBILE) {
+        if (width != 0 && getViewMode(width) == ViewMode.MOBILE) {
             viewMode[0] = ViewMode.MOBILE;
-        } else if (UIUtils.getViewMode(width) == ViewMode.DESKTOP) {
+        } else if (getViewMode(width) == ViewMode.DESKTOP) {
             viewMode[0] = ViewMode.DESKTOP;
         }
 
@@ -1767,14 +1762,14 @@ public class UIUtils {
 
         public static Button backButton(Consumer<ButtonConfigurator.BaseButtonConfigurator> configurator) {
             Button back = createTertiaryButton(VaadinIcon.ANGLE_LEFT);
-            back.setAriaLabel("Back");
+            back.setAriaLabel(LocalizationProvider.localize("Back", "utils.back_aria"));
             configurator.accept(ButtonConfigurator.configure(back));
             return back;
         }
 
         public static Button closeButton(Consumer<ButtonConfigurator.BaseButtonConfigurator> configurator) {
             Button close = createCloseButton();
-            close.setAriaLabel("Close");
+            close.setAriaLabel(LocalizationProvider.localize("Close", "utils.close_aria"));
             configurator.accept(ButtonConfigurator.configure(close));
             return close;
         }
@@ -2045,10 +2040,11 @@ public class UIUtils {
             return i;
         }
 
+        @SuppressWarnings("PMD.UnnecessaryFullyQualifiedName")
         public static MenuItem createIconItem(HasMenuItems menu, LumoIcon iconName, String label, String ariaLabel,
                                               boolean isChild) {
             com.vaadin.flow.component.icon.Icon icon = new com.vaadin.flow.component.icon.Icon("lumo", iconName.toString().toLowerCase());
-            MenuItem item = menu.addItem(icon, null);
+            MenuItem item = menu.addItem(icon, (ComponentEventListener<ClickEvent<MenuItem>>) null);
             item.setAriaLabel(ariaLabel);
 
             if (label != null) {

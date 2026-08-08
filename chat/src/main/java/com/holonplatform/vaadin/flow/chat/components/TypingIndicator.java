@@ -144,6 +144,11 @@ public class TypingIndicator extends Composite<Div> {
         this.roomId = roomId;
 
         getContent().addClassName("typing-indicator");
+        getContent().getElement().setAttribute("role", "status");
+        getContent().getElement().setAttribute("aria-live", "polite");
+        getContent().getElement().setAttribute("aria-atomic", "true");
+        getContent().getElement().setAttribute("aria-label",
+                LocalizationProvider.localize("Typing status", ChatI18N.TYPING_ARIA_LABEL));
 
         dots.addClassName("typing-indicator__dots");
         dots.add(new Span(), new Span(), new Span());   // 3 animated dots
@@ -177,7 +182,6 @@ public class TypingIndicator extends Composite<Div> {
         closeTopicConnection();
         super.onDetach(event);
     }
-
     // ------------------------------------------------------------------ //
     // Public API
     // ------------------------------------------------------------------ //

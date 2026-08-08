@@ -37,7 +37,7 @@ public interface ItemSetConfigurator<C extends ItemSetConfigurator<C>> {
 	 * @since 5.2.0
 	 */
 	@FunctionalInterface
-	public interface ItemCaptionGenerator<ITEM> extends Serializable {
+	interface ItemCaptionGenerator<ITEM> extends Serializable {
 
 		/**
 		 * Get the caption for given <code>item</code>.

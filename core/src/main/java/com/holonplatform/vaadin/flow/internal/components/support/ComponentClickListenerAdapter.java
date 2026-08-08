@@ -15,6 +15,7 @@
  */
 package com.holonplatform.vaadin.flow.internal.components.support;
 
+import java.io.Serial;
 import com.holonplatform.core.internal.utils.ObjectUtils;
 import com.holonplatform.vaadin.flow.components.events.ClickEventListener;
 import com.holonplatform.vaadin.flow.internal.components.events.DefaultClickEvent;
@@ -31,6 +32,7 @@ import com.vaadin.flow.component.ComponentEventListener;
  */
 public class ComponentClickListenerAdapter<C extends Component> implements ComponentEventListener<ClickEvent<C>> {
 
+	@Serial
 	private static final long serialVersionUID = 2832892710052433615L;
 
 	private final ClickEventListener<C, com.holonplatform.vaadin.flow.components.events.ClickEvent<C>> clickListener;

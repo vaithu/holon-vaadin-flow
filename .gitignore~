@@ -1,0 +1,63 @@
+# Eclipse
+.classpath
+.project
+.settings/
+
+# Intellij
+.idea/
+*.iml
+*.iws
+.vscode
+.qodo
+.copilot
+.claude
+
+qodana.sarif.json
+qodana.yaml
+
+
+# Mac
+.DS_Store
+
+# Maven
+log/
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+
+# Scratch / CI artefacts
+*.log
+*.exit
+*.ok
+*-report.txt
+dep-list-*.txt
+*-versions.txt
+*.txt
+copilot-*
+
+# Build output text files (captured stdout/stderr)
+core-err.txt
+core-out.txt
+core-test-output.txt
+demo-compile-result.txt
+demo-out.txt
+
+# AI assistant workspace
+.junie/
+
+# Avoid ignoring Maven wrapper jar file (.jar files are usually ignored)
+!/.mvn/wrapper/maven-wrapper.jar
+
+# Vaadin
+node_modules/
+package.json
+webpack.config.js
+webpack.generated.js
+package-lock.json
+

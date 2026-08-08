@@ -1,5 +1,6 @@
 package com.holonplatform.vaadin.flow.internal.components.events;
 
+import java.io.Serial;
 import java.util.Collections;
 import java.util.List;
 
@@ -16,6 +17,7 @@ import com.holonplatform.vaadin.flow.components.events.ColumnReorderEvent;
  */
 public class DefaultColumnReorderEvent<T, P> implements ColumnReorderEvent<T, P> {
 
+	@Serial
 	private static final long serialVersionUID = -8327993040907036877L;
 	
 	private final ItemListing<T, P> source;

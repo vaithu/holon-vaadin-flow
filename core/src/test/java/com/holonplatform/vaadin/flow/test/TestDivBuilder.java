@@ -241,14 +241,14 @@ class TestDivBuilder {
     }
 
     // =========================================================================
-    // withPostProcessor
+    // configure (formerly withPostProcessor)
     // =========================================================================
 
     @Test
-    void withPostProcessor_callsProcessor() {
+    void configure_callsConfigurator() {
         AtomicBoolean called = new AtomicBoolean(false);
         DivBuilder.create()
-                .withPostProcessor(cfg -> called.set(true))
+                .configure(cfg -> called.set(true))
                 .build();
         assertTrue(called.get());
     }

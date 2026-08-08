@@ -6,7 +6,7 @@ public enum Overflow {
 
     private final String className;
 
-    private Overflow(String className) {
+    Overflow(String className) {
         this.className = className;
     }
 

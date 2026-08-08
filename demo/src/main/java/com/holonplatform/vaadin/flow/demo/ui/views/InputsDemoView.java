@@ -3,6 +3,9 @@ package com.holonplatform.vaadin.flow.demo.ui.views;
 import com.holonplatform.vaadin.flow.components.Input;
 import com.holonplatform.vaadin.flow.demo.ui.DemoExample;
 import com.holonplatform.vaadin.flow.demo.ui.DemoMainLayout;
+import com.vaadin.flow.component.Unit;
+import com.vaadin.flow.component.checkbox.CheckboxGroup;
+import com.vaadin.flow.component.checkbox.CheckboxGroupVariant;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.Paragraph;
@@ -30,6 +33,7 @@ public class InputsDemoView extends Div {
         examples.add(stringAreaExample());
         examples.add(numberExample());
         examples.add(booleanExample());
+        examples.add(toggleExample());
         examples.add(passwordExample());
         examples.add(localDateExample());
         examples.add(localDateTimeExample());
@@ -89,12 +93,29 @@ public class InputsDemoView extends Div {
     private DemoExample booleanExample() {
         var input = Input.boolean_()
                 .label("Active")
+                .styleName("switch")
                 .build();
 
         return new DemoExample("Boolean Input (Checkbox)", input.getComponent(), """
                 Input.boolean_()
                     .label("Active")
                     .build();""");
+    }
+
+    private DemoExample toggleExample() {
+        CheckboxGroup<String> group = new CheckboxGroup<>("Label");
+        group.addClassName("switch");
+        group.addThemeVariants(CheckboxGroupVariant.LUMO_VERTICAL);
+        group.setItems("Item 1", "Item 2", "Item 3");
+        group.setWidth(320, Unit.PIXELS);
+
+        return new DemoExample("Boolean Input (Checkbox)", group, """
+                CheckboxGroup<String> group = new CheckboxGroup<>("Label");
+                        group.addClassName("switch");
+                        group.addThemeVariants(CheckboxGroupVariant.LUMO_VERTICAL);
+                        group.setItems("Item 1", "Item 2", "Item 3");
+                        group.setWidth(320, Unit.PIXELS);
+                        """);
     }
 
     private DemoExample passwordExample() {

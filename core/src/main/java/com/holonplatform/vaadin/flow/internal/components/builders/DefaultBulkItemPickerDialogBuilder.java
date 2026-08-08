@@ -33,6 +33,7 @@ public class DefaultBulkItemPickerDialogBuilder
         if (isShouldAutoOpen()) {
             dialog.open();
         }
+        applyPostProcessors();
         return dialog;
     }
 }

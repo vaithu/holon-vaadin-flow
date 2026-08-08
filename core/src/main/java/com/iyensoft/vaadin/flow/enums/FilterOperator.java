@@ -21,6 +21,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static com.holonplatform.core.internal.utils.TypeUtils.wrapPrimitive;
+
 /**
  * Operators available in a {@code DynamicFilterPanel} filter row.
  *
@@ -157,19 +159,7 @@ public enum FilterOperator {
         return this == IS_EMPTY || this == IS_NOT_EMPTY;
     }
 
-    // -----------------------------------------------------------------------
-    // Internal helper
-    // -----------------------------------------------------------------------
 
-    private static Class<?> wrapPrimitive(Class<?> type) {
-        if (int.class.equals(type))    return Integer.class;
-        if (long.class.equals(type))   return Long.class;
-        if (double.class.equals(type)) return Double.class;
-        if (float.class.equals(type))  return Float.class;
-        if (short.class.equals(type))  return Short.class;
-        if (byte.class.equals(type))   return Byte.class;
-        return type;
-    }
 }
 
 

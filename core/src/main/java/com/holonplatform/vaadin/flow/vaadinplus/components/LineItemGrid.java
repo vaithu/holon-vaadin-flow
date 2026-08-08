@@ -24,6 +24,7 @@ import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.data.renderer.LitRenderer;
 import com.vaadin.flow.data.value.ValueChangeMode;
 
+import java.text.MessageFormat;
 import java.text.NumberFormat;
 import java.util.*;
 import java.util.function.Consumer;
@@ -143,9 +144,17 @@ public class LineItemGrid extends Composite<Div> implements HasComponent {
     private final Span taxAmountSpan  = Components.span().text("0.00").build();
     private final Span totalSpan      = Components.span().text("0.00").build();
 
+    /** Footer label spans — stored as fields so {@link #localeChange} can update them. */
+    private final Span subtotalLabelSpan = Components.span().build();
+    private final Span taxFooterLabelSpan = Components.span().build();
+    private final Span totalLabelSpan = Components.span().build();
+
     private Grid.Column<LineItemRow> descriptionCol;
     private Grid.Column<LineItemRow> accountCol;
     private Grid.Column<LineItemRow> projectCol;
+
+    /** Details toggle button — stored as a field so {@link #localeChange} can update its text. */
+    private Button toggleBtn;
 
     private boolean          detailsVisible = false;
     private Consumer<List<LineItemRow>> changeListener;
@@ -239,7 +248,7 @@ public class LineItemGrid extends Composite<Div> implements HasComponent {
             cb.setItems(itemSuggestions);
             cb.setItemLabelGenerator(ItemSuggestion::name);
             cb.setWidthFull();
-            cb.setPlaceholder("Select item…");
+            cb.setPlaceholder(LocalizationProvider.localize("Select item…", "line_item.placeholder_item"));
             preselectItem(cb, row.getItemName());
             cb.addValueChangeListener(e -> {
                 var s = e.getValue();
@@ -256,7 +265,7 @@ public class LineItemGrid extends Composite<Div> implements HasComponent {
             });
             attachEnterNav(cb);
             return cb;
-        })).setHeader("ITEM").setFlexGrow(2).setKey("item");
+        })).setHeader(LocalizationProvider.localize("ITEM", "line_item.col_item")).setFlexGrow(2).setKey("item");
 
         // ── Quantity ──────────────────────────────────────────────────────────
         g.addColumn(new ComponentRenderer<>(row -> {
@@ -269,7 +278,7 @@ public class LineItemGrid extends Composite<Div> implements HasComponent {
             f.addValueChangeListener(e -> { row.setQuantity(e.getValue()); refreshRow(row); fireChange(); });
             attachEnterNav(f);
             return f;
-        })).setHeader("QTY").setWidth("90px").setFlexGrow(0).setKey("qty");
+        })).setHeader(LocalizationProvider.localize("QTY", "line_item.col_qty")).setWidth("90px").setFlexGrow(0).setKey("qty");
 
         // ── Rate ──────────────────────────────────────────────────────────────
         g.addColumn(new ComponentRenderer<>(row -> {
@@ -282,7 +291,7 @@ public class LineItemGrid extends Composite<Div> implements HasComponent {
             f.addValueChangeListener(e -> { row.setRate(e.getValue()); refreshRow(row); fireChange(); });
             attachEnterNav(f);
             return f;
-        })).setHeader("RATE").setWidth("120px").setFlexGrow(0).setKey("rate");
+        })).setHeader(LocalizationProvider.localize("RATE", "line_item.col_rate")).setWidth("120px").setFlexGrow(0).setKey("rate");
 
         // ── Tax ───────────────────────────────────────────────────────────────
         g.addColumn(new ComponentRenderer<>(row -> {
@@ -292,7 +301,7 @@ public class LineItemGrid extends Composite<Div> implements HasComponent {
             cb.setWidthFull();
             cb.setItems(taxOptions);
             cb.setItemLabelGenerator(TaxOption::label);
-            cb.setPlaceholder("No Tax");
+            cb.setPlaceholder(LocalizationProvider.localize("No Tax", "line_item.placeholder_no_tax"));
             preselectTax(cb, row.getTaxLabel());
             cb.addValueChangeListener(e -> {
                 var t = e.getValue();
@@ -303,13 +312,13 @@ public class LineItemGrid extends Composite<Div> implements HasComponent {
             });
             attachEnterNav(cb);
             return cb;
-        })).setHeader("TAX").setWidth("130px").setFlexGrow(0).setKey("tax");
+        })).setHeader(LocalizationProvider.localize("TAX", "line_item.col_tax")).setWidth("130px").setFlexGrow(0).setKey("tax");
 
         // ── Amount — LitRenderer (client-side template, no server Span object) ─
         g.addColumn(LitRenderer.<LineItemRow>of(
                         "<span class='lig-amount'>${item.amount}</span>")
                 .withProperty("amount", row -> fmt(row.getAmount())))
-                .setHeader("AMOUNT").setWidth("140px").setFlexGrow(0).setKey("amount");
+                .setHeader(LocalizationProvider.localize("AMOUNT", "line_item.col_amount")).setWidth("140px").setFlexGrow(0).setKey("amount");
 
         // ── Description (details group) ───────────────────────────────────────
         descriptionCol = g.addColumn(new ComponentRenderer<>(row -> {
@@ -317,12 +326,12 @@ public class LineItemGrid extends Composite<Div> implements HasComponent {
             f.addClassName("lig-cell");
             f.getElement().setAttribute("data-lig-col", "5");
             f.setWidthFull();
-            f.setPlaceholder("Description…");
+            f.setPlaceholder(LocalizationProvider.localize("Description…", "line_item.placeholder_desc"));
             if (row.getDescription() != null) f.setValue(row.getDescription());
             f.addValueChangeListener(e -> { row.setDescription(e.getValue()); fireChange(); });
             attachEnterNav(f);
             return f;
-        })).setHeader("DESCRIPTION").setFlexGrow(1).setKey("desc");
+        })).setHeader(LocalizationProvider.localize("DESCRIPTION", "line_item.col_desc")).setFlexGrow(1).setKey("desc");
         descriptionCol.setVisible(false);
 
         // ── Account (details group) ───────────────────────────────────────────
@@ -331,12 +340,12 @@ public class LineItemGrid extends Composite<Div> implements HasComponent {
             f.addClassName("lig-cell");
             f.getElement().setAttribute("data-lig-col", "6");
             f.setWidthFull();
-            f.setPlaceholder("Account…");
+            f.setPlaceholder(LocalizationProvider.localize("Account…", "line_item.placeholder_account"));
             if (row.getAccount() != null) f.setValue(row.getAccount());
             f.addValueChangeListener(e -> { row.setAccount(e.getValue()); fireChange(); });
             attachEnterNav(f);
             return f;
-        })).setHeader("ACCOUNT").setWidth("140px").setFlexGrow(0).setKey("account");
+        })).setHeader(LocalizationProvider.localize("ACCOUNT", "line_item.col_account")).setWidth("140px").setFlexGrow(0).setKey("account");
         accountCol.setVisible(false);
 
         // ── Project (details group) ───────────────────────────────────────────
@@ -345,12 +354,12 @@ public class LineItemGrid extends Composite<Div> implements HasComponent {
             f.addClassName("lig-cell");
             f.getElement().setAttribute("data-lig-col", "7");
             f.setWidthFull();
-            f.setPlaceholder("Project…");
+            f.setPlaceholder(LocalizationProvider.localize("Project…", "line_item.placeholder_project"));
             if (row.getProject() != null) f.setValue(row.getProject());
             f.addValueChangeListener(e -> { row.setProject(e.getValue()); fireChange(); });
             attachEnterNav(f);
             return f;
-        })).setHeader("PROJECT").setWidth("130px").setFlexGrow(0).setKey("project");
+        })).setHeader(LocalizationProvider.localize("PROJECT", "line_item.col_project")).setWidth("130px").setFlexGrow(0).setKey("project");
         projectCol.setVisible(false);
 
         // ── Delete ────────────────────────────────────────────────────────────
@@ -369,16 +378,18 @@ public class LineItemGrid extends Composite<Div> implements HasComponent {
     // ── Toolbar ───────────────────────────────────────────────────────────────
 
     private Div buildToolbar() {
-        Span titleSpan = Components.span().text(title != null ? title : "Line Items").styleName("lig-title").build();
+        Span titleSpan = Components.span().text(title != null ? title : LocalizationProvider.localize("Line Items", "line_item.title")).styleName("lig-title").build();
 
-        Button toggleBtn = Components.button().text("Show Details").tertiary().build();
+        toggleBtn = Components.button().text(LocalizationProvider.localize("Show Details", "line_item.show_details")).tertiary().build();
         toggleBtn.addThemeVariants(ButtonVariant.LUMO_SMALL);
         toggleBtn.addClickListener(e -> {
             detailsVisible = !detailsVisible;
             descriptionCol.setVisible(detailsVisible);
             accountCol.setVisible(detailsVisible);
             projectCol.setVisible(detailsVisible);
-            toggleBtn.setText(detailsVisible ? "Hide Details" : "Show Details");
+            toggleBtn.setText(detailsVisible
+                    ? LocalizationProvider.localize("Hide Details", "line_item.hide_details")
+                    : LocalizationProvider.localize("Show Details", "line_item.show_details"));
         });
 
         // ── Bulk row count field + Add Rows ───────────────────────────────────
@@ -388,9 +399,9 @@ public class LineItemGrid extends Composite<Div> implements HasComponent {
         rowCountField.setMin(1);
         rowCountField.setMax(50);
         rowCountField.setStepButtonsVisible(true);
-        rowCountField.setTitle("Number of rows to content");
+        rowCountField.setTitle(LocalizationProvider.localize("Number of rows to add", "line_item.rows_count_title"));
 
-        Button addBtn = Components.button().text("Add Rows").icon(VaadinIcon.PLUS).tertiary()
+        Button addBtn = Components.button().text(LocalizationProvider.localize("Add Rows", "line_item.add_rows")).icon(VaadinIcon.PLUS).tertiary()
                 .withClickListener(e -> {
                     int count = rowCountField.getValue() != null ? rowCountField.getValue() : 1;
                     addRows(count);
@@ -400,7 +411,7 @@ public class LineItemGrid extends Composite<Div> implements HasComponent {
         Div actions = Components.div().add(toggleBtn, rowCountField, addBtn).styleName("lig-toolbar-actions").build();
 
         if (!itemSuggestions.isEmpty()) {
-            Button pickBtn = Components.button().text("Pick Items").icon(VaadinIcon.SEARCH).tertiary()
+            Button pickBtn = Components.button().text(LocalizationProvider.localize("Pick Items", "line_item.pick_items")).icon(VaadinIcon.SEARCH).tertiary()
                     .withClickListener(e -> openBulkItemsDialog()).build();
             pickBtn.addThemeVariants(ButtonVariant.LUMO_SMALL);
             actions.add(pickBtn);
@@ -417,17 +428,20 @@ public class LineItemGrid extends Composite<Div> implements HasComponent {
         taxAmountSpan.addClassName("lig-total-value");
         totalSpan.addClassNames("lig-total-value", "lig-grand-total");
 
+        subtotalLabelSpan.setText(LocalizationProvider.localize("Subtotal", "line_item.subtotal"));
+        taxFooterLabelSpan.setText(LocalizationProvider.localize("Tax", "line_item.tax"));
+        totalLabelSpan.setText(LocalizationProvider.localize("Total", "line_item.total"));
+
         Div footer = Components.div().add(
-                footerRow("Subtotal", subtotalSpan),
-                footerRow("Tax",      taxAmountSpan),
-                footerRow("Total",    totalSpan)
+                footerRow(subtotalLabelSpan, subtotalSpan),
+                footerRow(taxFooterLabelSpan, taxAmountSpan),
+                footerRow(totalLabelSpan, totalSpan)
         ).styleName("lig-footer").build();
         return footer;
     }
 
-    private static Div footerRow(String label, Span value) {
-        Div row = Components.div().add(Components.span().text(label).build(), value).styleName("lig-footer-row").build();
-        return row;
+    private static Div footerRow(Span label, Span value) {
+        return Components.div().add(label, value).styleName("lig-footer-row").build();
     }
 
     // ── Mobile cards ──────────────────────────────────────────────────────────
@@ -457,37 +471,37 @@ public class LineItemGrid extends Composite<Div> implements HasComponent {
     }
 
     private void openEditSheet(LineItemRow row) {
-        var itemCb = new ComboBox<ItemSuggestion>("Item");
+        var itemCb = new ComboBox<ItemSuggestion>(LocalizationProvider.localize("Item", "line_item.field_item"));
         itemCb.setItems(itemSuggestions);
         itemCb.setItemLabelGenerator(ItemSuggestion::name);
         itemCb.setWidthFull();
         preselectItem(itemCb, row.getItemName());
 
-        var qtyField = new IntegerField("Quantity");
+        var qtyField = new IntegerField(LocalizationProvider.localize("Quantity", "line_item.field_quantity"));
         qtyField.setMin(0);
         qtyField.setValue(row.getQuantity() != null ? row.getQuantity() : 1);
         qtyField.setWidthFull();
 
-        var rateField = new NumberField("Rate");
+        var rateField = new NumberField(LocalizationProvider.localize("Rate", "line_item.field_rate"));
         rateField.setMin(0);
         if (row.getRate() != null) rateField.setValue(row.getRate());
         rateField.setWidthFull();
 
-        var taxCb = new ComboBox<TaxOption>("Tax");
+        var taxCb = new ComboBox<TaxOption>(LocalizationProvider.localize("Tax", "line_item.field_tax"));
         taxCb.setItems(taxOptions);
         taxCb.setItemLabelGenerator(TaxOption::label);
         taxCb.setWidthFull();
         preselectTax(taxCb, row.getTaxLabel());
 
-        var descField = new TextField("Description");
+        var descField = new TextField(LocalizationProvider.localize("Description", "line_item.field_desc"));
         descField.setWidthFull();
         if (row.getDescription() != null) descField.setValue(row.getDescription());
 
-        var accountField = new TextField("Account");
+        var accountField = new TextField(LocalizationProvider.localize("Account", "line_item.field_account"));
         accountField.setWidthFull();
         if (row.getAccount() != null) accountField.setValue(row.getAccount());
 
-        var projectField = new TextField("Project");
+        var projectField = new TextField(LocalizationProvider.localize("Project", "line_item.field_project"));
         projectField.setWidthFull();
         if (row.getProject() != null) projectField.setValue(row.getProject());
 
@@ -496,7 +510,7 @@ public class LineItemGrid extends Composite<Div> implements HasComponent {
         form.setResponsiveSteps(new FormLayout.ResponsiveStep("0", 1),
                 new FormLayout.ResponsiveStep("400px", 2));
 
-        var saveBtn = Components.button().text("Save Changes").primary().build();
+        var saveBtn = Components.button().text(LocalizationProvider.localize("Save Changes", "line_item.save_changes")).primary().build();
         saveBtn.addClickListener(e -> {
             var s = itemCb.getValue();
             if (s != null) { row.setItemName(s.name()); row.setSku(s.sku()); }
@@ -511,11 +525,11 @@ public class LineItemGrid extends Composite<Div> implements HasComponent {
             refreshAll();
         });
 
-        Components.button().text("Delete Row").error().tertiary().withClickListener(e -> removeRow(row)).build();
+        Components.button().text(LocalizationProvider.localize("Delete Row", "line_item.delete_row")).error().tertiary().withClickListener(e -> removeRow(row)).build();
 
         Sheet.builder(Sheet.Side.BOTTOM)
-                .title(row.getItemName() != null ? row.getItemName() : "Edit Line Item")
-                .description("Edit item details, pricing and accounting information.")
+                .title(row.getItemName() != null ? row.getItemName() : LocalizationProvider.localize("Edit Line Item", "line_item.edit_sheet_title"))
+                .description(LocalizationProvider.localize("Edit item details, pricing and accounting information.", "line_item.edit_sheet_desc"))
                 .content(form)
                 .fullscreenOnMobile(true)
                 .onClose(() -> {})
@@ -539,7 +553,7 @@ public class LineItemGrid extends Composite<Div> implements HasComponent {
      */
     private void openBulkItemsDialog() {
         var dialog = new Dialog();
-        dialog.setHeaderTitle("Add Items in Bulk");
+        dialog.setHeaderTitle(LocalizationProvider.localize("Add Items in Bulk", "bulk_picker.title"));
         dialog.setWidth("900px");
         dialog.setCloseOnOutsideClick(true);
 
@@ -551,7 +565,7 @@ public class LineItemGrid extends Composite<Div> implements HasComponent {
         // ── Left panel: search + item list ────────────────────────────────────
         var searchField = new TextField();
         searchField.setWidthFull();
-        searchField.setPlaceholder("Type to search or scan the barcode of the item");
+        searchField.setPlaceholder(LocalizationProvider.localize("Type to search or scan the barcode of the item", "bulk_picker.search_placeholder"));
         searchField.setClearButtonVisible(true);
         // Debounce: fire only after 300 ms of inactivity — prevents rebuild on every keystroke
         searchField.setValueChangeMode(ValueChangeMode.LAZY);
@@ -562,9 +576,9 @@ public class LineItemGrid extends Composite<Div> implements HasComponent {
         Div leftPanel = Components.div().add(searchWrapper, itemList).styleName("lig-bulk-left").build();
 
         // ── Right panel: selected items ───────────────────────────────────────
-        Span selectedTitle = Components.span().text("Selected Items").styleName("lig-bulk-selected-title").build();
+        Span selectedTitle = Components.span().text(LocalizationProvider.localize("Selected Items", "bulk_picker.selected_title")).styleName("lig-bulk-selected-title").build();
         Span countBadge = Components.span().text("0").styleName("lig-bulk-count-badge").build();
-        Span totalQtyLabel = Components.span().text("Total Quantity: 0").styleName("lig-bulk-total-qty").build();
+        Span totalQtyLabel = Components.span().text(MessageFormat.format(LocalizationProvider.localize("Total Quantity: {0}", "line_item.total_qty"), 0)).styleName("lig-bulk-total-qty").build();
 
         Div rightHeader = Components.div().add(selectedTitle, countBadge, totalQtyLabel).styleName("lig-bulk-right-header").build();
         Div selectedList = Components.div().styleName("lig-bulk-selected-list").build();
@@ -587,7 +601,7 @@ public class LineItemGrid extends Composite<Div> implements HasComponent {
                         boolean sel = selection.containsKey(s);
 
                         Span nameSpan = Components.span().text(s.name()).styleName("lig-bulk-item-name").build();
-                        Span metaSpan = Components.span().text("SKU: " + s.sku() + "  ·  Purchase Rate: $" + fmt(s.defaultRate())).styleName("lig-bulk-item-meta").build();
+                        Span metaSpan = Components.span().text(MessageFormat.format(LocalizationProvider.localize("SKU: {0}  \u00b7  Purchase Rate: ${1}", "line_item.sku_meta"), s.sku(), fmt(s.defaultRate()))).styleName("lig-bulk-item-meta").build();
                         Div textCol = Components.div().add(nameSpan, metaSpan).styleName("lig-bulk-item-text").build();
                         Div itemRow = Components.div().add(textCol).styleName("lig-bulk-item-row").build();
                         if (sel) {
@@ -630,7 +644,7 @@ public class LineItemGrid extends Composite<Div> implements HasComponent {
                     qtySpan.setText(String.valueOf(qHolder[0]));
                     int total = selection.values().stream().mapToInt(Integer::intValue).sum();
                     countBadge.setText(String.valueOf(selection.size()));
-                    totalQtyLabel.setText("Total Quantity: " + total);
+                    totalQtyLabel.setText(MessageFormat.format(LocalizationProvider.localize("Total Quantity: {0}", "line_item.total_qty"), total));
                 });
 
                 plusBtn.addClickListener(e -> {
@@ -638,7 +652,7 @@ public class LineItemGrid extends Composite<Div> implements HasComponent {
                     selection.put(s, qHolder[0]);
                     qtySpan.setText(String.valueOf(qHolder[0]));
                     int total = selection.values().stream().mapToInt(Integer::intValue).sum();
-                    totalQtyLabel.setText("Total Quantity: " + total);
+                    totalQtyLabel.setText(MessageFormat.format(LocalizationProvider.localize("Total Quantity: {0}", "line_item.total_qty"), total));
                 });
 
                 Div stepper = Components.div().add(minusBtn, qtySpan, plusBtn).styleName("lig-bulk-qty-stepper").build();
@@ -649,7 +663,7 @@ public class LineItemGrid extends Composite<Div> implements HasComponent {
             // Sync badge + total
             int total = selection.values().stream().mapToInt(Integer::intValue).sum();
             countBadge.setText(String.valueOf(selection.size()));
-            totalQtyLabel.setText("Total Quantity: " + total);
+            totalQtyLabel.setText(MessageFormat.format(LocalizationProvider.localize("Total Quantity: {0}", "line_item.total_qty"), total));
         };
 
         renderRef[0].run();
@@ -660,9 +674,9 @@ public class LineItemGrid extends Composite<Div> implements HasComponent {
         });
 
         // ── Footer ────────────────────────────────────────────────────────────
-        var cancelBtn = Components.button().text("Cancel").tertiary().withClickListener(e -> dialog.close()).build();
+        var cancelBtn = Components.button().text(LocalizationProvider.localize("Cancel", "bulk_picker.cancel_btn")).tertiary().withClickListener(e -> dialog.close()).build();
 
-        var addBtn = Components.button().text("Add Items").icon(VaadinIcon.PLUS).primary().build();
+        var addBtn = Components.button().text(LocalizationProvider.localize("Add Items", "bulk_picker.add_btn")).icon(VaadinIcon.PLUS).primary().build();
         addBtn.addClickListener(e -> {
             if (selection.isEmpty()) return;
             selection.forEach((s, qty) -> {
@@ -716,7 +730,6 @@ public class LineItemGrid extends Composite<Div> implements HasComponent {
         taxAmountSpan.setText(fmt(taxTotal));
         totalSpan.setText(fmt(subtotal + taxTotal));
     }
-
     // ── Keyboard navigation ───────────────────────────────────────────────────
 
     /**

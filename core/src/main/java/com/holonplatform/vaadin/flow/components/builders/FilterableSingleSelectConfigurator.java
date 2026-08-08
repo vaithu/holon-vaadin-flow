@@ -157,7 +157,7 @@ public interface FilterableSingleSelectConfigurator<T, ITEM, B extends Filterabl
      * @param <D>    Datastore data source configurator type
      * @param <C>    Concrete configurator type
      */
-    public interface FilterableSingleSelectInputConfigurator<T, ITEM, D extends DatastoreDataProviderConfigurator<ITEM, D>, C extends FilterableSingleSelectInputConfigurator<T, ITEM, D, C>>
+    interface FilterableSingleSelectInputConfigurator<T, ITEM, D extends DatastoreDataProviderConfigurator<ITEM, D>, C extends FilterableSingleSelectInputConfigurator<T, ITEM, D, C>>
             extends FilterableSingleSelectConfigurator<T, ITEM, C>,
             HasBeanDatastoreFilterableDataProviderConfigurator<ITEM, String, D, C> {
 
@@ -171,7 +171,7 @@ public interface FilterableSingleSelectConfigurator<T, ITEM, B extends Filterabl
      * @param <ITEM> Item type
      * @param <C>    Concrete configurator type
      */
-    public interface DatastoreFilterableSingleSelectInputConfigurator<T, ITEM, C extends DatastoreFilterableSingleSelectInputConfigurator<T, ITEM, C>>
+    interface DatastoreFilterableSingleSelectInputConfigurator<T, ITEM, C extends DatastoreFilterableSingleSelectInputConfigurator<T, ITEM, C>>
             extends FilterableSingleSelectConfigurator<T, ITEM, C>, DatastoreDataProviderConfigurator<ITEM, C> {
 
     }
@@ -184,7 +184,7 @@ public interface FilterableSingleSelectConfigurator<T, ITEM, B extends Filterabl
      * @param <D> Datastore data source configurator type
      * @param <C> Concrete configurator type
      */
-    public interface PropertyFilterableSingleSelectInputConfigurator<T, D extends DatastoreDataProviderConfigurator<PropertyBox, D>, C extends PropertyFilterableSingleSelectInputConfigurator<T, D, C>>
+    interface PropertyFilterableSingleSelectInputConfigurator<T, D extends DatastoreDataProviderConfigurator<PropertyBox, D>, C extends PropertyFilterableSingleSelectInputConfigurator<T, D, C>>
             extends FilterableSingleSelectConfigurator<T, PropertyBox, C>,
             HasPropertyBoxDatastoreFilterableDataProviderConfigurator<String, D, C>,
             PropertySelectInputConfigurator<T, T, C> {
@@ -267,7 +267,7 @@ public interface FilterableSingleSelectConfigurator<T, ITEM, B extends Filterabl
      * @param <T> Value type
      * @param <C> Concrete configurator type
      */
-    public interface DatastorePropertyFilterableSingleSelectInputConfigurator<T, C extends DatastorePropertyFilterableSingleSelectInputConfigurator<T, C>>
+    interface DatastorePropertyFilterableSingleSelectInputConfigurator<T, C extends DatastorePropertyFilterableSingleSelectInputConfigurator<T, C>>
             extends FilterableSingleSelectConfigurator<T, PropertyBox, C>,
             DatastoreDataProviderSelectConfigurator<PropertyBox, C>, PropertySelectInputConfigurator<T, T, C> {
 
@@ -347,7 +347,7 @@ public interface FilterableSingleSelectConfigurator<T, ITEM, B extends Filterabl
      * @param <T>    Value type
      * @param <ITEM> Item type
      */
-    public interface ValidatableFilterableSingleSelectInputBuilder<T, ITEM> extends
+    interface ValidatableFilterableSingleSelectInputBuilder<T, ITEM> extends
             FilterableSingleSelectInputConfigurator<T, ITEM, ValidatableDatastoreFilterableSingleSelectInputBuilder<T, ITEM>, ValidatableFilterableSingleSelectInputBuilder<T, ITEM>>,
             BaseValidatableInputBuilder<T, ValidatableSingleSelect<T>, ValidatableFilterableSingleSelectInputBuilder<T, ITEM>> {
 
@@ -360,7 +360,7 @@ public interface FilterableSingleSelectConfigurator<T, ITEM, B extends Filterabl
      * @param <T>    Value type
      * @param <ITEM> Item type
      */
-    public interface ValidatableDatastoreFilterableSingleSelectInputBuilder<T, ITEM> extends
+    interface ValidatableDatastoreFilterableSingleSelectInputBuilder<T, ITEM> extends
             DatastoreFilterableSingleSelectInputConfigurator<T, ITEM, ValidatableDatastoreFilterableSingleSelectInputBuilder<T, ITEM>>,
             BaseValidatableInputBuilder<T, ValidatableSingleSelect<T>, ValidatableDatastoreFilterableSingleSelectInputBuilder<T, ITEM>> {
 
@@ -381,7 +381,7 @@ public interface FilterableSingleSelectConfigurator<T, ITEM, B extends Filterabl
      * @param <T>    Value type
      * @param <ITEM> Item type
      */
-    public interface FilterableSingleSelectInputBuilder<T, ITEM> extends
+    interface FilterableSingleSelectInputBuilder<T, ITEM> extends
             FilterableSingleSelectInputConfigurator<T, ITEM, DatastoreFilterableSingleSelectInputBuilder<T, ITEM>, FilterableSingleSelectInputBuilder<T, ITEM>>,
             InputBuilder<T, ValueChangeEvent<T>, SingleSelect<T>, ValidatableSingleSelect<T>, FilterableSingleSelectInputBuilder<T, ITEM>, ValidatableFilterableSingleSelectInputBuilder<T, ITEM>> {
 
@@ -394,7 +394,7 @@ public interface FilterableSingleSelectConfigurator<T, ITEM, B extends Filterabl
      * @param <T>    Value type
      * @param <ITEM> Item type
      */
-    public interface DatastoreFilterableSingleSelectInputBuilder<T, ITEM> extends
+    interface DatastoreFilterableSingleSelectInputBuilder<T, ITEM> extends
             DatastoreFilterableSingleSelectInputConfigurator<T, ITEM, DatastoreFilterableSingleSelectInputBuilder<T, ITEM>>,
             InputBuilder<T, ValueChangeEvent<T>, SingleSelect<T>, ValidatableSingleSelect<T>, DatastoreFilterableSingleSelectInputBuilder<T, ITEM>, ValidatableDatastoreFilterableSingleSelectInputBuilder<T, ITEM>> {
 
@@ -408,7 +408,7 @@ public interface FilterableSingleSelectConfigurator<T, ITEM, B extends Filterabl
      *
      * @param <T> Value type
      */
-    public interface ValidatablePropertyFilterableSingleSelectInputBuilder<T> extends
+    interface ValidatablePropertyFilterableSingleSelectInputBuilder<T> extends
             PropertyFilterableSingleSelectInputConfigurator<T, ValidatableDatastorePropertyFilterableSingleSelectInputBuilder<T>, ValidatablePropertyFilterableSingleSelectInputBuilder<T>>,
             BaseValidatableInputBuilder<T, ValidatableSingleSelect<T>, ValidatablePropertyFilterableSingleSelectInputBuilder<T>> {
     }
@@ -419,7 +419,7 @@ public interface FilterableSingleSelectConfigurator<T, ITEM, B extends Filterabl
      *
      * @param <T> Value type
      */
-    public interface ValidatableDatastorePropertyFilterableSingleSelectInputBuilder<T> extends
+    interface ValidatableDatastorePropertyFilterableSingleSelectInputBuilder<T> extends
             DatastorePropertyFilterableSingleSelectInputConfigurator<T, ValidatableDatastorePropertyFilterableSingleSelectInputBuilder<T>>,
             BaseValidatableInputBuilder<T, ValidatableSingleSelect<T>, ValidatableDatastorePropertyFilterableSingleSelectInputBuilder<T>> {
 
@@ -430,7 +430,7 @@ public interface FilterableSingleSelectConfigurator<T, ITEM, B extends Filterabl
      *
      * @param <T> Value type
      */
-    public interface PropertyFilterableSingleSelectInputBuilder<T> extends
+    interface PropertyFilterableSingleSelectInputBuilder<T> extends
             PropertyFilterableSingleSelectInputConfigurator<T, DatastorePropertyFilterableSingleSelectInputBuilder<T>, PropertyFilterableSingleSelectInputBuilder<T>>,
             InputBuilder<T, ValueChangeEvent<T>, SingleSelect<T>, ValidatableSingleSelect<T>, PropertyFilterableSingleSelectInputBuilder<T>, ValidatablePropertyFilterableSingleSelectInputBuilder<T>> {
     }
@@ -441,7 +441,7 @@ public interface FilterableSingleSelectConfigurator<T, ITEM, B extends Filterabl
      *
      * @param <T> Value type
      */
-    public interface DatastorePropertyFilterableSingleSelectInputBuilder<T> extends
+    interface DatastorePropertyFilterableSingleSelectInputBuilder<T> extends
             DatastorePropertyFilterableSingleSelectInputConfigurator<T, DatastorePropertyFilterableSingleSelectInputBuilder<T>>,
             InputBuilder<T, ValueChangeEvent<T>, SingleSelect<T>, ValidatableSingleSelect<T>, DatastorePropertyFilterableSingleSelectInputBuilder<T>, ValidatableDatastorePropertyFilterableSingleSelectInputBuilder<T>> {
 

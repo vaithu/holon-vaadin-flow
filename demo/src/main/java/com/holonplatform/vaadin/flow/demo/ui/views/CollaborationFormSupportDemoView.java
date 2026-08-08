@@ -215,7 +215,7 @@ public class CollaborationFormSupportDemoView extends Div {
         statusBadge.addClassName("collab-status-badge");
 
         Signal.effect(statusBadge, () -> {
-            boolean on = collab.enabledSignal().get();         // reactive dependency
+            boolean on = Boolean.TRUE.equals(collab.enabledSignal().get());         // reactive dependency
             statusBadge.setText(on ? "🟢 Live collaboration" : "🔒 Private editing");
             statusBadge.addClassName   ("collab-status--" + (on ? "active"   : "inactive"));
             statusBadge.removeClassName("collab-status--" + (on ? "inactive" : "active"));
@@ -226,14 +226,14 @@ public class CollaborationFormSupportDemoView extends Div {
         formWrapper.addClassName("collab-form-wrapper");
 
         Signal.effect(formWrapper, () ->
-            formWrapper.setClassName("collab-form-wrapper--active", collab.enabledSignal().get()));
+            formWrapper.setClassName("collab-form-wrapper--active", Boolean.TRUE.equals(collab.enabledSignal().get())));
 
         // ── 3. Save button enabled only while collaboration is on ─────────────
         var saveBtn = new Button("Save (enabled while Live)");
         saveBtn.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         saveBtn.setEnabled(false);
 
-        Signal.effect(saveBtn, () -> saveBtn.setEnabled(collab.enabledSignal().get()));
+        Signal.effect(saveBtn, () -> saveBtn.setEnabled(Boolean.TRUE.equals(collab.enabledSignal().get())));
 
         saveBtn.addClickListener(e -> {
             var draft = new Contact();
@@ -254,7 +254,7 @@ public class CollaborationFormSupportDemoView extends Div {
                 // 1. Status badge — updates automatically when toggle is clicked
                 var statusBadge = new Span("🔒 Private editing");
                 Signal.effect(statusBadge, () -> {
-                    boolean on = collab.enabledSignal().get();  // reactive read
+                    boolean on = Boolean.TRUE.equals(collab.enabledSignal().get());  // reactive read
                     statusBadge.setText(on ? "🟢 Live collaboration" : "🔒 Private editing");
                 });
 
@@ -455,7 +455,7 @@ public class CollaborationFormSupportDemoView extends Div {
         badge.addClassName("collab-status--inactive");
 
         Signal.effect(badge, () -> {
-            boolean on = collab.enabledSignal().get();          // reactive read
+            boolean on = Boolean.TRUE.equals(collab.enabledSignal().get());          // reactive read
             badge.setText(on ? "🟢 Live" : "🔒 Private");
             badge.addClassName   ("collab-status--" + (on ? "active"   : "inactive"));
             badge.removeClassName("collab-status--" + (on ? "inactive" : "active"));
@@ -476,8 +476,6 @@ public class CollaborationFormSupportDemoView extends Div {
         n.addThemeVariants(NotificationVariant.LUMO_CONTRAST);
     }
 }
-
-
 
 
 

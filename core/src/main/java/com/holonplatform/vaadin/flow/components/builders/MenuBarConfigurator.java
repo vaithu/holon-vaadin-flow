@@ -16,224 +16,220 @@
 package com.holonplatform.vaadin.flow.components.builders;
 
 import com.holonplatform.core.i18n.Localizable;
-import com.holonplatform.core.internal.utils.ObjectUtils;
 import com.holonplatform.vaadin.flow.components.HasComponent;
+import com.holonplatform.vaadin.flow.components.events.ClickEvent;
 import com.holonplatform.vaadin.flow.components.events.ClickEventListener;
 import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.contextmenu.MenuItem;
 import com.vaadin.flow.component.contextmenu.SubMenu;
+import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.menubar.MenuBar;
 import com.vaadin.flow.component.menubar.MenuBarVariant;
 
-
-import java.util.EventListener;
+import java.util.function.Consumer;
 
 /**
  * {@link MenuBar} component configurator.
+ * <p>
+ * The builder preserves the natural <code>MenuBar &rarr; MenuItem &rarr; SubMenu</code> hierarchy: each
+ * {@link #withMenuItem(Localizable)} call returns a dedicated {@link MenuItemBuilder} bound to the created item, and
+ * {@link MenuItemBuilder#withSubMenu(Consumer)} opens a dedicated {@link SubMenuBuilder} for that item. Because every level is a
+ * distinct builder instance, multiple items each with their own (possibly nested) sub-menus can be built without any
+ * shared mutable state.
+ * </p>
  *
- * @param <L> Menu item click listener type
- * @param <M> Concrete Menubar component type
- * @param <I> Menu item type
- * @param <S> Sub menu type
  * @param <C> Concrete configurator type
  * @since 5.5.6
  */
-public interface MenuBarConfigurator<L extends EventListener, M extends MenuBar,
-        I extends MenuItem,
-        S extends SubMenu,
-        C extends MenuBarConfigurator<L, M, I, S, C>>
+public interface MenuBarConfigurator<C extends MenuBarConfigurator<C>>
         extends ComponentConfigurator<C>, HasStyleConfigurator<C>, HasThemeVariantConfigurator<MenuBarVariant, C> {
 
     /**
+     * Click event listener type used for menu items.
+     */
+    interface MenuItemClickListener extends ClickEventListener<MenuItem, ClickEvent<MenuItem>> {
+    }
+
+    /**
      * Create a new menu item with the given localizable text content.
-     * <p>
-     * The {@link MenuItemBuilder#add()} method can be used to content the item to the MenuBar.
-     * </p>
      *
      * @param text Localizable menu item text content
-     * @return A {@link MenuItemBuilder} to create and content the menu item
+     * @return A {@link MenuItemBuilder} to configure and add the menu item
      * @see LocalizationProvider
      */
-    MenuItemBuilder<L, M, I, S, C> withMenuItem(Localizable text);
+    MenuItemBuilder<C> withMenuItem(Localizable text);
 
     /**
      * Create a new menu item with the given text content.
-     * <p>
-     * The {@link MenuItemBuilder#add()} method can be used to content the item to the MenuBar.
-     * </p>
      *
      * @param text Menu item text content
-     * @return A {@link MenuItemBuilder} to create and content the menu item
+     * @return A {@link MenuItemBuilder} to configure and add the menu item
      */
-    default MenuItemBuilder<L, M, I, S, C> withMenuItem(String text) {
-        return withMenuItem(Localizable.builder().message(text).build());
-    }
+    MenuItemBuilder<C> withMenuItem(String text);
 
     /**
      * Create a new menu item using given <code>messageCode</code> for text content localization.
-     * <p>
-     * The {@link MenuItemBuilder#add()} method can be used to content the item to the MenuBar.
-     * </p>
      *
-     * @param defaultText Default menu item text content if no translation is available for given
-     *                    <code>messageCode</code>.
+     * @param defaultText Default text content if no translation is available for given <code>messageCode</code>
      * @param messageCode Menu item text content translation message key
      * @param arguments   Optional translation arguments
-     * @return A {@link MenuItemBuilder} to create and content the menu item
+     * @return A {@link MenuItemBuilder} to configure and add the menu item
      * @see LocalizationProvider
      */
-    default MenuItemBuilder<L, M, I, S, C> withMenuItem(String defaultText, String messageCode, Object... arguments) {
-        return withMenuItem(Localizable.builder().message((defaultText == null) ? "" : defaultText).messageCode(messageCode)
-                .messageArguments(arguments).build());
-    }
+    MenuItemBuilder<C> withMenuItem(String defaultText, String messageCode, Object... arguments);
 
     /**
      * Create a new menu item with the given component inside.
-     * <p>
-     * The {@link MenuItemBuilder#add()} method can be used to content the item to the MenuBar.
-     * </p>
      *
      * @param component The menu item component (not null)
-     * @return A {@link MenuItemBuilder} to create and content the menu item
+     * @return A {@link MenuItemBuilder} to configure and add the menu item
      */
-    MenuItemBuilder<L, M, I, S, C> withMenuItem(Component component);
+    MenuItemBuilder<C> withMenuItem(Component component);
 
     /**
      * Create a new menu item with the given {@link HasComponent} component inside.
+     *
+     * @param component The menu item component (not null)
+     * @return A {@link MenuItemBuilder} to configure and add the menu item
+     */
+    MenuItemBuilder<C> withMenuItem(HasComponent component);
+
+    /**
+     * Create a new menu item with the given component inside and the given tooltip text.
+     *
+     * @param component The menu item component (not null)
+     * @param toolTip   The tooltip text
+     * @return A {@link MenuItemBuilder} to configure and add the menu item
+     */
+    MenuItemBuilder<C> withMenuItem(Component component, String toolTip);
+
+    /**
+     * Create a new menu item with the given {@link HasComponent} component inside and the given tooltip text.
+     *
+     * @param component The menu item component (not null)
+     * @param toolTip   The tooltip text
+     * @return A {@link MenuItemBuilder} to configure and add the menu item
+     */
+    MenuItemBuilder<C> withMenuItem(HasComponent component, String toolTip);
+
+    /**
+     * Add a new menu item using given localizable text content and a click listener.
+     *
+     * @param text               Menu item text content
+     * @param clickEventListener The click listener (not null)
+     * @return this
+     */
+    C withMenuItem(Localizable text, MenuItemClickListener clickEventListener);
+
+    /**
+     * Add a new menu item using given text content and a click listener.
+     *
+     * @param text               Menu item text content
+     * @param clickEventListener The click listener (not null)
+     * @return this
+     */
+    C withMenuItem(String text, MenuItemClickListener clickEventListener);
+
+    /**
+     * Add a new menu item using given <code>messageCode</code> for text localization and a click listener.
+     *
+     * @param defaultText        Default text content if no translation is available for given <code>messageCode</code>
+     * @param messageCode        Menu item text content translation message key
+     * @param clickEventListener The click listener (not null)
+     * @return this
+     */
+    C withMenuItem(String defaultText, String messageCode, MenuItemClickListener clickEventListener);
+
+    /**
+     * Add a new menu item with the given component inside and a click listener.
+     *
+     * @param component          The menu item component (not null)
+     * @param clickEventListener The click listener (not null)
+     * @return this
+     */
+    C withMenuItem(Component component, MenuItemClickListener clickEventListener);
+
+    /**
+     * Add a new menu item with the given {@link HasComponent} component inside and a click listener.
+     *
+     * @param component          The menu item component (not null)
+     * @param clickEventListener The click listener (not null)
+     * @return this
+     */
+    C withMenuItem(HasComponent component, MenuItemClickListener clickEventListener);
+
+    /**
+     * Add a new menu item with the given component inside, the given tooltip text and a click listener.
+     *
+     * @param component          The menu item component (not null)
+     * @param tooltipText        The tooltip text
+     * @param clickEventListener The click listener (not null)
+     * @return this
+     */
+    C withMenuItem(Component component, String tooltipText, MenuItemClickListener clickEventListener);
+
+    /**
+     * Add a new menu item that displays the given icon followed by the given text, with a click listener.
      * <p>
-     * The {@link MenuItemBuilder#add()} method can be used to content the item to the MenuBar.
+     * The icon is the primary component of the menu item; the text label is appended directly after it, matching the
+     * canonical Vaadin pattern for icon-and-label menu items.
      * </p>
      *
-     * @param component The menu item component (not null)
-     * @return A {@link MenuItemBuilder} to create and content the menu item
-     */
-    default MenuItemBuilder<L, M, I, S, C> withMenuItem(HasComponent component) {
-        ObjectUtils.argumentNotNull(component, "HasComponent must be not null");
-        return withMenuItem(component.getComponent());
-    }
-
-    /**
-     * Add a new menu item using given localizable text content and a {@link ClickEventListener} for menu item clicks.
-     *
+     * @param icon               The menu item icon (not null)
      * @param text               Menu item text content
-     * @param clickEventListener The listener to use to listen to menu item clicks (not null)
+     * @param clickEventListener The click listener (not null)
      * @return this
-     * @see LocalizationProvider
      */
-    default C withMenuItem(Localizable text, L clickEventListener) {
-        return withMenuItem(text).withClickListener(clickEventListener).add();
-    }
+    C withMenuItem(Icon icon, String text, MenuItemClickListener clickEventListener);
 
     /**
-     * Add a new menu item using given <code>messageCode</code> for text localization and a {@link ClickEventListener}
-     * for menu item clicks.
+     * Add a new menu item that displays the given icon followed by the given localizable text, with a click listener.
+     * <p>
+     * The icon is the primary component of the menu item; the text label is appended directly after it, matching the
+     * canonical Vaadin pattern for icon-and-label menu items.
+     * </p>
      *
-     * @param defaultText        Default menu item text content if no translation is available for given
-     *                           <code>messageCode</code>.
-     * @param messageCode        Menu item text content translation message key
-     * @param clickEventListener The listener to use to listen to menu item clicks (not null)
+     * @param icon               The menu item icon (not null)
+     * @param text               Localizable menu item text content
+     * @param clickEventListener The click listener (not null)
      * @return this
-     * @see LocalizationProvider
+     * @see com.holonplatform.vaadin.flow.i18n.LocalizationProvider
      */
-    default C withMenuItem(String defaultText, String messageCode, L clickEventListener) {
-        return withMenuItem(defaultText, messageCode).withClickListener(clickEventListener).add();
-    }
-
-    /**
-     * Add a new menu item using given text content and a {@link ClickEventListener} for menu item clicks.
-     *
-     * @param text               Menu item text content
-     * @param clickEventListener The listener to use to listen to menu item clicks (not null)
-     * @return this
-     */
-    default C withMenuItem(String text, L clickEventListener) {
-        return withMenuItem(text).withClickListener(clickEventListener).add();
-    }
-
-    /**
-     * Add a new menu item with the given component inside and a {@link ClickEventListener} for menu item clicks.
-     *
-     * @param component          The menu item component (not null)
-     * @param clickEventListener The listener to use to listen to menu item clicks (not null)
-     * @return this
-     */
-    default C withMenuItem(Component component, L clickEventListener) {
-        return withMenuItem(component).withClickListener(clickEventListener).add();
-    }
-
-    /**
-     * Add a new menu item with the given {@link HasComponent} component inside and a {@link ClickEventListener} for
-     * menu item clicks.
-     *
-     * @param component          The menu item component (not null)
-     * @param clickEventListener The listener to use to listen to menu item clicks (not null)
-     * @return this
-     */
-    default C withMenuItem(HasComponent component, L clickEventListener) {
-        ObjectUtils.argumentNotNull(component, "HasComponent must be not null");
-        return withMenuItem(component.getComponent(), clickEventListener);
-    }
-
-    /**
-     * Add a new menu item with the given {@link HasComponent} component inside and a {@link String} for
-     * menu item tooltips.
-     *
-     * @param component The menu item component (not null)
-     * @param toolTip   The tooltip to use
-     * @return this
-     */
-    MenuItemBuilder<L, M, I, S, C> withMenuItem(HasComponent component, String toolTip);
-
-    MenuItemBuilder<L, M, I, S, C> withMenuItem(Component component, String toolTip);
-
-    default C withMenuItem(Component component,
-                           String tooltipText,
-                           L clickEventListener) {
-        return withMenuItem(component, tooltipText).onClick(clickEventListener).add();
-    }
-
+    C withMenuItem(Icon icon, Localizable text, MenuItemClickListener clickEventListener);
 
     /**
      * Sets the event which opens the sub menus of the root level buttons.
      *
-     * @param openOnHover - true to make the sub menus open on hover (mouseover), false to make them openable by clicking
+     * @param openOnHover <code>true</code> to make the sub menus open on hover, <code>false</code> to open on click
      * @return this
      */
-
     C openOnHover(boolean openOnHover);
 
     /**
      * Sets reverse collapse order for the menu bar.
      *
-     * @param reverseCollapseOrder -  If true, the buttons will be collapsed into the overflow menu starting from the "start" end of the bar instead of the "end".
+     * @param reverseCollapseOrder if <code>true</code>, the buttons collapse into the overflow menu from the start end
      * @return this
      */
     C reverseCollapseOrder(boolean reverseCollapseOrder);
 
-
     /**
      * Sets tab navigation for the menu bar.
      *
-     * @param tabNavigation -  If true, the top-level menu items is traversable by tab instead of arrow keys (i.e. disabling roving tabindex)
+     * @param tabNavigation if <code>true</code>, the top-level items are traversable by tab instead of arrow keys
      * @return this
      */
     C tabNavigation(boolean tabNavigation);
 
     /**
-     * MenuBar item configurator.
+     * Builder to configure a single {@link MenuItem} and, optionally, open its {@link SubMenu}.
      *
-     * @param <L> Click listener type
-     * @param <M> Concrete MenuBar component type
-     * @param <I> Menu item type
-     * @param <S> Sub menu type
-     * @param <B> Parent configurator type
+     * @param <P> Parent builder type returned by {@link #add()}
      * @since 5.5.6
      */
-    public interface MenuItemBuilder<L extends EventListener, M extends MenuBar,
-            I extends MenuItem, S extends SubMenu, B extends MenuBarConfigurator<L, M, I, S, B>>
-            extends HasEnabledConfigurator<MenuItemBuilder<L, M, I, S, B>>, HasStyleConfigurator<MenuItemBuilder<L, M, I, S, B>>,
-            HasTextConfigurator<MenuItemBuilder<L, M, I, S, B>> {
+    interface MenuItemBuilder<P> extends HasEnabledConfigurator<MenuItemBuilder<P>>,
+            HasStyleConfigurator<MenuItemBuilder<P>>, HasTextConfigurator<MenuItemBuilder<P>> {
 
         /**
          * Sets the id of the root element of the menu item.
@@ -241,191 +237,196 @@ public interface MenuBarConfigurator<L extends EventListener, M extends MenuBar,
          * @param id the id to set
          * @return this
          */
-        MenuItemBuilder<L, M, I, S, B> id(String id);
+        MenuItemBuilder<P> id(String id);
 
         /**
-         * Set whether the menu item is checkable.
-         * <p>
-         * A checkable item toggles a checkmark icon when clicked.
-         * </p>
-         * <p>
-         * Changes in the checked state can be handled in the item's click handler with <code>isChecked()</code>.
-         * <p>
+         * Set whether the menu item is checkable. A checkable item toggles a checkmark icon when clicked.
          *
          * @param checkable Whether the menu item is checkable
          * @return this
-         * @since 5.2.3
          */
-        MenuItemBuilder<L, M, I, S, B> checkable(boolean checkable);
-//        MenuItemBuilder<L, M, I, S, B> toolTip(String toolTip);
+        MenuItemBuilder<P> checkable(boolean checkable);
 
         /**
-         * Set the menu as checkable.
-         * <p>
-         * A checkable item toggles a checkmark icon when clicked.
-         * </p>
-         * <p>
-         * Changes in the checked state can be handled in the item's click handler with <code>isChecked()</code>.
-         * <p>
+         * Set the menu item as checkable.
          *
          * @return this
-         * @since 5.2.3
          */
-        default MenuItemBuilder<L, M, I, S, B> checkable() {
-            return checkable(true);
-        }
+        MenuItemBuilder<P> checkable();
 
         /**
          * Set whether a checkable menu item is checked.
          *
          * @param checked Whether the menu item is checked
          * @return this
-         * @see #checkable(boolean)
-         * @since 5.2.3
          */
-        MenuItemBuilder<L, M, I, S, B> checked(boolean checked);
+        MenuItemBuilder<P> checked(boolean checked);
 
         /**
-         * Register a menu item click event listener.
-         *
-         * @param menuItemClickListener The listener to content (not null)
-         * @return this
-         */
-        MenuItemBuilder<L, M, I, S, B> withClickListener(L menuItemClickListener);
-
-        /**
-         * Register a menu item click event listener.
-         * <p>
-         * Alias for {@link #withClickListener(EventListener)}.
-         * </p>
-         *
-         * @param menuItemClickListener The listener to content (not null)
-         * @return this
-         */
-        default MenuItemBuilder<L, M, I, S, B> onClick(L menuItemClickListener) {
-            return withClickListener(menuItemClickListener);
-        }
-
-        /**
-         * Sets the keep open state of this menu item. An item that marked as keep open prevents menu from closing when clicked.
+         * Sets the keep open state of this menu item. A kept-open item prevents the menu from closing when clicked.
          *
          * @param keepOpen whether clicking this item keeps the menu open
          * @return this
-         * @since 5.5.6
          */
-        MenuItemBuilder<L, M, I, S, B> keepOpen(boolean keepOpen);
-
-        default MenuItemBuilder<L, M, I, S, B> highlight() {
-            return styleNames("color-bg-primary", "color-text-primary-contrast");
-        }
-
-       /* SubMenuItemBuilder<L, M, I, S, B> withSubMenu(String text);
-
-        SubMenuItemBuilder<L, M, I, S, B> withSubMenu(Component component);
-
-        default SubMenuItemBuilder<L, M, I, S, B> withSubMenu(String text, L clickListener) {
-            return withSubMenu(text).withClickListener(clickListener);
-        }
-
-        default SubMenuItemBuilder<L, M, I, S, B> withSubMenu(Component component, L clickListener) {
-            return withSubMenu(component).withClickListener(clickListener);
-        }*/
+        MenuItemBuilder<P> keepOpen(boolean keepOpen);
 
         /**
-         * Add the menu item to the MenuBar.
+         * Register a menu item click event listener.
          *
-         * @return The parent MenuBar builder
+         * @param menuItemClickListener The listener (not null)
+         * @return this
          */
-        B add();
+        MenuItemBuilder<P> withClickListener(MenuItemClickListener menuItemClickListener);
+
+        /**
+         * Register a menu item click event listener. Alias for {@link #withClickListener(MenuItemClickListener)}.
+         *
+         * @param menuItemClickListener The listener (not null)
+         * @return this
+         */
+        MenuItemBuilder<P> onClick(MenuItemClickListener menuItemClickListener);
+
+        /**
+         * Highlight this menu item using the primary theme colors.
+         *
+         * @return this
+         */
+        MenuItemBuilder<P> highlight();
+
+        /**
+         * Open the {@link SubMenu} of this menu item and configure it via a consumer.
+         * <p>
+         * The consumer receives the submenu builder, so nested menu chains keep a natural indentation.
+         * </p>
+         *
+         * @param config submenu configurator consumer (not null)
+         * @return the parent builder
+         */
+        P withSubMenu(Consumer<SubMenuBuilder<MenuItemBuilder<P>>> config);
+
+        /**
+         * Add this menu item to its parent and return the parent builder.
+         *
+         * @return The parent builder
+         */
+        P add();
 
     }
 
     /**
-     * SubMenu item configurator.
+     * Builder to add items to a {@link SubMenu}. Child items may themselves open nested sub-menus, allowing an
+     * arbitrarily deep and repeatable <code>MenuItem &rarr; SubMenu</code> hierarchy.
      *
-     * @param <L> Click listener type
-     * @param <M> Concrete MenuBar component type
-     * @param <I> Menu item type
-     * @param <S> Sub menu type
-     * @param <B> Parent configurator type
+     * @param <P> Parent builder type returned by {@link #add()}
      * @since 5.5.6
      */
-    interface SubMenuItemBuilder<L extends EventListener, M extends MenuBar,
-            I extends MenuItem, S extends SubMenu, B extends MenuBarConfigurator<L, M, I, S, B>> extends MenuItemBuilder<L, M, I, S, B> {
+    interface SubMenuBuilder<P> {
 
         /**
-         * Adds a new item component with the given text content and click listener to the context menu overlay.
-         * <p>
-         * This is a convenience method for the use case where you have a list of highlightable MenuItems inside the overlay.
-         * If you want to create the contents of the overlay without wrapping them inside MenuItems,
-         * or if you just want to content some non-highlightable components between the items, use the ContextMenuBase.content(Component...) method.
+         * Add a child item with the given localizable text content to this sub-menu.
          *
-         * @param text
-         * @return
+         * @param text Localizable item text content
+         * @return A {@link MenuItemBuilder} bound to the child item; its {@link MenuItemBuilder#add()} returns to this
+         *         sub-menu builder
          */
-
-        SubMenuItemBuilder<L, M, I, S, B> withMenuItem(String text);
-
-
-        default SubMenuItemBuilder<L, M, I, S, B> withMenuItem(String text, L clickListener) {
-            return withMenuItem(text).withClickListener(clickListener);
-        }
-
+        MenuItemBuilder<SubMenuBuilder<P>> withMenuItem(Localizable text);
 
         /**
-         * Adds a new item component with the given component and click listener to the context menu overlay.
-         * <p>
-         * This is a convenience method for the use case where you have a list of highlightable MenuItems inside the overlay.
-         * If you want to create the contents of the overlay without wrapping them inside MenuItems,
-         * or if you just want to content some non-highlightable components between the items,
-         * use the ContextMenuBase.content(Component...) method.
+         * Add a child item with the given text content to this sub-menu.
          *
-         * @param component
-         * @return
+         * @param text Item text content
+         * @return A {@link MenuItemBuilder} bound to the child item
          */
-
-        SubMenuItemBuilder<L, M, I, S, B> withMenuItem(Component component);
-
-        default SubMenuItemBuilder<L, M, I, S, B> withMenuItem(Component component, L clickListener
-        ) {
-            return withMenuItem(component).withClickListener(clickListener);
-        }
+        MenuItemBuilder<SubMenuBuilder<P>> withMenuItem(String text);
 
         /**
-         * Adds a separator between items.
+         * Add a child item with the given component inside to this sub-menu.
          *
-         * @return
+         * @param component The item component (not null)
+         * @return A {@link MenuItemBuilder} bound to the child item
          */
-        SubMenuItemBuilder<L, M, I, S, B> separator();
-        // Additional methods for SubMenuItemBuilder can be defined here
+        MenuItemBuilder<SubMenuBuilder<P>> withMenuItem(Component component);
 
         /**
-         * Register a menu item click event listener.
+         * Add a child item with the given {@link HasComponent} component inside to this sub-menu.
          *
-         * @param menuItemClickListener The listener to content (not null)
+         * @param component The item component (not null)
+         * @return A {@link MenuItemBuilder} bound to the child item
+         */
+        MenuItemBuilder<SubMenuBuilder<P>> withMenuItem(HasComponent component);
+
+        /**
+         * Add a child item with the given text content and click listener to this sub-menu.
+         *
+         * @param text               Item text content
+         * @param clickEventListener The click listener (not null)
          * @return this
          */
-        SubMenuItemBuilder<L, M, I, S, B> withClickListener(L menuItemClickListener);
+        SubMenuBuilder<P> withMenuItem(String text, MenuItemClickListener clickEventListener);
 
         /**
-         * Register a menu item click event listener.
+         * Add a child item with the given localizable text content and click listener to this sub-menu.
+         *
+         * @param text               Localizable item text content
+         * @param clickEventListener The click listener (not null)
+         * @return this
+         */
+        SubMenuBuilder<P> withMenuItem(Localizable text, MenuItemClickListener clickEventListener);
+
+        /**
+         * Add a child item with the given component inside and click listener to this sub-menu.
+         *
+         * @param component          The item component (not null)
+         * @param clickEventListener The click listener (not null)
+         * @return this
+         */
+        SubMenuBuilder<P> withMenuItem(Component component, MenuItemClickListener clickEventListener);
+
+        /**
+         * Add a child item that displays the given icon followed by the given text, with a click listener, to this
+         * sub-menu.
          * <p>
-         * Alias for {@link #withClickListener(EventListener)}.
+         * The icon is the primary component of the item; the text label is appended directly after it, matching the
+         * canonical Vaadin pattern for icon-and-label menu items. The icon is automatically sized for sub-menu use.
          * </p>
          *
-         * @param menuItemClickListener The listener to content (not null)
+         * @param icon               The menu item icon (not null)
+         * @param text               Item text content
+         * @param clickEventListener The click listener (not null)
          * @return this
          */
-        default SubMenuItemBuilder<L, M, I, S, B> onClick(L menuItemClickListener) {
-            return withClickListener(menuItemClickListener);
-        }
+        SubMenuBuilder<P> withMenuItem(Icon icon, String text, MenuItemClickListener clickEventListener);
 
         /**
-         * Add the sub menu item to the MenuItem.
+         * Add a child item that displays the given icon followed by the given localizable text, with a click listener,
+         * to this sub-menu.
+         * <p>
+         * The icon is the primary component of the item; the text label is appended directly after it, matching the
+         * canonical Vaadin pattern for icon-and-label menu items. The icon is automatically sized for sub-menu use.
+         * </p>
          *
-         * @return The parent MenuItem builder
+         * @param icon               The menu item icon (not null)
+         * @param text               Localizable item text content
+         * @param clickEventListener The click listener (not null)
+         * @return this
+         * @see com.holonplatform.vaadin.flow.i18n.LocalizationProvider
          */
-        B add();
+        SubMenuBuilder<P> withMenuItem(Icon icon, Localizable text, MenuItemClickListener clickEventListener);
+
+        /**
+         * Add a separator between items.
+         *
+         * @return this
+         */
+        SubMenuBuilder<P> separator();
+
+        /**
+         * Close this sub-menu and return to the parent builder.
+         *
+         * @return The parent builder
+         */
+        P add();
 
     }
+
 }

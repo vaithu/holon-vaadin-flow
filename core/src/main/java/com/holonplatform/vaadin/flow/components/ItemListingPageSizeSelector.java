@@ -15,10 +15,15 @@
  */
 package com.holonplatform.vaadin.flow.components;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
+import java.util.function.Supplier;
+
 import com.holonplatform.core.internal.utils.ObjectUtils;
-import com.holonplatform.core.query.QueryFilter;
+import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
+import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.UI;
-import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.dataview.GridLazyDataView;
@@ -27,53 +32,52 @@ import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.provider.CallbackDataProvider;
+import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.data.provider.Query;
 import com.vaadin.flow.data.value.ValueChangeMode;
-import com.vaadin.flow.signals.Signal;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.function.Supplier;
 
 /**
  * A <em>"Show N entries"</em> selector that controls the page size of an
  * {@link ItemListing}.
  *
- * <p>Renders as:</p>
+ * <p>
+ * Renders as:
+ * </p>
+ * 
  * <pre>
  *   Show  [10 ▾]  entries
  * </pre>
  *
  * <h4>Standalone (lazy listing, no pagination bar)</h4>
+ * 
  * <pre>{@code
  * listing.setItems(q -> employees.stream().skip(q.getOffset()).limit(q.getLimit()));
  *
- * ItemListingPageSizeSelector<Employee, String> selector =
- *         Components.pageSizeSelector(listing)
- *             .withOptions(10, 25, 50, 100)
- *             .withDefaultSize(10)
- *             .build();
+ * ItemListingPageSizeSelector<Employee, String> selector = Components.pageSizeSelector(listing)
+ *         .withOptions(10, 25, 50, 100)
+ *         .withDefaultSize(10)
+ *         .build();
  * }</pre>
  *
  * <h4>With pagination bar — TRUE page-based data swap (recommended)</h4>
- * <p>Pass the fetch callback to the selector via {@link Builder#withLazyFetch}
- * instead of calling {@code listing.setItems()} directly.  The selector wraps
+ * <p>
+ * Pass the fetch callback to the selector via {@link Builder#withLazyFetch}
+ * instead of calling {@code listing.setItems()} directly. The selector wraps
  * the callback with a mutable page offset so that navigating pages actually
- * replaces the visible data rather than just scrolling the viewport.</p>
+ * replaces the visible data rather than just scrolling the viewport.
+ * </p>
+ * 
  * <pre>{@code
  * ItemListingPaginationBar<Employee, String> bar = new ItemListingPaginationBar<>(listing);
  *
- * ItemListingPageSizeSelector<Employee, String> selector =
- *         Components.pageSizeSelector(listing)
- *             .withOptions(10, 25, 50)
- *             .withDefaultSize(10)
- *             .withPaginationBar(bar)
- *             .withLazyFetch(
+ * ItemListingPageSizeSelector<Employee, String> selector = Components.pageSizeSelector(listing)
+ *         .withOptions(10, 25, 50)
+ *         .withDefaultSize(10)
+ *         .withPaginationBar(bar)
+ *         .withLazyFetch(
  *                 q -> employeeService.fetch(q.getOffset(), q.getLimit()),
- *                 () -> employeeService.count())          // for total page count
- *             .build();
+ *                 () -> employeeService.count()) // for total page count
+ *         .build();
  * }</pre>
  *
  * @param <T> item type
@@ -97,7 +101,7 @@ public class ItemListingPageSizeSelector<T, P> extends Div {
     // State
     // -----------------------------------------------------------------------
 
-    private final ItemListing<T, P>        listing;
+    private final ItemListing<T, P> listing;
     private ItemListingPaginationBar<T, P> paginationBar;
 
     /**
@@ -108,13 +112,13 @@ public class ItemListingPageSizeSelector<T, P> extends Div {
 
     /**
      * Current page offset (= (page-1) * pageSize) used by the managed fetch
-     * wrapper.  Zero for standalone mode or when on page 1.
+     * wrapper. Zero for standalone mode or when on page 1.
      */
-    private final int[] currentPageOffset = {0};
+    private final int[] currentPageOffset = { 0 };
 
     /**
      * Non-null only in <em>managed-fetch mode</em> ({@link Builder#withLazyFetch}
-     * was called).  Holds the lazy data view so the count callback can be updated
+     * was called). Holds the lazy data view so the count callback can be updated
      * when the page size changes.
      */
     private GridLazyDataView<T> managedDataView;
@@ -129,15 +133,39 @@ public class ItemListingPageSizeSelector<T, P> extends Div {
 
     private Notification noResultsNotification;
 
+    /**
+     * Serializable listener that is notified with the actual item count after each
+     * managed fetch.
+     * Used by {@link ListingBundle} to show/hide the appropriate empty-state
+     * component.
+     */
+    @FunctionalInterface
+    public interface ItemCountListener extends java.io.Serializable {
+        void onItemCount(int count);
+    }
+
+    /** Optional listener set by {@link ListingBundle} to track empty state. */
+    private ItemCountListener itemCountListener;
+
+    /**
+     * Registers a listener that is called after every managed data fetch with the
+     * actual number of items returned (0 = truly empty).
+     *
+     * @param listener the listener (not null)
+     */
+    public void setItemCountListener(ItemCountListener listener) {
+        this.itemCountListener = Objects.requireNonNull(listener);
+    }
+
     // -----------------------------------------------------------------------
     // Constructor (use the builder or Components factory)
     // -----------------------------------------------------------------------
 
     private ItemListingPageSizeSelector(Builder<T, P> builder) {
-        this.listing        = builder.listing;
-        this.paginationBar  = builder.paginationBar;
-        this.currentPageSz  = new int[]{ builder.defaultSize };
-        this.countSupplier  = builder.countSupplier;
+        this.listing = builder.listing;
+        this.paginationBar = builder.paginationBar;
+        this.currentPageSz = new int[] { builder.defaultSize };
+        this.countSupplier = builder.countSupplier;
 
         addClassName("page-size-selector");
 
@@ -146,31 +174,30 @@ public class ItemListingPageSizeSelector<T, P> extends Div {
             initManagedFetch(builder.fetchCallback, builder.countSupplier, builder.defaultSize);
         }
 
-        // Wire filter reset via Signal.effect (lifecycle-aware, preferred) ────
-        // Uses FilterInputGroup.queryFilterSignal() to bridge filter-change events to
-        // a Vaadin Signal so the effect is bound to this component's attach/detach lifecycle.
-        // The AtomicBoolean guard ensures the effect does NOT fire at registration time —
-        // only on subsequent signal changes (i.e. actual filter updates).
+        // Wire filter-group reset: when the filter changes, reset the listing to page
+        // 1.
+        // Uses FilterChangeListener which extends Serializable → safe for session
+        // serialization.
         if (builder.filterGroupSignal != null && builder.fetchCallback != null) {
-            Signal<Optional<QueryFilter>> filterSignal = builder.filterGroupSignal.queryFilterSignal();
-            AtomicBoolean filterInitialized = new AtomicBoolean(false);
-            Signal.effect(this, () -> {
-                filterSignal.get();  // register reactive dependency
-                if (filterInitialized.getAndSet(true)) {
-                    resetToPage1();
-                }
-            });
+            builder.filterGroupSignal.addFilterChangeListener(e -> resetToPage1());
         }
 
-        // Legacy listener-based filter reset (kept for backward compat, lower priority) ──
+        // Legacy listener-based filter reset (kept for backward compat, lower priority)
+        // ──
         if (builder.filterGroup != null && builder.fetchCallback != null) {
             builder.filterGroup.addFilterChangeListener(e -> resetToPage1());
         }
 
-        // Wire search field: value changes reset to page 1 (lazy debounce by default)
+        // Wire search field: filter triggers only on Enter key press or clear-button
+        // click
         if (builder.searchField != null && builder.fetchCallback != null) {
-            builder.searchField.setValueChangeMode(ValueChangeMode.LAZY);
-            builder.searchField.addValueChangeListener(e -> resetToPage1());
+            builder.searchField.setValueChangeMode(ValueChangeMode.ON_CHANGE);
+            builder.searchField.addKeyDownListener(Key.ENTER, e -> resetToPage1());
+            builder.searchField.addValueChangeListener(e -> {
+                if (e.getValue() == null || e.getValue().isEmpty()) {
+                    resetToPage1(); // clear button pressed — reset immediately
+                }
+            });
         }
 
         buildUI(builder.options, builder.defaultSize);
@@ -183,21 +210,26 @@ public class ItemListingPageSizeSelector<T, P> extends Div {
     /**
      * Resets the selector to page 1 and refreshes the listing data.
      *
-     * <p>Call this whenever the active filter changes so that the page offset
+     * <p>
+     * Call this whenever the active filter changes so that the page offset
      * is cleared and the bar's page count is recomputed against the new
-     * result set.  Typically wired via
-     * {@link Builder#withFilterReset(FilterInputGroup)} or manually:</p>
+     * result set. Typically wired via
+     * {@link Builder#withFilterReset(FilterInputGroup)} or manually:
+     * </p>
      *
      * <pre>{@code
      * filterPanel.addFilterChangeListener(e -> selector.resetToPage1());
      * }</pre>
      *
-     * <p>Has no effect in unmanaged (non-{@link Builder#withLazyFetch}) mode.</p>
+     * <p>
+     * Has no effect in unmanaged (non-{@link Builder#withLazyFetch}) mode.
+     * </p>
      *
      * @since 10.0.1
      */
     public void resetToPage1() {
-        if (managedDataView == null) return;
+        if (managedDataView == null)
+            return;
         currentPageOffset[0] = 0;
         final UI currentUi = UI.getCurrent();
 
@@ -212,7 +244,8 @@ public class ItemListingPageSizeSelector<T, P> extends Div {
 
         // Always recompute bar page count from the count supplier when available —
         // regardless of paginatedMode. Filter changes narrow the result set in both
-        // virtual-scroll and paginated mode; the bar should always reflect the new count.
+        // virtual-scroll and paginated mode; the bar should always reflect the new
+        // count.
         if (paginationBar != null && countSupplier != null) {
             int count = Math.max(0, countSupplier.get());
             paginationBar.seedTotalPagesFromCount(count, currentPageSz[0]);
@@ -243,7 +276,7 @@ public class ItemListingPageSizeSelector<T, P> extends Div {
             return;
         }
         noResultsNotification = Components.notification()
-                .text("No matching records found.")
+                .text(LocalizationProvider.localize("No matching records found.", "page_size_selector.no_results"))
                 .warning()
                 .autoClose(false)
                 .closeButton(true)
@@ -259,18 +292,18 @@ public class ItemListingPageSizeSelector<T, P> extends Div {
     /**
      * Sets up a <em>wrapped</em> fetch callback that:
      * <ol>
-     *   <li>Injects the current page offset so navigating pages replaces the grid
-     *       data rather than scrolling the viewport.</li>
-     *   <li>Uses a <strong>look-ahead</strong>: requests {@code pageSize + 1} rows
-     *       from the backend.  If {@code pageSize + 1} rows are returned there is a
-     *       next page; if fewer rows are returned the current page is the last.
-     *       The result is pushed to the bar via
-     *       {@link ItemListingPaginationBar#setHasNextPage(boolean)} — <strong>no
-     *       {@code COUNT(*)} query is ever issued</strong>.</li>
-     *   <li>Sets {@code setItemCountCallback(q -> currentPageSz)} so the grid
-     *       shows exactly N rows and never loads more on scroll.</li>
-     *   <li>Registers a page-change listener on the bar (if present) to update
-     *       the offset and refresh.</li>
+     * <li>Injects the current page offset so navigating pages replaces the grid
+     * data rather than scrolling the viewport.</li>
+     * <li>Uses a <strong>look-ahead</strong>: requests {@code pageSize + 1} rows
+     * from the backend. If {@code pageSize + 1} rows are returned there is a
+     * next page; if fewer rows are returned the current page is the last.
+     * The result is pushed to the bar via
+     * {@link ItemListingPaginationBar#setHasNextPage(boolean)} — <strong>no
+     * {@code COUNT(*)} query is ever issued</strong>.</li>
+     * <li>Sets {@code setItemCountCallback(q -> currentPageSz)} so the grid
+     * shows exactly N rows and never loads more on scroll.</li>
+     * <li>Registers a page-change listener on the bar (if present) to update
+     * the offset and refresh.</li>
      * </ol>
      */
     private void initManagedFetch(
@@ -279,22 +312,29 @@ public class ItemListingPageSizeSelector<T, P> extends Div {
             int initialPageSize) {
 
         // Wrap: inject page offset + look-ahead (fetch limit+1 to detect next page)
-        final int[] lastFetchedCount = {initialPageSize};
+        final int[] lastFetchedCount = { initialPageSize };
 
         managedDataView = listing.setItems(q -> {
             final int limit = q.getLimit();
             // Fetch one extra row — if it comes back, a next page exists
-            java.util.List<T> rows = originalFetch.fetch(new Query<>(
-                            currentPageOffset[0] + q.getOffset(),
-                            limit + 1,   // look-ahead
-                            q.getSortOrders(),
-                            null,
-                            null))
+            List<T> rows = originalFetch.fetch(new Query<>(
+                    currentPageOffset[0] + q.getOffset(),
+                    limit + 1, // look-ahead
+                    q.getSortOrders(),
+                    null,
+                    null))
                     .limit(limit + 1L)
                     .toList();
             final boolean next = rows.size() > limit;
             int actualCount = Math.min(rows.size(), limit);
             lastFetchedCount[0] = actualCount;
+
+            // Notify empty-state listener (registered by ListingBundle when
+            // emptyState/noResultsState configured)
+            ItemCountListener countListener = itemCountListener;
+            if (countListener != null) {
+                countListener.onItemCount(actualCount);
+            }
 
             // Only apply pagination logic when in paginated mode
             if (paginatedMode) {
@@ -305,9 +345,9 @@ public class ItemListingPageSizeSelector<T, P> extends Div {
                 // and notify user they've reached the end.
                 if (actualCount < currentPageSz[0] && actualCount > 0) {
                     managedDataView.setItemCountCallback(cq -> lastFetchedCount[0]);
-                    com.vaadin.flow.component.notification.Notification.show(
+                    Notification.show(
                             "Reached end of data", 2000,
-                            com.vaadin.flow.component.notification.Notification.Position.BOTTOM_CENTER);
+                            Notification.Position.BOTTOM_CENTER);
                 } else if (actualCount == currentPageSz[0]) {
                     // Full page — restore count to page size for next fetch cycle
                     managedDataView.setItemCountCallback(cq -> currentPageSz[0]);
@@ -357,26 +397,36 @@ public class ItemListingPageSizeSelector<T, P> extends Div {
     // Paginated / virtual-scroll mode toggle
     // -----------------------------------------------------------------------
 
-    /** Whether pagination is currently active (true) or virtual-scroll mode (false). Default is virtual-scroll. */
+    /**
+     * Whether pagination is currently active (true) or virtual-scroll mode (false).
+     * Default is virtual-scroll.
+     */
     private boolean paginatedMode = false;
 
     /**
      * Switches between paginated mode and default virtual-scroll mode.
      *
-     * <p>In paginated mode (default), the grid shows a fixed page of items and
-     * navigation is via the pagination bar.</p>
+     * <p>
+     * In paginated mode (default), the grid shows a fixed page of items and
+     * navigation is via the pagination bar.
+     * </p>
      *
-     * <p>In virtual-scroll mode, the grid uses Vaadin's built-in infinite scroll
+     * <p>
+     * In virtual-scroll mode, the grid uses Vaadin's built-in infinite scroll
      * with the same data provider — no page offset is injected and the item count
-     * is set to unknown so the grid fetches rows as the user scrolls.</p>
+     * is set to unknown so the grid fetches rows as the user scrolls.
+     * </p>
      *
-     * @param paginated {@code true} for paginated mode, {@code false} for virtual scroll
+     * @param paginated {@code true} for paginated mode, {@code false} for virtual
+     *                  scroll
      */
     public void setPaginatedMode(boolean paginated) {
-        if (this.paginatedMode == paginated) return;
+        if (this.paginatedMode == paginated)
+            return;
         this.paginatedMode = paginated;
 
-        if (managedDataView == null) return;
+        if (managedDataView == null)
+            return;
 
         if (paginated) {
             // Switch to paginated: reset to page 1, hard-cap rows to pageSize.
@@ -393,10 +443,13 @@ public class ItemListingPageSizeSelector<T, P> extends Div {
                 paginationBar.goToFirstPage();
             }
         } else {
-            // Switch to virtual-scroll: reset offset, let the grid grow as the user scrolls.
+            // Switch to virtual-scroll: reset offset, let the grid grow as the user
+            // scrolls.
             // Do NOT call refreshAll() — currently visible rows are already correct.
-            // setItemCountUnknown() notifies the client that more rows may exist and enables
-            // infinite scroll; the grid will fetch additional rows only when the user scrolls.
+            // setItemCountUnknown() notifies the client that more rows may exist and
+            // enables
+            // infinite scroll; the grid will fetch additional rows only when the user
+            // scrolls.
             currentPageOffset[0] = 0;
             managedDataView.setItemCountUnknown();
             if (listing.getComponent() instanceof Grid<?> grid) {
@@ -417,42 +470,52 @@ public class ItemListingPageSizeSelector<T, P> extends Div {
     // -----------------------------------------------------------------------
 
     private void buildUI(List<Integer> options, int defaultSize) {
-        Span prefix = Components.span().text("Show").styleName("page-size-selector__label").build();
+        Span prefix = Components.span()
+                .text(LocalizationProvider.localize("Show", "page_size_selector.show"))
+                .styleName("page-size-selector__label").build();
 
-        ComboBox<Integer> combo = new ComboBox<>();
-        combo.addClassName("page-size-selector__select");
-        combo.setItems(options);
-        combo.setValue(defaultSize);
-        combo.setAllowCustomValue(true);
-
-        // Apply initial page size (unmanaged mode only — managed is handled in initManagedFetch)
+        // Apply initial page size (unmanaged mode only — managed is handled in
+        // initManagedFetch)
         if (managedDataView == null) {
             applyPageSize(defaultSize, false);
         }
 
-        // Standard dropdown selection
-        combo.addValueChangeListener(event -> {
-            Integer chosen = event.getValue();
-            if (chosen != null && chosen > 0) {
-                applyPageSize(chosen, true);
-            }
-        });
+        Span suffix = Components.span()
+                .text(LocalizationProvider.localize("entries", "page_size_selector.entries"))
+                .styleName("page-size-selector__label").build();
 
-        // Custom value typed by the user (e.g. "42")
-        combo.addCustomValueSetListener(event -> {
-            try {
-                int custom = Integer.parseInt(event.getDetail().trim());
-                if (custom > 0) {
-                    combo.setValue(custom);   // triggers valueChange → applyPageSize
-                }
-            } catch (NumberFormatException ignored) {
-                // non-numeric input — silently keep previous value
-            }
-        });
+        ListDataProvider<Integer> dataProvider = new ListDataProvider<>(options);
 
-        Span suffix = Components.span().text("entries").styleName("page-size-selector__label").build();
+        SingleSelect<Integer> itemCount = Components.input.singleSelect(Integer.class)
+                .dataSource(dataProvider)
+                .ariaLabel(LocalizationProvider.localize("Page size", "page_size_selector.count_aria"))
+                .styleName("page-size-selector__select")
+                .allowCustomValue(true)
+                .withValueChangeListener(event -> {
+                    if (event.isUserOriginated() && event.getValue() > 0) {
+                        applyPageSize(event.getValue(), true);
+                    }
+                })
+                .withCustomValueSetListener(event -> {
+                    String raw = event.getCustomValue();
+                    if (raw != null && !raw.isBlank()) {
+                        try {
+                            int parsed = Integer.parseInt(raw.trim());
+                            if (parsed > 0) {
+                                // setValue triggers the valueChangeListener which calls applyPageSize
+                                event.getSource().setValue(parsed);
+                                applyPageSize(parsed, true);
+                            }
+                        } catch (NumberFormatException ignored) {
+                            // non-numeric input — ignore
+                        }
+                    }
+                })
+                .build();
 
-        add(prefix, combo, suffix);
+        itemCount.setValue(defaultSize);
+
+        add(prefix, itemCount.getComponent(), suffix);
     }
 
     // -----------------------------------------------------------------------
@@ -464,14 +527,14 @@ public class ItemListingPageSizeSelector<T, P> extends Div {
      *
      * <h4>Managed-fetch mode ({@link Builder#withLazyFetch} was called)</h4>
      * <ol>
-     *   <li>Resets the page offset to 0 (back to page 1).</li>
-     *   <li>Updates {@code currentPageSz} so the wrapped count callback returns
-     *       the new size.</li>
-     *   <li>Updates the grid's page size (so the bar's {@code getPageSize()}
-     *       stays accurate).</li>
-     *   <li>Refreshes the listing — the wrapped fetch re-fetches from offset 0
-     *       with limit = new size.</li>
-     *   <li>Refreshes the bar so total page count is recomputed.</li>
+     * <li>Resets the page offset to 0 (back to page 1).</li>
+     * <li>Updates {@code currentPageSz} so the wrapped count callback returns
+     * the new size.</li>
+     * <li>Updates the grid's page size (so the bar's {@code getPageSize()}
+     * stays accurate).</li>
+     * <li>Refreshes the listing — the wrapped fetch re-fetches from offset 0
+     * with limit = new size.</li>
+     * <li>Refreshes the bar so total page count is recomputed.</li>
      * </ol>
      *
      * <h4>Unmanaged + pagination bar</h4>
@@ -487,8 +550,8 @@ public class ItemListingPageSizeSelector<T, P> extends Div {
 
         // ── Managed-fetch mode ──────────────────────────────────────────────
         if (managedDataView != null) {
-            currentPageSz[0]     = size;
-            currentPageOffset[0] = 0;  // reset to page 1
+            currentPageSz[0] = size;
+            currentPageOffset[0] = 0; // reset to page 1
 
             if (listing.getComponent() instanceof Grid<?> grid) {
                 if (!paginatedMode) {
@@ -523,7 +586,8 @@ public class ItemListingPageSizeSelector<T, P> extends Div {
         }
 
         // ── Unmanaged standalone ────────────────────────────────────────────
-        if (!(listing.getComponent() instanceof Grid<?> grid)) return;
+        if (!(listing.getComponent() instanceof Grid<?> grid))
+            return;
         grid.setPageSize(size);
         try {
             @SuppressWarnings("unchecked")
@@ -532,7 +596,8 @@ public class ItemListingPageSizeSelector<T, P> extends Div {
             lazyView.setItemCountCallback(q -> size);
         } catch (IllegalStateException ignored) {
             // In-memory grid — not lazy; a plain refresh is sufficient
-            if (refreshListing) listing.refresh();
+            if (refreshListing)
+                listing.refresh();
         }
     }
 
@@ -564,14 +629,14 @@ public class ItemListingPageSizeSelector<T, P> extends Div {
      */
     public static final class Builder<T, P> {
 
-        private final ItemListing<T, P>        listing;
-        private List<Integer>                  options      = DEFAULT_OPTIONS;
-        private int                            defaultSize  = DEFAULT_PAGE_SIZE;
+        private final ItemListing<T, P> listing;
+        private List<Integer> options = DEFAULT_OPTIONS;
+        private int defaultSize = DEFAULT_PAGE_SIZE;
         private ItemListingPaginationBar<T, P> paginationBar;
 
         /** Set by {@link #withLazyFetch} — enables managed-fetch mode. */
         private CallbackDataProvider.FetchCallback<T, Void> fetchCallback;
-        private Supplier<Integer>                           countSupplier;
+        private Supplier<Integer> countSupplier;
 
         /** Optional: reset to page 1 when filters change (listener-based, legacy). */
         private FilterInputGroup filterGroup;
@@ -621,7 +686,8 @@ public class ItemListingPageSizeSelector<T, P> extends Div {
          * @return this builder
          */
         public Builder<T, P> withDefaultSize(int size) {
-            if (size <= 0) throw new IllegalArgumentException("Default page size must be > 0");
+            if (size <= 0)
+                throw new IllegalArgumentException("Default page size must be > 0");
             this.defaultSize = size;
             return this;
         }
@@ -629,9 +695,11 @@ public class ItemListingPageSizeSelector<T, P> extends Div {
         /**
          * Links a {@link ItemListingPaginationBar}.
          *
-         * <p>When combined with {@link #withLazyFetch}, the bar's page navigation
+         * <p>
+         * When combined with {@link #withLazyFetch}, the bar's page navigation
          * swaps the underlying data (true pagination) instead of just scrolling
-         * the viewport.</p>
+         * the viewport.
+         * </p>
          *
          * @param bar the pagination bar to keep in sync (not null)
          * @return this builder
@@ -646,36 +714,46 @@ public class ItemListingPageSizeSelector<T, P> extends Div {
          * Enables <em>managed-fetch mode</em> — the recommended approach when a
          * pagination bar is present.
          *
-         * <p>The selector takes ownership of the data binding: it calls
+         * <p>
+         * The selector takes ownership of the data binding: it calls
          * {@code listing.setItems(wrappedCallback)} internally, wrapping your
-         * callback with a mutable page offset.  <strong>Do not call
-         * {@code listing.setItems()} separately when using this method.</strong></p>
+         * callback with a mutable page offset. <strong>Do not call
+         * {@code listing.setItems()} separately when using this method.</strong>
+         * </p>
          *
          * <h4>Page navigation — zero COUNT(*) queries</h4>
-         * <p>Internally the wrapped fetch requests {@code pageSize + 1} rows from the
-         * back end (the <em>look-ahead</em> pattern).  If {@code pageSize + 1} rows
+         * <p>
+         * Internally the wrapped fetch requests {@code pageSize + 1} rows from the
+         * back end (the <em>look-ahead</em> pattern). If {@code pageSize + 1} rows
          * come back, there is a next page; if fewer rows come back the current page is
-         * the last.  The result is pushed to the bar via
+         * the last. The result is pushed to the bar via
          * {@link ItemListingPaginationBar#setHasNextPage(boolean)} so that
-         * <strong>page navigation never issues a COUNT(*) query</strong>.</p>
+         * <strong>page navigation never issues a COUNT(*) query</strong>.
+         * </p>
          *
-         * <h4>countSupplier — optional, called at construction and on filter resets</h4>
-         * <p>When non-null, the supplier is called:</p>
+         * <h4>countSupplier — optional, called at construction and on filter
+         * resets</h4>
+         * <p>
+         * When non-null, the supplier is called:
+         * </p>
          * <ul>
-         *   <li><strong>Once at construction</strong> — to seed the bar's initial total
-         *       page count so the user sees the correct number of pages immediately,
-         *       before the first look-ahead fetch fires.</li>
-         *   <li><strong>On each {@link ItemListingPageSizeSelector#resetToPage1()} call</strong>
-         *       (and therefore on each filter change wired via
-         *       {@link #withFilterReset(FilterInputGroup)}) — to recompute the total page
-         *       count for the updated result set.</li>
+         * <li><strong>Once at construction</strong> — to seed the bar's initial total
+         * page count so the user sees the correct number of pages immediately,
+         * before the first look-ahead fetch fires.</li>
+         * <li><strong>On each {@link ItemListingPageSizeSelector#resetToPage1()}
+         * call</strong>
+         * (and therefore on each filter change wired via
+         * {@link #withFilterReset(FilterInputGroup)}) — to recompute the total page
+         * count for the updated result set.</li>
          * </ul>
-         * <p>Pass {@code null} to opt out of all count calls.  The bar will then use the
+         * <p>
+         * Pass {@code null} to opt out of all count calls. The bar will then use the
          * look-ahead result only (Next/Prev enabled/disabled, but no total-page number
-         * shown until after the first fetch completes).</p>
+         * shown until after the first fetch completes).
+         * </p>
          *
-         * @param fetchCallback  lazy fetch callback (offset + limit honoured); not null
-         * @param countSupplier  optional total-item count supplier; may be {@code null}
+         * @param fetchCallback lazy fetch callback (offset + limit honoured); not null
+         * @param countSupplier optional total-item count supplier; may be {@code null}
          * @return this builder
          * @since 10.0.1
          */
@@ -683,8 +761,8 @@ public class ItemListingPageSizeSelector<T, P> extends Div {
                 CallbackDataProvider.FetchCallback<T, Void> fetchCallback,
                 Supplier<Integer> countSupplier) {
             ObjectUtils.argumentNotNull(fetchCallback, "FetchCallback must be not null");
-            this.fetchCallback  = fetchCallback;
-            this.countSupplier  = countSupplier;
+            this.fetchCallback = fetchCallback;
+            this.countSupplier = countSupplier;
             return this;
         }
 
@@ -692,18 +770,23 @@ public class ItemListingPageSizeSelector<T, P> extends Div {
          * Registers a {@link FilterInputGroup} (e.g. {@code DynamicFilterPanel})
          * whose filter-change events automatically reset the selector to page 1.
          *
-         * <p>Only effective in managed-fetch mode ({@link #withLazyFetch}).
-         * When the user applies a new filter:</p>
+         * <p>
+         * Only effective in managed-fetch mode ({@link #withLazyFetch}).
+         * When the user applies a new filter:
+         * </p>
          * <ol>
-         *   <li>Page offset is reset to 0 (back to page 1).</li>
-         *   <li>The count supplier is re-called with the current filter closure
-         *       to give the bar an updated total page count.</li>
-         *   <li>The listing is refreshed so the grid re-fetches page 1 of the
-         *       filtered result set.</li>
+         * <li>Page offset is reset to 0 (back to page 1).</li>
+         * <li>The count supplier is re-called with the current filter closure
+         * to give the bar an updated total page count.</li>
+         * <li>The listing is refreshed so the grid re-fetches page 1 of the
+         * filtered result set.</li>
          * </ol>
          *
-         * <p>The {@code countSupplier} passed to {@link #withLazyFetch} should be
-         * a closure that reads the current filter at call time:</p>
+         * <p>
+         * The {@code countSupplier} passed to {@link #withLazyFetch} should be
+         * a closure that reads the current filter at call time:
+         * </p>
+         * 
          * <pre>{@code
          * .withLazyFetch(
          *     q -> service.fetch(q.getOffset(), q.getLimit(), filterPanel.getQueryFilter()),
@@ -725,12 +808,18 @@ public class ItemListingPageSizeSelector<T, P> extends Div {
          * Registers a {@link FilterInputGroup} (e.g. {@code DynamicFilterPanel}) using
          * the Signal-based reactive approach.
          *
-         * <p>Preferred over {@link #withFilterReset(FilterInputGroup)} for Vaadin 25+ as it
+         * <p>
+         * Preferred over {@link #withFilterReset(FilterInputGroup)} for Vaadin 25+ as
+         * it
          * uses {@link Signal#effect} bound to this component's lifecycle, rather than a
-         * persistent plain listener. The effect activates on component attach, deactivates on
-         * detach, and does <strong>not</strong> fire at registration time.</p>
+         * persistent plain listener. The effect activates on component attach,
+         * deactivates on
+         * detach, and does <strong>not</strong> fire at registration time.
+         * </p>
          *
-         * <p>Only effective in managed-fetch mode ({@link #withLazyFetch}).</p>
+         * <p>
+         * Only effective in managed-fetch mode ({@link #withLazyFetch}).
+         * </p>
          *
          * @param filterGroup the filter group to observe (not null)
          * @return this builder
@@ -746,20 +835,26 @@ public class ItemListingPageSizeSelector<T, P> extends Div {
          * Wires a {@link TextField} so that every value change automatically resets
          * the selector to page 1 and re-fetches with the new search text.
          *
-         * <p>{@link ValueChangeMode#LAZY} (400 ms debounce) is applied automatically
-         * so that a backend fetch is not triggered on every keystroke.</p>
+         * <p>
+         * Filtering is triggered only when the user presses <b>Enter</b>, or when
+         * the clear button empties the field (immediate reset). No fetch is issued
+         * on every keystroke.
+         * </p>
          *
-         * <p>The fetch callback you pass to {@link #withLazyFetch} should read the
-         * field value via closure at call time:</p>
+         * <p>
+         * The fetch callback you pass to {@link #withLazyFetch} should read the
+         * field value via closure at call time:
+         * </p>
+         * 
          * <pre>{@code
          * TextField search = new TextField();
          *
          * Components.pageSizeSelector(listing)
-         *     .withLazyFetch(
-         *         q -> service.fetch(q.getOffset(), q.getLimit(), search.getValue()),
-         *         null)
-         *     .withSearchField(search)
-         *     .build();
+         *         .withLazyFetch(
+         *                 q -> service.fetch(q.getOffset(), q.getLimit(), search.getValue()),
+         *                 null)
+         *         .withSearchField(search)
+         *         .build();
          * }</pre>
          *
          * @param searchField the text field to observe (not null)
@@ -782,4 +877,3 @@ public class ItemListingPageSizeSelector<T, P> extends Div {
         }
     }
 }
-

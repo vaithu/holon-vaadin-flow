@@ -15,6 +15,7 @@
  */
 package com.holonplatform.vaadin.flow.internal.components.events;
 
+import java.io.Serial;
 import java.util.Collections;
 import java.util.Optional;
 import java.util.Set;
@@ -30,6 +31,7 @@ import com.holonplatform.vaadin.flow.components.Selectable.SelectionEvent;
  */
 public class DefaultSelectionEvent<T> implements SelectionEvent<T> {
 
+	@Serial
 	private static final long serialVersionUID = 8499428333309600901L;
 
 	private final Set<T> selectedItems;
@@ -53,7 +55,7 @@ public class DefaultSelectionEvent<T> implements SelectionEvent<T> {
 	 */
 	@Override
 	public Optional<T> getFirstSelectedItem() {
-		return (selectedItems.isEmpty()) ? Optional.empty() : Optional.ofNullable(selectedItems.iterator().next());
+		return selectedItems.isEmpty() ? Optional.empty() : Optional.ofNullable(selectedItems.iterator().next());
 	}
 
 	/*

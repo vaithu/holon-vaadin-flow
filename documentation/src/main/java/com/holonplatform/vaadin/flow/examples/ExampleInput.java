@@ -22,6 +22,8 @@ import com.holonplatform.core.datastore.DataTarget;
 import com.holonplatform.core.datastore.Datastore;
 import com.holonplatform.core.property.*;
 import com.holonplatform.core.query.QueryConfigurationProvider;
+import com.holonplatform.core.query.QueryFilter;
+import com.holonplatform.core.query.QuerySort;
 import com.holonplatform.vaadin.flow.components.*;
 import com.holonplatform.vaadin.flow.components.Input.InputPropertyRenderer;
 import com.holonplatform.vaadin.flow.components.ValidationStatusHandler.Status;
@@ -328,8 +330,9 @@ public class ExampleInput {
 	}
 
 	public void input17() {
-		final QueryConfigurationProvider myQueryConfigurationProvider = null;
 		// tag::input17[]
+		final QueryConfigurationProvider myQueryConfigurationProvider = QueryConfigurationProvider.create(
+				(QueryFilter) null, (QuerySort) null);
 		SingleSelect<Long> singleSelect = Input.singleSelect(ID) // <1>
 				.dataSource(getDatastore(), TARGET, SUBJECT) // <2>
 				.withQueryFilter(NAME.isNotNull()) // <3>

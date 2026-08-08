@@ -15,7 +15,9 @@
  */
 package com.holonplatform.vaadin.flow.vaadinplus.components;
 
+import java.io.Serial;
 import com.holonplatform.vaadin.flow.components.Components;
+import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
@@ -40,6 +42,7 @@ import com.vaadin.flow.component.icon.VaadinIcon;
  */
 public class PaginationPrevious extends Div {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     /**
@@ -47,14 +50,18 @@ public class PaginationPrevious extends Div {
      */
     public PaginationPrevious() {
         addClassName("pagination__previous");
-        getElement().setAttribute("aria-label", "Go to previous page");
+        getElement().setAttribute("aria-label",
+                LocalizationProvider.localize("Go to previous page", "pagination.previous_aria"));
         getElement().setAttribute("tabindex", "0");
 
         Icon chevron = new Icon(VaadinIcon.CHEVRON_LEFT);
         chevron.addClassName("pagination__nav-icon");
+        chevron.getElement().setAttribute("aria-hidden", "true");
         add(chevron);
 
-        Span label = Components.span().text("Previous").styleName("pagination__nav-label").build();
+        Span label = Components.span()
+                .text(LocalizationProvider.localize("Previous", "pagination.previous_label"))
+                .styleName("pagination__nav-label").build();
         add(label);
     }
 
@@ -75,4 +82,3 @@ public class PaginationPrevious extends Div {
         }
     }
 }
-

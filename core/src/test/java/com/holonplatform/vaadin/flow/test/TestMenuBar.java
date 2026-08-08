@@ -17,7 +17,6 @@ package com.holonplatform.vaadin.flow.test;
 
 import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.vaadin.flow.components.builders.MenuBarBuilder;
-import com.holonplatform.vaadin.flow.components.builders.MenuItemBuilder;
 import com.holonplatform.vaadin.flow.test.util.LocalizationTestUtils;
 import com.vaadin.flow.component.contextmenu.MenuItem;
 import com.vaadin.flow.component.html.Span;
@@ -140,44 +139,46 @@ public class TestMenuBar {
 	@Test
 	public void testSubMenu() {
 
-		final Span cmp = new Span("test");
-
-		MenuBar menu = MenuBarBuilder.create().withMenuItem(cmp)
-				.add()
-				.withMenuItem("Test")
-				.add()
+		MenuBar menu = MenuBarBuilder.create()
+				.withMenuItem("File")
+					.withSubMenu(sub -> sub
+						.withMenuItem("New", e -> {})
+						.withMenuItem("Open", e -> {})
+						.separator()
+						.withMenuItem("Save", e -> {}))
+				.withMenuItem("Edit")
+					.withSubMenu(sub -> sub
+						.withMenuItem("Undo", e -> {}))
 				.build();
 
-		assertNotNull(menu);
+		assertEquals(2, menu.getItems().size());
 
-		final MenuItemBuilder menuItemBuilder = MenuItemBuilder.create().withMenuItem("test").withMenuItem("test");
+		MenuItem file = menu.getItems().get(0);
+		assertEquals("File", file.getText());
+		assertEquals(3, file.getSubMenu().getItems().size());
 
-		final MenuItem menuItem1 = menuItemBuilder.withSubMenu("dsfsdf").withMenuItem("sdskdfjsdf").getMenuItem();
-		assertNotNull(menuItem1);
+		MenuItem edit = menu.getItems().get(1);
+		assertEquals("Edit", edit.getText());
+		assertEquals(1, edit.getSubMenu().getItems().size());
+	}
 
-		final MenuItem menuItem2 = menuItemBuilder.withSubMenu("dsfsdf").withSubMenuItem("sdskdfasdasdjsdf").getMenuItem();
-		assertNotEquals(menuItem1,menuItem2);
+	@Test
+	public void testNestedSubMenu() {
 
+		MenuBar menu = MenuBarBuilder.create()
+				.withMenuItem("File")
+					.withSubMenu(sub -> sub
+						.withMenuItem("Recent")
+							.withSubMenu(recent -> recent
+								.withMenuItem("Doc1", e -> {})
+								.withMenuItem("Doc2", e -> {})))
+				.build();
 
-
-		/*final SubMenu subMenu = menu.getItems().get(0).getSubMenu();
-
-		assertNotNull(subMenu);
-		assertNotNull(menu.getItems().get(1).getSubMenu());
-
-		assertNotNull(subMenu.getItems());
-
-		Element element = subMenu.getParentMenuItem().getElement();
-
-		System.out.println(element);
-
-		for (MenuItem item : subMenu.getItems()) {
-			element = item.getElement();
-			System.out.println(element);
-		}
-
-		System.out.println(subMenu.getItems().get(0).getElement());*/
-
+		MenuItem file = menu.getItems().get(0);
+		MenuItem recent = file.getSubMenu().getItems().get(0);
+		assertEquals("Recent", recent.getText());
+		assertEquals(2, recent.getSubMenu().getItems().size());
+		assertEquals("Doc1", recent.getSubMenu().getItems().get(0).getText());
 	}
 
 }

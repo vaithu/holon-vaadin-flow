@@ -115,7 +115,7 @@ public interface BaseTemporalInputConfigurator<D, C extends BaseTemporalInputCon
 	/**
 	 * Date input calendar popup localization settings.
 	 */
-	public interface CalendarLocalization {
+	interface CalendarLocalization {
 
 		/**
 		 * Gets {@link Localizable} messages for the name of the months.
@@ -182,7 +182,7 @@ public interface BaseTemporalInputConfigurator<D, C extends BaseTemporalInputCon
 	 * @param <D> Temporal data type
 	 * @param <C> Parent configurator type
 	 */
-	public interface CalendarLocalizationBuilder<D, C extends BaseTemporalInputConfigurator<D, C>> {
+	interface CalendarLocalizationBuilder<D, C extends BaseTemporalInputConfigurator<D, C>> {
 
 		/**
 		 * Set the {@link Localizable} messages to use to display the month names, starting from January and ending on

@@ -7,6 +7,14 @@
 .idea/
 *.iml
 *.iws
+.vscode
+.qodo
+.copilot
+.claude
+
+qodana.sarif.json
+qodana.yaml
+
 
 # Mac
 .DS_Store
@@ -30,6 +38,8 @@ buildNumber.properties
 *-report.txt
 dep-list-*.txt
 *-versions.txt
+*.txt
+copilot-*
 
 # Build output text files (captured stdout/stderr)
 core-err.txt
@@ -50,4 +60,5 @@ package.json
 webpack.config.js
 webpack.generated.js
 package-lock.json
+src/main/frontend/generated
 

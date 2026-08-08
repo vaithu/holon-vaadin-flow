@@ -1,5 +1,7 @@
 package com.holonplatform.vaadin.flow.vaadinplus.components;
 
+import java.io.Serial;
+import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.html.ListItem;
 import com.vaadin.flow.component.html.Nav;
@@ -51,7 +53,7 @@ import java.util.function.Supplier;
  * <p><strong>Custom separator icon:</strong></p>
  * <pre>{@code
  * Breadcrumb bc = new Breadcrumb();
- * bc.setSeparatorSupplier(() -> new BreadcrumbSeparator(MaterialSymbol.CHEVRON_RIGHT));
+ * bc.setSeparatorSupplier(() -> new BreadcrumbSeparator(VaadinIcon.CHEVRON_RIGHT));
  * bc.addWithSeparators(
  *     new BreadcrumbItem("Home",       HomeView.class),
  *     new BreadcrumbPage("Dashboard")
@@ -74,10 +76,10 @@ import java.util.function.Supplier;
  * @see BreadcrumbSeparator
  * @see BreadcrumbEllipsis
  */
-@StyleSheet("context://material-symbols.css")
 @StyleSheet("context://breadcrumb.css")
 public class Breadcrumb extends Nav {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     private final OrderedList list;
@@ -94,7 +96,8 @@ public class Breadcrumb extends Nav {
      */
     public Breadcrumb() {
         addClassName("breadcrumb");
-        getElement().setAttribute("aria-label", "Breadcrumb");
+        getElement().setAttribute("aria-label",
+                LocalizationProvider.localize("Breadcrumb", "breadcrumb.aria_label"));
 
         this.list = new OrderedList();
         this.list.addClassName("breadcrumb__list");
@@ -103,7 +106,7 @@ public class Breadcrumb extends Nav {
 
     /**
      * Creates a breadcrumb pre-populated with the given items.
-     * Items are added as-is — separators must be included explicitly.
+     * Items are added as-is â€” separators must be included explicitly.
      *
      * @param items the items to content (may be {@link BreadcrumbItem}, {@link BreadcrumbSeparator},
      *              {@link BreadcrumbPage}, {@link BreadcrumbEllipsis}, or any {@link ListItem})
@@ -147,7 +150,7 @@ public class Breadcrumb extends Nav {
     }
 
     // -----------------------------------------------------------------------
-    // Convenience — automatic separators
+    // Convenience â€” automatic separators
     // -----------------------------------------------------------------------
 
     /**
@@ -155,9 +158,9 @@ public class Breadcrumb extends Nav {
      *
      * <p>Default: {@code () -> new BreadcrumbSeparator()} (renders "/").</p>
      *
-     * <p>Example — chevron separator:</p>
+     * <p>Example â€” chevron separator:</p>
      * <pre>{@code
-     * breadcrumb.setSeparatorSupplier(() -> new BreadcrumbSeparator(MaterialSymbol.CHEVRON_RIGHT));
+     * breadcrumb.setSeparatorSupplier(() -> new BreadcrumbSeparator(VaadinIcon.CHEVRON_RIGHT));
      * }</pre>
      *
      * @param separatorSupplier the factory that creates each separator (not null)

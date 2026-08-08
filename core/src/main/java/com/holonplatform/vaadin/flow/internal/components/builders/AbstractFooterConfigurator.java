@@ -6,7 +6,7 @@ import com.holonplatform.vaadin.flow.vaadinplus.utilities.Color.Background;
 import com.vaadin.flow.component.Component;
 
 public abstract class AbstractFooterConfigurator<C extends FooterConfigurator<C>>
-        extends AbstractLayoutConfigurator<C>
+        extends AbstractLayoutConfigurator<Footer, C>
         implements FooterConfigurator<C> {
 
     public AbstractFooterConfigurator(Footer component) {
@@ -14,7 +14,7 @@ public abstract class AbstractFooterConfigurator<C extends FooterConfigurator<C>
     }
 
     protected Footer footer() {
-        return (Footer) super.getComponent();
+        return getComponent();
     }
 
     @Override
@@ -59,7 +59,7 @@ public abstract class AbstractFooterConfigurator<C extends FooterConfigurator<C>
         return getConfigurator();
     }
 
-    
 
-    
+
+
 }

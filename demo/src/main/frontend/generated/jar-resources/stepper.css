@@ -30,3 +30,10 @@ flow-stepper.stepper--large {
     --conn-thickness:  3px;
 }
 
+/* ── Mobile: shrink node so pills stay compact on small phones ───────────── */
+
+@media (max-width: 480px) {
+    flow-stepper {
+        --node-size: 1.75rem;
+    }
+}

@@ -7,12 +7,12 @@ import com.holonplatform.vaadin.flow.vaadinplus.components.BreadcrumbItem;
 import com.holonplatform.vaadin.flow.vaadinplus.components.BreadcrumbPage;
 import com.holonplatform.vaadin.flow.vaadinplus.components.BreadcrumbSeparator;
 import com.iyensoft.vaadin.flow.components.builders.BreadcrumbConfigurator;
-import com.iyensoft.vaadin.flow.enums.MaterialSymbol;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasEnabled;
 import com.vaadin.flow.component.HasSize;
 import com.vaadin.flow.component.HasStyle;
 import com.vaadin.flow.component.html.ListItem;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.shared.HasTooltip;
 
 import java.util.Optional;
@@ -82,8 +82,8 @@ public abstract class AbstractBreadcrumbConfigurator<C extends BreadcrumbConfigu
     }
 
     @Override
-    public C separator(MaterialSymbol symbol) {
-        return add(new BreadcrumbSeparator(symbol));
+    public C separator(VaadinIcon icon) {
+        return add(new BreadcrumbSeparator(icon));
     }
 
     @Override
@@ -149,4 +149,6 @@ public abstract class AbstractBreadcrumbConfigurator<C extends BreadcrumbConfigu
         return Optional.empty();
     }
 }
+
+
 

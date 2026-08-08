@@ -15,6 +15,7 @@
  */
 package com.holonplatform.vaadin.flow.navigator.internal;
 
+import java.io.Serial;
 import com.holonplatform.vaadin.flow.navigator.NavigationChangeListener.NavigationChangeEvent;
 import com.vaadin.flow.component.HasElement;
 import com.vaadin.flow.router.Location;
@@ -26,6 +27,7 @@ import com.vaadin.flow.router.Location;
  */
 public class DefaultNavigationChangeEvent implements NavigationChangeEvent {
 
+	@Serial
 	private static final long serialVersionUID = 3909804813928195300L;
 
 	private final Location location;

@@ -3,6 +3,8 @@ package com.holonplatform.vaadin.flow.chat.components;
 import com.holonplatform.vaadin.flow.chat.ChatInvitation;
 import com.holonplatform.vaadin.flow.chat.ChatRoom;
 import com.holonplatform.vaadin.flow.chat.api.ChatService;
+import com.holonplatform.vaadin.flow.chat.i18n.ChatI18N;
+import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
 import com.vaadin.collaborationengine.UserInfo;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -97,7 +99,8 @@ public class InviteToGroupDialog extends Dialog {
         this.room        = room;
         this.inviter     = inviter;
 
-        setHeaderTitle("Invite people to " + roomDisplayName(room));
+        setHeaderTitle(LocalizationProvider.localize(
+                "Invite people to {0}", ChatI18N.INVITE_TITLE, roomDisplayName(room)));
         setWidth("420px");
         setDraggable(true);
 
@@ -105,9 +108,14 @@ public class InviteToGroupDialog extends Dialog {
 
         Button closeBtn = new Button(VaadinIcon.CLOSE.create(), e -> close());
         closeBtn.addThemeVariants(ButtonVariant.LUMO_TERTIARY, ButtonVariant.LUMO_ICON);
+        closeBtn.getElement().setAttribute("aria-label",
+                LocalizationProvider.localize("Close dialog", ChatI18N.INVITE_CLOSE_ARIA));
         getHeader().add(closeBtn);
     }
 
+    // ------------------------------------------------------------------ //
+    // LocaleChangeObserver
+    // ------------------------------------------------------------------ //
     // ------------------------------------------------------------------ //
     // Configuration
     // ------------------------------------------------------------------ //
@@ -164,6 +172,7 @@ public class InviteToGroupDialog extends Dialog {
     private void buildContent() {
         rows.setPadding(false);
         rows.setSpacing(false);
+        rows.getElement().setAttribute("role", "list");
 
         // Rebuilt on open so membership state is fresh
         addOpenedChangeListener(e -> {
@@ -190,7 +199,8 @@ public class InviteToGroupDialog extends Dialog {
         try {
             users = availableUsersSupplier.get();
         } catch (Exception ex) {
-            rows.add(new Paragraph("Could not load users: " + ex.getMessage()));
+            rows.add(new Paragraph(LocalizationProvider.localize(
+                    "Could not load users: {0}", ChatI18N.INVITE_ERROR_LOADING, ex.getMessage())));
             return;
         }
 
@@ -209,7 +219,8 @@ public class InviteToGroupDialog extends Dialog {
                 .toList();
 
         if (candidates.isEmpty()) {
-            rows.add(new Paragraph("No users available to invite."));
+            rows.add(new Paragraph(LocalizationProvider.localize(
+                    "No users available to invite.", ChatI18N.INVITE_NO_USERS)));
             return;
         }
 
@@ -225,6 +236,7 @@ public class InviteToGroupDialog extends Dialog {
         row.setAlignItems(FlexComponent.Alignment.CENTER);
         row.setWidthFull();
         row.addClassName("invite-dialog__row");
+        row.getElement().setAttribute("role", "listitem");
 
         // Left: name
         var nameSpan = new Span(user.name());
@@ -234,22 +246,36 @@ public class InviteToGroupDialog extends Dialog {
 
         // Right: state badge or invite button
         if (isMember) {
-            var badge = new Span("Already a member");
+            var badge = new Span(LocalizationProvider.localize(
+                    "Already a member", ChatI18N.INVITE_ALREADY_MEMBER));
             badge.addClassName("invite-dialog__badge--member");
+            badge.getElement().setAttribute("aria-label",
+                    user.name() + ": " + LocalizationProvider.localize(
+                            "Already a member", ChatI18N.INVITE_ALREADY_MEMBER));
             row.add(badge);
         } else if (isInvited) {
-            var badge = new Span("Invited ✓");
+            var badge = new Span(LocalizationProvider.localize(
+                    "Invited \u2713", ChatI18N.INVITE_BADGE_INVITED));
             badge.addClassName("invite-dialog__badge--invited");
+            badge.getElement().setAttribute("aria-label",
+                    user.name() + ": " + LocalizationProvider.localize(
+                            "Invited \u2713", ChatI18N.INVITE_BADGE_INVITED));
             row.add(badge);
         } else {
-            var inviteBtn = new Button("Invite");
+            var inviteBtn = new Button(LocalizationProvider.localize("Invite", ChatI18N.INVITE_BTN));
             inviteBtn.addThemeVariants(ButtonVariant.LUMO_SMALL, ButtonVariant.LUMO_PRIMARY);
+            inviteBtn.getElement().setAttribute("aria-label",
+                    LocalizationProvider.localize("Invite", ChatI18N.INVITE_BTN) + " " + user.name());
             inviteBtn.addClickListener(e -> {
                 doInvite(user.id(), user.name());
                 // Replace button with "Invited ✓" badge
                 row.remove(inviteBtn);
-                var badge = new Span("Invited ✓");
+                var badge = new Span(LocalizationProvider.localize(
+                        "Invited \u2713", ChatI18N.INVITE_BADGE_INVITED));
                 badge.addClassName("invite-dialog__badge--invited");
+                badge.getElement().setAttribute("aria-label",
+                        user.name() + ": " + LocalizationProvider.localize(
+                                "Invited \u2713", ChatI18N.INVITE_BADGE_INVITED));
                 row.add(badge);
             });
             row.add(inviteBtn);
@@ -264,24 +290,31 @@ public class InviteToGroupDialog extends Dialog {
 
     private void buildManualIdContent() {
         var hint = new Paragraph(
-                "Enter the user ID (or email) of the person you want to invite to "
-                + roomDisplayName(room) + ".");
+                LocalizationProvider.localize(
+                        "Enter the user ID (or email) of the person you want to invite to {0}.",
+                        ChatI18N.INVITE_HINT, roomDisplayName(room)));
         hint.addClassName("invite-dialog__hint");
 
         var field = new TextField();
-        field.setPlaceholder("User ID or email…");
+        field.setPlaceholder(LocalizationProvider.localize(
+                "User ID or email\u2026", ChatI18N.INVITE_FIELD_PLACEHOLDER));
         field.setWidthFull();
         field.setPrefixComponent(VaadinIcon.USER.create());
         field.setClearButtonVisible(true);
+        field.getElement().setAttribute("aria-label",
+                LocalizationProvider.localize("User ID or email\u2026", ChatI18N.INVITE_FIELD_PLACEHOLDER));
 
-        var sendBtn = new Button("Send invitation", VaadinIcon.PAPERPLANE.create());
+        var sendBtn = new Button(
+                LocalizationProvider.localize("Send invitation", ChatI18N.INVITE_SEND_BTN),
+                VaadinIcon.PAPERPLANE.create());
         sendBtn.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         sendBtn.setWidthFull();
         sendBtn.addClickListener(e -> {
             String userId = field.getValue().trim();
             if (userId.isBlank()) {
                 field.setInvalid(true);
-                field.setErrorMessage("Please enter a user ID.");
+                field.setErrorMessage(LocalizationProvider.localize(
+                        "Please enter a user ID.", ChatI18N.INVITE_FIELD_REQUIRED));
                 return;
             }
             field.setInvalid(false);
@@ -298,7 +331,8 @@ public class InviteToGroupDialog extends Dialog {
         rows.add(hint, field, sendBtn);
 
         if (!pending.isEmpty()) {
-            var sentHeader = new Span("Pending invitations:");
+            var sentHeader = new Span(LocalizationProvider.localize(
+                    "Pending invitations:", ChatI18N.INVITE_PENDING_HEADER));
             sentHeader.addClassName("invite-dialog__sent-header");
             rows.add(sentHeader);
             for (ChatInvitation inv : pending) {
@@ -311,13 +345,18 @@ public class InviteToGroupDialog extends Dialog {
         var name = new Span(inv.getInviteeId());
         name.addClassName("invite-dialog__name");
 
-        var badge = new Span("Pending ⏳");
+        var badge = new Span(LocalizationProvider.localize(
+                "Pending \u23f3", ChatI18N.INVITE_PENDING_BADGE));
         badge.addClassName("invite-dialog__badge--pending");
+        badge.getElement().setAttribute("aria-label",
+                inv.getInviteeId() + ": " + LocalizationProvider.localize(
+                        "Pending \u23f3", ChatI18N.INVITE_PENDING_BADGE));
 
         var row = new HorizontalLayout(name, badge);
         row.setAlignItems(FlexComponent.Alignment.CENTER);
         row.setWidthFull();
         row.setFlexGrow(1, name);
+        row.getElement().setAttribute("role", "listitem");
 
         var wrapper = new Div(row);
         wrapper.addClassName("invite-dialog__row-wrapper");
@@ -338,13 +377,16 @@ public class InviteToGroupDialog extends Dialog {
                     inviteeId
             );
             Notification n = Notification.show(
-                    "Invitation sent to " + inviteeName, 3000,
-                    Notification.Position.BOTTOM_END);
+                    LocalizationProvider.localize(
+                            "Invitation sent to {0}", ChatI18N.INVITE_SENT_NOTIFICATION, inviteeName),
+                    3000, Notification.Position.BOTTOM_END);
             n.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
         } catch (Exception ex) {
             Notification n = Notification.show(
-                    "Could not send invitation: " + ex.getMessage(), 4000,
-                    Notification.Position.BOTTOM_END);
+                    LocalizationProvider.localize(
+                            "Could not send invitation: {0}", ChatI18N.INVITE_ERROR_NOTIFICATION,
+                            ex.getMessage()),
+                    4000, Notification.Position.BOTTOM_END);
             n.addThemeVariants(NotificationVariant.LUMO_ERROR);
         }
     }

@@ -230,31 +230,3 @@
 .customer-form__layout > vaadin-form-layout {
   width: 100%;
 }
-
-/* Empty state in detail view (no customer selected) */
-.customer-detail__empty {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  flex: 1;
-  gap: var(--space-m, 1rem);
-  color: var(--color-body-secondary, #6b7280);
-  padding: var(--space-xl, 2rem);
-  text-align: center;
-}
-
-.customer-detail__empty-icon {
-  font-size: 3rem;
-  opacity: 0.3;
-}
-
-.customer-detail__empty-title {
-  font-weight: 600;
-  font-size: var(--font-size-lg, 1.125rem);
-}
-
-.customer-detail__empty-desc {
-  font-size: var(--font-size-sm, 0.875rem);
-}
-

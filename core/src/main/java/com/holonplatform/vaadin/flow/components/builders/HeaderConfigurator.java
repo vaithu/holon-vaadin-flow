@@ -38,6 +38,12 @@ public interface HeaderConfigurator<C extends HeaderConfigurator<C>> extends Com
 
     C hidePrefixOnDesktop(boolean hidePrefixOnDesktop);
 
+    C sticky(boolean sticky);
+
+    default C withoutSticky() {
+        return sticky(false);
+    }
+
     C breadcrumb(BreadcrumbItem... items);
     C breadcrumb(Breadcrumb breadcrumb);
 

@@ -80,7 +80,7 @@ public interface NavigationLink extends HasComponent, HasText, HasStyle, HasEnab
 	/**
 	 * {@link NavigationLink} builder.
 	 */
-	public interface Builder extends ComponentConfigurator<Builder>, HasTextConfigurator<Builder>,
+	interface Builder extends ComponentConfigurator<Builder>, HasTextConfigurator<Builder>,
 			HasStyleConfigurator<Builder>, HasSizeConfigurator<Builder>, HasEnabledConfigurator<Builder>,
 			NavigationURLBuilder<Builder>, DeferrableLocalizationConfigurator<Builder> {
 

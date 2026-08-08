@@ -15,11 +15,15 @@
  */
 package com.holonplatform.vaadin.flow.vaadinplus.components;
 
+import java.io.Serial;
 import com.holonplatform.vaadin.flow.components.builders.CarouselBuilder;
+import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
 import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.shared.Registration;
+
+import java.text.MessageFormat;
 
 /**
  * Accessible carousel (slideshow) component inspired by shadcn/ui Carousel.
@@ -31,12 +35,12 @@ import com.vaadin.flow.shared.Registration;
  *
  * <p>Component hierarchy:</p>
  * <pre>
- * Carousel                     ← root &lt;div&gt; with role="region"
- *   CarouselContent            ← scroll viewport &lt;div&gt;
- *     CarouselItem             ← individual slide &lt;div&gt;
- *       … user content …
- *   CarouselPrevious           ← ghost prev button
- *   CarouselNext               ← ghost next button
+ * Carousel                     â† root &lt;div&gt; with role="region"
+ *   CarouselContent            â† scroll viewport &lt;div&gt;
+ *     CarouselItem             â† individual slide &lt;div&gt;
+ *       â€¦ user content â€¦
+ *   CarouselPrevious           â† ghost prev button
+ *   CarouselNext               â† ghost next button
  * </pre>
  *
  * <p>Minimal usage:</p>
@@ -64,6 +68,7 @@ import com.vaadin.flow.shared.Registration;
 @StyleSheet("context://carousel.css")
 public class Carousel extends Div {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     // -----------------------------------------------------------------------
@@ -106,6 +111,7 @@ public class Carousel extends Div {
      */
     public static class SlideChangeEvent extends ComponentEvent<Carousel> {
 
+        @Serial
         private static final long serialVersionUID = 1L;
 
         private final int previousIndex;
@@ -269,7 +275,8 @@ public class Carousel extends Div {
         for (Component c : components) {
             int slideNumber = content.getItemCount() + 1;
             CarouselItem item = new CarouselItem(c);
-            item.getElement().setAttribute("aria-label", "Slide " + slideNumber);
+            item.getElement().setAttribute("aria-label",
+                    MessageFormat.format(LocalizationProvider.localize("Slide {0}", "carousel.slide_label"), slideNumber));
             content.add(item);
         }
         updateNavigationState();
@@ -288,7 +295,7 @@ public class Carousel extends Div {
     /**
      * Returns the total number of slides currently registered.
      *
-     * @return slide count ≥ 0
+     * @return slide count â‰¥ 0
      */
     public int getItemCount() {
         return content.getItemCount();
@@ -342,7 +349,7 @@ public class Carousel extends Div {
     /**
      * Navigates directly to the given zero-based slide index.
      *
-     * @param index target slide index (0 ≤ index &lt; {@link #getItemCount()})
+     * @param index target slide index (0 â‰¤ index &lt; {@link #getItemCount()})
      * @throws IndexOutOfBoundsException if {@code index} is out of range
      */
     public void scrollTo(int index) {
@@ -402,11 +409,10 @@ public class Carousel extends Div {
         next.setDisabled(!loop && (count == 0 || atLast));
 
         getElement().setAttribute("aria-label",
-                "Slide " + (currentIndex + 1) + " of " + count);
+                MessageFormat.format(LocalizationProvider.localize("Slide {0} of {1}", "carousel.slide_of_total"), currentIndex + 1, count));
     }
 
 }
-
 
 
 

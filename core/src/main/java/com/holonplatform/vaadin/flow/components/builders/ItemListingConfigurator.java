@@ -1216,7 +1216,7 @@ public interface ItemListingConfigurator<T, P, L extends ItemListing<T, P>, C ex
     /**
      * Enumeration of column text alignments.
      */
-    public enum ColumnAlignment {
+    enum ColumnAlignment {
 
         /**
          * Left aligned column text
@@ -1241,7 +1241,7 @@ public interface ItemListingConfigurator<T, P, L extends ItemListing<T, P>, C ex
      * @param <C> Concrete configurator type
      * @since 5.2.11
      */
-    public interface BaseItemListingColumnConfigurator<C extends BaseItemListingColumnConfigurator<C>> {
+    interface BaseItemListingColumnConfigurator<C extends BaseItemListingColumnConfigurator<C>> {
 
         /**
          * Set whether the column is user-resizable.
@@ -1339,7 +1339,7 @@ public interface ItemListingConfigurator<T, P, L extends ItemListing<T, P>, C ex
      * @param <C> Concrete configurator type
      * @since 5.2.0
      */
-    public interface ItemListingColumnConfigurator<T, P, C extends ItemListingColumnConfigurator<T, P, C>>
+    interface ItemListingColumnConfigurator<T, P, C extends ItemListingColumnConfigurator<T, P, C>>
             extends BaseItemListingColumnConfigurator<C> {
 
         /**
@@ -1504,7 +1504,7 @@ public interface ItemListingConfigurator<T, P, L extends ItemListing<T, P>, C ex
      * @param <B> Parent builder type
      * @since 5.2.0
      */
-    public interface ItemListingColumnBuilder<T, P, L extends ItemListing<T, P>, B extends ItemListingConfigurator<T, P, L, B>>
+    interface ItemListingColumnBuilder<T, P, L extends ItemListing<T, P>, B extends ItemListingConfigurator<T, P, L, B>>
             extends ItemListingColumnConfigurator<T, P, ItemListingColumnBuilder<T, P, L, B>> {
 
         /**
@@ -1521,7 +1521,7 @@ public interface ItemListingConfigurator<T, P, L extends ItemListing<T, P>, C ex
      *
      * @since 5.2.11
      */
-    public interface ColumnConfigurator extends BaseItemListingColumnConfigurator<ColumnConfigurator> {
+    interface ColumnConfigurator extends BaseItemListingColumnConfigurator<ColumnConfigurator> {
 
     }
 
@@ -1533,7 +1533,7 @@ public interface ItemListingConfigurator<T, P, L extends ItemListing<T, P>, C ex
      * @since 5.2.11
      */
     @FunctionalInterface
-    public interface ColumnPostProcessor<P> {
+    interface ColumnPostProcessor<P> {
 
         /**
          * Configure the column which corresponds to given <code>property</code>.
@@ -1556,7 +1556,7 @@ public interface ItemListingConfigurator<T, P, L extends ItemListing<T, P>, C ex
      * @param <B> Parent item listing builder type
      * @since 5.2.0
      */
-    public interface ItemListingContextMenuBuilder<T, P, L extends ItemListing<T, P>, B extends ItemListingConfigurator<T, P, L, B>>
+    interface ItemListingContextMenuBuilder<T, P, L extends ItemListing<T, P>, B extends ItemListingConfigurator<T, P, L, B>>
             extends
             ContextMenuConfigurator<ItemEventListener<GridMenuItem<T>, T, ItemListingItemEvent<GridMenuItem<T>, T, P>>, GridContextMenu<T>, GridMenuItem<T>, GridSubMenu<T>, ItemListingContextMenuBuilder<T, P, L, B>> {
 
@@ -1574,7 +1574,7 @@ public interface ItemListingConfigurator<T, P, L extends ItemListing<T, P>, C ex
      *
      * @param <P> Item property type
      */
-    public interface EditableItemListingSection<P> extends ItemListingSection<P, EditableItemListingRow<P>> {
+    interface EditableItemListingSection<P> extends ItemListingSection<P, EditableItemListingRow<P>> {
 
         /**
          * Adds a new row at the bottom of the section.
@@ -1597,7 +1597,7 @@ public interface ItemListingConfigurator<T, P, L extends ItemListing<T, P>, C ex
      *
      * @param <P> Item property type
      */
-    public interface EditableItemListingRow<P> extends ItemListingRow<P> {
+    interface EditableItemListingRow<P> extends ItemListingRow<P> {
 
         /**
          * Joins the cells corresponding the given columns in the row.

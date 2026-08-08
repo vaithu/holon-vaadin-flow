@@ -7,7 +7,7 @@ public enum FlexWrap {
 
     private final String className;
 
-    private FlexWrap(String className) {
+    FlexWrap(String className) {
         this.className = className;
     }
 

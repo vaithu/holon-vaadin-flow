@@ -160,7 +160,7 @@ public interface FormLayoutConfigurator<C extends FormLayoutConfigurator<C>> ext
 	/**
 	 * Base configurator.
 	 */
-	public interface BaseFormLayoutConfigurator extends FormLayoutConfigurator<BaseFormLayoutConfigurator> {
+	interface BaseFormLayoutConfigurator extends FormLayoutConfigurator<BaseFormLayoutConfigurator> {
 
 	}
 

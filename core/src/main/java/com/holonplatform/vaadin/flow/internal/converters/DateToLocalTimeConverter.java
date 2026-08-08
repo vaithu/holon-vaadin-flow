@@ -15,6 +15,7 @@
  */
 package com.holonplatform.vaadin.flow.internal.converters;
 
+import java.io.Serial;
 import java.time.LocalTime;
 import java.util.Calendar;
 import java.util.Date;
@@ -29,6 +30,7 @@ import com.vaadin.flow.data.binder.ValueContext;
  */
 public class DateToLocalTimeConverter extends AbstractLocaleSupportConverter<LocalTime, Date> {
 
+	@Serial
 	private static final long serialVersionUID = 8774267222144386868L;
 
 	/*

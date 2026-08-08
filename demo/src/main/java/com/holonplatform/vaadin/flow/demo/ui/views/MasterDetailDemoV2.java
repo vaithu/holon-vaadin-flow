@@ -7,22 +7,28 @@ import com.holonplatform.vaadin.flow.demo.ui.DemoMainLayout;
 import com.holonplatform.vaadin.flow.internal.lumo.FlexDirection;
 import com.holonplatform.vaadin.flow.navigator.annotations.OnShow;
 import com.holonplatform.vaadin.flow.navigator.annotations.QueryParameter;
+import com.holonplatform.vaadin.flow.vaadinplus.KeyValueList;
 import com.holonplatform.vaadin.flow.vaadinplus.ResponsiveDiv;
+import com.holonplatform.vaadin.flow.vaadinplus.components.*;
 import com.holonplatform.vaadin.flow.vaadinplus.components.Alert.Variant;
-import com.holonplatform.vaadin.flow.vaadinplus.components.Breadcrumb;
-import com.holonplatform.vaadin.flow.vaadinplus.components.BreadcrumbItem;
-import com.holonplatform.vaadin.flow.vaadinplus.components.BreadcrumbPage;
 import com.holonplatform.vaadin.flow.vaadinplus.components.IconBadge.Size;
-import com.holonplatform.vaadin.flow.vaadinplus.components.Sheet;
 import com.iyensoft.vaadin.flow.components.MasterDetailLayout;
+import com.iyensoft.vaadin.flow.components.builders.PanelBuilder;
 import com.iyensoft.vaadin.flow.enums.ButtonPreset;
 import com.iyensoft.vaadin.flow.enums.ViewMode;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.avatar.Avatar;
+import com.vaadin.flow.component.avatar.AvatarVariant;
+import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.menubar.MenuBarVariant;
 import com.vaadin.flow.data.renderer.LitRenderer;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.theme.lumo.LumoIcon;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Master-Detail demo — showcases the two-mode strategy with URL sync:
@@ -48,11 +54,15 @@ import com.vaadin.flow.router.Route;
 @Route(value = "master-detail-v2", layout = DemoMainLayout.class)
 public class MasterDetailDemoV2 extends Div {
 
+    private static final Logger log = LoggerFactory.getLogger(MasterDetailDemoV2.class);
     private final transient ProductService productService;
+    private Product currentProduct;
 
     // ── URL sync ──────────────────────────────────────────────────────────────
 
-    /** Injected from the {@code ?id=} query parameter on every navigation. */
+    /**
+     * Injected from the {@code ?id=} query parameter on every navigation.
+     */
     @QueryParameter("id")
     private String urlId;
 
@@ -76,16 +86,20 @@ public class MasterDetailDemoV2 extends Div {
      * syncDetail() is only ever called AFTER the setup consumer, so these
      * are always non-null by the time syncDetail() executes.
      */
-    private Avatar         avatar;
-    private Span           headingSpan;
+    private Avatar avatar;
+    private Span headingSpan;
     private BreadcrumbPage currentPage;
+    private IconBadge detailCategorySpan;
+    private EntityFormPanel<Product> overviewForm;
+    private IconBadge detailActiveSpan;
+    private KeyValueList overviewKeyValueList;
 
     // ── Constructor ───────────────────────────────────────────────────────────
 
     public MasterDetailDemoV2(ProductService productService) {
         this.productService = productService;
         ResponsiveDiv.configure(this)
-                .slotOnce(ViewMode.MOBILE,  () -> buildLayout(ViewMode.MOBILE))
+                .slotOnce(ViewMode.MOBILE, () -> buildLayout(ViewMode.MOBILE))
                 .slotOnce(ViewMode.DESKTOP, () -> buildLayout(ViewMode.DESKTOP))
                 .fullHeight()
                 .build();
@@ -104,9 +118,14 @@ public class MasterDetailDemoV2 extends Div {
      * </ul>
      */
     private MasterDetailLayout<Product> buildLayout(ViewMode viewMode) {
+
+        PanelBuilder tabContentPanelBuilder = Components.panel();
+
+
         MasterDetailLayout<Product> layout = Components.masterDetail(Product.class)
                 .viewMode(viewMode)
-                .withMobileSheet(Sheet.Side.RIGHT)   // ignored on desktop
+                .withMobileSheet(Sheet.Side.RIGHT)
+                // ignored on desktop
                 /*
                  * URL sync — desktop only at runtime:
                  *   idExtractor  : Product → "42"  (pushed to ?id= on every click)
@@ -133,14 +152,25 @@ public class MasterDetailDemoV2 extends Div {
                                 .search("Search products…")
                                 .withFilterPanel()
                                 .fetch((q, text, filter, sort) ->
-                                        productService.fetch(q.getOffset(), q.getLimit(), text, filter, sort)))
+                                               productService.fetch(q.getOffset(), q.getLimit(), text, filter, sort)))
                         .selectionKey(Product::getId))
                 .lazyDetail(d -> d
                         .header(h -> h
                                 .breadcrumb(detailBreadcrumb())
                                 .prefix(detailAvatar())
                                 .heading(detailHeading())
-                                .details(detailStatus()))
+                                .details(detailStatus())
+                                .actions(
+                                        detailActions(viewMode)
+                                )
+                                .tabs(
+                                        Components.lazyTabs()
+                                                .withLazyTab("Overview", () -> overviewTab())
+                                                .withContainer(tabContentPanelBuilder.build())
+                                                .build()
+                                )
+                        )
+                        .content(tabContentPanelBuilder.build())
                         .withDetailSync(this::syncDetail))
                 .build();
 
@@ -161,6 +191,59 @@ public class MasterDetailDemoV2 extends Div {
         }
 
         return layout;
+    }
+
+    private Component[] detailActions(ViewMode viewMode) {
+        if (viewMode == ViewMode.DESKTOP) {
+            return new Component[]{
+                    Components.button().preset(ButtonPreset.EDIT)
+                            .small()
+                            .onClick(event -> editProduct())
+                            .build()
+                    ,
+                    Components.menuBar()
+                            .withThemeVariants(MenuBarVariant.SMALL)
+                            .withMenuItem("More")
+                            .withSubMenu(s ->
+                                                 s.withMenuItem("Clone Product", event -> {})
+                                                         .withMenuItem("Mark Inactive", event -> {})
+
+
+                            )
+                            .build()
+                    ,
+                    Components.button().preset(ButtonPreset.CLOSE)
+                            .small()
+                            .error()
+                            .build()
+            };
+        } else {
+            return new Component[]{
+                    Components.menuBar()
+                            .withThemeVariants(MenuBarVariant.LUMO_TERTIARY_INLINE)
+                            .withMenuItem(VaadinIcon.ELLIPSIS_DOTS_V.create())
+                            .withSubMenu(s ->
+                                                 s.withMenuItem(LumoIcon.EDIT.create(),"Edit", event -> {})
+                                                         .withMenuItem("Clone Product", event -> {})
+                                                         .withMenuItem("Mark Inactive", event -> {})
+
+                            )
+
+                            .build()
+            };
+        }
+    }
+
+    private Component overviewTab() {
+        overviewKeyValueList = Components.keyValueList();
+
+//        return new Button("dskfjsldkfj");
+
+        return overviewKeyValueList.getContent();
+    }
+
+    private void editProduct() {
+
     }
 
     // ── Navigation lifecycle ──────────────────────────────────────────────────
@@ -199,7 +282,9 @@ public class MasterDetailDemoV2 extends Div {
     // ── Master panel helpers ──────────────────────────────────────────────────
 
     private Component masterActions() {
-        return Components.button().preset(ButtonPreset.NEW).build();
+        return Components.button().preset(ButtonPreset.NEW)
+                .small()
+                .build();
     }
 
     private Component masterBadges() {
@@ -238,24 +323,28 @@ public class MasterDetailDemoV2 extends Div {
         currentPage = new BreadcrumbPage("—");
         return Components.breadcrumb()
                 .addWithSeparators(
-                        new BreadcrumbItem("Home",     IndexView.class),
+                        new BreadcrumbItem("Home", IndexView.class),
                         new BreadcrumbItem("Products", MasterDetailDemoV2.class),
                         currentPage)
                 .build();
     }
 
     private Avatar detailAvatar() {
-        return avatar = Components.avatar("?").build();
+        return avatar = Components.avatar("?")
+                .withThemeVariants(AvatarVariant.XLARGE)
+                .build();
     }
 
     private Span detailHeading() {
         return headingSpan = new Span("Select a product");
     }
 
-    private Component detailStatus() {
-        return Components.hl()
-                .addToStart(Components.iconBadge().size(Size.XS).variant(Variant.SUCCESS).build())
-                .build();
+    private Component[] detailStatus() {
+        return new Component[]{
+                detailCategorySpan = Components.iconBadge().size(Size.XS).variant(Variant.SUCCESS).build()
+                ,
+                detailActiveSpan = Components.iconBadge().size(Size.XS).variant(Variant.SUCCESS).build()
+        };
     }
 
     // ── Sync handler ─────────────────────────────────────────────────────────
@@ -272,9 +361,23 @@ public class MasterDetailDemoV2 extends Div {
      * </ul>
      */
     private void syncDetail(Product product) {
+        this.currentProduct = product;
+
         avatar.setName(product.getName());
         headingSpan.setText(product.getName());
         currentPage.setText(product.getName());
+        detailCategorySpan.setText(product.getCategory());
+
+        if (product.isActive()) {
+            detailActiveSpan.setVariant(Variant.INFO);
+            detailActiveSpan.setText("Active");
+        } else {
+            detailActiveSpan.setVariant(Variant.DESTRUCTIVE);
+            detailActiveSpan.setText("Inactive");
+        }
+
+        overviewKeyValueList.asFields()
+                .addFromBean(product, "category", "name", "active");
 
         // URL push — desktopLayout is null when the mobile slot is active,
         // so this is automatically skipped on small screens.

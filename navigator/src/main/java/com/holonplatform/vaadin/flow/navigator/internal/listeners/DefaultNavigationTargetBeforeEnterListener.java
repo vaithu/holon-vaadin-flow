@@ -15,6 +15,7 @@
  */
 package com.holonplatform.vaadin.flow.navigator.internal.listeners;
 
+import java.io.Serial;
 import com.holonplatform.auth.AuthContext;
 import com.holonplatform.auth.Authentication;
 import com.holonplatform.auth.annotations.Authenticate;
@@ -48,6 +49,7 @@ import java.util.Set;
 public class DefaultNavigationTargetBeforeEnterListener extends AbstractNavigationTargetListener
 		implements BeforeEnterListener {
 
+	@Serial
 	private static final long serialVersionUID = 4407342989579425922L;
 
 	/*
@@ -132,7 +134,7 @@ public class DefaultNavigationTargetBeforeEnterListener extends AbstractNavigati
 			}
 			// check authorization
 			final Set<String> roles = configuration.getAuthorization();
-			if (!roles.isEmpty() && !authContext.isPermittedAny(roles.toArray(new String[roles.size()]))) {
+			if (!roles.isEmpty() && !authContext.isPermittedAny(roles.toArray(new String[0]))) {
 				// redirect to error
 				event.rerouteToError(ForbiddenNavigationException.class,
 						LocalizationProvider.localize(ForbiddenNavigationException.DEFAULT_MESSAGE,

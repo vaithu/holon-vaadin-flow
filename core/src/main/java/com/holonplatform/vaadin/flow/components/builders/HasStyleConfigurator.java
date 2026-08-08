@@ -47,7 +47,7 @@ public interface HasStyleConfigurator<C extends HasStyleConfigurator<C>> {
 	/**
 	 * Base {@link HasStyleConfigurator}.
 	 */
-	public interface BaseHasStyleConfigurator extends HasStyleConfigurator<BaseHasStyleConfigurator> {
+	interface BaseHasStyleConfigurator extends HasStyleConfigurator<BaseHasStyleConfigurator> {
 
 	}
 

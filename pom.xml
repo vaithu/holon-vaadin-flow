@@ -55,7 +55,9 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-		<java.version>21</java.version>
+		<java.version>25</java.version>
+		<maven.compiler.release>25</maven.compiler.release>
+		<maven-compiler-plugin.version>3.15.0</maven-compiler-plugin.version>
 
 		<!-- Holon core -->
 		<holon.core.version>10.0.0</holon.core.version>
@@ -79,6 +81,11 @@
 		<jetbrains.annotations.version>26.0.2</jetbrains.annotations.version>
 		<guava.version>33.5.0-jre</guava.version>
 
+		<!-- HikariCP — managed explicitly for version transparency and easy CVE override.
+		     Spring Boot 4.1.0 ships HikariCP 6.x via spring-boot-starter-jdbc.
+		     No known CVEs as of 2026-07-10; bump this property if a CVE arises. -->
+		<hikaricp.version>6.3.0</hikaricp.version>
+
 		<!-- CVE-patched dependency versions -->
 		<!-- h2: fixes CVE-2021-23463, CVE-2021-42392, CVE-2022-23221, CVE-2022-45868 -->
 		<h2.version>2.3.232</h2.version>
@@ -99,6 +106,12 @@
 		<snakeyaml.version>2.3</snakeyaml.version>
 		<!-- commons-lang3: fixes CVE-2025-48924 -->
 		<commons-lang3.version>3.18.0</commons-lang3.version>
+
+        <!-- Code quality plugin versions -->
+        <spotbugs-maven-plugin.version>4.10.3.0</spotbugs-maven-plugin.version>
+        <findsecbugs.version>1.13.0</findsecbugs.version>
+        <maven-pmd-plugin.version>3.26.0</maven-pmd-plugin.version>
+        <maven-checkstyle-plugin.version>3.6.0</maven-checkstyle-plugin.version>
 
 	</properties>
 
@@ -286,6 +299,21 @@
 				<version>${commons-lang3.version}</version>
 			</dependency>
 
+			<!-- P6Spy — SQL logging proxy, raw library (Spring Boot 4 compatible) -->
+			<dependency>
+				<groupId>p6spy</groupId>
+				<artifactId>p6spy</artifactId>
+				<version>3.9.1</version>
+			</dependency>
+
+			<!-- HikariCP — explicit version pin; Spring Boot 4.1 manages this transitively
+			     via spring-boot-starter-jdbc, but declared here for CVE override capability -->
+			<dependency>
+				<groupId>com.zaxxer</groupId>
+				<artifactId>HikariCP</artifactId>
+				<version>${hikaricp.version}</version>
+			</dependency>
+
 			<!-- Line Awesome icon font â€“ static CSS/font assets only, no Java API coupling -->
 			<dependency>
 				<groupId>org.parttio</groupId>
@@ -296,6 +324,47 @@
 	</dependencyManagement>
 
 	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<version>${maven-compiler-plugin.version}</version>
+					<configuration>
+						<release>${maven.compiler.release}</release>
+						<parameters>true</parameters>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-maven-plugin</artifactId>
+					<version>${spring-boot.version}</version>
+				</plugin>
+				<plugin>
+					<groupId>com.vaadin</groupId>
+					<artifactId>vaadin-maven-plugin</artifactId>
+					<version>${vaadin.version}</version>
+				</plugin>
+                <!-- ===== SpotBugs + FindSecBugs ===== -->
+                <plugin>
+                    <groupId>com.github.spotbugs</groupId>
+                    <artifactId>spotbugs-maven-plugin</artifactId>
+                    <version>${spotbugs-maven-plugin.version}</version>
+                    <configuration>
+                        <effort>Max</effort>
+                        <threshold>Low</threshold>
+                        <failOnError>true</failOnError>
+                        <plugins>
+                            <plugin>
+                                <groupId>com.h3xstream.findsecbugs</groupId>
+                                <artifactId>findsecbugs-plugin</artifactId>
+                                <version>${findsecbugs.version}</version>
+                            </plugin>
+                        </plugins>
+                    </configuration>
+                </plugin>
+			</plugins>
+		</pluginManagement>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>

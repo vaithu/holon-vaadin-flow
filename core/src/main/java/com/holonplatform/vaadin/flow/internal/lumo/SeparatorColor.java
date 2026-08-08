@@ -26,7 +26,7 @@ public enum SeparatorColor {
 
     private final String className;
 
-    private SeparatorColor(String className) {
+    SeparatorColor(String className) {
         this.className = className;
     }
 

@@ -15,8 +15,11 @@
  */
 package com.holonplatform.vaadin.flow.vaadinplus.components;
 
+import java.io.Serial;
 import com.holonplatform.vaadin.flow.components.builders.TimelineStepperBuilder;
 import com.holonplatform.vaadin.flow.components.builders.TimelineStepperConfigurator;
+import com.holonplatform.core.i18n.Localizable;
+import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
 import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.dependency.JsModule;
 import com.vaadin.flow.component.dependency.StyleSheet;
@@ -57,10 +60,14 @@ import java.util.stream.Collectors;
 @StyleSheet("context://timeline.css")
 public class TimelineStepper extends Component implements HasSize, HasEnabled {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     /** Tracks the number of active {@link EntryClickEvent} listeners. */
     private int clickListenerCount = 0;
+
+    /** Stored localizable aria-label; re-resolved on locale change. */
+    private Localizable ariaLabelLocalizable;
 
     // -----------------------------------------------------------------------
     // Severity enum
@@ -72,10 +79,10 @@ public class TimelineStepper extends Component implements HasSize, HasEnabled {
      * <p>Each constant maps to the lowercase JSON value expected by the
      * {@code <timeline-stepper>} web component:</p>
      * <ul>
-     *   <li>{@link #INFO}    → {@code "info"}</li>
-     *   <li>{@link #SUCCESS} → {@code "success"}</li>
-     *   <li>{@link #WARNING} → {@code "warning"}</li>
-     *   <li>{@link #ERROR}   → {@code "error"}</li>
+     *   <li>{@link #INFO}    â†’ {@code "info"}</li>
+     *   <li>{@link #SUCCESS} â†’ {@code "success"}</li>
+     *   <li>{@link #WARNING} â†’ {@code "warning"}</li>
+     *   <li>{@link #ERROR}   â†’ {@code "error"}</li>
      * </ul>
      */
     public enum Severity {
@@ -88,7 +95,7 @@ public class TimelineStepper extends Component implements HasSize, HasEnabled {
     }
 
     // -----------------------------------------------------------------------
-    // AuditEntry — convenience entry builder/DTO
+    // AuditEntry â€” convenience entry builder/DTO
     // -----------------------------------------------------------------------
 
     /**
@@ -193,10 +200,48 @@ public class TimelineStepper extends Component implements HasSize, HasEnabled {
     // -----------------------------------------------------------------------
 
     /** Creates an empty timeline with default settings. */
-    public TimelineStepper() {}
+    public TimelineStepper() {
+        getElement().setAttribute("role", "region");
+    }
 
     // -----------------------------------------------------------------------
-    // Configuration (attribute-based — synced to the web component)
+    // A11Y + I18N â€” aria-label and locale support
+    // -----------------------------------------------------------------------
+
+    /**
+     * Sets the accessible name for this timeline region.
+     *
+     * @param label the ARIA label (not null)
+     */
+    public void setAriaLabel(String label) {
+        this.ariaLabelLocalizable = null;
+        if (label != null && !label.isBlank()) {
+            getElement().setAttribute("aria-label", label);
+        }
+    }
+
+    /**
+     * Sets the accessible name from a {@link Localizable} descriptor.
+     * Re-resolved on each locale change.
+     *
+     * @param label the localizable accessible name (not null)
+     */
+    public void setAriaLabel(Localizable label) {
+        this.ariaLabelLocalizable = label;
+        applyAriaLabel();
+    }
+    private void applyAriaLabel() {
+        if (ariaLabelLocalizable == null) return;
+        String resolved = LocalizationProvider.localize(ariaLabelLocalizable)
+                .orElseGet(() -> ariaLabelLocalizable.getMessage() != null
+                        ? ariaLabelLocalizable.getMessage() : "");
+        if (!resolved.isBlank()) {
+            getElement().setAttribute("aria-label", resolved);
+        }
+    }
+
+    // -----------------------------------------------------------------------
+    // Configuration (attribute-based â€” synced to the web component)
     // -----------------------------------------------------------------------
 
     /**
@@ -286,7 +331,7 @@ public class TimelineStepper extends Component implements HasSize, HasEnabled {
     }
 
     // -----------------------------------------------------------------------
-    // Data mutation API (JS function calls — fire-and-forget after first render)
+    // Data mutation API (JS function calls â€” fire-and-forget after first render)
     // -----------------------------------------------------------------------
 
     /**
@@ -354,7 +399,7 @@ public class TimelineStepper extends Component implements HasSize, HasEnabled {
     // -----------------------------------------------------------------------
 
     /**
-     * Fired when the IntersectionObserver sentinel enters the viewport —
+     * Fired when the IntersectionObserver sentinel enters the viewport â€”
      * i.e. the user has scrolled near the bottom and the next page should load.
      */
     @DomEvent("tl-load-more")
@@ -470,4 +515,3 @@ public class TimelineStepper extends Component implements HasSize, HasEnabled {
                 .collect(Collectors.joining(",")) + "]";
     }
 }
-

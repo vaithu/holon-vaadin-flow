@@ -15,7 +15,9 @@
  */
 package com.holonplatform.vaadin.flow.vaadinplus.components;
 
+import java.io.Serial;
 import com.holonplatform.vaadin.flow.components.Components;
+import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
@@ -40,6 +42,7 @@ import com.vaadin.flow.component.icon.VaadinIcon;
  */
 public class PaginationNext extends Div {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     /**
@@ -47,14 +50,18 @@ public class PaginationNext extends Div {
      */
     public PaginationNext() {
         addClassName("pagination__next");
-        getElement().setAttribute("aria-label", "Go to next page");
+        getElement().setAttribute("aria-label",
+                LocalizationProvider.localize("Go to next page", "pagination.next_aria"));
         getElement().setAttribute("tabindex", "0");
 
-        Span label = Components.span().text("Next").styleName("pagination__nav-label").build();
+        Span label = Components.span()
+                .text(LocalizationProvider.localize("Next", "pagination.next_label"))
+                .styleName("pagination__nav-label").build();
         add(label);
 
         Icon chevron = new Icon(VaadinIcon.CHEVRON_RIGHT);
         chevron.addClassName("pagination__nav-icon");
+        chevron.getElement().setAttribute("aria-hidden", "true");
         add(chevron);
     }
 
@@ -75,4 +82,3 @@ public class PaginationNext extends Div {
         }
     }
 }
-

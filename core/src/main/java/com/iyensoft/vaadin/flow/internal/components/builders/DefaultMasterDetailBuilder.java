@@ -28,6 +28,7 @@ public class DefaultMasterDetailBuilder<T>
 
     @Override
     public MasterDetailLayout<T> build() {
+        applyPostProcessors();
         return getComponent();
     }
 }

@@ -15,9 +15,11 @@
  */
 package com.holonplatform.vaadin.flow.vaadinplus.components;
 
+import java.io.Serial;
 import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.vaadin.flow.components.Components;
 import com.holonplatform.vaadin.flow.components.builders.SheetBuilder;
+import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
 import com.iyensoft.vaadin.flow.enums.HeadingLevel;
 import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.button.Button;
@@ -38,23 +40,23 @@ import java.util.function.Supplier;
  *
  * <p>Supported sides:</p>
  * <ul>
- *   <li>{@link Side#BOTTOM} — slides up from the bottom (primary mobile pattern)</li>
- *   <li>{@link Side#LEFT}   — slides in from the left  (navigation drawer)</li>
- *   <li>{@link Side#RIGHT}  — slides in from the right (detail / filter panel)</li>
+ *   <li>{@link Side#BOTTOM} â€” slides up from the bottom (primary mobile pattern)</li>
+ *   <li>{@link Side#LEFT}   â€” slides in from the left  (navigation drawer)</li>
+ *   <li>{@link Side#RIGHT}  â€” slides in from the right (detail / filter panel)</li>
  * </ul>
  *
  * <p>Composition:</p>
  * <pre>
  * Sheet  (.sheet + .sheet--{side} [.sheet--fullscreen-mobile])
- *  ├── Backdrop     (.sheet__backdrop)       — dimmed overlay, click-to-close
- *  └── Panel        (.sheet__panel)          — the sliding surface
- *       ├── Handle  (.sheet__handle)         — drag indicator (BOTTOM only, visual)
- *       ├── Header  (.sheet__header)         — {@link Header} with nav buttons + title
- *       │    ├── prefix  → back Button (.sheet__btn-back)
- *       │    ├── column  → SheetTitle heading + SheetDescription details
- *       │    └── actions → close Button (.sheet__btn-close)
- *       ├── Content (.sheet__content)        — arbitrary user content
- *       └── Footer  (.sheet__footer)         — optional action / meta row
+ *  â”œâ”€â”€ Backdrop     (.sheet__backdrop)       â€” dimmed overlay, click-to-close
+ *  â””â”€â”€ Panel        (.sheet__panel)          â€” the sliding surface
+ *       â”œâ”€â”€ Handle  (.sheet__handle)         â€” drag indicator (BOTTOM only, visual)
+ *       â”œâ”€â”€ Header  (.sheet__header)         â€” {@link Header} with nav buttons + title
+ *       â”‚    â”œâ”€â”€ prefix  â†’ back Button (.sheet__btn-back)
+ *       â”‚    â”œâ”€â”€ column  â†’ SheetTitle heading + SheetDescription details
+ *       â”‚    â””â”€â”€ actions â†’ close Button (.sheet__btn-close)
+ *       â”œâ”€â”€ Content (.sheet__content)        â€” arbitrary user content
+ *       â””â”€â”€ Footer  (.sheet__footer)         â€” optional action / meta row
  * </pre>
  *
  * <p>Both nav buttons are shown by default and can be hidden via
@@ -81,10 +83,11 @@ import java.util.function.Supplier;
 @StyleSheet("context://sheet.css")
 public class Sheet extends Div {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     // -----------------------------------------------------------------------
-    // JS — browser History API bridge
+    // JS â€” browser History API bridge
     // -----------------------------------------------------------------------
 
     private static final String JS_PUSH_HISTORY = """
@@ -120,11 +123,11 @@ public class Sheet extends Div {
 
     /** The edge from which the Sheet panel slides in. */
     public enum Side {
-        /** Slides up from the bottom — primary mobile pattern (action sheet / bottom drawer). */
+        /** Slides up from the bottom â€” primary mobile pattern (action sheet / bottom drawer). */
         BOTTOM("sheet--bottom"),
-        /** Slides in from the left — navigation drawer. */
+        /** Slides in from the left â€” navigation drawer. */
         LEFT("sheet--left"),
-        /** Slides in from the right — detail panel / filter panel. */
+        /** Slides in from the right â€” detail panel / filter panel. */
         RIGHT("sheet--right");
 
         private final String cssClass;
@@ -184,31 +187,41 @@ public class Sheet extends Div {
     public Sheet(Side side) {
         addClassName("sheet");
 
-        // Backdrop — full-screen dimmed overlay
+        // Backdrop â€” full-screen dimmed overlay
         Div backdrop = Components.div().styleName("sheet__backdrop").build();
         backdrop.addClickListener(e -> { if (closeOnBackdropClick) close(); });
 
-        // Panel — the visible sliding surface
+        // Panel â€” the visible sliding surface
         this.panel = Components.div().styleName("sheet__panel").build();
 
-        // Handle — drag indicator (visual only, BOTTOM sheets on mobile)
+        // Handle â€” drag indicator (visual only, BOTTOM sheets on mobile)
         this.handle = Components.div().styleName("sheet__handle").build();
 
-        // Back button — closes the sheet (mirrors hardware back button)
+        // Back button â€” closes the sheet (mirrors hardware back button)
         this.backButton = Components.button().icon(LineAwesomeIcon.ARROW_LEFT_SOLID.create())
-                .styleName("sheet__btn-back").ariaLabel("Back").withClickListener(e -> close()).build();
+                .styleName("sheet__btn-back")
+                .ariaLabel(LocalizationProvider.localize("Back", "sheet.back_aria"))
+                .withClickListener(e -> close()).build();
         this.backButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY_INLINE, ButtonVariant.LUMO_ICON);
 
-        // Close button — closes the sheet and cleans up history entry
+        // Close button â€” closes the sheet and cleans up history entry
         this.closeButton = Components.button().icon(LineAwesomeIcon.TIMES_SOLID.create())
-                .styleName("sheet__btn-close").ariaLabel("Close").withClickListener(e -> close()).build();
+                .styleName("sheet__btn-close")
+                .ariaLabel(LocalizationProvider.localize("Close", "sheet.close_aria"))
+                .withClickListener(e -> close()).build();
         this.closeButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY_INLINE, ButtonVariant.LUMO_ICON);
 
         // Header: prefix = back, column = title+description, actions = close
         this.header = createDefaultHeader();
 
-        // Content slot — holds arbitrary user components
+        // Content slot â€” holds arbitrary user components
         this.contentSlot = Components.div().styleName("sheet__content").build();
+
+        // ARIA: panel is the modal dialog surface
+        this.panel.getElement().setAttribute("role", "dialog");
+        this.panel.getElement().setAttribute("aria-modal", "true");
+        this.panel.getElement().setAttribute("aria-label",
+                LocalizationProvider.localize("Sheet panel", "sheet.panel_aria_label"));
 
         rebuildPanel();
         add(backdrop, panel);
@@ -216,7 +229,6 @@ public class Sheet extends Div {
         setSide(side);
         syncHeaderVisibility();
     }
-
     // -----------------------------------------------------------------------
     // Static factories
     // -----------------------------------------------------------------------
@@ -235,7 +247,7 @@ public class Sheet extends Div {
     }
 
     // -----------------------------------------------------------------------
-    // Lifecycle — open / close
+    // Lifecycle â€” open / close
     // -----------------------------------------------------------------------
 
     /**
@@ -265,7 +277,7 @@ public class Sheet extends Div {
     /**
      * Closes the sheet: triggers slide-out CSS transition, cleans up history entry via
      * {@code replaceState} (does NOT fire {@code popstate}), fires {@code onClose}.
-     * Idempotent — safe to call on an already-closed sheet.
+     * Idempotent â€” safe to call on an already-closed sheet.
      */
     public void close() {
         if (!isOpen()) return;
@@ -282,7 +294,7 @@ public class Sheet extends Div {
 
     /**
      * Removes the sheet from the UI DOM entirely.
-     * For routine open/close cycles prefer {@link #close()} — the element stays attached.
+     * For routine open/close cycles prefer {@link #close()} â€” the element stays attached.
      */
     public void detach() {
         if (isAttached()) {
@@ -293,12 +305,12 @@ public class Sheet extends Div {
     }
 
     // -----------------------------------------------------------------------
-    // @ClientCallable — hardware back button bridge
+    // @ClientCallable â€” hardware back button bridge
     // -----------------------------------------------------------------------
 
     /**
      * Called from JS when {@code popstate} fires and this sheet is top of the stack.
-     * The browser has already consumed the history entry — no further manipulation needed.
+     * The browser has already consumed the history entry â€” no further manipulation needed.
      */
     @ClientCallable
     public void closeFromHistory() {
@@ -337,6 +349,20 @@ public class Sheet extends Div {
         ensureHeader();
         this.currentTitle = title;
         header.setHeading(title != null ? title : HeadingLevel.NONE.getComponent(""));
+        if (title != null) {
+            // Ensure the title has an ID so the panel can be labelled by it
+            String titleId = title.getId().orElseGet(() -> {
+                String id = "sheet-title-" + Integer.toHexString(System.identityHashCode(title));
+                title.setId(id);
+                return id;
+            });
+            panel.getElement().setAttribute("aria-labelledby", titleId);
+            panel.getElement().removeAttribute("aria-label");
+        } else {
+            panel.getElement().removeAttribute("aria-labelledby");
+            panel.getElement().setAttribute("aria-label",
+                    LocalizationProvider.localize("Sheet panel", "sheet.panel_aria_label"));
+        }
         syncHeaderVisibility();
     }
 
@@ -434,8 +460,8 @@ public class Sheet extends Div {
      * Sets whether the semi-transparent backdrop is shown behind the panel when the sheet opens.
      *
      * <ul>
-     *   <li>{@code true} (default) — backdrop dims the content behind the sheet</li>
-     *   <li>{@code false} — the sheet slides in on top of the existing view with no dimming;
+     *   <li>{@code true} (default) â€” backdrop dims the content behind the sheet</li>
+     *   <li>{@code false} â€” the sheet slides in on top of the existing view with no dimming;
      *       useful for persistent side panels or filter drawers where the user needs to
      *       interact with the background after closing</li>
      * </ul>
@@ -456,17 +482,17 @@ public class Sheet extends Div {
 
     /**
      * Controls whether the panel (and backdrop) start below the application header on
-     * non-mobile screens (≥ 768 px), keeping the AppBar and its navigation buttons visible.
+     * non-mobile screens (â‰¥ 768 px), keeping the AppBar and its navigation buttons visible.
      *
      * <ul>
-     *   <li>{@code false} (default) — panel covers the full viewport height, including
+     *   <li>{@code false} (default) â€” panel covers the full viewport height, including
      *       the AppBar area</li>
-     *   <li>{@code true} — panel starts below the AppBar; uses the CSS custom property
+     *   <li>{@code true} â€” panel starts below the AppBar; uses the CSS custom property
      *       {@code --vaadin-app-layout-navbar-offset-top} for the top offset.
      *       Vaadin {@code AppLayout} sets this automatically. For custom AppBars, declare
      *       it in your application CSS:
      *       <pre>:root &#123; --vaadin-app-layout-navbar-offset-top: 64px; &#125;</pre>
-     *       Has no effect on mobile (≤ 767 px) or on {@link Side#BOTTOM} sheets.</li>
+     *       Has no effect on mobile (â‰¤ 767 px) or on {@link Side#BOTTOM} sheets.</li>
      * </ul>
      *
      * @param belowHeader {@code true} to keep the AppBar visible above the sheet
@@ -596,5 +622,4 @@ public class Sheet extends Div {
         });
     }
 }
-
 

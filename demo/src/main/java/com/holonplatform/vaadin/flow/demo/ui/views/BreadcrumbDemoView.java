@@ -109,7 +109,7 @@ public class BreadcrumbDemoView extends Div {
                 // Override the separator factory with any icon or character.
                 Breadcrumb bc = new Breadcrumb();
                 bc.setSeparatorSupplier(
-                    () -> new BreadcrumbSeparator(MaterialSymbol.CHEVRON_RIGHT)
+                    () -> new BreadcrumbSeparator(VaadinIcon.CHEVRON_RIGHT)
                 );
                 bc.addWithSeparators(
                     new BreadcrumbItem("Home",     HomeView.class),

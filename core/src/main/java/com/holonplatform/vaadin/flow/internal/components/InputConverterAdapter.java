@@ -15,6 +15,7 @@
  */
 package com.holonplatform.vaadin.flow.internal.components;
 
+import java.io.Serial;
 import com.holonplatform.core.Registration;
 import com.holonplatform.core.internal.utils.ObjectUtils;
 import com.holonplatform.vaadin.flow.components.HasLabel;
@@ -46,6 +47,7 @@ import java.util.function.Function;
  */
 public class InputConverterAdapter<T, V> implements Input<V> {
 
+	@Serial
 	private static final long serialVersionUID = -2429215257047725962L;
 
 	private final Input<T> input;

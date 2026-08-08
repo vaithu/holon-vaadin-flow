@@ -15,6 +15,7 @@
  */
 package com.holonplatform.vaadin.flow.internal.utils;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -26,6 +27,7 @@ import java.util.Set;
  */
 public final class CollectionUtils implements Serializable {
 
+	@Serial
 	private static final long serialVersionUID = -4296571955394598665L;
 
 	private CollectionUtils() {

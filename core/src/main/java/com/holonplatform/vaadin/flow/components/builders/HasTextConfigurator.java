@@ -90,7 +90,7 @@ public interface HasTextConfigurator<C extends HasTextConfigurator<C>> {
 	/**
 	 * Base {@link HasTextConfigurator}.
 	 */
-	public interface BaseHasTextConfigurator extends HasTextConfigurator<BaseHasTextConfigurator> {
+	interface BaseHasTextConfigurator extends HasTextConfigurator<BaseHasTextConfigurator> {
 
 	}
 

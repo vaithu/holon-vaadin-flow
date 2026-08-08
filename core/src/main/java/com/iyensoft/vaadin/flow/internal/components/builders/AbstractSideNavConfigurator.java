@@ -16,7 +16,7 @@ import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.shared.HasTooltip;
 import com.vaadin.flow.component.sidenav.SideNav;
 import com.vaadin.flow.component.sidenav.SideNavItem;
-import com.vaadin.flow.component.textfield.TextField;
+import com.holonplatform.vaadin.flow.components.Input;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.RouteParameters;
 
@@ -161,25 +161,41 @@ public abstract class AbstractSideNavConfigurator<C extends SideNavConfigurator<
         var host = Components.div().styleName("sidenav-host").build();
         host.addAttachListener(e -> e.getUI().getPage().addStyleSheet("context://menu.css"));
         if (searchEnabled) {
-            var searchField = new TextField();
-            searchField.setPlaceholder(searchPlaceholder);
-            searchField.addClassName("sidenav-search");
-            searchField.setClearButtonVisible(true);
-            searchField.setPrefixComponent(VaadinIcon.SEARCH.create());
-            searchField.setValueChangeMode(ValueChangeMode.LAZY);
-            searchField.addValueChangeListener(e -> filterRecursive(e.getValue()));
-            host.add(searchField);
+            Input<String> searchField = Components.input.string()
+                    .placeholder(searchPlaceholder)
+                    .styleName("sidenav-search")
+                    .clearButtonVisible(true)
+                    .prefixComponent(VaadinIcon.SEARCH.create())
+                    .valueChangeMode(ValueChangeMode.LAZY)
+                    .withValueChangeListener(e -> filterRecursive(e.getValue()))
+                    .build();
+            host.add(searchField.getComponent());
         }
         host.add(sideNav);
         if (collapseEnabled) {
+            // Icon stays CHEVRON_LEFT at all times; menu.css rotates it 180° when
+            // sidenav-host--collapsed is present, giving the visual expand/collapse cue.
+            // The JS additionally toggles `sidenav-collapsed` on the nearest
+            // vaadin-app-layout host so its --shell-nav-width token is overridden,
+            // shrinking the actual drawer and letting the main content fill the space.
             Button toggle = Components.button()
                     .styleName("sidenav-collapse-toggle")
                     .icon(VaadinIcon.CHEVRON_LEFT)
                     .withClickListener(e -> {
                         if (host.hasClassName("sidenav-host--collapsed")) {
+                            // Expand
                             host.removeClassName("sidenav-host--collapsed");
+                            e.getSource().getUI().ifPresent(ui -> ui.getPage().executeJs(
+                                    "var al=$0.closest('vaadin-app-layout');" +
+                                    "if(al)al.classList.remove('sidenav-collapsed');",
+                                    e.getSource().getElement()));
                         } else {
+                            // Collapse
                             host.addClassName("sidenav-host--collapsed");
+                            e.getSource().getUI().ifPresent(ui -> ui.getPage().executeJs(
+                                    "var al=$0.closest('vaadin-app-layout');" +
+                                    "if(al)al.classList.add('sidenav-collapsed');",
+                                    e.getSource().getElement()));
                         }
                     })
                     .build();
@@ -189,74 +205,74 @@ public abstract class AbstractSideNavConfigurator<C extends SideNavConfigurator<
     }
 
     @Override
-    public SideNavItemBuilder withNavItem(String label) {
-        return new DefaultSideNavItemBuilder(this, new SideNavItem(label));
+    public SideNavItemBuilder<C> withNavItem(String label) {
+        return new DefaultSideNavItemBuilder<>(getConfigurator(), new SideNavItem(label));
     }
 
     @Override
-    public SideNavItemBuilder withNavItem(String label, Class<? extends Component> view) {
-        return new DefaultSideNavItemBuilder(this, new SideNavItem(label, view));
+    public SideNavItemBuilder<C> withNavItem(String label, Class<? extends Component> view) {
+        return new DefaultSideNavItemBuilder<>(getConfigurator(), new SideNavItem(label, view));
     }
 
     @Override
-    public SideNavItemBuilder withNavItem(String label, Class<? extends Component> view, Component prefixComponent) {
-        return new DefaultSideNavItemBuilder(this, new SideNavItem(label, view, prefixComponent));
+    public SideNavItemBuilder<C> withNavItem(String label, Class<? extends Component> view, Component prefixComponent) {
+        return new DefaultSideNavItemBuilder<>(getConfigurator(), new SideNavItem(label, view, prefixComponent));
     }
 
     @Override
-    public SideNavItemBuilder withNavItem(String label, Class<? extends Component> view, RouteParameters params) {
-        return new DefaultSideNavItemBuilder(this, new SideNavItem(label, view, params));
+    public SideNavItemBuilder<C> withNavItem(String label, Class<? extends Component> view, RouteParameters params) {
+        return new DefaultSideNavItemBuilder<>(getConfigurator(), new SideNavItem(label, view, params));
     }
 
     @Override
-    public SideNavItemBuilder withNavItem(String label, Class<? extends Component> view, RouteParameters params, Component prefixComponent) {
-        return new DefaultSideNavItemBuilder(this, new SideNavItem(label, view, params, prefixComponent));
+    public SideNavItemBuilder<C> withNavItem(String label, Class<? extends Component> view, RouteParameters params, Component prefixComponent) {
+        return new DefaultSideNavItemBuilder<>(getConfigurator(), new SideNavItem(label, view, params, prefixComponent));
     }
 
     @Override
-    public SideNavItemBuilder withNavItem(String label, String path) {
-        return new DefaultSideNavItemBuilder(this, new SideNavItem(label, path));
+    public SideNavItemBuilder<C> withNavItem(String label, String path) {
+        return new DefaultSideNavItemBuilder<>(getConfigurator(), new SideNavItem(label, path));
     }
 
     @Override
-    public SideNavItemBuilder withNavItem(String label, String path, Component prefixComponent) {
-        return new DefaultSideNavItemBuilder(this, new SideNavItem(label, path, prefixComponent));
+    public SideNavItemBuilder<C> withNavItem(String label, String path, Component prefixComponent) {
+        return new DefaultSideNavItemBuilder<>(getConfigurator(), new SideNavItem(label, path, prefixComponent));
     }
 
     // ── Localizable withNavItem overloads ─────────────────────────────────────
 
     @Override
-    public SideNavItemBuilder withNavItem(Localizable label) {
+    public SideNavItemBuilder<C> withNavItem(Localizable label) {
         return withNavItem(resolve(label));
     }
 
     @Override
-    public SideNavItemBuilder withNavItem(Localizable label, Class<? extends Component> view) {
+    public SideNavItemBuilder<C> withNavItem(Localizable label, Class<? extends Component> view) {
         return withNavItem(resolve(label), view);
     }
 
     @Override
-    public SideNavItemBuilder withNavItem(Localizable label, Class<? extends Component> view, Component prefixComponent) {
+    public SideNavItemBuilder<C> withNavItem(Localizable label, Class<? extends Component> view, Component prefixComponent) {
         return withNavItem(resolve(label), view, prefixComponent);
     }
 
     @Override
-    public SideNavItemBuilder withNavItem(Localizable label, Class<? extends Component> view, RouteParameters params) {
+    public SideNavItemBuilder<C> withNavItem(Localizable label, Class<? extends Component> view, RouteParameters params) {
         return withNavItem(resolve(label), view, params);
     }
 
     @Override
-    public SideNavItemBuilder withNavItem(Localizable label, Class<? extends Component> view, RouteParameters params, Component prefixComponent) {
+    public SideNavItemBuilder<C> withNavItem(Localizable label, Class<? extends Component> view, RouteParameters params, Component prefixComponent) {
         return withNavItem(resolve(label), view, params, prefixComponent);
     }
 
     @Override
-    public SideNavItemBuilder withNavItem(Localizable label, String path) {
+    public SideNavItemBuilder<C> withNavItem(Localizable label, String path) {
         return withNavItem(resolve(label), path);
     }
 
     @Override
-    public SideNavItemBuilder withNavItem(Localizable label, String path, Component prefixComponent) {
+    public SideNavItemBuilder<C> withNavItem(Localizable label, String path, Component prefixComponent) {
         return withNavItem(resolve(label), path, prefixComponent);
     }
 

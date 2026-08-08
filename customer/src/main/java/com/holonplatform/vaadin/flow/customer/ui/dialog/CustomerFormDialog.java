@@ -178,7 +178,7 @@ public class CustomerFormDialog extends Dialog {
         jobTitleField.setWidthFull();
         departmentField.setWidthFull();
 
-        displayNameField.setPlaceholder("Auto-derived from name if left blank");
+        displayNameField.setPlaceholder(getTranslation(CustomerI18n.FIELD_DISPLAY_NAME_PLACEHOLDER));
         displayNameField.setHelperText(getTranslation("customer.field.display_name.help"));
         displayNameField.setWidthFull();
 
@@ -331,7 +331,7 @@ public class CustomerFormDialog extends Dialog {
     }
 
     private Div buildOtherSection() {
-        customerCodeField.setPlaceholder("e.g. CUST-001");
+        customerCodeField.setPlaceholder(getTranslation(CustomerI18n.FIELD_CUSTOMER_CODE_PLACEHOLDER));
         customerCodeField.setHelperText(getTranslation("customer.field.customer_code.help"));
         customerCodeField.setWidthFull();
 

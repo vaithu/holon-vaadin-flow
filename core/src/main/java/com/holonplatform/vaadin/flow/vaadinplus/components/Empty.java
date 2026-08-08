@@ -15,6 +15,7 @@
  */
 package com.holonplatform.vaadin.flow.vaadinplus.components;
 
+import java.io.Serial;
 import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.vaadin.flow.components.Components;
 import com.holonplatform.vaadin.flow.components.builders.EmptyBuilder;
@@ -27,15 +28,15 @@ import com.vaadin.flow.component.icon.Icon;
  * Empty-state component inspired by shadcn/ui {@code EmptyState}.
  *
  * <p>Use this component to communicate that a collection, list, or data set contains
- * no items — and to give the user a clear path forward through an optional call-to-action.</p>
+ * no items â€” and to give the user a clear path forward through an optional call-to-action.</p>
  *
  * <p>Composition:</p>
  * <pre>
  * Empty
- *  ├── Icon / Illustration  (optional — {@link #setIcon(Icon)})
- *  ├── EmptyTitle           ({@link #setTitle(EmptyTitle)} / {@link #setTitle(String)} / {@link #setTitle(Localizable)})
- *  ├── EmptyDescription     ({@link #setDescription(EmptyDescription)} / {@link #setDescription(String)})
- *  └── EmptyAction          ({@link #setAction(EmptyAction)} / {@link #setAction(Component...)})
+ *  â”œâ”€â”€ Icon / Illustration  (optional â€” {@link #setIcon(Icon)})
+ *  â”œâ”€â”€ EmptyTitle           ({@link #setTitle(EmptyTitle)} / {@link #setTitle(String)} / {@link #setTitle(Localizable)})
+ *  â”œâ”€â”€ EmptyDescription     ({@link #setDescription(EmptyDescription)} / {@link #setDescription(String)})
+ *  â””â”€â”€ EmptyAction          ({@link #setAction(EmptyAction)} / {@link #setAction(Component...)})
  * </pre>
  *
  * <p>Preferred usage via builder:</p>
@@ -58,6 +59,7 @@ import com.vaadin.flow.component.icon.Icon;
 @StyleSheet("context://empty.css")
 public class Empty extends Div {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     // -----------------------------------------------------------------------
@@ -81,6 +83,8 @@ public class Empty extends Div {
      */
     public Empty() {
         addClassName("empty");
+        // role="status" so screen readers politely announce when an empty state appears
+        getElement().setAttribute("role", "status");
 
         this.iconSlot = Components.div().styleName("empty__icon").visible(false).build();
         this.contentSlot = Components.div().styleName("empty__content").build();
@@ -279,4 +283,3 @@ public class Empty extends Div {
         setAction(new EmptyAction(actions));
     }
 }
-

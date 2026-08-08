@@ -30,7 +30,7 @@ public interface VaadinHttpRequest extends HttpRequest {
 	 * Returns the portion of the request URI that indicates the context of the request.
 	 * @return a String specifying the portion of the request URI that indicates the context of the request
 	 */
-	public String getContextPath();
+	String getContextPath();
 
 	/**
 	 * Create a {@link VaadinHttpRequest} using given {@link VaadinRequest}.

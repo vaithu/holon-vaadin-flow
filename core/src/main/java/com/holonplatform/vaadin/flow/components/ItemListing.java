@@ -574,7 +574,7 @@ public interface ItemListing<T, P> extends ItemSet, Selectable<T>, HasComponent 
      *
      * @param <P> Item property type
      */
-    public interface ItemListingRow<P> {
+    interface ItemListingRow<P> {
 
         /**
          * Gets the cells that belong to this row as an unmodifiable list.
@@ -596,7 +596,7 @@ public interface ItemListing<T, P> extends ItemSet, Selectable<T>, HasComponent 
     /**
      * An {@link ItemListing} section row cell handler.
      */
-    public interface ItemListingCell {
+    interface ItemListingCell {
 
         /**
          * Sets the localizable text content of this cell.
@@ -680,7 +680,7 @@ public interface ItemListing<T, P> extends ItemSet, Selectable<T>, HasComponent 
      * @since 5.2.8
      */
     @FunctionalInterface
-    public interface EditorOpenListener<T, P> extends Serializable {
+    interface EditorOpenListener<T, P> extends Serializable {
 
         /**
          * Called when the editor is opened.
@@ -699,7 +699,7 @@ public interface ItemListing<T, P> extends ItemSet, Selectable<T>, HasComponent 
      * @since 5.2.8
      */
     @FunctionalInterface
-    public interface EditorCloseListener<T, P> extends Serializable {
+    interface EditorCloseListener<T, P> extends Serializable {
 
         /**
          * Called when the editor is closed.
@@ -718,7 +718,7 @@ public interface ItemListing<T, P> extends ItemSet, Selectable<T>, HasComponent 
      * @since 5.2.8
      */
     @FunctionalInterface
-    public interface EditorSaveListener<T, P> extends Serializable {
+    interface EditorSaveListener<T, P> extends Serializable {
 
         /**
          * Called when the editor is saved.
@@ -737,7 +737,7 @@ public interface ItemListing<T, P> extends ItemSet, Selectable<T>, HasComponent 
      * @since 5.2.8
      */
     @FunctionalInterface
-    public interface EditorCancelListener<T, P> extends Serializable {
+    interface EditorCancelListener<T, P> extends Serializable {
 
         /**
          * Called when the editor is cancelled.
@@ -755,7 +755,7 @@ public interface ItemListing<T, P> extends ItemSet, Selectable<T>, HasComponent 
      * @param <P> Property type
      * @since 5.2.8
      */
-    public interface ItemEditorEvent<T, P> extends Serializable {
+    interface ItemEditorEvent<T, P> extends Serializable {
 
         /**
          * Get the {@link ItemListing} to which the ditor is bound.
@@ -812,7 +812,7 @@ public interface ItemListing<T, P> extends ItemSet, Selectable<T>, HasComponent 
      * @param <T> Item type
      * @since 5.2.0
      */
-    public interface EditorComponentGroup<P, T> extends BoundComponentGroup<P, Input<?>> {
+    interface EditorComponentGroup<P, T> extends BoundComponentGroup<P, Input<?>> {
 
         /**
          * Get the current editor item.

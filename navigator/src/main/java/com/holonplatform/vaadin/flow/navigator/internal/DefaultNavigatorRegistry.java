@@ -15,6 +15,7 @@
  */
 package com.holonplatform.vaadin.flow.navigator.internal;
 
+import java.io.Serial;
 import java.util.Map;
 import java.util.Optional;
 import java.util.WeakHashMap;
@@ -33,6 +34,7 @@ import com.vaadin.flow.component.UI;
  */
 public class DefaultNavigatorRegistry implements NavigatorRegistry {
 
+	@Serial
 	private static final long serialVersionUID = -4967741563966590261L;
 
 	/**

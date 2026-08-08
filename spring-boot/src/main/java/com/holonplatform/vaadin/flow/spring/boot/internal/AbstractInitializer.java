@@ -39,7 +39,7 @@ public abstract class AbstractInitializer {
 	 * @return <code>true</code> if session scoped
 	 */
 	protected static boolean isSessionScope(BeanFactory beanFactory, String beanName) {
-		return getBeanScope(beanFactory, beanName).filter(scope -> scope != null).map(
+		return getBeanScope(beanFactory, beanName).map(
 				scope -> (WebApplicationContext.SCOPE_SESSION.equals(scope) || VaadinSessionScope.NAME.equals(scope)))
 				.orElse(false);
 	}
@@ -51,8 +51,8 @@ public abstract class AbstractInitializer {
 	 * @return <code>true</code> if UI scoped
 	 */
 	protected static boolean isUIScope(BeanFactory beanFactory, String beanName) {
-		return getBeanScope(beanFactory, beanName).filter(scope -> scope != null)
-				.map(scope -> VaadinUIScope.VAADIN_UI_SCOPE_NAME.equals(scope)).orElse(false);
+		return getBeanScope(beanFactory, beanName).map(scope -> VaadinUIScope.VAADIN_UI_SCOPE_NAME.equals(scope))
+				.orElse(false);
 	}
 
 	/**

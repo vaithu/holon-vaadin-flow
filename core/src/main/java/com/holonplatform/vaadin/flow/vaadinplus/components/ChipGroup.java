@@ -4,6 +4,7 @@ import com.vaadin.flow.component.ComponentEvent;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.dependency.StyleSheet;
+import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -44,6 +45,9 @@ public class ChipGroup extends Div {
 
     public ChipGroup() {
         addClassName("chip-group");
+        getElement().setAttribute("role", "group");
+        getElement().setAttribute("aria-label",
+                LocalizationProvider.localize("Filter options", "chip_group.aria_label"));
     }
 
     // ── Builder entry point ───────────────────────────────────────────────

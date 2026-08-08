@@ -15,6 +15,7 @@
  */
 package com.holonplatform.vaadin.flow.internal.components;
 
+import java.io.Serial;
 import com.holonplatform.core.internal.utils.ObjectUtils;
 import com.holonplatform.core.presentation.StringValuePresenter;
 import com.holonplatform.vaadin.flow.components.ViewComponent;
@@ -34,6 +35,7 @@ import java.util.function.Function;
  */
 public class DefaultViewComponent<T> extends AbstractViewComponent<Div, T> {
 
+	@Serial
 	private static final long serialVersionUID = 7748055782623326295L;
 
 	private static final PropertyDescriptor<String, String> innerHtmlDescriptor = PropertyDescriptors

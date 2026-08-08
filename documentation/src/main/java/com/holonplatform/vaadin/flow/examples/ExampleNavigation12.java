@@ -43,7 +43,7 @@ public class ExampleNavigation12 {
 	}
 
 	public void navigator2() {
-		UI myUI = null;
+		UI myUI = UI.getCurrent();
 		// tag::navigator2[]
 		Navigator navigator = Navigator.create(myUI); // <1>
 		// end::navigator2[]

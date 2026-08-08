@@ -15,9 +15,11 @@
  */
 package com.holonplatform.vaadin.flow.vaadinplus.components;
 
+import java.io.Serial;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
 
 /**
  * The "Next slide" navigation button inside a {@link Carousel}.
@@ -35,6 +37,7 @@ import com.vaadin.flow.component.icon.VaadinIcon;
  */
 public class CarouselNext extends Div {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     // -----------------------------------------------------------------------
@@ -47,7 +50,8 @@ public class CarouselNext extends Div {
     public CarouselNext() {
         addClassName("carousel__next");
         getElement().setAttribute("role", "button");
-        getElement().setAttribute("aria-label", "Next slide");
+        getElement().setAttribute("aria-label",
+                LocalizationProvider.localize("Next slide", "carousel.next_aria"));
         getElement().setAttribute("tabindex", "0");
 
         Icon icon = new Icon(VaadinIcon.CHEVRON_RIGHT);
@@ -76,4 +80,3 @@ public class CarouselNext extends Div {
         }
     }
 }
-

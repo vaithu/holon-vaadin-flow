@@ -15,6 +15,7 @@
  */
 package com.holonplatform.vaadin.flow.internal.components;
 
+import java.io.Serial;
 import com.holonplatform.core.Registration;
 import com.holonplatform.core.Validator;
 import com.holonplatform.core.Validator.ValidationException;
@@ -45,6 +46,7 @@ import java.util.Optional;
  */
 public abstract class AbstractValidatableInputAdapter<T, I extends Input<T>> implements ValidatableInput<T> {
 
+	@Serial
 	private static final long serialVersionUID = -2291397152828158839L;
 
 	/**
@@ -358,17 +360,21 @@ public abstract class AbstractValidatableInputAdapter<T, I extends Input<T>> imp
 		if (validateOnValueChange) {
 			if (validationListenerRegistration == null) {
 				this.validationListenerRegistration = this.input.addValueChangeListener(e -> {
-					try {
-						validate(e.getValue());
-					} catch (@SuppressWarnings("unused") ValidationException ve) {
-						// swallow
-					}
+					validateSilently(e.getValue());
 				});
 			}
 		} else {
 			if (validationListenerRegistration != null) {
 				validationListenerRegistration.remove();
 			}
+		}
+	}
+
+	private void validateSilently(T value) {
+		try {
+			validate(value);
+		} catch (ValidationException ve) {
+			ve.getValidationMessages();
 		}
 	}
 

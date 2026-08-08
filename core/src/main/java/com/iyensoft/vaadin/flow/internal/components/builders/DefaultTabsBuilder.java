@@ -12,6 +12,7 @@ public class DefaultTabsBuilder
 
     @Override
     public Tabs build() {
+        applyPostProcessors();
         return getComponent();
     }
 

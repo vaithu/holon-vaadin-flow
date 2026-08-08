@@ -3,37 +3,37 @@
  *
  * Mobile-first styles for AppBar — a sticky top navigation bar.
  *
- * BEM: .app-bar / .app-bar__start / .app-bar__middle / .app-bar__end
+ * BEM: .app-bar / .app-bar__start / .app-bar__middle / .app-bar__end / .app-bar__bottom
  *
  * Mobile  (< 640 px) — compact height (3 rem), tight padding.
  * Desktop (≥ 640 px) — standard height (3.5 rem), generous padding.
+ *
+ * Badge counter:
+ *   Uses a plain <div class="app-bar__badge-wrap"> wrapper (light DOM).
+ *   ::after on a regular div is never clipped by shadow-DOM overflow.
  */
 
 /* -----------------------------------------------------------------------
  * Root — sticky full-width header bar
+ *
+ * flex-wrap: wrap  allows the optional .app-bar__bottom child to occupy
+ * its own full-width row beneath the start / middle / end row.
  * ----------------------------------------------------------------------- */
 
 .app-bar {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     gap: 0.5rem;
     width: 100%;
-    height: 3rem;                /* compact on mobile */
+    min-height: 3rem;
     box-sizing: border-box;
-    border-block-end: 1px solid var(--color-border, #e4e4e7);
-    padding-inline: 0.75rem;
-    /* Respect iOS status bar / Dynamic Island */
-    padding-block-start: env(safe-area-inset-top, 0);
-    /* NOTE: do NOT use position:sticky here — AppLayout's navbar slot is
-       already sticky/fixed; sticky inside a shadow-DOM slot has no effect
-       and can break stacking context. */
 }
 
 @media (min-width: 640px) {
     .app-bar {
-        height: 3.5rem;
+        min-height: 3.5rem;
         padding-inline: 1rem;
-        gap: 1.5rem;
     }
 }
 
@@ -44,7 +44,7 @@
 .app-bar__start {
     display: flex;
     align-items: center;
-    gap: 1rem;
+    gap: 0.5rem;
     overflow: hidden;
     flex-shrink: 1;
     min-width: 0;
@@ -75,54 +75,97 @@
 }
 
 /* -----------------------------------------------------------------------
- * Action icon buttons — end slot (notifications, lang, theme, etc.)
- *
- * SaaS reference pattern (Linear · GitHub · Vercel · Raycast):
- *   · 32 × 32 px square — icon-only, no label
- *   · 4 % black tint at rest — "clickable affordance" without being a box
- *   · 8 % fill + icon-to-primary on hover
- *   · Icon scales 1.1× for micro-interaction feedback
- *   · Red badge via [data-badge] attribute — no JS needed
- *   · 2 px focus ring on keyboard nav (accessibility)
+ * Bottom row — spans full width below start / middle / end.
+ * Hidden automatically when empty (no children).
+ * ----------------------------------------------------------------------- */
+
+.app-bar__bottom {
+    /* stretch to full bar width */
+    flex-basis: 100%;
+    /* reset gap/margin imposed by the parent flex */
+    margin-inline: -0.75rem;
+    width: calc(100% + 1.5rem);
+    /* hide when empty */
+    display: none;
+    align-items: stretch;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    padding-block-end: 0;
+    /* top separator */
+    border-top: 1px solid var(--lumo-contrast-10pct);
+}
+
+.app-bar__bottom::-webkit-scrollbar { display: none; }
+
+/* Shown as soon as any child is added */
+.app-bar__bottom:not(:empty) {
+    display: flex;
+}
+
+@media (min-width: 640px) {
+    .app-bar__bottom {
+        margin-inline: -1rem;
+        width: calc(100% + 2rem);
+    }
+}
+
+/* -----------------------------------------------------------------------
+ * Action icon buttons — end slot
  * ----------------------------------------------------------------------- */
 
 .app-bar__action-btn {
-    --vaadin-button-background:    rgb(0 0 0 / 0.04);  /* barely-there resting tint  */
-    --vaadin-button-border-color:  transparent;
-    --vaadin-button-border-width:  0;
-    --vaadin-button-shadow:        none;
-    --vaadin-button-height:        2rem;
+    --vaadin-button-background:   transparent;
+    --vaadin-button-border-color: transparent;
+    --vaadin-button-border-width: 0;
+    --vaadin-button-shadow:       none;
+    --vaadin-button-height:       2rem;
     min-width:     2rem;
     border-radius: var(--radius-md, 8px);
     transition:    background var(--transition-fast, 120ms ease);
     box-shadow:    none;
 }
 
-/* Type+class wins over the :not() chain in vaadin-shell-theme.css */
 vaadin-button.app-bar__action-btn {
-    width:    2rem;
-    height:   2rem;
-    min-width: 2rem;
+    display:         inline-flex;
+    align-items:     center;
+    justify-content: center;
+    width:      2rem;
+    height:     2rem;
+    min-width:  2rem;
+    max-height: 2rem;
+    padding:    0;
     box-shadow: none;
-    position: relative;   /* anchor for ::after badge           */
-    overflow: visible;    /* allow ::after to extend outside bounds */
-    z-index:  0;          /* establish stacking context for badge  */
+    position:   relative;
+    overflow:   visible !important;
 }
 
-/* Icon — secondary tone at rest, primary on hover, subtle scale feedback */
-.app-bar__action-btn vaadin-icon {
-    width:  1.25rem;
-    height: 1.25rem;
-    color:  var(--text-secondary, #475569);
+/* WCAG 2.5.8 — expands tap area to ~44 px without inflating visual size */
+vaadin-button.app-bar__action-btn::before {
+    content:        '';
+    position:       absolute;
+    inset:          -0.375rem;
+    border-radius:  inherit;
+    pointer-events: auto;
+}
+
+/* Icon */
+vaadin-button.app-bar__action-btn vaadin-icon {
+    width:  1.125rem;
+    height: 1.125rem;
+    color:  var(--text-secondary, #64748b);
     transition:
         color     var(--transition-fast, 120ms ease),
         transform var(--transition-fast, 120ms ease);
-    flex-shrink: 0;
+    flex-shrink:    0;
+    pointer-events: none;
+    position:       relative;
+    z-index:        1;
 }
 
-/* Hover: deeper fill + brighter icon + scale nudge */
+/* Hover */
 vaadin-button.app-bar__action-btn:not([disabled]):hover {
-    --vaadin-button-background: rgb(0 0 0 / 0.08);
+    --vaadin-button-background: rgb(0 0 0 / 0.06);
     box-shadow: none;
 }
 
@@ -131,62 +174,305 @@ vaadin-button.app-bar__action-btn:not([disabled]):hover vaadin-icon {
     transform: scale(1.1);
 }
 
-/* Focus ring — keyboard accessibility.
-   [focus-ring] is set by Vaadin JS during Tab navigation only.
-   Universal rule in vaadin-shell-theme.css section 4b also handles this;
-   explicit rule here ensures no override from app-bar's own box-shadow reset. */
+/* Focus ring — [focus-ring] is set by Vaadin during keyboard navigation */
 vaadin-button.app-bar__action-btn[focus-ring] {
+    outline: none !important;
     box-shadow:
         0 0 0 2px var(--surface-0, #ffffff),
         0 0 0 4px var(--brand-500, #3b82f6) !important;
-    outline: none !important;
-}
-
-/* ── Notification badge ────────────────────────────────────────────
- * Usage in Java:  notifBtn.getElement().setAttribute("data-badge", "3");
- * Remove badge:   notifBtn.getElement().removeAttribute("data-badge");
- * Zero/empty:     badge hidden via [data-badge=""] rule below.
- * ─────────────────────────────────────────────────────────────────── */
-vaadin-button.app-bar__action-btn[data-badge]:not([data-badge=""])::after {
-    content:        attr(data-badge);
-    position:       absolute;
-    top:            -4px;
-    right:          -4px;
-    min-width:      16px;
-    height:         16px;
-    padding:        0 4px;
-    border-radius:  9999px;
-    background:     var(--err, #dc2626);
-    color:          #ffffff;
-    font-size:      0.5625rem;   /* 9px — tight, readable at small size */
-    font-weight:    700;
-    line-height:    16px;
-    text-align:     center;
-    box-sizing:     border-box;
-    pointer-events: none;
-    /* White halo separates badge ring from icon background */
-    box-shadow:     0 0 0 2px var(--surface-0, #ffffff);
-}
-
-/* Touch targets (WCAG 2.5.8 — 44 px) */
-.app-bar__start > vaadin-button,
-.app-bar__start > button,
-.app-bar__end > vaadin-button,
-.app-bar__end > button {
-    min-height: 2.75rem;
-    min-width: 2.75rem;
 }
 
 /* -----------------------------------------------------------------------
- * Global search — fills the middle slot up to a comfortable reading width
- * clamp: min 200px · preferred 40% of viewport · max 520px
+ * Notification badge wrapper
+ *
+ * The badge ::after lives on a plain <div class="app-bar__badge-wrap">
+ * that wraps the vaadin-button. A regular div is never subject to
+ * shadow-DOM or AppLayout navbar overflow clipping.
+ *
+ * Java (DefaultAppShellLayoutBuilder manages this automatically):
+ *   notifWrap.getElement().setAttribute("data-badge", "3");  // show
+ *   notifWrap.getElement().removeAttribute("data-badge");     // hide
+ *   notifWrap.getElement().setAttribute("data-badge", "");   // also hides
+ * ----------------------------------------------------------------------- */
+
+.app-bar__badge-wrap {
+    position:        relative;
+    display:         inline-flex;
+    align-items:     center;
+    justify-content: center;
+    flex-shrink:     0;
+}
+
+.app-bar__badge-wrap[data-badge]:not([data-badge=""])::after {
+    content:  attr(data-badge);
+    position: absolute;
+    top:   -5px;
+    right: -5px;
+
+    min-width:  17px;
+    height:     17px;
+    padding:    0 4px;
+    box-sizing: border-box;
+
+    border-radius:  9999px;
+    background:     var(--color-error, #dc2626);
+    color:          #fff;
+    font-size:      9px;
+    font-weight:    700;
+    line-height:    17px;
+    text-align:     center;
+    white-space:    nowrap;
+    pointer-events: none;
+    z-index:        10;
+
+    box-shadow: 0 0 0 2px var(--surface-0, #ffffff);
+}
+
+/* -----------------------------------------------------------------------
+ * Global search — mobile-first width; desktop override in responsive block
  * ----------------------------------------------------------------------- */
 
 .app-bar__search {
-    width: clamp(200px, 40vw, 520px);
+    /* base: fill the flex middle slot on mobile */
+    width:     100%;
+    min-width: 0;
 }
 
 .app-bar__search::part(input-field) {
-    border-radius: var(--radius-full, 9999px);  /* pill shape — visually distinct from form inputs */
+    border-radius: var(--radius-full, 9999px);
 }
 
+/* -----------------------------------------------------------------------
+ * Utility: CSS-only hide — keeps the server-side node active so that
+ * vaadin-side-nav-item URL-change RPCs are not rejected as "inactive".
+ * Use this instead of setVisible(false) for components that fire
+ * client-initiated RPCs based on browser URL changes.
+ * ----------------------------------------------------------------------- */
+
+.app-bar__hidden {
+    display: none !important;
+    pointer-events: none !important;
+}
+
+/* -----------------------------------------------------------------------
+ * Nav MenuBar — tab-style navigation strip in the bottom row.
+ *
+ * vaadin-menu-bar-button elements are in the light DOM (slotted) so they
+ * are fully targetable from a page stylesheet.
+ * ----------------------------------------------------------------------- */
+
+.app-bar__nav-menubar {
+    /* Reset host — remove the default card-like container look */
+    background:                       transparent;
+    border:                           none;
+    border-radius:                    0;
+    box-shadow:                       none;
+    padding:                          0;
+    gap:                              0;
+    /* Lumo custom properties forwarded to internal parts */
+    --vaadin-menu-bar-background:     transparent;
+    --vaadin-menu-bar-border-color:   transparent;
+    --vaadin-menu-bar-shadow:         none;
+    --vaadin-menu-bar-button-height:  2.5rem;
+}
+
+/* Each top-level tab button */
+.app-bar__nav-menubar vaadin-menu-bar-button {
+    /* Remove all button chrome */
+    --vaadin-button-background:    transparent;
+    --vaadin-button-border-color:  transparent;
+    --vaadin-button-border-width:  0;
+    --vaadin-button-shadow:        none;
+    --vaadin-button-color:         var(--lumo-secondary-text-color);
+
+    border-radius:    0;
+    border-bottom:    2px solid transparent;
+    padding:          0 0.875rem;
+    height:           2.5rem;
+    font-size:        0.8125rem;
+    font-weight:      500;
+    letter-spacing:   0.01em;
+    white-space:      nowrap;
+    color:            var(--lumo-secondary-text-color);
+    transition:
+        color         120ms ease,
+        border-color  120ms ease,
+        background    120ms ease;
+    box-shadow: none !important;
+    position: relative;
+}
+
+/* Hover state */
+.app-bar__nav-menubar vaadin-menu-bar-button:hover {
+    --vaadin-button-background: var(--lumo-contrast-5pct);
+    background:   var(--lumo-contrast-5pct);
+    color:        var(--lumo-primary-text-color);
+    border-bottom-color: var(--lumo-primary-color-50pct, rgba(74,144,226,.5));
+}
+
+/* Active / open (submenu open) */
+.app-bar__nav-menubar vaadin-menu-bar-button[aria-expanded="true"],
+.app-bar__nav-menubar vaadin-menu-bar-button[active] {
+    background:          transparent;
+    color:               var(--lumo-primary-color);
+    border-bottom-color: var(--lumo-primary-color);
+    font-weight:         600;
+}
+
+/* Keyboard focus ring */
+.app-bar__nav-menubar vaadin-menu-bar-button[focus-ring] {
+    box-shadow: inset 0 0 0 2px var(--lumo-primary-color-50pct) !important;
+    border-radius: var(--lumo-border-radius-s);
+    outline: none;
+}
+
+/* Overflow ("more") button — same tab look */
+.app-bar__nav-menubar vaadin-menu-bar-button[slot="overflow"] {
+    padding: 0 0.625rem;
+}
+
+/* -----------------------------------------------------------------------
+ * Nav item label — text + optional chevron (light DOM, slotted)
+ * ----------------------------------------------------------------------- */
+
+.app-bar__nav-item-label {
+    display:        inline-flex;
+    flex-direction: row;
+    align-items:    center;
+    gap:            0.25rem;
+    white-space:    nowrap;
+    vertical-align: middle;
+}
+
+.app-bar__nav-chevron {
+    width:       0.75rem;
+    height:      0.75rem;
+    flex:        0 0 0.75rem;
+    align-self:  center;
+    /* vaadin-icon defaults to display:block inside its own shadow styles;
+       force inline-flex so it participates in the parent flex row correctly */
+    display:     inline-flex !important;
+    opacity:     0.6;
+    transition:  transform 180ms ease, opacity 120ms ease;
+}
+
+/* Rotate chevron when the submenu is open */
+vaadin-menu-bar-button[aria-expanded="true"] .app-bar__nav-chevron {
+    transform: rotate(180deg);
+    opacity:   1;
+}
+
+/* Slightly more visible on hover */
+vaadin-menu-bar-button:hover .app-bar__nav-chevron {
+    opacity: 0.85;
+}
+
+
+/* -----------------------------------------------------------------------
+ * Brand logo + name
+ * ----------------------------------------------------------------------- */
+
+.app-bar__brand {
+    display:         inline-flex;
+    align-items:     center;
+    gap:             0.5rem;
+    flex-shrink:     1;
+    min-width:       0;
+    overflow:        hidden;
+    text-decoration: none;
+    color:           inherit;
+}
+
+/* Hide brand name on very small screens; show from 480 px up */
+.app-bar__brand-name {
+    display:       none;
+    font-size:     0.9375rem;
+    font-weight:   600;
+    white-space:   nowrap;
+    overflow:      hidden;
+    text-overflow: ellipsis;
+}
+
+@media (min-width: 480px) {
+    .app-bar__brand-name { display: block; }
+}
+
+/* -----------------------------------------------------------------------
+ * Layout toggle — only meaningful on desktop; hidden on mobile because
+ * the drawer already provides navigation there.
+ * ----------------------------------------------------------------------- */
+
+.app-bar__layout-toggle {
+    display: none !important;
+}
+
+@media (min-width: 640px) {
+    .app-bar__layout-toggle {
+        display: inline-flex !important;
+    }
+}
+
+/* -----------------------------------------------------------------------
+ * Responsive slot adjustments
+ * ----------------------------------------------------------------------- */
+
+/* Mobile (< 480 px): tighten end-slot and shrink action buttons */
+@media (max-width: 479px) {
+    .app-bar__end {
+        gap: 0;
+    }
+
+    vaadin-button.app-bar__action-btn {
+        width:      1.75rem;
+        height:     1.75rem;
+        min-width:  1.75rem;
+        max-height: 1.75rem;
+    }
+
+    vaadin-button.app-bar__action-btn vaadin-icon {
+        width:  1rem;
+        height: 1rem;
+    }
+}
+
+/* -----------------------------------------------------------------------
+ * Search — desktop width override (base rule is at line 238)
+ * ----------------------------------------------------------------------- */
+
+@media (min-width: 640px) {
+    .app-bar__search {
+        width: clamp(200px, 40vw, 520px);
+    }
+}
+
+/* -----------------------------------------------------------------------
+ * Nav MenuBar (bottom row) — desktop-only
+ * On mobile the drawer already provides navigation; showing the tab bar
+ * there would duplicate it and waste vertical space.
+ * ----------------------------------------------------------------------- */
+
+@media (max-width: 639px) {
+    /* Force hidden on mobile even when children are present */
+    .app-bar__bottom,
+    .app-bar__bottom:not(:empty) {
+        display: none !important;
+    }
+}
+
+/* -----------------------------------------------------------------------
+ * Nav MenuBar — responsive font / height at different breakpoints
+ * ----------------------------------------------------------------------- */
+
+@media (min-width: 640px) and (max-width: 1023px) {
+    .app-bar__nav-menubar vaadin-menu-bar-button {
+        padding:   0 0.625rem;
+        font-size: 0.75rem;
+    }
+}
+
+@media (min-width: 1024px) {
+    .app-bar__nav-menubar vaadin-menu-bar-button {
+        padding:   0 1rem;
+        font-size: 0.8125rem;
+    }
+}

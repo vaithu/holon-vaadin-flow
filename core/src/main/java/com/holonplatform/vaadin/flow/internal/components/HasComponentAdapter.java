@@ -15,6 +15,7 @@
  */
 package com.holonplatform.vaadin.flow.internal.components;
 
+import java.io.Serial;
 import com.holonplatform.core.internal.utils.ObjectUtils;
 import com.holonplatform.vaadin.flow.components.HasComponent;
 import com.vaadin.flow.component.Component;
@@ -26,6 +27,7 @@ import com.vaadin.flow.component.Component;
  */
 public class HasComponentAdapter implements HasComponent {
 
+	@Serial
 	private static final long serialVersionUID = 6659651206546109072L;
 
 	private final Component component;

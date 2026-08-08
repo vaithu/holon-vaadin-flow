@@ -15,6 +15,7 @@
  */
 package com.holonplatform.vaadin.flow.internal.components;
 
+import java.io.Serial;
 import com.holonplatform.core.Validator;
 import com.holonplatform.core.Validator.ValidationException;
 import com.holonplatform.core.i18n.Localizable;
@@ -46,6 +47,7 @@ import java.util.stream.Stream;
 public class DefaultPropertyInputGroup extends AbstractPropertySetGroup<Input<?>, PropertyInputGroup>
 		implements PropertyInputGroup, GroupValidationStatusHandler<PropertyInputGroup, Property<?>, Input<?>> {
 
+	@Serial
 	private static final long serialVersionUID = -5441417959315472240L;
 
 	protected final static Logger LOGGER = VaadinLogger.create();
@@ -614,7 +616,11 @@ public class DefaultPropertyInputGroup extends AbstractPropertySetGroup<Input<?>
 			}
 			// Validate on value change
 			if (isValidateOnValueChange()) {
-				input.addValueChangeListener(e -> validateOnValueChange(configuration.getProperty(), e.getValue()));
+				input.addValueChangeListener(e -> {
+					if (e.isUserOriginated()) {
+						validateOnValueChange(configuration.getProperty(), e.getValue());
+					}
+				});
 			}
 			// Refresh on value change
 			if (isEnableRefreshOnValueChange()) {
@@ -832,6 +838,26 @@ public class DefaultPropertyInputGroup extends AbstractPropertySetGroup<Input<?>
 			notifyValidationStatusChange(new DefaultGroupValidationStatusEvent<>(getComponentGroup(), Status.UNRESOLVED,
 					Collections.emptyList(), Collections.singletonList(asValidationStatusEvent(property, validation))));
 		});
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public void validateInput(Property<?> property) throws ValidationException {
+		final Property<Object> p = (Property<Object>) property;
+		final Input<Object> input = (Input<Object>) getInput(p).orElse(null);
+		if (input == null || input.isReadOnly()) {
+			return;
+		}
+		final Optional<InputValidationStatus> status = validateProperty(p, input.getValue());
+		if (status.isPresent()) {
+			notifyValidationStatusChange(new DefaultGroupValidationStatusEvent<>(getComponentGroup(),
+					Status.UNRESOLVED, Collections.emptyList(),
+					Collections.singletonList(asValidationStatusEvent(p, status.get()))));
+			if (status.get().isInvalid()) {
+				final List<ValidationException> exceptions = status.get().getValidationExceptions();
+				throw exceptions.size() == 1 ? exceptions.getFirst() : new ValidationException(exceptions);
+			}
+		}
 	}
 
 	/**

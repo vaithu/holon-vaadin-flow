@@ -36,7 +36,7 @@ public interface VaadinSessionScope extends ContextScope {
 	/**
 	 * Scope name
 	 */
-	public static final String NAME = "vaadin-session";
+	String NAME = "vaadin-session";
 
 	/**
 	 * Get the Vaadin Session scope from current context.

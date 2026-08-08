@@ -38,7 +38,6 @@ public final class SelectionHighlighter<T> {
     private final ItemListing<T, ?> listing;
     private final Function<T, ?> keyExtractor;
     private final String selectedPartName;
-    private T currentItem;
     private Object currentKey;
 
     public SelectionHighlighter(ItemListing<T, ?> listing) {
@@ -79,7 +78,6 @@ public final class SelectionHighlighter<T> {
      * to a cached index — leaving the row's part name stale.</p>
      */
     public void setHighlighted(T next) {
-        currentItem = next;
         currentKey = keyOf(next);
         // Always reinstall: Grid.setPartNameGenerator triggers DataCommunicator.reset()
         // which re-evaluates the generator for every visible row.  For a paginated
@@ -92,4 +90,3 @@ public final class SelectionHighlighter<T> {
         return item != null ? keyExtractor.apply(item) : null;
     }
 }
-

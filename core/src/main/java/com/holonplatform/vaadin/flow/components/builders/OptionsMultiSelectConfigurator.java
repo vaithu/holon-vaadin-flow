@@ -56,7 +56,7 @@ public interface OptionsMultiSelectConfigurator<T, ITEM, B extends OptionsMultiS
 	 * @param <D> Datastore data source configurator type
 	 * @param <C> Concrete configurator type
 	 */
-	public interface OptionsMultiSelectInputConfigurator<T, ITEM, D extends DatastoreDataProviderConfigurator<ITEM, D>, C extends OptionsMultiSelectInputConfigurator<T, ITEM, D, C>>
+	interface OptionsMultiSelectInputConfigurator<T, ITEM, D extends DatastoreDataProviderConfigurator<ITEM, D>, C extends OptionsMultiSelectInputConfigurator<T, ITEM, D, C>>
 			extends OptionsMultiSelectConfigurator<T, ITEM, C>, HasBeanDatastoreDataProviderConfigurator<ITEM, D, C> {
 
 	}
@@ -68,7 +68,7 @@ public interface OptionsMultiSelectConfigurator<T, ITEM, B extends OptionsMultiS
 	 * @param <ITEM> Item type param
 	 * @param <C> Concrete configurator type
 	 */
-	public interface DatastoreOptionsMultiSelectInputConfigurator<T, ITEM, C extends DatastoreOptionsMultiSelectInputConfigurator<T, ITEM, C>>
+	interface DatastoreOptionsMultiSelectInputConfigurator<T, ITEM, C extends DatastoreOptionsMultiSelectInputConfigurator<T, ITEM, C>>
 			extends OptionsMultiSelectConfigurator<T, ITEM, C>, DatastoreDataProviderConfigurator<ITEM, C> {
 
 	}
@@ -80,7 +80,7 @@ public interface OptionsMultiSelectConfigurator<T, ITEM, B extends OptionsMultiS
 	 * @param <D> Datastore data source configurator type
 	 * @param <C> Concrete configurator type
 	 */
-	public interface PropertyOptionsMultiSelectInputConfigurator<T, D extends DatastoreDataProviderConfigurator<PropertyBox, D>, C extends PropertyOptionsMultiSelectInputConfigurator<T, D, C>>
+	interface PropertyOptionsMultiSelectInputConfigurator<T, D extends DatastoreDataProviderConfigurator<PropertyBox, D>, C extends PropertyOptionsMultiSelectInputConfigurator<T, D, C>>
 			extends OptionsMultiSelectConfigurator<T, PropertyBox, C>,
 			HasPropertyBoxDatastoreDataProviderConfigurator<D, C>, PropertySelectInputConfigurator<Set<T>, T, C> {
 
@@ -107,7 +107,7 @@ public interface OptionsMultiSelectConfigurator<T, ITEM, B extends OptionsMultiS
 	 * @param <T> Value type
 	 * @param <C> Concrete configurator type
 	 */
-	public interface DatastorePropertyOptionsMultiSelectInputConfigurator<T, C extends DatastorePropertyOptionsMultiSelectInputConfigurator<T, C>>
+	interface DatastorePropertyOptionsMultiSelectInputConfigurator<T, C extends DatastorePropertyOptionsMultiSelectInputConfigurator<T, C>>
 			extends OptionsMultiSelectConfigurator<T, PropertyBox, C>,
 			DatastoreDataProviderSelectConfigurator<PropertyBox, C>, PropertySelectInputConfigurator<Set<T>, T, C> {
 
@@ -121,7 +121,7 @@ public interface OptionsMultiSelectConfigurator<T, ITEM, B extends OptionsMultiS
 	 * @param <T> Value type
 	 * @param <ITEM> Item type
 	 */
-	public interface ValidatableOptionsMultiSelectInputBuilder<T, ITEM> extends
+	interface ValidatableOptionsMultiSelectInputBuilder<T, ITEM> extends
 			OptionsMultiSelectInputConfigurator<T, ITEM, ValidatableDatastoreOptionsMultiSelectInputBuilder<T, ITEM>, ValidatableOptionsMultiSelectInputBuilder<T, ITEM>>,
 			BaseValidatableInputBuilder<Set<T>, ValidatableMultiSelect<T>, ValidatableOptionsMultiSelectInputBuilder<T, ITEM>> {
 
@@ -133,7 +133,7 @@ public interface OptionsMultiSelectConfigurator<T, ITEM, B extends OptionsMultiS
 	 * @param <T> Value type
 	 * @param <ITEM> Item type
 	 */
-	public interface ValidatableDatastoreOptionsMultiSelectInputBuilder<T, ITEM> extends
+	interface ValidatableDatastoreOptionsMultiSelectInputBuilder<T, ITEM> extends
 			DatastoreOptionsMultiSelectInputConfigurator<T, ITEM, ValidatableDatastoreOptionsMultiSelectInputBuilder<T, ITEM>>,
 			BaseValidatableInputBuilder<Set<T>, ValidatableMultiSelect<T>, ValidatableDatastoreOptionsMultiSelectInputBuilder<T, ITEM>> {
 
@@ -145,7 +145,7 @@ public interface OptionsMultiSelectConfigurator<T, ITEM, B extends OptionsMultiS
 	 * @param <T> Value type
 	 * @param <ITEM> Item type
 	 */
-	public interface OptionsMultiSelectInputBuilder<T, ITEM> extends
+	interface OptionsMultiSelectInputBuilder<T, ITEM> extends
 			OptionsMultiSelectInputConfigurator<T, ITEM, DatastoreOptionsMultiSelectInputBuilder<T, ITEM>, OptionsMultiSelectInputBuilder<T, ITEM>>,
 			InputBuilder<Set<T>, ValueChangeEvent<Set<T>>, MultiSelect<T>, ValidatableMultiSelect<T>, OptionsMultiSelectInputBuilder<T, ITEM>, ValidatableOptionsMultiSelectInputBuilder<T, ITEM>> {
 
@@ -157,7 +157,7 @@ public interface OptionsMultiSelectConfigurator<T, ITEM, B extends OptionsMultiS
 	 * @param <T> Value type
 	 * @param <ITEM> Item type
 	 */
-	public interface DatastoreOptionsMultiSelectInputBuilder<T, ITEM> extends
+	interface DatastoreOptionsMultiSelectInputBuilder<T, ITEM> extends
 			DatastoreOptionsMultiSelectInputConfigurator<T, ITEM, DatastoreOptionsMultiSelectInputBuilder<T, ITEM>>,
 			InputBuilder<Set<T>, ValueChangeEvent<Set<T>>, MultiSelect<T>, ValidatableMultiSelect<T>, DatastoreOptionsMultiSelectInputBuilder<T, ITEM>, ValidatableDatastoreOptionsMultiSelectInputBuilder<T, ITEM>> {
 
@@ -170,7 +170,7 @@ public interface OptionsMultiSelectConfigurator<T, ITEM, B extends OptionsMultiS
 	 *
 	 * @param <T> Value type
 	 */
-	public interface ValidatablePropertyOptionsMultiSelectInputBuilder<T> extends
+	interface ValidatablePropertyOptionsMultiSelectInputBuilder<T> extends
 			PropertyOptionsMultiSelectInputConfigurator<T, ValidatableDatastorePropertyOptionsMultiSelectInputBuilder<T>, ValidatablePropertyOptionsMultiSelectInputBuilder<T>>,
 			BaseValidatableInputBuilder<Set<T>, ValidatableMultiSelect<T>, ValidatablePropertyOptionsMultiSelectInputBuilder<T>> {
 
@@ -182,7 +182,7 @@ public interface OptionsMultiSelectConfigurator<T, ITEM, B extends OptionsMultiS
 	 *
 	 * @param <T> Value type
 	 */
-	public interface ValidatableDatastorePropertyOptionsMultiSelectInputBuilder<T> extends
+	interface ValidatableDatastorePropertyOptionsMultiSelectInputBuilder<T> extends
 			DatastorePropertyOptionsMultiSelectInputConfigurator<T, ValidatableDatastorePropertyOptionsMultiSelectInputBuilder<T>>,
 			BaseValidatableInputBuilder<Set<T>, ValidatableMultiSelect<T>, ValidatableDatastorePropertyOptionsMultiSelectInputBuilder<T>> {
 
@@ -193,7 +193,7 @@ public interface OptionsMultiSelectConfigurator<T, ITEM, B extends OptionsMultiS
 	 *
 	 * @param <T> Value type
 	 */
-	public interface PropertyOptionsMultiSelectInputBuilder<T> extends
+	interface PropertyOptionsMultiSelectInputBuilder<T> extends
 			PropertyOptionsMultiSelectInputConfigurator<T, DatastorePropertyOptionsMultiSelectInputBuilder<T>, PropertyOptionsMultiSelectInputBuilder<T>>,
 			InputBuilder<Set<T>, ValueChangeEvent<Set<T>>, MultiSelect<T>, ValidatableMultiSelect<T>, PropertyOptionsMultiSelectInputBuilder<T>, ValidatablePropertyOptionsMultiSelectInputBuilder<T>> {
 
@@ -205,7 +205,7 @@ public interface OptionsMultiSelectConfigurator<T, ITEM, B extends OptionsMultiS
 	 *
 	 * @param <T> Value type
 	 */
-	public interface DatastorePropertyOptionsMultiSelectInputBuilder<T> extends
+	interface DatastorePropertyOptionsMultiSelectInputBuilder<T> extends
 			DatastorePropertyOptionsMultiSelectInputConfigurator<T, DatastorePropertyOptionsMultiSelectInputBuilder<T>>,
 			InputBuilder<Set<T>, ValueChangeEvent<Set<T>>, MultiSelect<T>, ValidatableMultiSelect<T>, DatastorePropertyOptionsMultiSelectInputBuilder<T>, ValidatableDatastorePropertyOptionsMultiSelectInputBuilder<T>> {
 

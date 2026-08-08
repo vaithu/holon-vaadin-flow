@@ -86,6 +86,9 @@ public class ChatChannelList extends Composite<Div> {
         this.localUser = localUser;
         this.chatService = chatService;
         getContent().addClassName("chat-channel-list");
+        getContent().getElement().setAttribute("role", "navigation");
+        getContent().getElement().setAttribute("aria-label",
+                LocalizationProvider.localize("Channels", ChatI18N.CHANNEL_LIST_ARIA));
     }
 
     // ------------------------------------------------------------------ //
@@ -103,7 +106,6 @@ public class ChatChannelList extends Composite<Div> {
         closeActiveManager();
         super.onDetach(event);
     }
-
     // ------------------------------------------------------------------ //
     // Public API
     // ------------------------------------------------------------------ //
@@ -205,8 +207,12 @@ public class ChatChannelList extends Composite<Div> {
             Span createBtn = new Span("+");
             createBtn.addClassName("chat-channel-list__header-btn");
             createBtn.addClassName("chat-channel-list__header-btn--create");
-            createBtn.getElement().setAttribute("title",
-                    LocalizationProvider.localize("Create channel or group", ChatI18N.CHANNEL_LIST_CREATE_TOOLTIP));
+            String createTooltip = LocalizationProvider.localize(
+                    "Create channel or group", ChatI18N.CHANNEL_LIST_CREATE_TOOLTIP);
+            createBtn.getElement().setAttribute("title", createTooltip);
+            createBtn.getElement().setAttribute("aria-label", createTooltip);
+            createBtn.getElement().setAttribute("role", "button");
+            createBtn.getElement().setAttribute("tabindex", "0");
             createBtn.addClickListener(e ->
                     new CreateRoomDialog(chatService, localUser.getId())
                             .onCreated(room -> {
@@ -216,11 +222,15 @@ public class ChatChannelList extends Composite<Div> {
                             .open());
 
             // Browse rooms button
-            Span browseBtn = new Span("⊕");
+            Span browseBtn = new Span("\u2295");
             browseBtn.addClassName("chat-channel-list__header-btn");
             browseBtn.addClassName("chat-channel-list__header-btn--browse");
-            browseBtn.getElement().setAttribute("title",
-                    LocalizationProvider.localize("Browse & join rooms", ChatI18N.CHANNEL_LIST_BROWSE_TOOLTIP));
+            String browseTooltip = LocalizationProvider.localize(
+                    "Browse & join rooms", ChatI18N.CHANNEL_LIST_BROWSE_TOOLTIP);
+            browseBtn.getElement().setAttribute("title", browseTooltip);
+            browseBtn.getElement().setAttribute("aria-label", browseTooltip);
+            browseBtn.getElement().setAttribute("role", "button");
+            browseBtn.getElement().setAttribute("tabindex", "0");
             browseBtn.addClickListener(e ->
                     new BrowseRoomsDialog(chatService, localUser.getId())
                             .onMembershipChanged(roomId -> loadRooms())
@@ -298,12 +308,24 @@ public class ChatChannelList extends Composite<Div> {
 
         RoomRow(ChatRoom room, int initialUnread, ValueSignal<String> activeRoomSignal) {
             addClassName("chat-channel-list__item");
+            getElement().setAttribute("role", "listitem");
+            getElement().setAttribute("tabindex", "0");
 
-            Span icon = new Span(room.getType() == ChatRoom.Type.DIRECT ? "@" : "#");
+            boolean isDirect = room.getType() == ChatRoom.Type.DIRECT;
+            Span icon = new Span(isDirect ? "@" : "#");
             icon.addClassName("chat-channel-list__icon");
+            icon.getElement().setAttribute("aria-hidden", "true");  // decorative — label is on the row
 
             Span name = new Span(room.getName());
             name.addClassName("chat-channel-list__name");
+
+            // Accessible row label
+            String rowAriaLabel = isDirect
+                    ? LocalizationProvider.localize("@ {0} direct message",
+                            ChatI18N.CHANNEL_LIST_DIRECT_ARIA, room.getName())
+                    : LocalizationProvider.localize("# {0} channel",
+                            ChatI18N.CHANNEL_LIST_CHANNEL_ARIA, room.getName());
+            getElement().setAttribute("aria-label", rowAriaLabel);
 
             badge = new Span();
             badge.addClassName("chat-channel-list__badge");
@@ -316,14 +338,27 @@ public class ChatChannelList extends Composite<Div> {
             Signal.effect(this, () -> {
                 int count = unreadSignal.get();
                 badge.setVisible(count > 0);
-                badge.setText(count > 99 ? "99+" : String.valueOf(count));
+                String countText = count > 99 ? "99+" : String.valueOf(count);
+                badge.setText(countText);
+                if (count > 0) {
+                    badge.getElement().setAttribute("aria-label",
+                            LocalizationProvider.localize("{0} unread messages",
+                                    ChatI18N.CHANNEL_LIST_UNREAD_ARIA, count));
+                } else {
+                    badge.getElement().removeAttribute("aria-label");
+                }
             });
 
             // Effect 2 — active CSS. get() inside effect = dependency tracking. ✓
             Signal.effect(this, () -> {
                 boolean active = room.getId().equals(activeRoomSignal.get());
-                if (active) addClassName("chat-channel-list__item--active");
-                else removeClassName("chat-channel-list__item--active");
+                if (active) {
+                    addClassName("chat-channel-list__item--active");
+                    getElement().setAttribute("aria-current", "page");
+                } else {
+                    removeClassName("chat-channel-list__item--active");
+                    getElement().removeAttribute("aria-current");
+                }
             });
         }
 

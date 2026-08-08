@@ -4,6 +4,7 @@ import com.holonplatform.vaadin.flow.components.Components;
 import com.holonplatform.vaadin.flow.components.builders.ButtonConfigurator;
 import com.holonplatform.vaadin.flow.components.builders.HeaderConfigurator;
 import com.holonplatform.vaadin.flow.components.css.CSSUtility;
+import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
 import com.holonplatform.vaadin.flow.vaadinplus.Layout;
 import com.holonplatform.vaadin.flow.vaadinplus.components.Breadcrumb;
 import com.holonplatform.vaadin.flow.vaadinplus.components.BreadcrumbItem;
@@ -73,6 +74,12 @@ public abstract class AbstractHeaderConfigurator<C extends HeaderConfigurator<C>
     }
 
     @Override
+    public C sticky(boolean sticky) {
+        getComponent().setSticky(sticky);
+        return getConfigurator();
+    }
+
+    @Override
     public C breadcrumb(BreadcrumbItem... items) {
         getComponent().setBreadcrumb(items);
         return getConfigurator();
@@ -110,8 +117,8 @@ public abstract class AbstractHeaderConfigurator<C extends HeaderConfigurator<C>
     public C edit(Consumer<ButtonConfigurator.BaseButtonConfigurator> configurator) {
         Button editBtn = Components.button()
                 .icon(LumoIcon.EDIT.create())
-                .title("Edit")
-                .text("Edit")
+                .title(LocalizationProvider.localize("Edit", "header.edit_title"))
+                .text("Edit", "header.edit")
                 .build();
 
         return addActions(configurator,editBtn);

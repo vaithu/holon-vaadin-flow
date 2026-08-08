@@ -17,6 +17,7 @@ public class DefaultAccordionBuilder
 
     @Override
     public Accordion build() {
+        applyPostProcessors();
         return getComponent();
     }
 }

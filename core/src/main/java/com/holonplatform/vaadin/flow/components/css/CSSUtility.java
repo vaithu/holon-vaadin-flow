@@ -1756,14 +1756,14 @@ public final class CSSUtility {
         }
     }
 
-    public class Margin {
-        public class Responsive {
-            public class Horizontal {
+    public static class Margin {
+        public static class Responsive {
+            public static class Horizontal {
                 public static final String M = "margin-r-h-m";
                 public static final String L = "margin-r-h-l";
             }
 
-            public class Vertical {
+            public static class Vertical {
                 public static final String M = "margin-r-v-m";
                 public static final String L = "margin-r-v-l";
             }

@@ -22,7 +22,6 @@ import com.holonplatform.core.i18n.LocalizationContext;
 import com.holonplatform.core.property.Property;
 import com.holonplatform.core.property.PropertyBox;
 import com.holonplatform.core.property.PropertySet;
-import com.holonplatform.vaadin.flow.internal.components.builders.DefaultListingBundleBuilder;
 import com.holonplatform.vaadin.flow.components.Composable.Composer;
 import com.holonplatform.vaadin.flow.components.builders.*;
 import com.holonplatform.vaadin.flow.components.builders.ButtonConfigurator.BaseButtonConfigurator;
@@ -53,13 +52,13 @@ import com.holonplatform.vaadin.flow.data.ItemConverter;
 import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
 import com.holonplatform.vaadin.flow.internal.components.DefaultFormFooter;
 import com.holonplatform.vaadin.flow.internal.components.DefaultTimeline;
-import com.holonplatform.vaadin.flow.internal.components.builders.DefaultAccordionHeaderBuilder;
-import com.holonplatform.vaadin.flow.internal.components.builders.DefaultCloseButtonBuilder;
-import com.holonplatform.vaadin.flow.internal.components.builders.DefaultOptionsButtonBuilder;
+import com.holonplatform.vaadin.flow.internal.components.builders.*;
 import com.holonplatform.vaadin.flow.vaadinplus.KeyValueItem;
 import com.holonplatform.vaadin.flow.vaadinplus.KeyValueList;
 import com.holonplatform.vaadin.flow.vaadinplus.Layout;
 import com.holonplatform.vaadin.flow.vaadinplus.components.*;
+import com.holonplatform.vaadin.flow.vaadinplus.components.Footer;
+import com.holonplatform.vaadin.flow.vaadinplus.components.Header;
 import com.iyensoft.vaadin.flow.components.Panel;
 import com.iyensoft.vaadin.flow.components.builders.*;
 import com.iyensoft.vaadin.flow.internal.components.builders.MobileGridColumnBuilder;
@@ -73,14 +72,12 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.checkbox.CheckboxGroup;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.contextmenu.ContextMenu;
-import com.vaadin.flow.component.contextmenu.MenuItem;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.listbox.ListBox;
 import com.vaadin.flow.component.listbox.MultiSelectListBox;
-import com.vaadin.flow.component.menubar.MenuBar;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.FlexLayout;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -134,7 +131,7 @@ public interface Components {
      * If the step is less than 900 seconds, the dropdown is hidden.
      * </p>
      */
-    public static final ConfigProperty<Duration> TIME_INPUT_STEP = ConfigProperty
+    ConfigProperty<Duration> TIME_INPUT_STEP = ConfigProperty
             .create(Components.class.getName() + ".time-input-step", Duration.class);
 
     // Configurators
@@ -550,11 +547,19 @@ public interface Components {
         return HeaderBuilder.create(labelBuilder);
     }
 
+    static HeaderBuilder configure(Header header) {
+        return new DefaultHeaderBuilder(header);
+    }
+
     static FooterBuilder footer() {
         return FooterBuilder.create();
     }
 
-    static FooterConfigurator.BaseFooterConfigurator footer(com.holonplatform.vaadin.flow.vaadinplus.components.Footer footer) {
+    static FooterBuilder configure(Footer footer) {
+        return new DefaultFooterBuilder(footer);
+    }
+
+    static FooterConfigurator.BaseFooterConfigurator footer(Footer footer) {
         return FooterConfigurator.configure(footer);
     }
 
@@ -855,7 +860,7 @@ public interface Components {
      * @return a {@link ButtonGroupConfigurator.BaseButtonGroupConfigurator}
      */
     static ButtonGroupConfigurator.BaseButtonGroupConfigurator configure(
-            com.holonplatform.vaadin.flow.vaadinplus.components.ButtonGroup buttonGroup) {
+            ButtonGroup buttonGroup) {
         return ButtonGroupConfigurator.configure(buttonGroup);
     }
 
@@ -998,7 +1003,6 @@ public interface Components {
         return TimelineStepperConfigurator.configure(timeline);
     }
 
-    static
     interface utils {
         static FormResponsiveStepBuilder responsiveSteps() {
             return FormResponsiveStepBuilder.create();
@@ -1103,8 +1107,8 @@ public interface Components {
      * @return a configurator for the provided panel
      * @since 10.0.0
      */
-    static com.iyensoft.vaadin.flow.components.builders.PanelConfigurator.BasePanelConfigurator configure(Panel panel) {
-        return com.iyensoft.vaadin.flow.components.builders.PanelConfigurator.configure(panel);
+    static PanelConfigurator.BasePanelConfigurator configure(Panel panel) {
+        return PanelConfigurator.configure(panel);
     }
 
 
@@ -1238,35 +1242,8 @@ public interface Components {
      *
      * @return A new {@link MenuBarBuilder}
      */
-    /*static MenuBarBuilder menuBar() {
+    static MenuBarBuilder menuBar() {
         return MenuBarBuilder.create();
-    }*/
-
-    /**
-     * Gets a builder to create {@link com.vaadin.flow.component.menubar.MenuBar}s.
-     *
-     * @return A new {@link MenuItemBuilder}
-     */
-    static MenuItemBuilder menuBar(MenuBar menuBar) {
-        return MenuItemBuilder.create(menuBar);
-    }
-
-    /**
-     * Gets a builder to create {@link com.vaadin.flow.component.menubar.MenuBar}s.
-     *
-     * @return A new {@link MenuItemBuilder}
-     */
-    static MenuItemBuilder menuBar(MenuBar menuBar, MenuItem menuItem) {
-        return MenuItemBuilder.create(menuBar, menuItem);
-    }
-
-    /**
-     * Gets a builder to create {@link com.vaadin.flow.component.menubar.MenuBar}s.
-     *
-     * @return A new {@link MenuItemBuilder}
-     */
-    static MenuItemBuilder menuBar() {
-        return MenuItemBuilder.create(new MenuBar());
     }
 
     /**
@@ -1307,7 +1284,7 @@ public interface Components {
     /**
      * Dialog builders provider.
      */
-    static interface dialog {
+    interface dialog {
 
         /**
          * Get a builder to create a generic message dialog.
@@ -1892,7 +1869,7 @@ public interface Components {
     /**
      * {@link ViewComponent} and {@link PropertyViewGroup} builders provider.
      */
-    static interface view {
+    interface view {
 
         /**
          * Get a {@link ViewComponentBuilder} to create a {@link ViewComponent} using
@@ -2123,7 +2100,7 @@ public interface Components {
      * {@link Input}, {@link PropertyInputGroup} and {@link PropertyInputForm}
      * builders provider.
      */
-    static interface input {
+    interface input {
 
         /**
          * Gets a builder to create {@link String} type {@link Input}s.
@@ -2898,7 +2875,7 @@ public interface Components {
     /**
      * {@link ItemListing} builders provider.
      */
-    static interface listing {
+    interface listing {
 
         /**
          * Get a {@link BeanListingBuilder} to create and setup a {@link BeanListing}
@@ -3381,9 +3358,9 @@ public interface Components {
      * @return a new {@link HighlightBuilder}
      * @since 10.0.0
      */
-    static com.holonplatform.vaadin.flow.components.builders.HighlightBuilder highlight(
+    static HighlightBuilder highlight(
             String heading, String value) {
-        return com.holonplatform.vaadin.flow.components.builders.HighlightBuilder.create(heading, value);
+        return HighlightBuilder.create(heading, value);
     }
 
     /**
@@ -3403,9 +3380,9 @@ public interface Components {
      * @return a new {@link HighlightBuilder}
      * @since 10.0.0
      */
-    static com.holonplatform.vaadin.flow.components.builders.HighlightBuilder highlight(
-            com.vaadin.flow.component.Component prefix, String heading, String value) {
-        return com.holonplatform.vaadin.flow.components.builders.HighlightBuilder.create(prefix, heading, value);
+    static HighlightBuilder highlight(
+            Component prefix, String heading, String value) {
+        return HighlightBuilder.create(prefix, heading, value);
     }
 
     // -----------------------------------------------------------------------
@@ -3626,8 +3603,8 @@ public interface Components {
      * @return a new {@link com.holonplatform.vaadin.flow.vaadinplus.components.LineItemGrid.Builder}
      * @since 10.0.0
      */
-    static com.holonplatform.vaadin.flow.vaadinplus.components.LineItemGrid.Builder lineItemGrid() {
-        return com.holonplatform.vaadin.flow.vaadinplus.components.LineItemGrid.builder();
+    static LineItemGrid.Builder lineItemGrid() {
+        return LineItemGrid.builder();
     }
 
     static DivBuilder div() {
@@ -3678,6 +3655,61 @@ public interface Components {
      */
     static StatusBadge statusBadge(String label, StatusBadge.Variant variant) {
         return StatusBadge.of(label, variant);
+    }
+
+    // -----------------------------------------------------------------------
+    // ArAgingBar
+    // -----------------------------------------------------------------------
+
+    /**
+     * Returns a fluent builder for {@link ArAgingBar} — a proportional segmented bar card
+     * for visualising distributions such as AR aging buckets, pipeline stages, budget
+     * breakdowns, or recruitment funnels.
+     *
+     * <p>The builder uses nested sub-builders with {@code Consumer<>} overloads:</p>
+     *
+     * <pre>{@code
+     * Components.arAgingBar()
+     *     .header(h -> h
+     *         .icon("€")
+     *         .title("AR aging · Helix Robotics")
+     *         .variant(ArAgingBar.Variant.INFO))
+     *     .content(c -> c
+     *         .segment(s -> s.key("Current").value("Current · €35K").percent(56).variant(Variant.SUCCESS))
+     *         .segment(s -> s.key("1–30d")  .value("1-30d · €18.7K").percent(30).variant(Variant.INFO))
+     *         .segment(s -> s.key("31–60d") .value("31-60d · €8.7K").percent(14).variant(Variant.WARNING)))
+     *     .footer(f -> f
+     *         .left("€0 owed").center("€0 overdue").right("€62.4K total open"))
+     *     .build();
+     * }</pre>
+     *
+     * @return a new {@link ArAgingBarBuilder}
+     */
+    static ArAgingBarBuilder arAgingBar() {
+        return ArAgingBarBuilder.create();
+    }
+
+    // -----------------------------------------------------------------------
+    // HeroStrip
+    // -----------------------------------------------------------------------
+
+    /**
+     * Returns a fluent builder for {@link HeroStrip} — a gradient metric-strip card
+     * showing N key performance indicators in equally-wide columns.
+     *
+     * <pre>{@code
+     * Components.heroStrip()
+     *     .variant(HeroStrip.Variant.INFO)
+     *     .cell(c -> c.label("Open pipeline").value("€182K").sub("4 active deals").pulse(true))
+     *     .cell(c -> c.label("Booked YTD").value("€624K").sub("14 orders").valueVariant(HeroStrip.ValueVariant.OK))
+     *     .cell(c -> c.label("AR balance").value("€62,400").sub("3 open · all on-time"))
+     *     .build();
+     * }</pre>
+     *
+     * @return a new {@link HeroStripBuilder}
+     */
+    static HeroStripBuilder heroStrip() {
+        return HeroStripBuilder.create();
     }
 
     // -----------------------------------------------------------------------
@@ -3736,6 +3768,185 @@ public interface Components {
         return ChipGroup.create();
     }
 
+    // -----------------------------------------------------------------------
+    // AppShellLayout
+    // -----------------------------------------------------------------------
+
+    /**
+     * Creates a new {@link com.iyensoft.vaadin.flow.components.builders.AppShellLayoutBuilder}
+     * for the standard enterprise application shell.
+     *
+     * <p>The builder assembles an {@link com.holonplatform.vaadin.flow.vaadinplus.components.AppBar}
+     * in the navbar with an optional
+     * {@link com.vaadin.flow.component.applayout.DrawerToggle}, brand, search,
+     * notification bell, language selector, dark/light theme toggle, and user avatar —
+     * plus an optional drawer header and navigation wrapper.
+     *
+     * <h4>Option A — standalone (demo / prototype)</h4>
+     * <pre>{@code
+     * AppShellLayout shell = Components.appShell()
+     *     .navbarBrand("My App", "v1.0", HomeView.class)
+     *     .search("Search…")
+     *     .notifications(3, "Deployment done", "New message")
+     *     .languages("English", "Deutsch", "Francais")
+     *     .themeToggle()
+     *     .user(u -> u
+     *         .name("Jane Smith")
+     *         .avatar("/avatars/jane.png")
+     *         .menu(m -> m
+     *             .item("Profile")
+     *             .item("Sign out")))
+     *     .drawerBrand(logoComponent)
+     *     .nav(Components.sideNav()...buildWrapper())
+     *     .build();
+     * }</pre>
+     *
+     * <h4>Option B — per-user with Spring injection (production)</h4>
+     * <pre>{@code
+     * @SpringComponent @UIScope
+     * public class MyAppLayout extends AppLayout {
+     *     @Autowired
+     *     public MyAppLayout(SecurityService sec, NotificationService notifs) {
+     *         var me = sec.currentUser();
+     *         Components.appShell()
+     *             .navbarBrand(me.getCompanyName(), HomeView.class)
+     *             .notifications(notifs.countUnread(me),
+     *                            notifs.topItems(me, 5).toArray(String[]::new))
+     *             .themeToggle()
+     *             .user(u -> u
+     *                 .name(me.getFullName())
+     *                 .avatar(me.getAvatarUrl())
+     *             .menu(m -> m
+     *                 .item("Profile")
+     *                 .item("Sign out")))
+     *             .nav(buildNav(me.getRoles()))
+     *             .configure(this);   // applies to THIS AppLayout instance
+     *     }
+     * }
+     * }</pre>
+     *
+     * @return a new {@link com.iyensoft.vaadin.flow.components.builders.AppShellLayoutBuilder}
+     * @since 10.0.0
+     */
+    static AppShellLayoutBuilder appShell() {
+        return AppShellLayoutBuilder.create();
+    }
+
+    // ── VaadinPlus custom components ──────────────────────────────────────
+
+    /**
+     * Creates a new {@link LivePreviewCard} with the given eyebrow label.
+     *
+     * <p>A dark-gradient summary card for displaying a live preview of structured form data.
+     * Typically used as a reactive sidebar alongside a multi-step form.</p>
+     *
+     * @param eyebrow small uppercase caption shown above the title (e.g. {@code "Live preview"})
+     * @return a new {@link LivePreviewCard}
+     */
+    static LivePreviewCard livePreviewCard(String eyebrow) {
+        return new LivePreviewCard(eyebrow);
+    }
+
+    /**
+     * Creates an empty {@link ChecklistPanel}.
+     *
+     * <p>A vertical checklist showing ordered steps with DONE / CURRENT / PENDING visual states.
+     * Add items via {@link ChecklistPanel#addItem} and advance via {@link ChecklistPanel#advance()}.</p>
+     *
+     * @return a new empty {@link ChecklistPanel}
+     */
+    static ChecklistPanel checklistPanel() {
+        return new ChecklistPanel();
+    }
+
+    /**
+     * Creates a new {@link AssignmentPickerRow} with the given name and description.
+     *
+     * <p>A clickable row displaying an avatar (with auto-derived initials), a name, a role/description,
+     * and an optional "Change" action link.</p>
+     *
+     * @param name        display name of the assigned person (initials derived automatically)
+     * @param description secondary description, e.g. role or department (may be {@code null})
+     * @return a new {@link AssignmentPickerRow}
+     */
+    static AssignmentPickerRow assignmentPickerRow(String name, String description) {
+        return new AssignmentPickerRow(name, description);
+    }
+
+    /**
+     * Creates an empty {@link StickyActionBar}.
+     *
+     * <p>A generic fixed bottom action bar with an optional status indicator, an optional progress
+     * display, and action buttons. Automatically respects the Vaadin AppLayout drawer width so it
+     * never overlaps a {@code SideNav} sidebar.</p>
+     *
+     * <p>Configure with {@link StickyActionBar#setStatus}, {@link StickyActionBar#setProgress},
+     * and {@link StickyActionBar#addAction}.</p>
+     *
+     * @return a new empty {@link StickyActionBar}
+     */
+    static StickyActionBar stickyActionBar() {
+        return new StickyActionBar();
+    }
+
+    /**
+     * Gets a builder to create a {@link FormStepCard}.
+     *
+     * <p>A Panel-based card representing one step in a multi-step form.
+     * The builder composes a step badge, heading, subtitle, "STEP N OF M" counter,
+     * form content, and optional help-text footer into a fully structured panel.</p>
+     *
+     * <pre>{@code
+     * FormStepCard card = Components.formStepCard()
+     *     .stepNumber(2)
+     *     .totalSteps(6)
+     *     .title("Primary contact")
+     *     .subtitle("Name, email, phone")
+     *     .state(FormStepCard.StepState.CURRENT)
+     *     .helpText("At least one contact is required before saving.")
+     *     .content(nameField, emailField)
+     *     .build();
+     * }</pre>
+     *
+     * @return a new {@link FormStepCardBuilder}
+     */
+    static FormStepCardBuilder formStepCard() {
+        return FormStepCardBuilder.create();
+    }
+
+    /**
+     * Creates a new {@link EntityCreationFormBuilder} for building a generic multi-step
+     * entity creation form.
+     *
+     * <p>A full-page layout that composes a page header (breadcrumb + title + draft badge +
+     * actions), a vertically stacked list of {@link FormStepCard} steps, and a
+     * {@link StickyActionBar} at the bottom.  The side column (LivePreviewCard, ChecklistPanel)
+     * is intentionally absent — it is a single-column, focused creation flow.</p>
+     *
+     * <pre>{@code
+     * EntityCreationForm form = Components.entityCreationForm()
+     *     .breadcrumb(
+     *         new BreadcrumbItem(new Span("Products")),
+     *         new BreadcrumbPage("New product")
+     *     )
+     *     .title("New product")
+     *     .subtitle("All required fields are marked with *")
+     *     .draftBadge("Unsaved draft")
+     *     .headerAction(Components.button().text("Discard").build())
+     *     .headerAction(Components.button().text("Save product").primary().build())
+     *     .step(detailsStep)
+     *     .step(pricingStep)
+     *     .status("Auto-saved · 2 sec ago", StickyActionBar.Variant.SUCCESS)
+     *     .progress("Setup", 50)
+     *     .barAction(Components.button().text("Discard").build())
+     *     .barAction(Components.button().text("Save product").primary().build())
+     *     .build();
+     * }</pre>
+     *
+     * @return a new {@link EntityCreationFormBuilder}
+     */
+    static EntityCreationFormBuilder entityCreationForm() {
+        return EntityCreationFormBuilder.create();
+    }
 
 }
-

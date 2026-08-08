@@ -15,6 +15,7 @@
  */
 package com.holonplatform.vaadin.flow.internal.components.support;
 
+import java.io.Serial;
 import com.holonplatform.core.Registration;
 import com.holonplatform.core.internal.utils.ObjectUtils;
 
@@ -25,6 +26,7 @@ import com.holonplatform.core.internal.utils.ObjectUtils;
  */
 public class RegistrationAdapter implements Registration {
 
+	@Serial
 	private static final long serialVersionUID = 910460619183674008L;
 
 	private final com.vaadin.flow.shared.Registration registration;

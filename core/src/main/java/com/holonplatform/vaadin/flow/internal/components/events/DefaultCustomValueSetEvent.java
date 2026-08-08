@@ -15,6 +15,7 @@
  */
 package com.holonplatform.vaadin.flow.internal.components.events;
 
+import java.io.Serial;
 import com.holonplatform.vaadin.flow.components.SingleSelect;
 import com.holonplatform.vaadin.flow.components.events.CustomValueSetEvent;
 
@@ -25,6 +26,7 @@ import com.holonplatform.vaadin.flow.components.events.CustomValueSetEvent;
  */
 public class DefaultCustomValueSetEvent<T> implements CustomValueSetEvent<T> {
 
+	@Serial
 	private static final long serialVersionUID = 8626765674836153959L;
 	
 	private final SingleSelect<T> source;

@@ -15,6 +15,7 @@
  */
 package com.holonplatform.vaadin.flow.internal.i18n;
 
+import java.io.Serial;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
@@ -30,6 +31,7 @@ import com.holonplatform.vaadin.flow.i18n.LocalizationContextI18NProvider;
  */
 public class DefaultLocalizationContextI18NProvider implements LocalizationContextI18NProvider {
 
+	@Serial
 	private static final long serialVersionUID = 820749775814684825L;
 
 	private final LocalizationContext localizationContext;

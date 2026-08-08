@@ -16,6 +16,7 @@ public class DefaultFooterBuilder extends AbstractFooterConfigurator<FooterBuild
 
     @Override
     public Footer build() {
+        applyPostProcessors();
         return footer();
     }
 }

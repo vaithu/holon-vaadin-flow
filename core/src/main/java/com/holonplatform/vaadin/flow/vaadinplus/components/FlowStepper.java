@@ -15,6 +15,7 @@
  */
 package com.holonplatform.vaadin.flow.vaadinplus.components;
 
+import java.io.Serial;
 import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.vaadin.flow.components.builders.StepperBuilder;
 import com.holonplatform.vaadin.flow.components.builders.StepperConfigurator;
@@ -40,15 +41,15 @@ import java.util.stream.Collectors;
  *
  * <h3>Orientations</h3>
  * <ul>
- *   <li>{@link Orientation#HORIZONTAL} (default) — steps laid out in a row.</li>
- *   <li>{@link Orientation#VERTICAL} — steps stacked in a column.</li>
+ *   <li>{@link Orientation#HORIZONTAL} (default) â€” steps laid out in a row.</li>
+ *   <li>{@link Orientation#VERTICAL} â€” steps stacked in a column.</li>
  * </ul>
  *
  * <h3>Variants</h3>
  * <ul>
- *   <li>{@link Variant#DEFAULT} — step number or icon in a circle.</li>
- *   <li>{@link Variant#NUMBERED} — always shows the step number.</li>
- *   <li>{@link Variant#DOT} — minimal dot instead of a labelled circle.</li>
+ *   <li>{@link Variant#DEFAULT} â€” step number or icon in a circle.</li>
+ *   <li>{@link Variant#NUMBERED} â€” always shows the step number.</li>
+ *   <li>{@link Variant#DOT} â€” minimal dot instead of a labelled circle.</li>
  * </ul>
  *
  * <h3>Fluent builder (recommended)</h3>
@@ -69,7 +70,14 @@ import java.util.stream.Collectors;
 @StyleSheet("context://stepper.css")
 public class FlowStepper extends Component implements HasSize, HasEnabled {
 
+    @Serial
     private static final long serialVersionUID = 1L;
+
+    /** Stored localizable steps; re-resolved when locale changes. */
+    private Localizable[] localizableSteps;
+
+    /** Stored localizable aria-label; re-resolved on locale change. */
+    private Localizable ariaLabelLocalizable;
 
     // -----------------------------------------------------------------------
     // Enums
@@ -89,7 +97,7 @@ public class FlowStepper extends Component implements HasSize, HasEnabled {
         DEFAULT,
         /** Step number always visible. */
         NUMBERED,
-        /** Minimal dot indicator — no number or icon. */
+        /** Minimal dot indicator â€” no number or icon. */
         DOT
     }
 
@@ -97,18 +105,18 @@ public class FlowStepper extends Component implements HasSize, HasEnabled {
      * Controls which steps respond to a click/keyboard-activate gesture.
      *
      * <p>The value is written to the {@code click-nav} HTML attribute and read by the
-     * web component on every render. It can be changed at runtime — call
+     * web component on every render. It can be changed at runtime â€” call
      * {@link #setClickNavigation(ClickNavigation)} at any point and the component
      * re-evaluates on the next attribute change.</p>
      *
      * <h4>When to use each mode</h4>
      * <ul>
-     *   <li>{@link #COMPLETED} <em>(default)</em> — linear wizard where the user must
+     *   <li>{@link #COMPLETED} <em>(default)</em> â€” linear wizard where the user must
      *       complete steps in order, but may go back to a finished step to review or
      *       change answers. Pending / active steps are non-interactive.</li>
-     *   <li>{@link #ALL} — free-navigation form where all steps are reachable at any
+     *   <li>{@link #ALL} â€” free-navigation form where all steps are reachable at any
      *       time (e.g. a settings screen with multiple tabs displayed as steps).</li>
-     *   <li>{@link #NONE} — purely decorative progress indicator; no step is clickable.
+     *   <li>{@link #NONE} â€” purely decorative progress indicator; no step is clickable.
      *       Use this when navigation is driven only by Next / Back buttons.</li>
      * </ul>
      */
@@ -138,6 +146,7 @@ public class FlowStepper extends Component implements HasSize, HasEnabled {
     /** Creates a stepper with no steps and default settings. */
     public FlowStepper() {
         setSteps(List.of());
+        getElement().setAttribute("role", "group");
     }
 
     /**
@@ -192,15 +201,53 @@ public class FlowStepper extends Component implements HasSize, HasEnabled {
     /**
      * Sets the step labels from a varargs array of {@link Localizable} descriptors.
      * Each label is resolved using {@link LocalizationProvider#localize(Localizable)},
-     * falling back to the descriptor's default message.
+     * falling back to the descriptor's default message. Labels are stored and
+     * re-resolved automatically on locale change.
      *
      * @param steps localizable step labels (not null)
      */
     public void setSteps(Localizable... steps) {
+        this.localizableSteps = steps;
         setSteps(Arrays.stream(steps)
                 .map(l -> LocalizationProvider.localize(l)
                         .orElseGet(() -> l.getMessage() != null ? l.getMessage() : ""))
                 .collect(Collectors.toList()));
+    }
+
+    // -----------------------------------------------------------------------
+    // A11Y â€” accessible label
+    // -----------------------------------------------------------------------
+
+    /**
+     * Sets the accessible name for this stepper group.
+     *
+     * @param label the ARIA label (not null)
+     */
+    public void setAriaLabel(String label) {
+        this.ariaLabelLocalizable = null;
+        if (label != null && !label.isBlank()) {
+            getElement().setAttribute("aria-label", label);
+        }
+    }
+
+    /**
+     * Sets the accessible name from a {@link Localizable} descriptor.
+     * Re-resolved on each locale change.
+     *
+     * @param label the localizable accessible name (not null)
+     */
+    public void setAriaLabel(Localizable label) {
+        this.ariaLabelLocalizable = label;
+        applyAriaLabel();
+    }
+    private void applyAriaLabel() {
+        if (ariaLabelLocalizable == null) return;
+        String resolved = LocalizationProvider.localize(ariaLabelLocalizable)
+                .orElseGet(() -> ariaLabelLocalizable.getMessage() != null
+                        ? ariaLabelLocalizable.getMessage() : "");
+        if (!resolved.isBlank()) {
+            getElement().setAttribute("aria-label", resolved);
+        }
     }
 
     // -----------------------------------------------------------------------

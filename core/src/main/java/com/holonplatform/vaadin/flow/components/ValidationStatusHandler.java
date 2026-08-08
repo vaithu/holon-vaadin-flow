@@ -174,7 +174,7 @@ public interface ValidationStatusHandler<S> extends Serializable {
 	/**
 	 * Validation status.
 	 */
-	public enum Status {
+	enum Status {
 
 		/**
 		 * Unresolved status, e.g. no value validation has been made yet.
@@ -198,7 +198,7 @@ public interface ValidationStatusHandler<S> extends Serializable {
 	 * 
 	 * @param <S> Validation source
 	 */
-	public interface ValidationStatusEvent<S> extends Serializable {
+	interface ValidationStatusEvent<S> extends Serializable {
 
 		/**
 		 * Ge the validation event source

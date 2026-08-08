@@ -24,7 +24,7 @@ import com.holonplatform.core.internal.Logger;
  */
 public interface VaadinLogger {
 
-	static final String NAME = "com.holonplatform.vaadin";
+	String NAME = "com.holonplatform.vaadin";
 
 	/**
 	 * Get a {@link Logger} bound to {@link #NAME}.

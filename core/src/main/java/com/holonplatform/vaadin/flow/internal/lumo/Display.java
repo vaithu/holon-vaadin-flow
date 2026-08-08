@@ -6,7 +6,7 @@ public enum Display {
 
     private final String className;
 
-    private Display(String className) {
+    Display(String className) {
         this.className = className;
     }
 

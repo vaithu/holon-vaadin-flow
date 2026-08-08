@@ -64,7 +64,7 @@ public interface FlexLayoutConfigurator<C extends FlexLayoutConfigurator<C>> ext
     /**
      * Base configurator.
      */
-    public interface BaseFlexLayoutConfigurator extends FlexLayoutConfigurator<BaseFlexLayoutConfigurator> {
+    interface BaseFlexLayoutConfigurator extends FlexLayoutConfigurator<BaseFlexLayoutConfigurator> {
 
     }
 

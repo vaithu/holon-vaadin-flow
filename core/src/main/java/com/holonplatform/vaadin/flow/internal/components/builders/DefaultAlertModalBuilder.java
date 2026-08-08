@@ -16,6 +16,6 @@ public class DefaultAlertModalBuilder
     protected AlertModalBuilder getConfigurator() { return this; }
 
     @Override
-    public AlertModal build() { return getComponent(); }
+    public AlertModal build() { applyPostProcessors(); return getComponent(); }
 }
 

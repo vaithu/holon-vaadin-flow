@@ -9,7 +9,7 @@ public enum AlignItems {
 
     private final String className;
 
-    private AlignItems(String className) {
+    AlignItems(String className) {
         this.className = className;
     }
 

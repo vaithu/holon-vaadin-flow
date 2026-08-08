@@ -15,8 +15,10 @@
  */
 package com.holonplatform.vaadin.flow.components;
 
+import com.holonplatform.core.internal.utils.FormatUtils;
 import com.holonplatform.vaadin.flow.vaadinplus.ResponsiveDiv;
 import com.holonplatform.vaadin.flow.vaadinplus.components.DynamicFilterPanel;
+import com.holonplatform.vaadin.flow.vaadinplus.components.Empty;
 import com.holonplatform.vaadin.flow.vaadinplus.components.GridHeader;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
@@ -25,6 +27,7 @@ import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.contextmenu.ContextMenu;
 import com.vaadin.flow.component.contextmenu.MenuItem;
+import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridSortOrder;
@@ -85,6 +88,15 @@ import java.util.Optional;
  * @param <T> item type ({@code Product} for BeanListing; {@code PropertyBox} for PropertyListing)
  * @since 10.0.1
  */
+@StyleSheet("context://layout.css")
+@StyleSheet("context://utilities.css")
+@StyleSheet("context://buttons.css")
+@StyleSheet("context://toolbar.css")
+@StyleSheet("context://menu.css")
+@StyleSheet("context://mobile-grid.css")
+@StyleSheet("context://master-detail-v2.css")
+@StyleSheet("context://document-row-lit-renderer.css")
+@StyleSheet("context://mobile-list-lit-renderer.css")
 public final class ListingBundle<T> extends Div {
 
     /**
@@ -146,6 +158,10 @@ public final class ListingBundle<T> extends Div {
     private Div                                     toolbarDiv;
     /** Cached footer div so visibility can be toggled. */
     private Div                                     footerDiv;
+    /** Shown when the dataset is genuinely empty (no search/filter active). {@code null} = feature disabled. */
+    private final Empty                             emptyState;
+    /** Shown when search/filter is active but yields no results. {@code null} = feature disabled. */
+    private final Empty                             noResultsState;
 
     public ListingBundle(ItemListing<T, ?>                listing,
                          ItemListingPaginationBar<T, ?>    bar,
@@ -160,7 +176,9 @@ public final class ListingBundle<T> extends Div {
                          String                            gridHeaderTitle,
                          Component[]                       gridHeaderContextComponents,
                          List<String>                      columnKeys,
-                         boolean                           paginatedMode) {
+                         boolean                           paginatedMode,
+                         Empty                             emptyState,
+                         Empty                             noResultsState) {
         super();
         this.listing             = listing;
         this.bar                 = bar;
@@ -176,6 +194,8 @@ public final class ListingBundle<T> extends Div {
         this.gridHeaderTitle     = gridHeaderTitle;
         this.gridHeaderContextComponents = gridHeaderContextComponents != null ? gridHeaderContextComponents.clone() : null;
         this.paginatedMode       = paginatedMode;
+        this.emptyState          = emptyState;
+        this.noResultsState      = noResultsState;
 
         // When explicitly starting in paginated mode, switch the selector (which defaults to
         // virtual-scroll) so the first data fetch uses page-based offsets and fixed count.
@@ -191,6 +211,22 @@ public final class ListingBundle<T> extends Div {
         if (header != null) {
             add(header);
         }
+
+        if (emptyState != null || noResultsState != null) {
+            if (emptyState != null && noResultsState != null) {
+                // Both states: wrap them in a single container so the Grid's one empty-state
+                // slot is occupied by the wrapper; onDataFetched() toggles each child's
+                // visibility inside the wrapper to show the correct state.
+                noResultsState.setVisible(false); // emptyState is shown by default
+                var wrapper = new Div(emptyState, noResultsState);
+                wrapper.addClassName("listing-empty-state-wrapper");
+                listing.setEmptyStateComponent(wrapper);
+            } else {
+                // Single state: set it directly; the Grid shows/hides it automatically.
+                listing.setEmptyStateComponent(emptyState != null ? emptyState : noResultsState);
+            }
+        }
+
         add(toolbar(), listing.getComponent(), footer());
 
         Components.configure(this)
@@ -247,6 +283,55 @@ public final class ListingBundle<T> extends Div {
     public void addItemClickListener(com.vaadin.flow.component.ComponentEventListener<com.vaadin.flow.component.grid.ItemClickEvent<T>> listener) {
         listing.addItemClickListener(listener);
         listing.hasStyle().ifPresent(style -> style.addClassName("listing-bundle-clickable"));
+    }
+
+    // ── Empty state ────────────────────────────────────────────────────────
+
+    /**
+     * Called by {@link ItemListingPageSizeSelector} after each managed fetch with the
+     * actual item count returned by the backend.
+     *
+     * <p>Determines which component to show:</p>
+     * <ul>
+     *   <li>{@code count > 0} — grid visible, both empty states hidden</li>
+     *   <li>{@code count == 0} + search or filter active — {@code noResultsState} shown
+     *       (falls back to {@code emptyState} if {@code noResultsState} is null)</li>
+     *   <li>{@code count == 0} + no active search/filter — {@code emptyState} shown
+     *       (falls back to {@code noResultsState} if {@code emptyState} is null)</li>
+     * </ul>
+     *
+     * @param count number of items returned by the last fetch (0 = empty)
+     */
+    public void onDataFetched(int count) {
+        if (emptyState == null && noResultsState == null) return;
+
+        boolean isEmpty = count == 0;
+
+        Empty toShow = null;
+        if (isEmpty) {
+            boolean filtered = isFiltered();
+            if (filtered && noResultsState != null) {
+                toShow = noResultsState;
+            } else if (!filtered && emptyState != null) {
+                toShow = emptyState;
+            } else {
+                // One state configured: show whichever is available
+                toShow = emptyState != null ? emptyState : noResultsState;
+            }
+        }
+
+        if (emptyState != null)     emptyState.setVisible(emptyState == toShow);
+        if (noResultsState != null) noResultsState.setVisible(noResultsState == toShow);
+    }
+
+    /**
+     * Returns {@code true} when a search term is entered or at least one filter is active.
+     * Used to differentiate "empty dataset" from "search / filter returned no results".
+     */
+    private boolean isFiltered() {
+        boolean searchActive = search != null && !search.getValue().isBlank();
+        boolean filterActive = filterPanel != null && filterPanel.isAnyActive();
+        return searchActive || filterActive;
     }
 
     // ── Layout helpers ─────────────────────────────────────────────────────
@@ -500,6 +585,7 @@ public final class ListingBundle<T> extends Div {
             colCombo.setItems(availableColumns.stream()
                     .map(Grid.Column::getKey)
                     .toList());
+            colCombo.setItemLabelGenerator(item -> FormatUtils.toSentenceCase(item));
             colCombo.addClassName("flex-grow-1");
 
             var dirCombo = new ComboBox<String>("Direction");
@@ -507,8 +593,12 @@ public final class ListingBundle<T> extends Div {
             dirCombo.setValue(direction != null ? direction : "Ascending");
             dirCombo.addClassName("flex-grow-1");
 
-            var removeBtn = new Button(new Icon(VaadinIcon.CLOSE_SMALL));
-            removeBtn.addThemeVariants(ButtonVariant.LUMO_TERTIARY, ButtonVariant.LUMO_ICON);
+            var removeBtn = Components.button()
+                    .icon(VaadinIcon.CLOSE_SMALL)
+                    .error()
+                    .tooltip("Remove selected option")
+                    .styleName("filter-panel__remove")
+                    .build();
 
             // Direction + remove: always side by side (avoids lonely × on mobile)
             var dirGroup = ResponsiveDiv.flex()
@@ -627,7 +717,7 @@ public final class ListingBundle<T> extends Div {
         content.setSpacing(true);
 
         managedColumns.forEach(col -> {
-            var cb = new Checkbox(col.getKey());
+            var cb = new Checkbox(FormatUtils.toSentenceCase(col.getKey()));
             cb.setValue(col.isVisible());
             cb.addValueChangeListener(e -> col.setVisible(e.getValue()));
             content.add(cb);
@@ -737,9 +827,10 @@ public final class ListingBundle<T> extends Div {
 
         filterDialog = new Dialog();
         filterDialog.setHeaderTitle(advancedSearchLabel);
-        filterDialog.setWidth("min(600px, 95vw)");
+        filterDialog.setWidth("min(750px, 95vw)");
         filterDialog.addClassName("listing-filter-dialog");
-
+        filterDialog.setDraggable(true);
+        filterDialog.setResizable(true);
         // Wrap the panel so CSS can target it without shadow-DOM tricks
         var body = new Div(filterPanel);
         body.addClassName("listing-filter-dialog__body");

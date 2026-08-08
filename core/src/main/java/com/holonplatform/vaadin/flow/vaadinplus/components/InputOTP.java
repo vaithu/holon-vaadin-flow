@@ -15,9 +15,11 @@
  */
 package com.holonplatform.vaadin.flow.vaadinplus.components;
 
+import java.io.Serial;
 import com.holonplatform.vaadin.flow.components.Components;
 import com.holonplatform.vaadin.flow.components.builders.InputOTPBuilder;
 import com.holonplatform.vaadin.flow.components.builders.InputOTPConfigurator;
+import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.html.Div;
@@ -44,7 +46,7 @@ import java.util.List;
  *     &lt;div class="input-otp__slot"&gt;...&lt;/div&gt;
  *     &lt;div class="input-otp__slot"&gt;...&lt;/div&gt;
  *   &lt;/div&gt;
- *   &lt;div class="input-otp__separator"&gt;–&lt;/div&gt;
+ *   &lt;div class="input-otp__separator"&gt;â€“&lt;/div&gt;
  *   &lt;div class="input-otp__group"&gt;
  *     &lt;div class="input-otp__slot"&gt;...&lt;/div&gt;
  *     &lt;div class="input-otp__slot"&gt;...&lt;/div&gt;
@@ -94,10 +96,10 @@ import java.util.List;
  * @see InputOTPSlot
  * @see InputOTPSeparator
  */
-@StyleSheet("context://material-symbols.css")
 @StyleSheet("context://input-otp.css")
 public class InputOTP extends Div {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     /** Error message label rendered below the slots row. Added to the DOM lazily. */
@@ -140,6 +142,9 @@ public class InputOTP extends Div {
      */
     public InputOTP() {
         addClassName("input-otp");
+        getElement().setAttribute("role", "group");
+        getElement().setAttribute("aria-label",
+                LocalizationProvider.localize("One-time password", "input_otp.aria_label"));
 
         // errorSpan is attached lazily to the DOM only when an error occurs
         errorSpan.addClassName("input-otp__error-message");
@@ -147,7 +152,7 @@ public class InputOTP extends Div {
     }
 
     // -----------------------------------------------------------------------
-    // Add — groups and separators
+    // Add â€” groups and separators
     // -----------------------------------------------------------------------
 
     /**
@@ -179,6 +184,19 @@ public class InputOTP extends Div {
             // Groups and separators are direct children of this InputOTP container
             super.add(c);
         }
+        // Re-label all slots now that the total is known: "Digit N of M"
+        refreshSlotAriaLabels();
+    }
+
+    /** Updates aria-labels for every registered slot as "Digit N of M". */
+    private void refreshSlotAriaLabels() {
+        int total = allSlots.size();
+        for (int i = 0; i < total; i++) {
+            String label = java.text.MessageFormat.format(
+                    LocalizationProvider.localize("Digit {0} of {1}", "input_otp.slot_aria_label"),
+                    i + 1, total);
+            allSlots.get(i).setSlotAriaLabel(label);
+        }
     }
 
     // -----------------------------------------------------------------------
@@ -186,7 +204,7 @@ public class InputOTP extends Div {
     // -----------------------------------------------------------------------
 
     /**
-     * Returns the current OTP value — the concatenation of all slot values in order.
+     * Returns the current OTP value â€” the concatenation of all slot values in order.
      * Slots that are still empty contribute an empty string to the result.
      *
      * @return the current value (never null; empty string if no slots are filled)
@@ -281,9 +299,9 @@ public class InputOTP extends Div {
      *
      * <p>The function receives the complete OTP string and must return:
      * <ul>
-     *   <li>{@code null} or an empty string — the code is <strong>valid</strong>;
+     *   <li>{@code null} or an empty string â€” the code is <strong>valid</strong>;
      *       the {@code onComplete} handler is fired normally.</li>
-     *   <li>A non-empty error message string — the code is <strong>invalid</strong>;
+     *   <li>A non-empty error message string â€” the code is <strong>invalid</strong>;
      *       the component enters the error state (red slot borders + error label),
      *       and the {@code onComplete} handler is <em>not</em> invoked.
      *       The error is automatically cleared the next time the user edits any slot.</li>
@@ -352,7 +370,7 @@ public class InputOTP extends Div {
     }
 
     /**
-     * Clears any active error state — hides the error label and removes the error
+     * Clears any active error state â€” hides the error label and removes the error
      * CSS class from all slots.
      */
     public void clearError() {
@@ -425,10 +443,10 @@ public class InputOTP extends Div {
                 String error = validator.apply(value);
                 if (error != null && !error.isEmpty()) {
                     setErrorMessage(error);
-                    return; // Validation failed — do not fire onComplete
+                    return; // Validation failed â€” do not fire onComplete
                 }
             }
-            // Validation passed (or no validator set) — fire the completion handler
+            // Validation passed (or no validator set) â€” fire the completion handler
             if (onCompleteHandler != null) {
                 onCompleteHandler.accept(value);
             }
@@ -490,4 +508,3 @@ public class InputOTP extends Div {
         return InputOTPConfigurator.configure(otp);
     }
 }
-

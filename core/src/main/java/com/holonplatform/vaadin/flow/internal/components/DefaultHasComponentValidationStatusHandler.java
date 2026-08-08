@@ -15,6 +15,7 @@
  */
 package com.holonplatform.vaadin.flow.internal.components;
 
+import java.io.Serial;
 import com.holonplatform.core.internal.Logger;
 import com.holonplatform.vaadin.flow.components.HasComponent;
 import com.holonplatform.vaadin.flow.components.ValidationStatusHandler;
@@ -31,6 +32,7 @@ import com.vaadin.flow.component.HasValidation;
  */
 public class DefaultHasComponentValidationStatusHandler<S extends HasComponent> implements ValidationStatusHandler<S> {
 
+	@Serial
 	private static final long serialVersionUID = 7495988011545023652L;
 
 	private final static Logger LOGGER = VaadinLogger.create();

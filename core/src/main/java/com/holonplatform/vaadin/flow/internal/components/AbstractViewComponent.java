@@ -15,6 +15,7 @@
  */
 package com.holonplatform.vaadin.flow.internal.components;
 
+import java.io.Serial;
 import com.holonplatform.core.Registration;
 import com.holonplatform.core.internal.utils.ObjectUtils;
 import com.holonplatform.vaadin.flow.components.HasLabel;
@@ -40,6 +41,7 @@ import java.util.Optional;
 public abstract class AbstractViewComponent<C extends Component, T> extends Composite<Div>
 		implements ViewComponent<T>, HasSize, HasEnabled, ClickNotifier<Component> {
 
+	@Serial
 	private static final long serialVersionUID = -1079320883460226029L;
 
 	private final NativeLabel label;

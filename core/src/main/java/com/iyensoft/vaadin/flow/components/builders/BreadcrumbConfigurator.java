@@ -6,10 +6,10 @@ import com.holonplatform.vaadin.flow.vaadinplus.components.Breadcrumb;
 import com.holonplatform.vaadin.flow.vaadinplus.components.BreadcrumbItem;
 import com.holonplatform.vaadin.flow.vaadinplus.components.BreadcrumbPage;
 import com.holonplatform.vaadin.flow.vaadinplus.components.BreadcrumbSeparator;
-import com.iyensoft.vaadin.flow.enums.MaterialSymbol;
 import com.iyensoft.vaadin.flow.internal.components.builders.DefaultBreadcrumbConfigurator;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.html.ListItem;
+import com.vaadin.flow.component.icon.VaadinIcon;
 
 import java.util.function.Supplier;
 
@@ -35,7 +35,7 @@ public interface BreadcrumbConfigurator<C extends BreadcrumbConfigurator<C>> ext
 
     C separator();
 
-    C separator(MaterialSymbol symbol);
+    C separator(VaadinIcon icon);
 
     C separator(Component customContent);
 
@@ -60,5 +60,7 @@ public interface BreadcrumbConfigurator<C extends BreadcrumbConfigurator<C>> ext
     interface BaseBreadcrumbConfigurator extends BreadcrumbConfigurator<BaseBreadcrumbConfigurator> {
     }
 }
+
+
 
 

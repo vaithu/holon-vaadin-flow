@@ -38,7 +38,7 @@ public class DefaultSaveAndNewDialogBuilder extends AbstractDialogConfigurator<D
         ObjectUtils.argumentNotNull(questionDialogCallback, "SaveAndNew dialog callback must be not null");
 
         this.saveAndNewButton = ButtonBuilder.create()
-                .text(Localizable.of("Save&New", DialogBuilder.DEFAULT_SAVE_NEW_BUTTON_MESSAGE_CODE))
+                .text(Localizable.of("Save&New", DEFAULT_SAVE_NEW_BUTTON_MESSAGE_CODE))
                 .styleName("h-dialog__action-btn")
                 .withClickListener(e -> {
                     // Close first; the caller's callback handles form reset / re-open
@@ -49,7 +49,7 @@ public class DefaultSaveAndNewDialogBuilder extends AbstractDialogConfigurator<D
                 .build();
 
         this.denyButton = ButtonBuilder.create()
-                .text(Localizable.of("Cancel", DialogBuilder.DEFAULT_DENY_BUTTON_MESSAGE_CODE))
+                .text(Localizable.of("Cancel", DEFAULT_DENY_BUTTON_MESSAGE_CODE))
                 .styleName("h-dialog__cancel-btn")
                 .withClickListener(e -> {
                     getComponent().attemptClose();

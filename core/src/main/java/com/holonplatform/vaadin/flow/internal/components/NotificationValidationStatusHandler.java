@@ -15,6 +15,7 @@
  */
 package com.holonplatform.vaadin.flow.internal.components;
 
+import java.io.Serial;
 import com.holonplatform.vaadin.flow.components.ValidationStatusHandler;
 import com.vaadin.flow.component.notification.Notification;
 
@@ -27,6 +28,7 @@ import com.vaadin.flow.component.notification.Notification;
  */
 public class NotificationValidationStatusHandler<S> implements ValidationStatusHandler<S> {
 
+	@Serial
 	private static final long serialVersionUID = -6101472534441005878L;
 
 	private final Notification notification;

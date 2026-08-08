@@ -15,8 +15,11 @@
  */
 package com.holonplatform.vaadin.flow.vaadinplus.components;
 
+import java.io.Serial;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.html.Span;
+import com.holonplatform.core.i18n.Localizable;
+import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
 
 /**
  * A static text or icon addon for use inside an {@link InputGroup}.
@@ -26,7 +29,7 @@ import com.vaadin.flow.component.html.Span;
  * to provide a prefix or suffix label, symbol, or icon.
  *
  * <p>Common prefixes: {@code @}, {@code $}, {@code https://}, {@code +1}
- * <br>Common suffixes: {@code .com}, {@code .00}, {@code kg}, a Material Symbol icon
+ * <br>Common suffixes: {@code .com}, {@code .00}, {@code kg}, a VaadinIcon icon
  *
  * <p><strong>Examples:</strong>
  *
@@ -36,9 +39,9 @@ import com.vaadin.flow.component.html.Span;
  * new InputGroupText("https://")   // -> <span class="input-group__text">https://</span>
  * }</pre>
  *
- * <p>Icon prefix (Material Symbol):
+ * <p>Icon prefix (VaadinIcon):
  * <pre>{@code
- * new InputGroupText(MaterialSymbol.SEARCH.create("input-group__text-icon"))
+ * new InputGroupText(VaadinIcon.SEARCH.create())
  * }</pre>
  *
  * <p>Multiple content pieces:
@@ -53,6 +56,7 @@ import com.vaadin.flow.component.html.Span;
  */
 public class InputGroupText extends Span {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     // -----------------------------------------------------------------------
@@ -81,6 +85,19 @@ public class InputGroupText extends Span {
     }
 
     /**
+     * Creates an addon cell with a {@link Localizable} text label.
+     * The text is resolved at construction time and re-resolved on locale change.
+     *
+     * @param text localizable text descriptor (not null)
+     */
+    public InputGroupText(Localizable text) {
+        this();
+        if (text != null) {
+            setText(LocalizationProvider.localize(text)
+                    .orElseGet(() -> text.getMessage() != null ? text.getMessage() : ""));
+        }
+    }
+    /**
      * Creates an addon cell containing the given child component(s).
      *
      * <p>Use this constructor to place an icon, avatar, or any other Vaadin
@@ -99,4 +116,3 @@ public class InputGroupText extends Span {
         }
     }
 }
-

@@ -30,28 +30,28 @@ public class DefaultFormFooter extends AbstractComponentConfigurator<Layout,Defa
         super(component);
 
         saveBtn = Components.button()
-                .text("Save")
+                .text("Save", "form_footer.save")
                 .primary()
 //                .onClick(event -> saveBtnAction())
                 .visible(true)
                 .build();
 
         saveAndNewBtn = Components.button()
-                .text("Save&New")
+                .text("Save&New", "form_footer.save_and_new")
                 .primary()
 //                .onClick(event -> saveBtnAction())
                 .visible(true)
                 .build();
 
         discardBtn = Components.button()
-                .text("Cancel")
+                .text("Cancel", "form_footer.cancel")
 //                .borderPrimary()
 //                .onClick(event -> discardBtnAction())
                 .visible(true)
                 .build();
 
         updateBtn = Components.button()
-                .text("Update")
+                .text("Update", "form_footer.update")
                 .primary()
 //                .onClick(event -> updateBtnAction())
                 .visible(false)

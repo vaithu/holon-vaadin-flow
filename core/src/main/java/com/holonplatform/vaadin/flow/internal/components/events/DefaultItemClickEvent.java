@@ -15,6 +15,7 @@
  */
 package com.holonplatform.vaadin.flow.internal.components.events;
 
+import java.io.Serial;
 import java.util.function.Supplier;
 
 import com.holonplatform.core.internal.utils.ObjectUtils;
@@ -30,6 +31,7 @@ import com.holonplatform.vaadin.flow.components.events.ItemClickEvent;
  */
 public class DefaultItemClickEvent<S, T> extends DefaultClickEvent<S> implements ItemClickEvent<S, T> {
 
+	@Serial
 	private static final long serialVersionUID = 4325465156285523799L;
 
 	private final Supplier<T> itemSupplier;

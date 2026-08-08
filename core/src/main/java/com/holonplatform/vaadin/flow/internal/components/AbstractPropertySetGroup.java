@@ -55,7 +55,7 @@ public abstract class AbstractPropertySetGroup<C extends ValueComponent<?>, G ex
 	private static final long serialVersionUID = 5966779573345769968L;
 
 	@Serial
-	private void writeObject(ObjectOutputStream out) throws IOException {
+	private void writeObject(@SuppressWarnings("unused") ObjectOutputStream out) throws IOException {
 		throw new NotSerializableException(getClass().getName());
 	}
 

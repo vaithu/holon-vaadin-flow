@@ -60,7 +60,7 @@ public interface HasEnabledConfigurator<C extends HasEnabledConfigurator<C>> {
 	/**
 	 * Base {@link HasEnabledConfigurator}.
 	 */
-	public interface BaseHasEnabledConfigurator extends HasEnabledConfigurator<BaseHasEnabledConfigurator> {
+	interface BaseHasEnabledConfigurator extends HasEnabledConfigurator<BaseHasEnabledConfigurator> {
 
 	}
 

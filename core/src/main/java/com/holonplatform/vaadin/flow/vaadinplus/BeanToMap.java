@@ -13,21 +13,25 @@ import java.util.concurrent.ConcurrentHashMap;
  * the fields you explicitly declared in the class (and its superclasses up to {@link Object}),
  * never recurses into field types, and excludes all Java reflection / Object machinery.
  *
+ * <h3>Key label resolution (first match wins)</h3>
+ * <ol>
+ *   <li>{@code @Caption} annotation — the annotation's {@code value()} (or {@code name()}) attribute
+ *       is used verbatim, with no further conversion.</li>
+ *   <li>camelCase humanization — field name is converted to Title Case via {@link #toTitleCase(String)}.</li>
+ * </ol>
+ * <pre>
+ *   &#64;Caption("Product Name") private String productName;  →  "Product Name"  (annotation wins)
+ *   private String firstName;                               →  "First Name"    (title-case fallback)
+ *   private String ZIPCode;                                 →  "ZIP Code"
+ *   private String userId;                                  →  "User ID"
+ * </pre>
+ *
  * <h3>Key ordering</h3>
  * <ol>
  *   <li>Exact {@code id} field first</li>
  *   <li>Other {@code *Id} / {@code *ID} fields next</li>
  *   <li>Remaining fields in case-insensitive alphabetical order</li>
  * </ol>
- *
- * <h3>Key format</h3>
- * camelCase / PascalCase / snake_case field names are humanized to Title Case.
- * Common acronyms (ID, URL, JSON, UUID, ZIP, …) are preserved in UPPER CASE.
- * <pre>
- *   firstName  →  First Name
- *   ZIPCode    →  ZIP Code
- *   userId     →  User ID
- * </pre>
  *
  * @since 10.0.1
  */
@@ -48,7 +52,12 @@ public final class BeanToMap {
     /** Cache of (class → list of readable declared fields across the hierarchy). */
     private static final Map<Class<?>, List<FieldAccessor>> FIELD_CACHE = new ConcurrentHashMap<>();
 
-    private record FieldAccessor(String fieldName, Method getter) {}
+    /**
+     * @param fieldName   raw Java field name (e.g. {@code "firstName"})
+     * @param getter      public getter method
+     * @param captionLabel explicit label from {@code @Caption}, or {@code null} to fall back to title-case
+     */
+    private record FieldAccessor(String fieldName, Method getter, String captionLabel) {}
 
     private static List<FieldAccessor> accessors(Class<?> type) {
         return FIELD_CACHE.computeIfAbsent(type, BeanToMap::buildAccessors);
@@ -76,12 +85,38 @@ public final class BeanToMap {
 
                 Method getter = findGetter(cursor, field);
                 if (getter != null) {
-                    result.add(new FieldAccessor(field.getName(), getter));
+                    result.add(new FieldAccessor(field.getName(), getter, readCaptionLabel(field)));
                 }
             }
             cursor = cursor.getSuperclass();
         }
         return Collections.unmodifiableList(result);
+    }
+
+    /**
+     * Reads the display label from a {@code @Caption} annotation, if present on the field.
+     *
+     * <p>Resolution order (first non-blank wins):
+     * <ol>
+     *   <li>{@code @Caption} {@code value()} attribute</li>
+     *   <li>{@code @Caption} {@code name()} attribute (alternate attribute name used by some versions)</li>
+     * </ol>
+     * Returns {@code null} when no {@code @Caption} is present or all its text attributes are blank.</p>
+     */
+    private static String readCaptionLabel(Field field) {
+        for (java.lang.annotation.Annotation ann : field.getAnnotations()) {
+            if (!"Caption".equals(ann.annotationType().getSimpleName())) continue;
+            // Try value() first, then name()
+            for (String attr : new String[]{"value", "name"}) {
+                try {
+                    Object result = ann.annotationType().getMethod(attr).invoke(ann);
+                    if (result instanceof String s && !s.isBlank()) {
+                        return s;
+                    }
+                } catch (Exception ignored) {}
+            }
+        }
+        return null;
     }
 
     /** Finds the public getter for a field: {@code getXxx()} or {@code isXxx()} for booleans. */
@@ -175,7 +210,11 @@ public final class BeanToMap {
             if (excludeKeys.contains(fa.fieldName())) continue;
             try {
                 Object value = fa.getter().invoke(bean);
-                entries.add(new Entry(fa.fieldName(), toTitleCase(fa.fieldName()), value));
+                // Use @Caption label verbatim if present; otherwise humanize field name
+                String displayKey = fa.captionLabel() != null
+                        ? fa.captionLabel()
+                        : toTitleCase(fa.fieldName());
+                entries.add(new Entry(fa.fieldName(), displayKey, value));
             } catch (Exception ignored) {
                 // skip any field whose getter throws
             }

@@ -853,7 +853,7 @@ public interface LitRendererBuilder<T> {
          * Append a horizontal row to the cell.
          * Use {@link GridCellRowBuilder} to add components to the start and end slots.
          */
-        GridCellBuilder<T> addRow(java.util.function.Consumer<GridCellRowBuilder<T>> rowConfigurator);
+        GridCellBuilder<T> addRow(Consumer<GridCellRowBuilder<T>> rowConfigurator);
 
         // ── Interaction ───────────────────────────────────────────────────────
 

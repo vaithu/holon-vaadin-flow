@@ -11,6 +11,7 @@ public class DefaultDivBuilder extends AbstractDivConfigurator<DivBuilder>
 
     @Override
     public Div build() {
+        applyPostProcessors();
         return getComponent();
     }
 

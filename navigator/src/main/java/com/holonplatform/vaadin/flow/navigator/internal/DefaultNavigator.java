@@ -15,6 +15,7 @@
  */
 package com.holonplatform.vaadin.flow.navigator.internal;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
@@ -41,6 +42,7 @@ import com.vaadin.flow.router.RouteConfiguration;
  */
 public class DefaultNavigator implements Navigator {
 
+	@Serial
 	private static final long serialVersionUID = -5365345141554389835L;
 
 	/**
@@ -218,6 +220,7 @@ public class DefaultNavigator implements Navigator {
 	public static class DefaultNavigationBuilder extends AbstractNavigationURLBuilder<NavigationBuilder>
 			implements NavigationBuilder {
 
+		@Serial
 		private static final long serialVersionUID = -3835424377998263190L;
 
 		private final Navigator navigator;
@@ -278,6 +281,7 @@ public class DefaultNavigator implements Navigator {
 	 */
 	private static class ViewLocation implements Serializable {
 
+		@Serial
 		private static final long serialVersionUID = 7865173610251184055L;
 
 		private final String path;

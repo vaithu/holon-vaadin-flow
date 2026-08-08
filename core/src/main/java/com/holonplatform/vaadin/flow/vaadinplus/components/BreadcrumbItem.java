@@ -1,5 +1,6 @@
 package com.holonplatform.vaadin.flow.vaadinplus.components;
 
+import java.io.Serial;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.html.ListItem;
 import com.vaadin.flow.router.AfterNavigationEvent;
@@ -7,12 +8,12 @@ import com.vaadin.flow.router.AfterNavigationObserver;
 import com.vaadin.flow.router.RouterLink;
 
 /**
- * A single crumb in a {@link Breadcrumb} trail — wraps a navigation link.
+ * A single crumb in a {@link Breadcrumb} trail â€” wraps a navigation link.
  *
  * <p>Renders as:</p>
  * <pre>
  * &lt;li class="breadcrumb__item"&gt;
- *   &lt;a class="breadcrumb__link" href="…"&gt;Label&lt;/a&gt;
+ *   &lt;a class="breadcrumb__link" href="â€¦"&gt;Label&lt;/a&gt;
  * &lt;/li&gt;
  * </pre>
  *
@@ -34,6 +35,7 @@ import com.vaadin.flow.router.RouterLink;
  */
 public class BreadcrumbItem extends ListItem implements AfterNavigationObserver {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     /** The embedded router link; {@code null} for arbitrary-content items. */
@@ -68,7 +70,7 @@ public class BreadcrumbItem extends ListItem implements AfterNavigationObserver 
 
     /**
      * Creates a breadcrumb item with arbitrary child content (no link).
-     * Use this for custom renderings — e.g. an icon-only crumb.
+     * Use this for custom renderings â€” e.g. an icon-only crumb.
      * This constructor does NOT register an {@link AfterNavigationObserver};
      * {@link #afterNavigation(AfterNavigationEvent)} is a no-op.
      *

@@ -15,6 +15,7 @@
  */
 package com.holonplatform.vaadin.flow.internal.components;
 
+import java.io.Serial;
 import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.core.internal.utils.ObjectUtils;
 import com.holonplatform.core.property.Property;
@@ -45,6 +46,7 @@ import java.util.function.Consumer;
 public class DefaultPropertyViewForm<C extends Component>
 		extends AbstractComposablePropertyForm<C, ViewComponent<?>, PropertyViewGroup> implements PropertyViewForm {
 
+	@Serial
 	private static final long serialVersionUID = -4202049108110710744L;
 
 	/**

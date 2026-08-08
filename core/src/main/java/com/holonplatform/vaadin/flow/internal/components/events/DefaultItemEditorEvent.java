@@ -15,6 +15,7 @@
  */
 package com.holonplatform.vaadin.flow.internal.components.events;
 
+import java.io.Serial;
 import java.util.Map;
 import java.util.function.Supplier;
 
@@ -33,6 +34,7 @@ import com.vaadin.flow.component.grid.editor.Editor;
  */
 public class DefaultItemEditorEvent<T, P> implements ItemEditorEvent<T, P> {
 
+	@Serial
 	private static final long serialVersionUID = 5792406429806357770L;
 
 	private final ItemListing<T, P> listing;

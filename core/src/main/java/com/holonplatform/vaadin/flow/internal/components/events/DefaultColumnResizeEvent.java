@@ -1,5 +1,6 @@
 package com.holonplatform.vaadin.flow.internal.components.events;
 
+import java.io.Serial;
 import com.holonplatform.vaadin.flow.components.ItemListing;
 import com.holonplatform.vaadin.flow.components.events.ColumnResizeEvent;
 
@@ -13,6 +14,7 @@ import com.holonplatform.vaadin.flow.components.events.ColumnResizeEvent;
  */
 public class DefaultColumnResizeEvent<T, P> implements ColumnResizeEvent<T, P> {
 
+	@Serial
 	private static final long serialVersionUID = 5796516429244341732L;
 
 	private final ItemListing<T, P> source;

@@ -12,7 +12,15 @@ import java.util.StringJoiner;
 
 import static com.holonplatform.vaadin.flow.components.css.BadgeShape.PILL;
 
+/**
+ * A Vaadin {@link Span} styled as a badge.
+ *
+ * <p>Text is resolved via {@link LocalizationProvider#localize(Localizable)} at
+ * construction / setter time. Because locale is typically fixed per session, no
+ * {@code LocaleChangeObserver} is needed; components are re-created on each navigation.</p>
+ */
 public class Badge extends Span {
+
     public Badge(String text) {
         this(text, BadgeColor.NORMAL);
     }
@@ -34,49 +42,27 @@ public class Badge extends Span {
         if (size.equals(BadgeSize.S)) {
             joiner.add(size.getThemeName());
         }
-       setTheme(joiner.toString(), this);
+        setTheme(joiner.toString(), this);
     }
 
-    // ── Localizable constructors ──────────────────────────────────────────────
+    // Localizable constructors
 
-    /**
-     * Creates a badge with localized text and default color.
-     *
-     * @param text localizable badge label (not null)
-     */
+    /** Creates a badge with localized text and default color. */
     public Badge(Localizable text) {
         this(resolve(text), BadgeColor.NORMAL);
     }
 
-    /**
-     * Creates a badge with localized text and specific color.
-     *
-     * @param text  localizable badge label (not null)
-     * @param color badge color theme
-     */
+    /** Creates a badge with localized text and specific color. */
     public Badge(Localizable text, BadgeColor color) {
         this(resolve(text), color);
     }
 
-    /**
-     * Creates a badge with localized text, color, size, and shape.
-     *
-     * @param text  localizable badge label (not null)
-     * @param color badge color theme
-     * @param size  badge size
-     * @param shape badge shape
-     */
+    /** Creates a badge with localized text, color, size, and shape. */
     public Badge(Localizable text, BadgeColor color, BadgeSize size, BadgeShape shape) {
         this(resolve(text), color, size, shape);
     }
 
-    // ── Text setter ───────────────────────────────────────────────────────────
-
-    /**
-     * Sets the badge label from a {@link Localizable} descriptor.
-     *
-     * @param text localizable label (not null)
-     */
+    /** Sets the badge label from a {@link Localizable} descriptor. */
     public void setText(Localizable text) {
         setText(resolve(text));
     }

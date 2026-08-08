@@ -37,7 +37,7 @@ public interface LabelConfigurator<L extends HtmlContainer & ClickNotifier, C ex
     /**
      * Base Label configurator.
      */
-    public interface BaseLabelConfigurator<L extends HtmlContainer & ClickNotifier>
+    interface BaseLabelConfigurator<L extends HtmlContainer & ClickNotifier>
             extends LabelConfigurator<L, BaseLabelConfigurator<L>> {
 
     }

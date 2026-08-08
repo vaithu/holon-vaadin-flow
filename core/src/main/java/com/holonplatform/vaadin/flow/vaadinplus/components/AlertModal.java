@@ -15,6 +15,7 @@
  */
 package com.holonplatform.vaadin.flow.vaadinplus.components;
 
+import java.io.Serial;
 import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.vaadin.flow.components.builders.AlertModalBuilder;
 import com.vaadin.flow.component.Component;
@@ -23,7 +24,7 @@ import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.icon.Icon;
 
 /**
- * Modal alert notification — a {@link Dialog} overlay wrapping an {@link Alert}.
+ * Modal alert notification â€” a {@link Dialog} overlay wrapping an {@link Alert}.
  *
  * <p>Use this component when you need to surface an inline {@link Alert} (info,
  * warning, success, or destructive notification) as a modal overlay.  It is
@@ -36,11 +37,11 @@ import com.vaadin.flow.component.icon.Icon;
  * <p>Composition:</p>
  * <pre>
  * AlertModal  (Dialog overlay)
- *  └── Alert
- *       ├── Icon            (optional — {@link #setIcon(Icon)})
- *       ├── AlertTitle      ({@link #setTitle(String)} / {@link #setTitle(Localizable)})
- *       ├── AlertDescription({@link #setDescription(String)})
- *       └── AlertAction     ({@link #setAction(Component...)})
+ *  â””â”€â”€ Alert
+ *       â”œâ”€â”€ Icon            (optional â€” {@link #setIcon(Icon)})
+ *       â”œâ”€â”€ AlertTitle      ({@link #setTitle(String)} / {@link #setTitle(Localizable)})
+ *       â”œâ”€â”€ AlertDescription({@link #setDescription(String)})
+ *       â””â”€â”€ AlertAction     ({@link #setAction(Component...)})
  * </pre>
  *
  * <p>Preferred usage via builder:</p>
@@ -62,6 +63,7 @@ import com.vaadin.flow.component.icon.Icon;
 @StyleSheet("context://alert-modal.css")
 public class AlertModal extends Dialog {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     private final Alert inner;
@@ -85,7 +87,7 @@ public class AlertModal extends Dialog {
     public AlertModal(Alert.Variant variant) {
         this.inner = new Alert(variant);
 
-        // AlertModal is dismissible — user is just being notified
+        // AlertModal is dismissible â€” user is just being notified
         setCloseOnEsc(true);
         setCloseOnOutsideClick(true);
 

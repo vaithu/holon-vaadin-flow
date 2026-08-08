@@ -1555,15 +1555,15 @@ public abstract class AbstractDatastorePropertyListingBuilder implements Propert
 
     @Override
     public PropertyListingBuilder.DatastorePropertyListingBuilder itemsPageable(
-            com.vaadin.flow.component.grid.Grid.SpringData.FetchCallback<?, PropertyBox> fetchCallback) {
+            Grid.SpringData.FetchCallback<?, PropertyBox> fetchCallback) {
         builder.itemsPageable(fetchCallback);
         return this;
     }
 
     @Override
     public PropertyListingBuilder.DatastorePropertyListingBuilder itemsPageable(
-            com.vaadin.flow.component.grid.Grid.SpringData.FetchCallback<?, PropertyBox> fetchCallback,
-            com.vaadin.flow.component.grid.Grid.SpringData.CountCallback<?> countCallback) {
+            Grid.SpringData.FetchCallback<?, PropertyBox> fetchCallback,
+            Grid.SpringData.CountCallback<?> countCallback) {
         builder.itemsPageable(fetchCallback, countCallback);
         return this;
     }

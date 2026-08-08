@@ -93,7 +93,7 @@ public interface HasLabelConfigurator<C extends HasLabelConfigurator<C>> {
 	/**
 	 * Base {@link HasLabelConfigurator}.
 	 */
-	public interface BaseHasLabelConfigurator extends HasLabelConfigurator<BaseHasLabelConfigurator> {
+	interface BaseHasLabelConfigurator extends HasLabelConfigurator<BaseHasLabelConfigurator> {
 
 	}
 

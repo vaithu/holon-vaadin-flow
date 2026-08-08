@@ -236,4 +236,23 @@ class TestHeader {
 
         assertTrue(header.getClassNames().contains("header--no-border"));
     }
+
+    @Test
+    void withoutSticky_addsNoStickyClass() {
+        Header header = new Header("Title");
+
+        header.withoutSticky();
+
+        assertTrue(header.getClassNames().contains("header--no-sticky"));
+    }
+
+    @Test
+    void setSticky_true_removesNoStickyClass() {
+        Header header = new Header("Title");
+
+        header.withoutSticky();
+        header.setSticky(true);
+
+        assertFalse(header.getClassNames().contains("header--no-sticky"));
+    }
 }

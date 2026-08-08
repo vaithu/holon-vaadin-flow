@@ -89,7 +89,7 @@ public interface ValueHolder<V, E extends ValueChangeEvent<V>> extends Serializa
 	 * @param listener the value change listener to content (not null)
 	 * @return a registration for the listener, which provides the <em>remove</em> operation
 	 */
-	public Registration addValueChangeListener(ValueChangeListener<V, E> listener);
+	Registration addValueChangeListener(ValueChangeListener<V, E> listener);
 
 	// ------- value change handling
 
@@ -100,7 +100,7 @@ public interface ValueHolder<V, E extends ValueChangeEvent<V>> extends Serializa
 	 * @param <E> Value change event type
 	 */
 	@FunctionalInterface
-	public interface ValueChangeListener<V, E extends ValueChangeEvent<V>> extends Serializable {
+	interface ValueChangeListener<V, E extends ValueChangeEvent<V>> extends Serializable {
 
 		/**
 		 * Invoked when a {@link ValueChangeEvent} is triggered.
@@ -115,7 +115,7 @@ public interface ValueHolder<V, E extends ValueChangeEvent<V>> extends Serializa
 	 * 
 	 * @param <V> Value type
 	 */
-	public interface ValueChangeEvent<V> extends Serializable {
+	interface ValueChangeEvent<V> extends Serializable {
 
 		/**
 		 * Returns whether this event was triggered by user interaction, on the client side, or programmatically, on the

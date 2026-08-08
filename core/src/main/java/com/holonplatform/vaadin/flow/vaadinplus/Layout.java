@@ -2,21 +2,11 @@ package com.holonplatform.vaadin.flow.vaadinplus;
 
 import com.holonplatform.vaadin.flow.internal.lumo.*;
 import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.html.Div;
-import lombok.Getter;
 
 import java.util.HashMap;
 
-@StyleSheet("context://layout.css")
-@StyleSheet("context://utilities.css")
-@StyleSheet("context://buttons.css")
-@StyleSheet("context://toolbar.css")
-@StyleSheet("context://menu.css")
-@StyleSheet("context://mobile-grid.css")
-@StyleSheet("context://master-detail-v2.css")
-@StyleSheet("context://document-row-lit-renderer.css")
-@StyleSheet("context://mobile-list-lit-renderer.css")
+
 public class Layout extends Div {
 
     private AlignItems alignItems;
@@ -24,7 +14,6 @@ public class Layout extends Div {
     private BoxSizing boxSizing;
     private Display display;
     private final HashMap<Breakpoint, Display> responsiveDisplay;
-    @Getter
     private FlexDirection flexDirection;
     private FlexWrap flexWrap;
     private final HashMap<Breakpoint, FlexDirection> responsiveFlexDirection;
@@ -96,6 +85,10 @@ public class Layout extends Div {
         }
         addClassNames(flexDirection.getClassName());
         this.flexDirection = flexDirection;
+    }
+
+    public FlexDirection getFlexDirection() {
+        return this.flexDirection;
     }
 
     public void setFlexDirection(Breakpoint breakpoint, FlexDirection flexDirection) {

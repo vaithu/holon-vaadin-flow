@@ -153,7 +153,7 @@ public interface ViewComponent<V> extends ValueHolder<V, ValueChangeEvent<V>>, V
 	 * @param <T> ViewComponent type
 	 */
 	@FunctionalInterface
-	public interface ViewComponentPropertyRenderer<T> extends PropertyRenderer<ViewComponent<T>, T> {
+	interface ViewComponentPropertyRenderer<T> extends PropertyRenderer<ViewComponent<T>, T> {
 
 		/*
 		 * (non-Javadoc)

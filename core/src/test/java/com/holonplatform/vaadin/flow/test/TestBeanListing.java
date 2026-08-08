@@ -157,6 +157,14 @@ public class TestBeanListing {
         public TestConstructorWithInstant(Instant instant) {
             this.instant = instant;
         }
+
+        public Instant getInstant() {
+            return instant;
+        }
+
+        public void setInstant(Instant instant) {
+            this.instant = instant;
+        }
     }
 
     /** Helper row bean used to project the instant_epoch column via BeanProjection. */
@@ -166,6 +174,14 @@ public class TestBeanListing {
         @DataPath("instant_epoch")
         private Long instantEpoch;
         public InstantEpochRow() {}
+
+        public Long getInstantEpoch() {
+            return instantEpoch;
+        }
+
+        public void setInstantEpoch(Long instantEpoch) {
+            this.instantEpoch = instantEpoch;
+        }
     }
 
     public static class TestBean {

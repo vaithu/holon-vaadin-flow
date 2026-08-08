@@ -1,12 +1,12 @@
 /*
  * Copyright 2016-2018 Axioma srl.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -15,6 +15,7 @@
  */
 package com.holonplatform.vaadin.flow.internal.components.support;
 
+import java.io.Serial;
 import com.holonplatform.core.Validator;
 import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.core.internal.utils.ObjectUtils;
@@ -37,7 +38,7 @@ import java.util.function.Supplier;
 
 /**
  * Default {@link ItemListingColumn} implementation.
- * 
+ *
  * @param <T> Item type
  * @param <P> Item property type
  * @param <V> Property value type
@@ -46,13 +47,14 @@ import java.util.function.Supplier;
  */
 public class DefaultItemListingColumn<P, T, V> implements ItemListingColumn<P, T, V> {
 
+	@Serial
 	private static final long serialVersionUID = 8922982578042556430L;
 
 	private final P property;
 //	private final String columnKey;
 	private String columnKey;
 
-	private boolean readOnly = false;
+	private boolean readOnly;
 	private boolean visible = true;
 	private boolean resizable = false;
 	private boolean frozen = false;
@@ -81,7 +83,7 @@ public class DefaultItemListingColumn<P, T, V> implements ItemListingColumn<P, T
 
 	private String headerPartName;
 	private String footerPartName;
-	
+
 	private SerializableFunction<T, String> partNameGenerator;
 	@SuppressWarnings("unused") // set via setTooltipGenerator but read not yet implemented
 	private SerializableFunction<T, String> tooltipGenerator;

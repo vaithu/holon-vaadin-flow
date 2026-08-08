@@ -1,5 +1,6 @@
 package com.holonplatform.vaadin.flow.vaadinplus.components;
 
+import java.io.Serial;
 import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.vaadin.flow.components.Components;
 import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
@@ -9,14 +10,14 @@ import com.vaadin.flow.component.html.ListItem;
 import com.vaadin.flow.component.html.Span;
 
 /**
- * The current / active page crumb in a {@link Breadcrumb} — intentionally <strong>not</strong> a link.
+ * The current / active page crumb in a {@link Breadcrumb} â€” intentionally <strong>not</strong> a link.
  *
  * <p>Renders as:</p>
  * <pre>
  * &lt;li class="breadcrumb__item"&gt;
  *   &lt;span class="breadcrumb__page"
  *         aria-disabled="true"
- *         aria-current="page"&gt;…&lt;/span&gt;
+ *         aria-current="page"&gt;â€¦&lt;/span&gt;
  * &lt;/li&gt;
  * </pre>
  *
@@ -34,12 +35,13 @@ import com.vaadin.flow.component.html.Span;
  *     new BreadcrumbSeparator(),
  *     new BreadcrumbItem("Components", ComponentsView.class),
  *     new BreadcrumbSeparator(),
- *     new BreadcrumbPage("Breadcrumb")       // ← current page, no link
+ *     new BreadcrumbPage("Breadcrumb")       // â† current page, no link
  * );
  * }</pre>
  */
 public class BreadcrumbPage extends ListItem {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     private final Span span;
@@ -143,4 +145,3 @@ public class BreadcrumbPage extends ListItem {
         this.span.getElement().setAttribute("role", "link");
     }
 }
-

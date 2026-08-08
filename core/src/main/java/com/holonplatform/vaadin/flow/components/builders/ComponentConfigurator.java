@@ -111,7 +111,7 @@ public interface ComponentConfigurator<C extends ComponentConfigurator<C>> exten
 	/**
 	 * Base component configurator.
 	 */
-	public interface BaseComponentConfigurator extends ComponentConfigurator<BaseComponentConfigurator> {
+	interface BaseComponentConfigurator extends ComponentConfigurator<BaseComponentConfigurator> {
 
 	}
 

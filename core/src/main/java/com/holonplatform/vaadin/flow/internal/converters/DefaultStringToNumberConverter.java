@@ -15,6 +15,7 @@
  */
 package com.holonplatform.vaadin.flow.internal.converters;
 
+import java.io.Serial;
 import com.holonplatform.core.internal.utils.ConversionUtils;
 import com.holonplatform.core.internal.utils.ObjectUtils;
 import com.holonplatform.core.internal.utils.TypeUtils;
@@ -44,6 +45,7 @@ import java.util.Optional;
 public class DefaultStringToNumberConverter<T extends Number> extends AbstractLocaleSupportConverter<String, T>
 		implements StringToNumberConverter<T> {
 
+	@Serial
 	private static final long serialVersionUID = 2952012087662607453L;
 
 	private static final String PATTERN_INTEGER = "[0-9]*";

@@ -15,6 +15,7 @@
  */
 package com.holonplatform.vaadin.flow.spring.boot.internal;
 
+import java.io.Serial;
 import java.util.Locale;
 
 import org.springframework.beans.BeansException;
@@ -97,6 +98,7 @@ public class LocalizationContextInitializer extends AbstractInitializer
 
 	static class SessionLocalizationContextInitializerServiceInitListener implements VaadinServiceInitListener {
 
+		@Serial
 		private static final long serialVersionUID = 5101338098301799675L;
 
 		/*
@@ -114,6 +116,7 @@ public class LocalizationContextInitializer extends AbstractInitializer
 
 	static class UILocalizationContextInitializerServiceInitListener implements VaadinServiceInitListener {
 
+		@Serial
 		private static final long serialVersionUID = 5101338098301799675L;
 
 		/*

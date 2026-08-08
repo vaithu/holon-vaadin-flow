@@ -12,199 +12,184 @@ import com.vaadin.flow.router.RouteParameters;
 import java.util.List;
 import java.util.Set;
 
-abstract class AbstractSideNavItemBuilder implements SideNavItemBuilder {
+abstract class AbstractSideNavItemBuilder<C extends SideNavConfigurator<C>>
+        implements SideNavItemBuilder<C> {
 
-    protected final SideNavConfigurator<?> parent;
-    protected SideNavItem item;
+    protected final C parent;
+    /** The root item that will be registered with the SideNav via {@link #add()}. */
+    protected final SideNavItem rootItem;
 
-    protected AbstractSideNavItemBuilder(
-            SideNavConfigurator<?> parent,
-            SideNavItem item
-    ) {
+    protected AbstractSideNavItemBuilder(C parent, SideNavItem rootItem) {
         this.parent = parent;
-        this.item = item;
+        this.rootItem = rootItem;
     }
 
     /* ---------- Basic ---------- */
 
     @Override
-    public SideNavItemBuilder expanded(boolean expanded) {
-        item.setExpanded(expanded);
+    public SideNavItemBuilder<C> expanded(boolean expanded) {
+        rootItem.setExpanded(expanded);
         return this;
     }
 
     @Override
-    public SideNavItemBuilder label(String label) {
-        item.setLabel(label);
+    public SideNavItemBuilder<C> label(String label) {
+        rootItem.setLabel(label);
         return this;
     }
 
     @Override
-    public SideNavItemBuilder label(Localizable label) {
+    public SideNavItemBuilder<C> label(Localizable label) {
         return label(resolve(label));
     }
 
     @Override
-    public SideNavItemBuilder matchNested(boolean value) {
-        item.setMatchNested(value);
+    public SideNavItemBuilder<C> matchNested(boolean value) {
+        rootItem.setMatchNested(value);
         return this;
     }
 
     @Override
-    public SideNavItemBuilder openInNewBrowserTab(boolean open) {
-        item.setOpenInNewBrowserTab(open);
+    public SideNavItemBuilder<C> openInNewBrowserTab(boolean open) {
+        rootItem.setOpenInNewBrowserTab(open);
         return this;
     }
 
     /* ---------- Path ---------- */
 
     @Override
-    public SideNavItemBuilder path(Class<? extends Component> view) {
-        item.setPath(view);
+    public SideNavItemBuilder<C> path(Class<? extends Component> view) {
+        rootItem.setPath(view);
         return this;
     }
 
     @Override
-    public SideNavItemBuilder path(String path) {
-        item.setPath(path);
+    public SideNavItemBuilder<C> path(String path) {
+        rootItem.setPath(path);
         return this;
     }
 
     @Override
-    public SideNavItemBuilder path(Class<? extends Component> view, RouteParameters params) {
-        item.setPath(view, params);
+    public SideNavItemBuilder<C> path(Class<? extends Component> view, RouteParameters params) {
+        rootItem.setPath(view, params);
         return this;
     }
 
     @Override
-    public SideNavItemBuilder pathAliases(Set<String> aliases) {
-        item.setPathAliases(aliases);
+    public SideNavItemBuilder<C> pathAliases(Set<String> aliases) {
+        rootItem.setPathAliases(aliases);
         return this;
     }
 
     @Override
-    public SideNavItemBuilder queryParameters(QueryParameters params) {
-        item.setQueryParameters(params);
+    public SideNavItemBuilder<C> queryParameters(QueryParameters params) {
+        rootItem.setQueryParameters(params);
         return this;
     }
 
     @Override
-    public SideNavItemBuilder routerIgnore(boolean ignore) {
-        item.setRouterIgnore(ignore);
+    public SideNavItemBuilder<C> routerIgnore(boolean ignore) {
+        rootItem.setRouterIgnore(ignore);
         return this;
     }
 
     @Override
-    public SideNavItemBuilder target(String target) {
-        item.setTarget(target);
+    public SideNavItemBuilder<C> target(String target) {
+        rootItem.setTarget(target);
         return this;
     }
 
     /* ---------- Children ---------- */
 
     @Override
-    public SideNavItemBuilder withItems(SideNavItem... items) {
-        item.addItem(items);
+    public SideNavItemBuilder<C> withItems(SideNavItem... items) {
+        rootItem.addItem(items);
         return this;
     }
 
     @Override
-    public SideNavItemBuilder withItemAsFirst(SideNavItem child) {
-        item.addItemAsFirst(child);
+    public SideNavItemBuilder<C> withItemAsFirst(SideNavItem child) {
+        rootItem.addItemAsFirst(child);
         return this;
     }
 
     @Override
-    public SideNavItemBuilder withItemAtIndex(int index, SideNavItem child) {
-        item.addItemAtIndex(index, child);
+    public SideNavItemBuilder<C> withItemAtIndex(int index, SideNavItem child) {
+        rootItem.addItemAtIndex(index, child);
         return this;
     }
 
     @Override
-    public SideNavItemBuilder withSubNavItem(String label) {
-        SideNavItem child = new SideNavItem(label);
-        item.addItem(child);
-        this.item = child;
+    public SideNavItemBuilder<C> withSubNavItem(String label) {
+        rootItem.addItem(new SideNavItem(label));
         return this;
     }
 
     @Override
-    public SideNavItemBuilder withSubNavItem(String label, Class<? extends Component> view) {
-        SideNavItem child = new SideNavItem(label, view);
-        item.addItem(child);
-        this.item = child;
+    public SideNavItemBuilder<C> withSubNavItem(String label, Class<? extends Component> view) {
+        rootItem.addItem(new SideNavItem(label, view));
         return this;
     }
 
     @Override
-    public SideNavItemBuilder withSubNavItem(String label, Class<? extends Component> view, Component prefixComponent) {
-        SideNavItem child = new SideNavItem(label, view, prefixComponent);
-        item.addItem(child);
-        this.item = child;
+    public SideNavItemBuilder<C> withSubNavItem(String label, Class<? extends Component> view, Component prefixComponent) {
+        rootItem.addItem(new SideNavItem(label, view, prefixComponent));
         return this;
     }
 
     @Override
-    public SideNavItemBuilder withSubNavItem(String label, Class<? extends Component> view, RouteParameters params) {
-        SideNavItem child = new SideNavItem(label, view, params);
-        item.addItem(child);
-        this.item = child;
+    public SideNavItemBuilder<C> withSubNavItem(String label, Class<? extends Component> view, RouteParameters params) {
+        rootItem.addItem(new SideNavItem(label, view, params));
         return this;
     }
 
     @Override
-    public SideNavItemBuilder withSubNavItem(
+    public SideNavItemBuilder<C> withSubNavItem(
             String label,
             Class<? extends Component> view,
             RouteParameters params,
             Component prefixComponent
     ) {
-        SideNavItem child = new SideNavItem(label, view, params, prefixComponent);
-        item.addItem(child);
-        this.item = child;
+        rootItem.addItem(new SideNavItem(label, view, params, prefixComponent));
         return this;
     }
 
     @Override
-    public SideNavItemBuilder withSubNavItem(String label, String path) {
-        SideNavItem child = new SideNavItem(label, path);
-        item.addItem(child);
-        this.item = child;
+    public SideNavItemBuilder<C> withSubNavItem(String label, String path) {
+        rootItem.addItem(new SideNavItem(label, path));
         return this;
     }
 
     @Override
-    public SideNavItemBuilder withSubNavItem(String label, String path, Component prefixComponent) {
-        SideNavItem child = new SideNavItem(label, path, prefixComponent);
-        item.addItem(child);
-        this.item = child;
+    public SideNavItemBuilder<C> withSubNavItem(String label, String path, Component prefixComponent) {
+        rootItem.addItem(new SideNavItem(label, path, prefixComponent));
         return this;
     }
 
     // ── Localizable withSubNavItem overloads ──────────────────────────────────
 
     @Override
-    public SideNavItemBuilder withSubNavItem(Localizable label) {
+    public SideNavItemBuilder<C> withSubNavItem(Localizable label) {
         return withSubNavItem(resolve(label));
     }
 
     @Override
-    public SideNavItemBuilder withSubNavItem(Localizable label, Class<? extends Component> view) {
+    public SideNavItemBuilder<C> withSubNavItem(Localizable label, Class<? extends Component> view) {
         return withSubNavItem(resolve(label), view);
     }
 
     @Override
-    public SideNavItemBuilder withSubNavItem(Localizable label, Class<? extends Component> view, Component prefixComponent) {
+    public SideNavItemBuilder<C> withSubNavItem(Localizable label, Class<? extends Component> view, Component prefixComponent) {
         return withSubNavItem(resolve(label), view, prefixComponent);
     }
 
     @Override
-    public SideNavItemBuilder withSubNavItem(Localizable label, Class<? extends Component> view, RouteParameters params) {
+    public SideNavItemBuilder<C> withSubNavItem(Localizable label, Class<? extends Component> view, RouteParameters params) {
         return withSubNavItem(resolve(label), view, params);
     }
 
     @Override
-    public SideNavItemBuilder withSubNavItem(
+    public SideNavItemBuilder<C> withSubNavItem(
             Localizable label,
             Class<? extends Component> view,
             RouteParameters params,
@@ -214,12 +199,12 @@ abstract class AbstractSideNavItemBuilder implements SideNavItemBuilder {
     }
 
     @Override
-    public SideNavItemBuilder withSubNavItem(Localizable label, String path) {
+    public SideNavItemBuilder<C> withSubNavItem(Localizable label, String path) {
         return withSubNavItem(resolve(label), path);
     }
 
     @Override
-    public SideNavItemBuilder withSubNavItem(Localizable label, String path, Component prefixComponent) {
+    public SideNavItemBuilder<C> withSubNavItem(Localizable label, String path, Component prefixComponent) {
         return withSubNavItem(resolve(label), path, prefixComponent);
     }
 
@@ -232,31 +217,36 @@ abstract class AbstractSideNavItemBuilder implements SideNavItemBuilder {
 
     @Override
     public List<SideNavItem> getItems() {
-        return item.getItems();
+        return rootItem.getItems();
     }
 
     /* ---------- Finalize ---------- */
+
+    /**
+     * Adds the root item to the parent configurator and returns the parent,
+     * preserving the concrete type {@code C} in the call chain.
+     */
     @Override
-    public SideNavConfigurator<?> add() {
-        parent.withItem(item);
+    public C add() {
+        parent.withItem(rootItem);
         return parent;
     }
 
     @Override
-    public SideNavItemBuilder enabled(boolean enabled) {
-        item.setEnabled(enabled);
+    public SideNavItemBuilder<C> enabled(boolean enabled) {
+        rootItem.setEnabled(enabled);
         return this;
     }
 
     @Override
-    public SideNavItemBuilder prefixComponent(Component component) {
-        item.setPrefixComponent(component);
+    public SideNavItemBuilder<C> prefixComponent(Component component) {
+        rootItem.setPrefixComponent(component);
         return this;
     }
 
     @Override
-    public SideNavItemBuilder suffixComponent(Component component) {
-        item.setSuffixComponent(component);
+    public SideNavItemBuilder<C> suffixComponent(Component component) {
+        rootItem.setSuffixComponent(component);
         return this;
     }
 }

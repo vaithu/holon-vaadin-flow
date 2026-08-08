@@ -106,7 +106,7 @@ public class DefaultPropertyListMultiSelectInputBuilder<T> extends AbstractPrope
 			if (item != null) {
 				return selectionProperty.present(item.getValue(selectionProperty));
 			}
-			return String.valueOf(item);
+			return "";
 		});
 		if (itemConverter instanceof PropertyItemConverter) {
 			this.propertyItemConverter = (PropertyItemConverter<T>) itemConverter;
@@ -2155,4 +2155,3 @@ public class DefaultPropertyListMultiSelectInputBuilder<T> extends AbstractPrope
 	}
 
 }
-

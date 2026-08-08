@@ -11,6 +11,7 @@ import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.data.selection.SelectionEvent;
 
+import java.text.MessageFormat;
 import java.util.Optional;
 
 @StyleSheet("context://grid-header.css")
@@ -24,7 +25,7 @@ public class GridHeader extends Header {
     private String title;
     private Component[] defaultActions;
     private Component[] contextActions;
-    private final Span selectionCount = new Span("0 selected");
+    private final Span selectionCount = new Span(LocalizationProvider.localize("0 selected", "grid_header.none_selected"));
     private Component titleComponent;
     private boolean selectionCountVisible;
     private Grid<?> grid;
@@ -140,13 +141,14 @@ public class GridHeader extends Header {
         updateNoTitleState();
         if (size > 0) {
             addClassName("grid-header--selected");
-            selectionCount.setText(size + " selected");
+            String template = LocalizationProvider.localize("{0} selected", "grid_header.count_selected");
+            selectionCount.setText(MessageFormat.format(template, size));
             setSelectionCountVisible(true);
             setDefaultActionsVisible(false);
             setContextActionsVisible(true);
         } else {
             removeClassName("grid-header--selected");
-            selectionCount.setText("0 selected");
+            selectionCount.setText(LocalizationProvider.localize("0 selected", "grid_header.none_selected"));
             setSelectionCountVisible(false);
             setDefaultActionsVisible(true);
             setContextActionsVisible(false);
@@ -176,6 +178,9 @@ public class GridHeader extends Header {
 
     private void configureSelectionCount() {
         selectionCount.addClassName(SELECTION_COUNT_CLASS);
+        selectionCount.getElement().setAttribute("role", "status");
+        selectionCount.getElement().setAttribute("aria-live", "polite");
+        selectionCount.getElement().setAttribute("aria-atomic", "true");
         setSelectionCountVisible(false);
         if (this.titleComponent != null || !hasVisibleTitle()) {
             this.titleComponent = createTitleComponent();
@@ -231,5 +236,4 @@ public class GridHeader extends Header {
     private boolean hasVisibleTitle() {
         return labelBuilder != null || (title != null );
     }
-
 }

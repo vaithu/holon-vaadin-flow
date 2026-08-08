@@ -15,6 +15,7 @@
  */
 package com.holonplatform.vaadin.flow.navigator.internal.config;
 
+import java.io.Serial;
 import com.holonplatform.auth.annotations.Authenticate;
 import com.holonplatform.core.i18n.Caption;
 import com.holonplatform.core.i18n.Localizable;
@@ -52,6 +53,7 @@ import java.util.stream.Stream;
  */
 public class DefaultNavigationTargetConfiguration implements NavigationTargetConfiguration {
 
+    @Serial
     private static final long serialVersionUID = -7603415697370663443L;
 
     private static final Logger LOGGER = VaadinLogger.create();
@@ -215,7 +217,7 @@ public class DefaultNavigationTargetConfiguration implements NavigationTargetCon
     private static Optional<Set<String>> getAuthorizationRoles(Class<?> navigationTarget) {
         if (isSecurityAnnotationsPresent(navigationTarget.getClassLoader())) {
             if (navigationTarget.isAnnotationPresent(PermitAll.class)) {
-                return Optional.ofNullable(Collections.emptySet());
+                return Optional.of(Collections.emptySet());
             }
             if (navigationTarget.isAnnotationPresent(RolesAllowed.class)) {
                 return Optional.of(Arrays.asList(navigationTarget.getAnnotation(RolesAllowed.class).value()).stream()

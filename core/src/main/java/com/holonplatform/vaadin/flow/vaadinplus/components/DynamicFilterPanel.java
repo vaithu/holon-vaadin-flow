@@ -25,13 +25,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.function.Consumer;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import com.holonplatform.core.Registration;
 import com.holonplatform.core.beans.BeanPropertySet;
+import com.holonplatform.core.internal.utils.BeanUtils;
 import com.holonplatform.core.internal.utils.TypeUtils;
 import com.holonplatform.core.property.PathProperty;
 import com.holonplatform.core.property.Property;
@@ -44,7 +43,6 @@ import com.holonplatform.vaadin.flow.components.FilterInput;
 import com.holonplatform.vaadin.flow.components.FilterInputGroup;
 import com.holonplatform.vaadin.flow.components.Input;
 import com.holonplatform.vaadin.flow.components.events.FilterChangeListener;
-import com.holonplatform.vaadin.flow.components.utils.BeanUtils;
 import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
 import com.holonplatform.vaadin.flow.internal.components.events.DefaultFilterChangeEvent;
 import com.iyensoft.vaadin.flow.enums.FilterOperator;
@@ -62,42 +60,53 @@ import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.timepicker.TimePicker;
 import com.vaadin.flow.data.provider.CallbackDataProvider;
 import com.vaadin.flow.data.provider.DataProvider;
+import com.vaadin.flow.function.SerializableConsumer;
+import com.vaadin.flow.function.SerializableRunnable;
+import com.vaadin.flow.function.SerializableSupplier;
 
 /**
- * A dynamic, row-based filter builder component that implements {@link FilterInputGroup}.
+ * A dynamic, row-based filter builder component that implements
+ * {@link FilterInputGroup}.
  *
  * <p>
- * The panel introspects a Java bean class at construction time and lets the user content any
+ * The panel introspects a Java bean class at construction time and lets the
+ * user content any
  * number of filter conditions at runtime. Each row presents:
  * </p>
  * <ul>
- *   <li>a <em>property selector</em> ComboBox (all bean properties)</li>
- *   <li>an <em>operator selector</em> ComboBox (type-aware: String, Number, Date, Boolean, Enum)</li>
- *   <li>a <em>value input</em> that adapts to the selected property type
- *       (TextField, NumberField, DatePicker, etc.); BETWEEN shows two inputs</li>
- *   <li>a remove (×) button</li>
+ * <li>a <em>property selector</em> ComboBox (all bean properties)</li>
+ * <li>an <em>operator selector</em> ComboBox (type-aware: String, Number, Date,
+ * Boolean, Enum)</li>
+ * <li>a <em>value input</em> that adapts to the selected property type
+ * (TextField, NumberField, DatePicker, etc.); BETWEEN shows two inputs</li>
+ * <li>a remove (×) button</li>
  * </ul>
  *
  * <p>
- * All rows are combined with AND (default) or OR depending on {@link #setMatchAll(boolean)}.
- * The filter is only committed when the user clicks <em>Apply filter</em>; until then
+ * All rows are combined with AND (default) or OR depending on
+ * {@link #setMatchAll(boolean)}.
+ * The filter is only committed when the user clicks <em>Apply filter</em>;
+ * until then
  * {@link #getQueryFilter()} returns the last applied state.
  * </p>
  *
  * <h3>Usage with Datastore (QueryFilter path)</h3>
+ * 
  * <pre>{@code
  * DynamicFilterPanel<Product> panel = DynamicFilterPanel.of(Product.class);
  * content(panel);
  *
  * listing.setItems(panel, (query, filter) -> {
  *     var q = datastore.query(TARGET).restrict(query.getLimit(), query.getOffset());
- *     if (filter != null) q.filter(filter);
+ *     if (filter != null)
+ *         q.filter(filter);
  *     return q.stream(BeanProjection.of(Product.class));
  * });
  * listing.refreshOnFilterChange(panel);
  * }</pre>
  *
  * <h3>Usage with in-memory data</h3>
+ * 
  * <pre>{@code
  * panel.addFilterChangeListener(e -> {
  *     shown.clear();
@@ -118,59 +127,159 @@ public class DynamicFilterPanel<T> extends Div implements FilterInputGroup {
     // ── Nested types ──────────────────────────────────────────────────────
 
     /**
+     * Resolved input-width tier driven by {@code @Column(length)} or
+     * {@code @Size(max)}.
+     * <ul>
+     * <li>{@code UNCONSTRAINED} — unknown / &gt;100 chars; input stretches freely
+     * (flex: 1 1 auto)</li>
+     * <li>{@code XS} — 1–10 chars (e.g. country code, flag); max-width: ~7 rem</li>
+     * <li>{@code SM} — 11–30 chars (e.g. short code, abbreviation); max-width: ~14
+     * rem</li>
+     * <li>{@code MD} — 31–100 chars (e.g. name, email); max-width: ~22 rem</li>
+     * </ul>
+     */
+    public enum FieldWidthTier {
+        UNCONSTRAINED(null),
+        XS("filter-panel__value-input--xs"),
+        SM("filter-panel__value-input--sm"),
+        MD("filter-panel__value-input--md");
+
+        private final String modifierClass;
+
+        FieldWidthTier(String modifierClass) {
+            this.modifierClass = modifierClass;
+        }
+
+        /**
+         * @return the CSS modifier class to add alongside
+         *         {@code filter-panel__value-input}, or {@code null}
+         */
+        public String getModifierClass() {
+            return modifierClass;
+        }
+
+        /** Maps a raw column length (0 = unknown) to the appropriate tier. */
+        public static FieldWidthTier of(int columnLength) {
+            if (columnLength <= 0 || columnLength > 100)
+                return UNCONSTRAINED;
+            if (columnLength <= 10)
+                return XS;
+            if (columnLength <= 30)
+                return SM;
+            return MD;
+        }
+    }
+
+    /**
      * Lightweight descriptor for a single property discovered either via bean
      * introspection or from a Holon {@link Property} object.
      *
      * <p>
      * When constructed from a {@link Property}, {@code rawProperty} holds the
-     * original object so it can be used directly as a {@link com.holonplatform.core.query.QueryFilter}
+     * original object so it can be used directly as a
+     * {@link com.holonplatform.core.query.QueryFilter}
      * operand and for {@link PropertyBox} value extraction.
+     * </p>
+     *
+     * <p>
+     * {@code columnLength} is resolved from {@code @Column(length)} or
+     * {@code @Size(max)}
+     * annotations and drives the {@link FieldWidthTier} for input sizing.
      * </p>
      */
     public record PropInfo(String name, String label, Class<?> type,
-                           Property<?> rawProperty)
-            implements java.io.Serializable {}
+            Property<?> rawProperty, int columnLength)
+            implements java.io.Serializable {
+        /**
+         * Convenience constructor for callers that don't supply a column length
+         * (defaults to 0 = unknown).
+         */
+        public PropInfo(String name, String label, Class<?> type, Property<?> rawProperty) {
+            this(name, label, type, rawProperty, 0);
+        }
+    }
 
     /**
      * Snapshot of a single filter row captured at "Apply filter" time.
-     * Used to build the in-memory Java {@link java.util.function.Predicate} via {@link #toPredicate()}.
+     * Used to build the in-memory Java {@link java.util.function.Predicate} via
+     * {@link #toPredicate()}.
      */
     private record AppliedRow(String propName, Class<?> propType, FilterOperator op,
-                               Object val, Object val2,
-                               Property<?> rawProperty,
-                               RowConnector connector)
-            implements java.io.Serializable {}
+            Object val, Object val2,
+            Property<?> rawProperty,
+            RowConnector connector)
+            implements java.io.Serializable {
+    }
 
     // ── Row connector ─────────────────────────────────────────────────────
 
     /**
-     * Binary logical connector used to join consecutive filter rows in advanced mode.
+     * Binary logical connector used to join consecutive filter rows in advanced
+     * mode.
      *
      * <table border="1">
-     * <tr><th>Connector</th><th>Expression</th><th>Meaning</th></tr>
-     * <tr><td>AND</td>     <td>A AND B</td>        <td>Both conditions must match</td></tr>
-     * <tr><td>OR</td>      <td>A OR B</td>         <td>At least one must match</td></tr>
-     * <tr><td>AND_NOT</td> <td>A AND NOT B</td>    <td>Matches A but excludes B</td></tr>
-     * <tr><td>OR_NOT</td>  <td>A OR NOT B</td>     <td>Matches A or anything not in B</td></tr>
-     * <tr><td>NAND</td>    <td>NOT(A AND B)</td>   <td>Not both conditions at once</td></tr>
-     * <tr><td>NOR</td>     <td>NOT(A OR B)</td>    <td>Neither condition matches</td></tr>
-     * <tr><td>XOR</td>     <td>A XOR B</td>        <td>Exactly one condition matches</td></tr>
+     * <tr>
+     * <th>Connector</th>
+     * <th>Expression</th>
+     * <th>Meaning</th>
+     * </tr>
+     * <tr>
+     * <td>AND</td>
+     * <td>A AND B</td>
+     * <td>Both conditions must match</td>
+     * </tr>
+     * <tr>
+     * <td>OR</td>
+     * <td>A OR B</td>
+     * <td>At least one must match</td>
+     * </tr>
+     * <tr>
+     * <td>AND_NOT</td>
+     * <td>A AND NOT B</td>
+     * <td>Matches A but excludes B</td>
+     * </tr>
+     * <tr>
+     * <td>OR_NOT</td>
+     * <td>A OR NOT B</td>
+     * <td>Matches A or anything not in B</td>
+     * </tr>
+     * <tr>
+     * <td>NAND</td>
+     * <td>NOT(A AND B)</td>
+     * <td>Not both conditions at once</td>
+     * </tr>
+     * <tr>
+     * <td>NOR</td>
+     * <td>NOT(A OR B)</td>
+     * <td>Neither condition matches</td>
+     * </tr>
+     * <tr>
+     * <td>XOR</td>
+     * <td>A XOR B</td>
+     * <td>Exactly one condition matches</td>
+     * </tr>
      * </table>
      *
      * @see DynamicFilterPanel#setAdvancedMode(boolean)
      */
     public enum RowConnector {
-        AND    ("And"),
-        OR     ("Or"),
+        AND("And"),
+        OR("Or"),
         AND_NOT("And Not"),
-        OR_NOT ("Or Not"),
-        NAND   ("Nand"),
-        NOR    ("Nor"),
-        XOR    ("Xor");
+        OR_NOT("Or Not"),
+        NAND("Nand"),
+        NOR("Nor"),
+        XOR("Xor");
 
         private final String label;
-        RowConnector(String label) { this.label = label; }
-        public String getLabel()   { return label; }
+
+        RowConnector(String label) {
+            this.label = label;
+        }
+
+        public String getLabel() {
+            return label;
+        }
     }
 
     // ── State ─────────────────────────────────────────────────────────────
@@ -179,35 +288,66 @@ public class DynamicFilterPanel<T> extends Div implements FilterInputGroup {
     private final List<FilterRow> rows = new ArrayList<>();
     private final Div rowsContainer;
 
-    /** "+ Add filter" button — kept as a field so {@link #updateAddButton()} can enable/disable it. */
+    /**
+     * "+ Add filter" button — kept as a field so {@link #updateAddButton()} can
+     * enable/disable it.
+     */
     private final Button addBtn;
 
-    /** Panel-level validation error message — shown when Apply is clicked with no complete criteria. */
+    /** "Clear all" button — kept as a field so locale changes can update its text. */
+    private final Button clearBtn;
+
+    /** "Apply filter" button — kept as a field so locale changes can update its text. */
+    private final Button applyBtn;
+
+    /**
+     * Panel-level validation error message — shown when Apply is clicked with no
+     * complete criteria.
+     */
     private final Div validationError;
 
-    /** {@code true} → AND-combine rows; {@code false} → OR-combine rows (simple mode). */
+    /** Text span inside the validation-error bar — updated on locale change. */
+    private final Span validationErrorText;
+
+    /**
+     * {@code true} → AND-combine rows; {@code false} → OR-combine rows (simple
+     * mode).
+     */
     private boolean matchAll = true;
 
     /**
-     * When {@code true} each row carries its own AND/OR connector and an optional NOT toggle.
+     * When {@code true} each row carries its own AND/OR connector and an optional
+     * NOT toggle.
      * The global {@link #matchAll} flag is ignored while advanced mode is active.
      */
     private boolean advancedMode = false;
+
+    /**
+     * When {@code true} (the <strong>default</strong>), each value input gets a CSS
+     * width-tier
+     * modifier class derived from {@code @Column(length)}, {@code @Size(max)}, or
+     * {@code @Min}/{@code @Max}.
+     * Set to {@code false} for uniform-width value inputs.
+     */
+    private boolean columnLengthAwareWidth = true;
 
     private QueryFilter appliedFilter = null;
     private List<AppliedRow> appliedRows = List.of();
     private final List<FilterChangeListener<?>> listeners = new ArrayList<>();
 
     /**
-     * Callbacks fired only when the built-in <em>Apply filter</em> button is clicked —
-     * NOT when a row is removed via the × button.  Use this to close an enclosing
+     * Callbacks fired only when the built-in <em>Apply filter</em> button is
+     * clicked —
+     * NOT when a row is removed via the × button. Use this to close an enclosing
      * {@link com.vaadin.flow.component.dialog.Dialog} on explicit Apply.
      */
-    private final List<Runnable> applyListeners = new ArrayList<>();
+    private final List<SerializableRunnable> applyListeners = new ArrayList<>();
 
     /**
-     * Per-property item providers for {@link FilterOperator#IN} / {@link FilterOperator#NOT_IN} rows.
-     * Key = property name. Value = {@link DataProvider} typed as {@code <Object, String>}.
+     * Per-property item providers for {@link FilterOperator#IN} /
+     * {@link FilterOperator#NOT_IN} rows.
+     * Key = property name. Value = {@link DataProvider} typed as
+     * {@code <Object, String>}.
      * Populated by {@link #setItems} and {@link #setLazyItems}.
      */
     @SuppressWarnings("rawtypes")
@@ -221,19 +361,24 @@ public class DynamicFilterPanel<T> extends Div implements FilterInputGroup {
 
         rowsContainer = Components.div().styleName("filter-panel__rows").build();
 
-        addBtn = Components.button().text("+ Add filter").styleName("filter-panel__add").withClickListener(e -> addRow()).build();
+        addBtn = Components.button().text(LocalizationProvider.localize("+ Add filter", "filter.add_filter")).styleName("filter-panel__add")
+                .withClickListener(e -> addRow()).build();
 
-        Button clearBtn = Components.button().text("Clear all").styleName("filter-panel__clear").withClickListener(e -> resetAll()).build();
+        clearBtn = Components.button().text(LocalizationProvider.localize("Clear all", "filter.clear_all")).styleName("filter-panel__clear")
+                .withClickListener(e -> resetAll()).build();
 
-        Button applyBtn = Components.button().text("Apply filter").styleName("filter-panel__apply").primary().withClickListener(e -> applyFilterFromButton()).build();
+        applyBtn = Components.button().text(LocalizationProvider.localize("Apply filter", "filter.apply_filter")).styleName("filter-panel__apply").primary()
+                .withClickListener(e -> applyFilterFromButton()).build();
 
         Div actions = Components.div().add(addBtn, clearBtn, applyBtn).styleName("filter-panel__actions").build();
 
-        // Validation error bar — hidden until Apply is clicked with no complete criteria.
+        // Validation error bar — hidden until Apply is clicked with no complete
+        // criteria.
         var errIcon = new Icon(VaadinIcon.EXCLAMATION_CIRCLE_O);
         errIcon.addClassName("filter-panel__validation-error-icon");
-        Span errText = Components.span().text("Please fill in at least one filter condition before applying.").build();
-        validationError = Components.div().add(errIcon, errText).styleName("filter-panel__validation-error").build();
+        validationErrorText = Components.span().text(LocalizationProvider.localize(
+                "Please fill in at least one filter condition before applying.", "filter.validation_error")).build();
+        validationError = Components.div().add(errIcon, validationErrorText).styleName("filter-panel__validation-error").build();
 
         add(rowsContainer, validationError, actions);
 
@@ -245,10 +390,14 @@ public class DynamicFilterPanel<T> extends Div implements FilterInputGroup {
     // ── Factory ────���──────────────────────────────────────────────────────
 
     /**
-     * Creates a new {@code DynamicFilterPanel} by introspecting the given bean class.
+     * Creates a new {@code DynamicFilterPanel} by introspecting the given bean
+     * class.
      * All readable+writable bean properties are offered as filter fields.
      *
-     * <p>Use this factory when working with {@link com.holonplatform.vaadin.flow.components.BeanListing}.</p>
+     * <p>
+     * Use this factory when working with
+     * {@link com.holonplatform.vaadin.flow.components.BeanListing}.
+     * </p>
      *
      * @param <T>      bean type
      * @param beanType bean class (not null)
@@ -264,14 +413,18 @@ public class DynamicFilterPanel<T> extends Div implements FilterInputGroup {
      * {@link Property} objects.
      *
      * <p>
-     * Use this factory when working with {@link com.holonplatform.vaadin.flow.components.PropertyListing},
-     * where the property set is already known. The actual {@link Property} objects are
+     * Use this factory when working with
+     * {@link com.holonplatform.vaadin.flow.components.PropertyListing},
+     * where the property set is already known. The actual {@link Property} objects
+     * are
      * retained so they are used directly as query filter operands and for
      * {@link PropertyBox} value extraction in {@link #toPredicate()}.
      * </p>
      *
-     * @param properties the properties to offer as filter fields (not null, not empty)
-     * @return a fully configured panel typed as {@code DynamicFilterPanel<PropertyBox>}
+     * @param properties the properties to offer as filter fields (not null, not
+     *                   empty)
+     * @return a fully configured panel typed as
+     *         {@code DynamicFilterPanel<PropertyBox>}
      * @since 10.0.0
      */
     public static DynamicFilterPanel<PropertyBox> ofProperties(Property<?>... properties) {
@@ -283,12 +436,14 @@ public class DynamicFilterPanel<T> extends Div implements FilterInputGroup {
      * Creates a new {@code DynamicFilterPanel} from a Holon {@link PropertySet}.
      *
      * <p>
-     * Use this factory when working with {@link com.holonplatform.vaadin.flow.components.PropertyListing}.
+     * Use this factory when working with
+     * {@link com.holonplatform.vaadin.flow.components.PropertyListing}.
      * The actual {@link Property} objects are retained as filter operands.
      * </p>
      *
      * @param propertySet the property set to offer as filter fields (not null)
-     * @return a fully configured panel typed as {@code DynamicFilterPanel<PropertyBox>}
+     * @return a fully configured panel typed as
+     *         {@code DynamicFilterPanel<PropertyBox>}
      * @since 10.0.0
      */
     @SuppressWarnings("unused") // public API — called by external consumers (PropertyListing integration)
@@ -304,13 +459,16 @@ public class DynamicFilterPanel<T> extends Div implements FilterInputGroup {
     /**
      * Makes a {@link Dialog} resizable and draggable by the header.
      *
-     * <p>Enables users to:
+     * <p>
+     * Enables users to:
      * <ul>
-     *   <li>Resize the dialog by dragging its bottom-right corner</li>
-     *   <li>Drag the dialog by its header area</li>
+     * <li>Resize the dialog by dragging its bottom-right corner</li>
+     * <li>Drag the dialog by its header area</li>
      * </ul>
      *
-     * <p><strong>Usage:</strong>
+     * <p>
+     * <strong>Usage:</strong>
+     * 
      * <pre>{@code
      * Dialog dialog = new Dialog();
      * dialog.add(filterPanel);
@@ -322,36 +480,9 @@ public class DynamicFilterPanel<T> extends Div implements FilterInputGroup {
      */
     public static void makeDialogResizableAndDraggable(Dialog dialog) {
         Objects.requireNonNull(dialog, "dialog must not be null");
-        dialog.getElement().executeJs(
-            "const dlg = this;" +
-            "const header = dlg.querySelector('[part=header]');" +
-            "if (!header) return;" +
-            "let isDragging = false;" +
-            "let startX = 0, startY = 0, startLeft = 0, startTop = 0;" +
-            "header.style.cursor = 'grab';" +
-            "header.addEventListener('mousedown', (e) => {" +
-            "  isDragging = true;" +
-            "  startX = e.clientX;" +
-            "  startY = e.clientY;" +
-            "  startLeft = dlg.style.left ? parseInt(dlg.style.left) : dlg.offsetLeft;" +
-            "  startTop = dlg.style.top ? parseInt(dlg.style.top) : dlg.offsetTop;" +
-            "  header.style.cursor = 'grabbing';" +
-            "  e.preventDefault();" +
-            "});" +
-            "document.addEventListener('mousemove', (e) => {" +
-            "  if (!isDragging) return;" +
-            "  const dX = e.clientX - startX;" +
-            "  const dY = e.clientY - startY;" +
-            "  dlg.style.left = (startLeft + dX) + 'px';" +
-            "  dlg.style.top = (startTop + dY) + 'px';" +
-            "});" +
-            "document.addEventListener('mouseup', () => {" +
-            "  isDragging = false;" +
-            "  header.style.cursor = 'grab';" +
-            "});" +
-            "dlg.style.resize = 'both';" +
-            "dlg.style.overflow = 'auto';"
-        );
+        dialog.setResizable(true);
+        dialog.setDraggable(true);
+
     }
 
     // ── Configuration ─────────────────────────────────────────────────────
@@ -371,16 +502,24 @@ public class DynamicFilterPanel<T> extends Div implements FilterInputGroup {
     /**
      * Enables or disables <em>advanced filtering mode</em>.
      *
-     * <p>When advanced mode is active every row gains two extra controls:
+     * <p>
+     * When advanced mode is active every row gains two extra controls:
      * <ul>
-     *   <li>A <strong>connector selector</strong> (And / Or) placed before the property selector
-     *       on rows 2 and above — determines how that row is joined to the previous result.</li>
-     *   <li>A <strong>NOT toggle</strong> — when activated, the row's condition is negated
-     *       before being combined: {@code AND NOT (price > 100)}.</li>
+     * <li>A <strong>connector selector</strong> (And / Or) placed before the
+     * property selector
+     * on rows 2 and above — determines how that row is joined to the previous
+     * result.</li>
+     * <li>A <strong>NOT toggle</strong> — when activated, the row's condition is
+     * negated
+     * before being combined: {@code AND NOT (price > 100)}.</li>
      * </ul>
-     * The global {@link #setMatchAll(boolean)} flag is ignored while advanced mode is on.</p>
+     * The global {@link #setMatchAll(boolean)} flag is ignored while advanced mode
+     * is on.
+     * </p>
      *
-     * <p>Opt-in usage:
+     * <p>
+     * Opt-in usage:
+     * 
      * <pre>{@code
      * DynamicFilterPanel<Product> panel = DynamicFilterPanel.of(Product.class);
      * panel.setAdvancedMode(true);
@@ -396,13 +535,41 @@ public class DynamicFilterPanel<T> extends Div implements FilterInputGroup {
         return this;
     }
 
+    /**
+     * Enable or disable annotation-driven input-width sizing for value inputs.
+     *
+     * <p>
+     * When {@code true} (the <strong>default</strong>), each value input gets a CSS
+     * width-tier modifier class derived from {@code @Column(length)},
+     * {@code @Size(max)},
+     * or {@code @Min}/{@code @Max} so short-code fields (country code, SKU) render
+     * narrower
+     * than long-text fields (description, notes).
+     * </p>
+     *
+     * <p>
+     * Set to {@code false} for uniform-width value inputs across all rows.
+     * </p>
+     *
+     * @param enable {@code true} to activate annotation-driven width tiers
+     *               (default)
+     * @return this panel (for fluent chaining)
+     */
+    public DynamicFilterPanel<T> setColumnLengthAwareWidth(boolean enable) {
+        this.columnLengthAwareWidth = enable;
+        return this;
+    }
+
     // ── Multi-select item registration ────────────────────────────────────
 
     /**
      * Registers a <strong>static</strong> list of items for the given property's
      * {@link FilterOperator#IN} / {@link FilterOperator#NOT_IN} value input.
      *
-     * <p>Use this for in-memory data or when all options are known upfront:</p>
+     * <p>
+     * Use this for in-memory data or when all options are known upfront:
+     * </p>
+     * 
      * <pre>{@code
      * panel.setItems("team", List.of("Engineering", "Design", "Product"));
      * }</pre>
@@ -421,17 +588,24 @@ public class DynamicFilterPanel<T> extends Div implements FilterInputGroup {
     }
 
     /**
-     * Registers a <strong>lazy</strong> (backend-driven) data provider for the given property's
+     * Registers a <strong>lazy</strong> (backend-driven) data provider for the
+     * given property's
      * {@link FilterOperator#IN} / {@link FilterOperator#NOT_IN} value input.
      *
-     * <p>Use this for database-backed dropdowns where filtering is done server-side:</p>
+     * <p>
+     * Use this for database-backed dropdowns where filtering is done server-side:
+     * </p>
+     * 
      * <pre>{@code
      * panel.setLazyItems("team",
-     *     query -> teamService.find(query.getFilter().orElse(""), query.getOffset(), query.getLimit()),
-     *     query -> teamService.count(query.getFilter().orElse("")));
+     *         query -> teamService.find(query.getFilter().orElse(""), query.getOffset(), query.getLimit()),
+     *         query -> teamService.count(query.getFilter().orElse("")));
      * }</pre>
      *
-     * <p>The filter string passed to the callbacks is the text the user typed in the search box.</p>
+     * <p>
+     * The filter string passed to the callbacks is the text the user typed in the
+     * search box.
+     * </p>
      *
      * @param <V>           item type
      * @param propertyName  property name as returned by {@link PropInfo#name()}
@@ -440,8 +614,8 @@ public class DynamicFilterPanel<T> extends Div implements FilterInputGroup {
      * @return this panel (for fluent chaining)
      */
     public <V> DynamicFilterPanel<T> setLazyItems(String propertyName,
-                                                    CallbackDataProvider.FetchCallback<V, String> fetchCallback,
-                                                    CallbackDataProvider.CountCallback<V, String> countCallback) {
+            CallbackDataProvider.FetchCallback<V, String> fetchCallback,
+            CallbackDataProvider.CountCallback<V, String> countCallback) {
         Objects.requireNonNull(propertyName, "propertyName must not be null");
         Objects.requireNonNull(fetchCallback, "fetchCallback must not be null");
         Objects.requireNonNull(countCallback, "countCallback must not be null");
@@ -452,7 +626,9 @@ public class DynamicFilterPanel<T> extends Div implements FilterInputGroup {
 
     // ── FilterInputGroup ──────────────────────────────────────────────────
 
-    /** Returns the {@link QueryFilter} committed by the last "Apply filter" click. */
+    /**
+     * Returns the {@link QueryFilter} committed by the last "Apply filter" click.
+     */
     @Override
     public Optional<QueryFilter> getQueryFilter() {
         return Optional.ofNullable(appliedFilter);
@@ -468,7 +644,10 @@ public class DynamicFilterPanel<T> extends Div implements FilterInputGroup {
      * Returns the number of active (committed) filter rows — i.e. the count of rows
      * that were present and complete when the last "Apply filter" click occurred.
      *
-     * <p>Use this to show a badge on the button that opens the filter dialog:</p>
+     * <p>
+     * Use this to show a badge on the button that opens the filter dialog:
+     * </p>
+     * 
      * <pre>{@code
      * panel.addFilterChangeListener(e -> {
      *     int n = panel.getActiveFilterCount();
@@ -484,13 +663,20 @@ public class DynamicFilterPanel<T> extends Div implements FilterInputGroup {
     }
 
     /**
-     * Registers a callback that is fired only when the built-in <em>Apply filter</em>
-     * button is clicked — and <strong>not</strong> when a row is removed via the × button
+     * Registers a callback that is fired only when the built-in <em>Apply
+     * filter</em>
+     * button is clicked — and <strong>not</strong> when a row is removed via the ×
+     * button
      * (which also re-applies automatically).
      *
-     * <p>The primary use-case is closing an enclosing
-     * {@link com.vaadin.flow.component.dialog.Dialog} after the user explicitly commits
-     * the filter, while keeping the dialog open when rows are interactively removed:</p>
+     * <p>
+     * The primary use-case is closing an enclosing
+     * {@link com.vaadin.flow.component.dialog.Dialog} after the user explicitly
+     * commits
+     * the filter, while keeping the dialog open when rows are interactively
+     * removed:
+     * </p>
+     * 
      * <pre>{@code
      * panel.addApplyListener(dialog::close);
      * }</pre>
@@ -498,25 +684,37 @@ public class DynamicFilterPanel<T> extends Div implements FilterInputGroup {
      * @param listener callback fired after the filter has been committed (not null)
      * @return a {@link Registration} that removes the listener when invoked
      */
-    public Registration addApplyListener(Runnable listener) {
+    public Registration addApplyListener(SerializableRunnable listener) {
         Objects.requireNonNull(listener, "listener must not be null");
         applyListeners.add(listener);
         return () -> applyListeners.remove(listener);
     }
 
     /**
-     * Programmatically applies the given {@link QueryFilter} without changing the row UI.
+     * Programmatically applies the given {@link QueryFilter} without changing the
+     * row UI.
      *
-     * <p>This is useful when restoring a previously persisted filter state or when driving
-     * the panel from tests. The filter is stored as the current applied filter, the active
-     * filter snapshot is cleared, and all registered {@link FilterChangeListener}s are
-     * notified.</p>
+     * <p>
+     * This is useful when restoring a previously persisted filter state or when
+     * driving
+     * the panel from tests. The filter is stored as the current applied filter, the
+     * active
+     * filter snapshot is cleared, and all registered {@link FilterChangeListener}s
+     * are
+     * notified.
+     * </p>
      *
-     * <p><strong>Note:</strong> this method does not synchronize the visual filter rows with the
-     * supplied filter. It only updates the committed filter returned by {@link #getQueryFilter()}.
-     * If you need the UI to reflect a filter expression, rebuild the rows explicitly.</p>
+     * <p>
+     * <strong>Note:</strong> this method does not synchronize the visual filter
+     * rows with the
+     * supplied filter. It only updates the committed filter returned by
+     * {@link #getQueryFilter()}.
+     * If you need the UI to reflect a filter expression, rebuild the rows
+     * explicitly.
+     * </p>
      *
-     * @param filter the filter to apply, or {@code null} to clear the current filter
+     * @param filter the filter to apply, or {@code null} to clear the current
+     *               filter
      */
     public void applyFilterProgrammatically(QueryFilter filter) {
         QueryFilter prev = appliedFilter;
@@ -526,7 +724,10 @@ public class DynamicFilterPanel<T> extends Div implements FilterInputGroup {
         fireChange(prev);
     }
 
-    /** Removes all rows, clears the applied filter, fires a change event, and re-adds the first row. */
+    /**
+     * Removes all rows, clears the applied filter, fires a change event, and
+     * re-adds the first row.
+     */
     @Override
     public void resetAll() {
         QueryFilter prev = appliedFilter;
@@ -534,13 +735,12 @@ public class DynamicFilterPanel<T> extends Div implements FilterInputGroup {
         rowsContainer.removeAll();
         appliedFilter = null;
         appliedRows = List.of();
-        updateAddButton();   // all rows gone → re-enable the button
+        updateAddButton(); // all rows gone → re-enable the button
         clearValidationErrors();
         fireChange(prev);
         // Restore the initial UX: always show at least one empty row after reset.
         addRow();
     }
-
     /**
      * Not supported for this dynamic panel (no static property bindings).
      *
@@ -574,7 +774,11 @@ public class DynamicFilterPanel<T> extends Div implements FilterInputGroup {
      * Returns a {@link Predicate} that evaluates the <em>last applied</em> filter
      * conditions against a bean instance using reflection.
      *
-     * <p>Useful for in-memory data sources where no Holon {@code Datastore} is involved:</p>
+     * <p>
+     * Useful for in-memory data sources where no Holon {@code Datastore} is
+     * involved:
+     * </p>
+     * 
      * <pre>{@code
      * panel.addFilterChangeListener(e -> {
      *     shown.clear();
@@ -614,17 +818,17 @@ public class DynamicFilterPanel<T> extends Div implements FilterInputGroup {
             }
 
             // snapshot for XOR (pred appears on both sides)
-            final Predicate<T> acc  = pred;
+            final Predicate<T> acc = pred;
             final Predicate<T> cond = rowPred;
 
             pred = switch (row.connector()) {
-                case AND     -> acc.and(cond);
-                case OR      -> acc.or(cond);
+                case AND -> acc.and(cond);
+                case OR -> acc.or(cond);
                 case AND_NOT -> acc.and(cond.negate());
-                case OR_NOT  -> acc.or(cond.negate());
-                case NAND    -> acc.and(cond).negate();
-                case NOR     -> acc.or(cond).negate();
-                case XOR     -> acc.and(cond.negate()).or(acc.negate().and(cond));
+                case OR_NOT -> acc.or(cond.negate());
+                case NAND -> acc.and(cond).negate();
+                case NOR -> acc.or(cond).negate();
+                case XOR -> acc.and(cond.negate()).or(acc.negate().and(cond));
             };
         }
         return pred != null ? pred : bean -> true;
@@ -637,15 +841,18 @@ public class DynamicFilterPanel<T> extends Div implements FilterInputGroup {
      * "Select filter" as placeholder and "Equals" pre-selected as the default
      * operator.
      *
-     * <p>The "+ Add filter" button is disabled while the last row is incomplete,
+     * <p>
+     * The "+ Add filter" button is disabled while the last row is incomplete,
      * but callers may always invoke this method directly to pre-populate rows
-     * (e.g., in demo views or when restoring saved filter state).</p>
+     * (e.g., in demo views or when restoring saved filter state).
+     * </p>
      */
     public void addRow() {
-        var row = new FilterRow(availableProps, this::removeRow, this::updateAddButton, multiSelectDataProviders);
+        var row = new FilterRow(availableProps, this::removeRow, this::updateAddButton,
+                multiSelectDataProviders, columnLengthAwareWidth);
         rows.add(row);
         rowsContainer.add(row);
-        row.applyAdvancedMode(advancedMode, true);  // connector at end → visible on all rows
+        row.applyAdvancedMode(advancedMode, true);
         updateAddButton();
     }
 
@@ -655,7 +862,7 @@ public class DynamicFilterPanel<T> extends Div implements FilterInputGroup {
         updateAddButton();
         refreshRowModes();
         clearValidationErrors();
-        applyFilter();   // immediately re-apply so removing a condition takes effect at once
+        applyFilter(); // immediately re-apply so removing a condition takes effect at once
     }
 
     /** Propagates the current advanced-mode state to all existing rows. */
@@ -672,23 +879,29 @@ public class DynamicFilterPanel<T> extends Div implements FilterInputGroup {
         addBtn.setEnabled(rows.isEmpty() || rows.getLast().isComplete());
         // Auto-dismiss row errors once the user has filled in a value.
         rows.stream()
-            .filter(FilterRow::isComplete)
-            .forEach(r -> r.removeClassName("filter-panel__row--error"));
+                .filter(FilterRow::isComplete)
+                .forEach(r -> r.removeClassName("filter-panel__row--error"));
         // Hide the panel error if at least one row is now complete.
         if (rows.stream().anyMatch(FilterRow::isComplete)) {
             validationError.removeClassName("filter-panel__validation-error--visible");
         }
     }
 
-    /** Called by the Apply button — validates first, then applies the filter and notifies apply-only listeners. */
+    /**
+     * Called by the Apply button — validates first, then applies the filter and
+     * notifies apply-only listeners.
+     */
     private void applyFilterFromButton() {
-        // Determine which rows are incomplete (have a property selected but missing operator/value).
-        // Rows that are entirely untouched (no property selected) are also counted as incomplete.
+        // Determine which rows are incomplete (have a property selected but missing
+        // operator/value).
+        // Rows that are entirely untouched (no property selected) are also counted as
+        // incomplete.
         List<FilterRow> incompleteRows = rows.stream()
                 .filter(r -> !r.isComplete())
                 .toList();
 
-        // If EVERY row is incomplete (nothing actionable has been configured), show validation errors.
+        // If EVERY row is incomplete (nothing actionable has been configured), show
+        // validation errors.
         boolean anyComplete = rows.stream().anyMatch(FilterRow::isComplete);
         if (!anyComplete) {
             showValidationErrors(incompleteRows);
@@ -704,13 +917,18 @@ public class DynamicFilterPanel<T> extends Div implements FilterInputGroup {
         }
     }
 
-    /** Marks incomplete rows with the error CSS class and makes the panel-level error message visible. */
+    /**
+     * Marks incomplete rows with the error CSS class and makes the panel-level
+     * error message visible.
+     */
     private void showValidationErrors(List<FilterRow> incompleteRows) {
         incompleteRows.forEach(r -> r.addClassName("filter-panel__row--error"));
         validationError.addClassName("filter-panel__validation-error--visible");
     }
 
-    /** Removes error styling from all rows and hides the panel-level error message. */
+    /**
+     * Removes error styling from all rows and hides the panel-level error message.
+     */
     private void clearValidationErrors() {
         rows.forEach(r -> r.removeClassName("filter-panel__row--error"));
         validationError.removeClassName("filter-panel__validation-error--visible");
@@ -741,19 +959,23 @@ public class DynamicFilterPanel<T> extends Div implements FilterInputGroup {
 
     /**
      * Builds a combined {@link QueryFilter} from an ordered list of applied rows,
-     * honouring each row's connector (AND / OR / AND NOT / OR NOT / NAND / NOR / XOR)
+     * honouring each row's connector (AND / OR / AND NOT / OR NOT / NAND / NOR /
+     * XOR)
      * and optional NOT negation.
      *
-     * <p>The row's own {@code negated} flag is applied first; the connector then combines
-     * the accumulated result with that (possibly negated) condition:</p>
+     * <p>
+     * The row's own {@code negated} flag is applied first; the connector then
+     * combines
+     * the accumulated result with that (possibly negated) condition:
+     * </p>
      * <ul>
-     *   <li>AND     → {@code acc AND cond}</li>
-     *   <li>OR      → {@code acc OR cond}</li>
-     *   <li>AND_NOT → {@code acc AND NOT cond}</li>
-     *   <li>OR_NOT  → {@code acc OR NOT cond}</li>
-     *   <li>NAND    → {@code NOT(acc AND cond)}</li>
-     *   <li>NOR     → {@code NOT(acc OR cond)}</li>
-     *   <li>XOR     → {@code (acc AND NOT cond) OR (NOT acc AND cond)}</li>
+     * <li>AND → {@code acc AND cond}</li>
+     * <li>OR → {@code acc OR cond}</li>
+     * <li>AND_NOT → {@code acc AND NOT cond}</li>
+     * <li>OR_NOT → {@code acc OR NOT cond}</li>
+     * <li>NAND → {@code NOT(acc AND cond)}</li>
+     * <li>NOR → {@code NOT(acc OR cond)}</li>
+     * <li>XOR → {@code (acc AND NOT cond) OR (NOT acc AND cond)}</li>
      * </ul>
      */
     private static QueryFilter buildAdvancedQueryFilter(List<AppliedRow> rows) {
@@ -762,7 +984,8 @@ public class DynamicFilterPanel<T> extends Div implements FilterInputGroup {
             PropInfo propInfo = new PropInfo(
                     row.propName(), row.propName(), row.propType(), row.rawProperty());
             Optional<QueryFilter> rowQf = buildFilter(propInfo, row.op(), row.val(), row.val2());
-            if (rowQf.isEmpty()) continue;
+            if (rowQf.isEmpty())
+                continue;
 
             QueryFilter cond = rowQf.get();
 
@@ -772,21 +995,22 @@ public class DynamicFilterPanel<T> extends Div implements FilterInputGroup {
             }
 
             result = switch (row.connector()) {
-                case AND     -> result.and(cond);
-                case OR      -> result.or(cond);
+                case AND -> result.and(cond);
+                case OR -> result.or(cond);
                 case AND_NOT -> result.and(cond.not());
-                case OR_NOT  -> result.or(cond.not());
-                case NAND    -> result.and(cond).not();
-                case NOR     -> result.or(cond).not();
-                case XOR     -> result.and(cond.not()).or(result.not().and(cond));
+                case OR_NOT -> result.or(cond.not());
+                case NAND -> result.and(cond).not();
+                case NOR -> result.or(cond).not();
+                case XOR -> result.and(cond.not()).or(result.not().and(cond));
             };
         }
         return result;
     }
 
-    @SuppressWarnings({"unchecked", "rawtypes"})
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     private void fireChange(QueryFilter prev) {
-        if (listeners.isEmpty()) return;
+        if (listeners.isEmpty())
+            return;
         var event = new DefaultFilterChangeEvent<>(STUB_SOURCE,
                 Optional.ofNullable(prev), Optional.ofNullable(appliedFilter), true);
         // Indexed loop with size snapshot: same ConcurrentModificationException safety
@@ -815,12 +1039,101 @@ public class DynamicFilterPanel<T> extends Div implements FilterInputGroup {
         var bps = BeanPropertySet.create(type);
         var list = new ArrayList<PropInfo>();
         for (PathProperty<?> prop : bps) {
-            String name  = prop.relativeName();
+            String name = prop.relativeName();
             // localize() → i18n messageCode → @Caption default message → camelCase fallback
             String label = LocalizationProvider.localize(prop).orElseGet(() -> toLabel(name));
-            list.add(new PropInfo(name, label, wrapPrimitive(prop.getType()), prop));
+            int colLen = resolveColumnLength(type, name);
+            list.add(new PropInfo(name, label, wrapPrimitive(prop.getType()), prop, colLen));
         }
         return list;
+    }
+
+    /**
+     * Resolves the effective column length for a bean field by reading, via
+     * reflection,
+     * the first matching annotation with a {@code length()}, {@code max()}, or
+     * {@code value()} method.
+     * Walks the class hierarchy for inherited fields.
+     *
+     * <p>
+     * <strong>Resolution order (first match wins at each tier):</strong>
+     * </p>
+     * <ol>
+     * <li>{@code @Column(length=N)} where N &gt; 0 and N ≠ 255 — authoritative
+     * schema width;
+     * 255 is the JPA spec default and is skipped to avoid false positives.</li>
+     * <li>{@code @Size(max=N)} where N ≠ {@link Integer#MAX_VALUE} — Bean
+     * Validation string length.</li>
+     * <li>{@code @Max(value=N)} / {@code @Min(value=N)} — numeric bounds; the digit
+     * count of the
+     * boundary value is used as the effective length (e.g. {@code @Max(9999)} → 4
+     * chars → XS).
+     * Negative {@code @Min} values add one extra char for the minus sign.</li>
+     * </ol>
+     *
+     * <p>
+     * Uses annotation reflection (no compile-time dependency on JPA or Bean
+     * Validation APIs)
+     * so the {@code core} module stays dependency-free. Any reflective failure
+     * returns {@code 0}.
+     * </p>
+     *
+     * @param beanClass the entity / bean class to inspect
+     * @param fieldName the simple field name (e.g. {@code "firstName"})
+     * @return resolved length, or {@code 0} if not determinable
+     */
+    private static int resolveColumnLength(Class<?> beanClass, String fieldName) {
+        Class<?> cls = beanClass;
+        while (cls != null && cls != Object.class) {
+            try {
+                java.lang.reflect.Field f = cls.getDeclaredField(fieldName);
+                int sizeMax = 0; // from @Size(max)
+                int numDigits = 0; // from @Max / @Min digit count
+
+                for (java.lang.annotation.Annotation ann : f.getAnnotations()) {
+                    String name = ann.annotationType().getSimpleName();
+                    try {
+                        switch (name) {
+                            case "Column" -> {
+                                int len = (int) ann.annotationType().getMethod("length").invoke(ann);
+                                if (len > 0 && len != 255)
+                                    return len; // authoritative; skip JPA default
+                            }
+                            case "Size" -> {
+                                int max = (int) ann.annotationType().getMethod("max").invoke(ann);
+                                if (max != Integer.MAX_VALUE)
+                                    sizeMax = max;
+                            }
+                            case "Max" -> {
+                                long val = (long) ann.annotationType().getMethod("value").invoke(ann);
+                                if (val < Long.MAX_VALUE) {
+                                    numDigits = Math.max(numDigits, Long.toString(val).length());
+                                }
+                            }
+                            case "Min" -> {
+                                long val = (long) ann.annotationType().getMethod("value").invoke(ann);
+                                int digits = Long.toString(Math.abs(val)).length() + (val < 0 ? 1 : 0);
+                                numDigits = Math.max(numDigits, digits);
+                            }
+                            default -> {
+                                /* other annotations ignored */ }
+                        }
+                    } catch (Exception ignored) {
+                    }
+                }
+
+                if (sizeMax > 0)
+                    return sizeMax; // @Size beats @Min/@Max
+                if (numDigits > 0)
+                    return numDigits; // @Min/@Max fallback
+                break; // field found in this class; stop climbing
+            } catch (NoSuchFieldException e) {
+                cls = cls.getSuperclass();
+            } catch (Exception e) {
+                break;
+            }
+        }
+        return 0;
     }
 
     /**
@@ -835,9 +1148,9 @@ public class DynamicFilterPanel<T> extends Div implements FilterInputGroup {
         var list = new ArrayList<PropInfo>();
         for (Property<?> prop : properties) {
             // Use relativeName() for PathProperty (e.g. "addedOn") so toLabel() can
-            // produce "Added On" — same strategy as introspect().  Fall back to
+            // produce "Added On" — same strategy as introspect(). Fall back to
             // toString() only for non-path property types.
-            String name  = prop instanceof PathProperty<?> pp ? pp.relativeName() : prop.toString();
+            String name = prop instanceof PathProperty<?> pp ? pp.relativeName() : prop.toString();
             String label = LocalizationProvider.localize(prop).orElseGet(() -> toLabel(name));
             list.add(new PropInfo(name, label, prop.getType(), prop));
         }
@@ -849,7 +1162,8 @@ public class DynamicFilterPanel<T> extends Div implements FilterInputGroup {
         // charAt avoids the char[] allocation of toCharArray()
         for (int i = 0; i < name.length(); i++) {
             char c = name.charAt(i);
-            if (Character.isUpperCase(c) && !sb.isEmpty()) sb.append(' ');
+            if (Character.isUpperCase(c) && !sb.isEmpty())
+                sb.append(' ');
             sb.append(sb.isEmpty() ? Character.toUpperCase(c) : c);
         }
         return sb.toString();
@@ -859,7 +1173,8 @@ public class DynamicFilterPanel<T> extends Div implements FilterInputGroup {
 
     /**
      * Returns the effective {@link Property} to use as filter operand.
-     * Raw property from bean introspection or user-provided property is always present;
+     * Raw property from bean introspection or user-provided property is always
+     * present;
      * the {@link PathProperty} fallback handles edge cases only.
      */
     @SuppressWarnings("rawtypes")
@@ -872,15 +1187,19 @@ public class DynamicFilterPanel<T> extends Div implements FilterInputGroup {
     /**
      * Builds a {@link QueryFilter} from a single filter row's state.
      *
-     * <p>Uses the same Holon Core type-detection pattern as
-     * {@link com.holonplatform.core.datastore.beans.BeanDatastoreHelper}: {@link TypeUtils} for type checks,
+     * <p>
+     * Uses the same Holon Core type-detection pattern as
+     * {@link com.holonplatform.core.datastore.beans.BeanDatastoreHelper}:
+     * {@link TypeUtils} for type checks,
      * {@link StringProperty} fluent API for string operations,
-     * and generic {@link QueryFilter} factory methods for numeric/temporal comparisons.</p>
+     * and generic {@link QueryFilter} factory methods for numeric/temporal
+     * comparisons.
+     * </p>
      */
-    @SuppressWarnings({"unchecked", "rawtypes"})
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     static Optional<QueryFilter> buildFilter(PropInfo prop, FilterOperator op,
-                                              Object val, Object val2) {
-        final Class<?> type  = wrapPrimitive(prop.type());
+            Object val, Object val2) {
+        final Class<?> type = wrapPrimitive(prop.type());
         final Property effProp = effectiveProperty(prop);
 
         // ── IS_EMPTY / IS_NOT_EMPTY ────────────────────────────────────────────
@@ -888,7 +1207,7 @@ public class DynamicFilterPanel<T> extends Div implements FilterInputGroup {
         // For other types: null / not-null
         if (op.isNullaryCheck()) {
             if (TypeUtils.isString(type) && effProp instanceof StringProperty sp) {
-                QueryFilter isNull  = QueryFilter.isNull(sp);
+                QueryFilter isNull = QueryFilter.isNull(sp);
                 QueryFilter isEmpty = QueryFilter.eq(sp, "");
                 return op == FilterOperator.IS_EMPTY
                         ? Optional.of(isNull.or(isEmpty))
@@ -900,41 +1219,50 @@ public class DynamicFilterPanel<T> extends Div implements FilterInputGroup {
         }
 
         // ── STRING operators ───────────────────────────────────────────────────
-        // Uses StringProperty fluent API (same pattern as BeanDatastoreHelper query filter building)
+        // Uses StringProperty fluent API (same pattern as BeanDatastoreHelper query
+        // filter building)
         if (TypeUtils.isString(type)) {
             String sVal = val instanceof String s ? s : null;
-            if (sVal == null || sVal.isBlank()) return Optional.empty();
-            // BeanPropertySet gives StringProperty for String fields; fall back for hand-built properties
+            if (sVal == null || sVal.isBlank())
+                return Optional.empty();
+            // BeanPropertySet gives StringProperty for String fields; fall back for
+            // hand-built properties
             StringProperty sp = effProp instanceof StringProperty existing
-                    ? existing : StringProperty.create(prop.name());
+                    ? existing
+                    : StringProperty.create(prop.name());
             return switch (op) {
-                case EQUALS       -> Optional.of(QueryFilter.eq(sp, sVal));
-                case NOT_EQUALS   -> Optional.of(QueryFilter.eq(sp, sVal).not());
-                case CONTAINS     -> Optional.of(sp.containsIgnoreCase(sVal));   // typed fluent API
+                case EQUALS -> Optional.of(QueryFilter.eq(sp, sVal));
+                case NOT_EQUALS -> Optional.of(QueryFilter.eq(sp, sVal).not());
+                case CONTAINS -> Optional.of(sp.containsIgnoreCase(sVal)); // typed fluent API
                 case NOT_CONTAINS -> Optional.of(sp.containsIgnoreCase(sVal).not());
-                case STARTS_WITH  -> Optional.of(sp.startsWithIgnoreCase(sVal));
-                case ENDS_WITH    -> Optional.of(sp.endsWithIgnoreCase(sVal));
-                default           -> Optional.empty();
+                case STARTS_WITH -> Optional.of(sp.startsWithIgnoreCase(sVal));
+                case ENDS_WITH -> Optional.of(sp.endsWithIgnoreCase(sVal));
+                default -> Optional.empty();
             };
         }
 
         // ── BETWEEN ────────────────────────────────────────────────────────────
         // Works for both numeric (goe/loe) and temporal (goe/loe accept Comparable)
         if (op == FilterOperator.BETWEEN) {
-            QueryFilter from = val  != null ? QueryFilter.goe(effProp, val)  : null;
-            QueryFilter to   = val2 != null ? QueryFilter.loe(effProp, val2) : null;
-            if (from != null && to != null) return Optional.of(from.and(to));
-            if (from != null) return Optional.of(from);
-            if (to   != null) return Optional.of(to);
+            QueryFilter from = val != null ? QueryFilter.goe(effProp, val) : null;
+            QueryFilter to = val2 != null ? QueryFilter.loe(effProp, val2) : null;
+            if (from != null && to != null)
+                return Optional.of(from.and(to));
+            if (from != null)
+                return Optional.of(from);
+            if (to != null)
+                return Optional.of(to);
             return Optional.empty();
         }
 
-        if (val == null) return Optional.empty();
+        if (val == null)
+            return Optional.empty();
 
         // ── IN / NOT_IN ────────────────────────────────────────────────────────
         // val is a Set<Object> from MultiSelectComboBox.getValue()
         if (op == FilterOperator.IN || op == FilterOperator.NOT_IN) {
-            if (!(val instanceof Collection<?> coll) || coll.isEmpty()) return Optional.empty();
+            if (!(val instanceof Collection<?> coll) || coll.isEmpty())
+                return Optional.empty();
             List<QueryFilter> eqFilters = coll.stream()
                     .map(v -> (QueryFilter) QueryFilter.eq(effProp, v))
                     .toList();
@@ -943,38 +1271,44 @@ public class DynamicFilterPanel<T> extends Div implements FilterInputGroup {
         }
 
         // ── NUMERIC, TEMPORAL, BOOLEAN, ENUM comparisons ───────────────────────
-        // Generic QueryFilter factory methods work for any Comparable-valued Property<T>
+        // Generic QueryFilter factory methods work for any Comparable-valued
+        // Property<T>
         return switch (op) {
-            case EQUALS                          -> Optional.of(QueryFilter.eq(effProp, val));
-            case NOT_EQUALS                      -> Optional.of(QueryFilter.eq(effProp, val).not());
-            case GREATER_THAN, AFTER             -> Optional.of(QueryFilter.gt(effProp, val));
-            case LESS_THAN,    BEFORE            -> Optional.of(QueryFilter.lt(effProp, val));
-            case GREATER_OR_EQUALS, ON_OR_AFTER  -> Optional.of(QueryFilter.goe(effProp, val));
-            case LESS_OR_EQUALS,    ON_OR_BEFORE -> Optional.of(QueryFilter.loe(effProp, val));
-            default                              -> Optional.empty();
+            case EQUALS -> Optional.of(QueryFilter.eq(effProp, val));
+            case NOT_EQUALS -> Optional.of(QueryFilter.eq(effProp, val).not());
+            case GREATER_THAN, AFTER -> Optional.of(QueryFilter.gt(effProp, val));
+            case LESS_THAN, BEFORE -> Optional.of(QueryFilter.lt(effProp, val));
+            case GREATER_OR_EQUALS, ON_OR_AFTER -> Optional.of(QueryFilter.goe(effProp, val));
+            case LESS_OR_EQUALS, ON_OR_BEFORE -> Optional.of(QueryFilter.loe(effProp, val));
+            default -> Optional.empty();
         };
     }
 
     // ── Private: in-memory predicate helpers ──────────────────────────────
 
     /**
-     * Extracts the property value from the given item and evaluates the filter operator.
+     * Extracts the property value from the given item and evaluates the filter
+     * operator.
      * <ul>
-     *   <li>If the item is already a {@link PropertyBox}, the raw {@link Property} reference
-     *       is used directly for type-safe value extraction.</li>
-     *   <li>For regular beans, {@link BeanUtils#readFromBean(Object)} converts the bean to a
-     *       {@link PropertyBox} via {@link com.holonplatform.core.beans.BeanIntrospector} —
-     *       the canonical Holon Core bean → PropertyBox conversion — then the same
-     *       {@link PropertyBox#getValue(Property)} call is used.</li>
+     * <li>If the item is already a {@link PropertyBox}, the raw {@link Property}
+     * reference
+     * is used directly for type-safe value extraction.</li>
+     * <li>For regular beans, {@link BeanUtils#readFromBean(Object)} converts the
+     * bean to a
+     * {@link PropertyBox} via {@link com.holonplatform.core.beans.BeanIntrospector}
+     * —
+     * the canonical Holon Core bean → PropertyBox conversion — then the same
+     * {@link PropertyBox#getValue(Property)} call is used.</li>
      * </ul>
      */
     @SuppressWarnings("unchecked")
     private static boolean matchRow(Object bean, AppliedRow row) {
         try {
-            if (row.rawProperty() == null) return true;
+            if (row.rawProperty() == null)
+                return true;
             final PropertyBox box = bean instanceof PropertyBox pb
                     ? pb
-                    : BeanUtils.readFromBean(bean);   // Bean → PropertyBox via BeanIntrospector
+                    : BeanUtils.readFromBean(bean); // Bean → PropertyBox via BeanIntrospector
             Object actual = box.getValue((Property<Object>) row.rawProperty());
             return evalOp(row.op(), actual, row.val(), row.val2());
         } catch (Exception ignored) {
@@ -982,30 +1316,29 @@ public class DynamicFilterPanel<T> extends Div implements FilterInputGroup {
         }
     }
 
-
     private static boolean evalOp(FilterOperator op, Object actual, Object val, Object val2) {
         return switch (op) {
-            case EQUALS      -> Objects.equals(actual, val);
-            case NOT_EQUALS  -> !Objects.equals(actual, val);
-            case IN          -> val instanceof Collection<?> c && c.contains(actual);
-            case NOT_IN      -> !(val instanceof Collection<?> c && c.contains(actual));
-            case CONTAINS    -> actual instanceof String a && val instanceof String v
+            case EQUALS -> Objects.equals(actual, val);
+            case NOT_EQUALS -> !Objects.equals(actual, val);
+            case IN -> val instanceof Collection<?> c && c.contains(actual);
+            case NOT_IN -> !(val instanceof Collection<?> c && c.contains(actual));
+            case CONTAINS -> actual instanceof String a && val instanceof String v
                     && a.toLowerCase().contains(v.toLowerCase());
             case NOT_CONTAINS -> !(actual instanceof String a && val instanceof String v
                     && a.toLowerCase().contains(v.toLowerCase()));
             case STARTS_WITH -> actual instanceof String a && val instanceof String v
                     && a.toLowerCase().startsWith(v.toLowerCase());
-            case ENDS_WITH   -> actual instanceof String a && val instanceof String v
+            case ENDS_WITH -> actual instanceof String a && val instanceof String v
                     && a.toLowerCase().endsWith(v.toLowerCase());
-            case IS_EMPTY    -> actual == null || (actual instanceof String s && s.isBlank());
+            case IS_EMPTY -> actual == null || (actual instanceof String s && s.isBlank());
             case IS_NOT_EMPTY -> actual != null && !(actual instanceof String s && s.isBlank());
-            case GREATER_THAN, AFTER         -> cmp(actual, val) > 0;
-            case LESS_THAN,    BEFORE        -> cmp(actual, val) < 0;
-            case GREATER_OR_EQUALS, ON_OR_AFTER  -> cmp(actual, val) >= 0;
-            case LESS_OR_EQUALS,    ON_OR_BEFORE -> cmp(actual, val) <= 0;
+            case GREATER_THAN, AFTER -> cmp(actual, val) > 0;
+            case LESS_THAN, BEFORE -> cmp(actual, val) < 0;
+            case GREATER_OR_EQUALS, ON_OR_AFTER -> cmp(actual, val) >= 0;
+            case LESS_OR_EQUALS, ON_OR_BEFORE -> cmp(actual, val) <= 0;
             case BETWEEN -> {
-                boolean fromOk = val  == null || cmp(actual, val)  >= 0;
-                boolean toOk   = val2 == null || cmp(actual, val2) <= 0;
+                boolean fromOk = val == null || cmp(actual, val) >= 0;
+                boolean toOk = val2 == null || cmp(actual, val2) <= 0;
                 yield fromOk && toOk;
             }
         };
@@ -1013,46 +1346,69 @@ public class DynamicFilterPanel<T> extends Div implements FilterInputGroup {
 
     @SuppressWarnings("unchecked")
     private static int cmp(Object a, Object b) {
-        if (a == null && b == null) return 0;
-        if (a == null) return -1;
-        if (b == null) return 1;
-        if (a instanceof Comparable c) return c.compareTo(b);
+        if (a == null && b == null)
+            return 0;
+        if (a == null)
+            return -1;
+        if (b == null)
+            return 1;
+        if (a instanceof Comparable c)
+            return c.compareTo(b);
         return 0;
     }
 
     // ── Private: type helpers ─────────────────────────────────────────────
 
     static Class<?> wrapPrimitive(Class<?> type) {
-        if (int.class.equals(type))     return Integer.class;
-        if (long.class.equals(type))    return Long.class;
-        if (double.class.equals(type))  return Double.class;
-        if (float.class.equals(type))   return Float.class;
-        if (short.class.equals(type))   return Short.class;
-        if (byte.class.equals(type))    return Byte.class;
-        if (boolean.class.equals(type)) return Boolean.class;
+        if (TypeUtils.isInteger(type))
+            return Integer.class;
+        if (TypeUtils.isLong(type))
+            return Long.class;
+        if (TypeUtils.isDouble(type))
+            return Double.class;
+        if (TypeUtils.isFloat(type))
+            return Float.class;
+        if (TypeUtils.isShort(type))
+            return Short.class;
+        if (TypeUtils.isByte(type))
+            return Byte.class;
+        if (TypeUtils.isBoolean(type))
+            return Boolean.class;
         return type;
     }
 
     /**
-     * Creates a type-appropriate {@link Input} for the given property type by delegating
-     * to {@link Input#create(Class)}, which backs the Holon {@code DefaultInputPropertyRenderer}
-     * pipeline. This covers String, Boolean (checkbox), Enum (with caption generator),
-     * LocalDate, LocalTime, LocalDateTime, legacy Date, and Number — more types than
-     * a hand-rolled switch, with correct per-type defaults (e.g. {@code emptyValuesAsNull}
-     * for String inputs so {@code val1Supplier.get()} reliably returns {@code null} on clear).
+     * Creates a type-appropriate {@link Input} for the given property type by
+     * delegating
+     * to {@link Input#create(Class)}, which backs the Holon
+     * {@code DefaultInputPropertyRenderer}
+     * pipeline. This covers String, Boolean (checkbox), Enum (with caption
+     * generator),
+     * LocalDate, LocalTime, LocalDateTime, legacy Date, and Number — more types
+     * than
+     * a hand-rolled switch, with correct per-type defaults (e.g.
+     * {@code emptyValuesAsNull}
+     * for String inputs so {@code val1Supplier.get()} reliably returns {@code null}
+     * on clear).
      * Falls back to a plain text field for unrecognised types.
      *
-     * <p><strong>LocalTime handling:</strong> For LocalTime properties, creates a combined
-     * date+time picker (DatePicker + TimePicker) displayed horizontally. The filter uses
-     * the selected date at midnight (00:00) combined with the selected time. Users can
-     * filter by specific times across any date context.</p>
+     * <p>
+     * <strong>LocalTime handling:</strong> For LocalTime properties, creates a
+     * combined
+     * date+time picker (DatePicker + TimePicker) displayed horizontally. The filter
+     * uses
+     * the selected date at midnight (00:00) combined with the selected time. Users
+     * can
+     * filter by specific times across any date context.
+     * </p>
      */
     @SuppressWarnings("unchecked")
     static Input<?> createInput(Class<?> rawType) {
         Class<?> type = wrapPrimitive(rawType);
 
         // Boolean: a "True / False" ComboBox is much clearer than the default checkbox.
-        // The ComboBox value (Boolean.TRUE / Boolean.FALSE) plugs straight into QueryFilter.eq()
+        // The ComboBox value (Boolean.TRUE / Boolean.FALSE) plugs straight into
+        // QueryFilter.eq()
         // and evalOp(EQUALS/NOT_EQUALS) without any extra handling.
         if (Boolean.class.equals(type)) {
             var cb = new ComboBox<Boolean>();
@@ -1070,7 +1426,7 @@ public class DynamicFilterPanel<T> extends Div implements FilterInputGroup {
         Optional<Input<Object>> created = Input.create((Class<Object>) type);
         return created.isPresent()
                 ? created.get()
-                : Input.string().placeholder("Enter a value").build();
+                : Input.string().placeholder(LocalizationProvider.localize("Enter a value", "filter.enter_value")).build();
     }
 
     /**
@@ -1079,25 +1435,30 @@ public class DynamicFilterPanel<T> extends Div implements FilterInputGroup {
      */
     private static Input<LocalTime> createLocalTimeInput() {
         TimePicker timePicker = new TimePicker();
-        timePicker.setPlaceholder("Time");
+        timePicker.setPlaceholder(LocalizationProvider.localize("Time", "filter.time_placeholder"));
         timePicker.addClassName("filter-panel__time-input");
         return Input.builder(timePicker).build();
     }
 
     /**
-     * Builds a {@link MultiSelectComboBox} for {@link FilterOperator#IN} / {@link FilterOperator#NOT_IN}.
+     * Builds a {@link MultiSelectComboBox} for {@link FilterOperator#IN} /
+     * {@link FilterOperator#NOT_IN}.
      *
-     * <p>Population strategy (first match wins):</p>
+     * <p>
+     * Population strategy (first match wins):
+     * </p>
      * <ol>
-     *   <li>A {@link DataProvider} registered via {@link #setItems} or {@link #setLazyItems}.</li>
-     *   <li>For {@link Enum} types: the enum constants are used automatically — no registration needed.</li>
+     * <li>A {@link DataProvider} registered via {@link #setItems} or
+     * {@link #setLazyItems}.</li>
+     * <li>For {@link Enum} types: the enum constants are used automatically — no
+     * registration needed.</li>
      * </ol>
      */
-    @SuppressWarnings({"unchecked", "rawtypes"})
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     static MultiSelectComboBox<Object> createMultiSelectInput(PropInfo prop,
-                                                               Map<String, DataProvider> providers) {
+            Map<String, DataProvider> providers) {
         MultiSelectComboBox<Object> msb = new MultiSelectComboBox<>();
-        msb.setPlaceholder("Select values");
+        msb.setPlaceholder(LocalizationProvider.localize("Select values", "filter.select_values"));
 
         DataProvider<Object, String> dp = providers.get(prop.name());
         if (dp != null) {
@@ -1119,17 +1480,43 @@ public class DynamicFilterPanel<T> extends Div implements FilterInputGroup {
     // ── Stub FilterInput (event source) ────────────────────────────────────
 
     /**
-     * Minimal stub that satisfies the {@link DefaultFilterChangeEvent} source requirement.
+     * Minimal stub that satisfies the {@link DefaultFilterChangeEvent} source
+     * requirement.
      * {@code getInput()} throws; all other methods are no-ops / empty.
      */
     private static final FilterInput<Void> STUB_SOURCE = new FilterInput<>() {
-        @Serial private static final long serialVersionUID = 1L;
-        @Override public Optional<QueryFilter>   getQueryFilter()  { return Optional.empty(); }
-        @Override public boolean                 isActive()         { return false; }
-        @Override public void                    reset()            {}
-        @Override public Input<Void>             getInput()         { throw new UnsupportedOperationException("stub"); }
-        @Override public Component               getComponent()     { return Components.div().build(); }
-        @Override public Registration addFilterChangeListener(FilterChangeListener<Void> l) { return () -> {}; }
+        @Serial
+        private static final long serialVersionUID = 1L;
+
+        @Override
+        public Optional<QueryFilter> getQueryFilter() {
+            return Optional.empty();
+        }
+
+        @Override
+        public boolean isActive() {
+            return false;
+        }
+
+        @Override
+        public void reset() {
+        }
+
+        @Override
+        public Input<Void> getInput() {
+            throw new UnsupportedOperationException("stub");
+        }
+
+        @Override
+        public Component getComponent() {
+            return Components.div().build();
+        }
+
+        @Override
+        public Registration addFilterChangeListener(FilterChangeListener<Void> l) {
+            return () -> {
+            };
+        }
     };
 
     // ── Inner class: FilterRow ────────────────────────────────────────────
@@ -1148,26 +1535,37 @@ public class DynamicFilterPanel<T> extends Div implements FilterInputGroup {
         /** {@code true} once the primary value input contains a non-blank value. */
         private boolean valueProvided = false;
         /** Callback fired whenever this row's completeness state may have changed. */
-        private final Runnable onStateChange;
+        private final SerializableRunnable onStateChange;
+
+        /**
+         * Whether to apply annotation-driven width-tier CSS classes to value inputs.
+         */
+        private final boolean columnLengthAwareWidth;
 
         /** Supplies the primary (or only) value from the current value input. */
-        private Supplier<Object> val1Supplier = () -> null;
+        private SerializableSupplier<Object> val1Supplier = () -> null;
         /** Supplies the secondary bound value (BETWEEN only). */
-        private Supplier<Object> val2Supplier = () -> null;
+        private SerializableSupplier<Object> val2Supplier = () -> null;
         /** Builds the complete QueryFilter for this row from current state. */
-        private Supplier<Optional<QueryFilter>> filterSupplier = Optional::empty;
+        private SerializableSupplier<Optional<QueryFilter>> filterSupplier = Optional::empty;
 
         /** AND/OR connector — only visible in advanced mode for rows 2 and above. */
         private final ComboBox<RowConnector> connectorSel;
 
         /** Logical category of the current value-input widget. */
-        private enum InputMode { NULLARY, SINGLE, MULTI, BETWEEN }
+        private enum InputMode {
+            NULLARY, SINGLE, MULTI, BETWEEN
+        }
 
         private static InputMode inputModeOf(FilterOperator op) {
-            if (op == null) return null;
-            if (op.isNullaryCheck()) return InputMode.NULLARY;
-            if (op.isMultiValue())   return InputMode.MULTI;
-            if (op.isBetween())      return InputMode.BETWEEN;
+            if (op == null)
+                return null;
+            if (op.isNullaryCheck())
+                return InputMode.NULLARY;
+            if (op.isMultiValue())
+                return InputMode.MULTI;
+            if (op.isBetween())
+                return InputMode.BETWEEN;
             return InputMode.SINGLE;
         }
 
@@ -1179,10 +1577,11 @@ public class DynamicFilterPanel<T> extends Div implements FilterInputGroup {
         private final Map<String, DataProvider> multiSelectDataProviders;
 
         @SuppressWarnings("rawtypes")
-        FilterRow(List<PropInfo> props, Consumer<FilterRow> onRemove, Runnable onStateChange,
-                  Map<String, DataProvider> multiSelectDataProviders) {
+        FilterRow(List<PropInfo> props, SerializableConsumer<FilterRow> onRemove, SerializableRunnable onStateChange,
+                Map<String, DataProvider> multiSelectDataProviders, boolean columnLengthAwareWidth) {
             this.onStateChange = onStateChange;
             this.multiSelectDataProviders = multiSelectDataProviders;
+            this.columnLengthAwareWidth = columnLengthAwareWidth;
             addClassName("filter-panel__row");
 
             // ── Advanced-mode controls (hidden by default) ─────────────────
@@ -1198,7 +1597,7 @@ public class DynamicFilterPanel<T> extends Div implements FilterInputGroup {
             var propSel = new ComboBox<PropInfo>();
             propSel.setItems(props);
             propSel.setItemLabelGenerator(PropInfo::label);
-            propSel.setPlaceholder("Select filter");
+            propSel.setPlaceholder(LocalizationProvider.localize("Select filter", "filter.select_filter"));
             propSel.addClassName("filter-panel__prop-sel");
 
             opSel = new ComboBox<>();
@@ -1227,7 +1626,8 @@ public class DynamicFilterPanel<T> extends Div implements FilterInputGroup {
                     opSel.setItems(operators);
                     opSel.setEnabled(true);
                     // Always default to EQUALS (valid for every type).
-                    // If the value is already EQUALS (retained by setItems), no change event fires —
+                    // If the value is already EQUALS (retained by setItems), no change event fires
+                    // —
                     // so we also update selectedOp and rebuild the value input manually.
                     if (FilterOperator.EQUALS.equals(opSel.getValue())) {
                         selectedOp = FilterOperator.EQUALS;
@@ -1245,20 +1645,25 @@ public class DynamicFilterPanel<T> extends Div implements FilterInputGroup {
                 onStateChange.run();
             });
 
-            // When operator changes → rebuild value input only when the widget category changes.
-            // filterSupplier lambdas read `this.selectedOp` (instance field, not a closure copy),
+            // When operator changes → rebuild value input only when the widget category
+            // changes.
+            // filterSupplier lambdas read `this.selectedOp` (instance field, not a closure
+            // copy),
             // so updating selectedOp is sufficient when the same widget type is reused —
-            // no DOM removal/re-creation needed (preserves the user's typed value, avoids flicker).
+            // no DOM removal/re-creation needed (preserves the user's typed value, avoids
+            // flicker).
             opSel.addValueChangeListener(e -> {
                 FilterOperator prevOp = selectedOp;
                 selectedOp = e.getValue();
                 if (selectedProp != null && selectedOp != null) {
                     if (inputModeOf(selectedOp) != inputModeOf(prevOp)) {
-                        // Widget category changed (e.g. single → between, single → multi) — full rebuild.
+                        // Widget category changed (e.g. single → between, single → multi) — full
+                        // rebuild.
                         clearValue();
                         rebuildValueInput();
                     }
-                    // else: same widget stays alive; filterSupplier already reads the new selectedOp.
+                    // else: same widget stays alive; filterSupplier already reads the new
+                    // selectedOp.
                 } else {
                     clearValue();
                 }
@@ -1266,8 +1671,10 @@ public class DynamicFilterPanel<T> extends Div implements FilterInputGroup {
             });
 
             // ── Initial visual state ─────────────────────────────────────
-            // Show "Equals" in the disabled operator ComboBox before any property is picked.
-            // The listeners above are already registered, so setValue fires opSel listener →
+            // Show "Equals" in the disabled operator ComboBox before any property is
+            // picked.
+            // The listeners above are already registered, so setValue fires opSel listener
+            // →
             // sets selectedOp = EQUALS (harmless since selectedProp is still null).
             opSel.setItems(FilterOperator.EQUALS);
             opSel.setValue(FilterOperator.EQUALS);
@@ -1276,15 +1683,19 @@ public class DynamicFilterPanel<T> extends Div implements FilterInputGroup {
         }
 
         /**
-         * Returns {@code true} when this row has enough information to be considered complete:
+         * Returns {@code true} when this row has enough information to be considered
+         * complete:
          * <ul>
-         *   <li>property and operator are both selected</li>
-         *   <li>if the operator requires a value (not IS_EMPTY/IS_NOT_EMPTY), a non-blank value is present</li>
+         * <li>property and operator are both selected</li>
+         * <li>if the operator requires a value (not IS_EMPTY/IS_NOT_EMPTY), a non-blank
+         * value is present</li>
          * </ul>
          */
         boolean isComplete() {
-            if (selectedProp == null || selectedOp == null) return false;
-            if (selectedOp.isNullaryCheck()) return true;
+            if (selectedProp == null || selectedOp == null)
+                return false;
+            if (selectedOp.isNullaryCheck())
+                return true;
             return valueProvided;
         }
 
@@ -1317,12 +1728,16 @@ public class DynamicFilterPanel<T> extends Div implements FilterInputGroup {
          */
         Optional<AppliedRow> getAppliedRow() {
             // Use isComplete() — mirrors the toQueryFilter() path and excludes rows where
-            // a property/operator is selected but the required value has not been entered yet.
-            // Without this guard, a null val causes evalOp(EQUALS, actual, null) → false for
+            // a property/operator is selected but the required value has not been entered
+            // yet.
+            // Without this guard, a null val causes evalOp(EQUALS, actual, null) → false
+            // for
             // every bean in AND mode, silently hiding all results.
-            if (!isComplete()) return Optional.empty();
+            if (!isComplete())
+                return Optional.empty();
             RowConnector connector = connectorSel.getValue() != null
-                    ? connectorSel.getValue() : RowConnector.AND;
+                    ? connectorSel.getValue()
+                    : RowConnector.AND;
             return Optional.of(new AppliedRow(
                     selectedProp.name(), selectedProp.type(), selectedOp,
                     val1Supplier.get(), val2Supplier.get(),
@@ -1336,41 +1751,39 @@ public class DynamicFilterPanel<T> extends Div implements FilterInputGroup {
             val2Supplier = () -> null;
             filterSupplier = Optional::empty;
             valueProvided = false;
-            showValuePlaceholder();     // always keep a visible field in the container
+            showValuePlaceholder(); // always keep a visible field in the container
         }
 
         /**
          * Adds a non-interactive placeholder TextField that looks identical to a
-         * real value input.  The field is blocked from user interaction purely via
+         * real value input. The field is blocked from user interaction purely via
          * CSS ({@code pointer-events: none} on {@code ::part(input-field)}), so it
          * never appears disabled or read-only, yet no keystroke reaches it.
          * Replaced by the appropriate typed input as soon as a property is chosen.
          */
         private void showValuePlaceholder() {
+            String enterValue = LocalizationProvider.localize("Enter a value", "filter.enter_value");
             valueContainer.add(Components.input.string()
-.placeholder("Enter a value")
-.ariaLabel("Enter a value")
-.styleNames("filter-panel__value-input","filter-panel__value-placeholder")
-.build().getComponent());
-
-
-
+                    .placeholder(enterValue)
+                    .ariaLabel(enterValue)
+                    .styleNames("filter-panel__value-input", "filter-panel__value-placeholder")
+                    .build().getComponent());
 
         }
 
         private void showNullaryPlaceholder() {
             valueContainer.add(
-                Components.input.string()
-                .placeholder("No value needed")
-                .disabled()
-                .styleNames("filter-panel__value-input","filter-panel__value-placeholder")
-                .build().getComponent()
-            );
+                    Components.input.string()
+                            .placeholder("No value needed")
+                            .disabled()
+                            .styleNames("filter-panel__value-input", "filter-panel__value-placeholder")
+                            .build().getComponent());
         }
 
         private void rebuildValueInput() {
             if (selectedOp.isNullaryCheck()) {
-                // IS_EMPTY / IS_NOT_EMPTY: show a disabled value slot so the row reads correctly.
+                // IS_EMPTY / IS_NOT_EMPTY: show a disabled value slot so the row reads
+                // correctly.
                 valueContainer.removeAll();
                 showNullaryPlaceholder();
                 filterSupplier = () -> buildFilter(selectedProp, selectedOp, null, null);
@@ -1386,7 +1799,7 @@ public class DynamicFilterPanel<T> extends Div implements FilterInputGroup {
                 MultiSelectComboBox<Object> msb = createMultiSelectInput(selectedProp, multiSelectDataProviders);
                 msb.addClassName("filter-panel__value-multi-select");
                 valueContainer.add(msb);
-                val1Supplier  = () -> msb.getValue().isEmpty() ? null : msb.getValue();
+                val1Supplier = () -> msb.getValue().isEmpty() ? null : msb.getValue();
                 filterSupplier = () -> buildFilter(selectedProp, selectedOp,
                         msb.getValue().isEmpty() ? null : msb.getValue(), null);
                 msb.addValueChangeListener(e -> {
@@ -1412,26 +1825,26 @@ public class DynamicFilterPanel<T> extends Div implements FilterInputGroup {
                 }
             } else if (selectedOp.isBetween()) {
                 Input<?> from = createInput(type);
-                Input<?> to   = createInput(type);
+                Input<?> to = createInput(type);
                 applyInputPlaceholder(from);
                 applyInputPlaceholder(to);
-                from.getComponent().addClassName("filter-panel__value-input");
-                to.getComponent().addClassName("filter-panel__value-input");
-                
+                applyValueInputClasses(from.getComponent(), selectedProp);
+                applyValueInputClasses(to.getComponent(), selectedProp);
+
                 // Create a grouped container for BETWEEN inputs
                 var betweenContainer = Components.div()
-                    .styleName("filter-panel__between-container")
-                    .build();
+                        .styleName("filter-panel__between-container")
+                        .build();
                 betweenContainer.add(from.getComponent());
-                
+
                 var sep = Components.span().text("–").styleName("filter-panel__between-sep").build();
                 betweenContainer.add(sep);
-                
+
                 betweenContainer.add(to.getComponent());
                 valueContainer.add(betweenContainer);
-                
-                val1Supplier  = from::getValue;
-                val2Supplier  = to::getValue;
+
+                val1Supplier = from::getValue;
+                val2Supplier = to::getValue;
                 filterSupplier = () -> buildFilter(selectedProp, selectedOp,
                         from.getValue(), to.getValue());
                 attachValueListener(from);
@@ -1439,9 +1852,9 @@ public class DynamicFilterPanel<T> extends Div implements FilterInputGroup {
             } else {
                 Input<?> input = createInput(type);
                 applyInputPlaceholder(input);
-                input.getComponent().addClassName("filter-panel__value-input");
+                applyValueInputClasses(input.getComponent(), selectedProp);
                 valueContainer.add(input.getComponent());
-                val1Supplier  = input::getValue;
+                val1Supplier = input::getValue;
                 filterSupplier = () -> buildFilter(selectedProp, selectedOp, input.getValue(), null);
                 attachValueListener(input);
             }
@@ -1454,14 +1867,37 @@ public class DynamicFilterPanel<T> extends Div implements FilterInputGroup {
         private static void applyInputPlaceholder(Input<?> input) {
             Component comp = input.getComponent();
             if (comp instanceof HasPlaceholder hp) {
-                hp.setPlaceholder("Enter a value");
+                hp.setPlaceholder(LocalizationProvider.localize("Enter a value", "filter.enter_value"));
+            }
+        }
+
+        /**
+         * Applies the base {@code filter-panel__value-input} class plus an optional
+         * width-tier modifier derived from the property's resolved
+         * {@link FieldWidthTier}.
+         * The modifier is only added when {@link #columnLengthAwareWidth} is
+         * {@code true}.
+         *
+         * <p>
+         * This keeps Java code annotation-free: only CSS class names are assigned;
+         * all visual sizing lives exclusively in {@code filter-panel.css}.
+         * </p>
+         */
+        private void applyValueInputClasses(Component comp, PropInfo prop) {
+            comp.addClassName("filter-panel__value-input");
+            if (columnLengthAwareWidth) {
+                String modifier = FieldWidthTier.of(prop.columnLength()).getModifierClass();
+                if (modifier != null) {
+                    comp.addClassName(modifier);
+                }
             }
         }
 
         /**
          * Attaches a value-change listener that updates {@link #valueProvided} and
          * notifies the panel so the "+ Add filter" button can be updated.
-         * Uses a raw-type cast because {@code Input<?>} prevents direct listener attachment.
+         * Uses a raw-type cast because {@code Input<?>} prevents direct listener
+         * attachment.
          */
         private void attachValueListener(Input<?> input) {
             input.addValueChangeListener(e -> {
@@ -1474,4 +1910,3 @@ public class DynamicFilterPanel<T> extends Div implements FilterInputGroup {
         }
     }
 }
-

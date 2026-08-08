@@ -36,7 +36,7 @@ public interface BeanListingBuilder<T> extends BeanListingConfigurator<T, BeanLi
 	 * 
 	 * @since 5.2.0
 	 */
-	public interface DatastoreBeanListingBuilder<T> extends BeanListingConfigurator<T, DatastoreBeanListingBuilder<T>>,
+	interface DatastoreBeanListingBuilder<T> extends BeanListingConfigurator<T, DatastoreBeanListingBuilder<T>>,
 			DatastoreDataProviderConfigurator<T, DatastoreBeanListingBuilder<T>>,
 			ItemListingBuilder<T, String, BeanListing<T>, DatastoreBeanListingBuilder<T>> {
 

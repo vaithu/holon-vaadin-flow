@@ -63,13 +63,32 @@ vaadin-dialog[theme~="alert-modal"]::part(overlay) {
     /* Let the inner Alert's background colour show — no opaque overlay shell */
     background: transparent;
 
-    /* Slide-down entrance animation */
-    animation: alert-modal-slide-down 280ms cubic-bezier(0.32, 0.72, 0, 1);
+    /* Animation removed — Vaadin 25.2 fix: unconditional animation on ::part(overlay)
+     * replays during close when Vaadin adds [closing] to the overlay host, causing
+     * the entrance animation to run instead of the exit animation (glitch).
+     * Enter/exit animations are now gated on [opening] / [closing] states below. */
+}
+
+/* Mobile enter — slide down from top */
+@media (max-width: 639px) {
+    vaadin-dialog-overlay[theme~="alert-modal"][opening]::part(overlay) {
+        animation: alert-modal-slide-down 280ms cubic-bezier(0.32, 0.72, 0, 1);
+    }
+
+    /* Mobile exit — slide back up */
+    vaadin-dialog-overlay[theme~="alert-modal"][closing]::part(overlay) {
+        animation: alert-modal-slide-up 250ms cubic-bezier(0.4, 0, 0.6, 1);
+    }
 }
 
 @keyframes alert-modal-slide-down {
     from { transform: translateY(-100%); }
     to   { transform: translateY(0);    }
+}
+
+@keyframes alert-modal-slide-up {
+    from { transform: translateY(0);     }
+    to   { transform: translateY(-100%); }
 }
 
 /* --------------------------------------------------------------------------
@@ -110,6 +129,12 @@ vaadin-dialog[theme~="alert-modal"]::part(content) {
 
         padding-block-start: 0;
         background: transparent;
+        animation: none; /* prevent Lumo default open/close animations on desktop */
+    }
+
+    /* Desktop: suppress Lumo's default close animation explicitly */
+    vaadin-dialog-overlay[theme~="alert-modal"][opening]::part(overlay),
+    vaadin-dialog-overlay[theme~="alert-modal"][closing]::part(overlay) {
         animation: none;
     }
 }

@@ -408,7 +408,7 @@ public interface DatastoreLazyDataProvider<T, F> extends BackEndDataProvider<T, 
 	 * @param <T> Data type
 	 * @param <F> Query filter type
 	 */
-	public interface Builder<T, F> {
+	interface Builder<T, F> {
 
 		/**
 		 * Add a {@link QueryConfigurationProvider} to provide additional query
@@ -494,7 +494,7 @@ public interface DatastoreLazyDataProvider<T, F> extends BackEndDataProvider<T, 
 	 * 
 	 * @param <F> Query filter type
 	 */
-	public interface PropertyBoxItemBuilder<F> extends Builder<PropertyBox, F> {
+	interface PropertyBoxItemBuilder<F> extends Builder<PropertyBox, F> {
 
 		/**
 		 * Use given <code>identifierProperty</code> value as items identifier.

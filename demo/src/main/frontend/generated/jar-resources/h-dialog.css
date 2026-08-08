@@ -73,13 +73,30 @@ vaadin-dialog[theme~="h-dialog"]::part(overlay) {
 
     overflow: hidden;
 
-    /* Slide-up entrance animation */
+    /* Animation removed from here — Vaadin 25.2 fix: unconditional animation on
+     * ::part(overlay) is re-triggered when [closing] is added to the host,
+     * causing the entrance animation to replay during the close sequence (glitch).
+     * Entrance/exit animations are now gated on [opening] / [closing] below. */
+}
+
+/* ── Mobile enter ── */
+vaadin-dialog-overlay[theme~="h-dialog"][opening]::part(overlay) {
     animation: h-dialog-slide-up 280ms cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+/* ── Mobile exit ── */
+vaadin-dialog-overlay[theme~="h-dialog"][closing]::part(overlay) {
+    animation: h-dialog-slide-down 250ms cubic-bezier(0.4, 0, 0.6, 1);
 }
 
 @keyframes h-dialog-slide-up {
     from { transform: translateY(100%); }
     to   { transform: translateY(0);   }
+}
+
+@keyframes h-dialog-slide-down {
+    from { transform: translateY(0);    }
+    to   { transform: translateY(100%); }
 }
 
 /* --------------------------------------------------------------------------
@@ -138,6 +155,12 @@ vaadin-dialog[theme~="h-dialog"]::part(footer) {
     to   { opacity: 1; transform: scale(1);    }
 }
 
+/* Scale-out exit animation */
+@keyframes h-dialog-scale-out {
+    from { opacity: 1; transform: scale(1);    }
+    to   { opacity: 0; transform: scale(0.95); }
+}
+
 @media (min-width: 640px) {
 
     /* Control dialog width via the Vaadin 25.2 standard custom property */
@@ -163,8 +186,17 @@ vaadin-dialog[theme~="h-dialog"]::part(footer) {
 
         padding-block-end: 0;
 
-        /* Fade + scale-in entrance — shadcn/ui animate-in zoom-in-95 */
+        /* Animation removed — handled by [opening]/[closing] rules below */
+    }
+
+    /* Desktop enter */
+    vaadin-dialog-overlay[theme~="h-dialog"][opening]::part(overlay) {
         animation: h-dialog-scale-in 180ms cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    /* Desktop exit */
+    vaadin-dialog-overlay[theme~="h-dialog"][closing]::part(overlay) {
+        animation: h-dialog-scale-out 150ms cubic-bezier(0.4, 0, 1, 1);
     }
 
     vaadin-dialog[theme~="h-dialog"]::part(header) {

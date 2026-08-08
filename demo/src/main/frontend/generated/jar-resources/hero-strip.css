@@ -1,0 +1,185 @@
+/*
+ * hero-strip.css
+ * BEM root: .hstrip
+ *
+ * .hstrip                  — gradient card wrapper (display:grid)
+ * .hstrip--default         — neutral dark gradient
+ * .hstrip--info            — blue gradient
+ * .hstrip--success         — green gradient
+ * .hstrip--warning         — amber gradient
+ * .hstrip--danger          — red gradient
+ * .hstrip--violet          — violet gradient
+ * .hstrip--responsive      — cells wrap to new rows; right-border dividers removed
+ * .hstrip__cell            — one metric column (border-right divider)
+ * .hstrip__label           — small uppercase label row (flex, gap for pulse dot)
+ * .hstrip__pulse           — animated amber dot (animation: hstrip-pulse)
+ * .hstrip__value           — large mono value
+ * .hstrip__value--ok       — mint green tint
+ * .hstrip__value--alert    — amber tint
+ * .hstrip__sub             — small muted sub-label
+ */
+
+.hstrip {
+    border-radius:         10px;
+    padding:               14px 18px;
+    display:               grid;
+    /* grid-template-columns is set inline to repeat(N, 1fr) */
+    gap:                   14px;
+    align-items:           center;
+    box-shadow:            0 4px 14px -2px rgba(15,27,45,.06), 0 2px 4px rgba(15,27,45,.04);
+    position:              relative;
+    overflow:              hidden;
+    color:                 #fff;
+}
+
+/* Decorative radial light on the right edge */
+.hstrip::after {
+    content:        '';
+    position:       absolute;
+    top: 0; right: 0; bottom: 0;
+    width:          40%;
+    background:     radial-gradient(circle at 100% 50%, rgba(255,255,255,.18), transparent 60%);
+    pointer-events: none;
+}
+
+/* ── Gradient variants ──────────────────────────────────────────────────── */
+.hstrip--default { background: linear-gradient(135deg, #5b6878 0%, #3a4452 100%); }
+.hstrip--info    { background: linear-gradient(135deg, #1576d3 0%, #0a5fb8 60%, #0a4a93 100%); }
+.hstrip--success { background: linear-gradient(135deg, #2e9a6a 0%, #1d7a52 100%); }
+.hstrip--warning { background: linear-gradient(135deg, #b8860b 0%, #8a6300 100%); }
+.hstrip--danger  { background: linear-gradient(135deg, #c0392b 0%, #922b21 100%); }
+.hstrip--violet  { background: linear-gradient(135deg, #5a4ec4 0%, #7e6ee8 100%); }
+
+/* ── Cell ────────────────────────────────────────────────────────────────── */
+.hstrip__cell {
+    position:      relative;
+    z-index:       1;
+    border-right:  1px solid rgba(255,255,255,.15);
+    padding-right: 14px;
+}
+
+.hstrip__cell:last-child {
+    border-right:  none;
+    padding-right: 0;
+}
+
+/* ── Label row ───────────────────────────────────────────────────────────── */
+.hstrip__label {
+    font-size:      10.5px;
+    color:          rgba(255,255,255,.75);
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    font-weight:    600;
+    display:        flex;
+    align-items:    center;
+    gap:            6px;
+}
+
+/* ── Animated pulse dot ──────────────────────────────────────────────────── */
+.hstrip__pulse {
+    width:         6px;
+    height:        6px;
+    border-radius: 50%;
+    background:    #fbbf24;
+    display:       inline-block;
+    flex-shrink:   0;
+    animation:     hstrip-pulse 1.4s ease-in-out infinite;
+}
+
+@keyframes hstrip-pulse {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: .4; }
+}
+
+/* ── Value ───────────────────────────────────────────────────────────────── */
+.hstrip__value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size:   18px;
+    font-weight: 600;
+    margin-top:  3px;
+    line-height: 1.1;
+}
+
+/* ValueVariant modifiers */
+.hstrip__value--ok    { color: #a7f3d0; } /* mint green  */
+.hstrip__value--alert { color: #fbbf24; } /* amber       */
+
+/* ── Sub-label ───────────────────────────────────────────────────────────── */
+.hstrip__sub {
+    font-size:  11px;
+    color:      rgba(255,255,255,.75);
+    margin-top: 2px;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+ * Responsive mode  (.hstrip--responsive)
+ *
+ * Without this class the strip renders all cells in one fixed row
+ * (grid-template-columns is set inline by Java). With this class, cells
+ * wrap automatically via auto-fit / minmax, and right-border dividers are
+ * replaced by the grid gap so the layout doesn't break across rows.
+ *
+ * Breakpoints:
+ *   > 768px  : auto-fit → typically all cells on one row (same as default)
+ *   481–768px: auto-fit collapses to 3 or 2 per row (minmax kicks in)
+ *   ≤ 480px  : forced 2-column grid
+ *   ≤ 320px  : forced 1-column (very small phones)
+ * ═══════════════════════════════════════════════════════════════════════════ */
+
+.hstrip--responsive {
+    /* override the inline grid-template-columns set by Java */
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)) !important;
+    align-items:           start; /* top-align cells when row heights differ */
+}
+
+/* Remove right-border dividers — gap acts as breathing room between columns */
+.hstrip--responsive .hstrip__cell {
+    border-right:  none;
+    padding-right: 0;
+}
+
+/* Tablet (481–768 px): tighten padding + gap */
+@media (max-width: 768px) {
+    .hstrip--responsive {
+        padding: 12px 14px;
+        gap:     12px 10px;
+    }
+}
+
+/* Mobile (≤ 480 px): force 2-column grid, slightly smaller value text */
+@media (max-width: 480px) {
+    .hstrip--responsive {
+        grid-template-columns: 1fr 1fr !important;
+        padding:               12px;
+        gap:                   10px 12px;
+    }
+
+    .hstrip--responsive .hstrip__value {
+        font-size: 16px;
+    }
+
+    /* Add a subtle bottom separator so stacked rows feel structured */
+    .hstrip--responsive .hstrip__cell {
+        padding-bottom: 8px;
+        border-bottom:  1px solid rgba(255,255,255,.1);
+    }
+
+    /* Last two children (bottom row) get no bottom border */
+    .hstrip--responsive .hstrip__cell:nth-last-child(-n+2) {
+        border-bottom: none;
+        padding-bottom: 0;
+    }
+}
+
+/* Very small phones (≤ 320 px): single column */
+@media (max-width: 320px) {
+    .hstrip--responsive {
+        grid-template-columns: 1fr !important;
+    }
+
+    /* Last child gets no bottom border in single-column layout */
+    .hstrip--responsive .hstrip__cell:last-child {
+        border-bottom: none;
+        padding-bottom: 0;
+    }
+}

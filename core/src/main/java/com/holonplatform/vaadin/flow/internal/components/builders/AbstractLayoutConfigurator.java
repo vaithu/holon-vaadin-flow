@@ -12,16 +12,16 @@ import com.vaadin.flow.component.shared.HasTooltip;
 
 import java.util.Optional;
 
-public abstract class AbstractLayoutConfigurator<C extends LayoutConfigurator<C>>
-        extends AbstractComponentConfigurator<Layout,C>
+public abstract class AbstractLayoutConfigurator<L extends Layout, C extends LayoutConfigurator<C>>
+        extends AbstractComponentConfigurator<L,C>
         implements LayoutConfigurator<C> {
 
     /**
      * Constructor.
      *
-     * @param component The component instance (not getConfigurator())
+     * @param component The component instance (not null)
      */
-    public AbstractLayoutConfigurator(Layout component) {
+    public AbstractLayoutConfigurator(L component) {
         super(component);
     }
 

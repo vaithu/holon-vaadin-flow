@@ -18,6 +18,7 @@ public final class DefaultSideNavBuilder
 
     @Override
     public SideNav build() {
+        applyPostProcessors();
         return sideNav;
     }
 }

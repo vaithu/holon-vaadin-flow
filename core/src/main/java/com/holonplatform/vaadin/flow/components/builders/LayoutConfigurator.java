@@ -96,11 +96,13 @@ public interface LayoutConfigurator<C extends LayoutConfigurator<C>> extends Com
     }
 
     default C horizontal() {
-        return flexDirection(FlexDirection.ROW);
+        return flex().flexDirection(FlexDirection.ROW);
     }
 
     default C vertical() {
-        return flexDirection(FlexDirection.COLUMN);
+        return
+
+                flex().flexDirection(FlexDirection.COLUMN);
     }
 
     /**
@@ -164,7 +166,7 @@ public interface LayoutConfigurator<C extends LayoutConfigurator<C>> extends Com
     /**
      * Base configurator.
      */
-    public interface BaseLayoutConfigurator extends LayoutConfigurator<LayoutConfigurator.BaseLayoutConfigurator> {
+    interface BaseLayoutConfigurator extends LayoutConfigurator<LayoutConfigurator.BaseLayoutConfigurator> {
 
     }
 }

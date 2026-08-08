@@ -158,15 +158,14 @@ public class PawnItemRow {
      */
     public double getLtvPercent() {
         if (loanAmount == null || appraisedValue == null || appraisedValue <= 0) return 0.0;
-        return (loanAmount / appraisedValue) * 100.0;
+        return loanAmount / appraisedValue * 100.0;
     }
 
     /**
      * Returns {@code true} if the current loan exceeds the max LTV for this category,
-     * signalling a risk flag (typically highlighted in UI).
+     * signaling a risk flag (typically highlighted in UI).
      */
     public boolean isLtvExceeded() {
         return getLtvPercent() > ltvMaxPercent;
     }
 }
-

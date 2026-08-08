@@ -215,9 +215,9 @@ vaadin-grid.mdl-master-grid::part(first-column-cell mdl-selected) {
 }
 
 .listing-bundle {
-    height: 100%;
     display: flex;
     flex-direction: column;
+  flex-grow: 1;
 }
 
 @media (min-width: 768px) {

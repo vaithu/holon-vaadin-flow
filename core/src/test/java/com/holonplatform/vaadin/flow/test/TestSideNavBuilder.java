@@ -128,4 +128,48 @@ class TestSideNavBuilder {
                 .buildWrapper();
         assertNotNull(wrapper);
     }
+
+    /**
+     * Verifies that {@code withNavItem(...).add()} preserves the concrete {@link SideNavBuilder}
+     * type so that {@code buildWrapper()} is reachable without a cast.
+     * Before the fix, {@code add()} returned {@code SideNavConfigurator<?>} and the chain broke.
+     */
+    @Test
+    void withNavItem_add_preservesSideNavBuilderType() {
+        // Must compile and run without a cast — that is the regression guard.
+        Div wrapper = SideNavBuilder.create()
+                .withSearch("Filter components…")
+                .withCollapse()
+                .withNavItem("Products", "/products").add()
+                .withNavItem("Customers", "/customers").add()
+                .buildWrapper();
+        assertNotNull(wrapper);
+        assertEquals(2, wrapper.getChildren()
+                .filter(c -> c instanceof com.vaadin.flow.component.sidenav.SideNav)
+                .findFirst()
+                .map(c -> ((com.vaadin.flow.component.sidenav.SideNav) c).getItems().size())
+                .orElse(0));
+    }
+
+    /**
+     * Verifies that multiple {@code withSubNavItem} calls on the same item builder add
+     * siblings under the root item — not nested children of each other.
+     * Before the fix, each call mutated {@code this.item} to the last child, so subsequent
+     * calls went ever deeper and {@code add()} registered the wrong (leaf) item.
+     */
+    @Test
+    void withSubNavItem_addsSiblings_notNested() {
+        SideNav nav = SideNavBuilder.create()
+                .withNavItem("Catalog", "/catalog")
+                .withSubNavItem("Books", "/catalog/books")
+                .withSubNavItem("Music", "/catalog/music")
+                .withSubNavItem("Movies", "/catalog/movies")
+                .add()
+                .build();
+
+        assertEquals(1, nav.getItems().size(), "One root item expected");
+        SideNavItem root = nav.getItems().get(0);
+        assertEquals("Catalog", root.getLabel());
+        assertEquals(3, root.getItems().size(), "Three sibling children expected under Catalog");
+    }
 }

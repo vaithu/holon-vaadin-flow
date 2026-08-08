@@ -15,6 +15,7 @@
  */
 package com.holonplatform.vaadin.flow.internal.data;
 
+import java.io.Serial;
 import com.holonplatform.core.internal.utils.ObjectUtils;
 import com.holonplatform.vaadin.flow.data.ItemListingDataProviderAdapter;
 import com.holonplatform.vaadin.flow.data.ItemListingLazyDataProviderAdapter;
@@ -38,6 +39,7 @@ import java.util.stream.Stream;
 public class DefaultItemListingLazyDataProviderAdapter<T, F> extends AbstractBackEndDataProvider<T, F>
 		implements ItemListingLazyDataProviderAdapter<T, F> {
 
+	@Serial
 	private static final long serialVersionUID = -5037549436183583417L;
 
 	private final BackEndDataProvider<T, F> dataProvider;

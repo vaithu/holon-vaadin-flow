@@ -100,7 +100,7 @@ public interface NavigationTargetConfiguration extends Serializable {
 	/**
 	 * URL query navigation parameter definition.
 	 */
-	public interface QueryParameterDefinition extends NavigationParameterDefinition {
+	interface QueryParameterDefinition extends NavigationParameterDefinition {
 
 		/**
 		 * Get the query parameter name.
@@ -113,7 +113,7 @@ public interface NavigationTargetConfiguration extends Serializable {
 	/**
 	 * Base navigation parameter definition.
 	 */
-	public interface NavigationParameterDefinition extends Serializable {
+	interface NavigationParameterDefinition extends Serializable {
 
 		/**
 		 * Get the parameter value type.
@@ -156,7 +156,7 @@ public interface NavigationTargetConfiguration extends Serializable {
 	/**
 	 * Parameter container types.
 	 */
-	public enum ParameterContainerType {
+	enum ParameterContainerType {
 
 		/**
 		 * None

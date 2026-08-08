@@ -51,6 +51,21 @@ class TestMenuBarBuilder {
     }
 
     @Test
+    void withSubMenu_consumer_addsNestedItems() {
+        MenuBar mb = MenuBarBuilder.create()
+                .withMenuItem("File")
+                    .withSubMenu(sub -> sub
+                        .withMenuItem("New", e -> {})
+                        .withMenuItem("Open", e -> {})
+                        .separator()
+                        .withMenuItem("Save", e -> {}))
+                .build();
+
+        assertEquals(1, mb.getItems().size());
+        assertEquals(3, mb.getItems().get(0).getSubMenu().getItems().size());
+    }
+
+    @Test
     void fluent_chain() {
         MenuBar mb = MenuBarBuilder.create()
                 .withMenuItem("Action 1", e -> {})

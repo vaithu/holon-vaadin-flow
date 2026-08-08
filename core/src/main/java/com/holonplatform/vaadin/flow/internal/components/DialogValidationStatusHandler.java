@@ -18,6 +18,7 @@ package com.holonplatform.vaadin.flow.internal.components;
 import com.holonplatform.vaadin.flow.components.Components;
 import com.holonplatform.vaadin.flow.components.ValidationStatusHandler;
 import com.holonplatform.vaadin.flow.components.builders.DialogBuilder.ConfirmDialogBuilder;
+import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
 import com.vaadin.flow.component.html.Div;
 
 import java.io.Serial;
@@ -50,7 +51,7 @@ public class DialogValidationStatusHandler<S> implements ValidationStatusHandler
 
 			final List<String> messages = statusChangeEvent.getErrorMessages();
 			if (messages.isEmpty()) {
-				builder.text("Validation failed");
+				builder.text(LocalizationProvider.localize("Validation failed", "dialog.validation_failed"));
 			} else {
 				builder.text(messages.getFirst());
 				if (messages.size() > 1) {

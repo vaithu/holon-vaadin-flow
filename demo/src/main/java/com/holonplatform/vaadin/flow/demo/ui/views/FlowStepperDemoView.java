@@ -3,28 +3,26 @@ package com.holonplatform.vaadin.flow.demo.ui.views;
 import com.holonplatform.vaadin.flow.demo.ui.DemoExample;
 import com.holonplatform.vaadin.flow.demo.ui.DemoMainLayout;
 import com.holonplatform.vaadin.flow.vaadinplus.components.FlowStepper;
+import com.holonplatform.vaadin.flow.vaadinplus.ResponsiveDiv;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;
+import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
 import java.util.List;
-import com.holonplatform.vaadin.flow.vaadinplus.ResponsiveDiv;
-
 
 /**
  * Demo page for the {@link FlowStepper} component.
  *
  * <p>Covers:
  * <ol>
- *   <li>Horizontal stepper (default)</li>
- *   <li>Vertical stepper</li>
- *   <li>Variant: NUMBERED</li>
- *   <li>Variant: DOT</li>
- *   <li>Interactive stepper with next/previous navigation</li>
+ *   <li>Desktop CRM-style mockup</li>
+ *   <li>Mobile CRM-style mockup</li>
+ *   <li>Interactive stepper with server-driven navigation</li>
  * </ol>
  */
 @PageTitle("FlowStepper – Holon Demo")
@@ -38,16 +36,13 @@ public class FlowStepperDemoView extends Div {
 
         var desc = new Paragraph(
                 "Multi-step progress indicator backed by the <flow-stepper> Shadow DOM web component. " +
-                "Communicates through HTML attributes only — no inline styles. " +
-                "Supports horizontal and vertical orientation, three visual variants " +
-                "(DEFAULT, NUMBERED, DOT), and server-driven navigation via next() / previous() / goTo().");
+                "This demo now mirrors the new customer mockups: a desktop layout with the full step rail " +
+                "and a mobile layout that compresses the stepper into a pill row on small screens.");
 
         var examples = ResponsiveDiv.flex().column().gapL().build();
 
-        examples.add(horizontalExample());
-        examples.add(verticalExample());
-        examples.add(numberedVariantExample());
-        examples.add(dotVariantExample());
+        examples.add(desktopMockupExample());
+        examples.add(mobileMockupExample());
         examples.add(interactiveExample());
 
         add(title, desc, examples);
@@ -55,69 +50,56 @@ public class FlowStepperDemoView extends Div {
 
     // ── Example builders ────────────────────────────────────────────────────
 
-    private DemoExample horizontalExample() {
-        var stepper = new FlowStepper(
-                List.of("Account", "Personal Info", "Preferences", "Review"),
-                1   // second step active (0-based)
-        );
+    private DemoExample desktopMockupExample() {
+        var stepper = new FlowStepper(List.of("Contact", "Company", "Address", "Terms", "Review"), 0);
+        stepper.setClickNavigation(FlowStepper.ClickNavigation.COMPLETED);
 
-        return new DemoExample("Horizontal (default)", stepper, """
-                FlowStepper stepper = new FlowStepper(
-                    List.of("Account", "Personal Info", "Preferences", "Review"),
-                    1    // 0-based index of the initially active step
-                );
-                // Or via builder:
+        var preview = ResponsiveDiv.flex().column().gapM().build();
+        preview.add(mockupHeader(
+                "Desktop CRM mockup",
+                "Full-width workspace with a linear step rail",
+                "New"));
+        preview.add(stepper);
+        preview.add(mockupSummary(
+                "Step 1 — Contact", "Import data, capture contact details, and validate the email address.",
+                "Step 2 — Company", "Capture industry, company size, owner, and lead source.",
+                "Step 3 — Review", "Confirm the record before saving the customer."));
+        preview.add(mockupFooter());
+
+        return new DemoExample("Desktop CRM mockup", preview, """
                 FlowStepper stepper = FlowStepper.builder()
-                    .steps("Account", "Personal Info", "Preferences", "Review")
+                    .steps("Contact", "Company", "Address", "Terms", "Review")
+                    .currentStep(0)
+                    .clickNavigation(FlowStepper.ClickNavigation.COMPLETED)
+                    .build();
+
+                // The stepper now matches the desktop new-customer mockup.
+                """);
+    }
+
+    private DemoExample mobileMockupExample() {
+        var stepper = new FlowStepper(List.of("Contact", "Company", "Address", "Terms", "Review"), 1);
+        stepper.setClickNavigation(FlowStepper.ClickNavigation.ALL);
+
+        var preview = ResponsiveDiv.flex().column().gapM().build();
+        preview.add(mockupHeader(
+                "Mobile CRM mockup",
+                "Compact chip row for smaller screens",
+                "Mobile"));
+        preview.add(stepper);
+        preview.add(mockupSummary(
+                "Compact step row", "The stepper collapses into a horizontal chip list on narrow viewports.",
+                "Touch-friendly navigation", "The current step stays prominent while completed steps remain accessible.",
+                "Responsive note", "Resize the browser to see the mobile presentation in action."));
+
+        return new DemoExample("Mobile CRM mockup", preview, """
+                FlowStepper stepper = FlowStepper.builder()
+                    .steps("Contact", "Company", "Address", "Terms", "Review")
                     .currentStep(1)
+                    .clickNavigation(FlowStepper.ClickNavigation.ALL)
                     .build();
-                """);
-    }
 
-    private DemoExample verticalExample() {
-        var stepper = new FlowStepper(
-                List.of("Choose plan", "Payment details", "Confirmation"),
-                0
-        );
-        stepper.setOrientation(FlowStepper.Orientation.VERTICAL);
-
-        return new DemoExample("Vertical Orientation", stepper, """
-                FlowStepper stepper = FlowStepper.builder()
-                    .steps("Choose plan", "Payment details", "Confirmation")
-                    .orientation(FlowStepper.Orientation.VERTICAL)
-                    .build();
-                """);
-    }
-
-    private DemoExample numberedVariantExample() {
-        var stepper = new FlowStepper(
-                List.of("Step 1", "Step 2", "Step 3", "Step 4"),
-                2
-        );
-        stepper.setVariant(FlowStepper.Variant.NUMBERED);
-
-        return new DemoExample("Variant: NUMBERED", stepper, """
-                FlowStepper stepper = FlowStepper.builder()
-                    .steps("Step 1", "Step 2", "Step 3", "Step 4")
-                    .currentStep(2)
-                    .variant(FlowStepper.Variant.NUMBERED)  // always shows step number
-                    .build();
-                """);
-    }
-
-    private DemoExample dotVariantExample() {
-        var stepper = new FlowStepper(
-                List.of("Start", "In progress", "Done"),
-                1
-        );
-        stepper.setVariant(FlowStepper.Variant.DOT);
-
-        return new DemoExample("Variant: DOT (minimal)", stepper, """
-                FlowStepper stepper = FlowStepper.builder()
-                    .steps("Start", "In progress", "Done")
-                    .currentStep(1)
-                    .variant(FlowStepper.Variant.DOT)  // minimal dot — no number/icon
-                    .build();
+                // On small screens, the component uses the pill/chip presentation.
                 """);
     }
 
@@ -134,7 +116,8 @@ public class FlowStepperDemoView extends Div {
         int[] current = {0};
         int total = 4;
 
-        prevBtn.addClickListener(e -> {
+        prevBtn.addClickListener(event -> {
+            event.getSource();
             if (current[0] > 0) {
                 current[0]--;
                 stepper.setCurrentStep(current[0]);
@@ -145,7 +128,8 @@ public class FlowStepperDemoView extends Div {
             }
         });
 
-        nextBtn.addClickListener(e -> {
+        nextBtn.addClickListener(event -> {
+            event.getSource();
             if (current[0] < total - 1) {
                 current[0]++;
                 stepper.setCurrentStep(current[0]);
@@ -166,16 +150,72 @@ public class FlowStepperDemoView extends Div {
                 );
 
                 // Server-driven navigation:
-                nextButton.addClickListener(e -> stepper.next());
-                prevButton.addClickListener(e -> stepper.previous());
+                nextButton.addClickListener(e -> stepper.nextStep());
+                prevButton.addClickListener(e -> stepper.prevStep());
                 // Or jump to a specific step:
-                stepper.goTo(2);
+                stepper.goToStep(2);
 
                 // Listen for step changes:
                 stepper.addStepChangedListener(e ->
                     log.info("Now on step {}", e.getStep())
                 );
                 """);
+    }
+
+    private Div mockupHeader(String title, String subtitle, String badgeText) {
+        var header = new Div();
+        header.addClassName("app-card");
+        header.addClassName("app-card--elevated");
+
+        var row = new Div();
+        row.addClassName("app-card__header");
+
+        var text = new Div(new H3(title), new Paragraph(subtitle));
+
+        var badge = new Span(badgeText);
+        badge.addClassName("app-badge");
+        badge.addClassName("app-badge--success");
+
+        row.add(text, badge);
+        header.add(row);
+        return header;
+    }
+
+    private Div mockupSummary(String leftTitle, String leftText, String middleTitle, String middleText,
+            String rightTitle, String rightText) {
+        var grid = ResponsiveDiv.grid().mobile(1).desktop(3).gapM().build();
+        grid.add(mockupCard(leftTitle, leftText));
+        grid.add(mockupCard(middleTitle, middleText));
+        grid.add(mockupCard(rightTitle, rightText));
+        return grid;
+    }
+
+    private Div mockupCard(String title, String text) {
+        var card = new Div();
+        card.addClassName("app-card");
+        card.add(new H3(title), new Paragraph(text));
+        return card;
+    }
+
+    private Div mockupFooter() {
+        var footer = new Div();
+        footer.addClassName("app-card");
+
+        var row = new Div();
+        row.addClassName("app-toolbar");
+
+        var footerLabel = new Paragraph("Step 1 of 5 — Contact information");
+        footerLabel.addClassName("app-card__title");
+
+        var spacer = new Div();
+        spacer.addClassName("app-toolbar__spacer");
+
+        var cancel = new Button("Cancel");
+        var confirm = new Button("Create customer");
+
+        row.add(footerLabel, spacer, cancel, confirm);
+        footer.add(row);
+        return footer;
     }
 }
 

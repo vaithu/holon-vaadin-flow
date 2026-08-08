@@ -15,6 +15,7 @@
  */
 package com.holonplatform.vaadin.flow.internal.converters;
 
+import java.io.Serial;
 import com.holonplatform.vaadin.flow.components.converters.StringToTimeConverter;
 import com.vaadin.flow.data.binder.Result;
 import com.vaadin.flow.data.binder.ValueContext;
@@ -34,6 +35,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class DefaultStringToTimeConverter extends AbstractLocaleSupportConverter<String, LocalTime>
 		implements StringToTimeConverter {
 
+	@Serial
 	private static final long serialVersionUID = 1951514034242175346L;
 
 	public static final char DEFAULT_TIME_SEPARATOR = ':';
@@ -182,15 +184,13 @@ public class DefaultStringToTimeConverter extends AbstractLocaleSupportConverter
 	private static char obtainTimeSeparator(Locale locale) {
 		String value = DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT).withLocale(locale)
 				.format(LocalTime.of(0, 0));
-		if (value != null) {
-			char[] chars = value.toCharArray();
-			for (int i = 0; i < chars.length; i++) {
-				if (i > 3) {
-					break;
-				}
-				if (!Character.isDigit(chars[i])) {
-					return chars[i];
-				}
+		char[] chars = value.toCharArray();
+		for (int i = 0; i < chars.length; i++) {
+			if (i > 3) {
+				break;
+			}
+			if (!Character.isDigit(chars[i])) {
+				return chars[i];
 			}
 		}
 		return DEFAULT_TIME_SEPARATOR;

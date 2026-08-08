@@ -1,7 +1,9 @@
 package com.holonplatform.vaadin.flow.vaadinplus.components;
 
+import java.io.Serial;
 import com.holonplatform.vaadin.flow.components.Components;
 import com.holonplatform.vaadin.flow.components.builders.TransferListBuilder;
+import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
 import com.vaadin.flow.component.ComponentEvent;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.button.Button;
@@ -19,20 +21,20 @@ import java.util.*;
  *
  * <h3>Layout</h3>
  * <pre>
- * ┌─────────────────────┐  ┌───┐  ┌─────────────────────┐
- * │ Available      [5]  │  │ → │  │ Selected       [2]  │
- * │─────────────────────│  │ →→│  │─────────────────────│
- * │ [✓] Coffee Table    │  │ ← │  │ [ ] Sofa            │
- * │ [ ] Storage Cabinet │  │ ←←│  │ [ ] Area Rug        │
- * │ [✓] Dining Set      │  └───┘  └─────────────────────┘
- * └─────────────────────┘
+ * â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”  â”Œâ”€â”€â”€â”  â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
+ * â”‚ Available      [5]  â”‚  â”‚ â†’ â”‚  â”‚ Selected       [2]  â”‚
+ * â”‚â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”‚  â”‚ â†’â†’â”‚  â”‚â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”‚
+ * â”‚ [âœ“] Coffee Table    â”‚  â”‚ â† â”‚  â”‚ [ ] Sofa            â”‚
+ * â”‚ [ ] Storage Cabinet â”‚  â”‚ â†â†â”‚  â”‚ [ ] Area Rug        â”‚
+ * â”‚ [âœ“] Dining Set      â”‚  â””â”€â”€â”€â”˜  â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
+ * â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
  * </pre>
  *
  * <ul>
- *   <li>{@code →}  — move highlighted items from Available → Selected</li>
- *   <li>{@code →→} — move all Available → Selected</li>
- *   <li>{@code ←}  — move highlighted items from Selected → Available</li>
- *   <li>{@code ←←} — move all Selected → Available</li>
+ *   <li>{@code â†’}  â€” move highlighted items from Available â†’ Selected</li>
+ *   <li>{@code â†’â†’} â€” move all Available â†’ Selected</li>
+ *   <li>{@code â†}  â€” move highlighted items from Selected â†’ Available</li>
+ *   <li>{@code â†â†} â€” move all Selected â†’ Available</li>
  * </ul>
  *
  * <h3>Usage</h3>
@@ -60,9 +62,10 @@ import java.util.*;
 @StyleSheet("context://transfer-list.css")
 public class TransferList extends Div {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
-    // ── Internal state ────────────────────────────────────────────────────────
+    // â”€â”€ Internal state â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
     /** Items currently shown in the left (available) panel. */
     private final List<TransferItem> availableItems = new ArrayList<>();
@@ -76,7 +79,7 @@ public class TransferList extends Div {
     /** IDs of items currently highlighted (row-selected) in the selected panel. */
     private final Set<String> highlightedSelected = new LinkedHashSet<>();
 
-    // ── UI references ─────────────────────────────────────────────────────────
+    // â”€â”€ UI references â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
     private final Div availableListDiv;
     private final Div selectedListDiv;
@@ -90,7 +93,7 @@ public class TransferList extends Div {
     private final Button moveLeftBtn;
     private final Button moveAllLeftBtn;
 
-    // ── Constructor ───────────────────────────────────────────────────────────
+    // â”€â”€ Constructor â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
     /**
      * Creates an empty {@code TransferList} with default "Available" / "Selected" titles.
@@ -98,8 +101,10 @@ public class TransferList extends Div {
     public TransferList() {
         addClassName("transfer-list");
 
-        // ── Left panel (Available) ────────────────────────────────────────────
-        availableTitleSpan = Components.span().text("Available").styleName("transfer-list__panel-title").build();
+        // â”€â”€ Left panel (Available) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+        availableTitleSpan = Components.span()
+                .text(LocalizationProvider.localize("Available", "transfer_list.available_title"))
+                .styleName("transfer-list__panel-title").build();
         availableCountSpan = Components.span().text("0").styleName("transfer-list__panel-count").build();
 
         Div availableHeader = Components.div().add(availableTitleSpan, availableCountSpan).styleName("transfer-list__panel-header").build();
@@ -107,12 +112,19 @@ public class TransferList extends Div {
         availableListDiv = Components.div().styleName("transfer-list__panel-list").build();
 
         Div availablePanel = Components.div().add(availableHeader, availableListDiv).styleName("transfer-list__panel").build();
+        availablePanel.getElement().setAttribute("role", "region");
+        availablePanel.getElement().setAttribute("aria-label",
+                LocalizationProvider.localize("Available items", "transfer_list.available_region_aria"));
 
-        // ── Controls column ───────────────────────────────────────────────────
-        moveRightBtn = buildCtrlButton(VaadinIcon.ANGLE_RIGHT, "Move selected right");
-        moveAllRightBtn = buildCtrlButton(VaadinIcon.ANGLE_DOUBLE_RIGHT, "Move all right");
-        moveLeftBtn = buildCtrlButton(VaadinIcon.ANGLE_LEFT, "Move selected left");
-        moveAllLeftBtn = buildCtrlButton(VaadinIcon.ANGLE_DOUBLE_LEFT, "Move all left");
+        // â”€â”€ Controls column â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+        moveRightBtn = buildCtrlButton(VaadinIcon.ANGLE_RIGHT,
+                LocalizationProvider.localize("Move selected items to the right", "transfer_list.move_right_aria"));
+        moveAllRightBtn = buildCtrlButton(VaadinIcon.ANGLE_DOUBLE_RIGHT,
+                LocalizationProvider.localize("Move all items to the right", "transfer_list.move_all_right_aria"));
+        moveLeftBtn = buildCtrlButton(VaadinIcon.ANGLE_LEFT,
+                LocalizationProvider.localize("Move selected items to the left", "transfer_list.move_left_aria"));
+        moveAllLeftBtn = buildCtrlButton(VaadinIcon.ANGLE_DOUBLE_LEFT,
+                LocalizationProvider.localize("Move all items to the left", "transfer_list.move_all_left_aria"));
 
         moveRightBtn.addClickListener(e -> moveHighlightedRight());
         moveAllRightBtn.addClickListener(e -> moveAllRight());
@@ -124,8 +136,10 @@ public class TransferList extends Div {
         Div toLeftGroup = Components.div().add(moveLeftBtn, moveAllLeftBtn).styleName("transfer-list__ctrl-group").build();
         Div controls = Components.div().add(toRightGroup, sep, toLeftGroup).styleName("transfer-list__controls").build();
 
-        // ── Right panel (Selected) ────────────────────────────────────────────
-        selectedTitleSpan = Components.span().text("Selected").styleName("transfer-list__panel-title").build();
+        // â”€â”€ Right panel (Selected) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+        selectedTitleSpan = Components.span()
+                .text(LocalizationProvider.localize("Selected", "transfer_list.selected_title"))
+                .styleName("transfer-list__panel-title").build();
         selectedCountSpan = Components.span().text("0").styleName("transfer-list__panel-count").build();
 
         Div selectedHeader = Components.div().add(selectedTitleSpan, selectedCountSpan).styleName("transfer-list__panel-header").build();
@@ -133,8 +147,11 @@ public class TransferList extends Div {
         selectedListDiv = Components.div().styleName("transfer-list__panel-list").build();
 
         Div selectedPanel = Components.div().add(selectedHeader, selectedListDiv).styleName("transfer-list__panel").build();
+        selectedPanel.getElement().setAttribute("role", "region");
+        selectedPanel.getElement().setAttribute("aria-label",
+                LocalizationProvider.localize("Selected items", "transfer_list.selected_region_aria"));
 
-        // ── Assembly ──────────────────────────────────────────────────────────
+        // â”€â”€ Assembly â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
         add(availablePanel, controls, selectedPanel);
 
         // Initial render
@@ -143,7 +160,7 @@ public class TransferList extends Div {
         updateCounters();
     }
 
-    // ── Public API ────────────────────────────────────────────────────────────
+    // â”€â”€ Public API â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
     /**
      * Sets the initial items in the "Available" (left) panel.
@@ -226,7 +243,7 @@ public class TransferList extends Div {
         return addListener(TransferEvent.class, listener);
     }
 
-    // ── Static factory ────────────────────────────────────────────────────────
+    // â”€â”€ Static factory â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
     /**
      * Returns a new Holon fluent {@link TransferListBuilder}.
@@ -245,7 +262,7 @@ public class TransferList extends Div {
         return TransferListBuilder.create();
     }
 
-    // ── Transfer operations ───────────────────────────────────────────────────
+    // â”€â”€ Transfer operations â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
     /**
      * Moves all highlighted items in the Available panel to the Selected panel.
@@ -301,12 +318,14 @@ public class TransferList extends Div {
         fireTransferEvent();
     }
 
-    // ── Rendering ─────────────────────────────────────────────────────────────
+    // â”€â”€ Rendering â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
     private void renderAvailableList() {
         availableListDiv.removeAll();
         if (availableItems.isEmpty()) {
-            availableListDiv.add(Components.span().text("No items available").styleName("transfer-list__empty").build());
+            availableListDiv.add(Components.span()
+                    .text(LocalizationProvider.localize("No items available", "transfer_list.empty_available"))
+                    .styleName("transfer-list__empty").build());
         } else {
             availableItems.forEach(item -> availableListDiv.add(
                     buildItemRow(item, highlightedAvailable, id -> toggleAvailableHighlight(id))));
@@ -317,7 +336,9 @@ public class TransferList extends Div {
     private void renderSelectedList() {
         selectedListDiv.removeAll();
         if (selectedItems.isEmpty()) {
-            selectedListDiv.add(Components.span().text("No items selected").styleName("transfer-list__empty").build());
+            selectedListDiv.add(Components.span()
+                    .text(LocalizationProvider.localize("No items selected", "transfer_list.empty_selected"))
+                    .styleName("transfer-list__empty").build());
         } else {
             selectedItems.forEach(item -> selectedListDiv.add(
                     buildItemRow(item, highlightedSelected, id -> toggleSelectedHighlight(id))));
@@ -356,7 +377,7 @@ public class TransferList extends Div {
         moveAllLeftBtn.setEnabled(!selectedItems.isEmpty());
     }
 
-    // ── Highlight toggles ─────────────────────────────────────────────────────
+    // â”€â”€ Highlight toggles â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
     private void toggleAvailableHighlight(String id) {
         toggle(highlightedAvailable, id);
@@ -372,7 +393,7 @@ public class TransferList extends Div {
         if (!set.remove(id)) set.add(id);
     }
 
-    // ── Utilities ─────────────────────────────────────────────────────────────
+    // â”€â”€ Utilities â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
     /** Removes and returns all items whose id is in {@code highlighted}. */
     private static List<TransferItem> drainHighlighted(List<TransferItem> source, Set<String> highlighted) {
@@ -386,21 +407,21 @@ public class TransferList extends Div {
 
     private static Button buildCtrlButton(VaadinIcon icon, String ariaLabel) {
         Button btn = Components.button().icon(icon).tertiary().styleName("transfer-list__ctrl-btn").ariaLabel(ariaLabel).build();
-        btn.setEnabled(false); // initially disabled — enabled by updateMoveButtonStates
+        btn.setEnabled(false); // initially disabled â€” enabled by updateMoveButtonStates
         return btn;
     }
 
     private void fireTransferEvent() {
         fireEvent(new TransferEvent(this, false, List.copyOf(availableItems), List.copyOf(selectedItems)));
     }
-
-    // ── Events ────────────────────────────────────────────────────────────────
+    // â”€â”€ Events â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
     /**
      * Fired whenever items are transferred between the Available and Selected panels.
      */
     public static class TransferEvent extends ComponentEvent<TransferList> {
 
+        @Serial
         private static final long serialVersionUID = 1L;
 
         private final List<TransferItem> availableItems;
@@ -438,4 +459,3 @@ public class TransferList extends Div {
         }
     }
 }
-

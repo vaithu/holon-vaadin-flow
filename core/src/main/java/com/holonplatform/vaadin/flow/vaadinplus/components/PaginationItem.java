@@ -15,6 +15,7 @@
  */
 package com.holonplatform.vaadin.flow.vaadinplus.components;
 
+import java.io.Serial;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.html.ListItem;
 
@@ -29,6 +30,7 @@ import com.vaadin.flow.component.html.ListItem;
  */
 public class PaginationItem extends ListItem {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     /**
@@ -50,4 +52,3 @@ public class PaginationItem extends ListItem {
         }
     }
 }
-

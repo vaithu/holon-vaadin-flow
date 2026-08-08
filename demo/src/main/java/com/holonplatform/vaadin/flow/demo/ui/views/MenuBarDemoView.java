@@ -50,27 +50,30 @@ public class MenuBarDemoView extends Div {
 
     private DemoExample withSubMenuExample() {
         var menuBar = MenuBarBuilder.create()
-                .withMenuItem("File").add()
-                .withMenuItem("Edit").add()
+                .withMenuItem("File")
+                    .withSubMenu(sub -> sub
+                        .withMenuItem("New", e -> Notification.show("New"))
+                        .withMenuItem("Open", e -> Notification.show("Open"))
+                        .separator()
+                        .withMenuItem("Save", e -> Notification.show("Save")))
+                .withMenuItem("Edit")
+                    .withSubMenu(sub -> sub
+                        .withMenuItem("Undo", e -> Notification.show("Undo"))
+                        .withMenuItem("Redo", e -> Notification.show("Redo")))
                 .build();
 
-        // Add sub-menu items after build
-        var fileItem = menuBar.getItems().get(0);
-        fileItem.getSubMenu().addItem("New", e -> Notification.show("New"));
-        fileItem.getSubMenu().addItem("Open", e -> Notification.show("Open"));
-        fileItem.getSubMenu().addItem("Save", e -> Notification.show("Save"));
-
-        var editItem = menuBar.getItems().get(1);
-        editItem.getSubMenu().addItem("Undo", e -> Notification.show("Undo"));
-        editItem.getSubMenu().addItem("Redo", e -> Notification.show("Redo"));
-
         return new DemoExample("With Sub-Menus", menuBar, """
-                var menuBar = MenuBarBuilder.create()
-                    .withMenuItem("File").add()
-                    .withMenuItem("Edit").add()
-                    .build();
-                var fileItem = menuBar.getItems().get(0);
-                fileItem.getSubMenu().addItem("New", e -> ...);
-                fileItem.getSubMenu().addItem("Open", e -> ...);""");
+                MenuBarBuilder.create()
+                    .withMenuItem("File")
+                        .withSubMenu(sub -> sub
+                            .withMenuItem("New", e -> Notification.show("New"))
+                            .withMenuItem("Open", e -> Notification.show("Open"))
+                            .separator()
+                            .withMenuItem("Save", e -> Notification.show("Save")))
+                    .withMenuItem("Edit")
+                        .withSubMenu(sub -> sub
+                            .withMenuItem("Undo", e -> Notification.show("Undo"))
+                            .withMenuItem("Redo", e -> Notification.show("Redo")))
+                    .build();""");
     }
 }

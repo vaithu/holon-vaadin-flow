@@ -453,7 +453,7 @@ public interface ItemListingColumn<P, T, V> extends Serializable {
 	/**
 	 * Column sort mode
 	 */
-	public enum SortMode {
+	enum SortMode {
 
 		DEFAULT,
 

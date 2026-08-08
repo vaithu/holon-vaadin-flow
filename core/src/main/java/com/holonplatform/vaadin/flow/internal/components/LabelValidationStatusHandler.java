@@ -15,6 +15,7 @@
  */
 package com.holonplatform.vaadin.flow.internal.components;
 
+import java.io.Serial;
 import com.holonplatform.core.internal.utils.ObjectUtils;
 import com.holonplatform.vaadin.flow.components.ValidationStatusHandler;
 import com.vaadin.flow.component.Component;
@@ -30,6 +31,7 @@ import com.vaadin.flow.component.HasText;
  */
 public class LabelValidationStatusHandler<S, L extends Component & HasText> implements ValidationStatusHandler<S> {
 
+	@Serial
 	private static final long serialVersionUID = 8471606832318073873L;
 
 	private final L label;

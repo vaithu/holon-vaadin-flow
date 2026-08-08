@@ -40,7 +40,7 @@ public interface NavigationChangeListener extends EventListener, Serializable {
 	 * 
 	 * @since 5.2.0
 	 */
-	public interface NavigationChangeEvent extends Serializable {
+	interface NavigationChangeEvent extends Serializable {
 
 		/**
 		 * Get the navigation location.

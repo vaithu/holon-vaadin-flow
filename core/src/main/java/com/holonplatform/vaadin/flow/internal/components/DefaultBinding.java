@@ -15,6 +15,7 @@
  */
 package com.holonplatform.vaadin.flow.internal.components;
 
+import java.io.Serial;
 import com.holonplatform.core.internal.utils.ObjectUtils;
 import com.holonplatform.vaadin.flow.components.BoundComponentGroup.Binding;
 import com.holonplatform.vaadin.flow.components.HasComponent;
@@ -29,6 +30,7 @@ import com.holonplatform.vaadin.flow.components.HasComponent;
  */
 public class DefaultBinding<P, C extends HasComponent> implements Binding<P, C> {
 
+	@Serial
 	private static final long serialVersionUID = -6134557608912391745L;
 
 	private final P property;

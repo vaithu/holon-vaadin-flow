@@ -15,9 +15,13 @@
  */
 package com.holonplatform.vaadin.flow.vaadinplus.components;
 
+import java.io.Serial;
 import com.holonplatform.vaadin.flow.components.Components;
+import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Span;
+
+import java.text.MessageFormat;
 
 /**
  * A clickable page-number button inside a {@link PaginationItem}.
@@ -36,6 +40,7 @@ import com.vaadin.flow.component.html.Span;
  */
 public class PaginationLink extends Div {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     private final int page;
@@ -56,7 +61,11 @@ public class PaginationLink extends Div {
         this.active = active;
 
         addClassName("pagination__link");
-        getElement().setAttribute("aria-label", "Go to page " + page);
+        // Use MessageFormat.format() so the page number is substituted even when no
+        // LocalizationContext is configured (LocalizationProvider returns the default
+        // message template as-is; MessageFormat substitutes {0} with the actual number).
+        String ariaTemplate = LocalizationProvider.localize("Go to page {0}", "pagination.page_aria");
+        getElement().setAttribute("aria-label", MessageFormat.format(ariaTemplate, page));
         getElement().setAttribute("tabindex", "0");
 
         if (active) {
@@ -100,4 +109,3 @@ public class PaginationLink extends Div {
         }
     }
 }
-

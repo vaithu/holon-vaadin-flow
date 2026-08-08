@@ -136,7 +136,7 @@ public interface InputConfigurator<T, E extends ValueChangeEvent<T>, C extends I
 	 * 
 	 * @param <T> Value type
 	 */
-	public interface BaseInputConfigurator<T>
+	interface BaseInputConfigurator<T>
 			extends InputConfigurator<T, ValueChangeEvent<T>, BaseInputConfigurator<T>> {
 
 	}

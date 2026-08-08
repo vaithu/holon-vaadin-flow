@@ -1,12 +1,12 @@
 /*
  * Copyright 2016-2018 Axioma srl.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -25,12 +25,12 @@ import com.vaadin.flow.component.HasValue;
 
 /**
  * A {@link PropertyHandler} implementation using callback functions to get and set the property value.
- * 
+ *
  * @param <P> Property value type
  * @param <T> Input value type
  * @param <V> {@link HasValue} type
  * @param <C> {@link Component} type
- * 
+ *
  * @since 5.2.0
  */
 public class CallbackPropertyHandler<P, T, V extends HasValue<?, T>, C extends Component>

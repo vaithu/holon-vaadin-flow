@@ -1,6 +1,7 @@
 package com.holonplatform.vaadin.flow.components.utils;
 
 import com.holonplatform.vaadin.flow.components.Components;
+import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.icon.Icon;
@@ -71,6 +72,6 @@ public final class NotificationUtil {
                 .map(err -> err.getErrorMessage())
                 .filter(m -> m != null && !m.isEmpty())
                 .reduce("", (a, b) -> a.isEmpty() ? b : a + ", " + b);
-        notificationError(msg.isEmpty() ? "Validation failed" : msg);
+        notificationError(msg.isEmpty() ? LocalizationProvider.localize("Validation failed", "notification.validation_failed") : msg);
     }
 }

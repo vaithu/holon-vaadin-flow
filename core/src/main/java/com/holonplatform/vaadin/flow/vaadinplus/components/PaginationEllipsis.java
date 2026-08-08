@@ -15,11 +15,12 @@
  */
 package com.holonplatform.vaadin.flow.vaadinplus.components;
 
+import java.io.Serial;
 import com.holonplatform.vaadin.flow.components.Components;
 import com.vaadin.flow.component.html.Span;
 
 /**
- * A gap indicator ({@code …}) shown in a {@link PaginationItem} when page numbers
+ * A gap indicator ({@code â€¦}) shown in a {@link PaginationItem} when page numbers
  * are skipped.
  *
  * <p>Renders as:</p>
@@ -35,18 +36,18 @@ import com.vaadin.flow.component.html.Span;
  */
 public class PaginationEllipsis extends Span {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     /**
-     * Creates the ellipsis indicator ({@code …}).
+     * Creates the ellipsis indicator ({@code â€¦}).
      */
     public PaginationEllipsis() {
         addClassName("pagination__ellipsis");
-        // Decorative — screen readers should skip it
+        // Decorative â€” screen readers should skip it
         getElement().setAttribute("aria-hidden", "true");
 
         Span dots = Components.span().text("\u2026").styleName("pagination__ellipsis-icon").build();   // Unicode HORIZONTAL ELLIPSIS
         add(dots);
     }
 }
-

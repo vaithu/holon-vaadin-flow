@@ -4,7 +4,6 @@ import com.holonplatform.vaadin.flow.components.utils.UIUtils;
 import com.iyensoft.vaadin.flow.enums.ColSpan;
 import com.iyensoft.vaadin.flow.enums.ViewMode;
 import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.page.WindowSize;
 import com.vaadin.flow.shared.Registration;
@@ -76,8 +75,7 @@ import com.iyensoft.vaadin.flow.utils.responsive.WindowSizeTracker;
  *
  * @since 10.0.0
  */
-@StyleSheet("context://layout.css")
-@StyleSheet("context://utilities.css")
+
 public class ResponsiveDiv extends Div {
 
     protected ResponsiveDiv() {
@@ -136,6 +134,57 @@ public class ResponsiveDiv extends Div {
      */
     public static DivConfigurator configure(Div div) {
         return new DivConfigurator(div);
+    }
+
+    /**
+     * Configures an <em>existing</em> {@link Div} as a Flexbox container, exposing the full
+     * flex fluent API ({@code column()/row()}, gaps, {@code align*()}, {@code justify*()} and
+     * per-breakpoint {@code desktop().row().end()} scopes) in addition to the shared sizing /
+     * slot API from {@link BaseBuilder}.
+     *
+     * <p>The {@code flex} class and the default {@code gap-m} are applied to the given div, and
+     * the same instance is returned from {@link FlexConfigurator#build()}.
+     *
+     * <pre>{@code
+     * ResponsiveDiv.configureFlex(this)
+     *     .column().gapM().alignStretch()
+     *     .desktop().row().gapL().end()
+     *     .fullHeight()
+     *     .slotOnce(ViewMode.DESKTOP, this::buildDesktopView)
+     *     .slotOnce(ViewMode.MOBILE,  this::buildMobileView)
+     *     .build();
+     * }</pre>
+     *
+     * @param div the existing {@link Div} to turn into a flex container (not null)
+     * @return a {@link FlexConfigurator} wrapping the given instance
+     */
+    public static FlexConfigurator configureFlex(Div div) {
+        return new FlexConfigurator(div);
+    }
+
+    /**
+     * Configures an <em>existing</em> {@link Div} as a CSS Grid container, exposing the full
+     * grid fluent API ({@code mobile(n)/tablet(n)/desktop(n)}, gaps, {@code placeCenter()},
+     * {@code dense()}, col-span content and per-breakpoint {@code desktop().gridCols(3).end()}
+     * scopes) in addition to the shared sizing / slot API from {@link BaseBuilder}.
+     *
+     * <p>The {@code grid} class and the default {@code gap-m} are applied to the given div, and
+     * the same instance is returned from {@link GridConfigurator#build()}.
+     *
+     * <pre>{@code
+     * ResponsiveDiv.configureGrid(this)
+     *     .mobile(1).tablet(2).desktop(3).gapM()
+     *     .fullHeight()
+     *     .slotOnce(ViewMode.DESKTOP, this::buildDesktopView)
+     *     .slotOnce(ViewMode.MOBILE,  this::buildMobileView)
+     *     .build();
+     * }</pre>
+     *
+     * @param div the existing {@link Div} to turn into a grid container (not null)
+     * @return a {@link GridConfigurator} wrapping the given instance
+     */
+    public static GridConfigurator configureGrid(Div div) {
+        return new GridConfigurator(div);
     }
 
     /**
@@ -248,6 +297,17 @@ public class ResponsiveDiv extends Div {
     }
 
     // ── Base Builder ──────────────────────────────────────────────────────────
+
+    /**
+     * Static WeakHashMap registry for slot suppliers. Static fields are never serialized,
+     * so non-serializable Supplier lambdas stored here are invisible to Java serialization.
+     * WeakHashMap ensures Div instances can be GC'd once there are no other references.
+     * After session deserialization the Div is a new instance — the registry returns null
+     * and the attach listener is a graceful no-op.
+     */
+    @SuppressWarnings("rawtypes")
+    private static final Map<Div, Map> SLOT_REGISTRY =
+            java.util.Collections.synchronizedMap(new java.util.WeakHashMap<>());
 
     /**
      * Shared builder state and operations for both {@link FlexBuilder} and {@link GridBuilder}.
@@ -377,18 +437,24 @@ public class ResponsiveDiv extends Div {
          */
         public D build() {
             if (slots != null && !slots.isEmpty()) {
-                // Snapshot: builder may be GC'd after build(); the lambda must not hold a ref to it.
-                final Map<ViewMode, Supplier<Component>> capturedSlots = Map.copyOf(slots);
-                final boolean[] resolved = {false};
-                div.addAttachListener(event -> {
-                    if (resolved[0]) return;      // guard: survive re-attach without rebuilding
-                    resolved[0] = true;
+                // Store slot suppliers in the static WeakHashMap (never serialized).
+                // After session deserialization the div is a new instance — registry returns null
+                // and the attach listener below is a graceful no-op.
+                final D capturedDiv = div;
+                @SuppressWarnings("unchecked")
+                Map<ViewMode, Supplier<Component>> slotsCopy = new java.util.HashMap<>(slots);
+                SLOT_REGISTRY.put(capturedDiv, slotsCopy);
+                capturedDiv.addAttachListener(event -> {
+                    @SuppressWarnings("unchecked")
+                    Map<ViewMode, Supplier<Component>> stored =
+                            (Map<ViewMode, Supplier<Component>>) SLOT_REGISTRY.remove(capturedDiv);
+                    if (stored == null) return;   // after deserialization: graceful no-op
                     WindowSize size = Signal.untracked(
                             () -> event.getUI().getPage().windowSizeSignal().get());
                     if (size != null) {
                         ViewMode mode = UIUtils.getViewMode(size.width(), size.height());
-                        Supplier<Component> s = resolveSlot(capturedSlots, mode);
-                        if (s != null) div.add(s.get());
+                        Supplier<Component> s = resolveSlot(stored, mode);
+                        if (s != null) capturedDiv.add(s.get());
                     }
                 });
             }
@@ -820,78 +886,83 @@ public class ResponsiveDiv extends Div {
      *     .build();
      * }</pre>
      */
-    public static final class GridBuilder extends BaseBuilder<GridBuilder, ResponsiveDiv> {
+    public abstract static class AbstractGridBuilder<B extends AbstractGridBuilder<B, D>, D extends Div>
+            extends BaseBuilder<B, D> {
 
-        private GridBuilder() {
-            div.addClassName("grid");
-            applyGap("gap-m");
+        /** Creates a brand-new {@link ResponsiveDiv} as the grid container. */
+        protected AbstractGridBuilder() {
+        }
+
+        /** Wraps an existing {@link Div} as the grid container. */
+        protected AbstractGridBuilder(D existing) {
+            super(existing);
         }
 
         // --- Column count per breakpoint ---
 
-        public GridBuilder mobile(int cols) {
+        public B mobile(int cols) {
             div.addClassName("grid-cols-" + cols);
-            return this;
+            return self();
         }
 
-        public GridBuilder tablet(int cols) {
+        public B tablet(int cols) {
             div.addClassName(ViewMode.TABLET.toCssClass("grid-cols-" + cols));
-            return this;
+            return self();
         }
 
-        public GridBuilder desktop(int cols) {
+        public B desktop(int cols) {
             div.addClassName(ViewMode.DESKTOP.toCssClass("grid-cols-" + cols));
-            return this;
+            return self();
         }
 
-        public GridBuilder largeDesktop(int cols) {
+        public B largeDesktop(int cols) {
             div.addClassName(ViewMode.LARGE_DESKTOP.toCssClass("grid-cols-" + cols));
-            return this;
+            return self();
         }
 
-        public GridBuilder columns(ViewMode mode, int cols) {
+        public B columns(ViewMode mode, int cols) {
             div.addClassName(mode.toCssClass("grid-cols-" + cols));
-            return this;
+            return self();
         }
 
         // --- Gap ---
 
         /** Uniform gap: {@code gap-xs} (0.25 rem). */
-        public GridBuilder gapXS() { applyGap("gap-xs"); return this; }
+        public B gapXS() { applyGap("gap-xs"); return self(); }
         /** Uniform gap: {@code gap-s} (0.5 rem). */
-        public GridBuilder gapS()  { applyGap("gap-s");  return this; }
+        public B gapS()  { applyGap("gap-s");  return self(); }
         /** Uniform gap: {@code gap-m} (1 rem). Default. */
-        public GridBuilder gapM()  { applyGap("gap-m");  return this; }
+        public B gapM()  { applyGap("gap-m");  return self(); }
         /** Uniform gap: {@code gap-l} (1.5 rem). */
-        public GridBuilder gapL()  { applyGap("gap-l");  return this; }
+        public B gapL()  { applyGap("gap-l");  return self(); }
         /** Uniform gap: {@code gap-xl} (2.5 rem). */
-        public GridBuilder gapXL() { applyGap("gap-xl"); return this; }
+        public B gapXL() { applyGap("gap-xl"); return self(); }
 
         /** Responsive gap override for a specific breakpoint → {@code {prefix}:gap-{token}}. */
-        public GridBuilder gap(ViewMode mode, GapSize size) {
+        public B gap(ViewMode mode, GapSize size) {
             div.addClassName(mode.toCssClass("gap-" + size.token()));
-            return this;
+            return self();
         }
 
         // --- Independent column / row gaps ---
 
         /** Column gap (x-axis): xs (0.25 rem). */
-        public GridBuilder columnGapXS() { div.addClassName("gap-x-xs"); return this; }
+        public B columnGapXS() { div.addClassName("gap-x-xs"); return self(); }
         /** Column gap (x-axis): s (0.5 rem). */
-        public GridBuilder columnGapS()  { div.addClassName("gap-x-s");  return this; }
+        public B columnGapS()  { div.addClassName("gap-x-s");  return self(); }
         /** Column gap (x-axis): m (1 rem). */
-        public GridBuilder columnGapM()  { div.addClassName("gap-x-m");  return this; }
+        public B columnGapM()  { div.addClassName("gap-x-m");  return self(); }
         /** Column gap (x-axis): l (1.5 rem). */
-        public GridBuilder columnGapL()  { div.addClassName("gap-x-l");  return this; }
+        public B columnGapL()  { div.addClassName("gap-x-l");  return self(); }
 
         /** Row gap (y-axis): xs (0.25 rem). */
-        public GridBuilder rowGapXS() { div.addClassName("gap-y-xs"); return this; }
+        public B rowGapXS() { div.addClassName("gap-y-xs"); return self(); }
         /** Row gap (y-axis): s (0.5 rem). */
-        public GridBuilder rowGapS()  { div.addClassName("gap-y-s");  return this; }
+        public B rowGapS()  { div.addClassName("gap-y-s");  return self(); }
         /** Row gap (y-axis): m (1 rem). */
-        public GridBuilder rowGapM()  { div.addClassName("gap-y-m");  return this; }
+        public B rowGapM()  { div.addClassName("gap-y-m");  return self(); }
         /** Row gap (y-axis): l (1.5 rem). */
-        public GridBuilder rowGapL()  { div.addClassName("gap-y-l");  return this; }
+        public B rowGapL()  { div.addClassName("gap-y-l");  return self(); }
 
         // --- Grid extras ---
 
@@ -899,33 +970,33 @@ public class ResponsiveDiv extends Div {
          * Centers all grid children both axes → {@code .place-center}
          * ({@code place-items: center}).
          */
-        public GridBuilder placeCenter() { div.addClassName("place-center");     return this; }
+        public B placeCenter() { div.addClassName("place-center");     return self(); }
 
         /**
          * Enables dense auto-placement so grid fills blank cells → {@code .grid-flow-dense}.
          * Useful for masonry-style card grids.
          */
-        public GridBuilder dense()       { div.addClassName("grid-flow-dense");  return this; }
+        public B dense()       { div.addClassName("grid-flow-dense");  return self(); }
 
         // --- Scoped breakpoint blocks ---
 
-        public GridScopeBuilder mobile()       { return new GridScopeBuilder(this, ViewMode.MOBILE);        }
-        public GridScopeBuilder tablet()       { return new GridScopeBuilder(this, ViewMode.TABLET);        }
-        public GridScopeBuilder desktop()      { return new GridScopeBuilder(this, ViewMode.DESKTOP);       }
-        public GridScopeBuilder largeDesktop() { return new GridScopeBuilder(this, ViewMode.LARGE_DESKTOP); }
-        public GridScopeBuilder on(ViewMode mode) { return new GridScopeBuilder(this, mode); }
+        public GridScopeBuilder<B> mobile()       { return new GridScopeBuilder<>(self(), ViewMode.MOBILE);        }
+        public GridScopeBuilder<B> tablet()       { return new GridScopeBuilder<>(self(), ViewMode.TABLET);        }
+        public GridScopeBuilder<B> desktop()      { return new GridScopeBuilder<>(self(), ViewMode.DESKTOP);       }
+        public GridScopeBuilder<B> largeDesktop() { return new GridScopeBuilder<>(self(), ViewMode.LARGE_DESKTOP); }
+        public GridScopeBuilder<B> on(ViewMode mode) { return new GridScopeBuilder<>(self(), mode); }
 
         // --- Col-span–aware content ---
 
-        public GridBuilder add(ColSpan colSpan, Component... components) {
+        public B add(ColSpan colSpan, Component... components) {
             for (Component c : components) {
                 c.addClassName("col-span-" + colSpan.getGridSpan());
                 div.add(c);
             }
-            return this;
+            return self();
         }
 
-        public GridBuilder add(GridEntry... entries) {
+        public B add(GridEntry... entries) {
             for (GridEntry e : entries) {
                 if (e.base != null) {
                     e.component.addClassName("col-span-" + e.base.getGridSpan());
@@ -935,7 +1006,43 @@ public class ResponsiveDiv extends Div {
                 }
                 div.add(e.component);
             }
-            return this;
+            return self();
+        }
+    }
+
+    /**
+     * CSS Grid container builder that creates a fresh {@link ResponsiveDiv}.
+     * Obtain via {@link ResponsiveDiv#grid()}.
+     */
+    public static final class GridBuilder extends AbstractGridBuilder<GridBuilder, ResponsiveDiv> {
+
+        private GridBuilder() {
+            div.addClassName("grid");
+            applyGap("gap-m");
+        }
+    }
+
+    /**
+     * CSS Grid configurator that turns an <em>existing</em> {@link Div} into a grid container,
+     * exposing the full {@link AbstractGridBuilder} API (column counts, gap, breakpoint scopes,
+     * col-span content) plus the shared {@link BaseBuilder} sizing / slot API.
+     *
+     * <p>Obtain via {@link ResponsiveDiv#configureGrid(Div)}:
+     * <pre>{@code
+     * ResponsiveDiv.configureGrid(this)
+     *     .mobile(1).tablet(2).desktop(3).gapM()
+     *     .fullHeight()
+     *     .slotOnce(ViewMode.DESKTOP, this::buildDesktopView)
+     *     .slotOnce(ViewMode.MOBILE,  this::buildMobileView)
+     *     .build();
+     * }</pre>
+     */
+    public static final class GridConfigurator extends AbstractGridBuilder<GridConfigurator, Div> {
+
+        private GridConfigurator(Div existing) {
+            super(existing);
+            div.addClassName("grid");
+            applyGap("gap-m");
         }
     }
 
@@ -1005,12 +1112,12 @@ public class ResponsiveDiv extends Div {
      *     .build();
      * }</pre>
      */
-    public static final class GridScopeBuilder {
+    public static final class GridScopeBuilder<P extends AbstractGridBuilder<P, ?>> {
 
-        private final GridBuilder parent;
+        private final P parent;
         private final ViewMode mode;
 
-        private GridScopeBuilder(GridBuilder parent, ViewMode mode) {
+        private GridScopeBuilder(P parent, ViewMode mode) {
             this.parent = parent;
             this.mode   = mode;
         }
@@ -1022,33 +1129,33 @@ public class ResponsiveDiv extends Div {
         // --- Columns ---
 
         /** Sets the number of grid columns at this breakpoint. */
-        public GridScopeBuilder gridCols(int n) { css("grid-cols-" + n);  return this; }
+        public GridScopeBuilder<P> gridCols(int n) { css("grid-cols-" + n);  return this; }
 
         // --- Gap ---
 
-        public GridScopeBuilder gapXS() { css("gap-xs"); return this; }
-        public GridScopeBuilder gapS()  { css("gap-s");  return this; }
-        public GridScopeBuilder gapM()  { css("gap-m");  return this; }
-        public GridScopeBuilder gapL()  { css("gap-l");  return this; }
-        public GridScopeBuilder gapXL() { css("gap-xl"); return this; }
+        public GridScopeBuilder<P> gapXS() { css("gap-xs"); return this; }
+        public GridScopeBuilder<P> gapS()  { css("gap-s");  return this; }
+        public GridScopeBuilder<P> gapM()  { css("gap-m");  return this; }
+        public GridScopeBuilder<P> gapL()  { css("gap-l");  return this; }
+        public GridScopeBuilder<P> gapXL() { css("gap-xl"); return this; }
 
         // --- Visibility ---
 
-        public GridScopeBuilder hide() { css("hidden"); return this; }
-        public GridScopeBuilder show() { css("block");  return this; }
+        public GridScopeBuilder<P> hide() { css("hidden"); return this; }
+        public GridScopeBuilder<P> show() { css("block");  return this; }
 
         // --- Margin ---
 
-        public GridScopeBuilder marginNone()  { css("m-0");     return this; }
-        public GridScopeBuilder marginXAuto() { css("mx-auto"); return this; }
-        public GridScopeBuilder marginM()     { css("m-m");     return this; }
-        public GridScopeBuilder marginL()     { css("m-l");     return this; }
-        public GridScopeBuilder marginYM()    { css("my-m");    return this; }
-        public GridScopeBuilder marginTopM()  { css("mt-m");    return this; }
-        public GridScopeBuilder marginBotM()  { css("mb-m");    return this; }
+        public GridScopeBuilder<P> marginNone()  { css("m-0");     return this; }
+        public GridScopeBuilder<P> marginXAuto() { css("mx-auto"); return this; }
+        public GridScopeBuilder<P> marginM()     { css("m-m");     return this; }
+        public GridScopeBuilder<P> marginL()     { css("m-l");     return this; }
+        public GridScopeBuilder<P> marginYM()    { css("my-m");    return this; }
+        public GridScopeBuilder<P> marginTopM()  { css("mt-m");    return this; }
+        public GridScopeBuilder<P> marginBotM()  { css("mb-m");    return this; }
 
-        /** Returns to the parent {@link GridBuilder}. */
-        public GridBuilder end() { return parent; }
+        /** Returns to the parent grid builder / configurator. */
+        public P end() { return parent; }
     }
 
     // ── Flex Builder ──────────────────────────────────────────────────────────
@@ -1064,87 +1171,129 @@ public class ResponsiveDiv extends Div {
      *     .build();
      * }</pre>
      */
-    public static final class FlexBuilder extends BaseBuilder<FlexBuilder, ResponsiveDiv> {
+    public abstract static class AbstractFlexBuilder<B extends AbstractFlexBuilder<B, D>, D extends Div>
+            extends BaseBuilder<B, D> {
 
-        private FlexBuilder() {
-            div.addClassName("flex");
-            applyGap("gap-m");
+        /** Creates a brand-new {@link ResponsiveDiv} as the flex container. */
+        protected AbstractFlexBuilder() {
+        }
+
+        /** Wraps an existing {@link Div} as the flex container. */
+        protected AbstractFlexBuilder(D existing) {
+            super(existing);
         }
 
         // --- Base (no-prefix) flex direction ---
 
-        public FlexBuilder column()  { div.addClassName("flex-col");    return this; }
-        public FlexBuilder row()     { div.addClassName("flex-row");    return this; }
-        public FlexBuilder wrap()    { div.addClassName("flex-wrap");   return this; }
-        public FlexBuilder noWrap()  { div.addClassName("flex-nowrap"); return this; }
+        public B column()  { div.addClassName("flex-col");    return self(); }
+        public B row()     { div.addClassName("flex-row");    return self(); }
+        public B wrap()    { div.addClassName("flex-wrap");   return self(); }
+        public B noWrap()  { div.addClassName("flex-nowrap"); return self(); }
 
         /**
          * Switches the container to {@code inline-flex} instead of {@code flex}.
          * Useful for inline widgets (tag groups, badge rows).
          */
-        public FlexBuilder inlineFlex() {
+        public B inlineFlex() {
             div.removeClassName("flex");
             div.addClassName("inline-flex");
-            return this;
+            return self();
         }
 
         // --- Base gap ---
 
-        public FlexBuilder gapXS()  { applyGap("gap-xs"); return this; }
-        public FlexBuilder gapS()   { applyGap("gap-s");  return this; }
-        public FlexBuilder gapM()   { applyGap("gap-m");  return this; }
-        public FlexBuilder gapL()   { applyGap("gap-l");  return this; }
-        public FlexBuilder gapXL()  { applyGap("gap-xl"); return this; }
+        public B gapXS()  { applyGap("gap-xs"); return self(); }
+        public B gapS()   { applyGap("gap-s");  return self(); }
+        public B gapM()   { applyGap("gap-m");  return self(); }
+        public B gapL()   { applyGap("gap-l");  return self(); }
+        public B gapXL()  { applyGap("gap-xl"); return self(); }
 
-        public FlexBuilder gap(ViewMode mode, GapSize size) {
+        public B gap(ViewMode mode, GapSize size) {
             div.addClassName(mode.toCssClass("gap-" + size.token()));
-            return this;
+            return self();
         }
 
         // --- Independent column / row gaps ---
 
         /** Column gap (x-axis): xs (0.25 rem). */
-        public FlexBuilder columnGapXS() { div.addClassName("gap-x-xs"); return this; }
+        public B columnGapXS() { div.addClassName("gap-x-xs"); return self(); }
         /** Column gap (x-axis): s (0.5 rem). */
-        public FlexBuilder columnGapS()  { div.addClassName("gap-x-s");  return this; }
+        public B columnGapS()  { div.addClassName("gap-x-s");  return self(); }
         /** Column gap (x-axis): m (1 rem). */
-        public FlexBuilder columnGapM()  { div.addClassName("gap-x-m");  return this; }
+        public B columnGapM()  { div.addClassName("gap-x-m");  return self(); }
         /** Column gap (x-axis): l (1.5 rem). */
-        public FlexBuilder columnGapL()  { div.addClassName("gap-x-l");  return this; }
+        public B columnGapL()  { div.addClassName("gap-x-l");  return self(); }
 
         /** Row gap (y-axis): xs (0.25 rem). */
-        public FlexBuilder rowGapXS() { div.addClassName("gap-y-xs"); return this; }
+        public B rowGapXS() { div.addClassName("gap-y-xs"); return self(); }
         /** Row gap (y-axis): s (0.5 rem). */
-        public FlexBuilder rowGapS()  { div.addClassName("gap-y-s");  return this; }
+        public B rowGapS()  { div.addClassName("gap-y-s");  return self(); }
         /** Row gap (y-axis): m (1 rem). */
-        public FlexBuilder rowGapM()  { div.addClassName("gap-y-m");  return this; }
+        public B rowGapM()  { div.addClassName("gap-y-m");  return self(); }
         /** Row gap (y-axis): l (1.5 rem). */
-        public FlexBuilder rowGapL()  { div.addClassName("gap-y-l");  return this; }
+        public B rowGapL()  { div.addClassName("gap-y-l");  return self(); }
 
         // --- Base align ---
 
-        public FlexBuilder alignCenter()   { div.addClassName("items-center");   return this; }
-        public FlexBuilder alignStart()    { div.addClassName("items-start");    return this; }
-        public FlexBuilder alignEnd()      { div.addClassName("items-end");      return this; }
-        public FlexBuilder alignStretch()  { div.addClassName("items-stretch");  return this; }
-        public FlexBuilder alignBaseline() { div.addClassName("items-baseline"); return this; }
+        public B alignCenter()   { div.addClassName("items-center");   return self(); }
+        public B alignStart()    { div.addClassName("items-start");    return self(); }
+        public B alignEnd()      { div.addClassName("items-end");      return self(); }
+        public B alignStretch()  { div.addClassName("items-stretch");  return self(); }
+        public B alignBaseline() { div.addClassName("items-baseline"); return self(); }
 
         // --- Base justify ---
 
-        public FlexBuilder justifyBetween() { div.addClassName("justify-between"); return this; }
-        public FlexBuilder justifyCenter()  { div.addClassName("justify-center");  return this; }
-        public FlexBuilder justifyEnd()     { div.addClassName("justify-end");     return this; }
-        public FlexBuilder justifyStart()   { div.addClassName("justify-start");   return this; }
-        public FlexBuilder justifyAround()  { div.addClassName("justify-around");  return this; }
-        public FlexBuilder justifyEvenly()  { div.addClassName("justify-evenly");  return this; }
+        public B justifyBetween() { div.addClassName("justify-between"); return self(); }
+        public B justifyCenter()  { div.addClassName("justify-center");  return self(); }
+        public B justifyEnd()     { div.addClassName("justify-end");     return self(); }
+        public B justifyStart()   { div.addClassName("justify-start");   return self(); }
+        public B justifyAround()  { div.addClassName("justify-around");  return self(); }
+        public B justifyEvenly()  { div.addClassName("justify-evenly");  return self(); }
 
         // --- Scoped breakpoint blocks ---
 
-        public FlexScopeBuilder mobile()       { return new FlexScopeBuilder(this, ViewMode.MOBILE);       }
-        public FlexScopeBuilder tablet()       { return new FlexScopeBuilder(this, ViewMode.TABLET);       }
-        public FlexScopeBuilder desktop()      { return new FlexScopeBuilder(this, ViewMode.DESKTOP);      }
-        public FlexScopeBuilder largeDesktop() { return new FlexScopeBuilder(this, ViewMode.LARGE_DESKTOP); }
-        public FlexScopeBuilder on(ViewMode mode) { return new FlexScopeBuilder(this, mode); }
+        public FlexScopeBuilder<B> mobile()       { return new FlexScopeBuilder<>(self(), ViewMode.MOBILE);        }
+        public FlexScopeBuilder<B> tablet()       { return new FlexScopeBuilder<>(self(), ViewMode.TABLET);        }
+        public FlexScopeBuilder<B> desktop()      { return new FlexScopeBuilder<>(self(), ViewMode.DESKTOP);       }
+        public FlexScopeBuilder<B> largeDesktop() { return new FlexScopeBuilder<>(self(), ViewMode.LARGE_DESKTOP); }
+        public FlexScopeBuilder<B> on(ViewMode mode) { return new FlexScopeBuilder<>(self(), mode); }
+    }
+
+    /**
+     * Flexbox container builder that creates a fresh {@link ResponsiveDiv}.
+     * Obtain via {@link ResponsiveDiv#flex()}.
+     */
+    public static final class FlexBuilder extends AbstractFlexBuilder<FlexBuilder, ResponsiveDiv> {
+
+        private FlexBuilder() {
+            div.addClassName("flex");
+            applyGap("gap-m");
+        }
+    }
+
+    /**
+     * Flexbox configurator that turns an <em>existing</em> {@link Div} into a flex container,
+     * exposing the full {@link AbstractFlexBuilder} API (direction, gap, align, justify,
+     * breakpoint scopes) plus the shared {@link BaseBuilder} sizing / slot API.
+     *
+     * <p>Obtain via {@link ResponsiveDiv#configureFlex(Div)}:
+     * <pre>{@code
+     * ResponsiveDiv.configureFlex(this)
+     *     .column().gapM().alignStretch()
+     *     .desktop().row().gapL().end()
+     *     .fullHeight()
+     *     .slotOnce(ViewMode.DESKTOP, this::buildDesktopView)
+     *     .slotOnce(ViewMode.MOBILE,  this::buildMobileView)
+     *     .build();
+     * }</pre>
+     */
+    public static final class FlexConfigurator extends AbstractFlexBuilder<FlexConfigurator, Div> {
+
+        private FlexConfigurator(Div existing) {
+            super(existing);
+            div.addClassName("flex");
+            applyGap("gap-m");
+        }
     }
 
     // ── Flex Scope Builder ────────────────────────────────────────────────────
@@ -1159,12 +1308,12 @@ public class ResponsiveDiv extends Div {
      * // adds: lg:flex-row lg:gap-l lg:items-center lg:justify-between
      * }</pre>
      */
-    public static final class FlexScopeBuilder {
+    public static final class FlexScopeBuilder<P extends AbstractFlexBuilder<P, ?>> {
 
-        private final FlexBuilder parent;
+        private final P parent;
         private final ViewMode mode;
 
-        private FlexScopeBuilder(FlexBuilder parent, ViewMode mode) {
+        private FlexScopeBuilder(P parent, ViewMode mode) {
             this.parent = parent;
             this.mode   = mode;
         }
@@ -1175,87 +1324,89 @@ public class ResponsiveDiv extends Div {
 
         // --- Direction ---
 
-        public FlexScopeBuilder column()  { css("flex-col");    return this; }
-        public FlexScopeBuilder row()     { css("flex-row");    return this; }
-        public FlexScopeBuilder wrap()    { css("flex-wrap");   return this; }
-        public FlexScopeBuilder noWrap()  { css("flex-nowrap"); return this; }
+        public FlexScopeBuilder<P> column()  { css("flex-col");    return this; }
+        public FlexScopeBuilder<P> row()     { css("flex-row");    return this; }
+        public FlexScopeBuilder<P> wrap()    { css("flex-wrap");   return this; }
+        public FlexScopeBuilder<P> noWrap()  { css("flex-nowrap"); return this; }
 
         // --- Gap ---
 
-        public FlexScopeBuilder gapXS()  { css("gap-xs"); return this; }
-        public FlexScopeBuilder gapS()   { css("gap-s");  return this; }
-        public FlexScopeBuilder gapM()   { css("gap-m");  return this; }
-        public FlexScopeBuilder gapL()   { css("gap-l");  return this; }
-        public FlexScopeBuilder gapXL()  { css("gap-xl"); return this; }
+        public FlexScopeBuilder<P> gapXS()  { css("gap-xs"); return this; }
+        public FlexScopeBuilder<P> gapS()   { css("gap-s");  return this; }
+        public FlexScopeBuilder<P> gapM()   { css("gap-m");  return this; }
+        public FlexScopeBuilder<P> gapL()   { css("gap-l");  return this; }
+        public FlexScopeBuilder<P> gapXL()  { css("gap-xl"); return this; }
 
         // --- Align items ---
 
-        public FlexScopeBuilder alignCenter()   { css("items-center");   return this; }
-        public FlexScopeBuilder alignStart()    { css("items-start");    return this; }
-        public FlexScopeBuilder alignEnd()      { css("items-end");      return this; }
-        public FlexScopeBuilder alignStretch()  { css("items-stretch");  return this; }
-        public FlexScopeBuilder alignBaseline() { css("items-baseline"); return this; }
+        public FlexScopeBuilder<P> alignCenter()   { css("items-center");   return this; }
+        public FlexScopeBuilder<P> alignStart()    { css("items-start");    return this; }
+        public FlexScopeBuilder<P> alignEnd()      { css("items-end");      return this; }
+        public FlexScopeBuilder<P> alignStretch()  { css("items-stretch");  return this; }
+        public FlexScopeBuilder<P> alignBaseline() { css("items-baseline"); return this; }
 
         // --- Justify content ---
 
-        public FlexScopeBuilder justifyBetween() { css("justify-between"); return this; }
-        public FlexScopeBuilder justifyCenter()  { css("justify-center");  return this; }
-        public FlexScopeBuilder justifyEnd()     { css("justify-end");     return this; }
-        public FlexScopeBuilder justifyStart()   { css("justify-start");   return this; }
-        public FlexScopeBuilder justifyAround()  { css("justify-around");  return this; }
-        public FlexScopeBuilder justifyEvenly()  { css("justify-evenly");  return this; }
+        public FlexScopeBuilder<P> justifyBetween() { css("justify-between"); return this; }
+        public FlexScopeBuilder<P> justifyCenter()  { css("justify-center");  return this; }
+        public FlexScopeBuilder<P> justifyEnd()     { css("justify-end");     return this; }
+        public FlexScopeBuilder<P> justifyStart()   { css("justify-start");   return this; }
+        public FlexScopeBuilder<P> justifyAround()  { css("justify-around");  return this; }
+        public FlexScopeBuilder<P> justifyEvenly()  { css("justify-evenly");  return this; }
 
         // --- Align self (this div is a flex/grid child) ---
 
-        public FlexScopeBuilder selfCenter()  { css("self-center");  return this; }
-        public FlexScopeBuilder selfStart()   { css("self-start");   return this; }
-        public FlexScopeBuilder selfEnd()     { css("self-end");     return this; }
-        public FlexScopeBuilder selfStretch() { css("self-stretch"); return this; }
+        public FlexScopeBuilder<P> selfCenter()  { css("self-center");  return this; }
+        public FlexScopeBuilder<P> selfStart()   { css("self-start");   return this; }
+        public FlexScopeBuilder<P> selfEnd()     { css("self-end");     return this; }
+        public FlexScopeBuilder<P> selfStretch() { css("self-stretch"); return this; }
 
         // --- Sizing ---
 
         /** Forces {@code width: 100%} at this breakpoint → {@code {prefix}:w-full}. */
-        public FlexScopeBuilder fullWidth() { css("w-full"); return this; }
+        public FlexScopeBuilder<P> fullWidth() { css("w-full"); return this; }
+
+        /** Forces {@code height: 100%} at this breakpoint → {@code {prefix}:h-full}. */
+        public FlexScopeBuilder<P> fullHeight() { css("h-full"); return this; }
 
         // --- Padding ---
 
-        public FlexScopeBuilder padS() { css("p-s"); return this; }
-        public FlexScopeBuilder padM() { css("p-m"); return this; }
-        public FlexScopeBuilder padL() { css("p-l"); return this; }
+        public FlexScopeBuilder<P> padS() { css("p-s"); return this; }
+        public FlexScopeBuilder<P> padM() { css("p-m"); return this; }
+        public FlexScopeBuilder<P> padL() { css("p-l"); return this; }
 
         // --- Text alignment ---
 
-        public FlexScopeBuilder textLeft()   { css("text-left");   return this; }
-        public FlexScopeBuilder textCenter() { css("text-center"); return this; }
-        public FlexScopeBuilder textRight()  { css("text-right");  return this; }
+        public FlexScopeBuilder<P> textLeft()   { css("text-left");   return this; }
+        public FlexScopeBuilder<P> textCenter() { css("text-center"); return this; }
+        public FlexScopeBuilder<P> textRight()  { css("text-right");  return this; }
 
         // --- Overflow ---
 
-        public FlexScopeBuilder overflowHidden() { css("overflow-hidden"); return this; }
+        public FlexScopeBuilder<P> overflowHidden() { css("overflow-hidden"); return this; }
 
         // --- Margin ---
 
-        public FlexScopeBuilder marginNone()   { css("m-0");      return this; }
-        public FlexScopeBuilder marginXAuto()  { css("mx-auto");  return this; }
-        public FlexScopeBuilder marginS()      { css("m-s");      return this; }
-        public FlexScopeBuilder marginM()      { css("m-m");      return this; }
-        public FlexScopeBuilder marginL()      { css("m-l");      return this; }
-        public FlexScopeBuilder marginXS()     { css("mx-s");     return this; }
-        public FlexScopeBuilder marginXM()     { css("mx-m");     return this; }
-        public FlexScopeBuilder marginYS()     { css("my-s");     return this; }
-        public FlexScopeBuilder marginYM()     { css("my-m");     return this; }
-        public FlexScopeBuilder marginTopS()   { css("mt-s");     return this; }
-        public FlexScopeBuilder marginTopM()   { css("mt-m");     return this; }
-        public FlexScopeBuilder marginBotS()   { css("mb-s");     return this; }
-        public FlexScopeBuilder marginBotM()   { css("mb-m");     return this; }
+        public FlexScopeBuilder<P> marginNone()   { css("m-0");      return this; }
+        public FlexScopeBuilder<P> marginXAuto()  { css("mx-auto");  return this; }
+        public FlexScopeBuilder<P> marginS()      { css("m-s");      return this; }
+        public FlexScopeBuilder<P> marginM()      { css("m-m");      return this; }
+        public FlexScopeBuilder<P> marginL()      { css("m-l");      return this; }
+        public FlexScopeBuilder<P> marginXS()     { css("mx-s");     return this; }
+        public FlexScopeBuilder<P> marginXM()     { css("mx-m");     return this; }
+        public FlexScopeBuilder<P> marginYS()     { css("my-s");     return this; }
+        public FlexScopeBuilder<P> marginYM()     { css("my-m");     return this; }
+        public FlexScopeBuilder<P> marginTopS()   { css("mt-s");     return this; }
+        public FlexScopeBuilder<P> marginTopM()   { css("mt-m");     return this; }
+        public FlexScopeBuilder<P> marginBotS()   { css("mb-s");     return this; }
+        public FlexScopeBuilder<P> marginBotM()   { css("mb-m");     return this; }
 
         // --- Visibility ---
 
-        public FlexScopeBuilder hide() { css("hidden"); return this; }
-        public FlexScopeBuilder show() { css("block");  return this; }
+        public FlexScopeBuilder<P> hide() { css("hidden"); return this; }
+        public FlexScopeBuilder<P> show() { css("block");  return this; }
 
-        /** Returns to the parent {@link FlexBuilder}. */
-        public FlexBuilder end() { return parent; }
+        /** Returns to the parent flex builder / configurator. */
+        public P end() { return parent; }
     }
 }
-

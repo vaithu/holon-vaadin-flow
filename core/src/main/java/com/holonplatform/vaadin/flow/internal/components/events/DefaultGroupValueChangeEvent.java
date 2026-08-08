@@ -15,6 +15,7 @@
  */
 package com.holonplatform.vaadin.flow.internal.components.events;
 
+import java.io.Serial;
 import java.util.Optional;
 
 import com.holonplatform.core.internal.utils.ObjectUtils;
@@ -36,6 +37,7 @@ import com.holonplatform.vaadin.flow.components.events.GroupValueChangeEvent;
 public class DefaultGroupValueChangeEvent<V, P, C extends HasComponent, G extends BoundComponentGroup<P, C>>
 		extends DefaultValueChangeEvent<V> implements GroupValueChangeEvent<V, P, C, G> {
 
+	@Serial
 	private static final long serialVersionUID = 894250818129852050L;
 
 	private final G inputGroup;

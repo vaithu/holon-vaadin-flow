@@ -15,6 +15,7 @@
  */
 package com.holonplatform.vaadin.flow.internal.components.events;
 
+import java.io.Serial;
 import java.util.Map;
 import java.util.Optional;
 
@@ -32,6 +33,7 @@ import com.vaadin.flow.component.grid.dnd.GridDropLocation;
 public class DefaultItemListingDropEvent<T, P> extends AbstractItemListingDnDEvent<T, P>
 		implements ItemListingDropEvent<T, P> {
 
+	@Serial
 	private static final long serialVersionUID = 4771156316048469614L;
 
 	private final GridDropEvent<T> event;

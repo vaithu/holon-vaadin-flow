@@ -63,16 +63,16 @@ public interface Navigator extends Serializable {
 	/**
 	 * Default navigation failed error message.
 	 */
-	public static final String DEFAULT_NAVIGATION_FAILED_MESSAGE = "Could not navigate to path";
+	static final String DEFAULT_NAVIGATION_FAILED_MESSAGE = "Could not navigate to path";
 	/**
 	 * Default navigation failed error message localization code.
 	 */
-	public static final String DEFAULT_NAVIGATION_FAILED_MESSAGE_CODE = "com.holonplatform.vaadin.flow.navigator.error";
+	static final String DEFAULT_NAVIGATION_FAILED_MESSAGE_CODE = "com.holonplatform.vaadin.flow.navigator.error";
 
 	/**
 	 * Default {@link Context} resource key.
 	 */
-	public static final String CONTEXT_KEY = Navigator.class.getName();
+	static final String CONTEXT_KEY = Navigator.class.getName();
 
 	/**
 	 * Navigate to the given location.
@@ -362,7 +362,7 @@ public interface Navigator extends Serializable {
 	 * 
 	 * @since 5.2.0
 	 */
-	public interface NavigationBuilder extends NavigationURLBuilder<NavigationBuilder> {
+	interface NavigationBuilder extends NavigationURLBuilder<NavigationBuilder> {
 
 		/**
 		 * Get the navigation location as a {@link Location}, including the navigation path and any declared query

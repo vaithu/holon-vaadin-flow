@@ -15,6 +15,7 @@
  */
 package com.holonplatform.vaadin.flow.vaadinplus.components;
 
+import java.io.Serial;
 import com.vaadin.flow.component.html.UnorderedList;
 
 /**
@@ -28,6 +29,7 @@ import com.vaadin.flow.component.html.UnorderedList;
  */
 public class PaginationContent extends UnorderedList {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     /**
@@ -57,4 +59,3 @@ public class PaginationContent extends UnorderedList {
         removeAll();
     }
 }
-

@@ -117,7 +117,6 @@ vaadin-app-layout::part(drawer) {
 /* Main content area */
 vaadin-app-layout::part(content) {
   background: var(--surface-1);
-  padding:    var(--shell-content-padding);
 }
 
 
@@ -307,9 +306,6 @@ vaadin-button[theme~="error"]:not([theme~="primary"]) {
   --vaadin-button-shadow:
     0 1px 3px 0   rgb(0 0 0 / 0.08),
     0 0 0 1px var(--err, #dc2626);
-  box-shadow:
-    0 1px 3px 0   rgb(0 0 0 / 0.08),
-    0 0 0 1px var(--err, #dc2626);
 }
 
 vaadin-button[theme~="error"]:not([theme~="primary"]):not([disabled]):hover {
@@ -477,6 +473,68 @@ vaadin-grid::part(footer-cell) {
   border-top  : 1px solid var(--zinc-200, #e4e4e7);
 }
 
+/* Switch
+   ─────────────────────────────────────────────────────────────────────────
+   Usage (Java):  checkboxGroup.addClassName("switch");
+   Usage (CSS):   vaadin-checkbox-group.switch vaadin-checkbox
+   Note: descendant combinator (space) is required — a single element cannot
+   be both vaadin-checkbox-group and vaadin-checkbox simultaneously.
+   ───────────────────────────────────────────────────────────────────────── */
+
+vaadin-checkbox-group.switch vaadin-checkbox::part(checkbox) {
+  border-radius: 9999px;
+  width:    var(--lumo-size-m);                /* pill width  ≈ 2rem / 32px */
+  height:   calc(var(--lumo-size-m) * 0.55);  /* pill height ≈ 1.1rem — shorter than width */
+  position: relative;                          /* REQUIRED: contains the absolutely-placed dot */
+  background-image: none;                      /* strip Vaadin 25 Lumo SVG checkmark */
+}
+
+vaadin-checkbox-group.switch vaadin-checkbox::part(checkbox)::after {
+  content:          "";
+  position:         absolute;
+  top:              50%;
+  left:             calc(var(--lumo-size-m) * 0.08);   /* dot rests at left edge */
+  transform:        translateY(-50%);
+  height:           calc(var(--lumo-size-m) * 0.38);
+  width:            calc(var(--lumo-size-m) * 0.38);
+  background-color: var(--lumo-secondary-text-color);
+  border-radius:    9999px;
+  opacity:          1;
+  transition:       left 0.2s, background-color 0.2s;
+}
+
+vaadin-checkbox-group.switch vaadin-checkbox[checked]::part(checkbox)::after {
+  background-color: var(--lumo-primary-contrast-color);
+  left:             calc(var(--lumo-size-m) * 0.53);   /* dot slides to right edge */
+}
+
+vaadin-checkbox.switch::part(checkbox) {
+  border-radius: 9999px;
+  width:    var(--lumo-size-m);                /* pill width  ≈ 2rem / 32px */
+  height:   calc(var(--lumo-size-m) * 0.55);  /* pill height ≈ 1.1rem — shorter than width */
+  position: relative;                          /* REQUIRED: contains the absolutely-placed dot */
+  background-image: none;                      /* strip Vaadin 25 Lumo SVG checkmark */
+}
+
+vaadin-checkbox.switch::part(checkbox)::after {
+  content:          "";
+  position:         absolute;
+  top:              50%;
+  left:             calc(var(--lumo-size-m) * 0.08);   /* dot rests at left edge */
+  transform:        translateY(-50%);
+  height:           calc(var(--lumo-size-m) * 0.38);
+  width:            calc(var(--lumo-size-m) * 0.38);
+  background-color: var(--lumo-secondary-text-color);
+  border-radius:    9999px;
+  opacity:          1;
+  transition:       left 0.2s, background-color 0.2s;
+}
+
+vaadin-checkbox.switch[checked]::part(checkbox)::after {
+  background-color: var(--lumo-primary-contrast-color);
+  left:             calc(var(--lumo-size-m) * 0.53);   /* dot slides to right edge */
+}
+
 
 @media (max-width: 767px) {
   :root {
@@ -491,10 +549,6 @@ vaadin-grid::part(footer-cell) {
     width: min(88vw, var(--shell-nav-width));
   }
 
-  vaadin-app-layout::part(content) {
-    padding: 1rem;
-  }
-
   vaadin-side-nav::part(label) {
     padding: 0.625rem 0.875rem 0.25rem;
   }
@@ -504,7 +558,9 @@ vaadin-grid::part(footer-cell) {
   }
 
   html {
-    --vaadin-button-height: 2.75rem;
+    --vaadin-button-height: 2.75rem; /* WCAG 2.5.8 minimum touch target on mobile.
+    NOTE: buttons.css overrides this back to 2rem for vaadin-button.btn--small
+    so that the ButtonSize.SMALL variant stays compact even on mobile. */
   }
 }
 

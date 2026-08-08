@@ -15,6 +15,7 @@
  */
 package com.holonplatform.vaadin.flow.spring.internal;
 
+import java.io.Serial;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -43,6 +44,7 @@ import com.vaadin.flow.server.VaadinServiceInitListener;
  */
 public class SecuredRouteServiceInitListener implements VaadinServiceInitListener {
 
+	@Serial
 	private static final long serialVersionUID = 6581058594162355308L;
 
 	private static final Logger LOGGER = VaadinLogger.create();
@@ -61,6 +63,7 @@ public class SecuredRouteServiceInitListener implements VaadinServiceInitListene
 
 	static class SecuredRouteBeforeEnterListener implements BeforeEnterListener {
 
+		@Serial
 		private static final long serialVersionUID = 1577627862173954401L;
 
 		/*

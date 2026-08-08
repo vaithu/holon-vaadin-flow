@@ -104,7 +104,7 @@ public interface DatastoreDataProviderConfigurator<ITEM, C extends DatastoreData
 	 * @param <ITEM> Item type
 	 * @param <C>    Concrete configurator type
 	 */
-	public interface DatastoreDataProviderSelectConfigurator<ITEM, C extends DatastoreDataProviderSelectConfigurator<ITEM, C>>
+	interface DatastoreDataProviderSelectConfigurator<ITEM, C extends DatastoreDataProviderSelectConfigurator<ITEM, C>>
 			extends DatastoreDataProviderConfigurator<ITEM, C> {
 
 		/**

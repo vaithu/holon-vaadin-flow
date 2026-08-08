@@ -11,6 +11,8 @@ import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasTheme;
 import com.vaadin.flow.component.avatar.Avatar;
 import com.vaadin.flow.component.avatar.AvatarVariant;
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.Tabs;
@@ -23,6 +25,7 @@ public class Header extends Layout implements HasTheme {
     private static final String CLASS_HEADER = "iyen-header";
     private static final String CLASS_HEADER_BORDERED = "iyen-header--bordered";
     private static final String CLASS_HEADER_NO_BORDER = "header--no-border";
+    private static final String CLASS_HEADER_NO_STICKY = "header--no-sticky";
     private static final String CLASS_ROW = "iyen-header__row";
     private static final String CLASS_TOP_ROW = "iyen-header__top-row";
     private static final String CLASS_TOP_ROW_AVATAR = "iyen-header__top-row--avatar";
@@ -152,7 +155,7 @@ public class Header extends Layout implements HasTheme {
         if (this.breadcrumb != null) {
             this.breadcrumb.addClassName(CLASS_BREADCRUMB);
             this.breadcrumb.setVisible(true);
-            Components.configure(this).addComponentAsFirst(this.breadcrumb);
+            addComponentAsFirst(this.breadcrumb);
         }
     }
 
@@ -326,8 +329,20 @@ public class Header extends Layout implements HasTheme {
         }
     }
 
+    public void setSticky(boolean sticky) {
+        if (sticky) {
+            removeClassName(CLASS_HEADER_NO_STICKY);
+        } else {
+            addClassName(CLASS_HEADER_NO_STICKY);
+        }
+    }
+
     public void withoutBorder() {
         setBordered(false);
+    }
+
+    public void withoutSticky() {
+        setSticky(false);
     }
 
     public void withoutColumnGap() {
@@ -476,6 +491,11 @@ public class Header extends Layout implements HasTheme {
         layout.removeAll();
         for (Component component : components) {
             if (component != null) {
+
+                if (component instanceof Button) {
+                    ((Button) component).setThemeVariants(ButtonVariant.SMALL);
+                    ((Button) component).addClassName("btn--small");
+                }
                 layout.add(component);
             }
         }

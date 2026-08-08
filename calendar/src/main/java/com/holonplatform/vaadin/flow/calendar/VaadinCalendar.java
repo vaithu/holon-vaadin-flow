@@ -5,8 +5,6 @@ import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
 import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.dependency.JsModule;
 import com.vaadin.flow.component.dependency.NpmPackage;
-import com.vaadin.flow.i18n.LocaleChangeEvent;
-import com.vaadin.flow.i18n.LocaleChangeObserver;
 import com.vaadin.flow.shared.Registration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,7 +57,7 @@ import java.util.regex.Pattern;
 @NpmPackage(value = "@fullcalendar/list",        version = "6.1.15")
 @NpmPackage(value = "@fullcalendar/interaction", version = "6.1.15")
 @JsModule("./vaadin-calendar-element.js")
-public class VaadinCalendar extends Component implements HasSize, Focusable<VaadinCalendar>, LocaleChangeObserver {
+public class VaadinCalendar extends Component implements HasSize, Focusable<VaadinCalendar> {
 
     private static final DateTimeFormatter ISO = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
 
@@ -841,15 +839,6 @@ public class VaadinCalendar extends Component implements HasSize, Focusable<Vaad
      * Re-applies the FullCalendar locale and re-resolves all {@link CalendarI18n} labels
      * through the Holon {@code LocalizationContext} / {@code I18NProvider} for the new locale.
      */
-    @Override
-    public void localeChange(LocaleChangeEvent event) {
-        Locale locale = event.getLocale();
-        getElement().setAttribute("locale", locale.toLanguageTag());
-        if (currentI18n != null) {
-            getElement().callJsFunction("setI18n", currentI18n.toJson(locale));
-        }
-    }
-
     // =========================================================================
     // CRUD API
     // =========================================================================

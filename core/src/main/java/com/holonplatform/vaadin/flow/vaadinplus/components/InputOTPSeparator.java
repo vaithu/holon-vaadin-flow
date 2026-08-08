@@ -15,11 +15,12 @@
  */
 package com.holonplatform.vaadin.flow.vaadinplus.components;
 
+import java.io.Serial;
 import com.holonplatform.vaadin.flow.components.Components;
-import com.iyensoft.vaadin.flow.enums.MaterialSymbol;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.icon.VaadinIcon;
 
 /**
  * A visual separator between {@link InputOTPGroup}s inside an {@link InputOTP}.
@@ -27,12 +28,12 @@ import com.vaadin.flow.component.html.Span;
  * <p>Renders as:
  * <pre>
  * &lt;div class="input-otp__separator" aria-hidden="true" role="presentation"&gt;
- *   &lt;span class="input-otp__separator-icon"&gt;–&lt;/span&gt;  &lt;!-- default --&gt;
+ *   &lt;span class="input-otp__separator-icon"&gt;â€“&lt;/span&gt;  &lt;!-- default --&gt;
  * &lt;/div&gt;
  * </pre>
  *
  * <p>Mirrors the shadcn/ui {@code InputOTPSeparator} element. Swap the default en-dash
- * for any component (e.g. a {@link MaterialSymbol} icon, or a plain {@link Span}).
+ * for any component (e.g. a {@link VaadinIcon} icon, or a plain {@link Span}).
  *
  * <p>All visual styling is defined in {@code input-otp.css}.
  *
@@ -41,6 +42,7 @@ import com.vaadin.flow.component.html.Span;
  */
 public class InputOTPSeparator extends Div {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     // -----------------------------------------------------------------------
@@ -48,19 +50,28 @@ public class InputOTPSeparator extends Div {
     // -----------------------------------------------------------------------
 
     /**
-     * Creates a separator with the default en-dash ({@code –}) glyph.
+     * Creates a separator with the default en-dash ({@code â€“}) glyph.
      */
     public InputOTPSeparator() {
         this((Component) null);
     }
 
     /**
-     * Creates a separator using a {@link MaterialSymbol} icon.
+     * Creates a separator using a {@link VaadinIcon} icon.
      *
-     * @param symbol the icon to render as separator content (not null)
+     * @param icon the icon to render as separator content (not null)
      */
-    public InputOTPSeparator(MaterialSymbol symbol) {
-        this(symbol != null ? symbol.create("input-otp__separator-icon") : null);
+    public InputOTPSeparator(VaadinIcon icon) {
+        addClassName("input-otp__separator");
+        getElement().setAttribute("aria-hidden", "true");
+        getElement().setAttribute("role", "presentation");
+        if (icon != null) {
+            var ic = icon.create();
+            ic.addClassName("input-otp__separator-icon");
+            add(ic);
+        } else {
+            add(Components.span().text("â€“").styleName("input-otp__separator-icon").build());
+        }
     }
 
     /**
@@ -77,9 +88,8 @@ public class InputOTPSeparator extends Div {
         if (customContent != null) {
             add(customContent);
         } else {
-            Span dash = Components.span().text("–").styleName("input-otp__separator-icon").build();
+            Span dash = Components.span().text("â€“").styleName("input-otp__separator-icon").build();
             add(dash);
         }
     }
 }
-

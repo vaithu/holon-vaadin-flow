@@ -9,7 +9,7 @@ public enum ColumnGap {
 
     private final String className;
 
-    private ColumnGap(String className) {
+    ColumnGap(String className) {
         this.className = className;
     }
 

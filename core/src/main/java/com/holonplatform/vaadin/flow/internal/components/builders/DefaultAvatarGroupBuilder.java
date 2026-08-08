@@ -22,6 +22,7 @@ public class DefaultAvatarGroupBuilder extends AbstractAvatarGroupConfigurator<A
 
     @Override
     public AvatarGroup build() {
+        applyPostProcessors();
         return getComponent();
     }
 }

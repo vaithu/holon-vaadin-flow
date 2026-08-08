@@ -36,14 +36,18 @@ public class SplitViewFrame extends Composite<Div> {
         addClassName(CLASS_NAME);
 
         header = Components.div().styleName(CLASS_NAME + "__header").build();
+        header.getElement().setAttribute("role", "banner");
 
         wrapper = new FlexBoxLayout();
         wrapper.setSizeFull();
         wrapper.addClassName(CLASS_NAME + "__wrapper");
 
         content = Components.div().styleName(CLASS_NAME + "__content").build();
+        content.getElement().setAttribute("role", "main");
         details = Components.div().styleName(CLASS_NAME + "__details").build();
+        details.getElement().setAttribute("role", "complementary");
         footer = Components.div().styleName(CLASS_NAME + "__footer").build();
+        footer.getElement().setAttribute("role", "contentinfo");
 
         wrapper.add(content, details);
         getContent().add(header, wrapper, footer);

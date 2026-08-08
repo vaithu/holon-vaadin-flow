@@ -259,8 +259,8 @@ public abstract class AbstractDivConfigurator<C extends DivConfigurator<C>>
     }
 
     @Override
-    public C withPostProcessor(Consumer<DivConfigurator<C>> postProcessor) {
-        postProcessor.accept(this);
+    public C configure(Consumer<DivConfigurator<C>> configurator) {
+        configurator.accept(this);
         return getConfigurator();
     }
 }

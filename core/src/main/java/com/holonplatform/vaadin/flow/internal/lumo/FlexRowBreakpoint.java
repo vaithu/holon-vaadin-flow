@@ -9,7 +9,7 @@ public enum FlexRowBreakpoint {
 
     private final String className;
 
-    private FlexRowBreakpoint(String className) {
+    FlexRowBreakpoint(String className) {
         this.className = className;
     }
 

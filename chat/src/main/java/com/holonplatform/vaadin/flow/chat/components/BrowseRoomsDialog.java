@@ -72,7 +72,6 @@ public class BrowseRoomsDialog extends Dialog {
         this.onMembershipChanged = callback;
         return this;
     }
-
     // ------------------------------------------------------------------ //
     // Build
     // ------------------------------------------------------------------ //
@@ -89,6 +88,8 @@ public class BrowseRoomsDialog extends Dialog {
         searchField.setWidthFull();
         searchField.addValueChangeListener(e -> loadRooms(e.getValue()));
         searchField.setClearButtonVisible(true);
+        searchField.getElement().setAttribute("aria-label",
+                LocalizationProvider.localize("Search rooms", ChatI18N.BROWSE_ROOMS_SEARCH_ARIA));
         return searchField;
     }
 
@@ -107,6 +108,7 @@ public class BrowseRoomsDialog extends Dialog {
     private void loadRooms(String filter) {
         roomList.removeAll();
         roomList.addClassName("browse-rooms-dialog__list");
+        roomList.getElement().setAttribute("role", "list");
 
         List<ChatRoom> rooms = chatService.findPublicRooms();
         if (rooms.isEmpty()) {
@@ -127,9 +129,18 @@ public class BrowseRoomsDialog extends Dialog {
     private Div buildRoomRow(ChatRoom room) {
         Div row = new Div();
         row.addClassName("browse-rooms-dialog__row");
+        row.getElement().setAttribute("role", "listitem");
 
-        Span icon = new Span(room.getType() == ChatRoom.Type.GROUP ? "@" : "#");
+        boolean isGroup = room.getType() == ChatRoom.Type.GROUP;
+        String iconText = isGroup ? "@" : "#";
+        String iconAriaLabel = isGroup
+                ? LocalizationProvider.localize("Group", ChatI18N.BROWSE_ROOMS_ICON_GROUP)
+                : LocalizationProvider.localize("Channel", ChatI18N.BROWSE_ROOMS_ICON_CHANNEL);
+
+        Span icon = new Span(iconText);
         icon.addClassName("browse-rooms-dialog__row-icon");
+        icon.getElement().setAttribute("aria-label", iconAriaLabel);
+        icon.getElement().setAttribute("title", iconAriaLabel);
 
         Span name = new Span(room.getName());
         name.addClassName("browse-rooms-dialog__row-name");
@@ -149,6 +160,7 @@ public class BrowseRoomsDialog extends Dialog {
                 : LocalizationProvider.localize("{0} members", ChatI18N.BROWSE_ROOMS_MEMBERS_MANY, memberCount);
         Span memberBadge = new Span(memberLabel);
         memberBadge.addClassName("browse-rooms-dialog__row-members");
+        memberBadge.getElement().setAttribute("aria-label", memberLabel);
 
         boolean joined = chatService.isMember(localUserId, room.getId());
         Button actionBtn = joined ? buildLeaveButton(room, row) : buildJoinButton(room, row);

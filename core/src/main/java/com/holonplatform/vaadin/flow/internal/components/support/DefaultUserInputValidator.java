@@ -15,6 +15,7 @@
  */
 package com.holonplatform.vaadin.flow.internal.components.support;
 
+import java.io.Serial;
 import com.holonplatform.core.Validator;
 import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.vaadin.flow.components.events.InvalidChangeEvent;
@@ -23,6 +24,7 @@ import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
 
 public class DefaultUserInputValidator<T> implements Validator<T>, InvalidChangeEventListener {
 
+	@Serial
 	private static final long serialVersionUID = 8168322550502915508L;
 
 	private static final Localizable DEFAULT_ERROR = Localizable.of("Invalid user input",

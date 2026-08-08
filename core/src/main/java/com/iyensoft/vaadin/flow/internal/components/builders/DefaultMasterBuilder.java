@@ -18,6 +18,7 @@ public class DefaultMasterBuilder
 
     @Override
     public Div build() {
+        applyPostProcessors();
         return getComponent();
     }
 }

@@ -160,8 +160,18 @@ vaadin-button.btn--icon::part(button) {
 
 /* -----------------------------------------------------------------------
  * Large — increased padding and font size
- * Replaces: ButtonVariant.LUMO_LARGE
+ *
+ * THREE-LAYER override required for Aura + Lumo cross-theme correctness:
+ *   1. height on HOST         → beats :host { height } by CSS Scoping L1 spec
+ *                               (external selectors always win over shadow :host)
+ *   2. --vaadin-button-height → Aura reads this token inside shadow DOM via var()
+ *   3. min-height ::part()    → Lumo / future engine fallback
  * ----------------------------------------------------------------------- */
+
+vaadin-button.btn--large {
+    --vaadin-button-height: 3.25rem;
+    height: 3.25rem;
+}
 
 vaadin-button.btn--large::part(button) {
     font-size  : 1rem;
@@ -171,15 +181,35 @@ vaadin-button.btn--large::part(button) {
 
 /* -----------------------------------------------------------------------
  * Small — reduced padding, font size, and touch target
- * Replaces: ButtonVariant.LUMO_SMALL
- * Note: WCAG 2.5.8 still recommends ≥ 44 px; use sparingly inside
- * dense UI sections where surrounding whitespace compensates.
+ *
+ * Same three-layer override as .btn--large above.
+ * Note: vaadin-shell-theme.css raises --vaadin-button-height to 2.75rem
+ * on mobile for WCAG 2.5.8. The @media block below keeps .btn--small
+ * compact on mobile too (use sparingly where surrounding space compensates).
  * ----------------------------------------------------------------------- */
+
+vaadin-button.btn--small {
+    --vaadin-button-height: 2rem;
+    height: 2rem;
+}
 
 vaadin-button.btn--small::part(button) {
     font-size  : 0.8125rem;
     padding    : 0.25rem 0.75rem;
     min-height : 2rem;
+}
+
+/* Mobile: pin btn--small at 2rem — overrides the global 2.75rem mobile
+   touch-target rule set by vaadin-shell-theme.css §4 media query. */
+@media (max-width: 767px) {
+    vaadin-button.btn--small {
+        --vaadin-button-height: 2rem;
+        height: 2rem;
+    }
+
+    vaadin-button.btn--small::part(button) {
+        min-height: 2rem;
+    }
 }
 
 /* -----------------------------------------------------------------------

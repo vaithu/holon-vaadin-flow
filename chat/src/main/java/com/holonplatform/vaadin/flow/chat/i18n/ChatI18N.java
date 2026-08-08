@@ -142,5 +142,105 @@ public final class ChatI18N {
      * Example: {@code "Several people are typing…"}
      */
     public static final String TYPING_SEVERAL = "chat.typing.several";
+    /** Accessible label for the typing indicator status region. */
+    public static final String TYPING_ARIA_LABEL = "chat.typing.aria_label";
+
+    // ------------------------------------------------------------------ //
+    // Invite-to-group dialog
+    // ------------------------------------------------------------------ //
+
+    /**
+     * Dialog header — argument {0} = room display name.
+     * Example: {@code "Invite people to #general"}
+     */
+    public static final String INVITE_TITLE              = "chat.invite.title";
+    /** Accessible label for the dialog close button. */
+    public static final String INVITE_CLOSE_ARIA         = "chat.invite.close_aria";
+    /** Error paragraph when the user list cannot be loaded — {0} = error message. */
+    public static final String INVITE_ERROR_LOADING      = "chat.invite.error_loading";
+    /** Empty-state paragraph when no invitable users remain. */
+    public static final String INVITE_NO_USERS           = "chat.invite.no_users";
+    /** Badge label for a user who is already a room member. */
+    public static final String INVITE_ALREADY_MEMBER     = "chat.invite.already_member";
+    /** Badge label for a user who has already been invited. */
+    public static final String INVITE_BADGE_INVITED      = "chat.invite.badge_invited";
+    /** Invite button label. */
+    public static final String INVITE_BTN                = "chat.invite.btn";
+    /**
+     * Hint paragraph in manual-ID mode — {0} = room display name.
+     * Example: {@code "Enter the user ID (or email) of the person you want to invite to #general."}
+     */
+    public static final String INVITE_HINT               = "chat.invite.hint";
+    /** Placeholder for the manual user-ID text field. */
+    public static final String INVITE_FIELD_PLACEHOLDER  = "chat.invite.field_placeholder";
+    /** Send invitation button label. */
+    public static final String INVITE_SEND_BTN           = "chat.invite.send_btn";
+    /** Validation error shown when the user-ID field is blank. */
+    public static final String INVITE_FIELD_REQUIRED     = "chat.invite.field_required";
+    /** Section header above pending invitations list. */
+    public static final String INVITE_PENDING_HEADER     = "chat.invite.pending_header";
+    /** Badge label for a pending invitation. */
+    public static final String INVITE_PENDING_BADGE      = "chat.invite.pending_badge";
+    /**
+     * Success notification — {0} = invitee display name.
+     * Example: {@code "Invitation sent to Alice"}
+     */
+    public static final String INVITE_SENT_NOTIFICATION  = "chat.invite.sent_notification";
+    /**
+     * Error notification — {0} = error message.
+     * Example: {@code "Could not send invitation: connection refused"}
+     */
+    public static final String INVITE_ERROR_NOTIFICATION = "chat.invite.error_notification";
+
+    // ------------------------------------------------------------------ //
+    // LiveChat – accessible labels
+    // ------------------------------------------------------------------ //
+
+    /** Marker appended to the sender abbreviation for edited messages. */
+    public static final String LIVE_CHAT_EDITED_MARKER   = "chat.live_chat.edited_marker";
+    /** Accessible label for the "Load older messages" button. */
+    public static final String LIVE_CHAT_LOAD_OLDER_ARIA = "chat.live_chat.load_older_aria";
+    /**
+     * Accessible label for the message list region — {0} = room name.
+     * Example: {@code "Messages for general"}
+     */
+    public static final String LIVE_CHAT_MESSAGES_ARIA   = "chat.live_chat.messages_aria";
+    /** Accessible label for the avatar group showing who is in the room. */
+    public static final String LIVE_CHAT_AVATARS_ARIA    = "chat.live_chat.avatars_aria";
+
+    // ------------------------------------------------------------------ //
+    // Channel list – accessible labels
+    // ------------------------------------------------------------------ //
+
+    /** Accessible label for the channel list nav/region. */
+    public static final String CHANNEL_LIST_ARIA         = "chat.channel_list.aria_label";
+    /**
+     * Accessible label for a public/channel room row — {0} = room name.
+     * Example: {@code "# general channel"}
+     */
+    public static final String CHANNEL_LIST_CHANNEL_ARIA = "chat.channel_list.channel_aria";
+    /**
+     * Accessible label for a direct-message room row — {0} = room name.
+     * Example: {@code "@ Alice direct message"}
+     */
+    public static final String CHANNEL_LIST_DIRECT_ARIA  = "chat.channel_list.direct_aria";
+    /**
+     * Accessible label for the unread badge — {0} = count.
+     * Example: {@code "3 unread messages"}
+     */
+    public static final String CHANNEL_LIST_UNREAD_ARIA  = "chat.channel_list.unread_aria";
+
+    // ------------------------------------------------------------------ //
+    // Browse-rooms dialog – accessible labels
+    // ------------------------------------------------------------------ //
+
+    /** Accessible label for the room-type icon in a channel row. */
+    public static final String BROWSE_ROOMS_ICON_CHANNEL = "chat.browse_rooms.icon_channel";
+    /** Accessible label for the room-type icon in a group row. */
+    public static final String BROWSE_ROOMS_ICON_GROUP   = "chat.browse_rooms.icon_group";
+    /**
+     * Accessible label for the search field.
+     */
+    public static final String BROWSE_ROOMS_SEARCH_ARIA  = "chat.browse_rooms.search_aria";
 }
 

@@ -61,6 +61,7 @@ import org.springframework.boot.persistence.autoconfigure.EntityScan;
 //@StyleSheet("context://brand-override-example.css")
 //@StyleSheet("context://brand-teal-ocean.css")
 // @StyleSheet("context://brand-gold-leaf.css")
+// @StyleSheet("context://brand-blue-clean.css")
 //@StyleSheet("context://brand-cobalt.css")
 //@StyleSheet("context://brand-violet-studio.css")
 //@StyleSheet("context://brand-azure.css")

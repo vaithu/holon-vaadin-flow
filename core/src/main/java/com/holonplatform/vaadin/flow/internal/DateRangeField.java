@@ -1,6 +1,7 @@
 package com.holonplatform.vaadin.flow.internal;
 
 import com.holonplatform.vaadin.flow.components.Components;
+import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
 import com.vaadin.flow.component.customfield.CustomField;
 import com.vaadin.flow.component.datepicker.DatePicker;
 
@@ -16,14 +17,13 @@ public class DateRangeField extends CustomField<DateRange> {
 
     public DateRangeField() {
         startDatePicker = new DatePicker();
-        startDatePicker.setPlaceholder("Start date");
+        startDatePicker.setPlaceholder(LocalizationProvider.localize("Start date", "date_range.start_placeholder"));
 
         endDatePicker = new DatePicker();
-        endDatePicker.setPlaceholder("End date");
+        endDatePicker.setPlaceholder(LocalizationProvider.localize("End date", "date_range.end_placeholder"));
 
         add(startDatePicker, Components.span().text(" – ").build(), endDatePicker);
     }
-
     @Override
     protected DateRange generateModelValue() {
         return new DateRange(startDatePicker.getValue(), endDatePicker.getValue());

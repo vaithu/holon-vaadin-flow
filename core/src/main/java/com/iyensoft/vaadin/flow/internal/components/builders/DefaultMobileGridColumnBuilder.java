@@ -21,6 +21,7 @@ public class DefaultMobileGridColumnBuilder extends AbstractMobileGridColumnConf
 
     @Override
     public Layout build() {
+        applyPostProcessors();
         return getComponent();
     }
 }

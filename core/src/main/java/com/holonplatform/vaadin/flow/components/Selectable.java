@@ -90,7 +90,7 @@ public interface Selectable<T> {
 	/**
 	 * Selection modes enumeration.
 	 */
-	public enum SelectionMode {
+	enum SelectionMode {
 
 		/**
 		 * The selection is not active.
@@ -113,7 +113,7 @@ public interface Selectable<T> {
 	 * Selection event.
 	 * @param <T> Selection item type
 	 */
-	public interface SelectionEvent<T> extends Serializable {
+	interface SelectionEvent<T> extends Serializable {
 
 		/**
 		 * Get first selected data item, if any.
@@ -142,7 +142,7 @@ public interface Selectable<T> {
 	 * @param <T> Selection item type
 	 */
 	@FunctionalInterface
-	public interface SelectionListener<T> extends Serializable {
+	interface SelectionListener<T> extends Serializable {
 
 		/**
 		 * Invoked when the selection has changed.

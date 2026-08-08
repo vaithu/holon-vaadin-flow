@@ -15,6 +15,7 @@
  */
 package com.holonplatform.vaadin.flow.internal.components;
 
+import java.io.Serial;
 import com.holonplatform.core.Registration;
 import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.core.internal.utils.ObjectUtils;
@@ -41,6 +42,7 @@ public abstract class AbstractComposablePropertyForm<C extends Component, E exte
 		extends AbstractComposable<C, E, G> implements BoundComponentGroup<Property<?>, E>,
 		ValueHolder<PropertyBox, GroupValueChangeEvent<PropertyBox, Property<?>, E, G>>, ValueComponent<PropertyBox> {
 
+	@Serial
 	private static final long serialVersionUID = -2331872101418117289L;
 
 	/**

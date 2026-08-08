@@ -20,7 +20,6 @@ import com.holonplatform.core.internal.utils.ObjectUtils;
 import com.holonplatform.vaadin.flow.components.builders.ButtonBuilder;
 import com.holonplatform.vaadin.flow.components.builders.ButtonConfigurator;
 import com.holonplatform.vaadin.flow.components.builders.ButtonConfigurator.BaseButtonConfigurator;
-import com.holonplatform.vaadin.flow.components.builders.DialogBuilder;
 import com.holonplatform.vaadin.flow.components.builders.DialogBuilder.QuestionDialogBuilder;
 import com.vaadin.flow.component.ModalityMode;
 import com.vaadin.flow.component.button.Button;
@@ -44,7 +43,7 @@ public class DefaultQuestionDialogBuilder extends AbstractDialogConfigurator<Que
 		ObjectUtils.argumentNotNull(questionDialogCallback, "Question dialog callback must be not null");
 
 		this.confirmButton = ButtonBuilder.create()
-				.text(Localizable.of("Yes", DialogBuilder.DEFAULT_CONFIRM_BUTTON_MESSAGE_CODE))
+				.text(Localizable.of("Yes", DEFAULT_CONFIRM_BUTTON_MESSAGE_CODE))
 				.styleName("h-dialog__action-btn")
 				.withClickListener(e -> {
 					getComponent().attemptClose();
@@ -53,7 +52,7 @@ public class DefaultQuestionDialogBuilder extends AbstractDialogConfigurator<Que
 				.build();
 
 		this.denyButton = ButtonBuilder.create()
-				.text(Localizable.of("No", DialogBuilder.DEFAULT_DENY_BUTTON_MESSAGE_CODE))
+				.text(Localizable.of("No", DEFAULT_DENY_BUTTON_MESSAGE_CODE))
 				.styleName("h-dialog__cancel-btn")
 				.withClickListener(e -> {
 					getComponent().attemptClose();

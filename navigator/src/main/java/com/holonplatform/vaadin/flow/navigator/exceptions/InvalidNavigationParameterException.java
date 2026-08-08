@@ -15,6 +15,8 @@
  */
 package com.holonplatform.vaadin.flow.navigator.exceptions;
 
+import java.io.Serial;
+
 /**
  * Exception to notify invalid navigation parameter values.
  *
@@ -22,6 +24,7 @@ package com.holonplatform.vaadin.flow.navigator.exceptions;
  */
 public class InvalidNavigationParameterException extends RuntimeException {
 
+	@Serial
 	private static final long serialVersionUID = -6645496038897867290L;
 
 	/**

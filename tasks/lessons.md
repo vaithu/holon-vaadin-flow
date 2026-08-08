@@ -25,3 +25,52 @@
 **Mistake:** Rewriting Java files via terminal/editor operations introduced a UTF-8 BOM, which javac treated as an illegal leading character and caused parse failures across the build.
 
 **Rule:** After any file rewrite of Java sources, verify the first bytes are BOM-free UTF-8 before compiling. Prefer direct patch/edit tools that preserve encoding, and if using shell rewrites, always write with `UTF8Encoding(false)`.
+
+## Lesson 004 — 2026-07-03
+**Context:** Implementing a reusable wizard component from mockup screenshots.
+
+**Mistake:** Built a domain-specific customer wizard in the feature module instead of a reusable component in the core library.
+
+**Rule:** When the user asks for a reusable framework component, implement it in core as a generic primitive with injected content and callbacks; keep domain-specific composition only in demos or consuming apps.
+
+## Lesson 005 — 2026-07-03
+**Context:** Refining the wizard refactor after user feedback.
+
+**Mistake:** Introduced a new wrapper shell around raw Vaadin components even though the codebase already provides reusable Holon components for the same layout and stepper concerns.
+
+**Rule:** Prefer existing Holon components and builders first; only use raw Vaadin primitives when no equivalent exists, and do not add a new wrapper component if the same UI can be composed from existing primitives.
+
+## Lesson 006 — 2026-07-03
+**Context:** Revamping the wizard demo into entity-backed forms.
+
+**Mistake:** Manually composing form controls and buttons where `EntityFormPanel` and Holon button presets already express the workflow more cleanly.
+
+**Rule:** For CRUD/wizard forms, start with `EntityFormPanel` plus `ButtonPreset`-driven buttons; only drop to manual component composition when a field or interaction cannot be modeled that way.
+
+## Lesson 007 — 2026-07-03
+**Context:** Finishing the mockup clone with Holon inputs.
+
+**Mistake:** I nearly reached for raw Vaadin text/select controls too early.
+
+**Rule:** Before adding a wrapper or raw field, verify the existing Holon input builders cover it; use raw Vaadin only for the one confirmed gap (the avatar upload here).
+
+## Lesson 008 — 2026-07-03
+**Context:** Refining the wizard shell after review.
+
+**Mistake:** Introduced a custom `Mode` enum and raw `Div` shells even though `ViewMode` and `Panel` already exist.
+
+**Rule:** Reuse the framework’s semantic viewport enums and container primitives first; do not create parallel mode enums or generic wrappers when the codebase already provides a matching abstraction.
+
+## Lesson 009 — 2026-07-03
+**Context:** Correcting the `WizardFrame` container interpretation.
+
+**Mistake:** I extended `Panel` instead of only replacing the internal `Div` slots with `Panel`.
+
+**Rule:** When the user asks to replace inner containers, keep the outer component contract unchanged unless they explicitly request a broader refactor.
+
+## Lesson 010 — 2026-07-24
+**Context:** Converting menu APIs to consumer-based indentation.
+
+**Mistake:** I kept the old no-arg submenu entry point alongside the new consumer overload, which duplicated the pattern and left stale call sites behind.
+
+**Rule:** When moving a builder API to `Consumer<T>` style, remove the old sibling entry point, update all usages in one pass, and verify there are no remaining no-arg calls before concluding.

@@ -18,51 +18,39 @@ package com.holonplatform.vaadin.flow.internal.components.builders;
 import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.core.internal.utils.ObjectUtils;
 import com.holonplatform.vaadin.flow.components.HasComponent;
-import com.holonplatform.vaadin.flow.components.builders.ContextMenuConfigurator;
 import com.holonplatform.vaadin.flow.components.builders.MenuBarConfigurator;
 import com.holonplatform.vaadin.flow.components.events.ClickEvent;
-import com.holonplatform.vaadin.flow.components.events.ClickEventListener;
 import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasEnabled;
 import com.vaadin.flow.component.HasSize;
 import com.vaadin.flow.component.HasStyle;
+import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.contextmenu.MenuItem;
-import com.vaadin.flow.component.contextmenu.SubMenu;
+import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.menubar.MenuBar;
 import com.vaadin.flow.component.menubar.MenuBarVariant;
 import com.vaadin.flow.component.shared.HasTooltip;
 
 import java.util.Optional;
-import java.util.function.BiFunction;
 import java.util.function.Function;
 
 /**
- * Abstract {@link ContextMenuConfigurator}.
+ * Abstract {@link MenuBarConfigurator}.
  *
- * @param <M> Concrete MenuBar component type
- * @param <I> Menu item type
- * @param <S> Sub menu type
  * @param <C> Concrete configurator type
  * @since 5.5.6
  */
-public abstract class AbstractMenuBarConfigurator<M extends MenuBar, I extends MenuItem, S extends SubMenu
-        , C extends MenuBarConfigurator<ClickEventListener<MenuItem, ClickEvent<MenuItem>>, M, I, S, C>>
-        extends AbstractComponentConfigurator<M, C>
-        implements MenuBarConfigurator<ClickEventListener<MenuItem, ClickEvent<MenuItem>>, M, I, S, C> {
+public abstract class AbstractMenuBarConfigurator<C extends MenuBarConfigurator<C>>
+        extends AbstractComponentConfigurator<MenuBar, C> implements MenuBarConfigurator<C> {
 
-    private final M instance;
-    private final BiFunction<M, String, MenuItem> textMenuItemProvider;
-    private final BiFunction<M, Component, MenuItem> componentMenuItemProvider;
+    private final MenuBar instance;
     private final Function<com.vaadin.flow.component.ClickEvent<MenuItem>, ClickEvent<MenuItem>> clickEventConverter;
 
-    public AbstractMenuBarConfigurator(M instance, BiFunction<M, String, MenuItem> textMenuItemProvider,
-                                       BiFunction<M, Component, MenuItem> componentMenuItemProvider,
-                                       Function<com.vaadin.flow.component.ClickEvent<MenuItem>, ClickEvent<MenuItem>> clickEventConverter) {
+    public AbstractMenuBarConfigurator(MenuBar instance,
+            Function<com.vaadin.flow.component.ClickEvent<MenuItem>, ClickEvent<MenuItem>> clickEventConverter) {
         super(instance);
         this.instance = instance;
-        this.textMenuItemProvider = textMenuItemProvider;
-        this.componentMenuItemProvider = componentMenuItemProvider;
         this.clickEventConverter = clickEventConverter;
     }
 
@@ -87,113 +75,136 @@ public abstract class AbstractMenuBarConfigurator<M extends MenuBar, I extends M
     }
 
     /**
-     * Get the context menu instance.
+     * Get the menu bar instance.
      *
-     * @return the context menu instance
+     * @return the menu bar instance
      */
-    protected M getInstance() {
+    protected MenuBar getInstance() {
         return instance;
     }
 
-    /*
-     * (non-Javadoc)
-     * @see
-     * com.holonplatform.vaadin.flow.components.builders.ContextMenuConfigurator#withItem(com.holonplatform.core.i18n.
-     * Localizable)
-     */
     @Override
-    public MenuItemBuilder<ClickEventListener<MenuItem, ClickEvent<MenuItem>>, M, I, S, C> withMenuItem(Localizable text) {
+    public MenuItemBuilder<C> withMenuItem(Localizable text) {
         ObjectUtils.argumentNotNull(text, "Text must be not null");
         return new DefaultMenuBarItemBuilder<>(getConfigurator(),
-                textMenuItemProvider.apply(instance, LocalizationProvider.localize(text).orElse("")),
-                clickEventConverter);
+                instance.addItem(LocalizationProvider.localize(text).orElse("")), clickEventConverter);
     }
 
-    /*
-     * (non-Javadoc)
-     * @see
-     * com.holonplatform.vaadin.flow.components.builders.ContextMenuConfigurator#withItem(com.vaadin.flow.component.
-     * Component)
-     */
     @Override
-    public MenuItemBuilder<ClickEventListener<MenuItem, ClickEvent<MenuItem>>, M, I, S, C> withMenuItem(
-            Component component) {
+    public MenuItemBuilder<C> withMenuItem(String text) {
+        return withMenuItem(Localizable.builder().message(text != null ? text : "").build());
+    }
+
+    @Override
+    public MenuItemBuilder<C> withMenuItem(String defaultText, String messageCode, Object... arguments) {
+        return withMenuItem(Localizable.builder().message((defaultText == null) ? "" : defaultText)
+                .messageCode(messageCode).messageArguments(arguments).build());
+    }
+
+    @Override
+    public MenuItemBuilder<C> withMenuItem(Component component) {
         ObjectUtils.argumentNotNull(component, "Component must be not null");
-        return new DefaultMenuBarItemBuilder<>(getConfigurator(),
-                componentMenuItemProvider.apply(instance, component), clickEventConverter);
+        return new DefaultMenuBarItemBuilder<>(getConfigurator(), instance.addItem(component), clickEventConverter);
     }
 
-    /**
-     * Add a new menu item with the given {@link HasComponent} component inside and a {@link String} for
-     * menu item tooltips.
-     *
-     * @param component The menu item component (not null)
-     * @param toolTip   The tooltip to use
-     * @return this
-     */
     @Override
-    public MenuItemBuilder<ClickEventListener<MenuItem, ClickEvent<MenuItem>>, M, I, S, C> withMenuItem(HasComponent component, String toolTip) {
+    public MenuItemBuilder<C> withMenuItem(HasComponent component) {
+        ObjectUtils.argumentNotNull(component, "HasComponent must be not null");
+        return withMenuItem(component.getComponent());
+    }
+
+    @Override
+    public MenuItemBuilder<C> withMenuItem(Component component, String toolTip) {
+        ObjectUtils.argumentNotNull(component, "Component must be not null");
+        MenuItem menuItem = instance.addItem(component);
+        menuItem.setTooltipText(toolTip);
+        return new DefaultMenuBarItemBuilder<>(getConfigurator(), menuItem, clickEventConverter);
+    }
+
+    @Override
+    public MenuItemBuilder<C> withMenuItem(HasComponent component, String toolTip) {
+        ObjectUtils.argumentNotNull(component, "HasComponent must be not null");
         return withMenuItem(component.getComponent(), toolTip);
     }
 
     @Override
-    public MenuItemBuilder<ClickEventListener<MenuItem, ClickEvent<MenuItem>>, M, I, S, C> withMenuItem(Component component, String toolTip) {
-        MenuItem menuItem = componentMenuItemProvider.apply(instance, component);
-        getInstance().setTooltipText(menuItem,toolTip);
-        return new DefaultMenuBarItemBuilder<>(getConfigurator(),menuItem, clickEventConverter);
+    public C withMenuItem(Localizable text, MenuItemClickListener clickEventListener) {
+        return withMenuItem(text).withClickListener(clickEventListener).add();
     }
 
+    @Override
+    public C withMenuItem(String text, MenuItemClickListener clickEventListener) {
+        return withMenuItem(text).withClickListener(clickEventListener).add();
+    }
 
+    @Override
+    public C withMenuItem(String defaultText, String messageCode, MenuItemClickListener clickEventListener) {
+        return withMenuItem(defaultText, messageCode).withClickListener(clickEventListener).add();
+    }
 
-    /**
-     * Sets the event which opens the sub menus of the root level buttons.
-     *
-     * @param openOnHover - true to make the sub menus open on hover (mouseover), false to make them openable by clicking
-     * @return this
-     */
+    @Override
+    public C withMenuItem(Component component, MenuItemClickListener clickEventListener) {
+        return withMenuItem(component).withClickListener(clickEventListener).add();
+    }
+
+    @Override
+    public C withMenuItem(HasComponent component, MenuItemClickListener clickEventListener) {
+        ObjectUtils.argumentNotNull(component, "HasComponent must be not null");
+        return withMenuItem(component.getComponent(), clickEventListener);
+    }
+
+    @Override
+    public C withMenuItem(Component component, String tooltipText, MenuItemClickListener clickEventListener) {
+        return withMenuItem(component, tooltipText).withClickListener(clickEventListener).add();
+    }
+
+    @Override
+    public C withMenuItem(Icon icon, String text, MenuItemClickListener clickEventListener) {
+        ObjectUtils.argumentNotNull(icon, "Icon must be not null");
+        ObjectUtils.argumentNotNull(clickEventListener, "Click listener must be not null");
+        MenuItem item = instance.addItem(icon);
+        if (text != null && !text.isEmpty()) {
+            item.add(new Text(text));
+        }
+        item.addClickListener(e -> clickEventListener.onClickEvent(clickEventConverter.apply(e)));
+        return getConfigurator();
+    }
+
+    @Override
+    public C withMenuItem(Icon icon, Localizable text, MenuItemClickListener clickEventListener) {
+        ObjectUtils.argumentNotNull(icon, "Icon must be not null");
+        ObjectUtils.argumentNotNull(clickEventListener, "Click listener must be not null");
+        MenuItem item = instance.addItem(icon);
+        String resolved = (text != null) ? LocalizationProvider.localize(text).orElse(text.getMessage()) : null;
+        if (resolved != null && !resolved.isEmpty()) {
+            item.add(new Text(resolved));
+        }
+        item.addClickListener(e -> clickEventListener.onClickEvent(clickEventConverter.apply(e)));
+        return getConfigurator();
+    }
+
     @Override
     public C openOnHover(boolean openOnHover) {
-        getInstance().setOpenOnHover(openOnHover);
+        instance.setOpenOnHover(openOnHover);
         return getConfigurator();
     }
 
-    /**
-     * Sets reverse collapse order for the menu bar.
-     *
-     * @param reverseCollapseOrder -  If true, the buttons will be collapsed into the overflow menu starting from the "start" end of the bar instead of the "end".
-     * @return this
-     */
     @Override
     public C reverseCollapseOrder(boolean reverseCollapseOrder) {
-        getInstance().setReverseCollapseOrder(reverseCollapseOrder);
+        instance.setReverseCollapseOrder(reverseCollapseOrder);
         return getConfigurator();
     }
 
-    /**
-     * Sets tab navigation for the menu bar.
-     *
-     * @param tabNavigation -  If true, the top-level menu items is traversable by tab instead of arrow keys (i.e. disabling roving tabindex)
-     * @return this
-     */
     @Override
     public C tabNavigation(boolean tabNavigation) {
-        getInstance().getElement().setProperty("tabNavigation", tabNavigation);
+        instance.getElement().setProperty("tabNavigation", tabNavigation);
         return getConfigurator();
     }
 
-    /**
-     * Add given theme variants to the component.
-     *
-     * @param variants The theme variants to content
-     * @return this
-     */
     @Override
     public C withThemeVariants(MenuBarVariant... variants) {
-        getInstance().addThemeVariants(variants);
+        instance.addThemeVariants(variants);
         return getConfigurator();
     }
-
-
-
 
 }

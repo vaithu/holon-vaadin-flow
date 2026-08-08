@@ -12,6 +12,7 @@ public class DefaultLazyTabsBuilder
 
     @Override
     public Tabs build() {
+        applyPostProcessors();
         return getComponent();
     }
 

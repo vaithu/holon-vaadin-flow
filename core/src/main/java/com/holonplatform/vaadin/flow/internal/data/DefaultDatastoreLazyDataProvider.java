@@ -15,6 +15,7 @@
  */
 package com.holonplatform.vaadin.flow.internal.data;
 
+import java.io.Serial;
 import com.holonplatform.core.ParameterSet;
 import com.holonplatform.core.Path;
 import com.holonplatform.core.datastore.DataTarget;
@@ -49,6 +50,7 @@ import java.util.stream.Stream;
 public class DefaultDatastoreLazyDataProvider<T, F> extends AbstractBackEndDataProvider<T, F>
 		implements DatastoreLazyDataProvider<T, F> {
 
+	@Serial
 	private static final long serialVersionUID = -2782826188714473332L;
 
 	/**
@@ -431,11 +433,9 @@ public class DefaultDatastoreLazyDataProvider<T, F> extends AbstractBackEndDataP
 		});
 
 		// paging
-		if (query != null) {
-			if (query.getLimit() < Integer.MAX_VALUE) {
-				q.limit(query.getLimit());
-				q.offset(query.getOffset());
-			}
+		if (query != null && query.getLimit() < Integer.MAX_VALUE) {
+			q.limit(query.getLimit());
+			q.offset(query.getOffset());
 		}
 
 		return q;

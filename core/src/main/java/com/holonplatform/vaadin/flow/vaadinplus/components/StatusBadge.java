@@ -199,12 +199,6 @@ public class StatusBadge extends Span {
         applyVariant(variant);
     }
 
-    /** Updates the badge label text. */
-    @Override
-    public void setText(String text) {
-        super.setText(text);
-    }
-
     /** Updates the badge label from a {@link Localizable} descriptor. */
     public void setText(Localizable text) {
         super.setText(resolve(text));
@@ -229,4 +223,3 @@ public class StatusBadge extends Span {
                 .orElseGet(() -> l.getMessage() != null ? l.getMessage() : "");
     }
 }
-

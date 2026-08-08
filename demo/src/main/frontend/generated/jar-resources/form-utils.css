@@ -1,0 +1,63 @@
+/*
+ * form-utils.css — generic CSS for the FormViewUtils helper methods.
+ *
+ * Views that use FormViewUtils must declare:
+ *   @StyleSheet("context://form-utils.css")
+ *
+ * BEM prefix: .futil
+ */
+
+/* ── Labeled field wrapper ───────────────────────────────────────────────── */
+/*
+ * Renders a small muted label above an arbitrary component — used for
+ * ChipGroup, AssignmentPickerRow, and any non-PropertyInputForm field.
+ */
+
+.futil__field {
+  display:        flex;
+  flex-direction: column;
+  gap:            4px;
+}
+
+.futil__field-label {
+  font-size:   var(--lumo-font-size-s);
+  font-weight: 500;
+  color:       var(--lumo-secondary-text-color);
+}
+
+/* ── Toggle row (label + description + switch) ───────────────────────────── */
+
+.futil__toggle-row {
+  display:         flex;
+  justify-content: space-between;
+  align-items:     center;
+  padding:         var(--lumo-space-s) 0;
+  border-bottom:   1px solid var(--lumo-contrast-10pct);
+  gap:             var(--lumo-space-m);
+}
+
+.futil__toggle-row:last-child {
+  border-bottom: none;
+}
+
+.futil__toggle-label {
+  font-size:   var(--lumo-font-size-m);
+  font-weight: 500;
+}
+
+.futil__toggle-sub {
+  display:   block;
+  font-size: var(--lumo-font-size-s);
+  color:     var(--lumo-secondary-text-color);
+}
+
+/* ── Required-fields hint ────────────────────────────────────────────────── */
+/*
+ * Used by FormViewUtils.requiredFieldsHint() to render the red asterisk
+ * in "All required fields are marked with *".
+ */
+
+.futil__required-star {
+  color:       var(--lumo-error-color, #ef4444);
+  font-weight: 600;
+}

@@ -15,6 +15,7 @@
  */
 package com.holonplatform.vaadin.flow.internal.components;
 
+import java.io.Serial;
 import com.holonplatform.core.Validator.ValidationException;
 import com.holonplatform.core.internal.utils.ObjectUtils;
 import com.vaadin.flow.data.binder.ValidationResult;
@@ -30,6 +31,7 @@ import com.vaadin.flow.data.binder.ValueContext;
  */
 public class BinderValidatorAdapter<T> implements Validator<T> {
 
+	@Serial
 	private static final long serialVersionUID = -7783005054676508541L;
 
 	private final com.holonplatform.core.Validator<T> validator;

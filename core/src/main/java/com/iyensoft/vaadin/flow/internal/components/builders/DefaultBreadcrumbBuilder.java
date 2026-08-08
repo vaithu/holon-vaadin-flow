@@ -12,6 +12,7 @@ public class DefaultBreadcrumbBuilder extends AbstractBreadcrumbConfigurator<Bre
 
     @Override
     public Breadcrumb build() {
+        applyPostProcessors();
         return getComponent();
     }
 

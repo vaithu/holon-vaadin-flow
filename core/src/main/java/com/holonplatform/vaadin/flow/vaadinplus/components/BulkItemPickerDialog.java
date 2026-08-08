@@ -1,7 +1,9 @@
 package com.holonplatform.vaadin.flow.vaadinplus.components;
 
+import java.io.Serial;
 import com.holonplatform.vaadin.flow.components.Components;
 import com.holonplatform.vaadin.flow.components.builders.BulkItemPickerDialogBuilder;
+import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
 import com.vaadin.flow.component.ComponentEvent;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.button.Button;
@@ -25,17 +27,17 @@ import java.util.function.Function;
  *
  * <h3>Layout</h3>
  * <pre>
- * ┌─────────────────────────────────────────────────────────┐
- * │  Add Items in Bulk                               [×]    │
- * ├──────────────────────────┬──────────────────────────────┤
- * │  [🔍 Search items…    ]  │  Selected Items  [2]  Total: │
- * │  ─────────────────────   │  ────────────────────────── │
- * │  Coffee Table        [✓] │  [Item 5] Coffee Table  -1+ │
- * │  Sofa                [✓] │  [Item 7] Sofa          -1+ │
- * │  Storage Cabinet     [ ] │                              │
- * ├──────────────────────────┴──────────────────────────────┤
- * │                               [Cancel]  [Add Items]     │
- * └─────────────────────────────────────────────────────────┘
+ * â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
+ * â”‚  Add Items in Bulk                               [Ã—]    â”‚
+ * â”œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¤
+ * â”‚  [ðŸ” Search itemsâ€¦    ]  â”‚  Selected Items  [2]  Total: â”‚
+ * â”‚  â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€   â”‚  â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ â”‚
+ * â”‚  Coffee Table        [âœ“] â”‚  [Item 5] Coffee Table  -1+ â”‚
+ * â”‚  Sofa                [âœ“] â”‚  [Item 7] Sofa          -1+ â”‚
+ * â”‚  Storage Cabinet     [ ] â”‚                              â”‚
+ * â”œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”´â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¤
+ * â”‚                               [Cancel]  [Add Items]     â”‚
+ * â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
  * </pre>
  *
  * <h3>Usage</h3>
@@ -61,14 +63,15 @@ import java.util.function.Function;
 @StyleSheet("context://bulk-item-picker-dialog.css")
 public class BulkItemPickerDialog extends Dialog {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
-    // ── Internal state ────────────────────────────────────────────────────────
+    // â”€â”€ Internal state â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
     /** Eagerly loaded catalogue (used when no itemProvider is set). */
     private final List<BulkPickerItem> allItems = new ArrayList<>();
 
-    /** id → quantity for selected items; insertion-ordered for stable display */
+    /** id â†’ quantity for selected items; insertion-ordered for stable display */
     private final LinkedHashMap<String, Integer> selectedQty = new LinkedHashMap<>();
 
     /**
@@ -85,7 +88,7 @@ public class BulkItemPickerDialog extends Dialog {
      */
     private Function<String, List<BulkPickerItem>> itemProvider;
 
-    // ── Paged provider (offset / limit / count — Spring Data style) ───────────
+    // â”€â”€ Paged provider (offset / limit / count â€” Spring Data style) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
     /**
      * Paginated fetch callback. Receives a {@link BulkPickerFetchQuery} with
@@ -95,7 +98,7 @@ public class BulkItemPickerDialog extends Dialog {
 
     /**
      * Optional count callback. Receives the search query and returns the total
-     * number of matching items — used to display "Page X of Y · N items".
+     * number of matching items â€” used to display "Page X of Y Â· N items".
      * When null, pagination shows only "Page X" and disables "Next" when a short
      * page is returned.
      */
@@ -116,7 +119,7 @@ public class BulkItemPickerDialog extends Dialog {
     /** Default page size when none is specified. */
     private static final int DEFAULT_PAGE_SIZE = 20;
 
-    // ── UI references (mutated by setter API) ─────────────────────────────────
+    // â”€â”€ UI references (mutated by setter API) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
     private final H3 titleHeading;
     private final TextField searchField;
@@ -124,16 +127,17 @@ public class BulkItemPickerDialog extends Dialog {
     private final Div selectedListDiv;
     private final Span countBadge;
     private final Span totalQtySpan;
+    private final Span rightTitleSpan;
     private final Button addItemsBtn;
     private final Button cancelBtn;
 
-    /** Pagination bar — only visible in paged provider mode. */
+    /** Pagination bar â€” only visible in paged provider mode. */
     private final Div paginationBar;
     private final Button prevBtn;
     private final Button nextBtn;
     private final Span pageInfoSpan;
 
-    // ── Callbacks ─────────────────────────────────────────────────────────────
+    // â”€â”€ Callbacks â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
     private Consumer<List<BulkPickerEntry>> confirmCallback;
     private Runnable cancelCallback;
@@ -141,7 +145,7 @@ public class BulkItemPickerDialog extends Dialog {
     /** Debounce delay in milliseconds applied to the search field value change. */
     private static final int SEARCH_DEBOUNCE_MS = 300;
 
-    // ── Constructor ───────────────────────────────────────────────────────────
+    // â”€â”€ Constructor â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
     /**
      * Creates an empty {@code BulkItemPickerDialog} with default labels.
@@ -156,8 +160,10 @@ public class BulkItemPickerDialog extends Dialog {
         setCloseOnEsc(true);
         setCloseOnOutsideClick(false);
 
-        // ── Header ────────────────────────────────────────────────────────────
-        titleHeading = Components.h3().text("Add Items in Bulk").styleName("h-dialog__title").build();
+        // â”€â”€ Header â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+        titleHeading = Components.h3()
+                .text(LocalizationProvider.localize("Add Items in Bulk", "bulk_picker.title"))
+                .styleName("h-dialog__title").build();
 
         Div headerText = Components.div().add(titleHeading).styleName("h-dialog__header-text").build();
 
@@ -165,19 +171,22 @@ public class BulkItemPickerDialog extends Dialog {
                 .icon(VaadinIcon.CLOSE)
                 .styleName("h-dialog__close-btn")
                 .tertiaryInline()
+                .ariaLabel(LocalizationProvider.localize("Close dialog", "bulk_picker.close_aria"))
                 .withClickListener(e -> handleCancel())
                 .build();
 
         getHeader().add(headerText, closeBtn);
 
-        // ── Left panel ────────────────────────────────────────────────────────
+        // â”€â”€ Left panel â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
         searchField = new TextField();
-        searchField.setPlaceholder("Type to search or scan the barcode of the item");
+        searchField.setPlaceholder(LocalizationProvider.localize(
+                "Type to search or scan the barcode of the item", "bulk_picker.search_placeholder"));
+        searchField.setAriaLabel(LocalizationProvider.localize("Search items", "bulk_picker.search_aria"));
         searchField.setClearButtonVisible(true);
         searchField.addClassName("bip__search");
         searchField.setPrefixComponent(VaadinIcon.SEARCH.create());
         // Lazy mode: wait for the user to pause typing before triggering a search.
-        // This prevents a round-trip on every keystroke — critical for provider mode.
+        // This prevents a round-trip on every keystroke â€” critical for provider mode.
         searchField.setValueChangeMode(ValueChangeMode.LAZY);
         searchField.setValueChangeTimeout(SEARCH_DEBOUNCE_MS);
         // Reset to page 0 on every new search query so results always start at the top.
@@ -189,11 +198,12 @@ public class BulkItemPickerDialog extends Dialog {
 
         itemListDiv = Components.div().styleName("bip__item-list").build();
 
-        // ── Pagination bar (hidden until a paged provider is set) ─────────────
+        // â”€â”€ Pagination bar (hidden until a paged provider is set) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
         prevBtn = Components.button()
                 .icon(VaadinIcon.ANGLE_LEFT)
                 .styleName("bip__pagination-btn")
                 .tertiary()
+                .ariaLabel(LocalizationProvider.localize("Previous page", "bulk_picker.prev_page_aria"))
                 .withClickListener(e -> navigatePage(-1))
                 .build();
 
@@ -203,6 +213,7 @@ public class BulkItemPickerDialog extends Dialog {
                 .icon(VaadinIcon.ANGLE_RIGHT)
                 .styleName("bip__pagination-btn")
                 .tertiary()
+                .ariaLabel(LocalizationProvider.localize("Next page", "bulk_picker.next_page_aria"))
                 .withClickListener(e -> navigatePage(1))
                 .build();
 
@@ -214,14 +225,19 @@ public class BulkItemPickerDialog extends Dialog {
 
         Div leftPanel = Components.div().add(searchField, itemListDiv, paginationBar).styleName("bip__left").build();
 
-        // ── Right panel ───────────────────────────────────────────────────────
-        Span rightTitle = Components.span().text("Selected Items").styleName("bip__right-title").build();
+        // â”€â”€ Right panel â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+        rightTitleSpan = Components.span()
+                .text(LocalizationProvider.localize("Selected Items", "bulk_picker.selected_title"))
+                .styleName("bip__right-title").build();
 
         countBadge = Components.span().text("0").styleName("bip__count-badge").build();
 
-        totalQtySpan = Components.span().text("Total Quantity: 0").styleName("bip__total-qty").build();
+        totalQtySpan = Components.span()
+                .text(LocalizationProvider.localize("Total Quantity: {0}", "bulk_picker.total_qty")
+                        .replace("{0}", "0"))
+                .styleName("bip__total-qty").build();
 
-        Div rightHeader = Components.div().add(rightTitle, countBadge, totalQtySpan).styleName("bip__right-header").build();
+        Div rightHeader = Components.div().add(rightTitleSpan, countBadge, totalQtySpan).styleName("bip__right-header").build();
 
         selectedListDiv = Components.div().styleName("bip__selected-list").build();
 
@@ -229,32 +245,37 @@ public class BulkItemPickerDialog extends Dialog {
 
         Div rightPanel = Components.div().add(rightHeader, selectedListDiv).styleName("bip__right").build();
 
-        // ── Body split ────────────────────────────────────────────────────────
+        // â”€â”€ Body split â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
         Div divider = Components.div().styleName("bip__divider").build();
 
         Div body = Components.div().add(leftPanel, divider, rightPanel).styleName("bip").build();
 
         add(body);
 
-        // ── Footer ────────────────────────────────────────────────────────────
+        // â”€â”€ Footer â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
         cancelBtn = Components.button()
-                .text("Cancel")
+                .text(LocalizationProvider.localize("Cancel", "bulk_picker.cancel_btn"))
                 .styleName("h-dialog__cancel-btn")
                 .tertiary()
                 .withClickListener(e -> handleCancel())
                 .build();
 
         addItemsBtn = Components.button()
-                .text("Add Items")
+                .text(LocalizationProvider.localize("Add Items", "bulk_picker.add_btn"))
                 .styleName("h-dialog__action-btn")
                 .primary()
                 .withClickListener(e -> handleConfirm())
                 .build();
 
         getFooter().add(cancelBtn, addItemsBtn);
+
+        // Vaadin 25.2 fix: route ESC through handleCancel() so the cancelCallback fires
+        // and the dialog state is reset. Without this listener, ESC auto-closes via the
+        // framework, bypassing cancelCallback entirely.
+        addDialogCloseActionListener(e -> handleCancel());
     }
 
-    // ── Public API ────────────────────────────────────────────────────────────
+    // â”€â”€ Public API â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
     /**
      * Replaces the full item catalogue shown in the left panel (eager mode).
@@ -298,7 +319,7 @@ public class BulkItemPickerDialog extends Dialog {
      *     productService.searchByNameOrSku(query, 50));
      * }</pre>
      *
-     * @param provider {@code (query) → List<BulkPickerItem>} — called with the
+     * @param provider {@code (query) â†’ List<BulkPickerItem>} â€” called with the
      *                 current search text on every debounced keystroke (not null)
      */
     public void setItemProvider(Function<String, List<BulkPickerItem>> provider) {
@@ -315,7 +336,7 @@ public class BulkItemPickerDialog extends Dialog {
         refreshSelectedList();
     }
 
-    // ── Paged provider API ────────────────────────────────────────────────────
+    // â”€â”€ Paged provider API â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
     /**
      * Sets a paginated item provider using Spring Data-style offset/limit semantics.
@@ -323,7 +344,7 @@ public class BulkItemPickerDialog extends Dialog {
      * <p>The {@code fetchProvider} is called on every debounced search with a
      * {@link BulkPickerFetchQuery} carrying {@code (query, offset, limit)}.
      * The {@code countProvider} is called once per query change to retrieve the total
-     * number of matching items — enabling "Page X of Y · N items" in the pagination bar.</p>
+     * number of matching items â€” enabling "Page X of Y Â· N items" in the pagination bar.</p>
      *
      * <pre>{@code
      * dialog.setPagedProvider(
@@ -378,7 +399,7 @@ public class BulkItemPickerDialog extends Dialog {
      * Sets the number of items fetched per page in paged provider mode.
      * Default: {@value #DEFAULT_PAGE_SIZE}.
      *
-     * @param pageSize items per page (≥ 1)
+     * @param pageSize items per page (â‰¥ 1)
      */
     public void setPageSize(int pageSize) {
         if (pageSize < 1) throw new IllegalArgumentException("pageSize must be >= 1");
@@ -479,7 +500,7 @@ public class BulkItemPickerDialog extends Dialog {
         return addListener(ConfirmEvent.class, listener);
     }
 
-    // ── Static factory ────────────────────────────────────────────────────────
+    // â”€â”€ Static factory â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
     /**
      * Returns a new Holon fluent {@link BulkItemPickerDialogBuilder}.
@@ -499,14 +520,14 @@ public class BulkItemPickerDialog extends Dialog {
         return BulkItemPickerDialogBuilder.create();
     }
 
-    // ── Rendering helpers ─────────────────────────────────────────────────────
+    // â”€â”€ Rendering helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
     private void refreshItemList() {
         itemListDiv.removeAll();
         String rawQuery = searchField.getValue() == null ? "" : searchField.getValue().trim();
 
         if (pagedFetchProvider != null) {
-            // ── Paged / offset-limit mode ────────────────────────────────────
+            // â”€â”€ Paged / offset-limit mode â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
             int offset = currentPage * pageSize;
             List<BulkPickerItem> items = pagedFetchProvider.apply(
                     new BulkPickerFetchQuery(rawQuery, offset, pageSize));
@@ -526,14 +547,14 @@ public class BulkItemPickerDialog extends Dialog {
             updatePaginationBar();
 
         } else if (itemProvider != null) {
-            // ── Simple lazy provider (no pagination) ─────────────────────────
+            // â”€â”€ Simple lazy provider (no pagination) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
             List<BulkPickerItem> items = itemProvider.apply(rawQuery);
             items.forEach(item -> itemListDiv.add(buildItemRow(item)));
             if (items.isEmpty()) itemListDiv.add(buildEmptySpan(rawQuery));
             paginationBar.setVisible(false);
 
         } else {
-            // ── Eager / in-memory mode ────────────────────────────────────────
+            // â”€â”€ Eager / in-memory mode â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
             String filter = rawQuery.toLowerCase(Locale.ROOT);
             List<BulkPickerItem> items = allItems.stream()
                     .filter(item -> matchesFilter(item, filter))
@@ -561,7 +582,7 @@ public class BulkItemPickerDialog extends Dialog {
 
         String info = pagedCountProvider != null
                 ? "Page " + (currentPage + 1) + " of " + totalPages
-                  + "  ·  " + totalCount + " items"
+                  + "  Â·  " + totalCount + " items"
                 : "Page " + (currentPage + 1);
         pageInfoSpan.setText(info);
         paginationBar.setVisible(true);
@@ -575,11 +596,10 @@ public class BulkItemPickerDialog extends Dialog {
 
     /** Builds an empty-state {@link Span} for the item list. */
     private static Span buildEmptySpan(String rawQuery) {
-        Span span = Components.span()
-                .text(rawQuery.isEmpty() ? "No items available" : "No items match your search")
-                .styleName("bip__empty")
-                .build();
-        return span;
+        String text = rawQuery.isEmpty()
+                ? LocalizationProvider.localize("No items available", "bulk_picker.empty_items")
+                : LocalizationProvider.localize("No items match your search", "bulk_picker.no_results");
+        return Components.span().text(text).styleName("bip__empty").build();
     }
 
     private static boolean matchesFilter(BulkPickerItem item, String filter) {
@@ -637,7 +657,9 @@ public class BulkItemPickerDialog extends Dialog {
 
     private void renderSelectedEmptyState() {
         selectedListDiv.removeAll();
-        var empty = Components.span().text("No items selected").styleName("bip__empty").build();
+        var empty = Components.span()
+                .text(LocalizationProvider.localize("No items selected", "bulk_picker.selected_empty"))
+                .styleName("bip__empty").build();
         selectedListDiv.add(empty);
         updateCounters();
     }
@@ -666,10 +688,11 @@ public class BulkItemPickerDialog extends Dialog {
         int count = selectedQty.size();
         int total = selectedQty.values().stream().mapToInt(Integer::intValue).sum();
         countBadge.setText(String.valueOf(count));
-        totalQtySpan.setText("Total Quantity: " + total);
+        String template = LocalizationProvider.localize("Total Quantity: {0}", "bulk_picker.total_qty");
+        totalQtySpan.setText(template.replace("{0}", String.valueOf(total)));
     }
 
-    // ── Interaction handlers ──────────────────────────────────────────────────
+    // â”€â”€ Interaction handlers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
     private void toggleItem(BulkPickerItem item) {
         if (selectedQty.containsKey(item.id())) {
@@ -701,7 +724,7 @@ public class BulkItemPickerDialog extends Dialog {
         close();
     }
 
-    // ── Utilities ─────────────────────────────────────────────────────────────
+    // â”€â”€ Utilities â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
     private BulkPickerItem findById(String id) {
         // In provider mode allItems is empty; use the cache of previously selected items.
@@ -720,21 +743,21 @@ public class BulkItemPickerDialog extends Dialog {
                 .toList();
     }
 
-    // ── Events ────────────────────────────────────────────────────────────────
-
+    // â”€â”€ Events â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     /**
      * Fired when the user clicks "Add Items".
      * Contains the resulting list of {@link BulkPickerEntry} objects.
      */
     public static class ConfirmEvent extends ComponentEvent<BulkItemPickerDialog> {
 
+        @Serial
         private static final long serialVersionUID = 1L;
 
         private final List<BulkPickerEntry> entries;
 
         /**
          * @param source     the dialog
-         * @param fromClient always {@code false} — server-side event
+         * @param fromClient always {@code false} â€” server-side event
          * @param entries    the confirmed entries
          */
         public ConfirmEvent(BulkItemPickerDialog source, boolean fromClient, List<BulkPickerEntry> entries) {
@@ -752,7 +775,6 @@ public class BulkItemPickerDialog extends Dialog {
         }
     }
 }
-
 
 
 

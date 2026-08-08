@@ -28,7 +28,7 @@ import com.vaadin.flow.component.HasSize;
  */
 public interface HasSizeConfigurator<C extends HasSizeConfigurator<C>> {
 
-	public static final String FULL_SIZE = "100%";
+	String FULL_SIZE = "100%";
 
 	/**
 	 * Sets the width of the component.
@@ -179,7 +179,7 @@ public interface HasSizeConfigurator<C extends HasSizeConfigurator<C>> {
 	/**
 	 * Base {@link HasSizeConfigurator}.
 	 */
-	public interface BaseHasSizeConfigurator extends HasSizeConfigurator<BaseHasSizeConfigurator> {
+	interface BaseHasSizeConfigurator extends HasSizeConfigurator<BaseHasSizeConfigurator> {
 
 	}
 

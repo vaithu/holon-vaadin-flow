@@ -31,6 +31,7 @@ public class DefaultButtonGroupBuilder
 
     @Override
     public ButtonGroup build() {
+        applyPostProcessors();
         return getComponent();
     }
 

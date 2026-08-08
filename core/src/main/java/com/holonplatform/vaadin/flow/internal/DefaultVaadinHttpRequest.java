@@ -176,23 +176,20 @@ public class DefaultVaadinHttpRequest extends AbstractHttpRequest implements Vaa
 	 *         a String with all values separated by a comma is returned
 	 */
 	private static Optional<String> getQueryParameterValue(Map<String, String[]> queryParameters, String name) {
-		if (name != null) {
-			if (queryParameters != null && queryParameters.containsKey(name)) {
-				String[] values = queryParameters.get(name);
-				if (values != null && values.length > 0) {
-					if (values.length == 1) {
-						return Optional.ofNullable(values[0]);
-					} else {
-						StringBuilder sb = new StringBuilder();
-						for (String value : values) {
-							if (sb.length() > 0) {
-								sb.append(',');
-							}
-							sb.append(value);
-						}
-						return Optional.of(sb.toString());
-					}
+		if (name != null && queryParameters != null && queryParameters.containsKey(name)) {
+			String[] values = queryParameters.get(name);
+			if (values != null && values.length > 0) {
+				if (values.length == 1) {
+					return Optional.ofNullable(values[0]);
 				}
+				StringBuilder sb = new StringBuilder();
+				for (String value : values) {
+					if (sb.length() > 0) {
+						sb.append(',');
+					}
+					sb.append(value);
+				}
+				return Optional.of(sb.toString());
 			}
 		}
 		return Optional.empty();
@@ -206,12 +203,10 @@ public class DefaultVaadinHttpRequest extends AbstractHttpRequest implements Vaa
 	 */
 	private static Optional<List<String>> getQueryParameterMultiValue(Map<String, String[]> queryParameters,
 			String name) {
-		if (name != null) {
-			if (queryParameters != null && queryParameters.containsKey(name)) {
-				String[] values = queryParameters.get(name);
-				if (values != null && values.length > 0) {
-					return Optional.of(Arrays.asList(values));
-				}
+		if (name != null && queryParameters != null && queryParameters.containsKey(name)) {
+			String[] values = queryParameters.get(name);
+			if (values != null && values.length > 0) {
+				return Optional.of(Arrays.asList(values));
 			}
 		}
 		return Optional.empty();

@@ -15,6 +15,7 @@
  */
 package com.holonplatform.vaadin.flow.internal.i18n;
 
+import java.io.Serial;
 import com.holonplatform.core.Context;
 import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.core.i18n.LocalizationContext;
@@ -35,6 +36,7 @@ import java.util.Optional;
  */
 public class DefaultLocalizationProvider implements LocalizationProvider {
 
+	@Serial
 	private static final long serialVersionUID = -2638646173588685927L;
 
 	private final I18NProvider i18nProvider;
@@ -120,7 +122,7 @@ public class DefaultLocalizationProvider implements LocalizationProvider {
 		if (messageCode == null) {
 			return Optional.ofNullable(localizable.getMessage());
 		}
-		// check I18nProvider — cache to avoid double Optional allocation
+		// check I18nProvider â€” cache to avoid double Optional allocation
 		final Optional<I18NProvider> provider = getI18nProvider();
 		if (provider.isPresent()) {
 			return Optional.ofNullable(provider
@@ -206,7 +208,7 @@ public class DefaultLocalizationProvider implements LocalizationProvider {
 		if (messageCode == null) {
 			return Optional.ofNullable(localizable.getMessage());
 		}
-		// check I18nProvider — cache to avoid double ThreadLocal lookup + Optional allocation
+		// check I18nProvider â€” cache to avoid double ThreadLocal lookup + Optional allocation
 		final Optional<I18NProvider> provider = getCurrentI18nProvider();
 		if (provider.isPresent()) {
 			return Optional.ofNullable(provider
@@ -244,7 +246,7 @@ public class DefaultLocalizationProvider implements LocalizationProvider {
 		if (messageCode == null) {
 			return Optional.ofNullable(localizable.getMessage());
 		}
-		// check I18nProvider — cache to avoid double ThreadLocal lookup + Optional allocation
+		// check I18nProvider â€” cache to avoid double ThreadLocal lookup + Optional allocation
 		final Locale currentLocale = getCurrentLocale().orElse(null);
 		if (currentLocale != null) {
 			final Optional<I18NProvider> provider = getCurrentI18nProvider();

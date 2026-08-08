@@ -1,10 +1,11 @@
 package com.holonplatform.vaadin.flow.vaadinplus.components;
 
+import java.io.Serial;
 import com.holonplatform.vaadin.flow.components.Components;
-import com.iyensoft.vaadin.flow.enums.MaterialSymbol;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.html.ListItem;
 import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.icon.VaadinIcon;
 
 /**
  * Visual separator placed <em>between</em> breadcrumb items in a {@link Breadcrumb}.
@@ -19,7 +20,7 @@ import com.vaadin.flow.component.html.Span;
  * <p>This is the shadcn/ui {@code BreadcrumbSeparator} equivalent. It is intentionally a separate
  * {@code <li>} element (not a CSS {@code ::before} trick) so you can:</p>
  * <ul>
- *   <li>Swap it with any {@link Component} or {@link MaterialSymbol} icon.</li>
+ *   <li>Swap it with any {@link Component} or {@link VaadinIcon} icon.</li>
  *   <li>Conditionally omit the last separator (before {@link BreadcrumbPage}).</li>
  * </ul>
  *
@@ -29,7 +30,7 @@ import com.vaadin.flow.component.html.Span;
  *     new BreadcrumbItem("Home",       HomeView.class),
  *     new BreadcrumbSeparator(),
  *     new BreadcrumbItem("Components", ComponentsView.class),
- *     new BreadcrumbSeparator(MaterialSymbol.CHEVRON_RIGHT),
+ *     new BreadcrumbSeparator(VaadinIcon.CHEVRON_RIGHT),
  *     new BreadcrumbPage("Breadcrumb")
  * );
  * }</pre>
@@ -49,6 +50,7 @@ import com.vaadin.flow.component.html.Span;
  */
 public class BreadcrumbSeparator extends ListItem {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     // -----------------------------------------------------------------------
@@ -63,12 +65,21 @@ public class BreadcrumbSeparator extends ListItem {
     }
 
     /**
-     * Creates a separator using a {@link MaterialSymbol} icon.
+     * Creates a separator using a {@link VaadinIcon} icon.
      *
-     * @param symbol the icon to render as the separator (not null)
+     * @param icon the icon to render as the separator (not null)
      */
-    public BreadcrumbSeparator(MaterialSymbol symbol) {
-        this(symbol != null ? symbol.create("breadcrumb__separator-icon") : null);
+    public BreadcrumbSeparator(VaadinIcon icon) {
+        addClassName("breadcrumb__separator");
+        getElement().setAttribute("aria-hidden", "true");
+        getElement().setAttribute("role", "presentation");
+        if (icon != null) {
+            var ic = icon.create();
+            ic.addClassName("breadcrumb__separator-icon");
+            add(ic);
+        } else {
+            add(Components.span().text("/").styleName("breadcrumb__separator-icon").build());
+        }
     }
 
     /**
@@ -90,5 +101,4 @@ public class BreadcrumbSeparator extends ListItem {
         }
     }
 }
-
 

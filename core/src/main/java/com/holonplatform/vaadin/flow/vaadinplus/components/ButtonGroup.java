@@ -15,14 +15,17 @@
  */
 package com.holonplatform.vaadin.flow.vaadinplus.components;
 
+import java.io.Serial;
+import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.vaadin.flow.components.builders.ButtonGroupBuilder;
 import com.holonplatform.vaadin.flow.components.builders.ButtonGroupConfigurator;
+import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.html.Div;
 
 /**
- * A visually unified group of {@link Button} instances — borders between
+ * A visually unified group of {@link Button} instances â€” borders between
  * adjacent buttons are merged and corner radius is applied only to the
  * outermost edges, creating a single cohesive control.
  *
@@ -59,7 +62,7 @@ import com.vaadin.flow.component.html.Div;
  *     .build();
  * }</pre>
  *
- * <p><strong>Disabled state:</strong> disable individual buttons as usual —
+ * <p><strong>Disabled state:</strong> disable individual buttons as usual â€”
  * the group has no global disable API because groups often mix enabled/disabled
  * buttons (e.g. a selected segment in a toggle bar).
  *
@@ -70,7 +73,11 @@ import com.vaadin.flow.component.html.Div;
 @StyleSheet("context://button-group.css")
 public class ButtonGroup extends Div {
 
+    @Serial
     private static final long serialVersionUID = 1L;
+
+    /** Stored localizable aria-label; re-resolved on locale change. */
+    private Localizable ariaLabelLocalizable;
 
     /**
      * Layout orientation of the button group.
@@ -91,6 +98,7 @@ public class ButtonGroup extends Div {
      */
     public ButtonGroup() {
         addClassName("btn-group");
+        getElement().setAttribute("role", "group");
     }
 
     /**
@@ -161,6 +169,42 @@ public class ButtonGroup extends Div {
             addClassName("btn-group--vertical");
         } else {
             removeClassName("btn-group--vertical");
+        }
+    }
+
+    /**
+     * Sets the ARIA label that describes the purpose of this group to assistive technology.
+     *
+     * <p>Example: {@code group.setAriaLabel("View period")} for a Day/Week/Month toggle.
+     *
+     * @param label the accessible name for the group (not null)
+     */
+    public void setAriaLabel(String label) {
+        this.ariaLabelLocalizable = null;
+        if (label != null && !label.isBlank()) {
+            getElement().setAttribute("aria-label", label);
+        } else {
+            getElement().removeAttribute("aria-label");
+        }
+    }
+
+    /**
+     * Sets the ARIA label from a {@link Localizable} descriptor.
+     * The label is resolved immediately and re-resolved on locale change.
+     *
+     * @param label the localizable accessible name (not null)
+     */
+    public void setAriaLabel(Localizable label) {
+        this.ariaLabelLocalizable = label;
+        applyAriaLabel();
+    }
+    private void applyAriaLabel() {
+        if (ariaLabelLocalizable == null) return;
+        String resolved = LocalizationProvider.localize(ariaLabelLocalizable)
+                .orElseGet(() -> ariaLabelLocalizable.getMessage() != null
+                        ? ariaLabelLocalizable.getMessage() : "");
+        if (!resolved.isBlank()) {
+            getElement().setAttribute("aria-label", resolved);
         }
     }
 

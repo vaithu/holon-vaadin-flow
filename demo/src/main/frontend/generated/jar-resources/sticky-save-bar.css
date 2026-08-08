@@ -1,0 +1,162 @@
+/*
+ * sticky-save-bar.css
+ *
+ * Fixed bottom action bar with status indicator, optional progress, and action buttons.
+ *
+ * BEM root: .ssb
+ *
+ * Structure:
+ *   .ssb                  — bar root (position: fixed, bottom: 0)
+ *   .ssb__left            — left side: status block + optional progress
+ *   .ssb__status          — flex row: dot + text
+ *   .ssb__dot             — pulsing/static coloured circle
+ *   .ssb__status-text     — status message text
+ *   .ssb__progress        — progress label + track (hidden until setProgress called)
+ *   .ssb__progress-label  — "Profile 62%" label
+ *   .ssb__progress-track  — grey progress bar background
+ *   .ssb__progress-fill   — coloured fill (width set via inline style %)
+ *   .ssb__actions         — right-aligned button row
+ *
+ * Dot variant modifiers:
+ *   .ssb__dot--saved      — green  + pulse (data saved)
+ *   .ssb__dot--saving     — amber  + pulse (in-flight save)
+ *   .ssb__dot--unsaved    — orange, no pulse (unsaved changes)
+ *   .ssb__dot--error      — red,   no pulse (save error)
+ *
+ * CSS custom property:
+ *   --ssb-left            — left offset (default: 0) — set to sidebar width if needed
+ *
+ * Token dependencies (defined in brand-*.css):
+ *   --surface-0, --border-color
+ *   --text-primary, --text-secondary, --text-tertiary
+ *   --brand-500, --ok, --warn, --err
+ *   --sp-2, --sp-3, --sp-4
+ *   --font-size-sm
+ *   --shadow-sm, --radius-sm, --radius-full
+ *   --transition-fast
+ */
+
+/* ── Bar root ───────────────────────────────────────────────────────────── */
+
+.ssb {
+    position:       fixed;
+    bottom:         0;
+    left:           var(--ssb-left, 0);
+    right:          0;
+    z-index:        50;
+
+    display:        flex;
+    align-items:    center;
+    justify-content: space-between;
+    gap:            var(--sp-4, 16px);
+    padding:        var(--sp-3, 12px) var(--sp-5, 32px);
+
+    background:     rgba(255, 255, 255, 0.96);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-top:     1px solid var(--border-color, #e4e9f0);
+    box-shadow:     0 -2px 12px rgba(15, 27, 45, 0.06);
+}
+
+/* ── Left block ─────────────────────────────────────────────────────────── */
+
+.ssb__left {
+    display:     flex;
+    align-items: center;
+    gap:         var(--sp-4, 16px);
+    min-width:   0;
+}
+
+/* ── Status ─────────────────────────────────────────────────────────────── */
+
+.ssb__status {
+    display:     flex;
+    align-items: center;
+    gap:         var(--sp-2, 8px);
+    font-size:   var(--font-size-sm, 0.75rem);
+    color:       var(--text-secondary, #5b6878);
+    white-space: nowrap;
+}
+
+/* ── Status dot ─────────────────────────────────────────────────────────── */
+
+.ssb__dot {
+    flex-shrink:   0;
+    width:         7px;
+    height:        7px;
+    border-radius: var(--radius-full, 9999px);
+    background:    var(--text-tertiary, #8a96a6); /* default — no variant set yet */
+}
+
+/* SAVED — green, pulsing */
+.ssb__dot--saved {
+    background: var(--ok, #2e9a6a);
+    animation:  ssb-pulse 1.6s ease-in-out infinite;
+}
+
+/* SAVING — amber, pulsing */
+.ssb__dot--saving {
+    background: var(--warn, #b8860b);
+    animation:  ssb-pulse 1.0s ease-in-out infinite;
+}
+
+/* UNSAVED — orange, static */
+.ssb__dot--unsaved {
+    background: #ea580c;
+}
+
+/* ERROR — red, static */
+.ssb__dot--error {
+    background: var(--err, #c0392b);
+}
+
+@keyframes ssb-pulse {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0.35; }
+}
+
+/* ── Status text ────────────────────────────────────────────────────────── */
+
+.ssb__status-text {
+    color: var(--text-secondary, #5b6878);
+}
+
+/* ── Progress ───────────────────────────────────────────────────────────── */
+
+.ssb__progress {
+    display:     flex;
+    align-items: center;
+    gap:         var(--sp-2, 8px);
+    font-size:   var(--font-size-sm, 0.75rem);
+    color:       var(--text-tertiary, #8a96a6);
+    white-space: nowrap;
+}
+
+.ssb__progress-label {
+    color: var(--text-secondary, #5b6878);
+}
+
+.ssb__progress-track {
+    width:         60px;
+    height:        4px;
+    background:    var(--zinc-100, #eef1f6);
+    border-radius: var(--radius-full, 9999px);
+    overflow:      hidden;
+    flex-shrink:   0;
+}
+
+.ssb__progress-fill {
+    height:        100%;
+    background:    linear-gradient(90deg, var(--brand-500, #1576d3), var(--brand-400, #4a9be5));
+    border-radius: var(--radius-full, 9999px);
+    transition:    width 0.3s ease;
+}
+
+/* ── Actions ────────────────────────────────────────────────────────────── */
+
+.ssb__actions {
+    display:     flex;
+    align-items: center;
+    gap:         var(--sp-2, 8px);
+    flex-shrink: 0;
+}

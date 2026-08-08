@@ -15,6 +15,7 @@
  */
 package com.holonplatform.vaadin.flow.vaadinplus.components;
 
+import java.io.Serial;
 import com.vaadin.flow.component.html.Div;
 
 /**
@@ -27,8 +28,8 @@ import com.vaadin.flow.component.html.Div;
  * <p>HTML output:</p>
  * <pre>
  * &lt;div class="carousel__content"&gt;
- *   &lt;div class="carousel__item"&gt;…&lt;/div&gt;
- *   &lt;div class="carousel__item"&gt;…&lt;/div&gt;
+ *   &lt;div class="carousel__item"&gt;â€¦&lt;/div&gt;
+ *   &lt;div class="carousel__item"&gt;â€¦&lt;/div&gt;
  * &lt;/div&gt;
  * </pre>
  *
@@ -37,6 +38,7 @@ import com.vaadin.flow.component.html.Div;
  */
 public class CarouselContent extends Div {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     private int itemCount = 0;
@@ -72,7 +74,7 @@ public class CarouselContent extends Div {
     /**
      * Returns the number of {@link CarouselItem}s currently inside this viewport.
      *
-     * @return item count ≥ 0
+     * @return item count â‰¥ 0
      */
     public int getItemCount() {
         return itemCount;
@@ -96,4 +98,3 @@ public class CarouselContent extends Div {
         }
     }
 }
-

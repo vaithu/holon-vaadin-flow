@@ -21,6 +21,7 @@ import com.holonplatform.vaadin.flow.components.builders.ShortcutConfigurator;
 import com.holonplatform.vaadin.flow.components.events.ClickEvent;
 import com.holonplatform.vaadin.flow.components.events.ClickEventListener;
 import com.iyensoft.vaadin.flow.enums.ButtonPreset;
+import com.iyensoft.vaadin.flow.enums.ButtonSize;
 import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
 import com.holonplatform.vaadin.flow.internal.components.support.ComponentClickListenerAdapter;
 import com.vaadin.flow.component.BlurNotifier.BlurEvent;
@@ -229,9 +230,7 @@ public abstract class AbstractButtonConfigurator<C extends ButtonConfigurator<C>
 						"click",
 						e -> {
 							JsonNode detail = e.getEventData().get("event.detail");
-							if (avoidDoubleClick && detail.asInt() > 1) {
-								// double click, ignore
-							} else {
+							if (!avoidDoubleClick || detail.asInt() <= 1) {
 								getComponent().addClickListener(new ComponentClickListenerAdapter<>(clickEventListener));
 							}
 						}
@@ -363,19 +362,33 @@ public abstract class AbstractButtonConfigurator<C extends ButtonConfigurator<C>
 
 	@Override
 	public C large() {
-		getComponent().addThemeVariants(ButtonVariant.LUMO_LARGE);
+		// btn--large in buttons.css: sets font-size, padding AND min-height on the whole button
+		getComponent().addClassName("btn--large");
 		return getConfigurator();
 	}
 
 	@Override
 	public C small() {
-		getComponent().addThemeVariants(ButtonVariant.LUMO_SMALL);
+		// btn--small in buttons.css: sets font-size, padding AND min-height on the whole button
+		// NOTE: ButtonVariant.LUMO_SMALL only shrinks text — do NOT use it here
+		getComponent().addClassName("btn--small");
 		return getConfigurator();
 	}
 
 	@Override
 	public C normal() {
-		//this is the default button so no variant is required
+		// default size — remove size modifier classes if previously applied
+		getComponent().removeClassNames("btn--small", "btn--large");
+		return getConfigurator();
+	}
+
+	@Override
+	public C size(ButtonSize size) {
+		// clear any existing size modifier first, then apply the requested one
+		getComponent().removeClassNames("btn--small", "btn--large");
+		if (size.getCssClass() != null) {
+			getComponent().addClassName(size.getCssClass());
+		}
 		return getConfigurator();
 	}
 
@@ -467,7 +480,7 @@ public abstract class AbstractButtonConfigurator<C extends ButtonConfigurator<C>
 				.text("Close", "close.code")
 				.iconAfterText(false)
 				.tooltip("Close", "tooltip.close.code")
-				.tertiaryInline();
+				;
     }
 
 	private C cancel() {
@@ -475,7 +488,7 @@ public abstract class AbstractButtonConfigurator<C extends ButtonConfigurator<C>
 				.text("Cancel", "cancel.code")
 				.iconAfterText(false)
 				.tooltip("Cancel", "tooltip.cancel.code")
-				.tertiaryInline();
+				;
     }
 
 	private C reset() {
@@ -483,7 +496,7 @@ public abstract class AbstractButtonConfigurator<C extends ButtonConfigurator<C>
 				.text("Reset", "reset.code")
 				.iconAfterText(false)
 				.tooltip("Reset", "tooltip.reset.code")
-				.tertiaryInline();
+				;
     }
 
 	/**
@@ -505,11 +518,10 @@ public abstract class AbstractButtonConfigurator<C extends ButtonConfigurator<C>
 	 * @return this configurator
 	 */
 	public C edit() {
-		return icon(LumoIcon.EDIT.create())
-				.text("Edit", "edit.code")
-				.iconAfterText(false)
-				.tooltip("Edit Record", "tooltip.edit.code")
-				.tertiaryInline();
+        return icon(LumoIcon.EDIT.create())
+                .text("Edit", "edit.code")
+                .iconAfterText(false)
+                .tooltip("Edit Record", "tooltip.edit.code");
 	}
 
 
@@ -519,10 +531,9 @@ public abstract class AbstractButtonConfigurator<C extends ButtonConfigurator<C>
 	 * @return this configurator
 	 */
 	public C duplicate() {
-		return icon(VaadinIcon.COPY)
-				.text("Duplicate", "duplicate.code")
-				.tooltip("Create Duplicate Record", "tooltip.duplicate.code")
-				.tertiaryInline();
+        return icon(VaadinIcon.COPY)
+                .text("Duplicate", "duplicate.code")
+                .tooltip("Create Duplicate Record", "tooltip.duplicate.code");
 	}
 
 	/**
@@ -534,7 +545,7 @@ public abstract class AbstractButtonConfigurator<C extends ButtonConfigurator<C>
 		return icon(LumoIcon.DOWNLOAD.create())
 				.text("Export", "export.code")
 				.tooltip("Export Records", "tooltip.export.code")
-				.tertiaryInline();
+				;
 	}
 
 	/**
@@ -546,7 +557,7 @@ public abstract class AbstractButtonConfigurator<C extends ButtonConfigurator<C>
 		return icon(LumoIcon.UPLOAD.create())
 				.text("Import", "import.code")
 				.tooltip("Import Records", "tooltip.import.code")
-				.tertiaryInline();
+				;
 	}
 
 	/**
@@ -558,7 +569,7 @@ public abstract class AbstractButtonConfigurator<C extends ButtonConfigurator<C>
 		return icon(LumoIcon.RELOAD.create())
 				.text("Refresh", "refresh.code")
 				.tooltip("Refresh Records", "tooltip.refresh.code")
-				.tertiaryInline();
+				;
 	}
 
 	public C delete() {

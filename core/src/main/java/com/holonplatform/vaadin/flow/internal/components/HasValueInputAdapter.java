@@ -15,6 +15,7 @@
  */
 package com.holonplatform.vaadin.flow.internal.components;
 
+import java.io.Serial;
 import com.holonplatform.core.Registration;
 import com.holonplatform.core.internal.utils.ObjectUtils;
 import com.holonplatform.vaadin.flow.components.Input;
@@ -31,6 +32,7 @@ import com.vaadin.flow.component.HasValue;
  */
 public class HasValueInputAdapter<T> implements HasValue<ComponentValueChangeEvent<Component, T>, T> {
 
+	@Serial
 	private static final long serialVersionUID = 7777886517390394594L;
 
 	private final Input<T> input;

@@ -15,6 +15,7 @@
  */
 package com.holonplatform.vaadin.flow.navigator.internal;
 
+import java.io.Serial;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -37,6 +38,7 @@ import com.vaadin.flow.router.QueryParameters;
 public abstract class AbstractNavigationURLBuilder<B extends NavigationURLBuilder<B>>
 		implements NavigationURLBuilder<B> {
 
+	@Serial
 	private static final long serialVersionUID = -3867878041666781468L;
 
 	protected final StringBuilder path;

@@ -147,12 +147,10 @@ public class LiveChat extends Composite<Div> {
         super.onAttach(event);
         if (loadMoreButton != null) {
             // Reactive guard: button disables itself while a fetch is in flight.
-            // Vaadin batches the enabled/disabled DOM write with the rest of the update.
             Signal.effect(loadMoreButton, () ->
                     loadMoreButton.getElement().setEnabled(!isLoadingHistory.get()));
         }
     }
-
     // ------------------------------------------------------------------ //
     // Static factory
     // ------------------------------------------------------------------ //
@@ -214,6 +212,8 @@ public class LiveChat extends Composite<Div> {
 
         avatarGroup = new CollaborationAvatarGroup(localUser, roomId);
         avatarGroup.addClassName("live-chat__avatars");
+        avatarGroup.getElement().setAttribute("aria-label",
+                LocalizationProvider.localize("Active users in this room", ChatI18N.LIVE_CHAT_AVATARS_ARIA));
 
         messageInput = new CollaborationMessageInput(messageList);
         messageInput.addClassName("live-chat__input");
@@ -232,6 +232,10 @@ public class LiveChat extends Composite<Div> {
         loadMoreButton = new Div();
         loadMoreButton.addClassName("live-chat__load-more");
         loadMoreButton.setText(LocalizationProvider.localize("Load older messages", ChatI18N.LIVE_CHAT_LOAD_OLDER));
+        loadMoreButton.getElement().setAttribute("role", "button");
+        loadMoreButton.getElement().setAttribute("tabindex", "0");
+        loadMoreButton.getElement().setAttribute("aria-label",
+                LocalizationProvider.localize("Load older messages", ChatI18N.LIVE_CHAT_LOAD_OLDER_ARIA));
         loadMoreButton.setVisible(chatService != null);
         loadMoreButton.addClickListener(e -> loadOlderMessages());
 
@@ -257,6 +261,11 @@ public class LiveChat extends Composite<Div> {
 
         Div messagesWrapper = new Div(historyList, loadMoreButton, messageList);
         messagesWrapper.addClassName("live-chat__messages");
+        messagesWrapper.getElement().setAttribute("role", "region");
+        messagesWrapper.getElement().setAttribute("aria-label",
+                LocalizationProvider.localize("Messages for {0}", ChatI18N.LIVE_CHAT_MESSAGES_ARIA, currentRoomId));
+        messagesWrapper.getElement().setAttribute("aria-live", "polite");
+        messagesWrapper.getElement().setAttribute("aria-relevant", "additions");
 
         Div panel = new Div();
         panel.addClassName("live-chat__panel");
@@ -284,12 +293,17 @@ public class LiveChat extends Composite<Div> {
 
     private Div buildHeader() {
         roomTitle.addClassName("live-chat__room-title");
-        String prefix = LocalizationProvider.localize("# ", ChatI18N.LIVE_CHAT_ROOM_PREFIX);
-        roomTitle.setText(prefix + currentRoomId);
+        updateRoomTitleLabel();
 
         Div header = new Div(roomTitle, avatarGroup);
         header.addClassName("live-chat__header");
         return header;
+    }
+
+    /** Resolves the room-title text using the current locale. */
+    private void updateRoomTitleLabel() {
+        String prefix = LocalizationProvider.localize("# ", ChatI18N.LIVE_CHAT_ROOM_PREFIX);
+        roomTitle.setText(prefix + currentRoomId);
     }
 
     // ------------------------------------------------------------------ //
@@ -355,7 +369,8 @@ public class LiveChat extends Composite<Div> {
                 msg.getAuthorName(),
                 msg.getAuthorImageUrl());
         if (msg.getEditedAt() != null) {
-            item.setUserAbbreviation("(edited)");
+            item.setUserAbbreviation(LocalizationProvider.localize(
+                    "(edited)", ChatI18N.LIVE_CHAT_EDITED_MARKER));
         }
         // Mark own messages so CSS can right-align them (same as CollaborationMessageList)
         if (localUser.getId().equals(msg.getAuthorId())) {
@@ -379,9 +394,7 @@ public class LiveChat extends Composite<Div> {
 
         currentRoomId = newRoomId;
         String prefix = LocalizationProvider.localize("# ", ChatI18N.LIVE_CHAT_ROOM_PREFIX);
-        roomTitle.setText(prefix + newRoomId);
-
-        // Reset lazy-load state for the new room
+        roomTitle.setText(prefix + newRoomId);        // Reset lazy-load state for the new room
         historyItems.clear();
         historyList.setItems();
         historyList.setVisible(false);

@@ -48,6 +48,10 @@ public class IndexView extends Div {
                 new Entry("AppBar",
                         "Responsive 3-slot page header (start / middle / end) that extends <header>.",
                         AppBarDemoView.class),
+                new Entry("AppShellLayout",
+                        "Full application shell builder: brand, search, notification bell, language selector, " +
+                        "theme toggle, and user avatar wired into AppLayout in one fluent call.",
+                        AppShellLayoutDemoView.class),
                 new Entry("Breadcrumb",
                         "Accessible navigation trail with automatic separator insertion and optional ellipsis.",
                         BreadcrumbDemoView.class),

@@ -1,0 +1,84 @@
+# Component Reference
+
+Generated reference files for components detected in this workspace.
+
+**Total components:** 76
+
+| Component | Package | Reference |
+|---|---|---|
+| `Alert` | `com.holonplatform.vaadin.flow.vaadinplus.components` | [alert.md](./alert.md) |
+| `AlertAction` | `com.holonplatform.vaadin.flow.vaadinplus.components` | [alert-action.md](./alert-action.md) |
+| `AlertDescription` | `com.holonplatform.vaadin.flow.vaadinplus.components` | [alert-description.md](./alert-description.md) |
+| `AlertDialog` | `com.holonplatform.vaadin.flow.vaadinplus.components` | [alert-dialog.md](./alert-dialog.md) |
+| `AlertModal` | `com.holonplatform.vaadin.flow.vaadinplus.components` | [alert-modal.md](./alert-modal.md) |
+| `AlertTitle` | `com.holonplatform.vaadin.flow.vaadinplus.components` | [alert-title.md](./alert-title.md) |
+| `AppBar` | `com.holonplatform.vaadin.flow.vaadinplus.components` | [app-bar.md](./app-bar.md) |
+| `Badge` | `com.holonplatform.vaadin.flow.components` | [badge.md](./badge.md) |
+| `Breadcrumb` | `com.holonplatform.vaadin.flow.vaadinplus.components` | [breadcrumb.md](./breadcrumb.md) |
+| `BreadcrumbEllipsis` | `com.holonplatform.vaadin.flow.vaadinplus.components` | [breadcrumb-ellipsis.md](./breadcrumb-ellipsis.md) |
+| `BreadcrumbItem` | `com.holonplatform.vaadin.flow.vaadinplus.components` | [breadcrumb-item.md](./breadcrumb-item.md) |
+| `BreadcrumbPage` | `com.holonplatform.vaadin.flow.vaadinplus.components` | [breadcrumb-page.md](./breadcrumb-page.md) |
+| `BreadcrumbSeparator` | `com.holonplatform.vaadin.flow.vaadinplus.components` | [breadcrumb-separator.md](./breadcrumb-separator.md) |
+| `BulkItemPickerDialog` | `com.holonplatform.vaadin.flow.vaadinplus.components` | [bulk-item-picker-dialog.md](./bulk-item-picker-dialog.md) |
+| `ButtonGroup` | `com.holonplatform.vaadin.flow.vaadinplus.components` | [button-group.md](./button-group.md) |
+| `Carousel` | `com.holonplatform.vaadin.flow.vaadinplus.components` | [carousel.md](./carousel.md) |
+| `CarouselContent` | `com.holonplatform.vaadin.flow.vaadinplus.components` | [carousel-content.md](./carousel-content.md) |
+| `CarouselItem` | `com.holonplatform.vaadin.flow.vaadinplus.components` | [carousel-item.md](./carousel-item.md) |
+| `CarouselNext` | `com.holonplatform.vaadin.flow.vaadinplus.components` | [carousel-next.md](./carousel-next.md) |
+| `CarouselPrevious` | `com.holonplatform.vaadin.flow.vaadinplus.components` | [carousel-previous.md](./carousel-previous.md) |
+| `ChartJsComponent` | `com.holonplatform.vaadin.flow.components.chartjs` | [chart-js-component.md](./chart-js-component.md) |
+| `Chip` | `com.holonplatform.vaadin.flow.vaadinplus.components` | [chip.md](./chip.md) |
+| `ChipGroup` | `com.holonplatform.vaadin.flow.vaadinplus.components` | [chip-group.md](./chip-group.md) |
+| `ComponentView` | `com.holonplatform.vaadin.flow.vaadinplus.components` | [component-view.md](./component-view.md) |
+| `DoubleLabel` | `com.holonplatform.vaadin.flow` | [double-label.md](./double-label.md) |
+| `DynamicFilterPanel` | `com.holonplatform.vaadin.flow.vaadinplus.components` | [dynamic-filter-panel.md](./dynamic-filter-panel.md) |
+| `Empty` | `com.holonplatform.vaadin.flow.vaadinplus.components` | [empty.md](./empty.md) |
+| `EmptyAction` | `com.holonplatform.vaadin.flow.vaadinplus.components` | [empty-action.md](./empty-action.md) |
+| `EmptyDescription` | `com.holonplatform.vaadin.flow.vaadinplus.components` | [empty-description.md](./empty-description.md) |
+| `EmptyTitle` | `com.holonplatform.vaadin.flow.vaadinplus.components` | [empty-title.md](./empty-title.md) |
+| `EntityFormPanel` | `com.holonplatform.vaadin.flow.vaadinplus.components` | [entity-form-panel.md](./entity-form-panel.md) |
+| `FlexBoxLayout` | `com.holonplatform.vaadin.flow.components` | [flex-box-layout.md](./flex-box-layout.md) |
+| `FlowStepper` | `com.holonplatform.vaadin.flow.vaadinplus.components` | [flow-stepper.md](./flow-stepper.md) |
+| `Footer` | `com.holonplatform.vaadin.flow.vaadinplus.components` | [footer.md](./footer.md) |
+| `FormSection` | `com.holonplatform.vaadin.flow.vaadinplus.components` | [form-section.md](./form-section.md) |
+| `GridHeader` | `com.holonplatform.vaadin.flow.vaadinplus.components` | [grid-header.md](./grid-header.md) |
+| `Header` | `com.holonplatform.vaadin.flow.vaadinplus.components` | [header.md](./header.md) |
+| `Highlight` | `com.holonplatform.vaadin.flow.vaadinplus.components` | [highlight.md](./highlight.md) |
+| `IconBadge` | `com.holonplatform.vaadin.flow.vaadinplus.components` | [icon-badge.md](./icon-badge.md) |
+| `InputGroup` | `com.holonplatform.vaadin.flow.vaadinplus.components` | [input-group.md](./input-group.md) |
+| `InputGroupText` | `com.holonplatform.vaadin.flow.vaadinplus.components` | [input-group-text.md](./input-group-text.md) |
+| `InputOTP` | `com.holonplatform.vaadin.flow.vaadinplus.components` | [input-otp.md](./input-otp.md) |
+| `InputOTPGroup` | `com.holonplatform.vaadin.flow.vaadinplus.components` | [input-otp-group.md](./input-otp-group.md) |
+| `InputOTPSeparator` | `com.holonplatform.vaadin.flow.vaadinplus.components` | [input-otp-separator.md](./input-otp-separator.md) |
+| `InputOTPSlot` | `com.holonplatform.vaadin.flow.vaadinplus.components` | [input-otp-slot.md](./input-otp-slot.md) |
+| `ItemListingPageSizeSelector` | `com.holonplatform.vaadin.flow.components` | [item-listing-page-size-selector.md](./item-listing-page-size-selector.md) |
+| `ItemListingPaginationBar` | `com.holonplatform.vaadin.flow.components` | [item-listing-pagination-bar.md](./item-listing-pagination-bar.md) |
+| `KeyValueItem` | `com.holonplatform.vaadin.flow.vaadinplus` | [key-value-item.md](./key-value-item.md) |
+| `KeyValueList` | `com.holonplatform.vaadin.flow.vaadinplus` | [key-value-list.md](./key-value-list.md) |
+| `KeyValuePair` | `com.holonplatform.vaadin.flow.vaadinplus` | [key-value-pair.md](./key-value-pair.md) |
+| `KeyValuePairs` | `com.holonplatform.vaadin.flow.vaadinplus` | [key-value-pairs.md](./key-value-pairs.md) |
+| `Layout` | `com.holonplatform.vaadin.flow.vaadinplus` | [layout.md](./layout.md) |
+| `LazyComponent` | `com.holonplatform.vaadin.flow` | [lazy-component.md](./lazy-component.md) |
+| `LineItemGrid` | `com.holonplatform.vaadin.flow.vaadinplus.components` | [line-item-grid.md](./line-item-grid.md) |
+| `ListItem` | `com.holonplatform.vaadin.flow.components` | [list-item.md](./list-item.md) |
+| `Pagination` | `com.holonplatform.vaadin.flow.vaadinplus.components` | [pagination.md](./pagination.md) |
+| `PaginationContent` | `com.holonplatform.vaadin.flow.vaadinplus.components` | [pagination-content.md](./pagination-content.md) |
+| `PaginationEllipsis` | `com.holonplatform.vaadin.flow.vaadinplus.components` | [pagination-ellipsis.md](./pagination-ellipsis.md) |
+| `PaginationItem` | `com.holonplatform.vaadin.flow.vaadinplus.components` | [pagination-item.md](./pagination-item.md) |
+| `PaginationLink` | `com.holonplatform.vaadin.flow.vaadinplus.components` | [pagination-link.md](./pagination-link.md) |
+| `PaginationNext` | `com.holonplatform.vaadin.flow.vaadinplus.components` | [pagination-next.md](./pagination-next.md) |
+| `PaginationPrevious` | `com.holonplatform.vaadin.flow.vaadinplus.components` | [pagination-previous.md](./pagination-previous.md) |
+| `Preview` | `com.holonplatform.vaadin.flow.vaadinplus.components` | [preview.md](./preview.md) |
+| `PriceListItem` | `com.holonplatform.vaadin.flow` | [price-list-item.md](./price-list-item.md) |
+| `ResponsiveDiv` | `com.holonplatform.vaadin.flow.vaadinplus` | [responsive-div.md](./responsive-div.md) |
+| `Separator` | `com.holonplatform.vaadin.flow.vaadinplus.components` | [separator.md](./separator.md) |
+| `Sheet` | `com.holonplatform.vaadin.flow.vaadinplus.components` | [sheet.md](./sheet.md) |
+| `SheetDescription` | `com.holonplatform.vaadin.flow.vaadinplus.components` | [sheet-description.md](./sheet-description.md) |
+| `SheetTitle` | `com.holonplatform.vaadin.flow.vaadinplus.components` | [sheet-title.md](./sheet-title.md) |
+| `SplitViewFrame` | `com.holonplatform.vaadin.flow.components` | [split-view-frame.md](./split-view-frame.md) |
+| `StatusBadge` | `com.holonplatform.vaadin.flow.vaadinplus.components` | [status-badge.md](./status-badge.md) |
+| `Tag` | `com.holonplatform.vaadin.flow.vaadinplus.components` | [tag.md](./tag.md) |
+| `TimelineStepper` | `com.holonplatform.vaadin.flow.vaadinplus.components` | [timeline-stepper.md](./timeline-stepper.md) |
+| `TransferList` | `com.holonplatform.vaadin.flow.vaadinplus.components` | [transfer-list.md](./transfer-list.md) |
+| `UnorderedPriceList` | `com.holonplatform.vaadin.flow` | [unordered-price-list.md](./unordered-price-list.md) |
+| `VaadinCalendar` | `com.holonplatform.vaadin.flow.calendar` | [vaadin-calendar.md](./vaadin-calendar.md) |

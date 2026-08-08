@@ -2,10 +2,10 @@ package com.holonplatform.vaadin.flow;
 
 import com.holonplatform.core.datastore.DataTarget;
 import com.holonplatform.core.datastore.beans.BeanDatastoreHelper;
+import com.holonplatform.core.internal.utils.BeanUtils;
 import com.holonplatform.core.property.PropertyBox;
 import com.holonplatform.core.property.PropertySet;
 import com.holonplatform.core.query.QueryFilter;
-import com.holonplatform.vaadin.flow.components.utils.BeanUtils;
 import com.holonplatform.vaadin.flow.components.utils.UIUtils;
 import com.holonplatform.vaadin.flow.vaadinplus.KeyValuePairs;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
