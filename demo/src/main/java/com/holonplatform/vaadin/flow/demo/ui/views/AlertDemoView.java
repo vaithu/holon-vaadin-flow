@@ -22,6 +22,8 @@ import com.holonplatform.vaadin.flow.vaadinplus.ResponsiveDiv;
  *   <li>Leading icon slot</li>
  *   <li>Action button slot</li>
  *   <li>Title-only (no description)</li>
+ *   <li>Inline action layout ({@code alert--inline})</li>
+ *   <li>Left-border-only style + inline action (Low Stock Alert rows)</li>
  * </ol>
  */
 @PageTitle("Alert – Holon Demo")
@@ -38,7 +40,9 @@ public class AlertDemoView extends Div {
                 "Contextual alert component inspired by shadcn/ui. " +
                 "Five severity variants — DEFAULT, DESTRUCTIVE, WARNING, SUCCESS, INFO — each driven " +
                 "purely by a CSS BEM modifier class. Supports optional icon, title, description, " +
-                "and action (button/link) slots via the fluent builder.");
+                "and action (button/link) slots via the fluent builder. " +
+                "Use inlineAction() to right-align the action beside the content, and leftBorder() " +
+                "to replace the full border with a 3 px left accent.");
 
         // ── Examples ─────────────────────────────────────────────────────────
         var examples = ResponsiveDiv.flex().column().gapL().build();
@@ -47,6 +51,8 @@ public class AlertDemoView extends Div {
         examples.add(withIconExample());
         examples.add(withActionExample());
         examples.add(titleOnlyExample());
+        examples.add(inlineActionExample());
+        examples.add(leftBorderInlineExample());
 
         add(title, desc, examples);
     }
@@ -184,6 +190,109 @@ public class AlertDemoView extends Div {
                 // Description slot is entirely optional
                 Alert.builder(Alert.Variant.INFO)
                     .title("Info — title only, no description")
+                    .build();
+                """);
+    }
+
+    private DemoExample inlineActionExample() {
+        var preview = new Div();
+
+        preview.add(
+            Alert.builder(Alert.Variant.DESTRUCTIVE)
+                .icon(VaadinIcon.EXCLAMATION_CIRCLE_O.create())
+                .title("Delete Account")
+                .description("This action is permanent and cannot be undone.")
+                .action(new Button("Delete"), new Button("Cancel"))
+                .inlineAction()
+                .build(),
+            Alert.builder(Alert.Variant.WARNING)
+                .icon(VaadinIcon.CLOCK.create())
+                .title("Session Expiring")
+                .description("Your session will expire in 5 minutes.")
+                .action(new Button("Extend"))
+                .inlineAction()
+                .build(),
+            Alert.builder(Alert.Variant.INFO)
+                .title("Update Available")
+                .description("Version 2.1.0 is ready to install.")
+                .action(new Button("Install"))
+                .inlineAction()
+                .build()
+        );
+
+        return new DemoExample("Inline Action", preview, """
+                // Action is placed to the right of the title/description instead of below.
+                // Combine with any variant and optional icon.
+
+                Alert.builder(Alert.Variant.DESTRUCTIVE)
+                    .icon(VaadinIcon.EXCLAMATION_CIRCLE_O.create())
+                    .title("Delete Account")
+                    .description("This action is permanent and cannot be undone.")
+                    .action(new Button("Delete"), new Button("Cancel"))
+                    .inlineAction()   // ← right-aligns action beside content
+                    .build();
+
+                Alert.builder(Alert.Variant.WARNING)
+                    .icon(VaadinIcon.CLOCK.create())
+                    .title("Session Expiring")
+                    .description("Your session will expire in 5 minutes.")
+                    .action(new Button("Extend"))
+                    .inlineAction()
+                    .build();
+                """);
+    }
+
+    private DemoExample leftBorderInlineExample() {
+        var preview = new Div();
+
+        preview.add(
+            Alert.builder(Alert.Variant.DESTRUCTIVE)
+                .title("Wireless Mouse MX")
+                .description("3 units left")
+                .action(new Button("Reorder"))
+                .inlineAction()
+                .leftBorder()
+                .build(),
+            Alert.builder(Alert.Variant.WARNING)
+                .title("USB-C Hub Pro")
+                .description("8 units left")
+                .action(new Button("Reorder"))
+                .inlineAction()
+                .leftBorder()
+                .build(),
+            Alert.builder(Alert.Variant.WARNING)
+                .title("Mechanical Keyboard")
+                .description("12 units left")
+                .action(new Button("Reorder"))
+                .inlineAction()
+                .leftBorder()
+                .build()
+        );
+
+        return new DemoExample("Left Border + Inline Action (Low Stock Alert rows)", preview, """
+                // Combines leftBorder() + inlineAction() to produce compact list rows
+                // matching the "Low Stock Alert" HTML panel pattern exactly:
+                //  • DESTRUCTIVE → #fef2f2 bg, #ef4444 left border, red Reorder button
+                //  • WARNING     → #fffbeb bg, #f59e0b left border, orange Reorder button
+                // Button colours and sizing are applied automatically by alert.css —
+                // no manual button styling required.
+
+                // Critical row
+                Alert.builder(Alert.Variant.DESTRUCTIVE)
+                    .title("Wireless Mouse MX")
+                    .description("3 units left")
+                    .action(new Button("Reorder"))
+                    .inlineAction()
+                    .leftBorder()
+                    .build();
+
+                // Warning rows
+                Alert.builder(Alert.Variant.WARNING)
+                    .title("USB-C Hub Pro")
+                    .description("8 units left")
+                    .action(new Button("Reorder"))
+                    .inlineAction()
+                    .leftBorder()
                     .build();
                 """);
     }

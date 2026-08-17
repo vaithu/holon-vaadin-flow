@@ -115,12 +115,49 @@ public class EntityCreationForm extends Div {
 
     // ── Mutable DOM references ────────────────────────────────────────────
 
-    private final Span  titleSpan;
-    private final Span  subtitleSpan;
-    private final Div   titleRow;
+    private Span  titleSpan;
+    private Span  subtitleSpan;
+    private Div   titleRow;
     private       Chip  draftBadgeChip;
-    private final Div   mainCol;
-    private final StickyActionBar actionBar;
+    private Div   mainCol;
+    private StickyActionBar actionBar;
+    /** Reference to the page header — {@code null} when built by the legacy constructor. */
+    private Header pageHead;
+
+    // ── Public no-arg constructor ──────────────────────────────────────────
+
+    /**
+     * Creates a new {@link EntityCreationForm}, assembling its DOM internally.
+     * Use {@link com.holonplatform.vaadin.flow.components.builders.EntityCreationFormBuilder} or
+     * configure via {@link com.holonplatform.vaadin.flow.components.builders.EntityCreationFormConfigurator}.
+     */
+    public EntityCreationForm() {
+        addClassName(CSS_ROOT);
+
+        this.titleSpan = new Span("");
+        this.titleRow  = new Div(titleSpan);
+        titleRow.addClassName("ecf__head-title");
+        this.draftBadgeChip = null;
+
+        this.subtitleSpan = new Span();
+        subtitleSpan.addClassName("ecf__head-sub");
+        subtitleSpan.setVisible(false);
+
+        this.pageHead = new Header("");
+        pageHead.setHeadingFontSize(null);
+        pageHead.setHeading(titleRow);
+        pageHead.setDetails(subtitleSpan);
+        pageHead.withoutSticky();
+
+        this.mainCol = new Div();
+        mainCol.addClassName("ecf__main");
+        Div body = new Div(mainCol);
+        body.addClassName("ecf__body");
+
+        this.actionBar = new StickyActionBar();
+
+        add(pageHead, body, actionBar);
+    }
 
     // ── Constructor (package-private) ─────────────────────────────────────
 
@@ -133,6 +170,37 @@ public class EntityCreationForm extends Div {
         this.draftBadgeChip = draftBadgeChip;
         this.mainCol        = mainCol;
         this.actionBar      = actionBar;
+        this.pageHead       = null; // DOM was assembled externally by the legacy builder
+    }
+
+    /**
+     * Sets or updates the breadcrumb in the page header.
+     * Only has effect when the form was created via the public no-arg constructor.
+     *
+     * @param items breadcrumb list items; {@code null} or empty = no-op
+     * @return this (fluent)
+     */
+    public EntityCreationForm setBreadcrumbItems(java.util.List<com.vaadin.flow.component.html.ListItem> items) {
+        if (pageHead != null && items != null && !items.isEmpty()) {
+            Breadcrumb breadcrumb = new Breadcrumb();
+            breadcrumb.addWithSeparators(items.toArray(com.vaadin.flow.component.html.ListItem[]::new));
+            pageHead.setBreadcrumb(breadcrumb);
+        }
+        return this;
+    }
+
+    /**
+     * Sets the header action components in the page header.
+     * Only has effect when the form was created via the public no-arg constructor.
+     *
+     * @param actions action components; {@code null} or empty = no-op
+     * @return this (fluent)
+     */
+    public EntityCreationForm setPageHeaderActions(java.util.List<Component> actions) {
+        if (pageHead != null && actions != null && !actions.isEmpty()) {
+            pageHead.setActions(actions.toArray(Component[]::new));
+        }
+        return this;
     }
 
     // ── Header — title ────────────────────────────────────────────────────

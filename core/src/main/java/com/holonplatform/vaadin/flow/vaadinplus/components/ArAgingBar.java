@@ -81,7 +81,6 @@ import java.util.stream.Collectors;
  * <h3>CSS</h3>
  * {@code META-INF/resources/ar-aging-bar.css} — BEM root: {@code .arb}
  *
- * @see ArAgingBarBuilder
  */
 @StyleSheet("context://ar-aging-bar.css")
 public class ArAgingBar extends Div {
@@ -191,6 +190,7 @@ public class ArAgingBar extends Div {
     // ── Mutable DOM references ─────────────────────────────────────────────
 
     private Variant   currentVariant;
+    private Span      iconSpan;
     private final Span titleSpan;
     private final Div  trackDiv;
     private final Div  legendDiv;
@@ -198,8 +198,60 @@ public class ArAgingBar extends Div {
     private final Span centerStatSpan;
     private final Span rightStatSpan;
 
-    // ── Constructor (package-private — use ArAgingBarBuilder) ─────────────
+    // ── Constructors ───────────────────────────────────────────────────────
 
+    /**
+     * Creates a new {@link ArAgingBar} with the given variant, assembling its DOM internally.
+     *
+     * @param variant the initial visual variant (may be {@code null} for {@link Variant#DEFAULT})
+     */
+    public ArAgingBar(Variant variant) {
+        this.iconSpan = new Span("■");
+        iconSpan.addClassName("arb__icon");
+
+        this.titleSpan = new Span("");
+        titleSpan.addClassName("arb__heading-text");
+
+        Div headingDiv = new Div(iconSpan, titleSpan);
+        headingDiv.addClassName("arb__heading");
+
+        this.legendDiv = new Div();
+        legendDiv.addClassName("arb__legend");
+
+        Header header = new Header("");
+        header.setHeadingFontSize(null);
+        header.setHeading(headingDiv);
+        header.setActions(legendDiv);
+        header.withoutSticky();
+
+        this.trackDiv = new Div();
+        trackDiv.addClassName("arb__track");
+        trackDiv.getElement().setAttribute("role", "img");
+        trackDiv.getElement().setAttribute("aria-label", buildTrackAriaLabel(null));
+
+        this.leftStatSpan   = new Span("");
+        this.centerStatSpan = new Span("");
+        this.rightStatSpan  = new Span("");
+        leftStatSpan.addClassName("arb__stat");
+        centerStatSpan.addClassName("arb__stat");
+        rightStatSpan.addClassName("arb__stat");
+
+        Div footerDiv = new Div(leftStatSpan, centerStatSpan, rightStatSpan);
+        footerDiv.addClassName("arb__footer");
+
+        Panel panel = new Panel();
+        panel.setHeader(header);
+        panel.setContent(trackDiv, footerDiv);
+
+        addClassName(CSS_ROOT);
+        getElement().setAttribute("role", "region");
+        add(panel);
+        this.currentVariant = variant;
+        if (variant != null) addClassName(variant.getCssClass());
+        refreshRootAriaLabel(titleSpan.getText());
+    }
+
+    /** Package-private: accepts pre-assembled DOM elements — used by the legacy builder. */
     ArAgingBar(Variant variant, Span titleSpan, Div trackDiv, Div legendDiv,
                Span leftStatSpan, Span centerStatSpan, Span rightStatSpan,
                Panel panel) {
@@ -212,6 +264,7 @@ public class ArAgingBar extends Div {
         this.leftStatSpan   = leftStatSpan;
         this.centerStatSpan = centerStatSpan;
         this.rightStatSpan  = rightStatSpan;
+        this.iconSpan       = new Span("■"); // default; builder may override via setIcon after construction
         add(panel);
         // apply initial variant without going through setVariant to avoid null-check on currentVariant
         this.currentVariant = variant;
@@ -220,6 +273,35 @@ public class ArAgingBar extends Div {
         }
         // A11Y: initial region label derived from title (track label was set by the builder)
         refreshRootAriaLabel(titleSpan.getText());
+    }
+
+    // ── Icon API ───────────────────────────────────────────────────────────
+
+    /**
+     * Updates the icon badge character displayed in the header.
+     *
+     * @param icon icon text; {@code null} resets to the default {@code "■"}
+     * @return this (fluent)
+     */
+    public ArAgingBar setIcon(String icon) {
+        iconSpan.setText(icon != null ? icon : "■");
+        return this;
+    }
+
+    // ── Segment API (additive) ─────────────────────────────────────────────
+
+    /**
+     * Appends a single segment to both the track bar and the header legend.
+     *
+     * @param segment the segment to add; {@code null} is silently ignored
+     * @return this (fluent)
+     */
+    public ArAgingBar addSegment(Segment segment) {
+        if (segment != null) {
+            trackDiv.add(buildSegmentDiv(segment));
+            legendDiv.add(buildLegendItem(segment));
+        }
+        return this;
     }
 
     // ── Getter API ─────────────────────────────────────────────────────────

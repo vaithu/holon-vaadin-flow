@@ -8,6 +8,7 @@ import com.holonplatform.vaadin.flow.vaadinplus.components.HeroStrip;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.Paragraph;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
@@ -23,7 +24,11 @@ import java.util.List;
  *   <li>Contact KPIs — 5 cells on VIOLET gradient</li>
  *   <li>ValueVariant — DEFAULT, OK, ALERT tints side by side</li>
  *   <li>Pulse dot — with and without animated amber dot</li>
- *   <li>Runtime mutation — {@code setVariant()} and {@code setCells()}</li>
+ *   <li>Header + tags — thumbnail/ribbon/name/meta header row with status tag pills, incl. the
+ *       gradient {@code HOT} tag variant (Customer 360, New customer, Sales pipeline mockups)</li>
+ *   <li>Wide first column — {@code wideFirstColumn()} for a {@code 1.4fr 1fr 1fr 1fr 1fr} grid,
+ *       matching the "Customers" detail-panel mockup where the first KPI has the longest content</li>
+ *   <li>Runtime mutation — {@code setVariant()}, {@code setHeader()}, {@code setTags()} and {@code setCells()}</li>
  * </ol>
  */
 @PageTitle("HeroStrip – Holon Demo")
@@ -35,8 +40,8 @@ public class HeroStripDemoView extends Div {
 
         add(new H1("HeroStrip"));
         add(new Paragraph(
-                "A horizontal gradient 'hero strip' card that displays N key metric cells side by side " +
-                "in equally-wide columns separated by translucent vertical dividers. " +
+                "A gradient 'hero strip' card that displays an optional thumbnail/name/meta header row, " +
+                "an optional row of status tag pills, and N key metric cells side by side in equally-wide columns. " +
                 "Each cell shows a small uppercase label (optionally with an animated pulse dot), " +
                 "a large monospace value, and an optional sub-label. " +
                 "Six gradient variants (DEFAULT, INFO, SUCCESS, WARNING, DANGER, VIOLET) and " +
@@ -50,6 +55,8 @@ public class HeroStripDemoView extends Div {
                 contactKpisExample(),
                 valueVariantExample(),
                 pulseDotExample(),
+                headerAndTagsExample(),
+                wideFirstColumnExample(),
                 responsiveExample(),
                 runtimeMutationExample()
         );
@@ -93,6 +100,7 @@ public class HeroStripDemoView extends Div {
     private DemoExample customerKpisExample() {
         var strip = Components.heroStrip()
                 .variant(HeroStrip.Variant.INFO)
+                .wideFirstColumn()
                 .cell(c -> c.header("Open pipeline").content("€182K").footer("4 active deals · 80% avg prob").pulse(true))
                 .cell(c -> c.header("Booked YTD").content("€624K").footer("14 orders · 22 invoices").valueVariant(HeroStrip.ValueVariant.OK))
                 .cell(c -> c.header("AR balance").content("€62,400").footer("3 open · all on-time"))
@@ -101,8 +109,12 @@ public class HeroStripDemoView extends Div {
                 .build();
 
         return new DemoExample("Customer KPIs", strip, """
+                // wideFirstColumn() renders "1.4fr 1fr 1fr 1fr 1fr" instead of equally-wide
+                // columns — handy when the first cell's label/value is longer than the rest
+                // (e.g. the Customer 360 "Open pipeline" cell in the CRM mockup).
                 Components.heroStrip()
                     .variant(HeroStrip.Variant.INFO)
+                    .wideFirstColumn()
                     .cell(c -> c.header("Open pipeline").content("€182K")
                         .footer("4 active deals · 80% avg prob").pulse(true))
                     .cell(c -> c.header("Booked YTD").content("€624K")
@@ -237,7 +249,187 @@ public class HeroStripDemoView extends Div {
                 """);
     }
 
-    // ── 6. Responsive ─────────────────────────────────────────────────────────
+    // ── 6. Header + tags (Customer 360 / New customer mockups) ────────────────
+
+    private DemoExample headerAndTagsExample() {
+        var preview = new Div();
+        preview.getStyle().set("display", "flex").set("flex-direction", "column").set("gap", "16px");
+
+        // Customer 360 header — dark gradient, T1 ribbon, star, AR warning tag
+        preview.add(
+            Components.heroStrip()
+                .variant(HeroStrip.Variant.DEFAULT)
+                .header(h -> h.thumbIcon(VaadinIcon.BUILDING.create())
+                        .ribbon("T1")
+                        .name("Helix Robotics SE")
+                        .starred(true)
+                        .meta("C-2026-0023 · Munich · since 1.9 yr"))
+                .tag("● Active", HeroStrip.TagVariant.OK)
+                .tag("★ T1", HeroStrip.TagVariant.PRI)
+                .tag("EMEA · DACH", HeroStrip.TagVariant.PRIM)
+                .tag("VIP", HeroStrip.TagVariant.VIOLET)
+                .tag("⚠ 14d AR", HeroStrip.TagVariant.WARN)
+                .cell(c -> c.header("Health").content("A+").footer("★ 4.7").valueVariant(HeroStrip.ValueVariant.OK))
+                .cell(c -> c.header("Open AR").content("€14.8K").footer("14d").valueVariant(HeroStrip.ValueVariant.ALERT))
+                .cell(c -> c.header("Open SOs").content("3").footer("€48.2K"))
+                .cell(c -> c.header("ARR").content("€1.84M").footer("+12%"))
+                .build()
+        );
+
+        // New-customer draft header — success gradient, NEW ribbon, draft/auto-save tags
+        preview.add(
+            Components.heroStrip()
+                .variant(HeroStrip.Variant.SUCCESS)
+                .header(h -> h.thumbIcon(VaadinIcon.USER.create())
+                        .ribbon("NEW")
+                        .name("New customer")
+                        .meta("will assign C-2026-0343 · owner Elena Lindqvist"))
+                .tag("● DRAFT", HeroStrip.TagVariant.WARN)
+                .tag("auto-save 4s", HeroStrip.TagVariant.PRIM)
+                .tag("live preview", HeroStrip.TagVariant.OK)
+                .cell(c -> c.header("Fields OK").content("6").footer("of 6 req").valueVariant(HeroStrip.ValueVariant.OK))
+                .cell(c -> c.header("Saved").content("2s ago").footer("in 2s"))
+                .cell(c -> c.header("#").content("0343").footer("reserved"))
+                .build()
+        );
+
+        // Sales pipeline opportunity header — dark gradient, NEGOTIATION ribbon, 🔥 Hot gradient tag
+        preview.add(
+            Components.heroStrip()
+                .variant(HeroStrip.Variant.DEFAULT)
+                .header(h -> h.thumbIcon(VaadinIcon.TRENDING_UP.create())
+                        .ribbon("NEGOTIATION")
+                        .name("Service-Tier 2yr")
+                        .starred(true)
+                        .meta("OPTY-2026-0094 · Elena · Helix"))
+                .tag("🔥 Hot", HeroStrip.TagVariant.HOT)
+                .tag("Negotiation · 18d", HeroStrip.TagVariant.WARN)
+                .tag("Commit", HeroStrip.TagVariant.OK)
+                .tag("Q3", HeroStrip.TagVariant.PRIM)
+                .cell(c -> c.header("TCV · 2yr").content("€184K").footer("€92K/yr"))
+                .cell(c -> c.header("Weighted").content("€147K").footer("80%").valueVariant(HeroStrip.ValueVariant.ALERT))
+                .cell(c -> c.header("Close").content("30 Aug").footer("36d"))
+                .cell(c -> c.header("Margin").content("38%").footer("€70K").valueVariant(HeroStrip.ValueVariant.OK))
+                .build()
+        );
+
+        return new DemoExample("Header + tags (Customer 360 / New customer / Sales pipeline)", preview, """
+                // Customer 360 header — thumbnail (icon + "T1" ribbon), starred name, meta subtitle,
+                // a wrapping row of status tag pills, then the metrics grid.
+                Components.heroStrip()
+                    .variant(HeroStrip.Variant.DEFAULT)
+                    .header(h -> h.thumbIcon(VaadinIcon.BUILDING.create())
+                            .ribbon("T1")
+                            .name("Helix Robotics SE")
+                            .starred(true)
+                            .meta("C-2026-0023 · Munich · since 1.9 yr"))
+                    .tag("● Active", HeroStrip.TagVariant.OK)
+                    .tag("★ T1", HeroStrip.TagVariant.PRI)
+                    .tag("EMEA · DACH", HeroStrip.TagVariant.PRIM)
+                    .tag("VIP", HeroStrip.TagVariant.VIOLET)
+                    .tag("⚠ 14d AR", HeroStrip.TagVariant.WARN)
+                    .cell(c -> c.header("Health").content("A+").footer("★ 4.7").valueVariant(HeroStrip.ValueVariant.OK))
+                    .cell(c -> c.header("Open AR").content("€14.8K").footer("14d").valueVariant(HeroStrip.ValueVariant.ALERT))
+                    .cell(c -> c.header("Open SOs").content("3").footer("€48.2K"))
+                    .cell(c -> c.header("ARR").content("€1.84M").footer("+12%"))
+                    .build();
+
+                // New-customer draft header — SUCCESS gradient, "NEW" ribbon, no star, draft/auto-save tags.
+                Components.heroStrip()
+                    .variant(HeroStrip.Variant.SUCCESS)
+                    .header(h -> h.thumbIcon(VaadinIcon.USER.create())
+                            .ribbon("NEW")
+                            .name("New customer")
+                            .meta("will assign C-2026-0343 · owner Elena Lindqvist"))
+                    .tag("● DRAFT", HeroStrip.TagVariant.WARN)
+                    .tag("auto-save 4s", HeroStrip.TagVariant.PRIM)
+                    .tag("live preview", HeroStrip.TagVariant.OK)
+                    .cell(c -> c.header("Fields OK").content("6").footer("of 6 req").valueVariant(HeroStrip.ValueVariant.OK))
+                    .cell(c -> c.header("Saved").content("2s ago").footer("in 2s"))
+                    .cell(c -> c.header("#").content("0343").footer("reserved"))
+                    .build();
+
+                // Sales pipeline opportunity header — DEFAULT gradient, "NEGOTIATION" ribbon and a
+                // TagVariant.HOT tag (warm gold gradient pill instead of a flat translucent colour).
+                Components.heroStrip()
+                    .variant(HeroStrip.Variant.DEFAULT)
+                    .header(h -> h.thumbIcon(VaadinIcon.TRENDING_UP.create())
+                            .ribbon("NEGOTIATION")
+                            .name("Service-Tier 2yr")
+                            .starred(true)
+                            .meta("OPTY-2026-0094 · Elena · Helix"))
+                    .tag("🔥 Hot", HeroStrip.TagVariant.HOT)
+                    .tag("Negotiation · 18d", HeroStrip.TagVariant.WARN)
+                    .tag("Commit", HeroStrip.TagVariant.OK)
+                    .tag("Q3", HeroStrip.TagVariant.PRIM)
+                    .cell(c -> c.header("TCV · 2yr").content("€184K").footer("€92K/yr"))
+                    .cell(c -> c.header("Weighted").content("€147K").footer("80%").valueVariant(HeroStrip.ValueVariant.ALERT))
+                    .cell(c -> c.header("Close").content("30 Aug").footer("36d"))
+                    .cell(c -> c.header("Margin").content("38%").footer("€70K").valueVariant(HeroStrip.ValueVariant.OK))
+                    .build();
+                """);
+    }
+
+    // ── 7. Wide first column (Customer detail-panel mockup) ───────────────────
+
+    private DemoExample wideFirstColumnExample() {
+        var preview = new Div();
+        preview.getStyle().set("display", "flex").set("flex-direction", "column").set("gap", "16px");
+
+        var equalLabel = new Paragraph("Default — 5 equally-wide columns:");
+        equalLabel.getStyle().set("font-size", "12px").set("color", "var(--lumo-secondary-text-color)").set("margin", "0");
+        preview.add(equalLabel);
+        preview.add(
+            Components.heroStrip()
+                .variant(HeroStrip.Variant.INFO)
+                .cell(c -> c.header("Open pipeline").content("€182K").footer("4 active deals · 80% avg prob").pulse(true))
+                .cell(c -> c.header("Booked YTD").content("€624K").footer("14 orders · 22 invoices").valueVariant(HeroStrip.ValueVariant.OK))
+                .cell(c -> c.header("AR balance").content("€62,400").footer("3 open · all on-time"))
+                .cell(c -> c.header("CSAT (NPS)").content("62").footer("Q2 survey · promoter").valueVariant(HeroStrip.ValueVariant.OK))
+                .cell(c -> c.header("Health score").content("5/5").footer("on track").valueVariant(HeroStrip.ValueVariant.OK))
+                .build()
+        );
+
+        var wideLabel = new Paragraph("With .wideFirstColumn() — first cell gets 1.4fr (Customers detail-panel mockup):");
+        wideLabel.getStyle().set("font-size", "12px").set("color", "var(--lumo-secondary-text-color)").set("margin", "0");
+        preview.add(wideLabel);
+        preview.add(
+            Components.heroStrip()
+                .variant(HeroStrip.Variant.INFO)
+                .wideFirstColumn()
+                .cell(c -> c.header("Open pipeline").content("€182K").footer("4 active deals · 80% avg prob").pulse(true))
+                .cell(c -> c.header("Booked YTD").content("€624K").footer("14 orders · 22 invoices").valueVariant(HeroStrip.ValueVariant.OK))
+                .cell(c -> c.header("AR balance").content("€62,400").footer("3 open · all on-time"))
+                .cell(c -> c.header("CSAT (NPS)").content("62").footer("Q2 survey · promoter").valueVariant(HeroStrip.ValueVariant.OK))
+                .cell(c -> c.header("Health score").content("5/5").footer("on track").valueVariant(HeroStrip.ValueVariant.OK))
+                .build()
+        );
+
+        return new DemoExample("Wide first column", preview, """
+                // Default — grid-template-columns: repeat(5, 1fr) (all cells equally wide).
+                Components.heroStrip()
+                    .variant(HeroStrip.Variant.INFO)
+                    .cell(c -> c.header("Open pipeline").content("€182K").footer("4 active deals").pulse(true))
+                    // ... 4 more cells
+                    .build();
+
+                // wideFirstColumn() — grid-template-columns: 1.4fr 1fr 1fr 1fr 1fr.
+                // Matches the "Customers" CRM detail-panel mockup, where the first KPI
+                // ("Open pipeline") carries the longest label/sub-label of the row.
+                Components.heroStrip()
+                    .variant(HeroStrip.Variant.INFO)
+                    .wideFirstColumn()               // ← the only addition
+                    .cell(c -> c.header("Open pipeline").content("€182K").footer("4 active deals").pulse(true))
+                    // ... 4 more cells
+                    .build();
+
+                // Runtime toggle:
+                strip.setWideFirstCell(true);
+                strip.isWideFirstCell();          // true
+                """);
+    }
+
+    // ── 8. Responsive ─────────────────────────────────────────────────────────
 
     private DemoExample responsiveExample() {
         var preview = new Div();
@@ -304,7 +496,7 @@ public class HeroStripDemoView extends Div {
                 """);
     }
 
-    // ── 7. Runtime Mutation ───────────────────────────────────────────────────
+    // ── 9. Runtime Mutation ───────────────────────────────────────────────────
 
     private DemoExample runtimeMutationExample() {
         record Scenario(

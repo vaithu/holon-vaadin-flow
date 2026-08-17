@@ -151,7 +151,7 @@ public class NewCustomerDemoView extends Div implements BeforeLeaveObserver {
                         discardBarBtn,
                         Components.button().text("Save & add another").build(),
                         saveBarBtn)
-                .withPostProcessor(f -> {
+                .withBuildPostProcessor(f -> {
 
                     Runnable syncHeader = () -> {
                         String v = accountNameInput.getValue();

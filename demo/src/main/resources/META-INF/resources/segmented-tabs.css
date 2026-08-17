@@ -1,0 +1,62 @@
+/*
+ * segmented-tabs.css
+ * Custom Tabs theme variant: "segmented" (iOS-style segmented control)
+ *
+ * Ported from a Vaadin 24 Lumo custom theme file (previously loaded from
+ * frontend/themes/<name>/styles.css via the @Theme annotation). No selector,
+ * part name, state attribute, or CSS custom property changed between Vaadin 24
+ * and Vaadin 25.2 — vaadin-tabs::part(tabs), vaadin-tab[selected],
+ * vaadin-tab[focus-ring], and all --lumo-* / --vaadin-focus-ring-* tokens used
+ * below are unchanged. Only the *loading mechanism* changed.
+ *
+ * ── Loading (Java) ──────────────────────────────────────────────────────────
+ *   @StyleSheet(Lumo.STYLESHEET)              // theme first
+ *   @StyleSheet("context://segmented-tabs.css") // then this variant, after the theme
+ *   public class Application implements AppShellConfigurator { ... }
+ *
+ * ── Usage ───────────────────────────────────────────────────────────────────
+ *   Tabs tabs = TabsBuilder.create()
+ *       .withTab("Overview", "Details", "Settings")
+ *       .elementConfiguration(element -> element.getThemeList().add("segmented"))
+ *       .build();
+ *
+ * ── File location ───────────────────────────────────────────────────────────
+ *   Spring: src/main/resources/META-INF/resources/segmented-tabs.css
+ *   (loaded with the "context://" prefix, resolved relative to the servlet
+ *   context root — same convention used by the other demo theme files.)
+ */
+
+vaadin-tabs[theme~="segmented"] {
+    box-shadow: none;
+}
+
+vaadin-tabs[theme~="segmented"]::part(tabs) {
+    background-color: var(--lumo-contrast-5pct);
+    border-radius: var(--lumo-border-radius-m);
+    margin: 0;
+    padding: calc(var(--lumo-space-xs) / 2);
+}
+
+vaadin-tabs[theme~="segmented"] vaadin-tab {
+    border-radius: var(--lumo-border-radius-m);
+}
+
+vaadin-tabs[theme~="segmented"] vaadin-tab::after,
+vaadin-tabs[theme~="segmented"] vaadin-tab::before {
+    content: none;
+}
+
+vaadin-tabs[theme~="segmented"] vaadin-tab[selected] {
+    background-color: var(--lumo-base-color);
+    box-shadow: var(--lumo-box-shadow-xs);
+}
+
+vaadin-tabs[theme~="segmented"] vaadin-tab[focus-ring] {
+    box-shadow: 0 0 0 var(--vaadin-focus-ring-width, 2px) var(--vaadin-focus-ring-color, var(--lumo-primary-color-50pct));
+    z-index: 1;
+}
+
+vaadin-tabs[theme~="segmented"] vaadin-tab[focus-ring][selected] {
+    box-shadow: var(--lumo-box-shadow-xs), 0 0 0 var(--vaadin-focus-ring-width, 2px) var(--vaadin-focus-ring-color, var(--lumo-primary-color-50pct));
+}
+

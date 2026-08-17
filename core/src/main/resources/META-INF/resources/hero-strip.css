@@ -2,7 +2,7 @@
  * hero-strip.css
  * BEM root: .hstrip
  *
- * .hstrip                  — gradient card wrapper (display:grid)
+ * .hstrip                  — gradient card wrapper (flex column: header row / tags row / metrics grid)
  * .hstrip--default         — neutral dark gradient
  * .hstrip--info            — blue gradient
  * .hstrip--success         — green gradient
@@ -10,7 +10,22 @@
  * .hstrip--danger          — red gradient
  * .hstrip--violet          — violet gradient
  * .hstrip--responsive      — cells wrap to new rows; right-border dividers removed
- * .hstrip__cell            — one metric column (border-right divider)
+ *
+ * .hstrip__row             — header row (thumbnail + body), flex
+ * .hstrip__thumb           — icon box (translucent bg), holds the optional ribbon badge
+ * .hstrip__thumb-ribbon    — small corner badge on the thumbnail (e.g. "NEW", "T1")
+ * .hstrip__body            — name + meta column
+ * .hstrip__name            — large title text (flex, gap for star)
+ * .hstrip__name-star       — gold star suffix after the name
+ * .hstrip__meta            — muted monospace subtitle below the name
+ *
+ * .hstrip__tags            — wrapping row of tag pills
+ * .hstrip__tag             — one pill (base look)
+ * .hstrip__tag--ok/pri/prim/violet/warn — flat translucent pill colour modifiers
+ * .hstrip__tag--hot        — warm gold gradient pill with dark text (eye-catching highlight)
+ *
+ * .hstrip__metrics         — metrics grid container (cells side by side, separated by dividers)
+ * .hstrip__cell            — one metric cell (right-border divider, no per-cell background)
  * .hstrip__label           — small uppercase label row (flex, gap for pulse dot)
  * .hstrip__pulse           — animated amber dot (animation: hstrip-pulse)
  * .hstrip__value           — large mono value
@@ -20,12 +35,11 @@
  */
 
 .hstrip {
-    border-radius:         10px;
-    padding:               14px 18px;
-    display:               grid;
-    /* grid-template-columns is set inline to repeat(N, 1fr) */
-    gap:                   14px;
-    align-items:           center;
+    border-radius:  10px;
+    padding:        14px 18px;
+    display:        flex;
+    flex-direction: column;
+    gap:            10px;
     box-shadow:            0 4px 14px -2px rgba(15,27,45,.06), 0 2px 4px rgba(15,27,45,.04);
     position:              relative;
     overflow:              hidden;
@@ -50,7 +64,108 @@
 .hstrip--danger  { background: linear-gradient(135deg, #c0392b 0%, #922b21 100%); }
 .hstrip--violet  { background: linear-gradient(135deg, #5a4ec4 0%, #7e6ee8 100%); }
 
-/* ── Cell ────────────────────────────────────────────────────────────────── */
+/* Header row (thumbnail + name/meta) */
+.hstrip__row {
+    display:     flex;
+    align-items: center;
+    gap:         12px;
+    position:    relative;
+    z-index:     1;
+}
+
+.hstrip__thumb {
+    width:           54px;
+    height:          54px;
+    border-radius:   12px;
+    background:      rgba(255,255,255,.16);
+    display:         flex;
+    align-items:     center;
+    justify-content: center;
+    flex-shrink:     0;
+    box-shadow:      0 4px 10px rgba(0,0,0,.25);
+    position:        relative;
+}
+
+.hstrip__thumb-ribbon {
+    position:       absolute;
+    top:            -4px;
+    right:          -4px;
+    background:     #d4a017;
+    color:          #fff;
+    font-size:      8px;
+    font-weight:    700;
+    padding:        2px 5px;
+    border-radius:  3px;
+    letter-spacing: .04em;
+    box-shadow:     0 1px 2px rgba(0,0,0,.2);
+}
+
+.hstrip__body {
+    flex:      1;
+    min-width: 0;
+}
+
+.hstrip__name {
+    font-size:      17px;
+    font-weight:    600;
+    letter-spacing: -0.01em;
+    line-height:    1.15;
+    display:        flex;
+    align-items:    center;
+    gap:            5px;
+}
+
+.hstrip__name-star {
+    color:     #d4a017;
+    font-size: 13px;
+}
+
+.hstrip__meta {
+    font-size:   11px;
+    color:       rgba(255,255,255,.7);
+    margin-top:  2px;
+    font-family: 'JetBrains Mono', monospace;
+    line-height: 1.3;
+}
+
+/* Tags row */
+.hstrip__tags {
+    display:   flex;
+    gap:       5px;
+    flex-wrap: wrap;
+    position:  relative;
+    z-index:   1;
+}
+
+.hstrip__tag {
+    font-size:      10px;
+    font-weight:    600;
+    padding:        3px 7px;
+    border-radius:  4px;
+    display:        inline-flex;
+    align-items:    center;
+    gap:            3px;
+    letter-spacing: .02em;
+}
+
+.hstrip__tag--ok     { background: rgba(46,154,106,.22);  color: #a7f3d0; }
+.hstrip__tag--pri    { background: rgba(212,160,23,.22);  color: #fde68a; }
+.hstrip__tag--prim   { background: rgba(21,118,211,.28);  color: #c5e0f4; }
+.hstrip__tag--violet { background: rgba(111,122,252,.22); color: #c8ccfb; }
+.hstrip__tag--warn   { background: rgba(184,134,11,.22);  color: #fde68a; }
+.hstrip__tag--hot    { background: linear-gradient(135deg, #fde68a, #fbbf24); color: #7c4a02; }
+
+/* Metrics grid */
+.hstrip__metrics {
+    display:      grid;
+    /* grid-template-columns is set inline to repeat(N, 1fr) */
+    gap:          14px;
+    align-items:  center;
+    position:     relative;
+    z-index:      1;
+}
+
+/* Cell — divider is a right border, no per-cell background/blur */
 .hstrip__cell {
     position:      relative;
     z-index:       1;
@@ -59,11 +174,11 @@
 }
 
 .hstrip__cell:last-child {
-    border-right:  none;
+    border-right:  0;
     padding-right: 0;
 }
 
-/* ── Label row ───────────────────────────────────────────────────────────── */
+/* Label row */
 .hstrip__label {
     font-size:      10.5px;
     color:          rgba(255,255,255,.75);
@@ -75,7 +190,7 @@
     gap:            6px;
 }
 
-/* ── Animated pulse dot ──────────────────────────────────────────────────── */
+/* Animated pulse dot */
 .hstrip__pulse {
     width:         6px;
     height:        6px;
@@ -91,7 +206,7 @@
     50%       { opacity: .4; }
 }
 
-/* ── Value ───────────────────────────────────────────────────────────────── */
+/* Value */
 .hstrip__value {
     font-family: 'JetBrains Mono', monospace;
     font-size:   18px;
@@ -104,82 +219,61 @@
 .hstrip__value--ok    { color: #a7f3d0; } /* mint green  */
 .hstrip__value--alert { color: #fbbf24; } /* amber       */
 
-/* ── Sub-label ───────────────────────────────────────────────────────────── */
+/* Sub-label */
 .hstrip__sub {
     font-size:  11px;
     color:      rgba(255,255,255,.75);
     margin-top: 2px;
 }
 
-/* ═══════════════════════════════════════════════════════════════════════════
+/* ============================================================================
  * Responsive mode  (.hstrip--responsive)
  *
- * Without this class the strip renders all cells in one fixed row
+ * Without this class the metrics grid renders all cells in one fixed row
  * (grid-template-columns is set inline by Java). With this class, cells
- * wrap automatically via auto-fit / minmax, and right-border dividers are
- * replaced by the grid gap so the layout doesn't break across rows.
+ * wrap automatically via auto-fit / minmax.
  *
  * Breakpoints:
- *   > 768px  : auto-fit → typically all cells on one row (same as default)
- *   481–768px: auto-fit collapses to 3 or 2 per row (minmax kicks in)
- *   ≤ 480px  : forced 2-column grid
- *   ≤ 320px  : forced 1-column (very small phones)
- * ═══════════════════════════════════════════════════════════════════════════ */
+ *   > 768px  : auto-fit -> typically all cells on one row (same as default)
+ *   481-768px: auto-fit collapses to 3 or 2 per row (minmax kicks in)
+ *   <= 480px : forced 2-column grid
+ *   <= 320px : forced 1-column (very small phones)
+ * ========================================================================= */
 
-.hstrip--responsive {
+.hstrip--responsive .hstrip__metrics {
     /* override the inline grid-template-columns set by Java */
     grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)) !important;
     align-items:           start; /* top-align cells when row heights differ */
 }
 
-/* Remove right-border dividers — gap acts as breathing room between columns */
+/* Wrapping breaks the single-row assumption behind the right-border divider trick */
 .hstrip--responsive .hstrip__cell {
     border-right:  none;
     padding-right: 0;
 }
 
-/* Tablet (481–768 px): tighten padding + gap */
+/* Tablet (481-768 px): tighten padding + gap */
 @media (max-width: 768px) {
     .hstrip--responsive {
         padding: 12px 14px;
-        gap:     12px 10px;
+        gap:     8px;
     }
 }
 
-/* Mobile (≤ 480 px): force 2-column grid, slightly smaller value text */
+/* Mobile (<= 480 px): force 2-column grid, slightly smaller value text */
 @media (max-width: 480px) {
-    .hstrip--responsive {
+    .hstrip--responsive .hstrip__metrics {
         grid-template-columns: 1fr 1fr !important;
-        padding:               12px;
-        gap:                   10px 12px;
     }
 
     .hstrip--responsive .hstrip__value {
         font-size: 16px;
     }
-
-    /* Add a subtle bottom separator so stacked rows feel structured */
-    .hstrip--responsive .hstrip__cell {
-        padding-bottom: 8px;
-        border-bottom:  1px solid rgba(255,255,255,.1);
-    }
-
-    /* Last two children (bottom row) get no bottom border */
-    .hstrip--responsive .hstrip__cell:nth-last-child(-n+2) {
-        border-bottom: none;
-        padding-bottom: 0;
-    }
 }
 
-/* Very small phones (≤ 320 px): single column */
+/* Very small phones (<= 320 px): single column */
 @media (max-width: 320px) {
-    .hstrip--responsive {
+    .hstrip--responsive .hstrip__metrics {
         grid-template-columns: 1fr !important;
-    }
-
-    /* Last child gets no bottom border in single-column layout */
-    .hstrip--responsive .hstrip__cell:last-child {
-        border-bottom: none;
-        padding-bottom: 0;
     }
 }

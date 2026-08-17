@@ -1,26 +1,24 @@
 package com.holonplatform.vaadin.flow.chat.internal;
 
-import com.holonplatform.vaadin.flow.chat.api.ChatService;
 import com.holonplatform.vaadin.flow.chat.builders.LiveChatBuilder;
 import com.holonplatform.vaadin.flow.chat.components.LiveChat;
 import com.vaadin.collaborationengine.UserInfo;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.function.Consumer;
 
 /**
  * Default implementation of {@link LiveChatBuilder}.
  *
  * <p>Collects all configuration then calls {@link LiveChat#assemble} on {@link #build()}.
  */
-public final class DefaultLiveChatBuilder implements LiveChatBuilder {
+public final class DefaultLiveChatBuilder extends AbstractLiveChatConfigurator<LiveChatBuilder>
+        implements LiveChatBuilder {
 
     private final UserInfo userInfo;
-
-    private String roomId;
-    private ChatService chatService;
-    private boolean typingEnabled;
-    private boolean channelsEnabled;
-    private boolean roomManagementEnabled;
-    private boolean directMessage;
-    private int pageSize = HolonChatPersister.DEFAULT_PAGE_SIZE;
+    private final List<Consumer<LiveChat>> postProcessors = new ArrayList<>();
 
     /**
      * Creates a builder for the given user.
@@ -33,49 +31,14 @@ public final class DefaultLiveChatBuilder implements LiveChatBuilder {
     }
 
     @Override
-    public LiveChatBuilder room(String roomId) {
-        if (roomId == null || roomId.isBlank()) throw new IllegalArgumentException("roomId must not be blank");
-        this.roomId = roomId;
+    protected LiveChatBuilder getConfigurator() {
         return this;
     }
 
     @Override
-    public LiveChatBuilder withPersistence(ChatService chatService) {
-        if (chatService == null) throw new IllegalArgumentException("chatService must not be null");
-        this.chatService = chatService;
-        return this;
-    }
-
-    @Override
-    public LiveChatBuilder withTypingIndicator() {
-        this.typingEnabled = true;
-        return this;
-    }
-
-    @Override
-    public LiveChatBuilder withChannels(ChatService chatService) {
-        if (chatService == null) throw new IllegalArgumentException("chatService must not be null");
-        this.channelsEnabled = true;
-        if (this.chatService == null) this.chatService = chatService;
-        return this;
-    }
-
-    @Override
-    public LiveChatBuilder withPageSize(int pageSize) {
-        if (pageSize <= 0) throw new IllegalArgumentException("pageSize must be > 0");
-        this.pageSize = pageSize;
-        return this;
-    }
-
-    @Override
-    public LiveChatBuilder withRoomManagement() {
-        this.roomManagementEnabled = true;
-        return this;
-    }
-
-    @Override
-    public LiveChatBuilder directMessage() {
-        this.directMessage = true;
+    public LiveChatBuilder withBuildPostProcessor(Consumer<LiveChat> postProcessor) {
+        Objects.requireNonNull(postProcessor, "Post-processor must not be null");
+        postProcessors.add(postProcessor);
         return this;
     }
 
@@ -88,9 +51,13 @@ public final class DefaultLiveChatBuilder implements LiveChatBuilder {
         LiveChat chat = new LiveChat(userInfo);
         chat.assemble(roomId, chatService, typingEnabled, channelsEnabled,
                 roomManagementEnabled, pageSize, directMessage);
+        applyComponentConfig(chat);
+        postProcessors.forEach(pp -> pp.accept(chat));
         return chat;
     }
 }
+
+
 
 
 

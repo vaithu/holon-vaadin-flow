@@ -51,8 +51,8 @@ public class FormStepCard extends Panel {
     private Span      badge;
     private int       stepNumber;
 
-    /** Package-private: created only by {@link FormStepCardBuilder}. */
-    FormStepCard() {
+    /** Constructor — also used directly by {@link com.holonplatform.vaadin.flow.components.builders.FormStepCardBuilder}. */
+    public FormStepCard() {
         addClassName(CSS_ROOT);
     }
 
@@ -80,8 +80,8 @@ public class FormStepCard extends Panel {
         return currentState;
     }
 
-    /** Package-private: called by {@link FormStepCardBuilder} to hand off the badge span. */
-    void initBadge(Span badge, int stepNumber) {
+    /** Called by builders to hand off the badge span after DOM assembly. */
+    public void initBadge(Span badge, int stepNumber) {
         this.badge      = badge;
         this.stepNumber = stepNumber;
     }

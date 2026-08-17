@@ -154,6 +154,7 @@ public final class DemoMainLayout extends AppLayout {
                         new SideNavItem("HeroStrip",          HeroStripDemoView.class,          VaadinIcon.GRID_BIG_O.create()),
                         new SideNavItem("DoubleLabel",        DoubleLabelDemoView.class,        VaadinIcon.TEXT_LABEL.create()),
                         new SideNavItem("PriceList",          PriceListDemoView.class,          VaadinIcon.MONEY.create()),
+                        new SideNavItem("TotalsCard",         TotalsCardDemoView.class,         VaadinIcon.FILE_TEXT.create()),
                         new SideNavItem("ListItem",           ListItemDemoView.class,           VaadinIcon.LIST_UL.create()),
                         new SideNavItem("LitRendererBuilder", LitRendererBuilderDemoView.class, VaadinIcon.CODE.create()),
                         new SideNavItem("Header",             HeaderDemoView.class,             VaadinIcon.HEADER.create()),

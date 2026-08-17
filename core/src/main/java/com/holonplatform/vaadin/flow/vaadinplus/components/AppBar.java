@@ -9,10 +9,10 @@ import com.vaadin.flow.component.html.Header;
 @StyleSheet("context://app-bar.css")
 public class AppBar extends Header implements HasTheme {
 
-    /** Lazily-created slot containers — null until first component is added. */
-    private Div startSlot;
-    private Div middleSlot;
-    private Div endSlot;
+    /** Always-present slot containers, created eagerly so the shell has a stable three-slot structure. */
+    private final Div startSlot;
+    private final Div middleSlot;
+    private final Div endSlot;
     private Div bottomSlot;
 
     public AppBar(Component... components) {
@@ -20,6 +20,15 @@ public class AppBar extends Header implements HasTheme {
         addClassName("app-bar");
         getElement().setAttribute("role", "banner");
         setWidthFull();
+
+        startSlot = new Div();
+        startSlot.addClassName("app-bar__start");
+        middleSlot = new Div();
+        middleSlot.addClassName("app-bar__middle");
+        endSlot = new Div();
+        endSlot.addClassName("app-bar__end");
+        add(startSlot, middleSlot, endSlot);
+
         if (components != null && components.length > 0) {
             addToStart(components);
         }
@@ -27,31 +36,16 @@ public class AppBar extends Header implements HasTheme {
 
     /** Appends {@code components} to the start slot (left edge). */
     public void addToStart(Component... components) {
-        if (startSlot == null) {
-            startSlot = new Div();
-            startSlot.addClassName("app-bar__start");
-            addComponentAsFirst(startSlot);
-        }
         startSlot.add(components);
     }
 
     /** Appends {@code components} to the middle slot (flex-grow centre). */
     public void addToMiddle(Component... components) {
-        if (middleSlot == null) {
-            middleSlot = new Div();
-            middleSlot.addClassName("app-bar__middle");
-            add(middleSlot);
-        }
         middleSlot.add(components);
     }
 
     /** Appends {@code components} to the end slot (right edge). */
     public void addToEnd(Component... components) {
-        if (endSlot == null) {
-            endSlot = new Div();
-            endSlot.addClassName("app-bar__end");
-            add(endSlot);
-        }
         endSlot.add(components);
     }
 
@@ -60,11 +54,6 @@ public class AppBar extends Header implements HasTheme {
      * Index 0 = leftmost position inside the end section.
      */
     public void addToEnd(int index, Component component) {
-        if (endSlot == null) {
-            endSlot = new Div();
-            endSlot.addClassName("app-bar__end");
-            add(endSlot);
-        }
         endSlot.addComponentAtIndex(index, component);
     }
 

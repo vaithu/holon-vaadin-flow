@@ -185,6 +185,130 @@
 }
 
 /* ============================================================
+   Left-border variant colour overrides
+   The default border-color for each variant uses color-mix() to produce a
+   blended tone. When only a left accent is shown, the vibrant accent colour
+   must be used instead so the result matches the HTML mockup exactly.
+   ============================================================ */
+
+.alert--destructive.alert--left-border {
+  background-color: var(--err-light, #fef2f2);
+  border-left-color: var(--err-accent, #ef4444);
+}
+
+.alert--warning.alert--left-border {
+  background-color: var(--warn-bg, #fffbeb);
+  border-left-color: var(--warn-accent, #f59e0b);
+}
+
+.alert--success.alert--left-border {
+  border-left-color: var(--ok, #16a34a);
+}
+
+.alert--info.alert--left-border {
+  border-left-color: var(--info, #2563eb);
+}
+
+/* ============================================================
+   Left-border row action buttons — colour + sizing via official
+   --vaadin-button-* style properties (Vaadin 25 Aura/Lumo API).
+   These properties are set on the host vaadin-button element so
+   both Aura and Lumo themes pick them up without any ::part() hacks.
+   ============================================================ */
+
+/* Destructive (red) Reorder button */
+.alert--destructive.alert--left-border .alert__action > vaadin-button {
+  --vaadin-button-background:    var(--err-accent, #ef4444);
+  --vaadin-button-text-color:    white;
+  --vaadin-button-border:        none;
+  --vaadin-button-height:        1.5rem;
+  --vaadin-button-padding:       0 0.625rem;
+  --vaadin-button-font-size:     0.6875rem;
+  --vaadin-button-font-weight:   500;
+  --vaadin-button-border-radius: 0.25rem;
+  min-height: unset;
+}
+
+/* Warning (orange) Reorder button */
+.alert--warning.alert--left-border .alert__action > vaadin-button {
+  --vaadin-button-background:    var(--warn-accent, #f59e0b);
+  --vaadin-button-text-color:    white;
+  --vaadin-button-border:        none;
+  --vaadin-button-height:        1.5rem;
+  --vaadin-button-padding:       0 0.625rem;
+  --vaadin-button-font-size:     0.6875rem;
+  --vaadin-button-font-weight:   500;
+  --vaadin-button-border-radius: 0.25rem;
+  min-height: unset;
+}
+
+/* Plain <button> fallback (same sizing) */
+.alert--left-border .alert__action > button {
+  min-height:    unset;
+  height:        1.5rem;
+  padding:       0.25rem 0.625rem;
+  font-size:     0.6875rem;
+  font-weight:   500;
+  border-radius: 0.25rem;
+  border:        none;
+  cursor:        pointer;
+  line-height:   1;
+  color:         white;
+}
+.alert--destructive.alert--left-border .alert__action > button {
+  background-color: var(--err-accent, #ef4444);
+}
+.alert--warning.alert--left-border .alert__action > button {
+  background-color: var(--warn-accent, #f59e0b);
+}
+
+/* ============================================================
+   Inline layout modifier — action right-aligned beside content
+   Use when you need the action button inline (e.g. stock alert rows).
+   ============================================================ */
+
+.alert--inline .alert__content {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 0 0.75rem;
+}
+
+.alert--inline .alert__title-row {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.alert--inline .alert__description {
+  grid-column: 1;
+  grid-row: 2;
+}
+
+.alert--inline .alert__action {
+  grid-column: 2;
+  grid-row: 1 / -1;
+  margin-top: 0;
+  align-self: center;
+}
+
+/* WCAG override: inline actions are smaller by design; reduce forced min-height */
+.alert--inline .alert__action > vaadin-button,
+.alert--inline .alert__action > button {
+  min-height: unset;
+}
+
+/* ============================================================
+   Left-border-only modifier — strip full border, keep left accent.
+   Variant border-color is still inherited from the variant class.
+   ============================================================ */
+
+.alert--left-border {
+  border-style: none;
+  border-left-style: solid;
+  border-left-width: 3px;
+}
+
+/* ============================================================
    Dark mode overrides — invert to dark-surface tints
    ============================================================ */
 @media (prefers-color-scheme: dark) {

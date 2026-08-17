@@ -1,44 +1,68 @@
 package com.holonplatform.vaadin.flow.vaadinplus.components;
 
 import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
+import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Span;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
- * A horizontal gradient "hero strip" card that displays N key metric cells side by side
- * in equally-wide columns separated by translucent vertical dividers.
+ * A gradient "hero strip" card that displays an optional thumbnail/name/meta header row,
+ * an optional row of status tag pills, and N key metric cells side by side in equally-wide
+ * columns.
  *
  * <p>The strip itself is the container — there is no Panel/Header/Footer wrapping.
- * Each cell shows a small label row (optionally with an animated pulse dot), a large
- * monospace value, and an optional sub-label beneath the value.</p>
+ * The optional header row shows an icon thumbnail (with an optional small corner ribbon
+ * badge, e.g. {@code "NEW"} or {@code "T1"}) next to a name (optionally starred) and a
+ * muted meta subtitle. The optional tags row is a wrapping list of small colour-coded
+ * pills (e.g. {@code "● Active"}, {@code "VIP"}). Each metric cell shows a small label row
+ * (optionally with an animated pulse dot), a large monospace value, and an optional
+ * sub-label beneath the value.</p>
  *
  * <h3>Structure</h3>
  * <pre>
  * ┌──────────────────────────────────────────────────────────────┐
- * │  ● Open pipeline  │  Booked YTD   │  AR balance             │
- * │     €182K         │    €624K      │    €62,400              │
- * │  4 deals · 80%    │  14 orders    │  3 open · on-time       │
+ * │  [ico] Helix Robotics SE ★                                    │
+ * │        C-2026-0023 · Munich · since 1.9 yr                    │
+ * │  ● Active   ★ T1   EMEA · DACH   VIP                          │
+ * ├──────────────────────────────────────────────────────────────┤
+ * │  Health    │  Open AR      │  Open SOs   │  ARR              │
+ * │  A+        │  €14.8K       │  3          │  €1.84M           │
+ * │  ★ 4.7     │  14d          │  €48.2K     │  +12%             │
  * └──────────────────────────────────────────────────────────────┘
  * </pre>
  *
- * <h3>Customer KPI example</h3>
+ * <h3>Customer 360 header example</h3>
  * <pre>{@code
  * Components.heroStrip()
  *     .variant(HeroStrip.Variant.INFO)
- *     .cell(c -> c.header("Open pipeline").content("€182K").footer("4 active deals · 80% avg prob").pulse(true))
- *     .cell(c -> c.header("Booked YTD").content("€624K").footer("14 orders · 22 invoices").valueVariant(HeroStrip.ValueVariant.OK))
- *     .cell(c -> c.header("AR balance").content("€62,400").footer("3 open · all on-time"))
+ *     .header(h -> h.thumbIcon(VaadinIcon.BUILDING.create())
+ *         .ribbon("T1")
+ *         .name("Helix Robotics SE")
+ *         .starred(true)
+ *         .meta("C-2026-0023 · Munich · since 1.9 yr"))
+ *     .tag("● Active", HeroStrip.TagVariant.OK)
+ *     .tag("★ T1", HeroStrip.TagVariant.PRI)
+ *     .tag("EMEA · DACH", HeroStrip.TagVariant.PRIM)
+ *     .tag("VIP", HeroStrip.TagVariant.VIOLET)
+ *     .cell(c -> c.header("Health").content("A+").footer("★ 4.7").valueVariant(HeroStrip.ValueVariant.OK))
+ *     .cell(c -> c.header("Open AR").content("€14.8K").footer("14d").valueVariant(HeroStrip.ValueVariant.ALERT))
+ *     .cell(c -> c.header("Open SOs").content("3").footer("€48.2K"))
+ *     .cell(c -> c.header("ARR").content("€1.84M").footer("+12%"))
  *     .build();
  * }</pre>
  *
  * <h3>Runtime mutation</h3>
  * <pre>{@code
  * strip.setVariant(HeroStrip.Variant.DANGER);
+ * strip.setHeader(new HeroStrip.Header(null, "NEW", "New customer", false, "will assign C-2026-0343"));
+ * strip.setTags(List.of(new HeroStrip.Tag("● DRAFT", HeroStrip.TagVariant.WARN)));
  * strip.setCells(List.of(
  *     new HeroStrip.Cell("Alert", "3 critical", "immediate action", true, HeroStrip.ValueVariant.ALERT)
  * ));
@@ -47,7 +71,6 @@ import java.util.List;
  * <h3>CSS</h3>
  * {@code META-INF/resources/hero-strip.css} — BEM root: {@code .hstrip}
  *
- * @see HeroStripBuilder
  */
 @StyleSheet("context://hero-strip.css")
 public class HeroStrip extends Div {
@@ -174,14 +197,121 @@ public class HeroStrip extends Div {
         }
     }
 
+    // ── TagVariant (h-tags pill colour) ─────────────────────────────────────
+
+    /**
+     * Colour variant for a {@link Tag} pill rendered in the strip's tags row.
+     */
+    public enum TagVariant implements Serializable {
+
+        /** Green — active / positive status (e.g. {@code "● Active"}). */
+        OK("ok"),
+        /** Amber/gold — priority / tier marker (e.g. {@code "★ T1"}). */
+        PRI("pri"),
+        /** Blue — primary informational (e.g. region). */
+        PRIM("prim"),
+        /** Violet — special marker (e.g. {@code "VIP"}). */
+        VIOLET("violet"),
+        /** Amber — warning / attention needed (e.g. overdue AR, draft state). */
+        WARN("warn"),
+        /** Warm gold gradient with dark text — eye-catching highlight (e.g. {@code "🔥 Hot"}). */
+        HOT("hot");
+
+        @Serial
+        private static final long serialVersionUID = 1L;
+
+        private final String cssModifier;
+
+        TagVariant(String cssModifier) {
+            this.cssModifier = cssModifier;
+        }
+
+        /** CSS modifier token (e.g. {@code "ok"}). */
+        public String getCssModifier() {
+            return cssModifier;
+        }
+    }
+
+    /**
+     * Immutable definition of one pill in the strip's tags row (below the header, above the metrics).
+     *
+     * @param text    the tag text, e.g. {@code "● Active"} or {@code "VIP"}
+     * @param variant colour variant; {@code null} defaults to {@link TagVariant#PRIM}
+     */
+    public record Tag(String text, TagVariant variant) implements Serializable {
+
+        @Serial
+        private static final long serialVersionUID = 1L;
+
+        /** Compact constructor — normalises {@code null} variant to {@link TagVariant#PRIM}. */
+        public Tag {
+            if (variant == null) variant = TagVariant.PRIM;
+        }
+    }
+
+    // ── Header (thumb + ribbon + name + meta) ───────────────────────────────
+
+    /**
+     * Immutable definition of the strip's header row: a thumbnail icon (optionally carrying a small
+     * corner ribbon badge) next to a name/title (optionally starred) and a muted meta subtitle.
+     *
+     * @param thumbIcon the icon rendered inside the thumbnail box; {@code null} = no thumbnail
+     * @param ribbon    small corner badge text on the thumbnail (e.g. {@code "NEW"}, {@code "T1"});
+     *                  {@code null} or blank = hidden
+     * @param name      the main title text (e.g. {@code "Helix Robotics SE"})
+     * @param starred   when {@code true}, a gold star is rendered right after the name
+     * @param meta      muted monospace subtitle below the name (e.g. {@code "C-2026-0023 · Munich"});
+     *                  {@code null} or blank = hidden
+     */
+    public record Header(Component thumbIcon, String ribbon, String name, boolean starred, String meta)
+            implements Serializable {
+
+        @Serial
+        private static final long serialVersionUID = 1L;
+    }
+
     // ── Mutable state ───────────────────────────────────────────────────────
 
     private Variant currentVariant;
     private boolean responsive;
+    private boolean wideFirstCell;
+    private Header header;
+    private final List<Tag> tags = new ArrayList<>();
+    private final List<Cell> cellList = new ArrayList<>();
 
-    // ── Constructor (package-private — use HeroStripBuilder) ───────────────
+    // ── Constructor (use HeroStripBuilder or direct construction) ─────────
 
-    HeroStrip(Variant variant, List<Cell> cells, boolean responsive) {
+    /**
+     * Convenience constructor — creates an empty strip with the given variant.
+     * Add cells via {@link #addCell(Cell)} or replace all via {@link #setCells(List)}.
+     *
+     * @param variant the gradient variant (may be {@code null} for {@link Variant#DEFAULT})
+     */
+    public HeroStrip(Variant variant) {
+        this(variant != null ? variant : Variant.DEFAULT, null, null, null, false);
+    }
+
+    /**
+     * Creates a strip with cells only (no header/tags row) — kept for backward compatibility.
+     *
+     * @param variant    the gradient variant (may be {@code null} for {@link Variant#DEFAULT})
+     * @param cells      ordered list of metric cells
+     * @param responsive whether responsive wrapping is enabled
+     */
+    public HeroStrip(Variant variant, List<Cell> cells, boolean responsive) {
+        this(variant, null, null, cells, responsive);
+    }
+
+    /**
+     * Creates a fully-featured strip: optional header row, optional tags row and metric cells.
+     *
+     * @param variant    the gradient variant (may be {@code null} for {@link Variant#DEFAULT})
+     * @param header     the header row definition; {@code null} = no header row rendered
+     * @param tags       ordered list of tag pills; {@code null} or empty = no tags row rendered
+     * @param cells      ordered list of metric cells; {@code null} or empty = no metrics grid rendered
+     * @param responsive whether responsive wrapping is enabled
+     */
+    public HeroStrip(Variant variant, Header header, List<Tag> tags, List<Cell> cells, boolean responsive) {
         addClassName(CSS_ROOT);
         // A11Y: mark as a named landmark region
         getElement().setAttribute("role", "region");
@@ -191,7 +321,10 @@ public class HeroStrip extends Div {
         addClassName(this.currentVariant.getCssClass());
         this.responsive = responsive;
         if (responsive) addClassName("hstrip--responsive");
-        renderCells(cells);
+        this.header = header;
+        if (tags != null) this.tags.addAll(tags);
+        if (cells != null) this.cellList.addAll(cells);
+        render();
     }
 
     // ── Responsive API ─────────────────────────────────────────────────────
@@ -222,6 +355,32 @@ public class HeroStrip extends Div {
         } else {
             removeClassName("hstrip--responsive");
         }
+        applyMetricsColumns();
+        return this;
+    }
+
+    // ── Wide first column API ───────────────────────────────────────────────
+
+    /**
+     * Returns whether the first metric cell is rendered wider ({@code 1.4fr}) than the others.
+     *
+     * @return {@code true} when the wide-first-column layout is active
+     */
+    public boolean isWideFirstCell() {
+        return wideFirstCell;
+    }
+
+    /**
+     * Enables or disables a wider first metric cell (e.g. for a longer label/value such as
+     * {@code "Open pipeline · €182K"}), rendering {@code grid-template-columns: 1.4fr 1fr ... 1fr}
+     * instead of equally-wide columns. No-op in responsive mode, where auto-fit / minmax takes over.
+     *
+     * @param wideFirstCell {@code true} to widen the first cell
+     * @return this (fluent)
+     */
+    public HeroStrip setWideFirstCell(boolean wideFirstCell) {
+        this.wideFirstCell = wideFirstCell;
+        applyMetricsColumns();
         return this;
     }
 
@@ -249,7 +408,83 @@ public class HeroStrip extends Div {
         return this;
     }
 
+    // ── Header API ─────────────────────────────────────────────────────────
+
+    /**
+     * Returns the current header row definition, if any.
+     *
+     * @return the current {@link Header}, or {@code null} if no header row is set
+     */
+    public Header getHeader() {
+        return header;
+    }
+
+    /**
+     * Sets (or clears) the header row: thumbnail icon + optional ribbon badge, name (optionally
+     * starred) and meta subtitle.
+     *
+     * @param header the header definition; {@code null} removes the header row
+     * @return this (fluent)
+     */
+    public HeroStrip setHeader(Header header) {
+        this.header = header;
+        render();
+        return this;
+    }
+
+    // ── Tags API ───────────────────────────────────────────────────────────
+
+    /**
+     * Returns an unmodifiable view of the current tag pills.
+     *
+     * @return the current tags, in rendering order
+     */
+    public List<Tag> getTags() {
+        return Collections.unmodifiableList(tags);
+    }
+
+    /**
+     * Appends a single tag pill to the tags row.
+     *
+     * @param tag the tag to append; {@code null} is silently ignored
+     * @return this (fluent)
+     */
+    public HeroStrip addTag(Tag tag) {
+        if (tag != null) {
+            tags.add(tag);
+            render();
+        }
+        return this;
+    }
+
+    /**
+     * Replaces all tag pills with the supplied list.
+     *
+     * @param tags ordered list of tags; {@code null} or empty clears the tags row
+     * @return this (fluent)
+     */
+    public HeroStrip setTags(List<Tag> tags) {
+        this.tags.clear();
+        if (tags != null) this.tags.addAll(tags);
+        render();
+        return this;
+    }
+
     // ── Cells API ──────────────────────────────────────────────────────────
+
+    /**
+     * Appends a single cell to the strip and updates the column grid accordingly.
+     *
+     * @param cell the cell to append; {@code null} is silently ignored
+     * @return this (fluent)
+     */
+    public HeroStrip addCell(Cell cell) {
+        if (cell != null) {
+            cellList.add(cell);
+            render();
+        }
+        return this;
+    }
 
     /**
      * Re-renders all cells with the supplied list.
@@ -261,22 +496,134 @@ public class HeroStrip extends Div {
      * @return this (fluent)
      */
     public HeroStrip setCells(List<Cell> cells) {
-        removeAll();
-        renderCells(cells);
+        this.cellList.clear();
+        if (cells != null) this.cellList.addAll(cells);
+        render();
         return this;
     }
 
     // ── Internal helpers ───────────────────────────────────────────────────
 
-    private void renderCells(List<Cell> cells) {
-        if (cells == null || cells.isEmpty()) return;
-        // Only set inline columns for the fixed layout; responsive mode uses CSS auto-fit
+    private Div metricsDiv;
+
+    /**
+     * Fully rebuilds the strip content (header row, tags row, metrics grid) from the current state.
+     */
+    private void render() {
+        removeAll();
+        metricsDiv = null;
+        if (header != null) {
+            add(buildHeaderRowDiv(header));
+        }
+        if (!tags.isEmpty()) {
+            add(buildTagsRowDiv(tags));
+        }
+        if (!cellList.isEmpty()) {
+            metricsDiv = buildMetricsDiv();
+            for (Cell cell : cellList) {
+                if (cell != null) metricsDiv.add(buildCellDiv(cell));
+            }
+            add(metricsDiv);
+            applyMetricsColumns();
+        }
+    }
+
+    /**
+     * Recomputes the inline {@code grid-template-columns} style on the metrics container, based on
+     * the current cell count (and the {@link #isWideFirstCell()} flag). No-op in responsive mode
+     * (CSS auto-fit takes over) or when no metrics are rendered.
+     */
+    private void applyMetricsColumns() {
+        if (metricsDiv == null) return;
         if (!responsive) {
-            getStyle().set("grid-template-columns", "repeat(" + cells.size() + ", 1fr)");
+            if (wideFirstCell && cellList.size() > 1) {
+                metricsDiv.getStyle().set("grid-template-columns",
+                        "1.4fr repeat(" + (cellList.size() - 1) + ", 1fr)");
+            } else {
+                metricsDiv.getStyle().set("grid-template-columns", "repeat(" + cellList.size() + ", 1fr)");
+            }
+        } else {
+            metricsDiv.getStyle().remove("grid-template-columns");
         }
-        for (Cell cell : cells) {
-            if (cell != null) add(buildCellDiv(cell));
+    }
+
+    /**
+     * Builds the container for the metrics grid (a row of {@link #buildCellDiv(Cell)} tiles).
+     *
+     * @return the assembled {@link Div} element
+     */
+    private static Div buildMetricsDiv() {
+        Div div = new Div();
+        div.addClassName("hstrip__metrics");
+        return div;
+    }
+
+    /**
+     * Builds the header row: thumbnail (icon + optional ribbon badge) and body (name + meta).
+     *
+     * @param header header data record (not null)
+     * @return the assembled {@link Div} element
+     */
+    private static Div buildHeaderRowDiv(Header header) {
+        Div row = new Div();
+        row.addClassName("hstrip__row");
+
+        Div thumb = new Div();
+        thumb.addClassName("hstrip__thumb");
+        if (header.thumbIcon() != null) {
+            thumb.add(header.thumbIcon());
         }
+        if (header.ribbon() != null && !header.ribbon().isBlank()) {
+            Div ribbon = new Div();
+            ribbon.addClassName("hstrip__thumb-ribbon");
+            ribbon.setText(header.ribbon());
+            thumb.add(ribbon);
+        }
+        row.add(thumb);
+
+        Div body = new Div();
+        body.addClassName("hstrip__body");
+
+        Div nameDiv = new Div();
+        nameDiv.addClassName("hstrip__name");
+        nameDiv.add(new Span(header.name() != null ? header.name() : ""));
+        if (header.starred()) {
+            Span star = new Span("★");
+            star.addClassName("hstrip__name-star");
+            // A11Y: the star is decorative, the "starred" semantics belong to the name text/aria-label
+            star.getElement().setAttribute("aria-hidden", "true");
+            nameDiv.add(star);
+        }
+        body.add(nameDiv);
+
+        if (header.meta() != null && !header.meta().isBlank()) {
+            Div metaDiv = new Div();
+            metaDiv.addClassName("hstrip__meta");
+            metaDiv.setText(header.meta());
+            body.add(metaDiv);
+        }
+        row.add(body);
+
+        return row;
+    }
+
+    /**
+     * Builds the tags row: a wrapping list of {@code hstrip__tag} pills.
+     *
+     * @param tags ordered list of tags (not null, not empty)
+     * @return the assembled {@link Div} element
+     */
+    private static Div buildTagsRowDiv(List<Tag> tags) {
+        Div tagsRow = new Div();
+        tagsRow.addClassName("hstrip__tags");
+        for (Tag tag : tags) {
+            if (tag == null) continue;
+            Span pill = new Span(tag.text() != null ? tag.text() : "");
+            pill.addClassName("hstrip__tag");
+            pill.addClassName("hstrip__tag--" + tag.variant().getCssModifier());
+            tagsRow.add(pill);
+        }
+        return tagsRow;
     }
 
     /**

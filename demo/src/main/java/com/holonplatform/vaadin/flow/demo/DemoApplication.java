@@ -66,6 +66,8 @@ import org.springframework.boot.persistence.autoconfigure.EntityScan;
 //@StyleSheet("context://brand-violet-studio.css")
 //@StyleSheet("context://brand-azure.css")
 @StyleSheet("context://app-shell.css")
+// 5. Segmented Tabs — theme="segmented" variant, ported from a Vaadin 24 Lumo custom theme
+@StyleSheet("context://segmented-tabs.css")
 public class DemoApplication implements AppShellConfigurator {
 
     public static void main(String[] args) {

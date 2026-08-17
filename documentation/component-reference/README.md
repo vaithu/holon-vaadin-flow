@@ -79,6 +79,10 @@ Generated reference files for components detected in this workspace.
 | `StatusBadge` | `com.holonplatform.vaadin.flow.vaadinplus.components` | [status-badge.md](./status-badge.md) |
 | `Tag` | `com.holonplatform.vaadin.flow.vaadinplus.components` | [tag.md](./tag.md) |
 | `TimelineStepper` | `com.holonplatform.vaadin.flow.vaadinplus.components` | [timeline-stepper.md](./timeline-stepper.md) |
+| `TotalsCard` | `com.holonplatform.vaadin.flow.vaadinplus.components` | [totals-card.md](./totals-card.md) |
+| `TotalsLabel` | `com.holonplatform.vaadin.flow.vaadinplus.components` | [totals-label.md](./totals-label.md) |
+| `TotalsRow` | `com.holonplatform.vaadin.flow.vaadinplus.components` | [totals-row.md](./totals-row.md) |
+| `TotalsValue` | `com.holonplatform.vaadin.flow.vaadinplus.components` | [totals-value.md](./totals-value.md) |
 | `TransferList` | `com.holonplatform.vaadin.flow.vaadinplus.components` | [transfer-list.md](./transfer-list.md) |
 | `UnorderedPriceList` | `com.holonplatform.vaadin.flow` | [unordered-price-list.md](./unordered-price-list.md) |
 | `VaadinCalendar` | `com.holonplatform.vaadin.flow.calendar` | [vaadin-calendar.md](./vaadin-calendar.md) |

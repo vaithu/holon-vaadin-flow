@@ -381,6 +381,47 @@ public class Alert extends Div {
     public void setAction(Component... actions) {
         setAction(new AlertAction(actions));
     }
+
+    // -----------------------------------------------------------------------
+    // Inline-action layout API
+    // -----------------------------------------------------------------------
+
+    /**
+     * Enables or disables the inline-action layout ({@code alert--inline}).
+     *
+     * <p>When enabled, the action is placed to the right of the title/description
+     * instead of below them. Useful for compact list rows such as stock alert items.</p>
+     *
+     * @param inline {@code true} to enable the inline layout, {@code false} to restore default
+     */
+    public void setInlineAction(boolean inline) {
+        if (inline) {
+            addClassName("alert--inline");
+        } else {
+            removeClassName("alert--inline");
+        }
+    }
+
+    // -----------------------------------------------------------------------
+    // Left-border-only style API
+    // -----------------------------------------------------------------------
+
+    /**
+     * Enables or disables the left-border-only style ({@code alert--left-border}).
+     *
+     * <p>When enabled, the full perimeter border is replaced with a left accent border (3 px).
+     * The accent colour is inherited from the variant's {@code border-color}.</p>
+     *
+     * @param leftBorder {@code true} to show only the left border, {@code false} to restore
+     *                   the full perimeter border
+     */
+    public void setLeftBorder(boolean leftBorder) {
+        if (leftBorder) {
+            addClassName("alert--left-border");
+        } else {
+            removeClassName("alert--left-border");
+        }
+    }
 }
 
 

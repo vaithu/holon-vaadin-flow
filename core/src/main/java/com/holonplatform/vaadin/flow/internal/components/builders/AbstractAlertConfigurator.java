@@ -122,6 +122,18 @@ public abstract class AbstractAlertConfigurator<C extends AlertConfigurator<C>>
         return getConfigurator();
     }
 
+    @Override
+    public C inlineAction() {
+        getComponent().setInlineAction(true);
+        return getConfigurator();
+    }
+
+    @Override
+    public C leftBorder() {
+        getComponent().setLeftBorder(true);
+        return getConfigurator();
+    }
+
     // -----------------------------------------------------------------------
     // AbstractComponentConfigurator hooks
     // -----------------------------------------------------------------------

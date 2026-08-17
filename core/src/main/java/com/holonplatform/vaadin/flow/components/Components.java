@@ -3685,8 +3685,8 @@ public interface Components {
      *
      * @return a new {@link ArAgingBarBuilder}
      */
-    static ArAgingBarBuilder arAgingBar() {
-        return ArAgingBarBuilder.create();
+    static com.holonplatform.vaadin.flow.components.builders.ArAgingBarBuilder arAgingBar() {
+        return com.holonplatform.vaadin.flow.components.builders.ArAgingBarBuilder.create();
     }
 
     // -----------------------------------------------------------------------
@@ -3694,22 +3694,31 @@ public interface Components {
     // -----------------------------------------------------------------------
 
     /**
-     * Returns a fluent builder for {@link HeroStrip} — a gradient metric-strip card
-     * showing N key performance indicators in equally-wide columns.
+     * Returns a fluent builder for {@link HeroStrip} — a gradient card showing an optional
+     * thumbnail/name/meta header row, an optional row of status tag pills, and N key
+     * performance indicators in equally-wide columns.
      *
      * <pre>{@code
      * Components.heroStrip()
      *     .variant(HeroStrip.Variant.INFO)
-     *     .cell(c -> c.label("Open pipeline").value("€182K").sub("4 active deals").pulse(true))
-     *     .cell(c -> c.label("Booked YTD").value("€624K").sub("14 orders").valueVariant(HeroStrip.ValueVariant.OK))
-     *     .cell(c -> c.label("AR balance").value("€62,400").sub("3 open · all on-time"))
+     *     .header(h -> h.thumbIcon(VaadinIcon.BUILDING.create())
+     *         .ribbon("T1")
+     *         .name("Helix Robotics SE")
+     *         .starred(true)
+     *         .meta("C-2026-0023 · Munich · since 1.9 yr"))
+     *     .tag("● Active", HeroStrip.TagVariant.OK)
+     *     .tag("★ T1", HeroStrip.TagVariant.PRI)
+     *     .tag("EMEA · DACH", HeroStrip.TagVariant.PRIM)
+     *     .cell(c -> c.header("Open pipeline").content("€182K").footer("4 active deals").pulse(true))
+     *     .cell(c -> c.header("Booked YTD").content("€624K").footer("14 orders").valueVariant(HeroStrip.ValueVariant.OK))
+     *     .cell(c -> c.header("AR balance").content("€62,400").footer("3 open · all on-time"))
      *     .build();
      * }</pre>
      *
      * @return a new {@link HeroStripBuilder}
      */
-    static HeroStripBuilder heroStrip() {
-        return HeroStripBuilder.create();
+    static com.holonplatform.vaadin.flow.components.builders.HeroStripBuilder heroStrip() {
+        return com.holonplatform.vaadin.flow.components.builders.HeroStripBuilder.create();
     }
 
     // -----------------------------------------------------------------------
@@ -3910,8 +3919,8 @@ public interface Components {
      *
      * @return a new {@link FormStepCardBuilder}
      */
-    static FormStepCardBuilder formStepCard() {
-        return FormStepCardBuilder.create();
+    static com.holonplatform.vaadin.flow.components.builders.FormStepCardBuilder formStepCard() {
+        return com.holonplatform.vaadin.flow.components.builders.FormStepCardBuilder.create();
     }
 
     /**
@@ -3945,8 +3954,8 @@ public interface Components {
      *
      * @return a new {@link EntityCreationFormBuilder}
      */
-    static EntityCreationFormBuilder entityCreationForm() {
-        return EntityCreationFormBuilder.create();
+    static com.holonplatform.vaadin.flow.components.builders.EntityCreationFormBuilder entityCreationForm() {
+        return com.holonplatform.vaadin.flow.components.builders.EntityCreationFormBuilder.create();
     }
 
 }

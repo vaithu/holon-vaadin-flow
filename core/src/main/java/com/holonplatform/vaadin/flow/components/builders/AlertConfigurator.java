@@ -156,6 +156,34 @@ public interface AlertConfigurator<C extends AlertConfigurator<C>>
     C action(Component... actions);
 
     // -----------------------------------------------------------------------
+    // Inline-action layout
+    // -----------------------------------------------------------------------
+
+    /**
+     * Enables the inline-action layout ({@code alert--inline}).
+     *
+     * <p>The action is placed to the right of the title/description instead of below.
+     * Useful for compact list rows such as low-stock alert items.</p>
+     *
+     * @return this configurator (for chaining)
+     */
+    C inlineAction();
+
+    // -----------------------------------------------------------------------
+    // Left-border-only style
+    // -----------------------------------------------------------------------
+
+    /**
+     * Enables the left-border-only style ({@code alert--left-border}).
+     *
+     * <p>Replaces the full perimeter border with a 3 px left accent whose colour
+     * is inherited from the active variant.</p>
+     *
+     * @return this configurator (for chaining)
+     */
+    C leftBorder();
+
+    // -----------------------------------------------------------------------
     // Configure factory
     // -----------------------------------------------------------------------
 

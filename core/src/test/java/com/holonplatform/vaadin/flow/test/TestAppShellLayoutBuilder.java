@@ -46,8 +46,18 @@ class TestAppShellLayoutBuilder {
 
     @SuppressWarnings("unchecked")
     private static List<String> menuItemsOf(DefaultAppShellLayoutBuilder sut) throws Exception {
-        Field field = DefaultAppShellLayoutBuilder.class.getDeclaredField("userMenuItems");
-        field.setAccessible(true);
-        return (List<String>) field.get(sut);
+        Class<?> type = sut.getClass();
+        NoSuchFieldException lastError = null;
+        while (type != null) {
+            try {
+                Field field = type.getDeclaredField("userMenuItems");
+                field.setAccessible(true);
+                return (List<String>) field.get(sut);
+            } catch (NoSuchFieldException e) {
+                lastError = e;
+                type = type.getSuperclass();
+            }
+        }
+        throw lastError;
     }
 }

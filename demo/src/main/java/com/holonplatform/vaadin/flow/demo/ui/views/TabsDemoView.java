@@ -70,6 +70,7 @@ public class TabsDemoView extends Div {
         examples.add(verticalExample());
         examples.add(autoselectExample());
         examples.add(i18nExample());
+        examples.add(segmentedThemeExample());
 
         add(title, desc, examples);
     }
@@ -351,6 +352,32 @@ public class TabsDemoView extends Div {
 
                 // Quick shorthand (fallback only, no message code):
                 Localizable.of("Settings")
+                """);
+    }
+
+    // ── Example 10 ────────────────────────────────────────────────────────────
+
+    private DemoExample segmentedThemeExample() {
+        var tabs = TabsBuilder.create()
+                .withTab("Day", "Week", "Month", "Year")
+                .elementConfiguration(element -> element.getThemeList().add("segmented"))
+                .build();
+
+        return new DemoExample("Custom \"segmented\" theme variant (iOS-style segmented control)", tabs, """
+                // "segmented" is a custom theme variant (not a built-in TabsVariant), defined in
+                // segmented-tabs.css and loaded application-wide via:
+                //   @StyleSheet(Lumo.STYLESHEET)
+                //   @StyleSheet("context://segmented-tabs.css")
+                // on the Application class implementing AppShellConfigurator.
+                //
+                // Since it's a custom theme name rather than a built-in TabsVariant enum constant,
+                // it's applied through elementConfiguration() — the Holon-idiomatic escape hatch for
+                // one-off element attribute tweaks not covered by a dedicated configurator method —
+                // rather than withThemeVariants(...).
+                TabsBuilder.create()
+                    .withTab("Day", "Week", "Month", "Year")
+                    .elementConfiguration(element -> element.getThemeList().add("segmented"))
+                    .build();
                 """);
     }
 }

@@ -1,5 +1,6 @@
 package com.holonplatform.vaadin.flow.components.builders;
 
+import com.holonplatform.vaadin.flow.internal.components.builders.DefaultWizardFrameConfigurator;
 import com.holonplatform.vaadin.flow.vaadinplus.components.Breadcrumb;
 import com.holonplatform.vaadin.flow.vaadinplus.components.Header;
 import com.holonplatform.vaadin.flow.vaadinplus.components.WizardFrame;
@@ -169,4 +170,23 @@ public interface WizardFrameConfigurator<C extends WizardFrameConfigurator<C>> {
      * @return this configurator for chaining
      */
     C onStepChanged(java.util.function.IntConsumer onStepChanged);
+
+    // ── Configure factory ─────────────────────────────────────────────────────
+
+    /**
+     * Get a new {@link BaseWizardFrameConfigurator} to accumulate configuration that can
+     * be applied to assemble a {@link WizardFrame}.
+     *
+     * @return a new {@link BaseWizardFrameConfigurator}
+     */
+    static BaseWizardFrameConfigurator configure() {
+        return new DefaultWizardFrameConfigurator();
+    }
+
+    // ── Base configurator ─────────────────────────────────────────────────────
+
+    /**
+     * Base (non-generic) {@link WizardFrameConfigurator}.
+     */
+    interface BaseWizardFrameConfigurator extends WizardFrameConfigurator<BaseWizardFrameConfigurator> {}
 }

@@ -1,0 +1,148 @@
+/* ============================================================
+   TotalsCard component
+   BEM: .totals-card / .totals-card__* / .totals-card__row--*
+
+   Visually mirrors a compact "account summary" totals card: a
+   gradient surface holding stacked label/value rows, ending with
+   an emphasised grand-total row.
+
+   Colours/typography are exposed as overridable CSS custom
+   properties (with sensible fallbacks) so the component can be
+   re-themed without touching Java code.
+*/
+
+.totals-card {
+  --totals-card-bg: linear-gradient(135deg, var(--primary-soft, #e6f1fb), var(--surface-0, #fafbfd));
+  --totals-card-border-color: var(--primary-soft-border, #cfe0f5);
+  --totals-card-radius: var(--radius-md, 0.625rem);
+  --totals-card-font-size: 0.75rem;
+  --totals-card-label-color: var(--text-mute, #5b6878);
+  --totals-card-value-font: var(--font-mono, 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace);
+  --totals-card-value-weight: 500;
+  --totals-card-discount-color: var(--success, #2e9a6a);
+  --totals-card-warning-color: var(--warn, #b8860b);
+  --totals-card-positive-color: var(--success, #2e9a6a);
+  --totals-card-negative-color: var(--danger, #c0392b);
+  --totals-card-grand-border-color: var(--line, #e4e9f0);
+  --totals-card-grand-font-size: 0.84375rem;
+  --totals-card-grand-label-color: var(--text, #0f1b2d);
+  --totals-card-grand-value-color: var(--primary, #1576d3);
+  --totals-card-grand-value-font-size: 1rem;
+  --totals-card-muted-color: var(--text-dim, #8a96a6);
+
+  display: block;
+  background: var(--totals-card-bg);
+  border: 1px solid var(--totals-card-border-color);
+  border-radius: var(--totals-card-radius);
+  padding: 0.8125rem 0.875rem;
+  box-sizing: border-box;
+}
+
+/* --- Row --- */
+
+.totals-card__row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.75rem;
+  padding: 0.1875rem 0;
+  font-size: var(--totals-card-font-size);
+}
+
+/* --- Label --- */
+
+.totals-card__label {
+  color: var(--totals-card-label-color);
+  min-width: 0;
+}
+
+/* --- Value --- */
+
+.totals-card__value {
+  font-family: var(--totals-card-value-font);
+  font-weight: var(--totals-card-value-weight);
+  white-space: nowrap;
+  text-align: right;
+}
+
+/* --- Discount row (deduction, always favourable → success colour) --- */
+
+.totals-card__row--discount .totals-card__value {
+  color: var(--totals-card-discount-color);
+}
+
+/* --- Warning row (needs attention, e.g. an open/overdue balance) --- */
+
+.totals-card__row--warning .totals-card__value {
+  color: var(--totals-card-warning-color);
+  font-weight: 600;
+}
+
+/* --- Positive row (explicit gain / credit / favourable variance) --- */
+
+.totals-card__row--positive .totals-card__value {
+  color: var(--totals-card-positive-color);
+}
+
+/* --- Negative row (loss, overage, unfavourable variance); also applied
+   automatically when a plain-string value starts with "-", the Unicode
+   minus sign "−", or is wrapped in accounting-style parentheses, e.g.
+   "(€1,240)" --- */
+
+.totals-card__row--negative .totals-card__value {
+  color: var(--totals-card-negative-color);
+  font-weight: 600;
+}
+
+/* --- Per-value muted override (via TotalsRow#setValueMuted / TotalsValue#setMuted).
+   Same specificity as the variant colour rules above but declared after them, so it
+   always takes precedence over discount/warning/positive/negative colours, regardless
+   of which variant was auto-detected or explicitly set. --- */
+
+.totals-card__row .totals-card__value--muted {
+  color: var(--totals-card-muted-color);
+}
+
+/* --- Muted row (secondary / informational annotation, de-emphasised) --- */
+
+.totals-card__row--muted .totals-card__label,
+.totals-card__row--muted .totals-card__value {
+  color: var(--totals-card-muted-color);
+  font-weight: 400;
+}
+
+/* --- Grand-total row --- */
+
+.totals-card__row--grand {
+  border-top: 2px solid var(--totals-card-grand-border-color);
+  padding-top: 0.4375rem;
+  margin-top: 0.3125rem;
+  font-size: var(--totals-card-grand-font-size);
+  font-weight: 700;
+}
+
+.totals-card__row--grand .totals-card__label {
+  color: var(--totals-card-grand-label-color);
+  font-weight: 600;
+}
+
+.totals-card__row--grand .totals-card__value {
+  color: var(--totals-card-grand-value-color);
+  font-size: var(--totals-card-grand-value-font-size);
+}
+
+/* ============================================================
+   Dark mode overrides
+   ============================================================ */
+@media (prefers-color-scheme: dark) {
+  .totals-card {
+    --totals-card-bg: linear-gradient(135deg, var(--primary-900, #0d3a63), var(--surface-2, #1e293b));
+    --totals-card-border-color: var(--primary-800, #164876);
+    --totals-card-label-color: var(--text-secondary, #94a3b8);
+    --totals-card-grand-label-color: var(--text-primary, #f1f5f9);
+    --totals-card-muted-color: var(--text-secondary, #94a3b8);
+    --totals-card-positive-color: var(--success, #4ade80);
+    --totals-card-negative-color: var(--danger, #f87171);
+  }
+}
+
