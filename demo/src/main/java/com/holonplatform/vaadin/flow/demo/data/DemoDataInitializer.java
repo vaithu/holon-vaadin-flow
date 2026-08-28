@@ -5,6 +5,7 @@ import com.holonplatform.vaadin.flow.demo.data.service.ProductService;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Inserts seed data into the H2 in-memory database on application startup.
@@ -22,6 +23,7 @@ public class DemoDataInitializer implements ApplicationRunner {
     }
 
     @Override
+    @Transactional
     public void run(ApplicationArguments args) {
         productService.seedIfEmpty();
         chatService.seedIfEmpty();
