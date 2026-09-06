@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>com.holon-platform.vaadin</groupId>
 		<artifactId>holon-vaadin-flow-root</artifactId>
-		<version>10.0.3-SNAPSHOT</version>
+		<version>12.0.0</version>
 	</parent>
 
 	<artifactId>holon-starter-vaadin-flow</artifactId>
@@ -34,6 +34,15 @@
 			<artifactId>holon-vaadin-flow-spring-boot</artifactId>
 		</dependency>
 
+		<!-- Spring Boot Actuator + Prometheus (Week 2: Production Observability) -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>io.micrometer</groupId>
+			<artifactId>micrometer-registry-prometheus</artifactId>
+		</dependency>
 
 
 	</dependencies>

@@ -58,6 +58,8 @@ public class HeroStripDemoView extends Div {
                 headerAndTagsExample(),
                 wideFirstColumnExample(),
                 responsiveExample(),
+                themeAwarenessExample(),  //  NEW EXAMPLE
+                iconHorizontalLayoutExample(),  // NEW: Icon-based horizontal layout
                 runtimeMutationExample()
         );
         add(examples);
@@ -293,7 +295,7 @@ public class HeroStripDemoView extends Div {
                 .build()
         );
 
-        // Sales pipeline opportunity header — dark gradient, NEGOTIATION ribbon, 🔥 Hot gradient tag
+        // Sales pipeline opportunity header — dark gradient, NEGOTIATION ribbon,  Hot gradient tag
         preview.add(
             Components.heroStrip()
                 .variant(HeroStrip.Variant.DEFAULT)
@@ -302,7 +304,7 @@ public class HeroStripDemoView extends Div {
                         .name("Service-Tier 2yr")
                         .starred(true)
                         .meta("OPTY-2026-0094 · Elena · Helix"))
-                .tag("🔥 Hot", HeroStrip.TagVariant.HOT)
+                .tag(" Hot", HeroStrip.TagVariant.HOT)
                 .tag("Negotiation · 18d", HeroStrip.TagVariant.WARN)
                 .tag("Commit", HeroStrip.TagVariant.OK)
                 .tag("Q3", HeroStrip.TagVariant.PRIM)
@@ -358,7 +360,7 @@ public class HeroStripDemoView extends Div {
                             .name("Service-Tier 2yr")
                             .starred(true)
                             .meta("OPTY-2026-0094 · Elena · Helix"))
-                    .tag("🔥 Hot", HeroStrip.TagVariant.HOT)
+                    .tag(" Hot", HeroStrip.TagVariant.HOT)
                     .tag("Negotiation · 18d", HeroStrip.TagVariant.WARN)
                     .tag("Commit", HeroStrip.TagVariant.OK)
                     .tag("Q3", HeroStrip.TagVariant.PRIM)
@@ -397,7 +399,7 @@ public class HeroStripDemoView extends Div {
             Components.heroStrip()
                 .variant(HeroStrip.Variant.INFO)
                 .wideFirstColumn()
-                .cell(c -> c.header("Open pipeline").content("€182K").footer("4 active deals · 80% avg prob").pulse(true))
+                .cell(c -> c.header("Open pipeline").content("€182K").footer("4 active deals · 80% prob").pulse(true))
                 .cell(c -> c.header("Booked YTD").content("€624K").footer("14 orders · 22 invoices").valueVariant(HeroStrip.ValueVariant.OK))
                 .cell(c -> c.header("AR balance").content("€62,400").footer("3 open · all on-time"))
                 .cell(c -> c.header("CSAT (NPS)").content("62").footer("Q2 survey · promoter").valueVariant(HeroStrip.ValueVariant.OK))
@@ -496,7 +498,165 @@ public class HeroStripDemoView extends Div {
                 """);
     }
 
-    // ── 9. Runtime Mutation ───────────────────────────────────────────────────
+    // ── 9. Theme Awareness (NEW — CSS Refactoring Validation) ───────────────────
+
+    private DemoExample themeAwarenessExample() {
+        var preview = new Div();
+        preview.getStyle().set("display", "flex").set("flex-direction", "column").set("gap", "12px");
+
+        var infoText = new Paragraph(
+                "✨ With the refactored CSS, HeroStrip now adapts to Lumo theme colors and supports dark mode. " +
+                "The INFO variant automatically uses var(--lumo-primary-color) instead of hardcoded #1576d3. " +
+                "Try toggling dark mode in your browser settings to see it adapt!"
+        );
+        infoText.getStyle().set("font-size", "13px").set("color", "var(--lumo-secondary-text-color)");
+        preview.add(infoText);
+
+        // INFO variant — uses Lumo primary color (will adapt to theme)
+        var strip1 = Components.heroStrip()
+                .variant(HeroStrip.Variant.INFO)
+                .header(h -> h.name("Theme-Aware Strip").meta("Uses var(--lumo-primary-color)"))
+                .tag("✨ Dynamic", HeroStrip.TagVariant.PRIM)
+                .tag(" Theme-aware", HeroStrip.TagVariant.OK)
+                .cell(c -> c.header("Current theme").content("Light").footer("adapts automatically"))
+                .cell(c -> c.header("Primary color").content("#1576d3").footer("uses Lumo token"))
+                .build();
+        preview.add(strip1);
+
+        // SUCCESS variant — shows green (stable across themes)
+        var strip2 = Components.heroStrip()
+                .variant(HeroStrip.Variant.SUCCESS)
+                .header(h -> h.name("Success Variant").meta("Independent gradient"))
+                .tag("✅ Static", HeroStrip.TagVariant.OK)
+                .cell(c -> c.header("Rendering").content("Stable").footer("consistent gradient"))
+                .build();
+        preview.add(strip2);
+
+        // VIOLET variant — demonstrates multiple gradient options
+        var strip3 = Components.heroStrip()
+                .variant(HeroStrip.Variant.VIOLET)
+                .header(h -> h.name("Violet Variant").meta("For contact/person 360"))
+                .tag(" Contact", HeroStrip.TagVariant.VIOLET)
+                .cell(c -> c.header("Type").content("Independent").footer("has own gradient"))
+                .build();
+        preview.add(strip3);
+
+        return new DemoExample("Theme Awareness & CSS Refactoring", preview, """
+                /*  REFACTORED CSS APPROACH:
+                 *
+                 * Before (hardcoded colors):
+                 * .hstrip--info { background: linear-gradient(135deg, #1576d3 0%, #0a5fb8 60%, #0a4a93 100%); }
+                 *
+                 * After (Lumo tokens + dark mode):
+                 * .hstrip--info {
+                 *     background: linear-gradient(
+                 *         135deg,
+                 *         var(--lumo-primary-color) 0%,
+                 *         color-mix(in srgb, var(--lumo-primary-color) 70%, #003366) 100%
+                 *     );
+                 * }
+                 *
+                 * @media (prefers-color-scheme: dark) {
+                 *     .hstrip--info {
+                 *         background: linear-gradient(135deg, #1a7be0 0%, #0e5fb8 100%);
+                 *     }
+                 * }
+                 */
+
+                // Build a theme-aware HeroStrip using INFO variant
+                Components.heroStrip()
+                    .variant(HeroStrip.Variant.INFO)  // ← uses Lumo primary color
+                    .header(h -> h.name("Theme-Aware").meta("Adapts to light/dark mode"))
+                    .tag("✨ Dynamic", HeroStrip.TagVariant.PRIM)
+                    .cell(c -> c.header("Theme").content("Auto").footer("adapts to Lumo"))
+                    .cell(c -> c.header("Color").content("#1576d3").footer("from Lumo token"))
+                    .build();
+
+                // CSS custom properties (NEW):
+                // --hstrip-padding: 14px 18px;
+                // --hstrip-thumb-size: 54px;
+                // --hstrip-mono-font: 'JetBrains Mono', 'Monaco', 'Courier New', monospace;
+                // --hstrip-star-color: #d4a017;
+                // --hstrip-pulse-color: #fbbf24;
+
+                // Animation GPU optimization (NEW):
+                // .hstrip__pulse {
+                //     will-change: opacity;      /* Hint browser to use GPU layer */
+                //     transform: translateZ(0);  /* Force GPU acceleration */
+                // }
+
+                // Dark mode support (NEW):
+                // @media (prefers-color-scheme: dark) {
+                //     .hstrip { color: #fff; }
+                //     .hstrip--info { background: lighter-blue-for-dark-mode; }
+                // }
+                """);
+    }
+
+    // ── 10. Icon-based horizontal layout (Composite Items detail mockup) ───────────
+
+    private DemoExample iconHorizontalLayoutExample() {
+        var preview = new Div();
+        preview.getStyle().set("display", "flex").set("flex-direction", "column").set("gap", "16px");
+
+        // Label
+        var label = new Paragraph("With icons — horizontal layout (icon left, content right):");
+        label.getStyle().set("font-size", "12px").set("color", "var(--lumo-secondary-text-color)").set("margin", "0");
+        preview.add(label);
+
+        // Icon + horizontal layout — matches the Composite Items detail mockup
+        // RESPONSIVE: Enabled to stack on smaller screens (2-col on mobile, 1-col on very small phones)
+        preview.add(
+            Components.heroStrip()
+                .variant(HeroStrip.Variant.DEFAULT)
+                .cell(c -> c.header("Buildable").content("18").footer("kits").icon(VaadinIcon.CUBE.create()))
+                .cell(c -> c.header("Sales price").content("€4,820").footer("35.6%").icon(VaadinIcon.MONEY.create()))
+                .cell(c -> c.header("Cost rollup").content("€3,104").footer("4 SKU").icon(VaadinIcon.CALC.create()))
+                .cell(c -> c.header("Built YTD").content("142").footer("kits").icon(VaadinIcon.CALENDAR.create()))
+                .cell(c -> c.header("Attach rate").content("68%").footer("SO 138").icon(VaadinIcon.TRENDING_UP.create()))
+                .responsive()  // ← Enable responsive wrapping for mobile/tablet screens
+                .build()
+        );
+
+        var description = new Paragraph(
+                "✨ NEW: Pass an icon Component to each cell to enable horizontal layout. " +
+                "This matches the Composite Items, Item Groups, and Expenses detail mockups. " +
+                "Responsive mode enabled — cells wrap to 2 columns on mobile (≤480px) and 1 column on very small screens. " +
+                "All existing features (pulse, valueVariant, wide-first-column) still work."
+        );
+        description.getStyle().set("font-size", "12px").set("color", "var(--lumo-secondary-text-color)").set("margin", "0").set("margin-top", "8px");
+        preview.add(description);
+
+        return new DemoExample("Icon-based horizontal layout (Mockup Design)", preview, """
+                // Pass an icon Component to enable horizontal layout (icon on left, content on right)
+                // With .responsive() enabled, cells wrap to 2 columns on mobile (≤480px) and 1 column on very small screens (≤320px)
+                Components.heroStrip()
+                    .variant(HeroStrip.Variant.DEFAULT)
+                    .cell(c -> c.header("Buildable").content("18").footer("kits")
+                        .icon(VaadinIcon.CUBE.create()))                    // ← NEW: icon property
+                    .cell(c -> c.header("Sales price").content("€4,820").footer("35.6%")
+                        .icon(VaadinIcon.MONEY.create()))
+                    .cell(c -> c.header("Cost rollup").content("€3,104").footer("4 SKU")
+                        .icon(VaadinIcon.CALC.create()))
+                    .cell(c -> c.header("Built YTD").content("142").footer("kits")
+                        .icon(VaadinIcon.CALENDAR.create()))
+                    .cell(c -> c.header("Attach rate").content("68%").footer("SO 138")
+                        .icon(VaadinIcon.TRENDING_UP.create()))
+                    .responsive()                                          // ← Enable responsive wrapping
+                    .build();
+
+                // The icon is rendered inside a translucent 28x28 box on the left.
+                // CSS class .hstrip__cell--horizontal is applied automatically when icon is present.
+                // With responsive mode enabled, cells wrap intelligently based on screen size:
+                //   > 768px  : all cells on one row (grid auto-fit)
+                //   481-768px: 3-2 per row (minmax 150px)
+                //   ≤ 480px  : 2 columns (mobile)
+                //   ≤ 320px  : 1 column (very small phones)
+                // All existing features (pulse, valueVariant, wide-first-column, etc.) still work.
+                """);
+    }
+
+    // ── 11. Runtime Mutation ──────────────────────────────────────────────────
 
     private DemoExample runtimeMutationExample() {
         record Scenario(

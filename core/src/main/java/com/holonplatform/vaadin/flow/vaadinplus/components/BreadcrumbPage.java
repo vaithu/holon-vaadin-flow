@@ -10,7 +10,7 @@ import com.vaadin.flow.component.html.ListItem;
 import com.vaadin.flow.component.html.Span;
 
 /**
- * The current / active page crumb in a {@link Breadcrumb} â€” intentionally <strong>not</strong> a link.
+ * The current / active page crumb in a {@link Breadcrumb}  intentionally <strong>not</strong> a link.
  *
  * <p>Renders as:</p>
  * <pre>

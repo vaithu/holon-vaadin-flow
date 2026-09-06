@@ -176,6 +176,9 @@ public class SheetStack {
         sheet.setBackdropVisible(isRoot);
         sheet.setFullscreenOnMobile(fullscreenOnMobile);
         sheet.setContent(content);
+        // Root sheet shows only the close affordance (M3 default); nested sheets additionally
+        // show a back button so the user can unwind one level of the navigation stack.
+        sheet.setShowBackButton(!isRoot);
 
         sheet.setOnClose(() -> {
             openSheets.remove(sheet);

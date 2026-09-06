@@ -25,7 +25,7 @@ import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.html.Div;
 
 /**
- * A visually unified group of {@link Button} instances â€” borders between
+ * A visually unified group of {@link Button} instances  borders between
  * adjacent buttons are merged and corner radius is applied only to the
  * outermost edges, creating a single cohesive control.
  *
@@ -62,7 +62,7 @@ import com.vaadin.flow.component.html.Div;
  *     .build();
  * }</pre>
  *
- * <p><strong>Disabled state:</strong> disable individual buttons as usual â€”
+ * <p><strong>Disabled state:</strong> disable individual buttons as usual
  * the group has no global disable API because groups often mix enabled/disabled
  * buttons (e.g. a selected segment in a toggle bar).
  *

@@ -95,7 +95,7 @@ public class TimelineStepper extends Component implements HasSize, HasEnabled {
     }
 
     // -----------------------------------------------------------------------
-    // AuditEntry â€” convenience entry builder/DTO
+    // AuditEntry  convenience entry builder/DTO
     // -----------------------------------------------------------------------
 
     /**
@@ -205,7 +205,7 @@ public class TimelineStepper extends Component implements HasSize, HasEnabled {
     }
 
     // -----------------------------------------------------------------------
-    // A11Y + I18N â€” aria-label and locale support
+    // A11Y + I18N  aria-label and locale support
     // -----------------------------------------------------------------------
 
     /**
@@ -241,7 +241,7 @@ public class TimelineStepper extends Component implements HasSize, HasEnabled {
     }
 
     // -----------------------------------------------------------------------
-    // Configuration (attribute-based â€” synced to the web component)
+    // Configuration (attribute-based  synced to the web component)
     // -----------------------------------------------------------------------
 
     /**
@@ -331,7 +331,7 @@ public class TimelineStepper extends Component implements HasSize, HasEnabled {
     }
 
     // -----------------------------------------------------------------------
-    // Data mutation API (JS function calls â€” fire-and-forget after first render)
+    // Data mutation API (JS function calls  fire-and-forget after first render)
     // -----------------------------------------------------------------------
 
     /**
@@ -399,7 +399,7 @@ public class TimelineStepper extends Component implements HasSize, HasEnabled {
     // -----------------------------------------------------------------------
 
     /**
-     * Fired when the IntersectionObserver sentinel enters the viewport â€”
+     * Fired when the IntersectionObserver sentinel enters the viewport
      * i.e. the user has scrolled near the bottom and the next page should load.
      */
     @DomEvent("tl-load-more")

@@ -44,7 +44,7 @@ public class PaginationEllipsis extends Span {
      */
     public PaginationEllipsis() {
         addClassName("pagination__ellipsis");
-        // Decorative â€” screen readers should skip it
+        // Decorative  screen readers should skip it
         getElement().setAttribute("aria-hidden", "true");
 
         Span dots = Components.span().text("\u2026").styleName("pagination__ellipsis-icon").build();   // Unicode HORIZONTAL ELLIPSIS

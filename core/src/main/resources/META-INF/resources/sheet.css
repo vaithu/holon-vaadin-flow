@@ -72,6 +72,9 @@
     z-index: 9998;
     pointer-events: none;   /* closed: no interaction */
     isolation: isolate;     /* new stacking context — panels stack correctly */
+    /* M3 standard easing (emphasized-decelerate-ish) + duration tokens, overridable per-instance */
+    --sheet-transition-duration: 300ms;
+    --sheet-transition-easing: cubic-bezier(0.2, 0, 0, 1);
 }
 
 /* Closed state — hide after the slide-out animation (max 300 ms) completes. */
@@ -95,10 +98,10 @@
     position: fixed;
     inset: 0;
     z-index: 9999;
-    background: rgba(0, 0, 0, 0.45);  /* ← was missing; this is why nothing dimmed */
+    background: rgba(0, 0, 0, 0.32);  /* M3 scrim: ~32% opacity */
     opacity: 0;
     pointer-events: none;
-    transition: opacity 260ms ease;
+    transition: opacity var(--sheet-transition-duration, 300ms) linear;
 }
 
 .sheet--open > .sheet__backdrop {
@@ -112,6 +115,62 @@
 }
 
 /* -----------------------------------------------------------------------
+ * Mode.STANDARD (M3 "standard side sheet") — no scrim, background stays
+ * interactive. The host stays pointer-events:none even while open so clicks
+ * pass through to the page; only the panel itself re-enables pointer-events.
+ * ----------------------------------------------------------------------- */
+.sheet--standard.sheet--open {
+    pointer-events: none;
+}
+
+.sheet--standard.sheet--open > .sheet__panel {
+    pointer-events: auto;
+}
+
+.sheet--standard > .sheet__panel {
+    /* Standard sheets sit inline with content: a hairline divider replaces the
+       floating-panel shadow used by modal sheets. */
+    box-shadow: none;
+}
+
+.sheet--standard.sheet--left > .sheet__panel {
+    border-inline-end: 1px solid var(--color-border, #e4e4e7);
+}
+
+.sheet--standard.sheet--right > .sheet__panel {
+    border-inline-start: 1px solid var(--color-border, #e4e4e7);
+}
+
+/* -----------------------------------------------------------------------
+ * Resize handle (Mode.STANDARD, LEFT/RIGHT only) — draggable inner edge
+ * ----------------------------------------------------------------------- */
+.sheet__resize-handle {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 6px;
+    cursor: col-resize;
+    touch-action: none;
+    z-index: 1;
+    background: transparent;
+    transition: background-color 120ms ease;
+}
+
+.sheet--left .sheet__resize-handle {
+    right: -3px;
+}
+
+.sheet--right .sheet__resize-handle {
+    left: -3px;
+}
+
+.sheet__resize-handle:hover,
+.sheet__resize-handle:active {
+    background: var(--lumo-primary-color, #1676f3);
+    opacity: 0.4;
+}
+
+/* -----------------------------------------------------------------------
  * Panel — shared defaults
  * ----------------------------------------------------------------------- */
 
@@ -122,7 +181,7 @@
     flex-direction: column;
     background: var(--lumo-base-color, #ffffff);   /* ← was missing; this is why content showed through */
     box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.12);
-    transition: transform 300ms cubic-bezier(0.32, 0.72, 0, 1);
+    transition: transform var(--sheet-transition-duration, 300ms) var(--sheet-transition-easing, cubic-bezier(0.2, 0, 0, 1));
     overflow: hidden;
     padding-bottom: env(safe-area-inset-bottom, 0);
 }
@@ -295,7 +354,7 @@
  * Fullscreen on mobile (.sheet--fullscreen-mobile)
  * ----------------------------------------------------------------------- */
 
-@media (max-width: 767px) {
+@media (max-width: 599px) {
 
     /* BOTTOM — stretch to full viewport height, drop rounded corners */
     .sheet--bottom.sheet--fullscreen-mobile > .sheet__panel {
@@ -324,9 +383,12 @@
  *
  * On wider screens, LEFT/RIGHT sheets can be wider and the bottom sheet
  * gets a max-width to prevent it stretching across a full 4K monitor.
+ *
+ * Breakpoint (600px) matches the M3 "compact" window size class upper bound
+ * (Compact < 600dp, Medium 600–840dp, Expanded ≥ 840dp).
  * ----------------------------------------------------------------------- */
 
-@media (min-width: 768px) {
+@media (min-width: 600px) {
     .sheet--bottom > .sheet__panel {
         max-width: 48rem;
         margin: 0 auto;
@@ -340,9 +402,12 @@
         transform: translateX(-50%) translateY(0);
     }
 
+    /* M3 side sheet width: ~50vw up to a 400px (25rem) cap on modal sheets.
+       Standard (Mode.STANDARD) sheets are user-resizable between
+       setMinResizeWidth()/setMaxResizeWidth() bounds via the drag handle. */
     .sheet--left > .sheet__panel,
     .sheet--right > .sheet__panel {
-        width: min(50vw, 28rem);
+        width: min(50vw, 25rem);
     }
 
     /* -----------------------------------------------------------------------

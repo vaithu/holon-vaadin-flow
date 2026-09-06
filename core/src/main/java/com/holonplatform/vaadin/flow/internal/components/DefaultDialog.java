@@ -41,25 +41,25 @@ import java.util.stream.Stream;
  *
  * <h3>BEM structure</h3>
  * <pre>
- * .h-dialog                         â€” root host (Dialog overlay)
- *   .h-dialog__header               â€” built-in Vaadin header slot
- *     [.h-dialog__icon]             â€” optional circular icon container (Tailwind Plus pattern)
- *     .h-dialog__header-text        â€” groups title + description (shadcn DialogHeader)
- *       .h-dialog__title            â€” optional title (H4)
- *       .h-dialog__description      â€” optional description (Paragraph)
- *     .h-dialog__close-btn          â€” Ã— close button (shadcn DialogClose)
- *   .h-dialog__body                 â€” scrollable content area (Div)
- *   .h-dialog__footer               â€” built-in Vaadin footer slot
- *     .h-dialog__cancel-btn         â€” left-aligned cancel/deny button
- *     .h-dialog__action-btn         â€” right-aligned primary action button
+ * .h-dialog                          root host (Dialog overlay)
+ *   .h-dialog__header                built-in Vaadin header slot
+ *     [.h-dialog__icon]              optional circular icon container (Tailwind Plus pattern)
+ *     .h-dialog__header-text         groups title + description (shadcn DialogHeader)
+ *       .h-dialog__title             optional title (H4)
+ *       .h-dialog__description       optional description (Paragraph)
+ *     .h-dialog__close-btn           Ã— close button (shadcn DialogClose)
+ *   .h-dialog__body                  scrollable content area (Div)
+ *   .h-dialog__footer                built-in Vaadin footer slot
+ *     .h-dialog__cancel-btn          left-aligned cancel/deny button
+ *     .h-dialog__action-btn          right-aligned primary action button
  * </pre>
  *
  * <h3>Patterns implemented</h3>
  * <ul>
- *   <li><strong>Vaadin Dialog</strong> â€” server-side overlay, slot API, theme attributes</li>
- *   <li><strong>shadcn/ui Dialog</strong> â€” three-slot model, DialogTrigger, DialogClose,
+ *   <li><strong>Vaadin Dialog</strong>  server-side overlay, slot API, theme attributes</li>
+ *   <li><strong>shadcn/ui Dialog</strong>  three-slot model, DialogTrigger, DialogClose,
  *       ARIA accessible name, conditional close guard, size variants</li>
- *   <li><strong>Tailwind Plus modal</strong> â€” mobile bottom-sheet, desktop centred modal,
+ *   <li><strong>Tailwind Plus modal</strong>  mobile bottom-sheet, desktop centred modal,
  *       icon header variant, centered variant, size max-width tiers</li>
  * </ul>
  *
@@ -79,12 +79,12 @@ public class DefaultDialog extends Dialog {
     private final Div body;
 
     /**
-     * Groups title + description in the header â€” mirrors shadcn/ui {@code DialogHeader}.
+     * Groups title + description in the header  mirrors shadcn/ui {@code DialogHeader}.
      * Placed between the optional icon and the close button in the header flex row.
      */
     private final Div headerText;
 
-    /** Header Ã— close button â€” optional, visible by default. */
+    /** Header Ã— close button  optional, visible by default. */
     private final Button closeButton;
 
     // -----------------------------------------------------------------------
@@ -98,11 +98,11 @@ public class DefaultDialog extends Dialog {
     // Callbacks
     // -----------------------------------------------------------------------
 
-    /** Unconditional close callback â€” dialog always closes after the Runnable completes. */
+    /** Unconditional close callback  dialog always closes after the Runnable completes. */
     private Runnable onCloseCallback;
 
     /**
-     * Conditional close handler â€” dialog closes only when the supplier returns {@code true}.
+     * Conditional close handler  dialog closes only when the supplier returns {@code true}.
      * Mutually exclusive with {@link #onCloseCallback}.
      */
     private BooleanSupplier onCloseCondition;
@@ -118,11 +118,11 @@ public class DefaultDialog extends Dialog {
         getElement().getClassList().add("h-dialog");
         getElement().getThemeList().add("h-dialog");
 
-        // Header text wrapper â€” groups title + description in a flex-col (shadcn/ui DialogHeader)
+        // Header text wrapper  groups title + description in a flex-col (shadcn/ui DialogHeader)
         this.headerText = Components.div().styleName("h-dialog__header-text").build();
         getHeader().add(this.headerText);
 
-        // Close button â€” lives at the dialog root (NOT in the header slot) so it does not
+        // Close button  lives at the dialog root (NOT in the header slot) so it does not
         // affect the title/description layout. Absolutely positioned via CSS at top-right
         // of the overlay, mirroring the shadcn/ui DialogClose pattern.
         this.closeButton = Components.button()
@@ -140,13 +140,13 @@ public class DefaultDialog extends Dialog {
         // Vaadin 25.2 fix: route ESC and outside-click through the same condition/callback
         // as programmatic close(). Without this listener, Vaadin auto-closes via the
         // framework path, bypassing the overridden close() and any registered callbacks.
-        // With the listener registered, Vaadin does NOT auto-close â€” the listener is
+        // With the listener registered, Vaadin does NOT auto-close  the listener is
         // responsible for calling close() (via attemptClose()).
         addDialogCloseActionListener(e -> attemptClose());
     }
 
     // -----------------------------------------------------------------------
-    // Lifecycle â€” open/close callbacks
+    // Lifecycle  open/close callbacks
     // -----------------------------------------------------------------------
 
     @Override
@@ -168,7 +168,7 @@ public class DefaultDialog extends Dialog {
      *
      * <ul>
      *   <li>If a {@link BooleanSupplier} guard is set: close only when it returns
-     *       {@code true} â€” mirrors the shadcn/ui conditional-close pattern.</li>
+     *       {@code true}  mirrors the shadcn/ui conditional-close pattern.</li>
      *   <li>Otherwise: always close; {@link Runnable} callback fires in a
      *       {@code try/finally} so it is never silently lost.</li>
      * </ul>
@@ -178,7 +178,7 @@ public class DefaultDialog extends Dialog {
             if (onCloseCondition.getAsBoolean()) {
                 performClose();
             }
-            // false â†’ guard rejected â€” stay open
+            // false â†’ guard rejected  stay open
         } else {
             performClose();
         }
@@ -244,7 +244,7 @@ public class DefaultDialog extends Dialog {
      *
      * <p>Defaults to {@code true} (visible). Set to {@code false} for confirmation
      * dialogs that require an explicit action-button choice (delete, question, etc.)
-     * â€” matches the shadcn/ui {@code AlertDialog} pattern where forced choice is required.</p>
+     *  matches the shadcn/ui {@code AlertDialog} pattern where forced choice is required.</p>
      *
      * @param visible {@code true} to show the button, {@code false} to hide it
      */
@@ -291,7 +291,7 @@ public class DefaultDialog extends Dialog {
      * Sets a structured title in the dialog header.
      *
      * <p>Also sets the ARIA accessible name on the dialog overlay so that
-     * screen readers announce the title when the dialog opens â€” mirrors the
+     * screen readers announce the title when the dialog opens  mirrors the
      * shadcn/ui {@code aria-labelledby} pattern.</p>
      *
      * @param text the title text (null or blank clears the title)
@@ -412,9 +412,9 @@ public class DefaultDialog extends Dialog {
      * <p>In non-centered mode the icon sits to the left of the
      * {@code .h-dialog__header-text} wrapper (flex row).  In centered mode
      * ({@link #setCentered(boolean)}) the icon appears above the title in a
-     * stacked column â€” matching the Tailwind Plus centred-modal pattern.</p>
+     * stacked column  matching the Tailwind Plus centred-modal pattern.</p>
      *
-     * @param icon         the icon component (vaadin-icon, svg, span glyph, etc.) â€” not null
+     * @param icon         the icon component (vaadin-icon, svg, span glyph, etc.)  not null
      * @param variantClass the BEM modifier class for the colour variant (not null)
      */
     public void addHeaderIcon(Component icon, String variantClass) {
@@ -430,7 +430,7 @@ public class DefaultDialog extends Dialog {
         Div iconContainer = Components.div().add(icon).styleName("h-dialog__icon").build();
         iconContainer.addClassNames(variantClass);
         iconContainer.getElement().setAttribute("aria-hidden", "true");
-        // Always the first element â€” headerText and closeButton follow naturally
+        // Always the first element  headerText and closeButton follow naturally
         getHeader().addComponentAsFirst(iconContainer);
     }
 
@@ -444,7 +444,7 @@ public class DefaultDialog extends Dialog {
      * <p>When {@code true}:</p>
      * <ul>
      *   <li>The {@code h-dialog--centered} theme modifier is added to the overlay.</li>
-     *   <li>The header close button is hidden â€” centred modals rely solely on footer actions.</li>
+     *   <li>The header close button is hidden  centred modals rely solely on footer actions.</li>
      *   <li>CSS centres the header (icon â†’ title â†’ description) and the footer buttons.</li>
      * </ul>
      *
@@ -535,7 +535,7 @@ public class DefaultDialog extends Dialog {
     // -----------------------------------------------------------------------
 
     /**
-     * Makes the dialog responsive using CSS viewport units â€” no JS resize listener needed.
+     * Makes the dialog responsive using CSS viewport units  no JS resize listener needed.
      *
      * <ul>
      *   <li>Mobile  (< 640 px) : dialog fills 95 % of viewport width / height.</li>

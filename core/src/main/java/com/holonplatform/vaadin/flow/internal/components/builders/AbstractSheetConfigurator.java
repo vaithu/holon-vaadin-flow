@@ -27,6 +27,7 @@ import com.vaadin.flow.component.HasStyle;
 import com.vaadin.flow.component.shared.HasTooltip;
 
 import java.util.Optional;
+import java.util.function.IntConsumer;
 import java.util.function.Supplier;
 
 /**
@@ -53,6 +54,36 @@ public abstract class AbstractSheetConfigurator<C extends SheetConfigurator<C>>
     @Override
     public C side(Sheet.Side side) {
         getComponent().setSide(side);
+        return getConfigurator();
+    }
+
+    @Override
+    public C mode(Sheet.Mode mode) {
+        getComponent().setMode(mode);
+        return getConfigurator();
+    }
+
+    @Override
+    public C resizable(boolean resizable) {
+        getComponent().setResizable(resizable);
+        return getConfigurator();
+    }
+
+    @Override
+    public C minResizeWidth(int minWidthPx) {
+        getComponent().setMinResizeWidth(minWidthPx);
+        return getConfigurator();
+    }
+
+    @Override
+    public C maxResizeWidth(int maxWidthPx) {
+        getComponent().setMaxResizeWidth(maxWidthPx);
+        return getConfigurator();
+    }
+
+    @Override
+    public C onResize(IntConsumer onResize) {
+        getComponent().setOnResize(onResize);
         return getConfigurator();
     }
 

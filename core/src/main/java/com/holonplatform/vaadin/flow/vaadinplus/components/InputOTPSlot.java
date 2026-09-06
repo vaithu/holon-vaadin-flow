@@ -64,7 +64,7 @@ public class InputOTPSlot extends Div {
         this.input.setMaxLength(1);
         this.input.addClassName("input-otp__slot-input");
         this.input.setValueChangeMode(ValueChangeMode.EAGER);
-        // Aura built-in variant â€” centres text AND caret via the theme's own <input> styling.
+        // Aura built-in variant  centres text AND caret via the theme's own <input> styling.
         // In Vaadin 25 the native <input> is a light-DOM child, so ::part(value) is a no-op;
         // TextFieldVariant.ALIGN_CENTER is the correct theme-level hook.
         this.input.addThemeVariants(TextFieldVariant.ALIGN_CENTER);
@@ -127,7 +127,7 @@ public class InputOTPSlot extends Div {
     public void setPattern(String pattern) {
         if (pattern != null) {
             // setAllowedCharPattern blocks invalid characters client-side, BEFORE they
-            // enter the input value â€” unlike setPattern(), which is HTML5 form validation
+            // enter the input value  unlike setPattern(), which is HTML5 form validation
             // and does nothing during typing.
             input.setAllowedCharPattern(pattern);
             // Keep the DOM attribute so tests and CSS attribute selectors still work
@@ -147,7 +147,7 @@ public class InputOTPSlot extends Div {
      * {@code input-otp.css}.
      *
      * <p>The listener is registered via {@code executeJs} so it fires entirely on the
-     * client â€” no server round-trip on each invalid keystroke.  The current pattern regex
+     * client  no server round-trip on each invalid keystroke.  The current pattern regex
      * is stored on the element ({@code el.__otpPattern}) and updated if
      * {@link #setPattern(String)} is called again with a different pattern.</p>
      */

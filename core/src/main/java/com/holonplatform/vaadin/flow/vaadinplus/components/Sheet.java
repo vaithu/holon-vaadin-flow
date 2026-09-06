@@ -28,35 +28,54 @@ import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.html.Div;
 import org.vaadin.lineawesome.LineAwesomeIcon;
 
+import java.util.function.IntConsumer;
 import java.util.function.Supplier;
 
 /**
- * A mobile-first slide-in panel inspired by shadcn/ui {@code Sheet}.
+ * A mobile-first slide-in panel inspired by shadcn/ui {@code Sheet}, aligned with the
+ * <a href="https://m3.material.io/components/side-sheets/overview">Material Design 3 Side sheet</a>
+ * (for {@link Side#LEFT} / {@link Side#RIGHT}) and Bottom sheet (for {@link Side#BOTTOM}) specs.
  *
  * <p>Unlike a modal {@link com.vaadin.flow.component.dialog.Dialog}, the Sheet slides in from a
- * viewport edge. The backdrop is always semi-transparent but non-blocking (the user can still see
- * the content behind it). The Sheet integrates with the browser History API so the hardware
- * <em>back</em> button on Android and mobile browsers closes it naturally.</p>
+ * viewport edge. The Sheet integrates with the browser History API so the hardware
+ * <em>back</em> button on Android and mobile browsers closes it naturally (Modal mode only).</p>
  *
  * <p>Supported sides:</p>
  * <ul>
- *   <li>{@link Side#BOTTOM} â€” slides up from the bottom (primary mobile pattern)</li>
- *   <li>{@link Side#LEFT}   â€” slides in from the left  (navigation drawer)</li>
- *   <li>{@link Side#RIGHT}  â€” slides in from the right (detail / filter panel)</li>
+ *   <li>{@link Side#BOTTOM}  slides up from the bottom (primary mobile pattern)</li>
+ *   <li>{@link Side#LEFT}    slides in from the left  (navigation drawer)</li>
+ *   <li>{@link Side#RIGHT}   slides in from the right (detail / filter panel)</li>
  * </ul>
+ *
+ * <p>Per M3, {@link Side#LEFT} / {@link Side#RIGHT} sheets support two {@link Mode}s:</p>
+ * <ul>
+ *   <li>{@link Mode#MODAL} (default)  dimming scrim, blocks interaction with the background,
+ *       {@code role="dialog"}/{@code aria-modal="true"}, closes on scrim click / hardware back.
+ *       Recommended for compact (mobile) screens.</li>
+ *   <li>{@link Mode#STANDARD}  no scrim; the background stays fully interactive
+ *       ({@code role="complementary"}, no {@code aria-modal}); the panel is resizable by
+ *       dragging its inner edge (min/max clamped via {@link #setMinResizeWidth(int)} /
+ *       {@link #setMaxResizeWidth(int)}). Recommended for medium/expanded screens where the sheet
+ *       coexists with the page content. Note: true content <em>reflow</em> (the main content
+ *       area shrinking to make room) requires the hosting layout to react to the panel width;
+ *       this component only removes the modal blocking/scrim and adds the resize handle.</li>
+ * </ul>
+ *
+ * <p>Use {@link #sideForWidth(int, Side)} to follow the M3 recommendation of falling back to a
+ * {@link Side#BOTTOM} sheet on compact (&lt; 600&nbsp;px) viewports instead of a side sheet.</p>
  *
  * <p>Composition:</p>
  * <pre>
  * Sheet  (.sheet + .sheet--{side} [.sheet--fullscreen-mobile])
- *  â”œâ”€â”€ Backdrop     (.sheet__backdrop)       â€” dimmed overlay, click-to-close
- *  â””â”€â”€ Panel        (.sheet__panel)          â€” the sliding surface
- *       â”œâ”€â”€ Handle  (.sheet__handle)         â€” drag indicator (BOTTOM only, visual)
- *       â”œâ”€â”€ Header  (.sheet__header)         â€” {@link Header} with nav buttons + title
- *       â”‚    â”œâ”€â”€ prefix  â†’ back Button (.sheet__btn-back)
- *       â”‚    â”œâ”€â”€ column  â†’ SheetTitle heading + SheetDescription details
- *       â”‚    â””â”€â”€ actions â†’ close Button (.sheet__btn-close)
- *       â”œâ”€â”€ Content (.sheet__content)        â€” arbitrary user content
- *       â””â”€â”€ Footer  (.sheet__footer)         â€” optional action / meta row
+ *  œ€€ Backdrop     (.sheet__backdrop)        dimmed overlay, click-to-close
+ *  ”€€ Panel        (.sheet__panel)           the sliding surface
+ *       œ€€ Handle  (.sheet__handle)          drag indicator (BOTTOM only, visual)
+ *       œ€€ Header  (.sheet__header)          {@link Header} with nav buttons + title
+ *           œ€€ prefix  â†’ back Button (.sheet__btn-back)
+ *           œ€€ column  â†’ SheetTitle heading + SheetDescription details
+ *           ”€€ actions â†’ close Button (.sheet__btn-close)
+ *       œ€€ Content (.sheet__content)         arbitrary user content
+ *       ”€€ Footer  (.sheet__footer)          optional action / meta row
  * </pre>
  *
  * <p>Both nav buttons are shown by default and can be hidden via
@@ -87,7 +106,7 @@ public class Sheet extends Div {
     private static final long serialVersionUID = 1L;
 
     // -----------------------------------------------------------------------
-    // JS â€” browser History API bridge
+    // JS  browser History API bridge
     // -----------------------------------------------------------------------
 
     private static final String JS_PUSH_HISTORY = """
@@ -118,16 +137,65 @@ public class Sheet extends Div {
             """;
 
     // -----------------------------------------------------------------------
+    // JS  drag-to-resize (Mode.STANDARD, LEFT/RIGHT only)
+    // -----------------------------------------------------------------------
+
+    private static final String JS_ENABLE_RESIZE = """
+            (function(sheetEl, handle, panel) {
+                if (handle.__resizeBound) return;
+                handle.__resizeBound = true;
+                let startX = 0, startWidth = 0, dragging = false;
+                handle.addEventListener('pointerdown', function(ev) {
+                    if (handle.offsetParent === null) return;
+                    dragging = true;
+                    startX = ev.clientX;
+                    startWidth = panel.getBoundingClientRect().width;
+                    handle.setPointerCapture(ev.pointerId);
+                    ev.preventDefault();
+                });
+                handle.addEventListener('pointermove', function(ev) {
+                    if (!dragging) return;
+                    const isLeftSide = sheetEl.classList.contains('sheet--left');
+                    const delta = isLeftSide ? (ev.clientX - startX) : (startX - ev.clientX);
+                    const minW = parseFloat(handle.dataset.minWidth || '256');
+                    const maxW = parseFloat(handle.dataset.maxWidth || '400');
+                    const newWidth = Math.max(minW, Math.min(maxW, startWidth + delta));
+                    panel.style.width = newWidth + 'px';
+                });
+                handle.addEventListener('pointerup', function(ev) {
+                    if (!dragging) return;
+                    dragging = false;
+                    try { handle.releasePointerCapture(ev.pointerId); } catch (e) {}
+                    if (sheetEl.$server && sheetEl.$server.onPanelResized) {
+                        sheetEl.$server.onPanelResized(parseFloat(panel.style.width));
+                    }
+                });
+            })($0, $1, $2);
+            """;
+
+    // -----------------------------------------------------------------------
+    // Mode
+    // -----------------------------------------------------------------------
+
+    /** Modal vs. standard behaviour for {@link Side#LEFT} / {@link Side#RIGHT} sheets (M3). */
+    public enum Mode {
+        /** Dimming scrim, blocks background interaction, integrates with browser history. */
+        MODAL,
+        /** No scrim, background stays interactive, panel is resizable by dragging its inner edge. */
+        STANDARD
+    }
+
+    // -----------------------------------------------------------------------
     // Side
     // -----------------------------------------------------------------------
 
     /** The edge from which the Sheet panel slides in. */
     public enum Side {
-        /** Slides up from the bottom â€” primary mobile pattern (action sheet / bottom drawer). */
+        /** Slides up from the bottom  primary mobile pattern (action sheet / bottom drawer). */
         BOTTOM("sheet--bottom"),
-        /** Slides in from the left â€” navigation drawer. */
+        /** Slides in from the left  navigation drawer. */
         LEFT("sheet--left"),
-        /** Slides in from the right â€” detail panel / filter panel. */
+        /** Slides in from the right  detail panel / filter panel. */
         RIGHT("sheet--right");
 
         private final String cssClass;
@@ -149,12 +217,14 @@ public class Sheet extends Div {
     private final Button closeButton;
     private final Div    contentSlot;
     private final Div    panel;
+    private final Div    resizeHandle;
 
     // -----------------------------------------------------------------------
     // State
     // -----------------------------------------------------------------------
 
     private Side             currentSide;
+    private Mode              mode = Mode.MODAL;
     private SheetTitle       currentTitle;
     private SheetDescription currentDescription;
 
@@ -164,10 +234,14 @@ public class Sheet extends Div {
     private boolean backdropVisible      = true;
     private boolean belowHeader          = false;
     private boolean customHeaderVisible   = false;
+    private boolean resizable            = false;
+    private int     minWidthPx           = 256;
+    private int     maxWidthPx           = 400;
 
     private Supplier<Component[]> lazyContentSupplier;
     private Runnable onOpenCallback;
     private Runnable onCloseCallback;
+    private IntConsumer onResizeCallback;
     private Footer footer;
 
     // -----------------------------------------------------------------------
@@ -177,6 +251,7 @@ public class Sheet extends Div {
     /** Creates a {@link Side#BOTTOM} sheet with no content. */
     public Sheet() {
         this(Side.BOTTOM);
+        setShowBackButton(true);
     }
 
     /**
@@ -187,24 +262,33 @@ public class Sheet extends Div {
     public Sheet(Side side) {
         addClassName("sheet");
 
-        // Backdrop â€” full-screen dimmed overlay
+        // Backdrop  full-screen dimmed overlay
         Div backdrop = Components.div().styleName("sheet__backdrop").build();
         backdrop.addClickListener(e -> { if (closeOnBackdropClick) close(); });
 
-        // Panel â€” the visible sliding surface
+        // Panel  the visible sliding surface
         this.panel = Components.div().styleName("sheet__panel").build();
 
-        // Handle â€” drag indicator (visual only, BOTTOM sheets on mobile)
+        // Handle  drag indicator (visual only, BOTTOM sheets on mobile)
         this.handle = Components.div().styleName("sheet__handle").build();
 
-        // Back button â€” closes the sheet (mirrors hardware back button)
+        // Resize handle  draggable inner-edge divider (Mode.STANDARD, LEFT/RIGHT only)
+        this.resizeHandle = Components.div().styleName("sheet__resize-handle").build();
+        this.resizeHandle.getElement().setAttribute("data-min-width", String.valueOf(minWidthPx));
+        this.resizeHandle.getElement().setAttribute("data-max-width", String.valueOf(maxWidthPx));
+        this.resizeHandle.setVisible(false);
+
+        // Back button  closes the sheet (mirrors hardware back button)
         this.backButton = Components.button().icon(LineAwesomeIcon.ARROW_LEFT_SOLID.create())
                 .styleName("sheet__btn-back")
                 .ariaLabel(LocalizationProvider.localize("Back", "sheet.back_aria"))
                 .withClickListener(e -> close()).build();
         this.backButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY_INLINE, ButtonVariant.LUMO_ICON);
+        // M3 side sheets show a single dismiss affordance by default; the back button is opt-in
+        // for nested navigation flows (see SheetStack, which enables it for non-root sheets).
+        this.backButton.setVisible(false);
 
-        // Close button â€” closes the sheet and cleans up history entry
+        // Close button  closes the sheet and cleans up history entry
         this.closeButton = Components.button().icon(LineAwesomeIcon.TIMES_SOLID.create())
                 .styleName("sheet__btn-close")
                 .ariaLabel(LocalizationProvider.localize("Close", "sheet.close_aria"))
@@ -214,7 +298,7 @@ public class Sheet extends Div {
         // Header: prefix = back, column = title+description, actions = close
         this.header = createDefaultHeader();
 
-        // Content slot â€” holds arbitrary user components
+        // Content slot  holds arbitrary user components
         this.contentSlot = Components.div().styleName("sheet__content").build();
 
         // ARIA: panel is the modal dialog surface
@@ -227,7 +311,12 @@ public class Sheet extends Div {
         add(backdrop, panel);
 
         setSide(side);
+        setMode(Mode.MODAL);
         syncHeaderVisibility();
+
+        // Bind the drag-to-resize behaviour once; it is a no-op unless the resize handle
+        // is visible (Mode.STANDARD + LEFT/RIGHT).
+        getElement().executeJs(JS_ENABLE_RESIZE, getElement(), resizeHandle.getElement(), panel.getElement());
     }
     // -----------------------------------------------------------------------
     // Static factories
@@ -247,7 +336,7 @@ public class Sheet extends Div {
     }
 
     // -----------------------------------------------------------------------
-    // Lifecycle â€” open / close
+    // Lifecycle  open / close
     // -----------------------------------------------------------------------
 
     /**
@@ -277,7 +366,7 @@ public class Sheet extends Div {
     /**
      * Closes the sheet: triggers slide-out CSS transition, cleans up history entry via
      * {@code replaceState} (does NOT fire {@code popstate}), fires {@code onClose}.
-     * Idempotent â€” safe to call on an already-closed sheet.
+     * Idempotent  safe to call on an already-closed sheet.
      */
     public void close() {
         if (!isOpen()) return;
@@ -294,7 +383,7 @@ public class Sheet extends Div {
 
     /**
      * Removes the sheet from the UI DOM entirely.
-     * For routine open/close cycles prefer {@link #close()} â€” the element stays attached.
+     * For routine open/close cycles prefer {@link #close()}  the element stays attached.
      */
     public void detach() {
         if (isAttached()) {
@@ -305,12 +394,12 @@ public class Sheet extends Div {
     }
 
     // -----------------------------------------------------------------------
-    // @ClientCallable â€” hardware back button bridge
+    // @ClientCallable  hardware back button bridge
     // -----------------------------------------------------------------------
 
     /**
      * Called from JS when {@code popstate} fires and this sheet is top of the stack.
-     * The browser has already consumed the history entry â€” no further manipulation needed.
+     * The browser has already consumed the history entry  no further manipulation needed.
      */
     @ClientCallable
     public void closeFromHistory() {
@@ -330,7 +419,125 @@ public class Sheet extends Div {
         if (side != null) {
             addClassName(side.getCssClass());
             handle.setVisible(side == Side.BOTTOM);
+            updateResizeHandleVisibility();
         }
+    }
+
+    /**
+     * Recommends a {@link Side} based on the current viewport width, following the M3 guidance
+     * to prefer a {@link Side#BOTTOM} sheet over a side sheet on compact (&lt; 600&nbsp;px) screens.
+     *
+     * @param viewportWidthPx  the current viewport width in pixels (e.g. from
+     *                         {@code UI.getCurrent().getPage().retrieveExtendedClientDetails(...)})
+     * @param preferredSide    the side to use on medium/expanded screens ({@link Side#LEFT} or
+     *                         {@link Side#RIGHT}; not null)
+     * @return {@link Side#BOTTOM} if {@code viewportWidthPx < 600}, {@code preferredSide} otherwise
+     */
+    public static Side sideForWidth(int viewportWidthPx, Side preferredSide) {
+        return viewportWidthPx < 600 ? Side.BOTTOM : preferredSide;
+    }
+
+    // -----------------------------------------------------------------------
+    // Mode API (M3: Modal vs. Standard side sheet)
+    // -----------------------------------------------------------------------
+
+    /** @return the current {@link Mode} (default {@link Mode#MODAL}) */
+    public Mode getMode() { return mode; }
+
+    /**
+     * Sets the sheet {@link Mode}. Only meaningful for {@link Side#LEFT} / {@link Side#RIGHT}
+     * sheets; {@link Side#BOTTOM} sheets always behave as {@link Mode#MODAL}.
+     *
+     * <ul>
+     *   <li>{@link Mode#MODAL}  restores the dimming scrim (per {@link #isBackdropVisible()}),
+     *       {@code role="dialog"}, {@code aria-modal="true"}, browser-history integration
+     *       (per {@link #isHistoryEnabled()}), and disables resizing.</li>
+     *   <li>{@link Mode#STANDARD}  hides the scrim, keeps the background interactive,
+     *       switches to {@code role="complementary"} (no {@code aria-modal}), disables browser
+     *       history integration (a standard sheet is not a navigational "screen"), and enables
+     *       drag-to-resize on the panel's inner edge.</li>
+     * </ul>
+     *
+     * @param mode the mode to apply (not null)
+     */
+    public void setMode(Mode mode) {
+        this.mode = mode;
+        boolean standard = mode == Mode.STANDARD;
+        setClassName("sheet--standard", standard);
+        this.resizable = standard;
+        this.historyEnabled = !standard;
+        updateResizeHandleVisibility();
+        if (standard) {
+            addClassName("sheet--no-backdrop");
+            panel.getElement().setAttribute("role", "complementary");
+            panel.getElement().removeAttribute("aria-modal");
+        } else {
+            if (backdropVisible) removeClassName("sheet--no-backdrop");
+            panel.getElement().setAttribute("role", "dialog");
+            panel.getElement().setAttribute("aria-modal", "true");
+        }
+    }
+
+    /**
+     * Enables/disables drag-to-resize on the panel's inner edge. Automatically set by
+     * {@link #setMode(Mode)} (enabled for {@link Mode#STANDARD}, disabled for
+     * {@link Mode#MODAL}); call after {@link #setMode(Mode)} to override.
+     * Only applies to {@link Side#LEFT} / {@link Side#RIGHT} sheets.
+     *
+     * @param resizable {@code true} to allow the user to drag-resize the panel
+     */
+    public void setResizable(boolean resizable) {
+        this.resizable = resizable;
+        updateResizeHandleVisibility();
+    }
+
+    /** @return {@code true} if the panel can be drag-resized by the user */
+    public boolean isResizable() { return resizable; }
+
+    /**
+     * Sets the minimum panel width (in pixels) allowed while drag-resizing.
+     * Default: {@code 256} (M3 minimum side sheet width).
+     *
+     * @param minWidthPx the minimum width in pixels (&gt; 0)
+     */
+    public void setMinResizeWidth(int minWidthPx) {
+        this.minWidthPx = minWidthPx;
+        resizeHandle.getElement().setAttribute("data-min-width", String.valueOf(minWidthPx));
+    }
+
+    /** @return the minimum drag-resize width in pixels (default {@code 256}) */
+    public int getMinResizeWidth() { return minWidthPx; }
+
+    /**
+     * Sets the maximum panel width (in pixels) allowed while drag-resizing.
+     * Default: {@code 400} (M3 recommended maximum side sheet width).
+     *
+     * @param maxWidthPx the maximum width in pixels (&gt; {@link #getMinResizeWidth()})
+     */
+    public void setMaxResizeWidth(int maxWidthPx) {
+        this.maxWidthPx = maxWidthPx;
+        resizeHandle.getElement().setAttribute("data-max-width", String.valueOf(maxWidthPx));
+    }
+
+    /** @return the maximum drag-resize width in pixels (default {@code 400}) */
+    public int getMaxResizeWidth() { return maxWidthPx; }
+
+    /**
+     * Registers a callback fired after the user finishes drag-resizing the panel
+     * (on pointer release), receiving the resulting panel width in pixels.
+     *
+     * @param onResize the callback (may be {@code null})
+     */
+    public void setOnResize(IntConsumer onResize) { this.onResizeCallback = onResize; }
+
+    /** Called from JS when the user releases the drag-to-resize handle. */
+    @ClientCallable
+    public void onPanelResized(double widthPx) {
+        if (onResizeCallback != null) onResizeCallback.accept((int) Math.round(widthPx));
+    }
+
+    private void updateResizeHandleVisibility() {
+        resizeHandle.setVisible(resizable && currentSide != null && currentSide != Side.BOTTOM);
     }
 
     // -----------------------------------------------------------------------
@@ -460,8 +667,8 @@ public class Sheet extends Div {
      * Sets whether the semi-transparent backdrop is shown behind the panel when the sheet opens.
      *
      * <ul>
-     *   <li>{@code true} (default) â€” backdrop dims the content behind the sheet</li>
-     *   <li>{@code false} â€” the sheet slides in on top of the existing view with no dimming;
+     *   <li>{@code true} (default)  backdrop dims the content behind the sheet</li>
+     *   <li>{@code false}  the sheet slides in on top of the existing view with no dimming;
      *       useful for persistent side panels or filter drawers where the user needs to
      *       interact with the background after closing</li>
      * </ul>
@@ -485,9 +692,9 @@ public class Sheet extends Div {
      * non-mobile screens (â‰¥ 768 px), keeping the AppBar and its navigation buttons visible.
      *
      * <ul>
-     *   <li>{@code false} (default) â€” panel covers the full viewport height, including
+     *   <li>{@code false} (default)  panel covers the full viewport height, including
      *       the AppBar area</li>
-     *   <li>{@code true} â€” panel starts below the AppBar; uses the CSS custom property
+     *   <li>{@code true}  panel starts below the AppBar; uses the CSS custom property
      *       {@code --vaadin-app-layout-navbar-offset-top} for the top offset.
      *       Vaadin {@code AppLayout} sets this automatically. For custom AppBars, declare
      *       it in your application CSS:
@@ -612,6 +819,7 @@ public class Sheet extends Div {
             footer.addClassName("sheet__footer");
             panel.add(footer);
         }
+        panel.add(resizeHandle);
     }
 
     private String ensureId() {

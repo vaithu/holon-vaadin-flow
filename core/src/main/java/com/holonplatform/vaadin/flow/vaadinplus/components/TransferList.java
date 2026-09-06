@@ -21,20 +21,20 @@ import java.util.*;
  *
  * <h3>Layout</h3>
  * <pre>
- * â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”  â”Œâ”€â”€â”€â”  â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
- * â”‚ Available      [5]  â”‚  â”‚ â†’ â”‚  â”‚ Selected       [2]  â”‚
- * â”‚â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”‚  â”‚ â†’â†’â”‚  â”‚â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”‚
- * â”‚ [âœ“] Coffee Table    â”‚  â”‚ â† â”‚  â”‚ [ ] Sofa            â”‚
- * â”‚ [ ] Storage Cabinet â”‚  â”‚ â†â†â”‚  â”‚ [ ] Area Rug        â”‚
- * â”‚ [âœ“] Dining Set      â”‚  â””â”€â”€â”€â”˜  â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
- * â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
+ * Œ€€€€€€€€€€€€€€€€€€€€€  Œ€€€  Œ€€€€€€€€€€€€€€€€€€€€€
+ *  Available      [5]     â†’    Selected       [2]
+ * €€€€€€€€€€€€€€€€€€€€€   â†’â†’  €€€€€€€€€€€€€€€€€€€€€
+ *  [âœ“] Coffee Table       â†    [ ] Sofa
+ *  [ ] Storage Cabinet    â†â†   [ ] Area Rug
+ *  [âœ“] Dining Set        ”€€€˜  ”€€€€€€€€€€€€€€€€€€€€€˜
+ * ”€€€€€€€€€€€€€€€€€€€€€˜
  * </pre>
  *
  * <ul>
- *   <li>{@code â†’}  â€” move highlighted items from Available â†’ Selected</li>
- *   <li>{@code â†’â†’} â€” move all Available â†’ Selected</li>
- *   <li>{@code â†}  â€” move highlighted items from Selected â†’ Available</li>
- *   <li>{@code â†â†} â€” move all Selected â†’ Available</li>
+ *   <li>{@code â†’}   move highlighted items from Available â†’ Selected</li>
+ *   <li>{@code â†’â†’}  move all Available â†’ Selected</li>
+ *   <li>{@code â†}   move highlighted items from Selected â†’ Available</li>
+ *   <li>{@code â†â†}  move all Selected â†’ Available</li>
  * </ul>
  *
  * <h3>Usage</h3>
@@ -65,7 +65,7 @@ public class TransferList extends Div {
     @Serial
     private static final long serialVersionUID = 1L;
 
-    // â”€â”€ Internal state â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // €€ Internal state €€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€
 
     /** Items currently shown in the left (available) panel. */
     private final List<TransferItem> availableItems = new ArrayList<>();
@@ -79,7 +79,7 @@ public class TransferList extends Div {
     /** IDs of items currently highlighted (row-selected) in the selected panel. */
     private final Set<String> highlightedSelected = new LinkedHashSet<>();
 
-    // â”€â”€ UI references â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // €€ UI references €€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€
 
     private final Div availableListDiv;
     private final Div selectedListDiv;
@@ -93,7 +93,7 @@ public class TransferList extends Div {
     private final Button moveLeftBtn;
     private final Button moveAllLeftBtn;
 
-    // â”€â”€ Constructor â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // €€ Constructor €€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€
 
     /**
      * Creates an empty {@code TransferList} with default "Available" / "Selected" titles.
@@ -101,7 +101,7 @@ public class TransferList extends Div {
     public TransferList() {
         addClassName("transfer-list");
 
-        // â”€â”€ Left panel (Available) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+        // €€ Left panel (Available) €€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€
         availableTitleSpan = Components.span()
                 .text(LocalizationProvider.localize("Available", "transfer_list.available_title"))
                 .styleName("transfer-list__panel-title").build();
@@ -116,7 +116,7 @@ public class TransferList extends Div {
         availablePanel.getElement().setAttribute("aria-label",
                 LocalizationProvider.localize("Available items", "transfer_list.available_region_aria"));
 
-        // â”€â”€ Controls column â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+        // €€ Controls column €€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€
         moveRightBtn = buildCtrlButton(VaadinIcon.ANGLE_RIGHT,
                 LocalizationProvider.localize("Move selected items to the right", "transfer_list.move_right_aria"));
         moveAllRightBtn = buildCtrlButton(VaadinIcon.ANGLE_DOUBLE_RIGHT,
@@ -136,7 +136,7 @@ public class TransferList extends Div {
         Div toLeftGroup = Components.div().add(moveLeftBtn, moveAllLeftBtn).styleName("transfer-list__ctrl-group").build();
         Div controls = Components.div().add(toRightGroup, sep, toLeftGroup).styleName("transfer-list__controls").build();
 
-        // â”€â”€ Right panel (Selected) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+        // €€ Right panel (Selected) €€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€
         selectedTitleSpan = Components.span()
                 .text(LocalizationProvider.localize("Selected", "transfer_list.selected_title"))
                 .styleName("transfer-list__panel-title").build();
@@ -151,7 +151,7 @@ public class TransferList extends Div {
         selectedPanel.getElement().setAttribute("aria-label",
                 LocalizationProvider.localize("Selected items", "transfer_list.selected_region_aria"));
 
-        // â”€â”€ Assembly â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+        // €€ Assembly €€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€
         add(availablePanel, controls, selectedPanel);
 
         // Initial render
@@ -160,7 +160,7 @@ public class TransferList extends Div {
         updateCounters();
     }
 
-    // â”€â”€ Public API â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // €€ Public API €€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€
 
     /**
      * Sets the initial items in the "Available" (left) panel.
@@ -243,7 +243,7 @@ public class TransferList extends Div {
         return addListener(TransferEvent.class, listener);
     }
 
-    // â”€â”€ Static factory â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // €€ Static factory €€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€
 
     /**
      * Returns a new Holon fluent {@link TransferListBuilder}.
@@ -262,7 +262,7 @@ public class TransferList extends Div {
         return TransferListBuilder.create();
     }
 
-    // â”€â”€ Transfer operations â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // €€ Transfer operations €€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€
 
     /**
      * Moves all highlighted items in the Available panel to the Selected panel.
@@ -318,7 +318,7 @@ public class TransferList extends Div {
         fireTransferEvent();
     }
 
-    // â”€â”€ Rendering â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // €€ Rendering €€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€
 
     private void renderAvailableList() {
         availableListDiv.removeAll();
@@ -377,7 +377,7 @@ public class TransferList extends Div {
         moveAllLeftBtn.setEnabled(!selectedItems.isEmpty());
     }
 
-    // â”€â”€ Highlight toggles â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // €€ Highlight toggles €€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€
 
     private void toggleAvailableHighlight(String id) {
         toggle(highlightedAvailable, id);
@@ -393,7 +393,7 @@ public class TransferList extends Div {
         if (!set.remove(id)) set.add(id);
     }
 
-    // â”€â”€ Utilities â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // €€ Utilities €€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€
 
     /** Removes and returns all items whose id is in {@code highlighted}. */
     private static List<TransferItem> drainHighlighted(List<TransferItem> source, Set<String> highlighted) {
@@ -407,14 +407,14 @@ public class TransferList extends Div {
 
     private static Button buildCtrlButton(VaadinIcon icon, String ariaLabel) {
         Button btn = Components.button().icon(icon).tertiary().styleName("transfer-list__ctrl-btn").ariaLabel(ariaLabel).build();
-        btn.setEnabled(false); // initially disabled â€” enabled by updateMoveButtonStates
+        btn.setEnabled(false); // initially disabled  enabled by updateMoveButtonStates
         return btn;
     }
 
     private void fireTransferEvent() {
         fireEvent(new TransferEvent(this, false, List.copyOf(availableItems), List.copyOf(selectedItems)));
     }
-    // â”€â”€ Events â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // €€ Events €€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€
 
     /**
      * Fired whenever items are transferred between the Available and Selected panels.

@@ -39,13 +39,13 @@ import com.vaadin.flow.component.html.Nav;
  *
  * <p>Component hierarchy:</p>
  * <ul>
- *   <li>{@link Pagination} â€” {@code <nav>} landmark wrapper</li>
- *   <li>{@link PaginationContent} â€” {@code <ul>} flex container of items</li>
- *   <li>{@link PaginationItem} â€” {@code <li>} wrapper for each control</li>
- *   <li>{@link PaginationLink} â€” numbered page button</li>
- *   <li>{@link PaginationPrevious} â€” previous-page control</li>
- *   <li>{@link PaginationNext} â€” next-page control</li>
- *   <li>{@link PaginationEllipsis} â€” gap indicator ({@code â€¦})</li>
+ *   <li>{@link Pagination}  {@code <nav>} landmark wrapper</li>
+ *   <li>{@link PaginationContent}  {@code <ul>} flex container of items</li>
+ *   <li>{@link PaginationItem}  {@code <li>} wrapper for each control</li>
+ *   <li>{@link PaginationLink}  numbered page button</li>
+ *   <li>{@link PaginationPrevious}  previous-page control</li>
+ *   <li>{@link PaginationNext}  next-page control</li>
+ *   <li>{@link PaginationEllipsis}  gap indicator ({@code â€¦})</li>
  * </ul>
  *
  * <p>All styling is defined in {@code pagination.css}. No inline styles or Lumo tokens.</p>

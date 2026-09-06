@@ -24,7 +24,7 @@ import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.icon.Icon;
 
 /**
- * Modal alert notification â€” a {@link Dialog} overlay wrapping an {@link Alert}.
+ * Modal alert notification  a {@link Dialog} overlay wrapping an {@link Alert}.
  *
  * <p>Use this component when you need to surface an inline {@link Alert} (info,
  * warning, success, or destructive notification) as a modal overlay.  It is
@@ -37,11 +37,11 @@ import com.vaadin.flow.component.icon.Icon;
  * <p>Composition:</p>
  * <pre>
  * AlertModal  (Dialog overlay)
- *  â””â”€â”€ Alert
- *       â”œâ”€â”€ Icon            (optional â€” {@link #setIcon(Icon)})
- *       â”œâ”€â”€ AlertTitle      ({@link #setTitle(String)} / {@link #setTitle(Localizable)})
- *       â”œâ”€â”€ AlertDescription({@link #setDescription(String)})
- *       â””â”€â”€ AlertAction     ({@link #setAction(Component...)})
+ *  ”€€ Alert
+ *       œ€€ Icon            (optional  {@link #setIcon(Icon)})
+ *       œ€€ AlertTitle      ({@link #setTitle(String)} / {@link #setTitle(Localizable)})
+ *       œ€€ AlertDescription({@link #setDescription(String)})
+ *       ”€€ AlertAction     ({@link #setAction(Component...)})
  * </pre>
  *
  * <p>Preferred usage via builder:</p>
@@ -87,7 +87,7 @@ public class AlertModal extends Dialog {
     public AlertModal(Alert.Variant variant) {
         this.inner = new Alert(variant);
 
-        // AlertModal is dismissible â€” user is just being notified
+        // AlertModal is dismissible  user is just being notified
         setCloseOnEsc(true);
         setCloseOnOutsideClick(true);
 

@@ -146,3 +146,196 @@
   }
 }
 
+/* ============================================================
+   Appraisal variant
+   BEM: .totals-card--appraisal / .totals-card__header|__eyebrow|
+        __highlight*|__gauge-wrap|__rows|__terms*|__toggle|__actions*
+
+   A dark, self-contained "live appraisal" surface: eyebrow + editable
+   highlight field header, an optional TotalsGauge ring, the usual rows
+   (colours flipped for the dark surface), an LTV-style slider, a term
+   toggle (built on ChipGroup) and up to two stacked action buttons.
+   ============================================================ */
+
+.totals-card--appraisal {
+  --totals-card-appraisal-bg-solid: #141d2b;
+  --totals-card-appraisal-border-color: transparent;
+
+  background: linear-gradient(160deg, #1b2536 0%, var(--totals-card-appraisal-bg-solid) 100%);
+  border-color: var(--totals-card-appraisal-border-color);
+  color: #ffffff;
+  padding: 0;
+  border-radius: var(--totals-card-radius, 0.875rem);
+  overflow: hidden;
+}
+
+/* --- Rows: flip label/value colours for the dark surface --- */
+
+.totals-card--appraisal .totals-card__rows {
+  padding: 0.25rem 1.375rem 1.125rem;
+}
+
+.totals-card--appraisal .totals-card__row {
+  border-bottom: 1px solid oklch(1 0 0 / 0.07);
+  padding: 0.5625rem 0;
+  /* Set on the row container (not directly on __value) so it is only ever applied
+     via inheritance: any explicit variant colour (discount/warning/positive/negative/
+     muted/grand, or the per-value muted override) always wins over an inherited value,
+     regardless of selector specificity or declaration order. */
+  color: #ffffff;
+}
+
+.totals-card--appraisal .totals-card__row:last-child {
+  border-bottom: none;
+}
+
+.totals-card--appraisal .totals-card__label {
+  color: oklch(0.72 0.01 260);
+}
+
+.totals-card--appraisal .totals-card__row--grand {
+  border-top: 2px solid oklch(1 0 0 / 0.12);
+}
+
+.totals-card--appraisal .totals-card__row--grand .totals-card__label {
+  color: #ffffff;
+}
+
+.totals-card--appraisal .totals-card__row--grand .totals-card__value {
+  color: var(--amber-500, #d9a441);
+  font-size: 1rem;
+}
+
+/* --- Header: eyebrow + editable highlight field --- */
+
+.totals-card--appraisal .totals-card__header {
+  padding: 1.375rem 1.375rem 1.125rem;
+  background: radial-gradient(120% 140% at 100% 0%, oklch(0.30 0.05 296 / 0.35), transparent 60%);
+}
+
+.totals-card--appraisal .totals-card__eyebrow {
+  display: block;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--amber-500, #d9a441);
+  margin-bottom: 0.5rem;
+}
+
+.totals-card--appraisal .totals-card__highlight {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.78125rem;
+  color: oklch(0.85 0.01 260);
+}
+
+.totals-card--appraisal .totals-card__highlight-caption {
+  white-space: nowrap;
+}
+
+.totals-card--appraisal .totals-card__highlight-input {
+  width: 4.875rem;
+}
+
+.totals-card--appraisal .totals-card__highlight-input::part(input-field) {
+  height: 1.625rem;
+  min-height: 1.625rem;
+  background: oklch(1 0 0 / 0.07);
+  border: 1px solid oklch(1 0 0 / 0.18);
+  color: #ffffff;
+  font-family: var(--totals-card-value-font);
+  font-size: 0.75rem;
+}
+
+.totals-card--appraisal .totals-card__highlight-suffix {
+  white-space: nowrap;
+}
+
+/* --- Gauge wrapper --- */
+
+.totals-card--appraisal .totals-card__gauge-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.625rem 1.375rem 0.25rem;
+}
+
+/* --- Terms: slider, term toggle, note --- */
+
+.totals-card--appraisal .totals-card__terms {
+  padding: 0.875rem 1.375rem 1.25rem;
+  background: oklch(1 0 0 / 0.04);
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+}
+
+.totals-card--appraisal .totals-card__slider-row {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+}
+
+.totals-card--appraisal .totals-card__slider-label {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: oklch(0.72 0.01 260);
+}
+
+.totals-card--appraisal .totals-card__slider-input {
+  flex: 1;
+  accent-color: var(--amber-500, #d9a441);
+}
+
+.totals-card--appraisal .totals-card__slider-value {
+  font-family: var(--totals-card-value-font);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  width: 2.75rem;
+  text-align: right;
+}
+
+.totals-card--appraisal .totals-card__toggle {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.totals-card--appraisal .totals-card__terms-note {
+  display: block;
+  font-size: 0.71875rem;
+  color: oklch(0.62 0.01 260);
+  line-height: 1.5;
+}
+
+/* --- Actions --- */
+
+.totals-card--appraisal .totals-card__actions {
+  padding: 1rem 1.375rem 1.375rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+}
+
+.totals-card--appraisal .totals-card__action-btn {
+  width: 100%;
+  justify-content: center;
+  padding: 0.75rem;
+  font-size: 0.875rem;
+}
+
+.totals-card--appraisal .totals-card__action-btn--primary {
+  background: var(--amber-500, #d9a441);
+  color: #28210f;
+}
+
+.totals-card--appraisal .totals-card__action-btn--secondary {
+  background: transparent;
+  border: 1px solid oklch(1 0 0 / 0.18);
+  color: #ffffff;
+}
+
+

@@ -14,11 +14,11 @@
  *
  * RESPONSIVE BEHAVIOUR
  * â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
- *   Mobile  (< 768 px) â€” master column fills the viewport; detail is hidden
+ *   Mobile  (< 768 px)  master column fills the viewport; detail is hidden
  *                         (portrait phones). Landscape and tablets (â‰¥ 480 px)
  *                         show detail as a side-by-side pane.
- *   Desktop (â‰¥ 768 px) â€” side-by-side columns with optional separator.
- *   Wide    (â‰¥ 1024 px) â€” master column is sticky, capped at
+ *   Desktop (â‰¥ 768 px)  side-by-side columns with optional separator.
+ *   Wide    (â‰¥ 1024 px)  master column is sticky, capped at
  *                          --iyen-master-desktop-basis (default 25 %).
  */
 
@@ -46,7 +46,7 @@ main.iyen-responsive-layout {
 }
 
 /* -----------------------------------------------------------------------
- * Overlay host â€” covers main content area for drawers / dialogs / toasts
+ * Overlay host  covers main content area for drawers / dialogs / toasts
  * ----------------------------------------------------------------------- */
 
 .iyen-overlay-host {
@@ -58,8 +58,8 @@ main.iyen-responsive-layout {
 
 /* -----------------------------------------------------------------------
  * 2) Master-Detail row
- *    Mobile  : column â€” Java puts only master in DOM on mobile.
- *    Desktop (>= 768 px): row â€” master 30 % | separator | detail fills rest.
+ *    Mobile  : column  Java puts only master in DOM on mobile.
+ *    Desktop (>= 768 px): row  master 30 % | separator | detail fills rest.
  * ----------------------------------------------------------------------- */
 
 .iyen-md-row {
@@ -91,7 +91,7 @@ main.iyen-responsive-layout {
 /* -----------------------------------------------------------------------
  * 3) Master column
  *    Mobile  : fills the full viewport width (only child in the row).
- *    Desktop (>= 768 px): fixed 30 % â€” independently scrollable.
+ *    Desktop (>= 768 px): fixed 30 %  independently scrollable.
  * ----------------------------------------------------------------------- */
 
 .iyen-master {
@@ -135,7 +135,7 @@ main.iyen-responsive-layout {
 }
 
 /* -----------------------------------------------------------------------
- * 4) Separator â€” hidden on mobile, 1 px vertical line on desktop.
+ * 4) Separator  hidden on mobile, 1 px vertical line on desktop.
  *    Color: utilities.css color-bg-* class added by SeparatorColor enum,
  *    or overridden per-context (e.g. .mdl-root .iyen-md-separator).
  * ----------------------------------------------------------------------- */
@@ -217,7 +217,7 @@ main.iyen-responsive-layout {
     flex: 1 1 auto;
     min-height: 0;
     overflow: auto;
-    padding: 1.5rem;                   /* 24px all sides â€” matches image */
+    padding: 1.5rem;                   /* 24px all sides  matches image */
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
@@ -254,8 +254,8 @@ main.iyen-responsive-layout {
 }
 
 /* -----------------------------------------------------------------------
- * 9) Toolbar â€” mobile: vertical stack; desktop (â‰¥ 768 px): horizontal row.
- *    Also defined in toolbar.css â€” declarations here add master-detail context.
+ * 9) Toolbar  mobile: vertical stack; desktop (â‰¥ 768 px): horizontal row.
+ *    Also defined in toolbar.css  declarations here add master-detail context.
  * ----------------------------------------------------------------------- */
 
 .toolbar {
@@ -274,7 +274,7 @@ main.iyen-responsive-layout {
 }
 
 /* -----------------------------------------------------------------------
- * 10) App shell â€” root viewport card wrapper
+ * 10) App shell  root viewport card wrapper
  *     Maps to: AppLayout / VerticalLayout root with .app-shell class.
  * ----------------------------------------------------------------------- */
 
@@ -291,7 +291,7 @@ main.iyen-responsive-layout {
 }
 
 /* -----------------------------------------------------------------------
- * 11) Content area â€” horizontal flex/split container
+ * 11) Content area  horizontal flex/split container
  *     Maps to: SplitLayout (HORIZONTAL) or HorizontalLayout.
  * ----------------------------------------------------------------------- */
 
@@ -302,7 +302,7 @@ main.iyen-responsive-layout {
 }
 
 /* -----------------------------------------------------------------------
- * 12) Master panel â€” list side of the split
+ * 12) Master panel  list side of the split
  *     Maps to: SplitLayout first child / VerticalLayout.
  * ----------------------------------------------------------------------- */
 
@@ -345,7 +345,7 @@ main.iyen-responsive-layout {
 }
 
 /* -----------------------------------------------------------------------
- * 13) Master list â€” scrollable record list
+ * 13) Master list  scrollable record list
  *     Maps to: VirtualList / Grid (no header, single column renderer).
  * ----------------------------------------------------------------------- */
 
@@ -419,7 +419,7 @@ main.iyen-responsive-layout {
     flex-wrap: wrap;
 }
 
-/* Small dot separator inside meta row â€” decorative, px intentional */
+/* Small dot separator inside meta row  decorative, px intentional */
 .meta-dot {
     width: 4px;
     height: 4px;
@@ -439,7 +439,7 @@ main.iyen-responsive-layout {
     padding: 0.1875rem var(--space-3, 0.75rem);
 }
 
-/* Decorative dot â€” px intentional */
+/* Decorative dot  px intentional */
 .status-dot {
     width: 6px;
     height: 6px;
@@ -627,7 +627,7 @@ main.iyen-responsive-layout {
 }
 
 /* -----------------------------------------------------------------------
- * 20) Responsive: â‰¤ 768 px â€” stacked layout
+ * 20) Responsive: â‰¤ 768 px  stacked layout
  * ----------------------------------------------------------------------- */
 
 @media (max-width: 768px) {

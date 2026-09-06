@@ -44,6 +44,7 @@ public interface HeroStripConfigurator<C extends HeroStripConfigurator<C>>
         CellSection footer(String footer);
         CellSection pulse(boolean pulse);
         CellSection valueVariant(HeroStrip.ValueVariant valueVariant);
+        CellSection icon(Component icon);
     }
 
     interface HeaderSection {

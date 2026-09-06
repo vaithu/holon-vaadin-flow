@@ -24,6 +24,7 @@ import com.holonplatform.vaadin.flow.vaadinplus.components.SheetDescription;
 import com.holonplatform.vaadin.flow.vaadinplus.components.SheetTitle;
 import com.vaadin.flow.component.Component;
 
+import java.util.function.IntConsumer;
 import java.util.function.Supplier;
 
 /**
@@ -53,6 +54,56 @@ public interface SheetConfigurator<C extends SheetConfigurator<C>>
      * @return this configurator for chaining
      */
     C side(Sheet.Side side);
+
+    // -----------------------------------------------------------------------
+    // Mode (M3: Modal vs. Standard side sheet)
+    // -----------------------------------------------------------------------
+
+    /**
+     * Sets the {@link Sheet.Mode}. Only meaningful for {@link Sheet.Side#LEFT} /
+     * {@link Sheet.Side#RIGHT} sheets. Default: {@link Sheet.Mode#MODAL}.
+     *
+     * @param mode the mode to apply (not null)
+     * @return this configurator for chaining
+     * @see Sheet#setMode(Sheet.Mode)
+     */
+    C mode(Sheet.Mode mode);
+
+    /**
+     * Enables/disables drag-to-resize on the panel's inner edge. Automatically set by
+     * {@link #mode(Sheet.Mode)}; call after it to override.
+     *
+     * @param resizable {@code true} to allow the user to drag-resize the panel
+     * @return this configurator for chaining
+     */
+    C resizable(boolean resizable);
+
+    /**
+     * Sets the minimum panel width (in pixels) allowed while drag-resizing.
+     * Default: {@code 256} (M3 minimum side sheet width).
+     *
+     * @param minWidthPx the minimum width in pixels
+     * @return this configurator for chaining
+     */
+    C minResizeWidth(int minWidthPx);
+
+    /**
+     * Sets the maximum panel width (in pixels) allowed while drag-resizing.
+     * Default: {@code 400} (M3 recommended maximum side sheet width).
+     *
+     * @param maxWidthPx the maximum width in pixels
+     * @return this configurator for chaining
+     */
+    C maxResizeWidth(int maxWidthPx);
+
+    /**
+     * Registers a callback fired after the user finishes drag-resizing the panel, receiving
+     * the resulting panel width in pixels.
+     *
+     * @param onResize the callback (not null)
+     * @return this configurator for chaining
+     */
+    C onResize(IntConsumer onResize);
 
     // -----------------------------------------------------------------------
     // Title

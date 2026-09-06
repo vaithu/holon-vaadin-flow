@@ -31,7 +31,7 @@ import com.vaadin.flow.component.html.Div;
  *
  * <p>By default each item occupies 100 % of the viewport width (horizontal)
  * or height (vertical). Use {@link #setBasis(String)} to create multi-item
- * views â€” e.g. {@code setBasis("33.333%")} shows three slides at once.</p>
+ * views  e.g. {@code setBasis("33.333%")} shows three slides at once.</p>
  *
  * @see Carousel
  * @see CarouselContent
@@ -72,9 +72,9 @@ public class CarouselItem extends Div {
      *
      * <p>Examples:
      * <ul>
-     *   <li>{@code "100%"} â€“ one slide at a time (default)</li>
-     *   <li>{@code "50%"} â€“ two slides at a time</li>
-     *   <li>{@code "33.333%"} â€“ three slides at a time</li>
+     *   <li>{@code "100%"}  one slide at a time (default)</li>
+     *   <li>{@code "50%"}  two slides at a time</li>
+     *   <li>{@code "33.333%"}  three slides at a time</li>
      * </ul>
      *
      * @param basis a valid CSS length or percentage string (not null)

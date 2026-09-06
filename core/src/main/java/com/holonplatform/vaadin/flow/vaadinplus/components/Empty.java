@@ -28,15 +28,15 @@ import com.vaadin.flow.component.icon.Icon;
  * Empty-state component inspired by shadcn/ui {@code EmptyState}.
  *
  * <p>Use this component to communicate that a collection, list, or data set contains
- * no items â€” and to give the user a clear path forward through an optional call-to-action.</p>
+ * no items  and to give the user a clear path forward through an optional call-to-action.</p>
  *
  * <p>Composition:</p>
  * <pre>
  * Empty
- *  â”œâ”€â”€ Icon / Illustration  (optional â€” {@link #setIcon(Icon)})
- *  â”œâ”€â”€ EmptyTitle           ({@link #setTitle(EmptyTitle)} / {@link #setTitle(String)} / {@link #setTitle(Localizable)})
- *  â”œâ”€â”€ EmptyDescription     ({@link #setDescription(EmptyDescription)} / {@link #setDescription(String)})
- *  â””â”€â”€ EmptyAction          ({@link #setAction(EmptyAction)} / {@link #setAction(Component...)})
+ *  œ€€ Icon / Illustration  (optional  {@link #setIcon(Icon)})
+ *  œ€€ EmptyTitle           ({@link #setTitle(EmptyTitle)} / {@link #setTitle(String)} / {@link #setTitle(Localizable)})
+ *  œ€€ EmptyDescription     ({@link #setDescription(EmptyDescription)} / {@link #setDescription(String)})
+ *  ”€€ EmptyAction          ({@link #setAction(EmptyAction)} / {@link #setAction(Component...)})
  * </pre>
  *
  * <p>Preferred usage via builder:</p>

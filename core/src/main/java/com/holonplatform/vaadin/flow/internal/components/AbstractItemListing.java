@@ -225,7 +225,7 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
     private transient T oldEditorValue;
 
     /**
-     * Reusable editor value holder â€” cached once to avoid anonymous class allocation on every
+     * Reusable editor value holder  cached once to avoid anonymous class allocation on every
      * editor-save event.
      */
     private final EditorValueHolder editorValueHolder = new EditorValueHolder();
@@ -266,7 +266,7 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
     private Column<T> mobileColumn;
 
     /**
-     * Cached header / footer section wrappers â€” created once on first access, never re-created.
+     * Cached header / footer section wrappers  created once on first access, never re-created.
      */
     private transient EditableItemListingSection<P> cachedHeaderSection;
     private transient EditableItemListingSection<P> cachedFooterSection;
@@ -379,7 +379,7 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
 
     @Override
     public Optional<T> getItemAtIndex(int index) {
-        // Fetch once â€” getLazyDataView().getItem() may trigger a backend page fetch
+        // Fetch once  getLazyDataView().getItem() may trigger a backend page fetch
         T item = getGrid().getLazyDataView().getItem(index);
         return Optional.ofNullable(item);
     }
@@ -2332,12 +2332,12 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
             }
         }
 
-        // inputs â€” pre-sized for-loop avoids stream overhead in this frequently-called validation path
+        // inputs  pre-sized for-loop avoids stream overhead in this frequently-called validation path
         final var fieldStatuses = binderStatus.getFieldValidationStatuses();
         final List<GroupElementValidationStatusEvent<EditorComponentGroup<P, T>, P, Input<?>>> inputsValidationStatus =
                 new ArrayList<>(fieldStatuses.size());
         for (var vs : fieldStatuses) {
-            // Single map lookup â€” avoids redundant containsKey + get double traversal
+            // Single map lookup  avoids redundant containsKey + get double traversal
             final P property = editorBindings.get(vs.getBinding());
             if (property == null) continue;
             final Input<?> input = editors.get(property);
@@ -2375,7 +2375,7 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
      * @param value The new value
      */
     protected void fireValueChangeListeners(T value) {
-        // Use the pre-allocated EditorValueHolder â€” no anonymous class allocation per save
+        // Use the pre-allocated EditorValueHolder  no anonymous class allocation per save
         final GroupValueChangeEvent<T, P, Input<?>, EditorComponentGroup<P, T>> event = new DefaultGroupValueChangeEvent<>(
                 this, editorValueHolder, oldEditorValue, value, true);
         valueChangeListeners.forEach(l -> l.valueChange(event));

@@ -31,9 +31,9 @@ import com.vaadin.flow.component.html.Div;
  *
  * <p>Two usage modes:</p>
  * <ul>
- *   <li><strong>Meaningful</strong> (default) â€” renders with {@code role="separator"} and
+ *   <li><strong>Meaningful</strong> (default)  renders with {@code role="separator"} and
  *       {@code aria-orientation} so assistive technologies announce it as a thematic break.</li>
- *   <li><strong>Decorative</strong> â€” renders with {@code role="none"} and
+ *   <li><strong>Decorative</strong>  renders with {@code role="none"} and
  *       {@code aria-hidden="true"} when the separator is purely visual and should be
  *       invisible to screen readers.</li>
  * </ul>
@@ -83,7 +83,7 @@ public class Separator extends Div {
     private static final long serialVersionUID = 1L;
 
     /**
-     * Separator thickness â€” maps to a CSS modifier class that overrides the
+     * Separator thickness  maps to a CSS modifier class that overrides the
      * {@code --separator-thickness} custom property used by both orientation rules.
      *
      * <pre>{@code
@@ -91,7 +91,7 @@ public class Separator extends Div {
      * }</pre>
      */
     public enum Thickness {
-        /** 1 px â€” the default. */
+        /** 1 px  the default. */
         THIN("separator--thickness-thin"),
         /** 2 px. */
         MEDIUM("separator--thickness-medium"),
@@ -111,7 +111,7 @@ public class Separator extends Div {
     }
 
     /**
-     * Separator orientation â€” maps directly to the WAI-ARIA {@code aria-orientation} values.
+     * Separator orientation  maps directly to the WAI-ARIA {@code aria-orientation} values.
      */
     public enum Orientation {
         /** A horizontal rule spanning the full width of its container. */

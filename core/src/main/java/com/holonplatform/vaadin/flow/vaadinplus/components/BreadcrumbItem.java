@@ -8,7 +8,7 @@ import com.vaadin.flow.router.AfterNavigationObserver;
 import com.vaadin.flow.router.RouterLink;
 
 /**
- * A single crumb in a {@link Breadcrumb} trail â€” wraps a navigation link.
+ * A single crumb in a {@link Breadcrumb} trail  wraps a navigation link.
  *
  * <p>Renders as:</p>
  * <pre>
@@ -70,7 +70,7 @@ public class BreadcrumbItem extends ListItem implements AfterNavigationObserver 
 
     /**
      * Creates a breadcrumb item with arbitrary child content (no link).
-     * Use this for custom renderings â€” e.g. an icon-only crumb.
+     * Use this for custom renderings  e.g. an icon-only crumb.
      * This constructor does NOT register an {@link AfterNavigationObserver};
      * {@link #afterNavigation(AfterNavigationEvent)} is a no-op.
      *

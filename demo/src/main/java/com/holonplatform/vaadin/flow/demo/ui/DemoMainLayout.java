@@ -175,7 +175,8 @@ public final class DemoMainLayout extends AppLayout {
                         new SideNavItem("NativeButton", NativeButtonDemoView.class,VaadinIcon.HAND.create()),
                         new SideNavItem("ContextMenu",  ContextMenuDemoView.class, VaadinIcon.ELLIPSIS_DOTS_V.create()),
                         new SideNavItem("MenuBar",      MenuBarDemoView.class,     VaadinIcon.MENU.create()),
-                        new SideNavItem("TransferList", TransferListDemoView.class,VaadinIcon.ARROWS.create())
+                        new SideNavItem("TransferList", TransferListDemoView.class,VaadinIcon.ARROWS.create()),
+                        new SideNavItem("Fab",          FabDemoView.class,         VaadinIcon.PLUS_CIRCLE.create())
                 )
                 .add();
 

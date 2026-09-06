@@ -76,7 +76,7 @@ import '@vaadin/avatar-group/src/vaadin-avatar-group.js';
 import 'Frontend/generated/jar-resources/stepper-component.js';
 import 'Frontend/generated/jar-resources/timeline-stepper.js';
 import '@vaadin/card/src/vaadin-card.js';
+import '@vaadin/integer-field/src/vaadin-integer-field.js';
 import '@vaadin/scroller/src/vaadin-scroller.js';
 import '@vaadin/progress-bar/src/vaadin-progress-bar.js';
-import '@vaadin/integer-field/src/vaadin-integer-field.js';
 import '@vaadin/app-layout/src/vaadin-drawer-toggle.js';

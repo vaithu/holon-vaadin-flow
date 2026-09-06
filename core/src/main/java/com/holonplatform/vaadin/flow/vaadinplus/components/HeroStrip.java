@@ -27,7 +27,7 @@ import java.util.List;
  *
  * <h3>Structure</h3>
  * <pre>
- * ┌──────────────────────────────────────────────────────────────┐
+ * ┌─────────��────────────────────────────────────────────────────┐
  * │  [ico] Helix Robotics SE ★                                    │
  * │        C-2026-0023 · Munich · since 1.9 yr                    │
  * │  ● Active   ★ T1   EMEA · DACH   VIP                          │
@@ -184,8 +184,9 @@ public class HeroStrip extends Div {
      *                     {@code null} or blank = hidden
      * @param pulse        when {@code true}, an animated amber dot is rendered before the header
      * @param valueVariant colour tint applied to the content text; {@code null} defaults to {@link ValueVariant#DEFAULT}
+     * @param icon         optional icon component rendered before the label (horizontal layout); {@code null} = no icon
      */
-    public record Cell(String header, String content, String footer, boolean pulse, ValueVariant valueVariant)
+    public record Cell(String header, String content, String footer, boolean pulse, ValueVariant valueVariant, Component icon)
             implements Serializable {
 
         @Serial
@@ -194,6 +195,19 @@ public class HeroStrip extends Div {
         /** Compact constructor — normalises {@code null} valueVariant to DEFAULT. */
         public Cell {
             if (valueVariant == null) valueVariant = ValueVariant.DEFAULT;
+        }
+
+        /**
+         * Convenience constructor without icon (backward compatibility).
+         *
+         * @param header       small uppercase label
+         * @param content      large monospace value
+         * @param footer       small sub-label or {@code null}
+         * @param pulse        whether to show animated dot
+         * @param valueVariant colour variant or {@code null}
+         */
+        public Cell(String header, String content, String footer, boolean pulse, ValueVariant valueVariant) {
+            this(header, content, footer, pulse, valueVariant, null);
         }
     }
 
@@ -327,7 +341,7 @@ public class HeroStrip extends Div {
         render();
     }
 
-    // ── Responsive API ─────────────────────────────────────────────────────
+    // ── Responsive API ───────────────────────────────��─────────────────────
 
     /**
      * Returns whether responsive wrapping is enabled.
@@ -635,12 +649,30 @@ public class HeroStrip extends Div {
     static Div buildCellDiv(Cell cell) {
         Div div = new Div();
         div.addClassName("hstrip__cell");
+
+        // Apply horizontal layout if icon is present
+        if (cell.icon() != null) {
+            div.addClassName("hstrip__cell--horizontal");
+        }
+
         // A11Y: each cell is a labelled group so screen readers announce
         //       "Open pipeline group" and then read the value and footer naturally
         div.getElement().setAttribute("role", "group");
         if (cell.header() != null && !cell.header().isBlank()) {
             div.getElement().setAttribute("aria-label", cell.header());
         }
+
+        // Icon (if present, rendered on the left)
+        if (cell.icon() != null) {
+            Div iconDiv = new Div();
+            iconDiv.addClassName("hstrip__icon");
+            iconDiv.add(cell.icon());
+            div.add(iconDiv);
+        }
+
+        // Content wrapper (label, value, footer)
+        Div contentDiv = new Div();
+        contentDiv.addClassName("hstrip__cell-content");
 
         // Label row (optionally with pulse dot)
         Div labelDiv = new Div();
@@ -653,25 +685,41 @@ public class HeroStrip extends Div {
             labelDiv.add(dot);
         }
         labelDiv.add(new Span(cell.header() != null ? cell.header() : ""));
-        div.add(labelDiv);
+        contentDiv.add(labelDiv);
 
         // Value (large mono)
+        // When icon is present: footer is inline as <small>
+        // When no icon: footer is a separate line below
         Div valueDiv = new Div();
         valueDiv.addClassName("hstrip__value");
         if (cell.valueVariant() != null && !cell.valueVariant().isDefault()) {
             valueDiv.addClassName("hstrip__value--" + cell.valueVariant().getCssModifier());
         }
-        valueDiv.setText(cell.content() != null ? cell.content() : "");
-        div.add(valueDiv);
 
-        // Sub-label (optional)
-        if (cell.footer() != null && !cell.footer().isBlank()) {
+        // Render value + optional inline footer
+        if (cell.icon() != null && cell.footer() != null && !cell.footer().isBlank()) {
+            // Icon mode: render footer inline as <small>
+            valueDiv.add(new Span(cell.content() != null ? cell.content() : ""));
+            Span smallFooter = new Span(" " + cell.footer());
+            smallFooter.addClassName("hstrip__value-small");
+            valueDiv.add(smallFooter);
+        } else {
+            // No icon: render value only (footer will be separate)
+            valueDiv.setText(cell.content() != null ? cell.content() : "");
+        }
+
+        contentDiv.add(valueDiv);
+
+        // Sub-label (optional, only when no icon)
+        // When icon is present, footer is already inline in the value
+        if (cell.icon() == null && cell.footer() != null && !cell.footer().isBlank()) {
             Div subDiv = new Div();
             subDiv.addClassName("hstrip__sub");
             subDiv.setText(cell.footer());
-            div.add(subDiv);
+            contentDiv.add(subDiv);
         }
 
+        div.add(contentDiv);
         return div;
     }
 }

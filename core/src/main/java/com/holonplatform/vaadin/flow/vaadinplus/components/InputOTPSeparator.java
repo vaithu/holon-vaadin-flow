@@ -28,7 +28,7 @@ import com.vaadin.flow.component.icon.VaadinIcon;
  * <p>Renders as:
  * <pre>
  * &lt;div class="input-otp__separator" aria-hidden="true" role="presentation"&gt;
- *   &lt;span class="input-otp__separator-icon"&gt;â€“&lt;/span&gt;  &lt;!-- default --&gt;
+ *   &lt;span class="input-otp__separator-icon"&gt;&lt;/span&gt;  &lt;!-- default --&gt;
  * &lt;/div&gt;
  * </pre>
  *
@@ -50,7 +50,7 @@ public class InputOTPSeparator extends Div {
     // -----------------------------------------------------------------------
 
     /**
-     * Creates a separator with the default en-dash ({@code â€“}) glyph.
+     * Creates a separator with the default en-dash ({@code }) glyph.
      */
     public InputOTPSeparator() {
         this((Component) null);
@@ -70,7 +70,7 @@ public class InputOTPSeparator extends Div {
             ic.addClassName("input-otp__separator-icon");
             add(ic);
         } else {
-            add(Components.span().text("â€“").styleName("input-otp__separator-icon").build());
+            add(Components.span().text("").styleName("input-otp__separator-icon").build());
         }
     }
 
@@ -88,7 +88,7 @@ public class InputOTPSeparator extends Div {
         if (customContent != null) {
             add(customContent);
         } else {
-            Span dash = Components.span().text("â€“").styleName("input-otp__separator-icon").build();
+            Span dash = Components.span().text("").styleName("input-otp__separator-icon").build();
             add(dash);
         }
     }

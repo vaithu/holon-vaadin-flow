@@ -119,6 +119,7 @@ public abstract class AbstractHeroStripConfigurator<C extends HeroStripConfigura
             final String[] footer  = {null};
             final boolean[] pulse  = {false};
             final HeroStrip.ValueVariant[] valueVariant = {HeroStrip.ValueVariant.DEFAULT};
+            final Component[] icon = {null};
             configurator.accept(new HeroStripConfigurator.CellSection() {
                 @Override public HeroStripConfigurator.CellSection header(String h)  { header[0]  = h; return this; }
                 @Override public HeroStripConfigurator.CellSection content(String c) { content[0] = c; return this; }
@@ -128,8 +129,9 @@ public abstract class AbstractHeroStripConfigurator<C extends HeroStripConfigura
                     valueVariant[0] = vv != null ? vv : HeroStrip.ValueVariant.DEFAULT;
                     return this;
                 }
+                @Override public HeroStripConfigurator.CellSection icon(Component i) { icon[0] = i; return this; }
             });
-            getComponent().addCell(new HeroStrip.Cell(header[0], content[0], footer[0], pulse[0], valueVariant[0]));
+            getComponent().addCell(new HeroStrip.Cell(header[0], content[0], footer[0], pulse[0], valueVariant[0], icon[0]));
         }
         return getConfigurator();
     }

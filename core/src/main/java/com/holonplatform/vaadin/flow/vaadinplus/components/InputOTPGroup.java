@@ -35,7 +35,7 @@ import java.util.List;
  * </pre>
  *
  * <p>Mirrors the shadcn/ui {@code InputOTPGroup} element. Use multiple groups with an
- * {@link InputOTPSeparator} between them to create the classic {@code 3â€“3} or {@code 3â€“2â€“1}
+ * {@link InputOTPSeparator} between them to create the classic {@code 33} or {@code 321}
  * OTP patterns.
  *
  * <p>All visual styling is defined in {@code input-otp.css}.

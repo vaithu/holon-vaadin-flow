@@ -14,8 +14,8 @@ import java.util.Objects;
  *
  * <p>Maps to the {@code chat_room} table.  Two room types are supported:
  * <ul>
- *   <li>{@link Type#CHANNEL} â€“ named rooms visible to all members (e.g., #general)</li>
- *   <li>{@link Type#DIRECT}  â€“ private conversation between exactly two users</li>
+ *   <li>{@link Type#CHANNEL}  named rooms visible to all members (e.g., #general)</li>
+ *   <li>{@link Type#DIRECT}   private conversation between exactly two users</li>
  * </ul>
  *
  * <p>For {@link Type#DIRECT} rooms the convention is that {@code id} is composed as
@@ -36,7 +36,7 @@ public class ChatRoom implements Serializable {
         /** Private direct-message conversation between exactly two users. */
         DIRECT,
         /**
-         * Private group chat â€” like a multi-person DM.
+         * Private group chat  like a multi-person DM.
          * Always {@code isPrivate = true}; only visible to explicit members.
          */
         GROUP

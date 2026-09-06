@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>com.holon-platform.vaadin</groupId>
 		<artifactId>holon-vaadin-flow-root</artifactId>
-		<version>10.0.3-SNAPSHOT</version>
+		<version>12.0.0</version>
 	</parent>
 
 	<artifactId>holon-vaadin-flow-spring-boot</artifactId>
@@ -67,7 +67,7 @@
 			<groupId>com.holon-platform.vaadin</groupId>
 			<artifactId>holon-vaadin-flow-chartjs</artifactId>
 		</dependency>
-		<!-- Vaadin dev-mode server â€” required so DevModeServletContextListener can find vaadin-dev-server.
+		<!-- Vaadin dev-mode server  required so DevModeServletContextListener can find vaadin-dev-server.
 		     Without this, Vaadin 25 throws "'vaadin-dev-server' not found" at startup in dev mode. -->
 		<dependency>
 			<groupId>com.vaadin</groupId>

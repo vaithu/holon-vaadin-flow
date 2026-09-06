@@ -41,15 +41,15 @@ import java.util.stream.Collectors;
  *
  * <h3>Orientations</h3>
  * <ul>
- *   <li>{@link Orientation#HORIZONTAL} (default) â€” steps laid out in a row.</li>
- *   <li>{@link Orientation#VERTICAL} â€” steps stacked in a column.</li>
+ *   <li>{@link Orientation#HORIZONTAL} (default)  steps laid out in a row.</li>
+ *   <li>{@link Orientation#VERTICAL}  steps stacked in a column.</li>
  * </ul>
  *
  * <h3>Variants</h3>
  * <ul>
- *   <li>{@link Variant#DEFAULT} â€” step number or icon in a circle.</li>
- *   <li>{@link Variant#NUMBERED} â€” always shows the step number.</li>
- *   <li>{@link Variant#DOT} â€” minimal dot instead of a labelled circle.</li>
+ *   <li>{@link Variant#DEFAULT}  step number or icon in a circle.</li>
+ *   <li>{@link Variant#NUMBERED}  always shows the step number.</li>
+ *   <li>{@link Variant#DOT}  minimal dot instead of a labelled circle.</li>
  * </ul>
  *
  * <h3>Fluent builder (recommended)</h3>
@@ -97,7 +97,7 @@ public class FlowStepper extends Component implements HasSize, HasEnabled {
         DEFAULT,
         /** Step number always visible. */
         NUMBERED,
-        /** Minimal dot indicator â€” no number or icon. */
+        /** Minimal dot indicator  no number or icon. */
         DOT
     }
 
@@ -105,18 +105,18 @@ public class FlowStepper extends Component implements HasSize, HasEnabled {
      * Controls which steps respond to a click/keyboard-activate gesture.
      *
      * <p>The value is written to the {@code click-nav} HTML attribute and read by the
-     * web component on every render. It can be changed at runtime â€” call
+     * web component on every render. It can be changed at runtime  call
      * {@link #setClickNavigation(ClickNavigation)} at any point and the component
      * re-evaluates on the next attribute change.</p>
      *
      * <h4>When to use each mode</h4>
      * <ul>
-     *   <li>{@link #COMPLETED} <em>(default)</em> â€” linear wizard where the user must
+     *   <li>{@link #COMPLETED} <em>(default)</em>  linear wizard where the user must
      *       complete steps in order, but may go back to a finished step to review or
      *       change answers. Pending / active steps are non-interactive.</li>
-     *   <li>{@link #ALL} â€” free-navigation form where all steps are reachable at any
+     *   <li>{@link #ALL}  free-navigation form where all steps are reachable at any
      *       time (e.g. a settings screen with multiple tabs displayed as steps).</li>
-     *   <li>{@link #NONE} â€” purely decorative progress indicator; no step is clickable.
+     *   <li>{@link #NONE}  purely decorative progress indicator; no step is clickable.
      *       Use this when navigation is driven only by Next / Back buttons.</li>
      * </ul>
      */
@@ -215,7 +215,7 @@ public class FlowStepper extends Component implements HasSize, HasEnabled {
     }
 
     // -----------------------------------------------------------------------
-    // A11Y â€” accessible label
+    // A11Y  accessible label
     // -----------------------------------------------------------------------
 
     /**

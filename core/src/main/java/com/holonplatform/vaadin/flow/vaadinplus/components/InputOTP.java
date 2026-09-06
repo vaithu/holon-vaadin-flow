@@ -46,7 +46,7 @@ import java.util.List;
  *     &lt;div class="input-otp__slot"&gt;...&lt;/div&gt;
  *     &lt;div class="input-otp__slot"&gt;...&lt;/div&gt;
  *   &lt;/div&gt;
- *   &lt;div class="input-otp__separator"&gt;â€“&lt;/div&gt;
+ *   &lt;div class="input-otp__separator"&gt;&lt;/div&gt;
  *   &lt;div class="input-otp__group"&gt;
  *     &lt;div class="input-otp__slot"&gt;...&lt;/div&gt;
  *     &lt;div class="input-otp__slot"&gt;...&lt;/div&gt;
@@ -152,7 +152,7 @@ public class InputOTP extends Div {
     }
 
     // -----------------------------------------------------------------------
-    // Add â€” groups and separators
+    // Add  groups and separators
     // -----------------------------------------------------------------------
 
     /**
@@ -204,7 +204,7 @@ public class InputOTP extends Div {
     // -----------------------------------------------------------------------
 
     /**
-     * Returns the current OTP value â€” the concatenation of all slot values in order.
+     * Returns the current OTP value  the concatenation of all slot values in order.
      * Slots that are still empty contribute an empty string to the result.
      *
      * @return the current value (never null; empty string if no slots are filled)
@@ -299,9 +299,9 @@ public class InputOTP extends Div {
      *
      * <p>The function receives the complete OTP string and must return:
      * <ul>
-     *   <li>{@code null} or an empty string â€” the code is <strong>valid</strong>;
+     *   <li>{@code null} or an empty string  the code is <strong>valid</strong>;
      *       the {@code onComplete} handler is fired normally.</li>
-     *   <li>A non-empty error message string â€” the code is <strong>invalid</strong>;
+     *   <li>A non-empty error message string  the code is <strong>invalid</strong>;
      *       the component enters the error state (red slot borders + error label),
      *       and the {@code onComplete} handler is <em>not</em> invoked.
      *       The error is automatically cleared the next time the user edits any slot.</li>
@@ -370,7 +370,7 @@ public class InputOTP extends Div {
     }
 
     /**
-     * Clears any active error state â€” hides the error label and removes the error
+     * Clears any active error state  hides the error label and removes the error
      * CSS class from all slots.
      */
     public void clearError() {
@@ -443,10 +443,10 @@ public class InputOTP extends Div {
                 String error = validator.apply(value);
                 if (error != null && !error.isEmpty()) {
                     setErrorMessage(error);
-                    return; // Validation failed â€” do not fire onComplete
+                    return; // Validation failed  do not fire onComplete
                 }
             }
-            // Validation passed (or no validator set) â€” fire the completion handler
+            // Validation passed (or no validator set)  fire the completion handler
             if (onCompleteHandler != null) {
                 onCompleteHandler.accept(value);
             }

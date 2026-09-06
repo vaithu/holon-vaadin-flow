@@ -5,14 +5,14 @@
     <parent>
         <groupId>com.holon-platform.vaadin</groupId>
         <artifactId>holon-vaadin-flow-root</artifactId>
-        <version>10.0.3-SNAPSHOT</version>
+        <version>12.0.0</version>
     </parent>
 
     <artifactId>holon-vaadin-flow-customer</artifactId>
 
     <name>${project.groupId}:${project.artifactId}</name>
     <description>
-        Holon Vaadin Flow â€“ reusable Customer Info CRUD module.
+        Holon Vaadin Flow  reusable Customer Info CRUD module.
         Drop this dependency into any SaaS Spring Boot application to get a
         production-ready Customer entity, service, and Vaadin Flow master-detail view.
 
@@ -34,7 +34,7 @@
         <dependency>
             <groupId>com.holon-platform.vaadin</groupId>
             <artifactId>holon-starter-vaadin-flow</artifactId>
-            <!-- provided â€” consuming app brings these in -->
+            <!-- provided  consuming app brings these in -->
             <scope>provided</scope>
         </dependency>
 
@@ -52,7 +52,7 @@
             <scope>provided</scope>
         </dependency>
 
-        <!-- Holon JPA Datastore â€” BeanDatastoreHelper -->
+        <!-- Holon JPA Datastore  BeanDatastoreHelper -->
         <dependency>
             <groupId>com.holon-platform.jpa</groupId>
             <artifactId>holon-datastore-jpa-spring-boot</artifactId>

@@ -307,7 +307,7 @@ public interface Components {
 
     /**
      * Obtain a {@link SheetBuilder} for a {@link Sheet.Side#BOTTOM} sheet
-     * (slides up from the bottom â€” primary mobile pattern).
+     * (slides up from the bottom  primary mobile pattern).
      *
      * @return a new {@link SheetBuilder}
      */
@@ -343,9 +343,9 @@ public interface Components {
      * call creates, configures, and opens a new sheet, applying stacking rules
      * automatically:</p>
      * <ul>
-     *   <li>Root sheet â€” {@code backdropVisible(true)}: dims the app content behind it.</li>
-     *   <li>Child sheets â€” {@code backdropVisible(false)}: parent not visible through overlay.</li>
-     *   <li>All sheets â€” {@code fullscreenOnMobile(true)}: full viewport on mobile.</li>
+     *   <li>Root sheet  {@code backdropVisible(true)}: dims the app content behind it.</li>
+     *   <li>Child sheets  {@code backdropVisible(false)}: parent not visible through overlay.</li>
+     *   <li>All sheets  {@code fullscreenOnMobile(true)}: full viewport on mobile.</li>
      * </ul>
      *
      * <pre>{@code
@@ -672,7 +672,7 @@ public interface Components {
     // -----------------------------------------------------------------------
 
     /**
-     * Get an {@link AlertDialogBuilder} to create an {@link AlertDialog} â€” the
+     * Get an {@link AlertDialogBuilder} to create an {@link AlertDialog}  the
      * shadcn/ui-inspired confirmation dialog that forces an explicit user choice.
      *
      * <p>By default the dialog is non-dismissible (no ESC, no click-outside).
@@ -705,7 +705,7 @@ public interface Components {
     }
 
     // -----------------------------------------------------------------------
-    // IconBadge â€” circular tinted icon container
+    // IconBadge  circular tinted icon container
     // -----------------------------------------------------------------------
 
     /**
@@ -782,7 +782,7 @@ public interface Components {
      * Get an {@link EmptyBuilder} to create an {@link Empty} empty-state component.
      *
      * <p>Use this component to communicate that a collection, list, or data set
-     * contains no items â€” and give the user a clear path forward.</p>
+     * contains no items  and give the user a clear path forward.</p>
      *
      * @return a new {@link EmptyBuilder}
      */
@@ -805,7 +805,7 @@ public interface Components {
     // -----------------------------------------------------------------------
 
     /**
-     * Get an {@link InputGroupBuilder} to create an {@link InputGroup} â€” a horizontal
+     * Get an {@link InputGroupBuilder} to create an {@link InputGroup}  a horizontal
      * flex container that merges input fields, buttons, and text addons into a single
      * unified control.
      *
@@ -971,6 +971,118 @@ public interface Components {
     }
 
     // -----------------------------------------------------------------------
+    // Fab (Material Design 3 Floating Action Button)
+    // -----------------------------------------------------------------------
+
+    /**
+     * Get a {@link FabBuilder} to create a {@link Fab} — the Material Design 3
+     * <a href="https://m3.material.io/components/floating-action-button/overview">Floating
+     * Action Button</a> — with a {@link com.vaadin.flow.component.icon.VaadinIcon#PLUS} icon,
+     * default size and surface color.
+     *
+     * @return a new {@link FabBuilder}
+     */
+    static FabBuilder fab() {
+        return FabBuilder.create();
+    }
+
+    /**
+     * Get a {@link FabBuilder} to create a {@link Fab} pre-configured with the given icon.
+     *
+     * @param icon the icon to display (not null)
+     * @return a new {@link FabBuilder}
+     */
+    static FabBuilder fab(com.vaadin.flow.component.icon.VaadinIcon icon) {
+        return FabBuilder.create(icon);
+    }
+
+    /**
+     * Get a {@link FabBuilder} to create a {@link Fab} pre-configured with icon and color.
+     *
+     * <pre>{@code
+     * Fab fab = Components.fab(VaadinIcon.EDIT, Fab.Color.PRIMARY)
+     *     .size(Fab.Size.LARGE)
+     *     .position(Fab.Position.BOTTOM_END)
+     *     .onClick(e -> compose())
+     *     .build();
+     * }</pre>
+     *
+     * @param icon  the icon to display (not null)
+     * @param color the color scheme ({@code null} = {@link Fab.Color#SURFACE})
+     * @return a new {@link FabBuilder}
+     */
+    static FabBuilder fab(com.vaadin.flow.component.icon.VaadinIcon icon, Fab.Color color) {
+        return FabBuilder.create(icon, color);
+    }
+
+    /**
+     * Get a {@link FabConfigurator.BaseFabConfigurator} to configure an existing {@link Fab}.
+     *
+     * @param fab the FAB to configure (not null)
+     * @return a {@link FabConfigurator.BaseFabConfigurator}
+     */
+    static FabConfigurator.BaseFabConfigurator configure(Fab fab) {
+        return FabConfigurator.configure(fab);
+    }
+
+    // -----------------------------------------------------------------------
+    // FabMenu (Material Design 3 FAB Menu / "speed-dial")
+    // -----------------------------------------------------------------------
+
+    /**
+     * Get a {@link FabMenuBuilder} to create a {@link FabMenu} — a Material Design 3
+     * <a href="https://m3.material.io/components/floating-action-button/overview">FAB Menu</a>
+     * — with a {@link com.vaadin.flow.component.icon.VaadinIcon#PLUS} trigger and primary color.
+     *
+     * @return a new {@link FabMenuBuilder}
+     */
+    static FabMenuBuilder fabMenu() {
+        return FabMenuBuilder.create();
+    }
+
+    /**
+     * Get a {@link FabMenuBuilder} to create a {@link FabMenu} pre-configured with the given
+     * trigger icon.
+     *
+     * @param icon the trigger's closed-state icon (not null)
+     * @return a new {@link FabMenuBuilder}
+     */
+    static FabMenuBuilder fabMenu(com.vaadin.flow.component.icon.VaadinIcon icon) {
+        return FabMenuBuilder.create(icon);
+    }
+
+    /**
+     * Get a {@link FabMenuBuilder} to create a {@link FabMenu} pre-configured with trigger icon
+     * and color.
+     *
+     * <pre>{@code
+     * FabMenu menu = Components.fabMenu(VaadinIcon.PLUS, Fab.Color.PRIMARY)
+     *     .position(Fab.Position.BOTTOM_END)
+     *     .item(VaadinIcon.EDIT, "Compose", e -> compose())
+     *     .item(VaadinIcon.CAMERA, "Photo", e -> takePhoto())
+     *     .build();
+     * }</pre>
+     *
+     * @param icon  the trigger's closed-state icon (not null)
+     * @param color the trigger (and default item) color scheme
+     * @return a new {@link FabMenuBuilder}
+     */
+    static FabMenuBuilder fabMenu(com.vaadin.flow.component.icon.VaadinIcon icon, Fab.Color color) {
+        return FabMenuBuilder.create(icon, color);
+    }
+
+    /**
+     * Get a {@link FabMenuConfigurator.BaseFabMenuConfigurator} to configure an existing
+     * {@link FabMenu}.
+     *
+     * @param menu the menu to configure (not null)
+     * @return a {@link FabMenuConfigurator.BaseFabMenuConfigurator}
+     */
+    static FabMenuConfigurator.BaseFabMenuConfigurator configure(FabMenu menu) {
+        return FabMenuConfigurator.configure(menu);
+    }
+
+    // -----------------------------------------------------------------------
     // Timeline Stepper (audit log)
     // -----------------------------------------------------------------------
 
@@ -1083,6 +1195,32 @@ public interface Components {
      */
     static MasterDetailBuilder<PropertyBox> masterDetail(PropertySet<?> propertySet) {
         return MasterDetailBuilder.create(propertySet);
+    }
+
+    /**
+     * Creates a new {@link ItemLineEditorBuilder} for the given row bean type — a generic,
+     * domain-agnostic editable line-item list (invoice lines, quotation lines, shopping cart
+     * lines, pawn-ticket appraisal items, purchase-order lines, etc.), driven by pluggable
+     * {@link ItemLineEditor.Column} definitions.
+     *
+     * <pre>{@code
+     * ItemLineEditor<InvoiceLine> editor = Components.itemLineEditor(InvoiceLine.class)
+     *     .title("Invoice Items")
+     *     .rowFactory(InvoiceLine::new)
+     *     .addColumn(Column.of("description", "Description", line -> descriptionField(line)).flexGrow(2))
+     *     .addColumn(Column.of("qty", "Qty", line -> qtyField(line)).width("90px"))
+     *     .footer(lines -> TotalsCard.builder()
+     *         .row("Total", format(total(lines)), TotalsRow.Variant.GRAND_TOTAL)
+     *         .build())
+     *     .build();
+     * }</pre>
+     *
+     * @param <T> the row bean type
+     * @param itemType the row bean class (not null)
+     * @return a new {@link ItemLineEditorBuilder}
+     */
+    static <T> ItemLineEditorBuilder<T> itemLineEditor(Class<T> itemType) {
+        return ItemLineEditorBuilder.create(itemType);
     }
 
     /**
@@ -1462,7 +1600,7 @@ public interface Components {
         // -----------------------------------------------------------------------
 
         /**
-         * Get an {@link AlertDialogBuilder} to create an {@link AlertDialog} â€” the
+         * Get an {@link AlertDialogBuilder} to create an {@link AlertDialog}  the
          * shadcn/ui-inspired confirmation dialog that forces an explicit user choice.
          * <p>By default the dialog is non-dismissible (no ESC, no click-outside).</p>
          *

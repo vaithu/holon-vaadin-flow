@@ -9,7 +9,7 @@
 
 	<groupId>com.holon-platform.vaadin</groupId>
 	<artifactId>holon-vaadin-flow-root</artifactId>
-	<version>10.0.3-SNAPSHOT</version>
+	<version>12.0.0</version>
 
 	<packaging>pom</packaging>
 
@@ -60,7 +60,7 @@
 		<maven-compiler-plugin.version>3.15.0</maven-compiler-plugin.version>
 
 		<!-- Holon core -->
-		<holon.core.version>10.0.0</holon.core.version>
+		<holon.core.version>12.0.0</holon.core.version>
 
 		<!-- Vaadin -->
 		<vaadin.version>25.2.1</vaadin.version>
@@ -69,10 +69,10 @@
 		<!-- Servlet API — must match what vaadin flow-server 25.2.x declares (6.1.0 / Jakarta EE 11). -->
 		<servlet.version>6.1.0</servlet.version>
 
-		<holon.jdbc.datastore.version>10.0.0</holon.jdbc.datastore.version>
-		<holon.jpa.datastore.version>10.0.0</holon.jpa.datastore.version>
+		<holon.jdbc.datastore.version>12.0.0</holon.jdbc.datastore.version>
+		<holon.jpa.datastore.version>12.0.0</holon.jpa.datastore.version>
 
-		<!-- line-awesome (latest; built against Vaadin 24.2.0 but used as pure CSS/font static assets â€“ no Java API coupling) -->
+		<!-- line-awesome (latest; built against Vaadin 24.2.0 but used as pure CSS/font static assets  no Java API coupling) -->
 		<line-awesome.version>2.1.0</line-awesome.version>
 
 		<!-- Mockito (test) -->
@@ -167,7 +167,7 @@
 				<version>${holon.jdbc.datastore.version}</version>
 			</dependency>
 
-			<!-- Holon JPA Datastore â€” used via DefaultBeanCrud for CRUD -->
+			<!-- Holon JPA Datastore  used via DefaultBeanCrud for CRUD -->
 			<dependency>
 				<groupId>com.holon-platform.jpa</groupId>
 				<artifactId>holon-datastore-jpa-spring-boot</artifactId>
@@ -263,7 +263,7 @@
 				<version>${assertj.version}</version>
 			</dependency>
 
-			<!-- Transitive CVE overrides â€“ force safe versions regardless of what upstream BOMs resolve -->
+			<!-- Transitive CVE overrides  force safe versions regardless of what upstream BOMs resolve -->
 
 			<!-- Servlet API — lock to 6.1.0 (Jakarta EE 11) to match vaadin flow-server 25.2.x -->
 			<dependency>
@@ -314,7 +314,7 @@
 				<version>${hikaricp.version}</version>
 			</dependency>
 
-			<!-- Line Awesome icon font â€“ static CSS/font assets only, no Java API coupling -->
+			<!-- Line Awesome icon font  static CSS/font assets only, no Java API coupling -->
 			<dependency>
 				<groupId>org.parttio</groupId>
 				<artifactId>line-awesome</artifactId>

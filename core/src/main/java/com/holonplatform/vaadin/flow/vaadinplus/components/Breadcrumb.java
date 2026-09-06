@@ -106,7 +106,7 @@ public class Breadcrumb extends Nav {
 
     /**
      * Creates a breadcrumb pre-populated with the given items.
-     * Items are added as-is â€” separators must be included explicitly.
+     * Items are added as-is  separators must be included explicitly.
      *
      * @param items the items to content (may be {@link BreadcrumbItem}, {@link BreadcrumbSeparator},
      *              {@link BreadcrumbPage}, {@link BreadcrumbEllipsis}, or any {@link ListItem})
@@ -150,7 +150,7 @@ public class Breadcrumb extends Nav {
     }
 
     // -----------------------------------------------------------------------
-    // Convenience â€” automatic separators
+    // Convenience  automatic separators
     // -----------------------------------------------------------------------
 
     /**
@@ -158,7 +158,7 @@ public class Breadcrumb extends Nav {
      *
      * <p>Default: {@code () -> new BreadcrumbSeparator()} (renders "/").</p>
      *
-     * <p>Example â€” chevron separator:</p>
+     * <p>Example  chevron separator:</p>
      * <pre>{@code
      * breadcrumb.setSeparatorSupplier(() -> new BreadcrumbSeparator(VaadinIcon.CHEVRON_RIGHT));
      * }</pre>

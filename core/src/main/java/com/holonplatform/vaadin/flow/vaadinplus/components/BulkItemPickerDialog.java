@@ -27,17 +27,17 @@ import java.util.function.Function;
  *
  * <h3>Layout</h3>
  * <pre>
- * â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
- * â”‚  Add Items in Bulk                               [Ã—]    â”‚
- * â”œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¤
- * â”‚  [ðŸ” Search itemsâ€¦    ]  â”‚  Selected Items  [2]  Total: â”‚
- * â”‚  â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€   â”‚  â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ â”‚
- * â”‚  Coffee Table        [âœ“] â”‚  [Item 5] Coffee Table  -1+ â”‚
- * â”‚  Sofa                [âœ“] â”‚  [Item 7] Sofa          -1+ â”‚
- * â”‚  Storage Cabinet     [ ] â”‚                              â”‚
- * â”œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”´â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¤
- * â”‚                               [Cancel]  [Add Items]     â”‚
- * â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
+ * Œ€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€
+ *   Add Items in Bulk                               [Ã—]
+ * œ€€€€€€€€€€€€€€€€€€€€€€€€€€¬€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€¤
+ *   [ðŸ” Search itemsâ€¦    ]    Selected Items  [2]  Total:
+ *   €€€€€€€€€€€€€€€€€€€€€     €€€€€€€€€€€€€€€€€€€€€€€€€€
+ *   Coffee Table        [âœ“]   [Item 5] Coffee Table  -1+
+ *   Sofa                [âœ“]   [Item 7] Sofa          -1+
+ *   Storage Cabinet     [ ]
+ * œ€€€€€€€€€€€€€€€€€€€€€€€€€€´€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€¤
+ *                                [Cancel]  [Add Items]
+ * ”€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€˜
  * </pre>
  *
  * <h3>Usage</h3>
@@ -66,7 +66,7 @@ public class BulkItemPickerDialog extends Dialog {
     @Serial
     private static final long serialVersionUID = 1L;
 
-    // â”€â”€ Internal state â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // €€ Internal state €€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€
 
     /** Eagerly loaded catalogue (used when no itemProvider is set). */
     private final List<BulkPickerItem> allItems = new ArrayList<>();
@@ -88,7 +88,7 @@ public class BulkItemPickerDialog extends Dialog {
      */
     private Function<String, List<BulkPickerItem>> itemProvider;
 
-    // â”€â”€ Paged provider (offset / limit / count â€” Spring Data style) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // €€ Paged provider (offset / limit / count  Spring Data style) €€€€€€€€€€€
 
     /**
      * Paginated fetch callback. Receives a {@link BulkPickerFetchQuery} with
@@ -98,7 +98,7 @@ public class BulkItemPickerDialog extends Dialog {
 
     /**
      * Optional count callback. Receives the search query and returns the total
-     * number of matching items â€” used to display "Page X of Y Â· N items".
+     * number of matching items  used to display "Page X of Y Â· N items".
      * When null, pagination shows only "Page X" and disables "Next" when a short
      * page is returned.
      */
@@ -119,7 +119,7 @@ public class BulkItemPickerDialog extends Dialog {
     /** Default page size when none is specified. */
     private static final int DEFAULT_PAGE_SIZE = 20;
 
-    // â”€â”€ UI references (mutated by setter API) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // €€ UI references (mutated by setter API) €€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€
 
     private final H3 titleHeading;
     private final TextField searchField;
@@ -131,13 +131,13 @@ public class BulkItemPickerDialog extends Dialog {
     private final Button addItemsBtn;
     private final Button cancelBtn;
 
-    /** Pagination bar â€” only visible in paged provider mode. */
+    /** Pagination bar  only visible in paged provider mode. */
     private final Div paginationBar;
     private final Button prevBtn;
     private final Button nextBtn;
     private final Span pageInfoSpan;
 
-    // â”€â”€ Callbacks â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // €€ Callbacks €€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€
 
     private Consumer<List<BulkPickerEntry>> confirmCallback;
     private Runnable cancelCallback;
@@ -145,7 +145,7 @@ public class BulkItemPickerDialog extends Dialog {
     /** Debounce delay in milliseconds applied to the search field value change. */
     private static final int SEARCH_DEBOUNCE_MS = 300;
 
-    // â”€â”€ Constructor â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // €€ Constructor €€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€
 
     /**
      * Creates an empty {@code BulkItemPickerDialog} with default labels.
@@ -160,7 +160,7 @@ public class BulkItemPickerDialog extends Dialog {
         setCloseOnEsc(true);
         setCloseOnOutsideClick(false);
 
-        // â”€â”€ Header â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+        // €€ Header €€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€
         titleHeading = Components.h3()
                 .text(LocalizationProvider.localize("Add Items in Bulk", "bulk_picker.title"))
                 .styleName("h-dialog__title").build();
@@ -177,7 +177,7 @@ public class BulkItemPickerDialog extends Dialog {
 
         getHeader().add(headerText, closeBtn);
 
-        // â”€â”€ Left panel â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+        // €€ Left panel €€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€
         searchField = new TextField();
         searchField.setPlaceholder(LocalizationProvider.localize(
                 "Type to search or scan the barcode of the item", "bulk_picker.search_placeholder"));
@@ -186,7 +186,7 @@ public class BulkItemPickerDialog extends Dialog {
         searchField.addClassName("bip__search");
         searchField.setPrefixComponent(VaadinIcon.SEARCH.create());
         // Lazy mode: wait for the user to pause typing before triggering a search.
-        // This prevents a round-trip on every keystroke â€” critical for provider mode.
+        // This prevents a round-trip on every keystroke  critical for provider mode.
         searchField.setValueChangeMode(ValueChangeMode.LAZY);
         searchField.setValueChangeTimeout(SEARCH_DEBOUNCE_MS);
         // Reset to page 0 on every new search query so results always start at the top.
@@ -198,7 +198,7 @@ public class BulkItemPickerDialog extends Dialog {
 
         itemListDiv = Components.div().styleName("bip__item-list").build();
 
-        // â”€â”€ Pagination bar (hidden until a paged provider is set) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+        // €€ Pagination bar (hidden until a paged provider is set) €€€€€€€€€€€€€
         prevBtn = Components.button()
                 .icon(VaadinIcon.ANGLE_LEFT)
                 .styleName("bip__pagination-btn")
@@ -225,7 +225,7 @@ public class BulkItemPickerDialog extends Dialog {
 
         Div leftPanel = Components.div().add(searchField, itemListDiv, paginationBar).styleName("bip__left").build();
 
-        // â”€â”€ Right panel â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+        // €€ Right panel €€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€
         rightTitleSpan = Components.span()
                 .text(LocalizationProvider.localize("Selected Items", "bulk_picker.selected_title"))
                 .styleName("bip__right-title").build();
@@ -245,14 +245,14 @@ public class BulkItemPickerDialog extends Dialog {
 
         Div rightPanel = Components.div().add(rightHeader, selectedListDiv).styleName("bip__right").build();
 
-        // â”€â”€ Body split â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+        // €€ Body split €€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€
         Div divider = Components.div().styleName("bip__divider").build();
 
         Div body = Components.div().add(leftPanel, divider, rightPanel).styleName("bip").build();
 
         add(body);
 
-        // â”€â”€ Footer â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+        // €€ Footer €€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€
         cancelBtn = Components.button()
                 .text(LocalizationProvider.localize("Cancel", "bulk_picker.cancel_btn"))
                 .styleName("h-dialog__cancel-btn")
@@ -275,7 +275,7 @@ public class BulkItemPickerDialog extends Dialog {
         addDialogCloseActionListener(e -> handleCancel());
     }
 
-    // â”€â”€ Public API â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // €€ Public API €€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€
 
     /**
      * Replaces the full item catalogue shown in the left panel (eager mode).
@@ -319,7 +319,7 @@ public class BulkItemPickerDialog extends Dialog {
      *     productService.searchByNameOrSku(query, 50));
      * }</pre>
      *
-     * @param provider {@code (query) â†’ List<BulkPickerItem>} â€” called with the
+     * @param provider {@code (query) â†’ List<BulkPickerItem>}  called with the
      *                 current search text on every debounced keystroke (not null)
      */
     public void setItemProvider(Function<String, List<BulkPickerItem>> provider) {
@@ -336,7 +336,7 @@ public class BulkItemPickerDialog extends Dialog {
         refreshSelectedList();
     }
 
-    // â”€â”€ Paged provider API â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // €€ Paged provider API €€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€
 
     /**
      * Sets a paginated item provider using Spring Data-style offset/limit semantics.
@@ -344,7 +344,7 @@ public class BulkItemPickerDialog extends Dialog {
      * <p>The {@code fetchProvider} is called on every debounced search with a
      * {@link BulkPickerFetchQuery} carrying {@code (query, offset, limit)}.
      * The {@code countProvider} is called once per query change to retrieve the total
-     * number of matching items â€” enabling "Page X of Y Â· N items" in the pagination bar.</p>
+     * number of matching items  enabling "Page X of Y Â· N items" in the pagination bar.</p>
      *
      * <pre>{@code
      * dialog.setPagedProvider(
@@ -500,7 +500,7 @@ public class BulkItemPickerDialog extends Dialog {
         return addListener(ConfirmEvent.class, listener);
     }
 
-    // â”€â”€ Static factory â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // €€ Static factory €€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€
 
     /**
      * Returns a new Holon fluent {@link BulkItemPickerDialogBuilder}.
@@ -520,14 +520,14 @@ public class BulkItemPickerDialog extends Dialog {
         return BulkItemPickerDialogBuilder.create();
     }
 
-    // â”€â”€ Rendering helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // €€ Rendering helpers €€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€
 
     private void refreshItemList() {
         itemListDiv.removeAll();
         String rawQuery = searchField.getValue() == null ? "" : searchField.getValue().trim();
 
         if (pagedFetchProvider != null) {
-            // â”€â”€ Paged / offset-limit mode â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+            // €€ Paged / offset-limit mode €€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€
             int offset = currentPage * pageSize;
             List<BulkPickerItem> items = pagedFetchProvider.apply(
                     new BulkPickerFetchQuery(rawQuery, offset, pageSize));
@@ -547,14 +547,14 @@ public class BulkItemPickerDialog extends Dialog {
             updatePaginationBar();
 
         } else if (itemProvider != null) {
-            // â”€â”€ Simple lazy provider (no pagination) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+            // €€ Simple lazy provider (no pagination) €€€€€€€€€€€€€€€€€€€€€€€€€
             List<BulkPickerItem> items = itemProvider.apply(rawQuery);
             items.forEach(item -> itemListDiv.add(buildItemRow(item)));
             if (items.isEmpty()) itemListDiv.add(buildEmptySpan(rawQuery));
             paginationBar.setVisible(false);
 
         } else {
-            // â”€â”€ Eager / in-memory mode â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+            // €€ Eager / in-memory mode €€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€
             String filter = rawQuery.toLowerCase(Locale.ROOT);
             List<BulkPickerItem> items = allItems.stream()
                     .filter(item -> matchesFilter(item, filter))
@@ -692,7 +692,7 @@ public class BulkItemPickerDialog extends Dialog {
         totalQtySpan.setText(template.replace("{0}", String.valueOf(total)));
     }
 
-    // â”€â”€ Interaction handlers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // €€ Interaction handlers €€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€
 
     private void toggleItem(BulkPickerItem item) {
         if (selectedQty.containsKey(item.id())) {
@@ -724,7 +724,7 @@ public class BulkItemPickerDialog extends Dialog {
         close();
     }
 
-    // â”€â”€ Utilities â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // €€ Utilities €€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€
 
     private BulkPickerItem findById(String id) {
         // In provider mode allItems is empty; use the cache of previously selected items.
@@ -743,7 +743,7 @@ public class BulkItemPickerDialog extends Dialog {
                 .toList();
     }
 
-    // â”€â”€ Events â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // €€ Events €€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€
     /**
      * Fired when the user clicks "Add Items".
      * Contains the resulting list of {@link BulkPickerEntry} objects.
@@ -757,7 +757,7 @@ public class BulkItemPickerDialog extends Dialog {
 
         /**
          * @param source     the dialog
-         * @param fromClient always {@code false} â€” server-side event
+         * @param fromClient always {@code false}  server-side event
          * @param entries    the confirmed entries
          */
         public ConfirmEvent(BulkItemPickerDialog source, boolean fromClient, List<BulkPickerEntry> entries) {
