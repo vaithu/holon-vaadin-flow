@@ -1,0 +1,197 @@
+/*
+ * fab.css
+ *
+ * Visual styling for the Fab (Material Design 3 Floating Action Button) component.
+ * Reference: https://m3.material.io/components/floating-action-button/overview
+ *
+ * BEM blocks:
+ *   .fab                     — root element (a <vaadin-button>)
+ *   .fab--small              — size modifier (40dp container / 24dp icon)
+ *   .fab--large               — size modifier (96dp container / 36dp icon)
+ *                              (no modifier = DEFAULT, 56dp container / 24dp icon)
+ *   .fab--surface             — color modifier (no modifier = default, same visual)
+ *   .fab--primary             — color modifier
+ *   .fab--secondary           — color modifier
+ *   .fab--tertiary            — color modifier
+ *   .fab--extended            — pill shape with icon + label
+ *   .fab--lowered             — reduced elevation variant
+ *   .fab--pos-bottom-end      — fixed docking position modifiers
+ *   .fab--pos-bottom-start
+ *   .fab--pos-bottom-center
+ *   .fab--pos-top-end
+ *   .fab--pos-top-start
+ *
+ * No inline styles are used; all sizing/color/elevation live here.
+ */
+
+/* -----------------------------------------------------------------------
+   Base — circular, elevated, DEFAULT size (56dp / 24dp icon)
+   ----------------------------------------------------------------------- */
+
+/*
+ * NOTE on specificity: Fab extends vaadin-button, and the active theme (Lumo/Aura) applies its
+ * own `:host` background/color rules directly on the <vaadin-button> host element (Button has no
+ * inner <button> wrapper, so there is no `::part()` to target instead). Those theme rules share
+ * the exact same specificity as a plain class selector here, so — depending on stylesheet
+ * injection order — they can win the cascade and make every Fab render with the same default
+ * button background regardless of the `fab--*` color modifier actually applied. `!important` is
+ * used below on the color-affecting properties only, to guarantee our modifiers always win.
+ */
+
+.fab {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    height: 56px;
+    min-width: 56px;
+    padding: 0;
+    border-radius: var(--fab-corner-radius, 16px);
+    box-shadow: var(--fab-elevation, 0 1px 3px 1px rgba(0, 0, 0, 0.15), 0 1px 2px 0 rgba(0, 0, 0, 0.30)) !important;
+    background-color: var(--fab-surface-color, var(--lumo-contrast-5pct, #f4f4f5)) !important;
+    color: var(--fab-surface-icon-color, var(--lumo-primary-text-color, #1a73e8)) !important;
+    transition: box-shadow 150ms ease-in-out, transform 100ms ease-in-out;
+    cursor: pointer;
+}
+
+.fab::part(icon) {
+    width: 24px;
+    height: 24px;
+}
+
+.fab:hover {
+    box-shadow: var(--fab-elevation-hover, 0 2px 6px 2px rgba(0, 0, 0, 0.15), 0 1px 2px 0 rgba(0, 0, 0, 0.30)) !important;
+}
+
+.fab:active {
+    box-shadow: var(--fab-elevation-pressed, 0 1px 3px 1px rgba(0, 0, 0, 0.15), 0 1px 2px 0 rgba(0, 0, 0, 0.30)) !important;
+    transform: scale(0.98);
+}
+
+/* -----------------------------------------------------------------------
+   Size modifiers
+   ----------------------------------------------------------------------- */
+
+.fab--small {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    border-radius: var(--fab-corner-radius-small, 12px);
+}
+
+.fab--small::part(icon) {
+    width: 24px;
+    height: 24px;
+}
+
+.fab--large {
+    width: 96px;
+    height: 96px;
+    min-width: 96px;
+    border-radius: var(--fab-corner-radius-large, 28px);
+}
+
+.fab--large::part(icon) {
+    width: 36px;
+    height: 36px;
+}
+
+/* -----------------------------------------------------------------------
+   Color modifiers
+   ----------------------------------------------------------------------- */
+
+.fab--primary {
+    background-color: var(--fab-primary-color, var(--lumo-primary-color, #1a73e8)) !important;
+    color: var(--fab-primary-icon-color, var(--lumo-primary-contrast-color, #ffffff)) !important;
+}
+
+.fab--secondary {
+    background-color: var(--fab-secondary-color, var(--lumo-contrast-10pct, #e4e4e7)) !important;
+    color: var(--fab-secondary-icon-color, var(--lumo-body-text-color, #27272a)) !important;
+}
+
+.fab--tertiary {
+    background-color: var(--fab-tertiary-color, var(--lumo-success-color, #16a34a)) !important;
+    color: var(--fab-tertiary-icon-color, #ffffff) !important;
+}
+
+/* -----------------------------------------------------------------------
+   Extended — pill shape, icon + label
+   ----------------------------------------------------------------------- */
+
+.fab--extended {
+    width: auto;
+    min-width: 80px;
+    height: 56px;
+    padding-inline: 20px;
+    gap: 12px;
+    border-radius: var(--fab-corner-radius, 16px);
+}
+
+.fab--extended.fab--small {
+    height: 40px;
+    padding-inline: 16px;
+    border-radius: var(--fab-corner-radius-small, 12px);
+}
+
+.fab--extended.fab--large {
+    height: 96px;
+    padding-inline: 28px;
+    border-radius: var(--fab-corner-radius-large, 28px);
+}
+
+/* -----------------------------------------------------------------------
+   Lowered — reduced elevation (e.g. FAB overlapping a bottom app bar)
+   ----------------------------------------------------------------------- */
+
+.fab--lowered {
+    box-shadow: var(--fab-elevation-lowered, 0 1px 2px 0 rgba(0, 0, 0, 0.20)) !important;
+}
+
+.fab--lowered:hover {
+    box-shadow: var(--fab-elevation, 0 1px 3px 1px rgba(0, 0, 0, 0.15), 0 1px 2px 0 rgba(0, 0, 0, 0.30)) !important;
+}
+
+/* -----------------------------------------------------------------------
+   Fixed docking position modifiers
+   Applies position:fixed relative to the viewport with a standard M3 16px
+   margin from the screen edges. Use Position.NONE (default) to keep the
+   FAB flowing normally inside its container instead.
+   ----------------------------------------------------------------------- */
+
+.fab--pos-bottom-end {
+    position: fixed;
+    right: var(--fab-margin, 16px);
+    bottom: var(--fab-margin, 16px);
+    z-index: var(--fab-z-index, 100);
+}
+
+.fab--pos-bottom-start {
+    position: fixed;
+    left: var(--fab-margin, 16px);
+    bottom: var(--fab-margin, 16px);
+    z-index: var(--fab-z-index, 100);
+}
+
+.fab--pos-bottom-center {
+    position: fixed;
+    left: 50%;
+    bottom: var(--fab-margin, 16px);
+    transform: translateX(-50%);
+    z-index: var(--fab-z-index, 100);
+}
+
+.fab--pos-top-end {
+    position: fixed;
+    right: var(--fab-margin, 16px);
+    top: var(--fab-margin, 16px);
+    z-index: var(--fab-z-index, 100);
+}
+
+.fab--pos-top-start {
+    position: fixed;
+    left: var(--fab-margin, 16px);
+    top: var(--fab-margin, 16px);
+    z-index: var(--fab-z-index, 100);
+}
+

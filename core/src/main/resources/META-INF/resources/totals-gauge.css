@@ -1,0 +1,80 @@
+/* ============================================================
+   TotalsGauge component
+   BEM: .totals-gauge / .totals-gauge__*
+
+   A circular donut gauge: a conic-gradient ring (fill driven by the
+   --totals-gauge-percent custom property, 0-100) around a centred
+   amount + caption label. Designed to sit on a dark surface (see
+   totals-card.css .totals-card--appraisal), but fully standalone.
+*/
+
+.totals-gauge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.625rem 0;
+}
+
+.totals-gauge__ring {
+  --totals-gauge-percent: 0;
+  --totals-gauge-size: 9.25rem;
+  --totals-gauge-thickness: 0.625rem;
+  --totals-gauge-track-color: oklch(1 0 0 / 0.08);
+  --totals-gauge-fill-start: #f3d386;
+  --totals-gauge-fill-end: #c9922f;
+  --totals-gauge-bg: var(--totals-card-appraisal-bg-solid, #141d2b);
+
+  position: relative;
+  width: var(--totals-gauge-size);
+  height: var(--totals-gauge-size);
+  border-radius: 999px;
+  background: conic-gradient(
+    from -90deg,
+    var(--totals-gauge-fill-start) 0%,
+    var(--totals-gauge-fill-end) calc(var(--totals-gauge-percent) * 1%),
+    var(--totals-gauge-track-color) calc(var(--totals-gauge-percent) * 1%),
+    var(--totals-gauge-track-color) 100%
+  );
+  transition: background 0.3s ease;
+  box-sizing: border-box;
+}
+
+/* Punches the donut hole; the caller (or the enclosing card) should override
+   --totals-gauge-bg to match its own background colour. */
+.totals-gauge__ring::before {
+  content: "";
+  position: absolute;
+  inset: var(--totals-gauge-thickness);
+  border-radius: 999px;
+  background: var(--totals-gauge-bg);
+}
+
+.totals-gauge__center {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.totals-gauge__amount {
+  font-size: 1.4375rem;
+  font-weight: 800;
+  font-family: var(--totals-card-value-font, 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace);
+  color: var(--totals-gauge-amount-color, #ffffff);
+  line-height: 1.1;
+}
+
+.totals-gauge__label {
+  font-size: 0.625rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-top: 0.125rem;
+  text-align: center;
+  padding: 0 0.5rem;
+  color: var(--totals-gauge-label-color, oklch(0.75 0.01 260));
+}
+

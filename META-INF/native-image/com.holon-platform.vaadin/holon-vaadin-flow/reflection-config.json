@@ -1,0 +1,335 @@
+[
+  {
+    "name": "com.holonplatform.vaadin.flow.core.components.types.ComponentType$Text",
+    "methods": [
+      {
+        "name": "getTypeName",
+        "parameterTypes": []
+      },
+      {
+        "name": "toString",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "name": "com.holonplatform.vaadin.flow.core.components.types.ComponentType$Number",
+    "methods": [
+      {
+        "name": "getTypeName",
+        "parameterTypes": []
+      },
+      {
+        "name": "toString",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "name": "com.holonplatform.vaadin.flow.core.components.types.ComponentType$Date",
+    "methods": [
+      {
+        "name": "getTypeName",
+        "parameterTypes": []
+      },
+      {
+        "name": "toString",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "name": "com.holonplatform.vaadin.flow.core.components.types.ComponentType$Boolean",
+    "methods": [
+      {
+        "name": "getTypeName",
+        "parameterTypes": []
+      },
+      {
+        "name": "toString",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "name": "com.holonplatform.vaadin.flow.core.components.types.ComponentType$Enumeration",
+    "methods": [
+      {
+        "name": "getTypeName",
+        "parameterTypes": []
+      },
+      {
+        "name": "toString",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "name": "com.holonplatform.vaadin.flow.core.components.types.ComponentType$Custom",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "java.lang.String"
+        ]
+      },
+      {
+        "name": "getTypeName",
+        "parameterTypes": []
+      },
+      {
+        "name": "toString",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "name": "com.holonplatform.vaadin.flow.core.operations.DataOperation$Create",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "java.lang.String",
+          "java.lang.Object"
+        ]
+      },
+      {
+        "name": "getOperationType",
+        "parameterTypes": []
+      },
+      {
+        "name": "entityType",
+        "parameterTypes": []
+      },
+      {
+        "name": "entity",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "name": "com.holonplatform.vaadin.flow.core.operations.DataOperation$Read",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "java.lang.String",
+          "java.lang.Object"
+        ]
+      },
+      {
+        "name": "getOperationType",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "name": "com.holonplatform.vaadin.flow.core.operations.DataOperation$Update",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "java.lang.String",
+          "java.lang.Object",
+          "java.lang.Object"
+        ]
+      },
+      {
+        "name": "getOperationType",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "name": "com.holonplatform.vaadin.flow.core.operations.DataOperation$Delete",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "java.lang.String",
+          "java.lang.Object"
+        ]
+      },
+      {
+        "name": "getOperationType",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "name": "com.holonplatform.vaadin.flow.core.operations.DataOperation$Bulk",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "java.lang.String",
+          "java.lang.String",
+          "int"
+        ]
+      },
+      {
+        "name": "getOperationType",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "name": "com.holonplatform.vaadin.flow.core.input.ValidationStrategy$Required",
+    "methods": [
+      {
+        "name": "validate",
+        "parameterTypes": [
+          "java.lang.Object"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "com.holonplatform.vaadin.flow.core.input.ValidationStrategy$Email",
+    "methods": [
+      {
+        "name": "validate",
+        "parameterTypes": [
+          "java.lang.Object"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "com.holonplatform.vaadin.flow.core.input.ValidationStrategy$Range",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "java.lang.Number",
+          "java.lang.Number"
+        ]
+      },
+      {
+        "name": "validate",
+        "parameterTypes": [
+          "java.lang.Object"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "com.holonplatform.vaadin.flow.core.input.ValidationStrategy$Pattern",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "java.lang.String"
+        ]
+      },
+      {
+        "name": "validate",
+        "parameterTypes": [
+          "java.lang.Object"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "com.holonplatform.vaadin.flow.core.input.ValidationStrategy$Custom",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "java.lang.String",
+          "java.util.function.Predicate"
+        ]
+      },
+      {
+        "name": "validate",
+        "parameterTypes": [
+          "java.lang.Object"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "com.holonplatform.vaadin.flow.core.events.ApplicationEvent$ViewAccessed",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "java.lang.String",
+          "java.lang.String"
+        ]
+      },
+      {
+        "name": "timestamp",
+        "parameterTypes": []
+      },
+      {
+        "name": "eventType",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "name": "com.holonplatform.vaadin.flow.core.events.ApplicationEvent$DataModified",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "java.lang.String",
+          "java.lang.String",
+          "java.lang.Object"
+        ]
+      },
+      {
+        "name": "timestamp",
+        "parameterTypes": []
+      },
+      {
+        "name": "eventType",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "name": "com.holonplatform.vaadin.flow.core.events.ApplicationEvent$Error",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "java.lang.String",
+          "java.lang.String",
+          "java.lang.Throwable"
+        ]
+      },
+      {
+        "name": "timestamp",
+        "parameterTypes": []
+      },
+      {
+        "name": "eventType",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "name": "com.holonplatform.vaadin.flow.core.events.ApplicationEvent$Performance",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "java.lang.String",
+          "double",
+          "java.lang.String"
+        ]
+      },
+      {
+        "name": "timestamp",
+        "parameterTypes": []
+      },
+      {
+        "name": "eventType",
+        "parameterTypes": []
+      }
+    ]
+  }
+]
+

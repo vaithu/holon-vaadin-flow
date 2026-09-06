@@ -1,0 +1,143 @@
+[
+  {
+    "name": "com.holonplatform.vaadin.flow.core.components.types.ComponentType$Text",
+    "lambdaCapturingType": "com.holonplatform.vaadin.flow.core.components.types.ComponentType$Text",
+    "unsafeAllocated": false
+  },
+  {
+    "name": "com.holonplatform.vaadin.flow.core.components.types.ComponentType$Number",
+    "lambdaCapturingType": "com.holonplatform.vaadin.flow.core.components.types.ComponentType$Number",
+    "unsafeAllocated": false
+  },
+  {
+    "name": "com.holonplatform.vaadin.flow.core.components.types.ComponentType$Date",
+    "lambdaCapturingType": "com.holonplatform.vaadin.flow.core.components.types.ComponentType$Date",
+    "unsafeAllocated": false
+  },
+  {
+    "name": "com.holonplatform.vaadin.flow.core.components.types.ComponentType$Boolean",
+    "lambdaCapturingType": "com.holonplatform.vaadin.flow.core.components.types.ComponentType$Boolean",
+    "unsafeAllocated": false
+  },
+  {
+    "name": "com.holonplatform.vaadin.flow.core.components.types.ComponentType$Enumeration",
+    "lambdaCapturingType": "com.holonplatform.vaadin.flow.core.components.types.ComponentType$Enumeration",
+    "unsafeAllocated": false
+  },
+  {
+    "name": "com.holonplatform.vaadin.flow.core.components.types.ComponentType$Custom",
+    "lambdaCapturingType": "com.holonplatform.vaadin.flow.core.components.types.ComponentType$Custom",
+    "unsafeAllocated": false
+  },
+  {
+    "name": "com.holonplatform.vaadin.flow.core.operations.DataOperation$Create",
+    "lambdaCapturingType": "com.holonplatform.vaadin.flow.core.operations.DataOperation$Create",
+    "unsafeAllocated": false
+  },
+  {
+    "name": "com.holonplatform.vaadin.flow.core.operations.DataOperation$Read",
+    "lambdaCapturingType": "com.holonplatform.vaadin.flow.core.operations.DataOperation$Read",
+    "unsafeAllocated": false
+  },
+  {
+    "name": "com.holonplatform.vaadin.flow.core.operations.DataOperation$Update",
+    "lambdaCapturingType": "com.holonplatform.vaadin.flow.core.operations.DataOperation$Update",
+    "unsafeAllocated": false
+  },
+  {
+    "name": "com.holonplatform.vaadin.flow.core.operations.DataOperation$Delete",
+    "lambdaCapturingType": "com.holonplatform.vaadin.flow.core.operations.DataOperation$Delete",
+    "unsafeAllocated": false
+  },
+  {
+    "name": "com.holonplatform.vaadin.flow.core.operations.DataOperation$Bulk",
+    "lambdaCapturingType": "com.holonplatform.vaadin.flow.core.operations.DataOperation$Bulk",
+    "unsafeAllocated": false
+  },
+  {
+    "name": "com.holonplatform.vaadin.flow.core.input.ValidationStrategy$Required",
+    "lambdaCapturingType": "com.holonplatform.vaadin.flow.core.input.ValidationStrategy$Required",
+    "unsafeAllocated": false
+  },
+  {
+    "name": "com.holonplatform.vaadin.flow.core.input.ValidationStrategy$Email",
+    "lambdaCapturingType": "com.holonplatform.vaadin.flow.core.input.ValidationStrategy$Email",
+    "unsafeAllocated": false
+  },
+  {
+    "name": "com.holonplatform.vaadin.flow.core.input.ValidationStrategy$Range",
+    "lambdaCapturingType": "com.holonplatform.vaadin.flow.core.input.ValidationStrategy$Range",
+    "unsafeAllocated": false
+  },
+  {
+    "name": "com.holonplatform.vaadin.flow.core.input.ValidationStrategy$Pattern",
+    "lambdaCapturingType": "com.holonplatform.vaadin.flow.core.input.ValidationStrategy$Pattern",
+    "unsafeAllocated": false
+  },
+  {
+    "name": "com.holonplatform.vaadin.flow.core.input.ValidationStrategy$Custom",
+    "lambdaCapturingType": "com.holonplatform.vaadin.flow.core.input.ValidationStrategy$Custom",
+    "unsafeAllocated": false
+  },
+  {
+    "name": "com.holonplatform.vaadin.flow.core.events.ApplicationEvent$ViewAccessed",
+    "lambdaCapturingType": "com.holonplatform.vaadin.flow.core.events.ApplicationEvent$ViewAccessed",
+    "unsafeAllocated": false
+  },
+  {
+    "name": "com.holonplatform.vaadin.flow.core.events.ApplicationEvent$DataModified",
+    "lambdaCapturingType": "com.holonplatform.vaadin.flow.core.events.ApplicationEvent$DataModified",
+    "unsafeAllocated": false
+  },
+  {
+    "name": "com.holonplatform.vaadin.flow.core.events.ApplicationEvent$Error",
+    "lambdaCapturingType": "com.holonplatform.vaadin.flow.core.events.ApplicationEvent$Error",
+    "unsafeAllocated": false
+  },
+  {
+    "name": "com.holonplatform.vaadin.flow.core.events.ApplicationEvent$Performance",
+    "lambdaCapturingType": "com.holonplatform.vaadin.flow.core.events.ApplicationEvent$Performance",
+    "unsafeAllocated": false
+  },
+  {
+    "name": "com.holonplatform.vaadin.flow.core.security.AuthenticationResult$Authenticated",
+    "lambdaCapturingType": "com.holonplatform.vaadin.flow.core.security.AuthenticationResult$Authenticated",
+    "unsafeAllocated": false
+  },
+  {
+    "name": "com.holonplatform.vaadin.flow.core.security.AuthenticationResult$InvalidCredentials",
+    "lambdaCapturingType": "com.holonplatform.vaadin.flow.core.security.AuthenticationResult$InvalidCredentials",
+    "unsafeAllocated": false
+  },
+  {
+    "name": "com.holonplatform.vaadin.flow.core.security.AuthenticationResult$AccountLocked",
+    "lambdaCapturingType": "com.holonplatform.vaadin.flow.core.security.AuthenticationResult$AccountLocked",
+    "unsafeAllocated": false
+  },
+  {
+    "name": "com.holonplatform.vaadin.flow.core.security.AuthenticationResult$RequiresMFA",
+    "lambdaCapturingType": "com.holonplatform.vaadin.flow.core.security.AuthenticationResult$RequiresMFA",
+    "unsafeAllocated": false
+  },
+  {
+    "name": "com.holonplatform.vaadin.flow.core.navigation.NavigationState$ViewEntered",
+    "lambdaCapturingType": "com.holonplatform.vaadin.flow.core.navigation.NavigationState$ViewEntered",
+    "unsafeAllocated": false
+  },
+  {
+    "name": "com.holonplatform.vaadin.flow.core.navigation.NavigationState$ViewExited",
+    "lambdaCapturingType": "com.holonplatform.vaadin.flow.core.navigation.NavigationState$ViewExited",
+    "unsafeAllocated": false
+  },
+  {
+    "name": "com.holonplatform.vaadin.flow.core.navigation.NavigationState$ParameterChanged",
+    "lambdaCapturingType": "com.holonplatform.vaadin.flow.core.navigation.NavigationState$ParameterChanged",
+    "unsafeAllocated": false
+  },
+  {
+    "name": "com.holonplatform.vaadin.flow.core.navigation.NavigationState$NavigationFailed",
+    "lambdaCapturingType": "com.holonplatform.vaadin.flow.core.navigation.NavigationState$NavigationFailed",
+    "unsafeAllocated": false
+  }
+]
+

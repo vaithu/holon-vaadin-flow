@@ -1,0 +1,226 @@
+/*
+ * fab-menu.css
+ *
+ * Visual styling for the FabMenu (Material Design 3 FAB Menu / "speed-dial") component.
+ * Reference: https://m3.material.io/components/floating-action-button/overview
+ *
+ * BEM blocks:
+ *   .fab-menu                 — root container
+ *   .fab-menu--open            — state modifier applied while the menu is expanded
+ *   .fab-menu--horizontal      — orientation modifier (default is vertical stacking)
+ *   .fab-menu--pos-bottom-end  — fixed docking position modifiers (same set as Fab.Position)
+ *   .fab-menu--pos-bottom-start
+ *   .fab-menu--pos-bottom-center
+ *   .fab-menu--pos-top-end
+ *   .fab-menu--pos-top-start
+ *   .fab-menu__scrim           — full-screen backdrop, closes the menu on click
+ *   .fab-menu__items           — stack of action items (column by default, row when horizontal)
+ *   .fab-menu__item            — a single action item (a .fab element underneath)
+ *   .fab-menu__item-row        — LabelPlacement.SIDE wrapper: [label chip] + [.fab-menu__item]
+ *   .fab-menu__item-label      — LabelPlacement.SIDE label chip, fades in independently of the icon
+ *   .fab-menu__trigger         — the main trigger (a .fab element underneath)
+ *
+ * No inline styles are used; all layout/animation lives here.
+ */
+
+/* -----------------------------------------------------------------------
+   Base — establishes the containing block for the absolutely positioned
+   items stack, whether or not the menu is fixed-docked.
+   ----------------------------------------------------------------------- */
+
+.fab-menu {
+    position: relative;
+    display: inline-block;
+}
+
+/* -----------------------------------------------------------------------
+   Fixed docking position modifiers — mirrors Fab's own position classes
+   ----------------------------------------------------------------------- */
+
+.fab-menu--pos-bottom-end {
+    position: fixed;
+    right: var(--fab-margin, 16px);
+    bottom: var(--fab-margin, 16px);
+    z-index: var(--fab-z-index, 100);
+}
+
+.fab-menu--pos-bottom-start {
+    position: fixed;
+    left: var(--fab-margin, 16px);
+    bottom: var(--fab-margin, 16px);
+    z-index: var(--fab-z-index, 100);
+}
+
+.fab-menu--pos-bottom-center {
+    position: fixed;
+    left: 50%;
+    bottom: var(--fab-margin, 16px);
+    transform: translateX(-50%);
+    z-index: var(--fab-z-index, 100);
+}
+
+.fab-menu--pos-top-end {
+    position: fixed;
+    right: var(--fab-margin, 16px);
+    top: var(--fab-margin, 16px);
+    z-index: var(--fab-z-index, 100);
+}
+
+.fab-menu--pos-top-start {
+    position: fixed;
+    left: var(--fab-margin, 16px);
+    top: var(--fab-margin, 16px);
+    z-index: var(--fab-z-index, 100);
+}
+
+/* -----------------------------------------------------------------------
+   Scrim — full-viewport backdrop, fades in while the menu is open
+   ----------------------------------------------------------------------- */
+
+.fab-menu__scrim {
+    position: fixed;
+    inset: 0;
+    background-color: var(--fab-menu-scrim-color, rgba(0, 0, 0, 0.32));
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 150ms ease-in-out;
+    z-index: var(--fab-menu-scrim-z-index, 99);
+}
+
+.fab-menu--open .fab-menu__scrim {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* -----------------------------------------------------------------------
+   Item stack — absolutely positioned above the trigger, closed by default.
+   Reveal/stagger animation targets any direct child of .fab-menu__items
+   (either a bare .fab-menu__item button, or a .fab-menu__item-row wrapper
+   when LabelPlacement.SIDE is used), so both cases animate consistently.
+   ----------------------------------------------------------------------- */
+
+.fab-menu__items {
+    position: absolute;
+    right: 0;
+    bottom: calc(56px + var(--fab-menu-gap, 16px));
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: var(--fab-menu-item-gap, 12px);
+    pointer-events: none;
+    z-index: var(--fab-menu-items-z-index, 100);
+}
+
+.fab-menu__item {
+    flex-shrink: 0;
+}
+
+.fab-menu__items > * {
+    opacity: 0;
+    transform: translateY(8px) scale(0.9);
+    transition: opacity 120ms ease, transform 120ms ease;
+    pointer-events: none;
+}
+
+.fab-menu--open .fab-menu__items {
+    pointer-events: auto;
+}
+
+.fab-menu--open .fab-menu__items > * {
+    opacity: 1;
+    transform: none;
+    pointer-events: auto;
+}
+
+/* Staggered reveal — later items (further from the trigger) animate in with
+   a slightly longer delay, closest item first. Supports up to 8 items;
+   additional items simply reuse the last delay step. */
+.fab-menu--open .fab-menu__items > *:nth-last-child(1) { transition-delay: 30ms; }
+.fab-menu--open .fab-menu__items > *:nth-last-child(2) { transition-delay: 60ms; }
+.fab-menu--open .fab-menu__items > *:nth-last-child(3) { transition-delay: 90ms; }
+.fab-menu--open .fab-menu__items > *:nth-last-child(4) { transition-delay: 120ms; }
+.fab-menu--open .fab-menu__items > *:nth-last-child(5) { transition-delay: 150ms; }
+.fab-menu--open .fab-menu__items > *:nth-last-child(6) { transition-delay: 180ms; }
+.fab-menu--open .fab-menu__items > *:nth-last-child(7) { transition-delay: 210ms; }
+.fab-menu--open .fab-menu__items > *:nth-last-child(8) { transition-delay: 240ms; }
+
+/* -----------------------------------------------------------------------
+   Orientation — horizontal item stack, extending to the side of the trigger
+   instead of stacking above it. Combine with Fab.Position for full control
+   over which edge of the screen the menu is docked to.
+   ----------------------------------------------------------------------- */
+
+.fab-menu--horizontal .fab-menu__items {
+    flex-direction: row;
+    align-items: center;
+    right: calc(56px + var(--fab-menu-gap, 16px));
+    bottom: 0;
+}
+
+.fab-menu--horizontal .fab-menu__items > * {
+    transform: translateX(8px) scale(0.9);
+}
+
+.fab-menu--horizontal.fab-menu--open .fab-menu__items > * {
+    transform: none;
+}
+
+/* -----------------------------------------------------------------------
+   LabelPlacement.SIDE — a separate label chip beside the icon button,
+   fading in independently of (and slightly after) the icon itself.
+   ----------------------------------------------------------------------- */
+
+.fab-menu__item-row {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.fab-menu--horizontal .fab-menu__item-row {
+    flex-direction: column;
+}
+
+.fab-menu__item-label {
+    opacity: 0;
+    transition: opacity 150ms ease;
+    background-color: var(--fab-menu-label-bg, rgba(0, 0, 0, 0.6));
+    color: var(--fab-menu-label-color, #ffffff);
+    padding: 6px 12px;
+    border-radius: var(--fab-menu-label-radius, 8px);
+    font-size: 0.875rem;
+    line-height: 1.2;
+    white-space: nowrap;
+    pointer-events: none;
+}
+
+.fab-menu--open .fab-menu__item-label {
+    opacity: 1;
+}
+
+/* Label fade-in is offset ~60ms after its icon's own stagger delay, so it
+   visibly trails the icon rather than appearing in perfect lock-step. */
+.fab-menu--open .fab-menu__items > *:nth-last-child(1) .fab-menu__item-label { transition-delay: 90ms; }
+.fab-menu--open .fab-menu__items > *:nth-last-child(2) .fab-menu__item-label { transition-delay: 120ms; }
+.fab-menu--open .fab-menu__items > *:nth-last-child(3) .fab-menu__item-label { transition-delay: 150ms; }
+.fab-menu--open .fab-menu__items > *:nth-last-child(4) .fab-menu__item-label { transition-delay: 180ms; }
+.fab-menu--open .fab-menu__items > *:nth-last-child(5) .fab-menu__item-label { transition-delay: 210ms; }
+.fab-menu--open .fab-menu__items > *:nth-last-child(6) .fab-menu__item-label { transition-delay: 240ms; }
+.fab-menu--open .fab-menu__items > *:nth-last-child(7) .fab-menu__item-label { transition-delay: 270ms; }
+.fab-menu--open .fab-menu__items > *:nth-last-child(8) .fab-menu__item-label { transition-delay: 300ms; }
+
+/* -----------------------------------------------------------------------
+   Trigger — stays above the scrim and the item stack
+   ----------------------------------------------------------------------- */
+
+.fab-menu__trigger {
+    position: relative;
+    z-index: var(--fab-menu-trigger-z-index, 101);
+    transition: box-shadow 150ms ease-in-out, transform 150ms ease-in-out;
+}
+
+.fab-menu--open .fab-menu__trigger::part(icon) {
+    transform: rotate(90deg);
+}
+
+
