@@ -1,5 +1,7 @@
 package com.iyensoft.vaadin.flow.internal.components.builders;
 
+import com.holonplatform.vaadin.flow.internal.components.builders.DefaultMaterialHeaderBuilder;
+import com.holonplatform.vaadin.flow.vaadinplus.components.MaterialHeader;
 import com.iyensoft.vaadin.flow.components.builders.PanelConfigurator;
 
 import java.util.Optional;
@@ -41,21 +43,33 @@ public abstract class AbstractPanelConfigurator<C extends PanelConfigurator<C>>
     }
 
     @Override
+    public C emptyState(String title) {
+        getComponent().setEmptyState(title);
+        return getConfigurator();
+    }
+
+    @Override
     public C card() {
         getComponent().addClassName("rdiv-card");
         return getConfigurator();
     }
 
-    
+
     @Override
-    public C footer(Footer footer) {
+    public C footer(Component footer) {
         getComponent().setFooter(footer);
         return getConfigurator();
     }
 
     @Override
-    public C header(Header header) {
+    public C header(Component header) {
        getComponent().setHeader(header);
+        return getConfigurator();
+    }
+
+    @Override
+    public C header(String title) {
+        getComponent().setHeader(title);
         return getConfigurator();
     }
 
@@ -79,5 +93,5 @@ public abstract class AbstractPanelConfigurator<C extends PanelConfigurator<C>>
         return Optional.empty();
     }
 
-    
+
 }

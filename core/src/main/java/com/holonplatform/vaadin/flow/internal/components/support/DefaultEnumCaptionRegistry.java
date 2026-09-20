@@ -16,7 +16,7 @@
 package com.holonplatform.vaadin.flow.internal.components.support;
 
 import java.util.Map;
-import java.util.WeakHashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 import com.holonplatform.core.i18n.Caption;
 import com.holonplatform.core.i18n.Localizable;
@@ -30,7 +30,21 @@ import com.holonplatform.core.internal.utils.ObjectUtils;
  */
 public class DefaultEnumCaptionRegistry {
 
-	private static final Map<Enum<?>, Localizable> enumCaptions = new WeakHashMap<>();
+	/**
+	 * Enum value to caption cache.
+	 *
+	 * <p>Must be a concurrent map: {@link #getEnumCaption(Enum)} is called from every UI
+	 * thread whenever an enum is rendered (grid cells, combo box items, view components),
+	 * so it is a hot, highly concurrent path. The previous plain {@link java.util.WeakHashMap}
+	 * was mutated without synchronization, which can corrupt the table and — in the classic
+	 * hash-map failure mode — spin a request thread at 100% CPU indefinitely.</p>
+	 *
+	 * <p>Weak keys bought nothing here: the keys are enum constants, which are strongly held
+	 * by their own {@link Class} for as long as the defining class loader is alive, so the
+	 * entries were never collectable anyway. The cache is naturally bounded by the number of
+	 * distinct enum constants the application renders.</p>
+	 */
+	private static final Map<Enum<?>, Localizable> enumCaptions = new ConcurrentHashMap<>();
 
 	/**
 	 * Get the localizable caption for given enum value.

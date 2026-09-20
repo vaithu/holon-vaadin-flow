@@ -1,0 +1,180 @@
+/* -----------------------------------------------------------------------
+ * TwoStepVerificationPage — generic split 2-step verification layout (TailAdmin inspired)
+ * ----------------------------------------------------------------------- */
+
+.iyen-verify {
+  display: flex;
+  min-height: 100vh;
+  width: 100%;
+  box-sizing: border-box;
+  background-color: var(--surface-0, #ffffff);
+  color: #1a2231;
+  font-family: var(--lumo-font-family, "Inter", system-ui, sans-serif);
+}
+
+/* Demo / embedded usage: constrain height instead of full viewport. */
+.iyen-verify--boxed {
+  min-height: 620px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+/* ── Form side ─────────────────────────────────────────────────────────── */
+
+.iyen-verify__form-side {
+  flex: 1 1 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2.5rem 1.5rem;
+}
+
+.iyen-verify__card {
+  width: 100%;
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.iyen-verify__heading {
+  margin: 0;
+  font-size: 1.875rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.iyen-verify__subtitle {
+  margin: -0.5rem 0 0;
+  color: #667085;
+  font-size: 0.9375rem;
+  line-height: 1.6;
+}
+
+/* ── Code field ────────────────────────────────────────────────────────── */
+
+.iyen-verify__code {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.iyen-verify__code-label {
+  color: #344054;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.iyen-verify__otp {
+  justify-content: flex-start;
+}
+
+.iyen-verify__link {
+  color: #465fff;
+  font-size: 0.875rem;
+  cursor: pointer;
+}
+
+.iyen-verify__link:hover {
+  text-decoration: underline;
+}
+
+.iyen-verify__submit {
+  height: 3rem;
+  border-radius: 10px;
+  background: #465fff;
+  color: #ffffff;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: background 0.15s ease;
+}
+
+.iyen-verify__submit:hover {
+  background: #3641f5;
+}
+
+/* ── Error message ─────────────────────────────────────────────────────── */
+
+.iyen-verify__error {
+  padding: 0.75rem 1rem;
+  border-radius: 10px;
+  background: #fef3f2;
+  color: #b42318;
+  font-size: 0.875rem;
+  border: 1px solid #fecdca;
+}
+
+/* ── Confirmation message ──────────────────────────────────────────────── */
+
+.iyen-verify__confirmation {
+  padding: 0.75rem 1rem;
+  border-radius: 10px;
+  background: #ecfdf3;
+  color: #027a48;
+  font-size: 0.875rem;
+  border: 1px solid #a6f4c5;
+}
+
+/* ── Resend row ────────────────────────────────────────────────────────── */
+
+.iyen-verify__resend {
+  text-align: center;
+  color: #667085;
+  font-size: 0.875rem;
+}
+
+/* ── Brand side ────────────────────────────────────────────────────────── */
+
+.iyen-verify__brand-side {
+  flex: 1 1 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2.5rem;
+  background:
+    radial-gradient(circle at top left, rgba(255, 255, 255, 0.12), transparent 55%),
+    linear-gradient(135deg, #1a2231 0%, #2a3244 55%, #465fff 130%);
+  color: #ffffff;
+}
+
+.iyen-verify__brand-content {
+  max-width: 340px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.iyen-verify__brand-logo {
+  display: inline-flex;
+  color: #ffffff;
+  opacity: 0.95;
+}
+
+.iyen-verify__brand-title {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.iyen-verify__brand-text {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.9375rem;
+  line-height: 1.6;
+}
+
+/* ── Responsive ────────────────────────────────────────────────────────── */
+
+@media (max-width: 991px) {
+  .iyen-verify__brand-side {
+    display: none;
+  }
+  .iyen-verify__form-side {
+    flex-basis: 100%;
+  }
+}

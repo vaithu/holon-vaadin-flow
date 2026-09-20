@@ -344,7 +344,8 @@
 
 .sheet__content {
     flex: 1 1 auto;
-    /*overflow-y: auto;*/
+    min-height: 0;
+    overflow-y: auto;
     /* Momentum scrolling on iOS */
     -webkit-overflow-scrolling: touch;
     overscroll-behavior: contain;

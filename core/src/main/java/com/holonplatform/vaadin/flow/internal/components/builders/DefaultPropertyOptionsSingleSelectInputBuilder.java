@@ -15,6 +15,8 @@
  */
 package com.holonplatform.vaadin.flow.internal.components.builders;
 
+import com.vaadin.flow.function.SerializableFunction;
+
 import com.holonplatform.core.Validator;
 import com.holonplatform.core.datastore.DataTarget;
 import com.holonplatform.core.datastore.Datastore;
@@ -276,7 +278,7 @@ public class DefaultPropertyOptionsSingleSelectInputBuilder<T> extends AbstractP
 	}
 
 	@Override
-	public <A> PropertyOptionsSingleSelectInputBuilder<T> withAdapter(Class<A> type, Function<Input<T>, A> adapter) {
+	public <A> PropertyOptionsSingleSelectInputBuilder<T> withAdapter(Class<A> type, SerializableFunction<Input<T>, A> adapter) {
 		builder.withAdapter(type, adapter);
 		return this;
 	}
@@ -1062,7 +1064,7 @@ public class DefaultPropertyOptionsSingleSelectInputBuilder<T> extends AbstractP
 
 		@Override
 		public <A> ValidatablePropertyOptionsSingleSelectInputBuilder<T> withAdapter(Class<A> type,
-				Function<Input<T>, A> adapter) {
+				SerializableFunction<Input<T>, A> adapter) {
 			builder.withAdapter(type, adapter);
 			return this;
 		}
@@ -1263,7 +1265,7 @@ public class DefaultPropertyOptionsSingleSelectInputBuilder<T> extends AbstractP
 
 		@Override
 		public <A> DatastorePropertyOptionsSingleSelectInputBuilder<T> withAdapter(Class<A> type,
-				Function<Input<T>, A> adapter) {
+				SerializableFunction<Input<T>, A> adapter) {
 			builder.withAdapter(type, adapter);
 			return this;
 		}
@@ -2020,7 +2022,7 @@ public class DefaultPropertyOptionsSingleSelectInputBuilder<T> extends AbstractP
 
 		@Override
 		public <A> ValidatableDatastorePropertyOptionsSingleSelectInputBuilder<T> withAdapter(Class<A> type,
-				Function<Input<T>, A> adapter) {
+				SerializableFunction<Input<T>, A> adapter) {
 			builder.withAdapter(type, adapter);
 			return this;
 		}

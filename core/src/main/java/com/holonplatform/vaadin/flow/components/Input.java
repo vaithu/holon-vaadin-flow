@@ -55,6 +55,7 @@ import com.vaadin.flow.component.shared.HasTooltip;
 import com.vaadin.flow.data.converter.Converter;
 
 import java.io.Serial;
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -956,7 +957,40 @@ public interface Input<T> extends ValueHolder<T, ValueChangeEvent<T>>, ValueComp
 	 * @see HasValueInputBuilder
 	 */
 	interface PropertyHandler<P, T, V extends HasValue<?, T>, C extends Component>
-			extends BiFunction<V, C, P>, TriConsumer<V, C, P> {
+			extends BiFunction<V, C, P>, TriConsumer<V, C, P>, Serializable {
+
+		/**
+		 * A serializable property value getter function.
+		 * <p>
+		 * Declaring the getter through this type (rather than a plain {@link BiFunction}) makes any
+		 * lambda bound to it serializable, which is required because {@link PropertyHandler}s are
+		 * retained by the {@link Input} instance and therefore live in the {@code VaadinSession}.
+		 * </p>
+		 *
+		 * @param <P> Property value type
+		 * @param <T> Input value type
+		 * @param <V> {@link HasValue} type
+		 * @param <C> {@link Component} type
+		 */
+		@FunctionalInterface
+		interface PropertyGetter<P, T, V extends HasValue<?, T>, C extends Component>
+				extends BiFunction<V, C, P>, Serializable {
+		}
+
+		/**
+		 * A serializable property value setter operation.
+		 *
+		 * @param <P> Property value type
+		 * @param <T> Input value type
+		 * @param <V> {@link HasValue} type
+		 * @param <C> {@link Component} type
+		 *
+		 * @see PropertyGetter
+		 */
+		@FunctionalInterface
+		interface PropertySetter<P, T, V extends HasValue<?, T>, C extends Component>
+				extends TriConsumer<V, C, P>, Serializable {
+		}
 
 		/**
 		 * Create a new {@link PropertyHandler} using given <code>getter</code> to get
@@ -965,12 +999,12 @@ public interface Input<T> extends ValueHolder<T, ValueChangeEvent<T>>, ValueComp
 		 * @param <T>    Input value type
 		 * @param <V>    {@link HasValue} type
 		 * @param <C>    {@link Component} type
-		 * @param getter A {@link BiFunction} to get the property value (not null)
-		 * @param setter A {@link TriConsumer} to set the property value (not null)
+		 * @param getter A {@link PropertyGetter} to get the property value (not null)
+		 * @param setter A {@link PropertySetter} to set the property value (not null)
 		 * @return A new {@link PropertyHandler}
 		 */
 		static <P, T, V extends HasValue<?, T>, C extends Component> PropertyHandler<P, T, V, C> create(
-				BiFunction<V, C, P> getter, TriConsumer<V, C, P> setter) {
+				PropertyGetter<P, T, V, C> getter, PropertySetter<P, T, V, C> setter) {
 			return new CallbackPropertyHandler<>(getter, setter);
 		}
 

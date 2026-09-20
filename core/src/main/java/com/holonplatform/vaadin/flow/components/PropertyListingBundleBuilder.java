@@ -25,6 +25,7 @@ import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
 import com.holonplatform.vaadin.flow.vaadinplus.components.DynamicFilterPanel;
 import com.holonplatform.vaadin.flow.vaadinplus.components.Empty;
 import com.holonplatform.vaadin.flow.vaadinplus.components.GridHeader;
+import com.holonplatform.vaadin.flow.vaadinplus.components.GridToolbar;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.contextmenu.MenuItem;
 import com.vaadin.flow.component.contextmenu.SubMenu;
@@ -124,18 +125,6 @@ public final class PropertyListingBundleBuilder {
     private FetchCallback fetchCallback;
     private FilteredFetchCallback filteredFetchCallback;
     /**
-     * Extra items appended to the options menu.
-     */
-    private final List<ListingBundle.MenuAction> menuActions = new ArrayList<>();
-    /**
-     * Optional import handler; when set, an "Import" item appears in the options menu.
-     */
-    private Runnable importAction;
-    /**
-     * Optional export handler; when set, an "Export" item appears in the options menu.
-     */
-    private Runnable exportAction;
-    /**
      * Title for the GridHeader (null = legacy toolbar mode).
      */
     private String gridHeaderTitle;
@@ -171,6 +160,7 @@ public final class PropertyListingBundleBuilder {
      * Optional post-processor applied to the built listing before assembling the bundle.
      */
     private Consumer<ItemListing<PropertyBox, ?>> postProcessor;
+    private Consumer<com.holonplatform.vaadin.flow.components.builders.GridToolbarBuilder> toolbarCustomizer;
     /** Optional empty state shown when dataset is genuinely empty (no search/filter). */
     private Empty emptyState;
     /** Optional empty state shown when search/filter is active but yields no results. */
@@ -300,68 +290,6 @@ public final class PropertyListingBundleBuilder {
     public PropertyListingBundleBuilder gridHeader(String title, Component... contextActions) {
         this.gridHeaderTitle = Objects.requireNonNull(title, "title must not be null");
         this.gridHeaderContextComponents = contextActions != null ? Arrays.copyOf(contextActions, contextActions.length) : null;
-        return this;
-    }
-
-    /**
-     * Appends an extra item (text-only) to the options menu.
-     *
-     * @param label  display text (not null)
-     * @param action action to run when clicked (not null)
-     * @return this builder
-     */
-    public PropertyListingBundleBuilder withMenuAction(String label, Runnable action) {
-        Objects.requireNonNull(label, "label must not be null");
-        Objects.requireNonNull(action, "action must not be null");
-        this.menuActions.add(ListingBundle.MenuAction.of(label, action));
-        return this;
-    }
-
-    /**
-     * Appends an extra item (icon + text) to the options menu.
-     *
-     * @param icon   icon shown to the left of the label (not null)
-     * @param label  display text (not null)
-     * @param action action to run when clicked (not null)
-     * @return this builder
-     */
-    public PropertyListingBundleBuilder withMenuAction(VaadinIcon icon, String label, Runnable action) {
-        Objects.requireNonNull(icon, "icon must not be null");
-        Objects.requireNonNull(label, "label must not be null");
-        Objects.requireNonNull(action, "action must not be null");
-        this.menuActions.add(ListingBundle.MenuAction.of(icon, label, action));
-        return this;
-    }
-
-    /**
-     * @deprecated Use {@link #withMenuAction(String, Runnable)} instead.
-     */
-    @Deprecated(since = "10.0.2", forRemoval = true)
-    public PropertyListingBundleBuilder withFilterOption(String label, Runnable action) {
-        return withMenuAction(label, action);
-    }
-
-    /**
-     * Registers a handler for the <em>Import</em> menu item.
-     * The item is only visible when a handler is provided.
-     *
-     * @param action action to run when the user clicks "Import" (not null)
-     * @return this builder
-     */
-    public PropertyListingBundleBuilder importAction(Runnable action) {
-        this.importAction = Objects.requireNonNull(action, "importAction must not be null");
-        return this;
-    }
-
-    /**
-     * Registers a handler for the <em>Export</em> menu item.
-     * The item is only visible when a handler is provided.
-     *
-     * @param action action to run when the user clicks "Export" (not null)
-     * @return this builder
-     */
-    public PropertyListingBundleBuilder exportAction(Runnable action) {
-        this.exportAction = Objects.requireNonNull(action, "exportAction must not be null");
         return this;
     }
 
@@ -511,6 +439,18 @@ public final class PropertyListingBundleBuilder {
         return this;
     }
 
+    /**
+     * Registers a callback invoked on the internal {@link com.holonplatform.vaadin.flow.components.builders.GridToolbarBuilder}
+     * before it is built, allowing toolbar-level customisations (e.g. {@code primaryAction},
+     * {@code bulkAction}, {@code optionsMenuAction}) not covered by the fluent API.
+     *
+     * @see ListingBundleConfigurer#withToolbarCustomizer(Consumer)
+     */
+    public PropertyListingBundleBuilder withToolbarCustomizer(Consumer<com.holonplatform.vaadin.flow.components.builders.GridToolbarBuilder> customizer) {
+        this.toolbarCustomizer = Objects.requireNonNull(customizer, "customizer must not be null");
+        return this;
+    }
+
     // ── Empty state ─────────────────────────────────────────────────────────
 
     /**
@@ -582,23 +522,39 @@ public final class PropertyListingBundleBuilder {
         // ── 2. Pagination bar ───────────────────────────────────────────────
         var bar = new ItemListingPaginationBar<>(listing);
 
-        // ── 3. Search field ─────────────────────────────────────────────────
-        TextField search = null;
-        if (searchPlaceholder != null) {
-            search = new TextField();
-            search.setPlaceholder(searchPlaceholder);
-            search.setPrefixComponent(new Icon(VaadinIcon.SEARCH));
-            search.addClassName("listing-toolbar__search");
-        }
-
-        // ── 4. Filter panel — uses the property set for introspection ────────
+        // ── 3. Filter panel — uses the property set for introspection ────────
         DynamicFilterPanel<PropertyBox> panel = null;
         if (includeFilterPanel) {
             panel = DynamicFilterPanel.ofPropertySet(propertySet);
         }
 
+        // ── 4. Toolbar — built up front so its own search field / filter dialog can be wired
+        //      directly into the fetch closure and page-size selector below ──────────────────
+        var toolbarBuilder = Components.gridToolbar(gridHeaderContextComponents);
+        if (searchPlaceholder != null) {
+            toolbarBuilder.searchPlaceholder(searchPlaceholder);
+        }
+        if (panel != null) {
+            toolbarBuilder.filterPanel(panel);
+        }
+        if (toolbarCustomizer != null) {
+            toolbarCustomizer.accept(toolbarBuilder);
+        }
+        GridToolbar toolbar = toolbarBuilder.build();
+
+        // GridToolbar retains filter values across open/close by default; reset on every open when disabled.
+        if (panel != null && !retainFilterValues) {
+            final DynamicFilterPanel<PropertyBox> resetPanel = panel;
+            toolbar.getFilterDialog().addOpenedChangeListener(e -> {
+                if (e.isOpened()) {
+                    resetPanel.resetAll();
+                }
+            });
+        }
+
         // ── 5. Selector ─────────────────────────────────────────────────────
-        final TextField fSearch = search;
+        final boolean fSearchEnabled = searchPlaceholder != null;
+        final TextField fSearch = toolbar.getSearchField();
         final DynamicFilterPanel<PropertyBox> fPanel = panel;
 
         // Raw Builder to avoid PropertyListing's Property<?> wildcard issues
@@ -622,7 +578,7 @@ public final class PropertyListingBundleBuilder {
             final FetchCallback fCb = this.fetchCallback;
             final FilteredFetchCallback fFiltCb = this.filteredFetchCallback;
             CallbackDataProvider.FetchCallback<PropertyBox, Void> wrappedFetch = q -> {
-                String text = fSearch != null ? fSearch.getValue() : "";
+                String text = fSearchEnabled ? fSearch.getValue() : "";
                 QueryFilter qf = fPanel != null ? fPanel.getQueryFilter().orElse(null) : null;
                 QuerySort sort = toQuerySort(q.getSortOrders());
                 if (fFiltCb != null) {
@@ -633,13 +589,12 @@ public final class PropertyListingBundleBuilder {
             sb.withLazyFetch(wrappedFetch, null);
         }
 
-        if (search != null) sb.withSearchField(search);
+        if (fSearchEnabled) sb.withSearchField(fSearch);
         if (panel != null) sb.withFilterResetSignal(panel);  // ← Signal.effect: lifecycle-aware reactive page reset
 
         ItemListingPageSizeSelector<PropertyBox, ?> selector = sb.build();
 
         // ── Actions column ────────────────────────────────────────────────────
-        @SuppressWarnings("unchecked")
         Grid<PropertyBox> grid = (Grid<PropertyBox>) listing.getComponent();
         if (!rowActions.isEmpty()) {
             if (highPerformanceActions) {
@@ -654,10 +609,8 @@ public final class PropertyListingBundleBuilder {
             postProcessor.accept(listing);
         }
 
-        @SuppressWarnings("unchecked")
-        ListingBundle<PropertyBox> bundle = (ListingBundle<PropertyBox>) new ListingBundle(listing, bar, selector, search, panel,
-                                                                              menuActions, importAction, exportAction,
-                                                                              advancedSearchLabel, retainFilterValues, gridHeaderTitle, gridHeaderContextComponents, List.of(), paginatedMode,
+        ListingBundle<PropertyBox> bundle = (ListingBundle<PropertyBox>) new ListingBundle(listing, bar, selector, toolbar, panel,
+                                                                              gridHeaderTitle, paginatedMode,
                                                                               emptyState, noResultsState);
 
         // Wire item-count listener for empty-state visibility after each fetch.

@@ -6,7 +6,8 @@ import com.vaadin.flow.dom.Element;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
-import java.util.function.Function;
+
+import com.vaadin.flow.function.SerializableFunction;
 
 /**
  * Synchronises the master-detail selection with the {@code ?id=} URL query parameter
@@ -22,16 +23,30 @@ import java.util.function.Function;
  *
  * @param <T> the item type
  */
-public final class UrlSelectionSync<T> {
+public final class UrlSelectionSync<T> implements java.io.Serializable {
 
-    private final Function<T, String> idExtractor;
-    private final Function<String, Optional<T>> itemLoader;
+    @java.io.Serial
+    private static final long serialVersionUID = 1L;
+
+    /** Query-parameter name used when none is configured explicitly. */
+    public static final String DEFAULT_PARAM_NAME = "id";
+
+    private final SerializableFunction<T, String> idExtractor;
+    private final SerializableFunction<String, Optional<T>> itemLoader;
+    private final String paramName;
 
     /** Use {@link #builder()} instead. */
-    UrlSelectionSync(Function<T, String> idExtractor,
-                     Function<String, Optional<T>> itemLoader) {
+    UrlSelectionSync(SerializableFunction<T, String> idExtractor,
+                     SerializableFunction<String, Optional<T>> itemLoader,
+                     String paramName) {
         this.idExtractor = idExtractor;
         this.itemLoader  = itemLoader;
+        this.paramName   = paramName == null || paramName.isBlank() ? DEFAULT_PARAM_NAME : paramName;
+    }
+
+    /** @return the query-parameter name carrying the selected id (defaults to {@value #DEFAULT_PARAM_NAME}). */
+    public String getParamName() {
+        return paramName;
     }
 
     /** Returns a new {@link Builder} for this type. */
@@ -46,25 +61,32 @@ public final class UrlSelectionSync<T> {
      */
     public static final class Builder<T> {
 
-        private Function<T, String> idExtractor;
-        private Function<String, Optional<T>> itemLoader;
+        private SerializableFunction<T, String> idExtractor;
+        private SerializableFunction<String, Optional<T>> itemLoader;
+        private String paramName = DEFAULT_PARAM_NAME;
 
         private Builder() {}
 
         /** Converts an item to its URL-safe string ID. */
-        public Builder<T> idExtractor(Function<T, String> idExtractor) {
+        public Builder<T> idExtractor(SerializableFunction<T, String> idExtractor) {
             this.idExtractor = idExtractor;
             return this;
         }
 
         /** Loads an item by its string ID, returning {@link Optional#empty()} if not found. */
-        public Builder<T> itemLoader(Function<String, Optional<T>> itemLoader) {
+        public Builder<T> itemLoader(SerializableFunction<String, Optional<T>> itemLoader) {
             this.itemLoader = itemLoader;
             return this;
         }
 
+        /** Overrides the query-parameter name (defaults to {@value #DEFAULT_PARAM_NAME}). */
+        public Builder<T> paramName(String paramName) {
+            this.paramName = paramName;
+            return this;
+        }
+
         public UrlSelectionSync<T> build() {
-            return new UrlSelectionSync<>(idExtractor, itemLoader);
+            return new UrlSelectionSync<>(idExtractor, itemLoader, paramName);
         }
     }
 
@@ -82,7 +104,7 @@ public final class UrlSelectionSync<T> {
         if (isMobile(mode) || idExtractor == null || item == null) return;
         String idStr = idExtractor.apply(item);
         if (idStr == null || idStr.isBlank()) return;
-        host.executeJs("history.replaceState(null, '', location.pathname + '?id=' + $0)", idStr);
+        host.executeJs("history.replaceState(null, '', location.pathname + '?' + $1 + '=' + $0)", idStr, paramName);
     }
 
     /**
@@ -96,13 +118,22 @@ public final class UrlSelectionSync<T> {
     }
 
     /**
+     * Looks up an item by ID.
+     * Returns {@link Optional#empty()} if no loader was configured, the id is blank,
+     * or the loader found nothing.
+     */
+    public Optional<T> load(String idStr) {
+        if (itemLoader == null || idStr == null || idStr.isBlank()) return Optional.empty();
+        return itemLoader.apply(idStr);
+    }
+
+    /**
      * Looks up an item by ID and forwards it to {@code selector} if found.
      * No-op if {@code itemLoader} was not configured or {@code idStr} is blank.
      * Always runs regardless of viewport — restoring deep-link state is device-agnostic.
      */
     public void restore(String idStr, Consumer<T> selector) {
-        if (itemLoader == null || idStr == null || idStr.isBlank()) return;
-        itemLoader.apply(idStr).ifPresent(selector);
+        load(idStr).ifPresent(selector);
     }
 
     private static boolean isMobile(ViewMode mode) {

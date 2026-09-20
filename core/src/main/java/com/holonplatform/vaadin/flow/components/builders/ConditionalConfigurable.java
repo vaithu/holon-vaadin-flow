@@ -10,7 +10,7 @@ import java.util.function.UnaryOperator;
  * <p>Added to {@link ComponentConfigurator} as a parent interface, so every builder
  * in the framework inherits these methods automatically — no concrete class changes needed.</p>
  *
- * <p>All methods return {@code SELF} (the concrete builder type), so they slot into
+ * <p>All methods return {@code C} (the concrete builder type), so they slot into
  * any existing chain without breaking it:</p>
  *
  * <pre>{@code
@@ -30,9 +30,9 @@ import java.util.function.UnaryOperator;
  *     .build();
  * }</pre>
  *
- * @param <SELF> the concrete builder type, enabling fluent self-return
+ * @param <C> the concrete builder type, enabling fluent self-return
  */
-public interface ConditionalConfigurable<SELF extends ConditionalConfigurable<SELF>> {
+public interface ConditionalConfigurable<C extends ConditionalConfigurable<C>> {
 
     /**
      * Applies {@code configure} to this builder only when {@code condition} is {@code true};
@@ -43,8 +43,8 @@ public interface ConditionalConfigurable<SELF extends ConditionalConfigurable<SE
      * @return this builder (configured or unchanged)
      */
     @SuppressWarnings("unchecked")
-    default SELF applyIf(boolean condition, UnaryOperator<SELF> configure) {
-        return condition ? configure.apply((SELF) this) : (SELF) this;
+    default C applyIf(boolean condition, UnaryOperator<C> configure) {
+        return condition ? configure.apply((C) this) : (C) this;
     }
 
     /**
@@ -58,8 +58,8 @@ public interface ConditionalConfigurable<SELF extends ConditionalConfigurable<SE
      * @return this builder (configured or unchanged)
      */
     @SuppressWarnings("unchecked")
-    default SELF applyUnless(boolean condition, UnaryOperator<SELF> configure) {
-        return condition ? (SELF) this : configure.apply((SELF) this);
+    default C applyUnless(boolean condition, UnaryOperator<C> configure) {
+        return condition ? (C) this : configure.apply((C) this);
     }
 
     /**
@@ -71,7 +71,7 @@ public interface ConditionalConfigurable<SELF extends ConditionalConfigurable<SE
      * @param configure  the configurator to apply
      * @return this builder (configured or unchanged)
      */
-    default SELF applyIf(Supplier<Boolean> condition, UnaryOperator<SELF> configure) {
+    default C applyIf(Supplier<Boolean> condition, UnaryOperator<C> configure) {
         return applyIf(Boolean.TRUE.equals(condition.get()), configure);
     }
 
@@ -93,8 +93,8 @@ public interface ConditionalConfigurable<SELF extends ConditionalConfigurable<SE
      * @return this builder
      */
     @SuppressWarnings("unchecked")
-    default SELF also(Consumer<SELF> configure) {
-        configure.accept((SELF) this);
-        return (SELF) this;
+    default C also(Consumer<C> configure) {
+        configure.accept((C) this);
+        return (C) this;
     }
 }

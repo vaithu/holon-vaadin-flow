@@ -636,11 +636,11 @@ public class EntityFormPanelDemoView extends Div {
                 .stretchLastRow(true)
             .configure(fb -> {
                 fb.property("firstName").ifPresent(p -> fb.configure(inner -> inner.required(p)));
-                fb.property("firstName").ifPresent(p -> fb.configure(inner -> inner.withValidator((PathProperty<String>) p, Validator.notBlank())));
+                fb.configure(inner -> inner.withValidator(PathProperty.create("firstName", String.class), Validator.notBlank()));
                 fb.property("lastName").ifPresent(p -> fb.configure(inner -> inner.required(p)));
-                fb.property("lastName").ifPresent(p -> fb.configure(inner -> inner.withValidator((PathProperty<String>) p, Validator.notBlank())));
+                fb.configure(inner -> inner.withValidator(PathProperty.create("lastName", String.class), Validator.notBlank()));
                 fb.property("email").ifPresent(p -> fb.configure(inner -> inner.required(p)));
-                fb.property("email").ifPresent(p -> fb.configure(inner -> inner.withValidator((PathProperty<String>) p, Validator.notBlank())));
+                fb.configure(inner -> inner.withValidator(PathProperty.create("email", String.class), Validator.notBlank()));
             })
                 .saveButton(
                         btn -> btn.primary().text("Save Employee"),
@@ -700,9 +700,9 @@ public class EntityFormPanelDemoView extends Div {
                 .stretchLastRow(false)
             .configure(fb -> {
                 fb.property("firstName").ifPresent(p -> fb.configure(inner -> inner.required(p)));
-                fb.property("firstName").ifPresent(p -> fb.configure(inner -> inner.withValidator((PathProperty<String>) p, Validator.notBlank())));
+                fb.configure(inner -> inner.withValidator(PathProperty.create("firstName", String.class), Validator.notBlank()));
                 fb.property("email").ifPresent(p -> fb.configure(inner -> inner.required(p)));
-                fb.property("email").ifPresent(p -> fb.configure(inner -> inner.withValidator((PathProperty<String>) p, Validator.notBlank())));
+                fb.configure(inner -> inner.withValidator(PathProperty.create("email", String.class), Validator.notBlank()));
             })
                 .saveButton(
                         btn -> btn.primary().text("Save Employee"),

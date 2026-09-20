@@ -15,6 +15,8 @@
  */
 package com.holonplatform.vaadin.flow.internal.components;
 
+import com.vaadin.flow.function.SerializableFunction;
+
 import java.io.Serial;
 import com.holonplatform.core.Registration;
 import com.holonplatform.core.internal.utils.ConversionUtils;
@@ -429,7 +431,7 @@ public class MultiSelectInputAdapter<T, ITEM, C extends Component> implements Mu
 	 * @param type Adapter type (not null)
 	 * @param adapter Adapter function
 	 */
-	public <A> void setAdapter(Class<A> type, Function<Input<Set<T>>, A> adapter) {
+	public <A> void setAdapter(Class<A> type, SerializableFunction<Input<Set<T>>, A> adapter) {
 		adapters.setAdapter(type, adapter);
 	}
 

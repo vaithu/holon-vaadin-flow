@@ -1,6 +1,15 @@
 {
     "java.compile.nullAnalysis.mode": "automatic",
-    "java.configuration.updateBuildConfiguration": "interactive",
+    "java.configuration.updateBuildConfiguration": "automatic",
     "java.debug.settings.hotCodeReplace": "auto",
-    "java.debug.settings.onBuildFailureProceed": true
+    "java.debug.settings.onBuildFailureProceed": true,
+    "java.transport": "stdio",
+    "java.jdt.ls.vmargs": "-XX:+UseG1GC -XX:+UseStringDeduplication -Xmx4G -Xms1G -Dsun.zip.disableMemoryMapping=true -Xlog:disable",
+    "java.configuration.runtimes": [
+        {
+            "name": "JavaSE-25",
+            "path": "C:/Users/V846281/AppData/Local/jdks/jdk-25.0.2",
+            "default": true
+        }
+    ]
 }

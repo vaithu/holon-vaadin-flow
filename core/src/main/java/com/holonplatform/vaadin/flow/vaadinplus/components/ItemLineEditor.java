@@ -27,7 +27,6 @@ import com.vaadin.flow.component.Composite;
 import com.vaadin.flow.component.HasEnabled;
 import com.vaadin.flow.component.HasLabel;
 import com.vaadin.flow.component.HasSize;
-import com.vaadin.flow.component.HasStyle;
 import com.vaadin.flow.component.HasValidation;
 import com.vaadin.flow.component.HasValue;
 import com.vaadin.flow.component.button.Button;
@@ -108,7 +107,7 @@ import java.util.function.Supplier;
  * @since 10.0.0
  */
 @StyleSheet("context://item-line-editor.css")
-public class ItemLineEditor<T> extends Composite<Div> implements HasComponent, HasSize, HasStyle, HasEnabled {
+public class ItemLineEditor<T> extends Composite<Div> implements HasComponent, HasSize, HasEnabled {
 
     /** Default cap on the number of rows, to keep server-side component counts bounded. */
     public static final int DEFAULT_MAX_ROWS = 200;
@@ -505,6 +504,30 @@ public class ItemLineEditor<T> extends Composite<Div> implements HasComponent, H
         return Collections.unmodifiableList(rows);
     }
 
+    // -----------------------------------------------------------------------
+    // Action buttons access (e.g. for per-user visibility/authorization control)
+    // -----------------------------------------------------------------------
+
+    /** Returns the toolbar "Add" {@link Button}. */
+    public Button getAddButton() {
+        return addBtn;
+    }
+
+    /** Returns the empty-state "Add" {@link Button}, shown when there are no rows. */
+    public Button getEmptyAddButton() {
+        return emptyAddBtn;
+    }
+
+    /** Returns the "Toggle details" {@link Button}, if the details toggle feature is enabled. */
+    public Button getToggleDetailsButton() {
+        return toggleDetailsBtn;
+    }
+
+    /** Returns the item picker trigger {@link Button}, if the picker feature is enabled. */
+    public Button getPickerButton() {
+        return pickerBtn;
+    }
+
     /** Replaces all current rows with the given list and refreshes the view. */
     public void setRows(List<T> newRows) {
         rows.clear();
@@ -596,7 +619,6 @@ public class ItemLineEditor<T> extends Composite<Div> implements HasComponent, H
      * @param secondaryLabel  extracts the catalog entry's secondary (muted) label (may be null)
      * @param rowMapper       builds a new row from a selected catalog entry and its chosen quantity
      */
-    @SuppressWarnings("unchecked")
     public <S> void setItemPicker(String buttonText, List<S> catalog, Function<S, String> primaryLabel,
             Function<S, String> secondaryLabel, BiFunction<S, Integer, T> rowMapper) {
         this.pickerButtonText = (buttonText != null) ? buttonText : "Pick Items";

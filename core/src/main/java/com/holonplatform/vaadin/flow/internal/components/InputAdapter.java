@@ -15,6 +15,10 @@
  */
 package com.holonplatform.vaadin.flow.internal.components;
 
+import com.vaadin.flow.function.SerializableConsumer;
+
+import com.vaadin.flow.function.SerializableFunction;
+
 import java.io.Serial;
 import com.holonplatform.core.Registration;
 import com.holonplatform.core.internal.utils.ObjectUtils;
@@ -70,16 +74,16 @@ public class InputAdapter<T, V extends HasValue<?, T>, C extends Component> impl
 	/**
 	 * Overridden operations
 	 */
-	private Function<V, T> emptyValueSupplier;
-	private Function<V, Boolean> isEmptySupplier;
-	private Function<V, T> valueSupplier;
-	private Consumer<V> focusOperation;
-	private Function<V, HasSize> hasSizeSupplier;
-	private Function<V, HasStyle> hasStyleSupplier;
-	private Function<V, HasEnabled> hasEnabledSupplier;
-	private Function<V, HasValueChangeMode> hasValueChangeModeSupplier;
-	private Function<V, HasValidation> hasValidationSupplier;
-	private Function<V, InvalidChangeEventNotifier> invalidChangeEventNotifierSupplier;
+	private SerializableFunction<V, T> emptyValueSupplier;
+	private SerializableFunction<V, Boolean> isEmptySupplier;
+	private SerializableFunction<V, T> valueSupplier;
+	private SerializableConsumer<V> focusOperation;
+	private SerializableFunction<V, HasSize> hasSizeSupplier;
+	private SerializableFunction<V, HasStyle> hasStyleSupplier;
+	private SerializableFunction<V, HasEnabled> hasEnabledSupplier;
+	private SerializableFunction<V, HasValueChangeMode> hasValueChangeModeSupplier;
+	private SerializableFunction<V, HasValidation> hasValidationSupplier;
+	private SerializableFunction<V, InvalidChangeEventNotifier> invalidChangeEventNotifierSupplier;
 
 	/**
 	 * Property handlers
@@ -120,7 +124,7 @@ public class InputAdapter<T, V extends HasValue<?, T>, C extends Component> impl
 	 * Get the empty value supplier, if available.
 	 * @return Optional empty value supplier
 	 */
-	public Optional<Function<V, T>> getEmptyValueSupplier() {
+	public Optional<SerializableFunction<V, T>> getEmptyValueSupplier() {
 		return Optional.ofNullable(emptyValueSupplier);
 	}
 
@@ -128,7 +132,7 @@ public class InputAdapter<T, V extends HasValue<?, T>, C extends Component> impl
 	 * Set the empty value supplier.
 	 * @param emptyValueSupplier the empty value supplier to set
 	 */
-	public void setEmptyValueSupplier(Function<V, T> emptyValueSupplier) {
+	public void setEmptyValueSupplier(SerializableFunction<V, T> emptyValueSupplier) {
 		this.emptyValueSupplier = emptyValueSupplier;
 	}
 
@@ -136,7 +140,7 @@ public class InputAdapter<T, V extends HasValue<?, T>, C extends Component> impl
 	 * Get the <em>is empty</em> value supplier, if available.
 	 * @return Optional <em>is empty</em> value supplier
 	 */
-	public Optional<Function<V, Boolean>> getIsEmptySupplier() {
+	public Optional<SerializableFunction<V, Boolean>> getIsEmptySupplier() {
 		return Optional.ofNullable(isEmptySupplier);
 	}
 
@@ -144,7 +148,7 @@ public class InputAdapter<T, V extends HasValue<?, T>, C extends Component> impl
 	 * Set the <em>is empty</em> value supplier.
 	 * @param isEmptySupplier the <em>is empty</em> value supplier to set
 	 */
-	public void setIsEmptySupplier(Function<V, Boolean> isEmptySupplier) {
+	public void setIsEmptySupplier(SerializableFunction<V, Boolean> isEmptySupplier) {
 		this.isEmptySupplier = isEmptySupplier;
 	}
 
@@ -152,7 +156,7 @@ public class InputAdapter<T, V extends HasValue<?, T>, C extends Component> impl
 	 * Get the Input value supplier, if available.
 	 * @return Optional Input value supplier
 	 */
-	public Optional<Function<V, T>> getValueSupplier() {
+	public Optional<SerializableFunction<V, T>> getValueSupplier() {
 		return Optional.ofNullable(valueSupplier);
 	}
 
@@ -160,7 +164,7 @@ public class InputAdapter<T, V extends HasValue<?, T>, C extends Component> impl
 	 * Set the Input value supplier.
 	 * @param valueSupplier the Input value supplier to set
 	 */
-	public void setValueSupplier(Function<V, T> valueSupplier) {
+	public void setValueSupplier(SerializableFunction<V, T> valueSupplier) {
 		this.valueSupplier = valueSupplier;
 	}
 
@@ -168,7 +172,7 @@ public class InputAdapter<T, V extends HasValue<?, T>, C extends Component> impl
 	 * Get the <code>focus</code> operation.
 	 * @return Optional <code>focus</code> operation
 	 */
-	public Optional<Consumer<V>> getFocusOperation() {
+	public Optional<SerializableConsumer<V>> getFocusOperation() {
 		return Optional.ofNullable(focusOperation);
 	}
 
@@ -176,7 +180,7 @@ public class InputAdapter<T, V extends HasValue<?, T>, C extends Component> impl
 	 * Set the <code>focus</code> operation.
 	 * @param focusOperation the operation to set
 	 */
-	public void setFocusOperation(Consumer<V> focusOperation) {
+	public void setFocusOperation(SerializableConsumer<V> focusOperation) {
 		this.focusOperation = focusOperation;
 	}
 
@@ -184,7 +188,7 @@ public class InputAdapter<T, V extends HasValue<?, T>, C extends Component> impl
 	 * Get the {@link HasSize} supplier.
 	 * @return Optional {@link HasSize} supplier
 	 */
-	public Optional<Function<V, HasSize>> getHasSizeSupplier() {
+	public Optional<SerializableFunction<V, HasSize>> getHasSizeSupplier() {
 		return Optional.ofNullable(hasSizeSupplier);
 	}
 
@@ -192,7 +196,7 @@ public class InputAdapter<T, V extends HasValue<?, T>, C extends Component> impl
 	 * Set the {@link HasSize} supplier.
 	 * @param hasSizeSupplier the supplier to set
 	 */
-	public void setHasSizeSupplier(Function<V, HasSize> hasSizeSupplier) {
+	public void setHasSizeSupplier(SerializableFunction<V, HasSize> hasSizeSupplier) {
 		this.hasSizeSupplier = hasSizeSupplier;
 	}
 
@@ -200,7 +204,7 @@ public class InputAdapter<T, V extends HasValue<?, T>, C extends Component> impl
 	 * Get the {@link HasStyle} supplier.
 	 * @return Optional {@link HasStyle} supplier
 	 */
-	public Optional<Function<V, HasStyle>> getHasStyleSupplier() {
+	public Optional<SerializableFunction<V, HasStyle>> getHasStyleSupplier() {
 		return Optional.ofNullable(hasStyleSupplier);
 	}
 
@@ -208,7 +212,7 @@ public class InputAdapter<T, V extends HasValue<?, T>, C extends Component> impl
 	 * Set the {@link HasStyle} supplier.
 	 * @param hasStyleSupplier the supplier to set
 	 */
-	public void setHasStyleSupplier(Function<V, HasStyle> hasStyleSupplier) {
+	public void setHasStyleSupplier(SerializableFunction<V, HasStyle> hasStyleSupplier) {
 		this.hasStyleSupplier = hasStyleSupplier;
 	}
 
@@ -216,7 +220,7 @@ public class InputAdapter<T, V extends HasValue<?, T>, C extends Component> impl
 	 * Get the {@link HasEnabled} supplier.
 	 * @return Optional {@link HasEnabled} supplier
 	 */
-	public Optional<Function<V, HasEnabled>> getHasEnabledSupplier() {
+	public Optional<SerializableFunction<V, HasEnabled>> getHasEnabledSupplier() {
 		return Optional.ofNullable(hasEnabledSupplier);
 	}
 
@@ -224,7 +228,7 @@ public class InputAdapter<T, V extends HasValue<?, T>, C extends Component> impl
 	 * Set the {@link HasEnabled} supplier.
 	 * @param hasEnabledSupplier the supplier to set
 	 */
-	public void setHasEnabledSupplier(Function<V, HasEnabled> hasEnabledSupplier) {
+	public void setHasEnabledSupplier(SerializableFunction<V, HasEnabled> hasEnabledSupplier) {
 		this.hasEnabledSupplier = hasEnabledSupplier;
 	}
 
@@ -232,7 +236,7 @@ public class InputAdapter<T, V extends HasValue<?, T>, C extends Component> impl
 	 * Get the {@link HasValueChangeMode} supplier.
 	 * @return Optional {@link HasValueChangeMode} supplier
 	 */
-	public Optional<Function<V, HasValueChangeMode>> getHasValueChangeModeSupplier() {
+	public Optional<SerializableFunction<V, HasValueChangeMode>> getHasValueChangeModeSupplier() {
 		return Optional.ofNullable(hasValueChangeModeSupplier);
 	}
 
@@ -240,7 +244,7 @@ public class InputAdapter<T, V extends HasValue<?, T>, C extends Component> impl
 	 * Set the {@link HasValueChangeMode} supplier.
 	 * @param hasValueChangeModeSupplier the supplier to set
 	 */
-	public void setHasValueChangeModeSupplier(Function<V, HasValueChangeMode> hasValueChangeModeSupplier) {
+	public void setHasValueChangeModeSupplier(SerializableFunction<V, HasValueChangeMode> hasValueChangeModeSupplier) {
 		this.hasValueChangeModeSupplier = hasValueChangeModeSupplier;
 	}
 
@@ -248,7 +252,7 @@ public class InputAdapter<T, V extends HasValue<?, T>, C extends Component> impl
 	 * Get the {@link HasValidation} supplier.
 	 * @return Optional {@link HasValidation} supplier
 	 */
-	public Optional<Function<V, HasValidation>> getHasValidationSupplier() {
+	public Optional<SerializableFunction<V, HasValidation>> getHasValidationSupplier() {
 		return Optional.ofNullable(hasValidationSupplier);
 	}
 
@@ -256,7 +260,7 @@ public class InputAdapter<T, V extends HasValue<?, T>, C extends Component> impl
 	 * Set the {@link HasValidation} supplier.
 	 * @param hasValidationSupplier the supplier to set
 	 */
-	public void setHasValidationSupplier(Function<V, HasValidation> hasValidationSupplier) {
+	public void setHasValidationSupplier(SerializableFunction<V, HasValidation> hasValidationSupplier) {
 		this.hasValidationSupplier = hasValidationSupplier;
 	}
 
@@ -264,7 +268,7 @@ public class InputAdapter<T, V extends HasValue<?, T>, C extends Component> impl
 	 * Get the {@link InvalidChangeEventNotifier} supplier.
 	 * @return Optional InvalidChangeEventNotifier} supplier
 	 */
-	public Optional<Function<V, InvalidChangeEventNotifier>> getInvalidChangeEventNotifierSupplier() {
+	public Optional<SerializableFunction<V, InvalidChangeEventNotifier>> getInvalidChangeEventNotifierSupplier() {
 		return Optional.ofNullable(invalidChangeEventNotifierSupplier);
 	}
 
@@ -273,7 +277,7 @@ public class InputAdapter<T, V extends HasValue<?, T>, C extends Component> impl
 	 * @param invalidChangeEventNotifierSupplier the supplier to set
 	 */
 	public void setInvalidChangeEventNotifierSupplier(
-			Function<V, InvalidChangeEventNotifier> invalidChangeEventNotifierSupplier) {
+			SerializableFunction<V, InvalidChangeEventNotifier> invalidChangeEventNotifierSupplier) {
 		this.invalidChangeEventNotifierSupplier = invalidChangeEventNotifierSupplier;
 	}
 
@@ -616,7 +620,7 @@ public class InputAdapter<T, V extends HasValue<?, T>, C extends Component> impl
 	 * @param type Adapter type (not null)
 	 * @param adapter Adapter function
 	 */
-	public <A> void setAdapter(Class<A> type, Function<Input<T>, A> adapter) {
+	public <A> void setAdapter(Class<A> type, SerializableFunction<Input<T>, A> adapter) {
 		adapters.setAdapter(type, adapter);
 	}
 

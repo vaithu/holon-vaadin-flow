@@ -65,6 +65,10 @@
 .hstrip--warning { background: linear-gradient(135deg, #b8860b 0%, #8a6300 100%); }
 .hstrip--danger  { background: linear-gradient(135deg, #c0392b 0%, #922b21 100%); }
 .hstrip--violet  { background: linear-gradient(135deg, #5a4ec4 0%, #7e6ee8 100%); }
+.hstrip--dark    { background: linear-gradient(135deg, #0f1b2d 0%, #1a3554 100%); }
+.hstrip--dark::after {
+    background: radial-gradient(circle at 80% 50%, rgba(111,122,252,.22), transparent 60%);
+}
 
 /* Header row (thumbnail + name/meta) */
 .hstrip__row {

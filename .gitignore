@@ -8,12 +8,9 @@
 *.iml
 *.iws
 .vscode
-.qodo
 .copilot
 .claude
-
-qodana.sarif.json
-qodana.yaml
+bin/
 
 
 # Mac
@@ -51,14 +48,24 @@ demo-out.txt
 # AI assistant workspace
 .junie/
 
+# Stray build output: javac emitted .class files into a CSS resource path
+/META-INF/resources/
+
+# Playwright output
+test-results/
+playwright-report/
+
 # Avoid ignoring Maven wrapper jar file (.jar files are usually ignored)
 !/.mvn/wrapper/maven-wrapper.jar
 
 # Vaadin
 node_modules/
+fronend/
 package.json
 webpack.config.js
 webpack.generated.js
 package-lock.json
-src/main/frontend/generated
+src/main/frontend/
+demo/src/main/frontend/
+
 

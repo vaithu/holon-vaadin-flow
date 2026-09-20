@@ -15,6 +15,8 @@
  */
 package com.holonplatform.vaadin.flow.internal.components.builders;
 
+import com.vaadin.flow.function.SerializableFunction;
+
 import com.holonplatform.core.Validator;
 import com.holonplatform.core.datastore.DataTarget;
 import com.holonplatform.core.datastore.Datastore;
@@ -711,7 +713,7 @@ public class DefaultOptionsMultiSelectInputBuilder<T, ITEM> extends
 
 		@Override
 		public <A> ValidatableOptionsMultiSelectInputBuilder<T, ITEM> withAdapter(Class<A> type,
-				Function<Input<Set<T>>, A> adapter) {
+				SerializableFunction<Input<Set<T>>, A> adapter) {
 			builder.withAdapter(type, adapter);
 			return this;
 		}
@@ -1097,7 +1099,7 @@ public class DefaultOptionsMultiSelectInputBuilder<T, ITEM> extends
 
 		@Override
 		public <A> DatastoreOptionsMultiSelectInputBuilder<T, ITEM> withAdapter(Class<A> type,
-				Function<Input<Set<T>>, A> adapter) {
+				SerializableFunction<Input<Set<T>>, A> adapter) {
 			builder.withAdapter(type, adapter);
 			return this;
 		}
@@ -1481,7 +1483,7 @@ public class DefaultOptionsMultiSelectInputBuilder<T, ITEM> extends
 
 		@Override
 		public <A> ValidatableDatastoreOptionsMultiSelectInputBuilder<T, ITEM> withAdapter(Class<A> type,
-				Function<Input<Set<T>>, A> adapter) {
+				SerializableFunction<Input<Set<T>>, A> adapter) {
 			builder.withAdapter(type, adapter);
 			return this;
 		}

@@ -15,6 +15,10 @@
  */
 package com.holonplatform.vaadin.flow.internal.components.builders;
 
+import com.vaadin.flow.function.SerializableConsumer;
+
+import com.vaadin.flow.function.SerializableFunction;
+
 import com.holonplatform.vaadin.flow.components.Input;
 import com.holonplatform.vaadin.flow.components.Input.PropertyHandler;
 import com.holonplatform.vaadin.flow.components.ValueHolder.ValueChangeEvent;
@@ -161,7 +165,7 @@ public class DefaultHasValueInputBuilder<T, H extends HasValue<?, T>, C extends 
 	 * Supplier)
 	 */
 	@Override
-	public HasValueInputBuilder<T, H, C> emptyValueSupplier(Function<H, T> emptyValueSupplier) {
+	public HasValueInputBuilder<T, H, C> emptyValueSupplier(SerializableFunction<H, T> emptyValueSupplier) {
 		getInstance().setEmptyValueSupplier(emptyValueSupplier);
 		return getConfigurator();
 	}
@@ -172,7 +176,7 @@ public class DefaultHasValueInputBuilder<T, H extends HasValue<?, T>, C extends 
 	 * Function)
 	 */
 	@Override
-	public HasValueInputBuilder<T, H, C> isEmptySupplier(Function<H, Boolean> isEmptySupplier) {
+	public HasValueInputBuilder<T, H, C> isEmptySupplier(SerializableFunction<H, Boolean> isEmptySupplier) {
 		getInstance().setIsEmptySupplier(isEmptySupplier);
 		return getConfigurator();
 	}
@@ -183,7 +187,7 @@ public class DefaultHasValueInputBuilder<T, H extends HasValue<?, T>, C extends 
 	 * com.holonplatform.vaadin.flow.components.builders.HasValueInputBuilder#valueSupplier(java.util.function.Function)
 	 */
 	@Override
-	public HasValueInputBuilder<T, H, C> valueSupplier(Function<H, T> valueSupplier) {
+	public HasValueInputBuilder<T, H, C> valueSupplier(SerializableFunction<H, T> valueSupplier) {
 		getInstance().setValueSupplier(valueSupplier);
 		return getConfigurator();
 	}
@@ -194,7 +198,7 @@ public class DefaultHasValueInputBuilder<T, H extends HasValue<?, T>, C extends 
 	 * Consumer)
 	 */
 	@Override
-	public HasValueInputBuilder<T, H, C> focusOperation(Consumer<H> focusOperation) {
+	public HasValueInputBuilder<T, H, C> focusOperation(SerializableConsumer<H> focusOperation) {
 		getInstance().setFocusOperation(focusOperation);
 		return getConfigurator();
 	}
@@ -205,7 +209,7 @@ public class DefaultHasValueInputBuilder<T, H extends HasValue<?, T>, C extends 
 	 * Function)
 	 */
 	@Override
-	public HasValueInputBuilder<T, H, C> hasSizeSupplier(Function<H, HasSize> hasSizeSupplier) {
+	public HasValueInputBuilder<T, H, C> hasSizeSupplier(SerializableFunction<H, HasSize> hasSizeSupplier) {
 		getInstance().setHasSizeSupplier(hasSizeSupplier);
 		return getConfigurator();
 	}
@@ -216,7 +220,7 @@ public class DefaultHasValueInputBuilder<T, H extends HasValue<?, T>, C extends 
 	 * Function)
 	 */
 	@Override
-	public HasValueInputBuilder<T, H, C> hasStyleSupplier(Function<H, HasStyle> hasStyleSupplier) {
+	public HasValueInputBuilder<T, H, C> hasStyleSupplier(SerializableFunction<H, HasStyle> hasStyleSupplier) {
 		getInstance().setHasStyleSupplier(hasStyleSupplier);
 		return getConfigurator();
 	}
@@ -228,7 +232,7 @@ public class DefaultHasValueInputBuilder<T, H extends HasValue<?, T>, C extends 
 	 * Function)
 	 */
 	@Override
-	public HasValueInputBuilder<T, H, C> hasEnabledSupplier(Function<H, HasEnabled> hasEnabledSupplier) {
+	public HasValueInputBuilder<T, H, C> hasEnabledSupplier(SerializableFunction<H, HasEnabled> hasEnabledSupplier) {
 		getInstance().setHasEnabledSupplier(hasEnabledSupplier);
 		return getConfigurator();
 	}
@@ -240,7 +244,7 @@ public class DefaultHasValueInputBuilder<T, H extends HasValue<?, T>, C extends 
 	 */
 	@Override
 	public HasValueInputBuilder<T, H, C> hasValueChangeModeSupplier(
-			Function<H, HasValueChangeMode> hasValueChangeModeSupplier) {
+			SerializableFunction<H, HasValueChangeMode> hasValueChangeModeSupplier) {
 		getInstance().setHasValueChangeModeSupplier(hasValueChangeModeSupplier);
 		return getConfigurator();
 	}
@@ -252,7 +256,7 @@ public class DefaultHasValueInputBuilder<T, H extends HasValue<?, T>, C extends 
 	 * Function)
 	 */
 	@Override
-	public HasValueInputBuilder<T, H, C> hasValidationSupplier(Function<H, HasValidation> hasValidationSupplier) {
+	public HasValueInputBuilder<T, H, C> hasValidationSupplier(SerializableFunction<H, HasValidation> hasValidationSupplier) {
 		getInstance().setHasValidationSupplier(hasValidationSupplier);
 		return getConfigurator();
 	}
@@ -265,7 +269,7 @@ public class DefaultHasValueInputBuilder<T, H extends HasValue<?, T>, C extends 
 	 */
 	@Override
 	public HasValueInputBuilder<T, H, C> invalidChangeEventNotifierSupplier(
-			Function<H, InvalidChangeEventNotifier> invalidChangeEventNotifierSupplier) {
+			SerializableFunction<H, InvalidChangeEventNotifier> invalidChangeEventNotifierSupplier) {
 		getInstance().setInvalidChangeEventNotifierSupplier(invalidChangeEventNotifierSupplier);
 		return getConfigurator();
 	}
@@ -348,13 +352,13 @@ public class DefaultHasValueInputBuilder<T, H extends HasValue<?, T>, C extends 
 	}
 
 	@Override
-	public <A> HasValueInputBuilder<T, H, C> withAdapter(Class<A> type, Function<Input<T>, A> adapter) {
+	public <A> HasValueInputBuilder<T, H, C> withAdapter(Class<A> type, SerializableFunction<Input<T>, A> adapter) {
 		getInstance().setAdapter(type, adapter);
 		return getConfigurator();
 	}
 
 	@Override
-	public <A> HasValueInputBuilder<T, H, C> withAdapters(Map<Class<A>, Function<Input<T>, A>> adapters) {
+	public <A> HasValueInputBuilder<T, H, C> withAdapters(Map<Class<A>, SerializableFunction<Input<T>, A>> adapters) {
 		if (adapters != null) {
 			adapters.forEach((type, adapter) -> getInstance().setAdapter(type, adapter));
 		}

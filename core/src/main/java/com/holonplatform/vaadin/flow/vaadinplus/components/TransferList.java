@@ -233,6 +233,30 @@ public class TransferList extends Div {
         return List.copyOf(selectedItems);
     }
 
+    // -----------------------------------------------------------------------
+    // Transfer buttons access (e.g. for per-user visibility/authorization control)
+    // -----------------------------------------------------------------------
+
+    /** Returns the "Move selected item(s) right" {@link Button}. */
+    public Button getMoveRightButton() {
+        return moveRightBtn;
+    }
+
+    /** Returns the "Move all items right" {@link Button}. */
+    public Button getMoveAllRightButton() {
+        return moveAllRightBtn;
+    }
+
+    /** Returns the "Move selected item(s) left" {@link Button}. */
+    public Button getMoveLeftButton() {
+        return moveLeftBtn;
+    }
+
+    /** Returns the "Move all items left" {@link Button}. */
+    public Button getMoveAllLeftButton() {
+        return moveAllLeftBtn;
+    }
+
     /**
      * Registers a listener invoked whenever items are transferred between panels.
      *

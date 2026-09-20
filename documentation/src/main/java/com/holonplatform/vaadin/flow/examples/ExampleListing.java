@@ -198,12 +198,12 @@ public class ExampleListing {
 				.resizable(true) // <3>
 				.frozenColumns(1) // <4>
 				.allRowsVisible(true) // <5>
-				.multiSort(true) // <7>
-				.autoWidth(ID) // <8>
-				.columnsAutoWidth() // <9>
-				.withColumnResizeListener(evt -> { // <10>
+				.multiSort(true) // <6>
+				.autoWidth(ID) // <7>
+				.columnsAutoWidth() // <8>
+				.withColumnResizeListener(evt -> { // <9>
 					// ...
-				}).withColumnReorderListener(evt -> { // <11>
+				}).withColumnReorderListener(evt -> { // <10>
 					// ...
 				}).build();
 		// end::listing11[]

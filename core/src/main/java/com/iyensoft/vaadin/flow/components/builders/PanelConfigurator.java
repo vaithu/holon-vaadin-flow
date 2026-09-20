@@ -1,12 +1,6 @@
 package com.iyensoft.vaadin.flow.components.builders;
 
-import com.holonplatform.vaadin.flow.components.builders.ComponentConfigurator;
-import com.holonplatform.vaadin.flow.components.builders.FooterConfigurator;
-import com.holonplatform.vaadin.flow.components.builders.HasSizeConfigurator;
-import com.holonplatform.vaadin.flow.components.builders.HasStyleConfigurator;
-import com.holonplatform.vaadin.flow.components.builders.HeaderConfigurator;
-import com.holonplatform.vaadin.flow.vaadinplus.components.Footer;
-import com.holonplatform.vaadin.flow.vaadinplus.components.Header;
+import com.holonplatform.vaadin.flow.components.builders.*;
 import com.iyensoft.vaadin.flow.components.Panel;
 import com.iyensoft.vaadin.flow.internal.components.builders.DefaultPanelConfigurator;
 import com.vaadin.flow.component.Component;
@@ -19,10 +13,13 @@ public interface PanelConfigurator<C extends PanelConfigurator<C>>
     FooterBuilder<C> footer();
 
     C content(Component... components);
+    C emptyState(String title);
 
-    C header(Header header);
+    C header(Component header);
 
-    C footer(Footer footer);
+    C header(String title);
+
+    C footer(Component footer);
 
     C card();
 
@@ -37,7 +34,6 @@ public interface PanelConfigurator<C extends PanelConfigurator<C>>
     interface HeaderBuilder<B extends PanelConfigurator<B>> extends HeaderConfigurator<HeaderBuilder<B>> {
         B add();
     }
-
     interface FooterBuilder<D extends PanelConfigurator<D>> extends FooterConfigurator<FooterBuilder<D>> {
         D add();
     }

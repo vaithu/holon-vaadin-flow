@@ -38,6 +38,8 @@
         <logger name="org.hibernate" level="INFO"/>
         <logger name="com.vaadin" level="INFO"/>
         <logger name="com.holonplatform" level="DEBUG"/>
+        <!-- SQL statement logging: on in development for query diagnostics. -->
+        <logger name="p6spy" level="INFO"/>
     </springProfile>
 
     <springProfile name="prod">
@@ -49,10 +51,14 @@
         <logger name="org.hibernate" level="WARN"/>
         <logger name="com.vaadin" level="WARN"/>
         <logger name="com.holonplatform" level="INFO"/>
+        <!-- Never log every statement in production: at high concurrency the volume
+             dominates the log and the appender becomes a contention point. -->
+        <logger name="p6spy" level="OFF"/>
     </springProfile>
 
     <!-- Default profile (no spring.profiles.active set) -->
     <root level="INFO">
         <appender-ref ref="CONSOLE"/>
     </root>
+    <logger name="p6spy" level="INFO"/>
 </configuration>

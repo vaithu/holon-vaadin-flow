@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Outfit:wght@400;500;600;700&display=swap');
+
 /*
  * master-detail-v2.css
  *
@@ -27,6 +29,32 @@
     --mdl-selected-accent: #1864ff;
     --mdl-selected-bg: rgba(24, 100, 255, 0.08);
     --mdl-selected-hover-bg: rgba(24, 100, 255, 0.15);
+    --mdl-master-width: 340px;
+    --surface-0: #ffffff;
+    --surface-1: #f3f5f8;
+    --surface-2: #f8fafc;
+    --line: #e4e9f0;
+    --line-soft: #eef1f6;
+    --text-strong: #0f1b2d;
+    --text-mute: #5b6878;
+    --text-dim: #8a96a6;
+    --primary: #1576d3;
+    --primary-soft: #e6f1fb;
+    --success: #2e9a6a;
+    --success-soft: #e7f6ee;
+    --warn: #b8860b;
+    --warn-soft: #fbf3dc;
+    --danger: #d35a4b;
+    --danger-soft: #fdecec;
+    --violet: #8472eb;
+    --violet-soft: #efeafd;
+
+    /* CRM mockup typography — applied here so every MasterDetailLayout consumer
+     * gets the correct look regardless of whether the active theme defines
+     * --font-body (falls back to the literal Outfit stack otherwise). */
+    font-family: var(--font-body, 'Outfit', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
+    font-size: 14px;
+    line-height: 1.45;
 
     display: flex;
     flex-direction: column;
@@ -99,12 +127,14 @@
     display: flex;
     flex-direction: column;
     height: 100%;
-    background: var(--surface-0);
+    background: var(--surface-0, #fff);
+    color: var(--text-strong, #0f1b2d);
 }
 
 .detail-view {
     display: none;
     padding-left: 0;
+    background: var(--surface-1, #f3f5f8);
 }
 
 .detail-view-content > .iyen-header {
@@ -177,7 +207,70 @@
     box-shadow: none;
 }
 
+.mdl-master-grid::part(row):hover ::slotted(*) {
+    background: transparent;
+}
+
+/*
+ * Full-row hover tint — mirrors the mock-up's `.mli:hover { background:
+ * var(--surface-2) }`. Setting --vaadin-grid-cell-background on the row
+ * (rather than a literal background on ::part(body-cell) directly) lets the
+ * value cascade/inherit down to every cell in the row, including the
+ * auto-added checkbox column, so the whole row tints together — not just
+ * the content-card cell, matching how the selection tint already spans the
+ * full row (see ::part(mdl-selected) below).
+ *
+ * ::part(body-cell) consumes this variable via its own background
+ * declaration; falls back to the plain surface colour when not hovered.
+ */
+.mdl-master-grid::part(row):hover {
+    --vaadin-grid-cell-background: var(--surface-2, #f8fafc);
+}
+
+.mdl-master-grid::part(body-cell) {
+    border-bottom: 1px solid var(--line-soft, #eef1f6);
+    background: var(--vaadin-grid-cell-background, var(--surface-0, #ffffff));
+    color: var(--text-strong, #0f1b2d);
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+.mdl-master-grid::part(header-cell) {
+    background: var(--surface-0, #ffffff);
+    color: var(--text-dim, #8a96a6);
+    border-bottom: 1px solid var(--line, #e4e9f0);
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
 /* ── CUSTOM SELECTION INDICATOR ─────────────────────────────────────────── */
+
+/*
+ * Declared AFTER ::part(body-cell) (whose "background" shorthand also sets
+ * background-color) so these tints win the cascade — same specificity,
+ * later rule — instead of being silently overridden back to plain white.
+ * They also win over the ::part(row):hover tint above: that rule only sets
+ * a custom property consumed by ::part(body-cell)'s own background, while
+ * mdl-active/mdl-selected set background-color directly and are declared
+ * later, exactly like the mock-up's ".mli.on" beating ".mli:hover" — hovering
+ * the active/selected row keeps its own tint instead of turning grey.
+ *
+ * Optional business/status row tint — set via
+ * MasterDetailConfigurator#withRowPartNameGenerator(...). Propagates to every cell
+ * of the row (unlike the LitRenderer's own "on" class, which only covers its own
+ * content cell), so e.g. an auto-added multi-select checkbox column also gets tinted
+ * instead of staying plain white next to a coloured card.
+ *
+ * Declared BEFORE ::part(mdl-selected) so that, on a row that is both "active" and
+ * the truly selected one, the selection tint below wins the cascade (same
+ * specificity, later rule) — true grid selection stays visually dominant.
+ */
+.mdl-master-grid::part(mdl-active) {
+    background-color: var(--primary-soft, #e6f1fb);
+}
 
 /*
  * Background tint — ::part(mdl-selected) is propagated by Vaadin Grid to every
@@ -227,9 +320,11 @@ vaadin-grid.mdl-master-grid::part(first-column-cell mdl-selected) {
     }
 
     .master-view {
-        max-width: 378px;
-        flex: 1 1 300px;
+        flex: 0 0 var(--mdl-master-width);
+        width: var(--mdl-master-width);
+        max-width: var(--mdl-master-width);
         overflow: auto;
+        border-right: 1px solid var(--color-border, #e4e9f0);
     }
 
     .separator {
@@ -239,8 +334,53 @@ vaadin-grid.mdl-master-grid::part(first-column-cell mdl-selected) {
 
     .detail-view {
         display: block;
-        flex: 2 1 500px;
+        flex: 1 1 0;
+        min-width: 0;
         overflow: auto;
     }
 }
 
+/* ── Rich detail header inside a mobile Sheet ────────────────────────────────
+ *
+ * sheet.css's .sheet__header rules assume a compact single-line title +
+ * description (SheetTitle/SheetDescription). When a full detail Header
+ * (breadcrumb + avatar + heading + tags + actions) is routed into the Sheet
+ * by AbstractMasterDetailConfigurator.wireMobileSheet(), those compact
+ * constraints (fixed min-height, centered single row, nowrap title) make the
+ * header's own rows collapse on top of each other. Relax them here, scoped
+ * to the "mdl-rich-header" marker so other (simple) Sheet usages keep the
+ * compact single-line header untouched.
+ */
+.mdl-rich-header .sheet__header .iyen-header__row {
+    align-items: stretch;
+    min-height: auto;
+}
+
+.mdl-rich-header .sheet__title,
+.mdl-rich-header .sheet__description {
+    white-space: normal;
+    overflow: visible;
+}
+
+/*
+ * header.css's row/wrap rules are viewport-width media queries (min-width: 640px),
+ * not container queries — they can't see that the Sheet panel itself is much
+ * narrower than the browser viewport. On a wide screen, the Sheet still renders
+ * as a ~400px drawer, so the ">=640px" nowrap/row layout gets applied even
+ * though there is nowhere near enough room, causing the avatar/heading/actions
+ * to overlap instead of wrap. Force the stacked (mobile) layout unconditionally
+ * whenever a rich Header lives inside a Sheet.
+ */
+.mdl-rich-header .iyen-header__top-row {
+    flex-wrap: wrap !important;
+    align-items: flex-start !important;
+}
+
+.mdl-rich-header .iyen-header__column-line {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+}
+
+.mdl-rich-header .iyen-header__column-line > :first-child {
+    flex: initial !important;
+}

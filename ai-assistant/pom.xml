@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.holon-platform.vaadin</groupId>
+        <artifactId>holon-vaadin-flow-root</artifactId>
+        <version>12.0.1-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>holon-vaadin-flow-ai-assistant</artifactId>
+
+    <name>${project.groupId}:${project.artifactId}</name>
+    <description>Holon Vaadin Flow AI Assistant — chat-based AI assistant components backed by the free
+        Vaadin AI (vaadin-ai-components-flow) module, with data access delegated to the Holon Datastore API
+    </description>
+
+    <url>https://holon-platform.com</url>
+
+    <dependencies>
+
+        <!-- Core Holon Vaadin components -->
+        <dependency>
+            <groupId>com.holon-platform.vaadin</groupId>
+            <artifactId>holon-vaadin-flow</artifactId>
+        </dependency>
+
+        <!-- Holon core Datastore API — data access for AI controllers/providers goes through this,
+             never through raw JDBC handed to the LLM -->
+        <dependency>
+            <groupId>com.holon-platform.core</groupId>
+            <artifactId>holon-core</artifactId>
+        </dependency>
+
+        <!-- Optional: Holon ChartJs component — required only when using ChartJsAIController -->
+        <dependency>
+            <groupId>com.holon-platform.vaadin</groupId>
+            <artifactId>holon-vaadin-flow-chartjs</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <!-- Vaadin AI support (free, Apache-2.0-licensed) — AIOrchestrator, LLMProvider, AIController,
+             DatabaseProvider, plus the ready-made GridAIController/ChartAIController/FormAIController.
+             This is a Vaadin 25.1+ preview feature (com.vaadin.experimental.aiComponents feature flag). -->
+        <dependency>
+            <groupId>com.vaadin</groupId>
+            <artifactId>vaadin-ai-components-flow</artifactId>
+            <version>${vaadin.version}</version>
+        </dependency>
+
+        <!-- Jackson databind (Jackson 3.x "tools.jackson" coordinates) — used to read LLM tool-call
+             JSON arguments (LLMProvider.ToolSpec#execute(tools.jackson.databind.JsonNode)); this is
+             the exact Jackson generation vaadin-ai-components-flow itself is compiled against. -->
+        <dependency>
+            <groupId>tools.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+        </dependency>
+
+        <!-- MessageList / MessageInput (used by the assistant view) are transitively provided by
+             vaadin-core via holon-vaadin-flow above — they have no Holon equivalent, so they are
+             the only raw Vaadin components allowed in this module. -->
+
+        <!-- NOTE: SpringAILLMProvider / LangChain4JLLMProvider ship as part of vaadin-ai-components-flow.
+             Applications that build the underlying Spring AI ChatModel / LangChain4j ChatModel
+             themselves must add their own org.springframework.ai / dev.langchain4j dependency —
+             this module does not impose a specific LLM framework. -->
+
+        <!-- Servlet API (provided by container) -->
+        <dependency>
+            <groupId>jakarta.servlet</groupId>
+            <artifactId>jakarta.servlet-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- Test -->
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifestEntries>
+                            <Automatic-Module-Name>com.holonplatform.vaadin.flow.ai</Automatic-Module-Name>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
+
+

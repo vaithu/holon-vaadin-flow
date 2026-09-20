@@ -17,8 +17,8 @@ package com.holonplatform.vaadin.flow.test;
 
 import com.holonplatform.vaadin.flow.components.Components;
 import com.holonplatform.vaadin.flow.components.ListingBundle;
-import com.holonplatform.vaadin.flow.vaadinplus.components.GridHeader;
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.HasText;
 import com.vaadin.flow.component.button.Button;
 import org.junit.jupiter.api.Test;
 
@@ -28,7 +28,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests for {@link com.holonplatform.vaadin.flow.components.ListingBundleBuilder#gridHeader(String)}
- * and the new fluent {@code gridHeader(Component...)} context-action wiring.
+ * and the {@code gridHeader(Component...)} context-action wiring — the title is a plain heading and
+ * context actions are wired into the {@link ListingBundle#toolbar()}'s bulk-actions row.
  */
 class TestListingBundleGridHeader {
 
@@ -45,7 +46,7 @@ class TestListingBundleGridHeader {
     }
 
     @Test
-    void gridHeader_withContextActions_attachesActionsToHeader() {
+    void gridHeader_withContextActions_attachesActionsToToolbar() {
         var deleteButton = new Button("Delete");
 
         ListingBundle<Product> bundle = Components.listing(Product.class)
@@ -54,11 +55,11 @@ class TestListingBundleGridHeader {
                 .fetch((q, text, sort) -> Stream.empty())
                 .build();
 
-        GridHeader header = bundle.header();
+        Component header = bundle.header();
         assertNotNull(header);
-        assertEquals("Products", header.getTitle().orElseThrow());
-        assertTrue(header.getColumnLayout().isVisible(), "listing grid header should keep the actions column visible");
-        assertTrue(isAttachedToHeader(deleteButton, header), "context action must be attached somewhere under the GridHeader hierarchy");
+        assertInstanceOf(HasText.class, header);
+        assertEquals("Products", ((HasText) header).getText());
+        assertTrue(isAttachedToBundle(bundle, deleteButton), "context action must be attached somewhere under the ListingBundle hierarchy");
     }
 
     @Test
@@ -68,14 +69,14 @@ class TestListingBundleGridHeader {
                 .fetch((q, text, sort) -> Stream.empty())
                 .build();
 
-        GridHeader header = bundle.header();
+        Component header = bundle.header();
         assertNotNull(header);
         assertSame(header, bundle.header(), "bundle.header() should return the cached header instance");
-        assertTrue(isAttachedToBundle(bundle, header), "standalone ListingBundle must add its non-null GridHeader as a child");
+        assertTrue(isAttachedToBundle(bundle, header), "standalone ListingBundle must add its non-null header as a child");
     }
 
     @Test
-    void gridHeader_contextActionsWithoutTitle_doNotCreateHeader() {
+    void gridHeader_contextActionsWithoutTitle_stillAttachToToolbar() {
         var deleteButton = new Button("Delete");
 
         ListingBundle<Product> bundle = Components.listing(Product.class)
@@ -84,18 +85,8 @@ class TestListingBundleGridHeader {
                 .build();
 
         assertNull(bundle.header());
-        assertTrue(deleteButton.getParent().isEmpty(), "context actions should stay unattached without a GridHeader title");
-    }
-
-    private static boolean isAttachedToHeader(Button button, GridHeader header) {
-        var current = button.getParent().orElse(null);
-        while (current != null) {
-            if (current == header) {
-                return true;
-            }
-            current = current.getParent().orElse(null);
-        }
-        return false;
+        assertTrue(isAttachedToBundle(bundle, deleteButton),
+                "context actions are wired into the toolbar regardless of whether a title is configured");
     }
 
     private static boolean isAttachedToBundle(ListingBundle<?> bundle, Component child) {

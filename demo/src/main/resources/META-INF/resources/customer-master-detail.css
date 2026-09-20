@@ -1,0 +1,20 @@
+.customer-master-detail { --font-body: 'Outfit', system-ui, sans-serif; --surface-0: #fff; --surface-1: #f3f5f8; --color-border: #e4e9f0; background: #f3f5f8; }
+.customer-master-detail .master-view .iyen-header { padding: 14px 16px 10px; border-bottom: 1px solid #eef1f6; }
+.customer-master-detail .detail-view > .iyen-header { background: #fff; padding: 18px 24px 16px; border-bottom: 1px solid #e4e9f0; }
+.customer-detail-tags, .customer-detail-tags > * { display: inline-flex; gap: 6px; flex-wrap: wrap; }
+.customer-detail-tabs { width: 100%; }
+.customer-detail-tabs > vaadin-tabs { background: #fff; border-bottom: 1px solid #e4e9f0; padding: 0 24px; }
+.customer-overview, .customer-detail-tabs > div { display: flex; flex-direction: column; gap: 16px; padding: 20px 24px; }
+.customer-section { background: #fff; border: 1px solid #e4e9f0; border-radius: 8px; box-shadow: 0 1px 2px rgba(15, 27, 45, .06); overflow: hidden; }
+.customer-section__heading { display: block; padding: 12px 16px; border-bottom: 1px solid #eef1f6; color: #0f1b2d; font-size: 14px; font-weight: 600; }
+.customer-section .entity-form-panel { padding: 16px; }
+.customer-addresses, .customer-contacts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; padding: 16px; }
+.customer-address, .customer-contact { background: #f8fafc; border: 1px solid #e4e9f0; border-radius: 6px; padding: 11px 13px; }
+.customer-address__caption { display: block; color: #8a96a6; font-size: 10.5px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; }
+.customer-address__value { display: block; margin-top: 4px; color: #5b6878; font-size: 12px; line-height: 1.45; white-space: pre-line; }
+.customer-contact { display: grid; grid-template-columns: 32px 1fr; column-gap: 9px; align-items: center; }
+.customer-contact vaadin-avatar { grid-row: span 2; --vaadin-avatar-size: 32px; }
+.customer-contact span:first-of-type { font-size: 12.5px; font-weight: 600; }.customer-contact span:last-of-type { color: #5b6878; font-size: 10.5px; }
+.customer-section .ar-aging-bar, .customer-section .timeline-stepper, .customer-section .totals-card { margin: 16px; }
+.customer-data-grid { width: 100%; }.customer-data-grid::part(header-cell) { background: #f8fafc; color: #8a96a6; font-size: 10.5px; text-transform: uppercase; }.customer-data-grid::part(body-cell) { font-size: 12.5px; }
+@media (max-width: 767px) { .customer-overview, .customer-detail-tabs > div { padding: 12px; }.customer-master-detail .detail-view > .iyen-header { padding: 12px 16px; }.customer-addresses, .customer-contacts { grid-template-columns: 1fr; } }

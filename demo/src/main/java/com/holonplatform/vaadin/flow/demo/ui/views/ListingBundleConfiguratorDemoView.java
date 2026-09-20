@@ -8,8 +8,8 @@ import com.holonplatform.vaadin.flow.demo.data.entity.Product;
 import com.holonplatform.vaadin.flow.demo.data.service.ProductService;
 import com.holonplatform.vaadin.flow.demo.ui.DemoExample;
 import com.holonplatform.vaadin.flow.demo.ui.DemoMainLayout;
-import com.holonplatform.vaadin.flow.vaadinplus.components.GridHeader;
-import com.holonplatform.vaadin.flow.vaadinplus.utilities.Font;
+import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.HasText;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.html.Div;
@@ -24,16 +24,14 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
 /**
- * Demo for the chained {@link com.holonplatform.vaadin.flow.components.builders.HeaderConfigurator}
- * → {@link com.holonplatform.vaadin.flow.components.builders.GridHeaderConfigurator}
- * → {@link ListingBundleConfigurator} fluent-configurator hierarchy.
+ * Demo for the {@link ListingBundleConfigurator} post-build fluent API.
  *
  * <p>Each example builds a {@link ListingBundle} the normal way, then re-configures
  * it after the fact via {@code ListingBundleConfigurator.configure(bundle)} — showing
- * that all three levels of fluent methods (heading / grid actions / row click) are
- * available in a single chain, and that the underlying parts (header, search,
- * toolbar, footer) can be retrieved either via the bundle's own accessors or via
- * the configurator's read-only accessors.
+ * that row-click wiring and read-only accessors (header, search, toolbar, footer) are
+ * available in a single chain. The title heading returned by {@link ListingBundle#header()}
+ * is a plain {@link Component}; grid-management actions and selection-aware context
+ * actions live in {@link ListingBundle#toolbar()} instead.
  */
 @PageTitle("ListingBundleConfigurator – Holon Demo")
 @Route(value = "listing-bundle-configurator", layout = DemoMainLayout.class)
@@ -48,10 +46,10 @@ public class ListingBundleConfiguratorDemoView extends Div {
 
         add(new H1("ListingBundleConfigurator"),
                 new Paragraph(
-                        "ListingBundleConfigurator extends GridHeaderConfigurator extends HeaderConfigurator. "
-                                + "Use ListingBundleConfigurator.configure(bundle) to fluently style the heading, "
-                                + "manage default/context actions on the GridHeader, attach row-click listeners, "
-                                + "and access the underlying search field, toolbar and footer — all from one chain."),
+                        "Use ListingBundleConfigurator.configure(bundle) to attach row-click listeners "
+                                + "and access the underlying header, search field, toolbar and footer — all "
+                                + "from one chain. The title and context actions are configured at build time "
+                                + "via ListingBundleBuilder#gridHeader(...)."),
                 example1RetrieveParts(),
                 example2HeaderRestyling(),
                 example3SelectionContextActions());
@@ -61,7 +59,6 @@ public class ListingBundleConfiguratorDemoView extends Div {
 
     private DemoExample example1RetrieveParts() {
         ListingBundle<Product> bundle = Components.listing(Product.class)
-                .gridHeader("Products")
                 .columns("id", "name", "category", "price")
                 .pageSizes(5, 10)
                 .defaultPageSize(5)
@@ -72,19 +69,13 @@ public class ListingBundleConfiguratorDemoView extends Div {
         // Single fluent chain — every accessor returns the live wired component
         var cfg = ListingBundleConfigurator.configure(bundle);
 
-        GridHeader  grid    = bundle.header();
+        Component   header  = bundle.header();
         TextField   search  = cfg.getSearchOptional().orElse(null);   // from ListingBundleConfigurator
         Div         toolbar = cfg.toolbar();
         Div         footer  = cfg.footer();
 
-        // Prove they are the same instances exposed by the bundle
-        var bundleHeader = bundle.header();
-        assert grid    == bundleHeader;
-        assert search  == bundle.getSearchOptional().orElse(null);
-
         var info = new Span(
-                "header=" + (grid != null) + ", "
-                        + "gridHeader=" + (grid != null) + ", "
+                "header=" + (header != null) + ", "
                         + "search=" + (search != null) + ", "
                         + "toolbar=" + (toolbar != null) + ", "
                         + "footer=" + (footer != null));
@@ -104,53 +95,45 @@ public class ListingBundleConfiguratorDemoView extends Div {
                 // Configurator gives typed access to every assembled part
                 var cfg = ListingBundleConfigurator.configure(bundle);
 
-                GridHeader grid    = bundle.header();                             // same live instance
+                Component  header  = bundle.header();                        // same live instance (the title heading)
                 TextField  search  = cfg.getSearchOptional().orElse(null);   // == bundle.getSearchOptional() (may be null)
                 Div        toolbar = cfg.toolbar();                           // == bundle.toolbar()
                 Div        footer  = cfg.footer();                            // == bundle.footer()
                 """);
     }
 
-    // ── Example 2 — restyle the heading after build ─────────────────────────
+    // ── Example 2 — restyle the title heading after build ───────────────────
 
     private DemoExample example2HeaderRestyling() {
         ListingBundle<Product> bundle = Components.listing(Product.class)
-                .gridHeader("Initial title")
                 .columns("id", "name", "category", "price")
                 .pageSizes(5)
                 .fetch((q, text, sort) -> productService.fetch(q.getOffset(), q.getLimit(), text))
                 .build();
 
-        // Re-configure the header using HeaderConfigurator methods inherited
-        // through the ListingBundleConfigurator chain. Also drop the bottom border.
-        ListingBundleConfigurator.configure(bundle)
-                .heading(Components.h3().text("Catalogue (restyled)").build())
-                .withSize(Font.Size.XLARGE)
-                .withoutBorder();
+        // header() returns a plain Component (an H2) — restyle it directly via the
+        // standard Vaadin HasText / HasStyle contracts; there is no dedicated
+        // Header-configurator for it anymore.
+        if (bundle.header() instanceof HasText text) {
+            text.setText("Catalogue (restyled)");
+        }
+        bundle.header().getElement().getStyle().set("font-size", "1.5rem");
 
         return new DemoExample(
-                "2. Restyle the heading via inherited HeaderConfigurator methods",
+                "2. Restyle the title heading directly",
                 new Div(bundle),
                 """
-                // All Header* methods are inherited — they delegate to the live bundle header()
-                ListingBundleConfigurator.configure(bundle)
-                    .heading(Components.h3().text("Catalogue (restyled)").build())
-                    .withSize(Font.Size.XLARGE)
-                    .withoutBorder();          // suppress header bottom border
+                // header() returns a plain Component (an H2) — restyle it directly
+                if (bundle.header() instanceof HasText text) {
+                    text.setText("Catalogue (restyled)");
+                }
+                bundle.header().getElement().getStyle().set("font-size", "1.5rem");
                 """);
     }
 
     // ── Example 3 — wire selection-aware context actions + row click ────────
 
     private DemoExample example3SelectionContextActions() {
-        ListingBundle<Product> bundle = Components.listing(Product.class)
-                .gridHeader("Products")
-                .columns("id", "name", "category", "price")
-                .pageSizes(5)
-                .search("Search…")
-                .fetch((q, text, sort) -> productService.fetch(q.getOffset(), q.getLimit(), text))
-                .build();
-
         var deleteBtn = new Button("Delete", new Icon(VaadinIcon.TRASH));
         deleteBtn.addThemeVariants(ButtonVariant.LUMO_ERROR);
         deleteBtn.addClickListener(e -> Notification.show("Pretend-deleted selected rows"));
@@ -158,23 +141,35 @@ public class ListingBundleConfiguratorDemoView extends Div {
         var exportBtn = new Button("Export CSV", new Icon(VaadinIcon.DOWNLOAD));
         exportBtn.addClickListener(e -> Notification.show("Pretend-exported selected rows"));
 
+        // Context actions are supplied at build time — they land in the toolbar's
+        // bulk-actions row, shown automatically once rows are selected.
+        ListingBundle<Product> bundle = Components.listing(Product.class)
+                .columns("id", "name", "category", "price")
+                .pageSizes(5)
+                .search("Search…")
+                .fetch((q, text, sort) -> productService.fetch(q.getOffset(), q.getLimit(), text))
+                .build();
+
         // Disable row selection so a click only fires onItemClick (no visual selection toggle).
         bundle.listing().setSelectionMode(Selectable.SelectionMode.NONE);
 
-        // Selection actions appear when rows are selected; row click opens a notification
         ListingBundleConfigurator.configure(bundle)
-                .contextActions(deleteBtn, exportBtn)
                 .onItemClick(e -> Notification.show("Clicked: " + e.getItem().getName()));
 
         return new DemoExample(
                 "3. Selection context actions + row click via the chained configurator",
                 new Div(bundle),
                 """
+                // Context actions are supplied at build time on the builder itself
+                ListingBundle<Product> bundle = Components.listing(Product.class)
+                    .gridHeader("Products", deleteBtn, exportBtn)
+                    .fetch((q, text, sort) -> productService.fetch(q.getOffset(), q.getLimit(), text))
+                    .build();
+
                 // Stop the grid from selecting the row when the user clicks it
                 bundle.listing().setSelectionMode(Selectable.SelectionMode.NONE);
 
                 ListingBundleConfigurator.configure(bundle)
-                    .contextActions(deleteBtn, exportBtn)                         // GridHeaderConfigurator
                     .onItemClick(e -> Notification.show(e.getItem().getName()));  // ListingBundleConfigurator
                 """);
     }

@@ -1,0 +1,269 @@
+/* -----------------------------------------------------------------------
+ * SignInPage — generic split sign-in layout (TailAdmin inspired)
+ * ----------------------------------------------------------------------- */
+
+.iyen-signin {
+  display: flex;
+  min-height: 100vh;
+  width: 100%;
+  box-sizing: border-box;
+  background-color: var(--surface-0, #ffffff);
+  color: #1a2231;
+  font-family: var(--lumo-font-family, "Inter", system-ui, sans-serif);
+  container-type: inline-size;
+  container-name: signin;
+}
+
+/* Demo / embedded usage: constrain height instead of full viewport. */
+.iyen-signin--boxed {
+  min-height: 620px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+/* ── Form side ─────────────────────────────────────────────────────────── */
+
+.iyen-signin__form-side {
+  flex: 1 1 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2.5rem 1.5rem;
+}
+
+.iyen-signin__card {
+  width: 100%;
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.iyen-signin__heading {
+  margin: 0;
+  font-size: 1.875rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.iyen-signin__subtitle {
+  margin: -0.5rem 0 0;
+  color: #667085;
+  font-size: 0.9375rem;
+}
+
+/* ── Social buttons ────────────────────────────────────────────────────── */
+
+.iyen-signin__social {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+.iyen-signin__social-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  height: 3rem;
+  padding: 0 0.75rem;
+  border: 1px solid #e4e7ec;
+  border-radius: 10px;
+  background: #f9fafb;
+  color: #344054;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.iyen-signin__social-button:hover {
+  background: #f2f4f7;
+  border-color: #d0d5dd;
+}
+
+/* ── Divider ───────────────────────────────────────────────────────────── */
+
+.iyen-signin__divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  color: #98a2b3;
+  font-size: 0.8125rem;
+}
+
+.iyen-signin__divider::before,
+.iyen-signin__divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: #e4e7ec;
+}
+
+.iyen-signin__divider span {
+  padding: 0 0.75rem;
+}
+
+/* ── Fields ────────────────────────────────────────────────────────────── */
+
+.iyen-signin__fields {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.iyen-signin__options {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.iyen-signin__keep {
+  font-size: 0.875rem;
+}
+
+.iyen-signin__link {
+  color: #465fff;
+  font-size: 0.875rem;
+  cursor: pointer;
+}
+
+.iyen-signin__link:hover {
+  text-decoration: underline;
+}
+
+.iyen-signin__submit {
+  height: 3rem;
+  border-radius: 10px;
+  background: #465fff;
+  color: #ffffff;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: background 0.15s ease;
+}
+
+.iyen-signin__submit:hover {
+  background: #3641f5;
+}
+
+/* ── Error message ─────────────────────────────────────────────────────── */
+
+.iyen-signin__error {
+  padding: 0.75rem 1rem;
+  border-radius: 10px;
+  background: #fef3f2;
+  color: #b42318;
+  font-size: 0.875rem;
+  border: 1px solid #fecdca;
+}
+
+/* ── Sign-up row ───────────────────────────────────────────────────────── */
+
+.iyen-signin__signup {
+  text-align: center;
+  color: #667085;
+  font-size: 0.875rem;
+}
+
+/* ── Brand side ────────────────────────────────────────────────────────── */
+
+.iyen-signin__brand-side {
+  flex: 1 1 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2.5rem;
+  background:
+    radial-gradient(circle at top left, rgba(255, 255, 255, 0.12), transparent 55%),
+    linear-gradient(135deg, #1a2231 0%, #2a3244 55%, #465fff 130%);
+  color: #ffffff;
+}
+
+.iyen-signin__brand-content {
+  max-width: 340px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.iyen-signin__brand-logo {
+  display: inline-flex;
+  color: #ffffff;
+  opacity: 0.95;
+}
+
+.iyen-signin__brand-title {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.iyen-signin__brand-text {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.9375rem;
+  line-height: 1.6;
+}
+
+/* ── Responsive ────────────────────────────────────────────────────────── */
+
+/* Container queries: adapt to the component's own width (works when embedded). */
+@container signin (max-width: 991px) {
+  .iyen-signin__brand-side {
+    display: none;
+  }
+  .iyen-signin__form-side {
+    flex-basis: 100%;
+  }
+}
+
+@container signin (max-width: 640px) {
+  .iyen-signin__form-side {
+    padding: 1.5rem 1rem;
+  }
+}
+
+@container signin (max-width: 480px) {
+  .iyen-signin__social {
+    grid-template-columns: 1fr;
+  }
+  .iyen-signin__options {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+}
+
+/* Viewport fallback for browsers without container query support. */
+@media (max-width: 991px) {
+  .iyen-signin__brand-side {
+    display: none;
+  }
+  .iyen-signin__form-side {
+    flex-basis: 100%;
+  }
+}
+
+@media (max-width: 640px) {
+  .iyen-signin__form-side {
+    padding: 1.5rem 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .iyen-signin__social {
+    grid-template-columns: 1fr;
+  }
+  .iyen-signin__options {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+}

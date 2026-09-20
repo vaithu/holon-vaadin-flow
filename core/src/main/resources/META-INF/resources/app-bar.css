@@ -26,6 +26,7 @@
     align-items: center;
     gap: 0.5rem;
     width: 100%;
+    padding-inline: 1rem;
     min-height: 3rem;
     box-sizing: border-box;
 }
@@ -33,7 +34,6 @@
 @media (min-width: 640px) {
     .app-bar {
         min-height: 3.5rem;
-        padding-inline: 1rem;
     }
 }
 
@@ -48,6 +48,7 @@
     overflow: hidden;
     flex-shrink: 1;
     min-width: 0;
+    min-height: 3rem;
 }
 
 /* -----------------------------------------------------------------------
@@ -72,6 +73,14 @@
     align-items: center;
     gap: 0.25rem;
     flex-shrink: 0;
+}
+
+@media (max-width: 639px) {
+    .app-bar__end {
+        margin-inline-start: auto;
+        gap: 0.5rem;
+        min-height: 3rem;
+    }
 }
 
 /* -----------------------------------------------------------------------

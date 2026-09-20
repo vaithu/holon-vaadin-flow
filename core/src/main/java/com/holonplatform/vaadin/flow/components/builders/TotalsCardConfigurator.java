@@ -87,6 +87,7 @@ public interface TotalsCardConfigurator<C extends TotalsCardConfigurator<C>>
      * @return this configurator (for chaining)
      */
     C clearRows();
+    C emptyState(String title);
 
     // -----------------------------------------------------------------------
     // Variant
@@ -245,4 +246,3 @@ public interface TotalsCardConfigurator<C extends TotalsCardConfigurator<C>>
     interface BaseTotalsCardConfigurator extends TotalsCardConfigurator<BaseTotalsCardConfigurator> {
     }
 }
-

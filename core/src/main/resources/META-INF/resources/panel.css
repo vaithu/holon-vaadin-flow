@@ -21,6 +21,13 @@
   border: none;
 }
 
+.iyen-panel > .panel-content,
+.iyen-panel > .panel-header {
+  align-self: stretch;
+  width: 100%;
+  box-sizing: border-box;
+}
+
 @media (max-width: 640px) {
   .iyen-panel {
     gap: var(--lumo-space-s);

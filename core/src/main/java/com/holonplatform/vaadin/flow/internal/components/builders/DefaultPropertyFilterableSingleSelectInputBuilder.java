@@ -617,7 +617,7 @@ public class DefaultPropertyFilterableSingleSelectInputBuilder<T> extends Abstra
 	}
 
 	@Override
-	public <A> PropertyFilterableSingleSelectInputBuilder<T> withAdapter(Class<A> type, Function<Input<T>, A> adapter) {
+	public <A> PropertyFilterableSingleSelectInputBuilder<T> withAdapter(Class<A> type, SerializableFunction<Input<T>, A> adapter) {
 		builder.withAdapter(type, adapter);
 		return this;
 	}
@@ -1089,7 +1089,7 @@ public class DefaultPropertyFilterableSingleSelectInputBuilder<T> extends Abstra
 
 		@Override
 		public <A> ValidatablePropertyFilterableSingleSelectInputBuilder<T> withAdapter(Class<A> type,
-				Function<Input<T>, A> adapter) {
+				SerializableFunction<Input<T>, A> adapter) {
 			builder.withAdapter(type, adapter);
 			return this;
 		}
@@ -1884,7 +1884,7 @@ public class DefaultPropertyFilterableSingleSelectInputBuilder<T> extends Abstra
 
 		@Override
 		public <A> DatastorePropertyFilterableSingleSelectInputBuilder<T> withAdapter(Class<A> type,
-				Function<Input<T>, A> adapter) {
+				SerializableFunction<Input<T>, A> adapter) {
 			builder.withAdapter(type, adapter);
 			return this;
 		}
@@ -2646,7 +2646,7 @@ public class DefaultPropertyFilterableSingleSelectInputBuilder<T> extends Abstra
 
 		@Override
 		public <A> ValidatableDatastorePropertyFilterableSingleSelectInputBuilder<T> withAdapter(Class<A> type,
-				Function<Input<T>, A> adapter) {
+				SerializableFunction<Input<T>, A> adapter) {
 			builder.withAdapter(type, adapter);
 			return this;
 		}

@@ -80,6 +80,20 @@ class ViewSessionSerializationTest extends AbstractViewSessionTest {
 //        assertDoesNotThrow(() -> roundTrip(view));
     }
 
+    @Test
+    void customerMasterDetailMaterialViewIsSerializable() throws Exception {
+        // Regression guard for the caches added when this view took over deep-link
+        // validation: none of them may join the serialized session. lastFetchText /
+        // lastFetchFilter mirror the listing's current query so the ItemIndexProvider can
+        // count against the same criteria, and preloadedProduct hands beforeEnter's lookup
+        // to the URL-sync loader — all three are request-scoped scratch state, and
+        // QueryFilter is not serializable in the first place.
+        assertTransientField(CustomerMasterDetailMaterialView.class, "productService");
+        assertTransientField(CustomerMasterDetailMaterialView.class, "lastFetchText");
+        assertTransientField(CustomerMasterDetailMaterialView.class, "lastFetchFilter");
+        assertTransientField(CustomerMasterDetailMaterialView.class, "preloadedProduct");
+    }
+
     private static void assertTransientField(Class<?> type, String fieldName) throws NoSuchFieldException {
         Field field = type.getDeclaredField(fieldName);
         assertTrue(Modifier.isTransient(field.getModifiers()),

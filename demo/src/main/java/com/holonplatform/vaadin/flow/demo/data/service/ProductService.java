@@ -9,12 +9,13 @@ import com.holonplatform.core.query.BeanProjection;
 import com.holonplatform.core.query.QueryFilter;
 import com.holonplatform.core.query.QuerySort;
 import com.holonplatform.vaadin.flow.demo.data.entity.Product;
+import com.vaadin.flow.data.provider.QuerySortOrder;
+import com.vaadin.flow.data.provider.SortDirection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -38,6 +39,8 @@ public class ProductService {
     private static final StringProperty        CATEGORY_PROP = StringProperty.create("category");
     private static final PathProperty<Long>    ID_PROP       = PathProperty.create("id", Long.class);
     private static final PathProperty<Boolean> ACTIVE_PROP   = PathProperty.create("active", Boolean.class);
+    private static final PathProperty<java.math.BigDecimal> PRICE_PROP =
+            PathProperty.create("price", java.math.BigDecimal.class);
 
     // ── CRUD delegate ─────────────────────────────────────────────────────────
     private final BeanDatastoreHelper<Product> helper;
@@ -48,13 +51,100 @@ public class ProductService {
 
     // ── Read operations ───────────────────────────────────────────────────────
 
+    @Transactional(readOnly = true)
     public Optional<Product> findById(Long id) {
         return helper.findOne(ID_PROP.eq(id));
     }
 
-    /** Returns the first product (by default sort order) for detail panel pre-population. */
+    /**
+     * Returns the first product in the listing's default sort order (name ascending), for
+     * detail-panel pre-population.
+     *
+     * <p>The sort must match {@link #fetch} — the grid renders only a window of rows, so an
+     * unsorted {@code LIMIT 1} would return an arbitrary product that may fall outside the
+     * rendered window and appear unselected.</p>
+     */
+    @Transactional(readOnly = true)
     public Optional<Product> findFirst() {
-        return helper.findFirst();
+        return helper.getDatastore()
+                .query(TARGET)
+                .sort(NAME_PROP.asc())
+                .restrict(1, 0)
+                .stream(BeanProjection.of(Product.class))
+                .findFirst();
+    }
+
+    /**
+     * Returns the zero-based row index of {@code product} in the listing, i.e. the number of
+     * rows that precede it under the <em>currently applied</em> sort, search text and filter.
+     *
+     * <p>Used as the Grid's {@code ItemIndexProvider} so a deep-linked row further down the
+     * list is scrolled into view. It must mirror {@link #fetch} exactly — counting against
+     * different criteria would scroll to the wrong row — so the same text/filter the last
+     * fetch used are passed back in, and the sort is read from the Grid's own query.</p>
+     *
+     * <p>Returns empty when the position cannot be expressed as a single range count
+     * (composite sort, a sort on a column with no ordering predicate, or a null sort value).
+     * The caller then simply skips the scroll rather than jumping somewhere wrong.</p>
+     *
+     * @param product     the item to locate
+     * @param text        the search text active on the listing, or {@code null}
+     * @param filter      the filter-panel filter active on the listing, or {@code null}
+     * @param sortOrders  the Grid's current sort orders; empty means the default name-ascending
+     */
+    @Transactional(readOnly = true)
+    public Optional<Integer> indexOf(Product product, String text, QueryFilter filter,
+                                     List<QuerySortOrder> sortOrders) {
+        if (product == null) {
+            return Optional.empty();
+        }
+        Optional<QueryFilter> preceding = precedingFilter(product, sortOrders);
+        if (preceding.isEmpty()) {
+            return Optional.empty();
+        }
+        var q = helper.getDatastore().query(TARGET).filter(preceding.get());
+        if (text != null && !text.isBlank()) {
+            q = q.filter(nameOrCategoryFilter(text));
+        }
+        if (filter != null) {
+            q = q.filter(filter);
+        }
+        return Optional.of((int) q.count());
+    }
+
+    /**
+     * Builds the "sorts before {@code product}" predicate for the active sort order, so the
+     * row index is a single {@code COUNT}. Empty when the sort cannot be expressed that way.
+     *
+     * <p>Package-private rather than private so the sort-branch matrix can be unit tested
+     * without a database: an error here scrolls the grid to the wrong row, which is hard to
+     * notice by eye but trivial to assert.</p>
+     */
+    static Optional<QueryFilter> precedingFilter(Product product,
+                                                         List<QuerySortOrder> sortOrders) {
+        if (sortOrders == null || sortOrders.isEmpty()) {
+            // Matches the default sort applied by fetch().
+            return comparison(NAME_PROP, product.getName(), true);
+        }
+        if (sortOrders.size() > 1) {
+            return Optional.empty();  // composite sort: a single range count cannot express it
+        }
+        QuerySortOrder order = sortOrders.get(0);
+        boolean asc = order.getDirection() != SortDirection.DESCENDING;
+        return switch (order.getSorted()) {
+            case "name" -> comparison(NAME_PROP, product.getName(), asc);
+            case "category" -> comparison(CATEGORY_PROP, product.getCategory(), asc);
+            case "id" -> comparison(ID_PROP, product.getId(), asc);
+            case "price" -> comparison(PRICE_PROP, product.getPrice(), asc);
+            default -> Optional.empty();  // e.g. a boolean column: no useful ordering predicate
+        };
+    }
+
+    private static <V> Optional<QueryFilter> comparison(PathProperty<V> property, V value, boolean asc) {
+        if (value == null) {
+            return Optional.empty();
+        }
+        return Optional.of(asc ? property.lt(value) : property.gt(value));
     }
 
     public List<Product> findAll() {
@@ -97,9 +187,16 @@ public class ProductService {
     }
 
     public long count(String text) {
+        return count(text, null);
+    }
+
+    public long count(String text, QueryFilter filter) {
         var q = helper.getDatastore().query(TARGET);
         if (text != null && !text.isBlank()) {
             q = q.filter(nameOrCategoryFilter(text));
+        }
+        if (filter != null) {
+            q = q.filter(filter);
         }
         return q.count();
     }
@@ -110,6 +207,7 @@ public class ProductService {
      * Both filters are AND-combined when both are non-null/non-blank.
      * Applies the given {@link QuerySort} if non-null, otherwise falls back to name ascending.
      */
+    @Transactional(readOnly = true)
     public Stream<Product> fetch(int offset, int limit, String text, QueryFilter filter, QuerySort sort) {
         var q = helper.getDatastore()
                 .query(TARGET)
@@ -146,69 +244,6 @@ public class ProductService {
     public void deleteById(Long id) {
         log.info("Deleting product id={}", id);
         findById(id).ifPresent(helper::delete);
-    }
-
-    // ── Seed data ────────────────────────────────────────────────────────────
-
-    /**
-     * Inserts sample data when the database is empty.
-     * Called from {@link com.holonplatform.vaadin.flow.demo.data.DemoDataInitializer}.
-     */
-    @Transactional
-    public void seedIfEmpty() {
-        if (helper.getDatastore().query(TARGET).count() > 0) return;
-
-        String[] categories = {"Electronics", "Furniture", "Audio", "Lighting", "Accessories",
-                "Storage", "Networking", "Software", "Peripherals", "Office Supplies"};
-        String[][] prefixes = {
-            {"Wireless", "Bluetooth", "USB-C", "4K", "Pro", "Mini", "Ultra", "Smart", "Portable", "Compact"},
-            {"Ergonomic", "Standing", "Adjustable", "Modular", "Foldable", "Premium", "Executive", "Industrial", "Wooden", "Metal"},
-            {"Noise-Cancelling", "Studio", "Surround", "Bass", "Hi-Fi", "Wireless", "Gaming", "DJ", "Podcast", "Mono"},
-            {"LED", "RGB", "Solar", "Motion", "Dimmable", "Touch", "Smart", "Ambient", "Task", "Clip-On"},
-            {"Multi-Port", "Cable", "Desk", "Travel", "Eco", "Universal", "Quick", "Heavy-Duty", "Slim", "Anti-Slip"},
-            {"SSD", "NAS", "Cloud", "RAID", "Encrypted", "Portable", "High-Speed", "Archive", "Backup", "Flash"},
-            {"Mesh", "5G", "WiFi-6", "Gigabit", "Fiber", "PoE", "Dual-Band", "Enterprise", "VPN", "Outdoor"},
-            {"Antivirus", "Productivity", "Creative", "Database", "Analytics", "CRM", "ERP", "CAD", "IDE", "Backup"},
-            {"Mechanical", "Optical", "Touch", "Pen", "Trackball", "Ergonomic", "Split", "Macro", "Silent", "TKL"},
-            {"Recycled", "Premium", "Bulk", "Custom", "Branded", "Standard", "Archive", "Lined", "Grid", "Sticky"}
-        };
-        String[][] nouns = {
-            {"Mouse", "Keyboard", "Monitor", "Webcam", "Hub", "Charger", "Speaker", "Tablet", "Dock", "Adapter"},
-            {"Chair", "Desk", "Shelf", "Cabinet", "Drawer", "Podium", "Table", "Bench", "Rack", "Divider"},
-            {"Headset", "Earbuds", "Microphone", "Amplifier", "Mixer", "DAC", "Soundbar", "Subwoofer", "Interface", "Receiver"},
-            {"Lamp", "Strip", "Bulb", "Panel", "Fixture", "Pendant", "Chandelier", "Sconce", "Floodlight", "Spotlight"},
-            {"Mat", "Organizer", "Mount", "Stand", "Holder", "Clip", "Tray", "Hook", "Pad", "Cover"},
-            {"Drive", "Enclosure", "Card", "Stick", "Bay", "Array", "Dock", "Reader", "Caddy", "Module"},
-            {"Router", "Switch", "Access Point", "Modem", "Repeater", "Bridge", "Firewall", "Controller", "Antenna", "Cable"},
-            {"Suite", "License", "Plugin", "Module", "Toolkit", "Platform", "Service", "Engine", "Framework", "Agent"},
-            {"Keyboard", "Mouse", "Tablet", "Stylus", "Controller", "Joystick", "Wheel", "Pad", "Scanner", "Printer"},
-            {"Paper", "Notebook", "Binder", "Folder", "Envelope", "Label", "Tape", "Pen", "Marker", "Stapler"}
-        };
-
-        var rng = new java.util.Random(42);
-        List<Product> batch = new java.util.ArrayList<>(500);
-        int total = 10_000;
-
-        for (int i = 0; i < total; i++) {
-            int catIdx = i % categories.length;
-            String prefix = prefixes[catIdx][rng.nextInt(prefixes[catIdx].length)];
-            String noun = nouns[catIdx][rng.nextInt(nouns[catIdx].length)];
-            String name = prefix + " " + noun + " " + (i + 1);
-            BigDecimal price = BigDecimal.valueOf(rng.nextInt(99900) + 100, 2); // $1.00 – $999.99
-            boolean active = rng.nextInt(10) > 1; // 90% active
-            Product p = new Product(name, categories[catIdx], price);
-            p.setActive(active);
-            batch.add(p);
-
-            if (batch.size() == 500) {
-                helper.bulkInsert(batch);
-                batch.clear();
-            }
-        }
-        if (!batch.isEmpty()) {
-            helper.bulkInsert(batch);
-        }
-        log.info("Seeded {} demo products", total);
     }
 
     // ── Helpers ───────────────────────────────────────────────────────────────

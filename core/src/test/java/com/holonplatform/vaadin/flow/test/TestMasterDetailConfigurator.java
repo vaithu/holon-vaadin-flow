@@ -15,7 +15,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.holonplatform.vaadin.flow.components.Components;
-import com.holonplatform.vaadin.flow.vaadinplus.components.GridHeader;
 import com.holonplatform.vaadin.flow.vaadinplus.components.Header;
 import com.holonplatform.vaadin.flow.vaadinplus.components.Sheet;
 import com.iyensoft.vaadin.flow.components.DetailSyncAware;
@@ -143,12 +142,20 @@ class TestMasterDetailConfigurator {
 
         Div masterDiv = (Div) layout.getChildren().findFirst().orElseThrow();
         // With the Consumer API the listing bundle is added as a single component;
-        // the GridHeader lives inside it — verify by scanning the full subtree.
-        boolean hasGridHeader = masterDiv.getChildren()
-                .anyMatch(c -> c instanceof GridHeader
-                        || c.getChildren().anyMatch(gc -> gc instanceof GridHeader));
-        assertTrue(hasGridHeader,
-                "A GridHeader should be present inside the master div (directly or within the ListingBundle)");
+        // its plain title heading lives inside it — verify by scanning the full subtree.
+        boolean hasTitleHeading = masterDiv.getChildren().anyMatch(TestMasterDetailConfigurator::containsProductsHeading);
+        assertTrue(hasTitleHeading,
+                "A 'Products' title heading should be present inside the master div (directly or within the ListingBundle)");
+    }
+
+    private static boolean containsProductsHeading(Component component) {
+        return isProductsHeading(component)
+                || component.getChildren().anyMatch(TestMasterDetailConfigurator::containsProductsHeading);
+    }
+
+    private static boolean isProductsHeading(Component component) {
+        return component instanceof com.vaadin.flow.component.HasText hasText
+                && "Products".equals(hasText.getText());
     }
 
     @Test

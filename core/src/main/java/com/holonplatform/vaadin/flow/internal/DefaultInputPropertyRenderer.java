@@ -26,13 +26,17 @@ import com.holonplatform.vaadin.flow.components.Input;
 import com.holonplatform.vaadin.flow.components.builders.LocalTimeInputBuilder;
 import com.holonplatform.vaadin.flow.internal.components.EnumItemCaptionGenerator;
 import com.holonplatform.vaadin.flow.internal.converters.DateToLocalTimeConverter;
+import com.holonplatform.vaadin.flow.internal.converters.InstantToLocalDateTimeConverter;
 import jakarta.annotation.Priority;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.Optional;
+
 
 /**
  * Default {@link PropertyRenderer} to create {@link Input} type
@@ -92,8 +96,12 @@ public class DefaultInputPropertyRenderer<T> implements PropertyRenderer<Input, 
 			return renderLocalTime(property);
 		}
 		if (LocalDateTime.class.isAssignableFrom(propertyType)) {
-			// LocalDate
+			// LocalDateTime
 			return renderLocalDateTime(property);
+		}
+		if (Instant.class.isAssignableFrom(propertyType)) {
+			// Instant - UTC based, displayed in user's timezone
+			return renderInstant(property);
 		}
 		if (TypeUtils.isDate(propertyType)) {
 			// Date
@@ -141,8 +149,13 @@ public class DefaultInputPropertyRenderer<T> implements PropertyRenderer<Input, 
 			return Optional.of(Input.localTime().build()).map(input -> (Input<V>) input);
 		}
 		if (LocalDateTime.class.isAssignableFrom(type)) {
-			// LocalDate
+			// LocalDateTime
 			return Optional.of(Input.localDateTime().build()).map(input -> (Input<V>) input);
+		}
+		if (Instant.class.isAssignableFrom(type)) {
+			// Instant - use system default timezone for conversion
+			return Optional.of(Input.from(Input.localDateTime().build(), 
+					new InstantToLocalDateTimeConverter())).map(input -> (Input<V>) input);
 		}
 		if (TypeUtils.isDate(type)) {
 			// Date
@@ -214,6 +227,29 @@ public class DefaultInputPropertyRenderer<T> implements PropertyRenderer<Input, 
 	 */
 	protected Input<LocalDateTime> renderLocalDateTime(Property<? extends T> property) {
 		return Input.localDateTime().label(property).readOnly(property.isReadOnly()).build();
+	}
+
+	/**
+	 * Render the property as a {@link Instant} type {@link Input}.
+	 * <p>
+	 * For SaaS applications, Instant is the preferred type for storing and transmitting
+	 * timestamps across timezones (UTC-based). The UI component will display the value
+	 * in the user's configured timezone using the converter.
+	 * </p>
+	 * @param property Property to render
+	 * @return The {@link Input} instance with Instant to LocalDateTime conversion
+	 */
+	@SuppressWarnings("unchecked")
+	protected Input<Instant> renderInstant(Property<? extends T> property) {
+		// Get user's timezone from property configuration, if available
+		// Otherwise use system default
+		ZoneId zoneId = property.getConfiguration()
+				.getParameter("com.holonplatform.vaadin.flow.timezone", ZoneId.class)
+				.orElse(ZoneId.systemDefault());
+		
+		return (Input<Instant>) Input.from(
+				Input.localDateTime().label(property).readOnly(property.isReadOnly()).build(),
+				new InstantToLocalDateTimeConverter(zoneId));
 	}
 
 	/**

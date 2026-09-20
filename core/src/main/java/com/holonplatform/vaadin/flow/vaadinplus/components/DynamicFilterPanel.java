@@ -662,6 +662,25 @@ public class DynamicFilterPanel<T> extends Div implements FilterInputGroup {
         return appliedRows.size();
     }
 
+    // -----------------------------------------------------------------------
+    // Action buttons access (e.g. for per-user visibility/authorization control)
+    // -----------------------------------------------------------------------
+
+    /** Returns the "Add filter row" {@link Button}. */
+    public Button getAddButton() {
+        return addBtn;
+    }
+
+    /** Returns the "Clear filters" {@link Button}. */
+    public Button getClearButton() {
+        return clearBtn;
+    }
+
+    /** Returns the "Apply filter" {@link Button}. */
+    public Button getApplyButton() {
+        return applyBtn;
+    }
+
     /**
      * Registers a callback that is fired only when the built-in <em>Apply
      * filter</em>

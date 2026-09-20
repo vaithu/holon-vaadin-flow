@@ -15,6 +15,8 @@
  */
 package com.holonplatform.vaadin.flow.internal.components;
 
+import com.vaadin.flow.function.SerializableFunction;
+
 import java.io.Serial;
 import com.holonplatform.core.Registration;
 import com.holonplatform.core.internal.utils.ObjectUtils;
@@ -132,7 +134,7 @@ public class InputConverterAdapter<T, V> implements Input<V> {
 	 * @param type Adapter type (not null)
 	 * @param adapter Adapter function
 	 */
-	public <A> void setAdapter(Class<A> type, Function<Input<V>, A> adapter) {
+	public <A> void setAdapter(Class<A> type, SerializableFunction<Input<V>, A> adapter) {
 		adapters.setAdapter(type, adapter);
 	}
 

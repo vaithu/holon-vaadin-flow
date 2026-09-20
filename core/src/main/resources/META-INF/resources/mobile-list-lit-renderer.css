@@ -6,9 +6,13 @@
  * Source aligned with bills.html design system.
  *
  * ── Root structure ────────────────────────────────────────────────────────
- *   .mli                  root row (cursor:pointer, border-bottom)
- *   .mli.on               selected / active row — primary-soft background + left border
- *   .mli.exception        exception row — red amount + red when-label (CSS cascade)
+ *   .mli                  root row (cursor:pointer, border-bottom, no background —
+ *                          the parent grid cell/row owns all background/hover/selection
+ *                          colouring; see master-detail-v2.css)
+ *   .mli.on               business-status ("active") marker — no visual styling of its
+ *                          own here; only enables the .exception/.paid amount-colour
+ *                          cascade below when combined with those classes
+ *   .mli.exception         exception row — red amount + red when-label (CSS cascade)
  *   .mli.on.exception     both selected and exception
  *   .mli.paid             paid row — green amount (CSS cascade)
  *
@@ -45,157 +49,236 @@
 
 /* ── Root ──────────────────────────────────────────────────────────────── */
 
+/*
+ * No background here (and no :hover background) on purpose.
+ *
+ * .mli is opaque light-DOM content slotted *inside* the grid's body-cell
+ * <td>. If it painted its own solid background (even just on hover), that
+ * background would sit visually on top of the <td>'s background, hiding it
+ * completely. Since the <td> already renders the correct background for
+ * every state — plain surface at rest, grey on row hover, and blue for the
+ * truly selected/active row (see ::part(body-cell) / ::part(row):hover /
+ * ::part(mdl-selected) in master-detail-v2.css) — .mli must stay transparent
+ * so that background always shows through undisturbed. Painting it here too
+ * previously caused hovering the *selected* row's card to visually mask its
+ * blue tint with plain hover-grey, making the row look unselected.
+ */
 .mli {
-    padding: 11px 16px;
-    border-bottom: 1px solid var(--line-soft, var(--lumo-contrast-10pct));
-    cursor: pointer;
-    position: relative;
+  cursor: pointer;
+  position: relative;
+  padding-top: 3px;
+  padding-bottom: 3px;
 }
 
-.mli:hover {
-    background: var(--surface-2, var(--lumo-contrast-5pct));
-}
-
-/* Selected / active row */
-.mli.on {
-    background: var(--primary-soft, #e6f1fb);
-}
-
-.mli.on::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    width: 3px;
-    background: var(--primary, #1576d3);
-}
+/*
+ * "on" (RowVariant.SELECTED) is a business-status indicator — e.g. "active"
+ * item — not the grid-selection state, and can be true for many/most rows at
+ * once. It intentionally has NO background and NO left accent bar here:
+ *
+ *   - No background: a per-card tint would repaint every "active" row, which
+ *     reads as a wall of blue cards rather than a single highlighted row.
+ *   - No ::before bar: the master grid already draws a single far-left accent
+ *     bar + full-row background tint for the truly selected row via
+ *     ::part(first-column-cell mdl-selected) / ::part(mdl-selected)
+ *     (see master-detail-v2.css) — adding a second bar/tint here would stack
+ *     a redundant blue line/wash on top of it, reading as a "double border".
+ *
+ * Other RowVariant classes (.exception, .paid) still drive their own cascade
+ * rules below (e.g. amount colour) — only the background/border affordances
+ * were removed from "on".
+ */
 
 /* ── Amount color driven by root variant (CSS cascade) ─────────────────── */
 
 /* Exception rows → amount turns red, when-label turns red+bold */
-.mli.exception .mli-amt  { color: var(--danger, #c0392b); }
-.mli.exception .mli-when { color: var(--danger, #c0392b); font-weight: 600; }
+.mli.exception .mli-amt {
+  color: var(--danger, #c0392b);
+}
+
+.mli.exception .mli-when {
+  color: var(--danger, #c0392b);
+  font-weight: 600;
+}
 
 /* Paid rows → amount turns green */
-.mli.paid .mli-amt { color: var(--success, #2e9a6a); }
+.mli.paid .mli-amt {
+  color: var(--success, #2e9a6a);
+}
 
 /* ── Top row ───────────────────────────────────────────────────────────── */
 
 .mli-top {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 4px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 5px;
 }
 
 /* Bill / PO reference number — monospace, primary blue */
 .mli-num {
-    font-family: 'JetBrains Mono', 'Fira Code', monospace;
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--primary, #1576d3);
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--primary, #1576d3);
+  letter-spacing: -0.01em;
 }
 
 /* Context label (right side of top row) — dim, monospace */
 .mli-when {
-    font-size: 10.5px;
-    color: var(--text-dim, #8a96a6);
-    font-family: 'JetBrains Mono', 'Fira Code', monospace;
-    white-space: nowrap;
-    flex-shrink: 0;
+  font-size: 11px;
+  color: var(--text-dim, #8a96a6);
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  white-space: nowrap;
+  flex-shrink: 0;
+  letter-spacing: -0.01em;
 }
 
 /* ── Vendor / body row ─────────────────────────────────────────────────── */
 
 .mli-vendor {
-    font-size: 12.5px;
-    font-weight: 600;
-    line-height: 1.2;
-    margin-bottom: 2px;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.25;
+  margin-bottom: 3px;
+  color: var(--text-strong, #0f1b2d);
 }
 
 /* ── Meta row ──────────────────────────────────────────────────────────── */
 
 .mli-meta {
-    font-size: 11px;
-    color: var(--text-mute, var(--lumo-secondary-text-color));
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    margin-bottom: 6px;
-    flex-wrap: wrap;
+  font-size: 11.5px;
+  color: var(--text-mute, var(--lumo-secondary-text-color));
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+  line-height: 1.35;
 }
 
 /* Chip badge — MUST be scoped to .mli-meta for correct specificity */
 .mli-meta .chip {
-    font-size: 9.5px;
-    font-weight: 600;
-    padding: 1px 5px;
-    border-radius: 3px;
-    text-transform: uppercase;
+  font-size: 9.5px;
+  font-weight: 600;
+  padding: 1px 5px;
+  border-radius: 3px;
+  text-transform: uppercase;
 }
 
 /* .chip.v  — variance / exception — danger-toned */
 .mli-meta .chip.v {
-    background: var(--danger-soft, #fbe7e4);
-    color: var(--danger, #c0392b);
+  background: var(--danger-soft, #fbe7e4);
+  color: var(--danger, #c0392b);
 }
 
 /* .chip.m  — matched / success — success-toned */
 .mli-meta .chip.m {
-    background: var(--success-soft, #e6f5ee);
-    color: var(--success, #2e9a6a);
+  background: var(--success-soft, #e6f5ee);
+  color: var(--success, #2e9a6a);
 }
 
 /* .chip.p  — pending / warning — warn-toned */
 .mli-meta .chip.p {
-    background: var(--warn-soft, #fbf3dc);
-    color: var(--warn, #b8860b);
+  background: var(--warn-soft, #fbf3dc);
+  color: var(--warn, #b8860b);
 }
 
 /* ── Bottom row ────────────────────────────────────────────────────────── */
 
 .mli-bot {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
 }
 
 /* Amount — monospace; color overridden by .mli.exception/.mli.paid cascade above */
 .mli-amt {
-    font-family: 'JetBrains Mono', 'Fira Code', monospace;
-    font-size: 13px;
-    font-weight: 600;
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--text-strong, #0f1b2d);
+  letter-spacing: -0.01em;
 }
 
 /* ── Status badge ──────────────────────────────────────────────────────── */
 
 .mli-status {
-    font-size: 10.5px;
-    font-weight: 500;
-    padding: 2px 7px;
-    border-radius: 999px;
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
+  font-size: 10.5px;
+  font-weight: 500;
+  padding: 3px 9px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  line-height: 1;
+  white-space: nowrap;
 }
 
 /* Colored dot before the status label text */
 .mli-status::before {
-    content: '';
-    width: 5px;
-    height: 5px;
-    border-radius: 50%;
-    background: currentColor;
-    flex-shrink: 0;
+  content: '';
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: currentColor;
+  flex-shrink: 0;
 }
 
 /* Status color variants */
-.st-draft   { background: var(--surface-2, var(--lumo-contrast-5pct)); color: var(--text-mute, #5b6878); }
-.st-await   { background: var(--warn-soft,    #fbf3dc); color: var(--warn,    #b8860b); }
-.st-approve { background: var(--violet-soft,  #eceefd); color: var(--violet,  #6f7afc); }
-.st-paid    { background: var(--success-soft, #e6f5ee); color: var(--success, #2e9a6a); }
-.st-due     { background: var(--primary-soft, #e6f1fb); color: var(--primary, #1576d3); }
-.st-overdue { background: var(--danger-soft,  #fbe7e4); color: var(--danger,  #c0392b); }
-.st-void    { background: #f0f0f0; color: #666; }
+.st-draft {
+  background: var(--surface-2, #f8fafc);
+  color: var(--text-mute, #5b6878);
+}
+
+.st-await {
+  background: var(--warn-soft, #fbf3dc);
+  color: var(--warn, #b8860b);
+}
+
+.st-approve {
+  background: var(--violet-soft, #eceefd);
+  color: var(--violet, #6f7afc);
+}
+
+.st-paid {
+  background: var(--success-soft, #e7f6ee);
+  color: var(--success, #2e9a6a);
+}
+
+.st-due {
+  background: var(--primary-soft, #e6f1fb);
+  color: var(--primary, #1576d3);
+}
+
+.st-overdue {
+  background: var(--warn-soft, #fbf3dc);
+  color: var(--warn, #b8860b);
+}
+
+.st-void {
+  background: #f3f4f6;
+  color: #6b7280;
+}
+
+/* CRM mockup aliases */
+.st-active {
+  background: var(--success-soft, #e7f6ee);
+  color: var(--success, #2e9a6a);
+}
+
+.st-churn {
+  background: #fdecec;
+  color: #d35a4b;
+}
+
+.st-onboard {
+  background: #eaf3ff;
+  color: #2f7edb;
+}
+
+.st-trial {
+  background: #efeafd;
+  color: #8472eb;
+}

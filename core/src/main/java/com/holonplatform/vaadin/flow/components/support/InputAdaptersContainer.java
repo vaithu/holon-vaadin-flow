@@ -15,6 +15,8 @@
  */
 package com.holonplatform.vaadin.flow.components.support;
 
+import com.vaadin.flow.function.SerializableFunction;
+
 import java.io.Serializable;
 import java.util.Map;
 import java.util.Optional;
@@ -38,7 +40,7 @@ public interface InputAdaptersContainer<T> extends Serializable {
 	 * @param type Adapter type (not null)
 	 * @param adapter Adapter function
 	 */
-	<A> void setAdapter(Class<A> type, Function<Input<T>, A> adapter);
+	<A> void setAdapter(Class<A> type, SerializableFunction<Input<T>, A> adapter);
 
 	/**
 	 * Get the input adapted to given type.
@@ -54,7 +56,7 @@ public interface InputAdaptersContainer<T> extends Serializable {
 	 * @param <A> Adapter type
 	 * @return A map of type and adapter, empty if none
 	 */
-	<A> Map<Class<A>, Function<Input<T>, A>> getAdapters();
+	<A> Map<Class<A>, SerializableFunction<Input<T>, A>> getAdapters();
 
 	/**
 	 * Create a new {@link InputAdaptersContainer}.

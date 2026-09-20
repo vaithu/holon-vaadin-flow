@@ -15,6 +15,8 @@
  */
 package com.holonplatform.vaadin.flow.components.builders;
 
+import com.vaadin.flow.function.SerializableFunction;
+
 import com.holonplatform.vaadin.flow.components.Input;
 import com.holonplatform.vaadin.flow.components.ValueHolder.ValueChangeEvent;
 import com.holonplatform.vaadin.flow.components.ValueHolder.ValueChangeListener;
@@ -87,7 +89,7 @@ public interface InputConfigurator<T, E extends ValueChangeEvent<T>, C extends I
 	 * @param adapter The function to use to provide the object instance of given type
 	 * @return this
 	 */
-	<A> C withAdapter(Class<A> type, Function<Input<T>, A> adapter);
+	<A> C withAdapter(Class<A> type, SerializableFunction<Input<T>, A> adapter);
 
 	/**
 	 * Set the input as <em>required</em> or not. When the input is required the user must fill in a value.

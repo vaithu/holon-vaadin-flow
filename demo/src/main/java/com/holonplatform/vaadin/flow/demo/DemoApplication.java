@@ -40,13 +40,10 @@ import org.springframework.boot.persistence.autoconfigure.EntityScan;
  * {@code vaadin-shell-theme.css}.
  * </p>
  */
-@SpringBootApplication(excludeName = {
-        "com.holonplatform.spring.boot.DataSourceAutoConfiguration"
-})
+@SpringBootApplication
 @EntityScan(basePackages = {
         "com.holonplatform.vaadin.flow.demo.data.entity",          // Product
-        "com.holonplatform.vaadin.flow.chat",                       // ChatRoom, ChatMessage, …
-        "com.holonplatform.vaadin.flow.customer.entity"             // Customer
+        "com.holonplatform.vaadin.flow.chat"                        // ChatRoom, ChatMessage, …
 })
 // 1. Vaadin Lumo base — shadow-DOM resets + component internals (must be first)
 // 2. Shell theme     — design tokens + Lumo bridge + app-layout / nav / button / grid / inputs

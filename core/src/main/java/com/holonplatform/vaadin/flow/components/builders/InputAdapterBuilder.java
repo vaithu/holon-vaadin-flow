@@ -15,7 +15,10 @@
  */
 package com.holonplatform.vaadin.flow.components.builders;
 
-import com.holonplatform.core.operation.TriConsumer;
+import com.holonplatform.vaadin.flow.components.Input.PropertyHandler.PropertyGetter;
+import com.holonplatform.vaadin.flow.components.Input.PropertyHandler.PropertySetter;
+import com.vaadin.flow.function.SerializableConsumer;
+import com.vaadin.flow.function.SerializableFunction;
 import com.holonplatform.vaadin.flow.components.HasLabel;
 import com.holonplatform.vaadin.flow.components.HasPlaceholder;
 import com.holonplatform.vaadin.flow.components.*;
@@ -31,10 +34,6 @@ import com.vaadin.flow.data.value.HasValueChangeMode;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
-import java.util.function.BiFunction;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Supplier;
 
 /**
  * Base builder to create {@link Input} components from a {@link HasValue} component.
@@ -55,70 +54,70 @@ public interface InputAdapterBuilder<T, V, H extends HasValue<?, V>, C extends C
 	 * @param emptyValueSupplier the empty value supplier to set
 	 * @return this
 	 */
-	B emptyValueSupplier(Function<H, T> emptyValueSupplier);
+	B emptyValueSupplier(SerializableFunction<H, T> emptyValueSupplier);
 
 	/**
 	 * Set the <em>is empty</em> value supplier.
 	 * @param isEmptySupplier the <em>is empty</em> value supplier to set
 	 * @return this
 	 */
-	B isEmptySupplier(Function<H, Boolean> isEmptySupplier);
+	B isEmptySupplier(SerializableFunction<H, Boolean> isEmptySupplier);
 
 	/**
 	 * Set the Input value supplier.
 	 * @param valueSupplier the Input value supplier to set
 	 * @return this
 	 */
-	B valueSupplier(Function<H, T> valueSupplier);
+	B valueSupplier(SerializableFunction<H, T> valueSupplier);
 
 	/**
 	 * Set the <code>focus</code> operation.
 	 * @param focusOperation the operation to set
 	 * @return this
 	 */
-	B focusOperation(Consumer<H> focusOperation);
+	B focusOperation(SerializableConsumer<H> focusOperation);
 
 	/**
 	 * Set the {@link HasSize} supplier.
 	 * @param hasSizeSupplier the supplier to set
 	 * @return this
 	 */
-	B hasSizeSupplier(Function<H, HasSize> hasSizeSupplier);
+	B hasSizeSupplier(SerializableFunction<H, HasSize> hasSizeSupplier);
 
 	/**
 	 * Set the {@link HasStyle} supplier.
 	 * @param hasStyleSupplier the supplier to set
 	 * @return this
 	 */
-	B hasStyleSupplier(Function<H, HasStyle> hasStyleSupplier);
+	B hasStyleSupplier(SerializableFunction<H, HasStyle> hasStyleSupplier);
 
 	/**
 	 * Set the {@link HasEnabled} supplier.
 	 * @param hasEnabledSupplier the supplier to set
 	 * @return this
 	 */
-	B hasEnabledSupplier(Function<H, HasEnabled> hasEnabledSupplier);
+	B hasEnabledSupplier(SerializableFunction<H, HasEnabled> hasEnabledSupplier);
 
 	/**
 	 * Set the {@link HasValueChangeMode} supplier.
 	 * @param hasValueChangeModeSupplier the supplier to set
 	 * @return this
 	 */
-	B hasValueChangeModeSupplier(Function<H, HasValueChangeMode> hasValueChangeModeSupplier);
+	B hasValueChangeModeSupplier(SerializableFunction<H, HasValueChangeMode> hasValueChangeModeSupplier);
 
 	/**
 	 * Set the {@link HasValidation} supplier.
 	 * @param hasValidationSupplier the supplier to set
 	 * @return this
 	 */
-	B hasValidationSupplier(Function<H, HasValidation> hasValidationSupplier);
+	B hasValidationSupplier(SerializableFunction<H, HasValidation> hasValidationSupplier);
 
 	/**
 	 * Set the {@link InvalidChangeEventNotifier} supplier
 	 * @param invalidChangeEventNotifierSupplier the supplier to set
 	 * @return this
 	 */
-	B invalidChangeEventNotifierSupplier(Function<H, InvalidChangeEventNotifier> invalidChangeEventNotifierSupplier);
+	B invalidChangeEventNotifierSupplier(SerializableFunction<H, InvalidChangeEventNotifier> invalidChangeEventNotifierSupplier);
 
 	/**
 	 * Provide the {@link PropertyHandler} to use to get and set the <em>required</em> property value.
@@ -139,10 +138,10 @@ public interface InputAdapterBuilder<T, V, H extends HasValue<?, V>, C extends C
 	 * implementation.
 	 * </p>
 	 * @param getter The {@link Supplier} to use to get the <code>required</code> property value (not null)
-	 * @param setter The {@link Consumer} to use to set the <code>required</code> property value (not null)
+	 * @param setter The {@link PropertySetter} to use to set the <code>required</code> property value (not null)
 	 * @return this
 	 */
-	default B requiredPropertyHandler(BiFunction<H, C, Boolean> getter, TriConsumer<H, C, Boolean> setter) {
+	default B requiredPropertyHandler(PropertyGetter<Boolean, V, H, C> getter, PropertySetter<Boolean, V, H, C> setter) {
 		return requiredPropertyHandler(PropertyHandler.create(getter, setter));
 	}
 
@@ -164,10 +163,10 @@ public interface InputAdapterBuilder<T, V, H extends HasValue<?, V>, C extends C
 	 * method.
 	 * </p>
 	 * @param getter The {@link Supplier} to use to get the <code>label</code> property value (not null)
-	 * @param setter The {@link Consumer} to use to set the <code>label</code> property value (not null)
+	 * @param setter The {@link PropertySetter} to use to set the <code>label</code> property value (not null)
 	 * @return this
 	 */
-	default B labelPropertyHandler(BiFunction<H, C, String> getter, TriConsumer<H, C, String> setter) {
+	default B labelPropertyHandler(PropertyGetter<String, V, H, C> getter, PropertySetter<String, V, H, C> setter) {
 		return labelPropertyHandler(PropertyHandler.create(getter, setter));
 	}
 
@@ -189,10 +188,10 @@ public interface InputAdapterBuilder<T, V, H extends HasValue<?, V>, C extends C
 	 * method.
 	 * </p>
 	 * @param getter The {@link Supplier} to use to get the <code>title</code> property value (not null)
-	 * @param setter The {@link Consumer} to use to set the <code>title</code> property value (not null)
+	 * @param setter The {@link PropertySetter} to use to set the <code>title</code> property value (not null)
 	 * @return this
 	 */
-	default B titlePropertyHandler(BiFunction<H, C, String> getter, TriConsumer<H, C, String> setter) {
+	default B titlePropertyHandler(PropertyGetter<String, V, H, C> getter, PropertySetter<String, V, H, C> setter) {
 		return titlePropertyHandler(PropertyHandler.create(getter, setter));
 	}
 
@@ -215,10 +214,10 @@ public interface InputAdapterBuilder<T, V, H extends HasValue<?, V>, C extends C
 	 * {@link Input#hasPlaceholder()} method.
 	 * </p>
 	 * @param getter The {@link Supplier} to use to get the <code>placeholder</code> property value (not null)
-	 * @param setter The {@link Consumer} to use to set the <code>placeholder</code> property value (not null)
+	 * @param setter The {@link PropertySetter} to use to set the <code>placeholder</code> property value (not null)
 	 * @return this
 	 */
-	default B placeholderPropertyHandler(BiFunction<H, C, String> getter, TriConsumer<H, C, String> setter) {
+	default B placeholderPropertyHandler(PropertyGetter<String, V, H, C> getter, PropertySetter<String, V, H, C> setter) {
 		return placeholderPropertyHandler(PropertyHandler.create(getter, setter));
 	}
 
@@ -242,7 +241,7 @@ public interface InputAdapterBuilder<T, V, H extends HasValue<?, V>, C extends C
 	 * @param adapters The adapters to content
 	 * @return this
 	 */
-	<A> B withAdapters(Map<Class<A>, Function<Input<T>, A>> adapters);
+	<A> B withAdapters(Map<Class<A>, SerializableFunction<Input<T>, A>> adapters);
 
 	/**
 	 * Add a set of adapters.

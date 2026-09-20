@@ -46,7 +46,21 @@ public class FormSection extends Div {
     private static final String CSS_SECTION = "form-section";
     private static final String CSS_LABEL   = "form-section__label";
 
-    private static int idCounter = 0;
+    /**
+     * Sequence backing the generated {@code id} of each section title.
+     *
+     * <p>Must be atomic: sections are built concurrently by every request thread, and the previous
+     * {@code private static int idCounter} was incremented with a plain non-atomic
+     * read-modify-write. Under concurrency that hands the same number to several sections, so
+     * their {@code aria-labelledby} attributes point at a colliding DOM id and screen readers
+     * announce the wrong heading.</p>
+     *
+     * <p>The sequence is seeded randomly per class-load so that ids minted on different cluster
+     * nodes — which may end up in the same page after a session fails over — do not collide
+     * either.</p>
+     */
+    private static final java.util.concurrent.atomic.AtomicLong ID_SEQUENCE =
+            new java.util.concurrent.atomic.AtomicLong(new java.security.SecureRandom().nextLong());
 
     private final H3         titleElement;
     private final FormLayout formLayout;
@@ -57,7 +71,7 @@ public class FormSection extends Div {
     private FormSection(String label, int colspanLast, Component... fields) {
         addClassName(CSS_SECTION);
 
-        String titleId = "form-section-" + (++idCounter) + "-title";
+        String titleId = "form-section-" + Long.toUnsignedString(ID_SEQUENCE.incrementAndGet(), 36) + "-title";
         this.titleElement = new H3(label);
         this.titleElement.addClassName(CSS_LABEL);
         this.titleElement.setId(titleId);

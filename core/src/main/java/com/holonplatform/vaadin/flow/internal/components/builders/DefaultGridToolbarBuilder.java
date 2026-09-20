@@ -1,0 +1,23 @@
+package com.holonplatform.vaadin.flow.internal.components.builders;
+
+import com.holonplatform.vaadin.flow.components.builders.GridToolbarBuilder;
+import com.holonplatform.vaadin.flow.vaadinplus.components.GridToolbar;
+import com.vaadin.flow.component.Component;
+
+/** Default {@link GridToolbarBuilder} implementation. */
+public class DefaultGridToolbarBuilder extends AbstractGridToolbarConfigurator<GridToolbarBuilder>
+        implements GridToolbarBuilder {
+
+    public DefaultGridToolbarBuilder(Component... components) {
+        super(new GridToolbar(components));
+    }
+
+    @Override protected GridToolbarBuilder getConfigurator() {
+        return this;
+    }
+
+    @Override public GridToolbar build() {
+        applyPostProcessors();
+        return getComponent();
+    }
+}

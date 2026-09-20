@@ -1,15 +1,28 @@
 package com.holonplatform.vaadin.flow.vaadinplus.components;
 
+import com.holonplatform.vaadin.flow.components.Components;
+import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
+import com.holonplatform.vaadin.flow.vaadinplus.Layout;
+import com.holonplatform.vaadin.flow.vaadinplus.ResponsiveDiv;
+import com.iyensoft.vaadin.flow.enums.ViewMode;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasTheme;
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.component.html.Header;
+import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.popover.Popover;
+import com.vaadin.flow.component.popover.PopoverPosition;
+import com.vaadin.flow.component.popover.PopoverVariant;
 
 @StyleSheet("context://app-bar.css")
-public class AppBar extends Header implements HasTheme {
+public class AppBar extends Layout implements HasTheme {
 
-    /** Always-present slot containers, created eagerly so the shell has a stable three-slot structure. */
+    /**
+     * Always-present slot containers, created eagerly so the shell has a stable
+     * three-slot structure.
+     */
     private final Div startSlot;
     private final Div middleSlot;
     private final Div endSlot;
@@ -17,34 +30,69 @@ public class AppBar extends Header implements HasTheme {
 
     public AppBar(Component... components) {
 
-        addClassName("app-bar");
-        getElement().setAttribute("role", "banner");
-        setWidthFull();
-
         startSlot = new Div();
         startSlot.addClassName("app-bar__start");
         middleSlot = new Div();
         middleSlot.addClassName("app-bar__middle");
         endSlot = new Div();
         endSlot.addClassName("app-bar__end");
-        add(startSlot, middleSlot, endSlot);
+
+        Components.configure(this)
+                .fullWidth()
+                .add(startSlot)
+                .styleName("app-bar")
+                .elementConfiguration(element -> element.setAttribute("role", "banner"));
 
         if (components != null && components.length > 0) {
             addToStart(components);
         }
+
+        ResponsiveDiv.configure(this)
+                .slotOnce(ViewMode.DESKTOP, unused -> add(middleSlot, endSlot))
+                .slotOnce(ViewMode.MOBILE, unused -> createMobileView())
+                .build();
     }
 
-    /** Appends {@code components} to the start slot (left edge). */
+    private void createMobileView() {
+        Button button = Components.button()
+                .icon(VaadinIcon.ELLIPSIS_DOTS_H)
+                .withThemeVariants(ButtonVariant.LUMO_ICON)
+                .tertiary()
+                .styleName("app-bar__action-btn")
+                .ariaLabel(LocalizationProvider.localize("More actions", "app_bar.more_actions_aria"))
+                .elementConfiguration(element -> element.getStyle().set("margin-inline-start", "auto"))
+                .build();
+
+        Popover popover = Components.popover().add(endSlot)
+                .target(button)
+                .fullWidth()
+                .heightUndefined()
+                .withThemeVariants(PopoverVariant.ARROW,
+                                   PopoverVariant.NO_PADDING)
+                .position(PopoverPosition.BOTTOM_END)
+                .modal(true)
+                .build();
+
+        add(button, popover);
+    }
+
+    /**
+     * Appends {@code components} to the start slot (left edge).
+     */
     public void addToStart(Component... components) {
         startSlot.add(components);
     }
 
-    /** Appends {@code components} to the middle slot (flex-grow centre). */
+    /**
+     * Appends {@code components} to the middle slot (flex-grow centre).
+     */
     public void addToMiddle(Component... components) {
         middleSlot.add(components);
     }
 
-    /** Appends {@code components} to the end slot (right edge). */
+    /**
+     * Appends {@code components} to the end slot (right edge).
+     */
     public void addToEnd(Component... components) {
         endSlot.add(components);
     }
@@ -57,7 +105,10 @@ public class AppBar extends Header implements HasTheme {
         endSlot.addComponentAtIndex(index, component);
     }
 
-    /** Appends {@code components} to the full-width bottom row (below start/middle/end). */
+    /**
+     * Appends {@code components} to the full-width bottom row (below
+     * start/middle/end).
+     */
     public void addToBottom(Component... components) {
         if (bottomSlot == null) {
             bottomSlot = new Div();

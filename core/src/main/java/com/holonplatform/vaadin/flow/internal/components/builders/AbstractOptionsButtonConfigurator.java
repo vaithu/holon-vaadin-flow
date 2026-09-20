@@ -43,7 +43,6 @@ public abstract class AbstractOptionsButtonConfigurator<C extends HasOptionsButt
         return Components.button()
                 .tertiaryInline()
                 .icon(VaadinIcon.ELLIPSIS_DOTS_V)
-                .tooltipText("Options")
                 .withFocusShortcutKey(Key.KEY_O, KeyModifier.ALT)
                 .build();
     }

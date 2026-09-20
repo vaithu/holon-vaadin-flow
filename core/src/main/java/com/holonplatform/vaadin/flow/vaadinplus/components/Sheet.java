@@ -428,7 +428,6 @@ public class Sheet extends Div {
      * to prefer a {@link Side#BOTTOM} sheet over a side sheet on compact (&lt; 600&nbsp;px) screens.
      *
      * @param viewportWidthPx  the current viewport width in pixels (e.g. from
-     *                         {@code UI.getCurrent().getPage().retrieveExtendedClientDetails(...)})
      * @param preferredSide    the side to use on medium/expanded screens ({@link Side#LEFT} or
      *                         {@link Side#RIGHT}; not null)
      * @return {@link Side#BOTTOM} if {@code viewportWidthPx < 600}, {@code preferredSide} otherwise
@@ -760,6 +759,12 @@ public class Sheet extends Div {
      * can embed this button inside the custom header so close functionality is preserved.</p>
      */
     public Button getCloseButton() { return closeButton; }
+
+    /**
+     * Returns the Sheet's built-in back navigation {@link Button}, if the corresponding feature
+     * is enabled (e.g. for per-user visibility/authorization control).
+     */
+    public Button getBackButton() { return backButton; }
 
     /**
      * Sets a lazy-content supplier invoked exactly once on the first {@link #open()} call.

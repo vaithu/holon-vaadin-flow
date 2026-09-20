@@ -22,7 +22,6 @@ import com.vaadin.flow.router.Route;
 
 import java.math.BigDecimal;
 import java.util.stream.Stream;
-import java.util.stream.Stream;
 
 /**
  * Demo page for {@link com.holonplatform.vaadin.flow.components.ListingBundleBuilder} and
@@ -114,7 +113,7 @@ public class ListingBundleDemoView extends Div {
 
     private DemoExample example2WithSearch() {
         var bundle = Components.listing(Product.class)
-                .columns("id", "name", "category", "price")
+                .columns("id", "name", "category", "price", "active")
                 .pageSizes(5, 10, 25)
                 .defaultPageSize(5)
                 .search("Search by name or category…")
@@ -127,7 +126,7 @@ public class ListingBundleDemoView extends Div {
                 new Div(bundle.toolbar(), bundle.grid(), bundle.footer()),
                 """
                 var bundle = Components.listing(Product.class)
-                    .columns("id", "name", "category", "price")
+                    .columns("id", "name", "category", "price", "active")
                     .pageSizes(5, 10, 25)
                     .defaultPageSize(5)
                     .search("Search by name or category…")  // adds TextField with LAZY debounce
@@ -147,7 +146,7 @@ public class ListingBundleDemoView extends Div {
 
     private DemoExample example3WithFilterPanel() {
         var bundle = Components.listing(Product.class)
-                .columns("id", "name", "category", "price", "active")
+                .columns("id", "name", "category", "price")
                 .pageSizes(5, 10, 25)
                 .defaultPageSize(5)
                 .search("Quick search…")
@@ -164,7 +163,7 @@ public class ListingBundleDemoView extends Div {
                 new Div(bundle.toolbar(), bundle.grid(), bundle.footer()),
                 """
                 var bundle = Components.listing(Product.class)
-                    .columns("id", "name", "category", "price", "active")
+                    .columns("id", "name", "category", "price")
                     .pageSizes(5, 10, 25)
                     .search("Quick search…")
                     .withFilterPanel()              // panel rendered in "Advanced Search" dialog
@@ -213,11 +212,11 @@ public class ListingBundleDemoView extends Div {
     private DemoExample example5CustomHeaders() {
         var bundle = Components.listing(Product.class)
                 .columns("id", "name", "category", "price", "createdDate")
-                .header("id",          "#")
-                .header("name",        "Product Name")
-                .header("category",    "Type")
-                .header("price",       "Price (€)")
-                .header("createdDate", "Date Added")
+                .columnHeader("id",          "#")
+                .columnHeader("name",        "Product Name")
+                .columnHeader("category",    "Type")
+                .columnHeader("price",       "Price (€)")
+                .columnHeader("createdDate", "Date Added")
                 .pageSizes(5, 10)
                 .defaultPageSize(5)
                 .search("Search products…")
@@ -225,16 +224,16 @@ public class ListingBundleDemoView extends Div {
                 .build();
 
         return new DemoExample(
-                "5. Custom column headers via .header(col, label)",
+                "5. Custom column headers via .columnHeader(col, label)",
                 new Div(bundle.toolbar(), bundle.grid(), bundle.footer()),
                 """
                 var bundle = Components.listing(Product.class)
                     .columns("id", "name", "category", "price", "createdDate")
-                    .header("id",          "#")
-                    .header("name",        "Product Name")
-                    .header("category",    "Type")
-                    .header("price",       "Price (€)")
-                    .header("createdDate", "Date Added")
+                    .columnHeader("id",          "#")
+                    .columnHeader("name",        "Product Name")
+                    .columnHeader("category",    "Type")
+                    .columnHeader("price",       "Price (€)")
+                    .columnHeader("createdDate", "Date Added")
                     .pageSizes(5, 10)
                     .search("Search products…")
                     .fetch((q, text) -> productService.fetch(q.getOffset(), q.getLimit(), text))
@@ -439,4 +438,3 @@ public class ListingBundleDemoView extends Div {
                 """);
     }
 }
-

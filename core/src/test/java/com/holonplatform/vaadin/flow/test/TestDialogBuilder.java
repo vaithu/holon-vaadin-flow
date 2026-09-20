@@ -23,6 +23,27 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 class TestDialogBuilder {
 
+    @Nested
+    class PlainDialogBuilderTests {
+
+        @Test
+        void create_buildsPlainDialog() {
+            Dialog dialog = DialogBuilder.create()
+                    .withTitle("Title")
+                    .withContent("Body")
+                    .build();
+
+            assertNotNull(dialog);
+        }
+
+        @Test
+        void create_withComponents_buildsPlainDialog() {
+            Dialog dialog = DialogBuilder.create(new Paragraph("Body")).build();
+
+            assertNotNull(dialog);
+        }
+    }
+
     // =========================================================================
     // MessageDialogBuilder
     // =========================================================================

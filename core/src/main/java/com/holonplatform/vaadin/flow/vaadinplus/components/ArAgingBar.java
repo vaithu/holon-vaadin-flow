@@ -2,6 +2,7 @@ package com.holonplatform.vaadin.flow.vaadinplus.components;
 
 import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
 import com.iyensoft.vaadin.flow.components.Panel;
+import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Span;
@@ -9,6 +10,7 @@ import com.vaadin.flow.component.html.Span;
 import java.io.Serial;
 import java.io.Serializable;
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -96,7 +98,7 @@ public class ArAgingBar extends Div {
      * Visual variant — controls the card border accent and the icon badge colour.
      * Follows the same CSS-modifier convention as {@link Alert.Variant}.
      */
-    public enum Variant implements Serializable {
+    public enum Variant  {
 
         /** Neutral / no emphasis. */
         DEFAULT("default",  "var(--text-mute, #5b6878)"),
@@ -194,9 +196,13 @@ public class ArAgingBar extends Div {
     private final Span titleSpan;
     private final Div  trackDiv;
     private final Div  legendDiv;
+    private final Panel panel;
+    private final Div footerDiv;
     private final Span leftStatSpan;
     private final Span centerStatSpan;
     private final Span rightStatSpan;
+    private List<Segment> currentSegments = List.of();
+    private String emptyStateTitle;
 
     // ── Constructors ───────────────────────────────────────────────────────
 
@@ -236,10 +242,10 @@ public class ArAgingBar extends Div {
         centerStatSpan.addClassName("arb__stat");
         rightStatSpan.addClassName("arb__stat");
 
-        Div footerDiv = new Div(leftStatSpan, centerStatSpan, rightStatSpan);
+        this.footerDiv = new Div(leftStatSpan, centerStatSpan, rightStatSpan);
         footerDiv.addClassName("arb__footer");
 
-        Panel panel = new Panel();
+        this.panel = new Panel();
         panel.setHeader(header);
         panel.setContent(trackDiv, footerDiv);
 
@@ -261,10 +267,12 @@ public class ArAgingBar extends Div {
         this.titleSpan      = titleSpan;
         this.trackDiv       = trackDiv;
         this.legendDiv      = legendDiv;
+        this.panel          = panel;
         this.leftStatSpan   = leftStatSpan;
         this.centerStatSpan = centerStatSpan;
         this.rightStatSpan  = rightStatSpan;
         this.iconSpan       = new Span("■"); // default; builder may override via setIcon after construction
+        this.footerDiv      = findOrCreateFooter(panel, leftStatSpan, centerStatSpan, rightStatSpan);
         add(panel);
         // apply initial variant without going through setVariant to avoid null-check on currentVariant
         this.currentVariant = variant;
@@ -298,8 +306,12 @@ public class ArAgingBar extends Div {
      */
     public ArAgingBar addSegment(Segment segment) {
         if (segment != null) {
+            currentSegments = new ArrayList<>(currentSegments);
+            currentSegments.add(segment);
             trackDiv.add(buildSegmentDiv(segment));
             legendDiv.add(buildLegendItem(segment));
+            syncEmptyState();
+            trackDiv.getElement().setAttribute("aria-label", buildTrackAriaLabel(currentSegments));
         }
         return this;
     }
@@ -398,6 +410,7 @@ public class ArAgingBar extends Div {
     public ArAgingBar setSegments(List<Segment> segments) {
         trackDiv.removeAll();
         legendDiv.removeAll();
+        currentSegments = segments == null ? List.of() : segments.stream().filter(seg -> seg != null).toList();
         if (segments != null) {
             for (Segment seg : segments) {
                 if (seg != null) {
@@ -406,6 +419,7 @@ public class ArAgingBar extends Div {
                 }
             }
         }
+        syncEmptyState();
         // A11Y: regenerate the track's img aria-label to reflect the new segments
         trackDiv.getElement().setAttribute("aria-label", buildTrackAriaLabel(segments));
         return this;
@@ -443,6 +457,22 @@ public class ArAgingBar extends Div {
      */
     public ArAgingBar setRightStat(String text) {
         rightStatSpan.setText(text != null ? text : "");
+        return this;
+    }
+
+    /**
+     * Sets the empty-state title shown when the bar has no segments.
+     *
+     * @param text empty-state title; {@code null} clears it
+     * @return this (fluent)
+     */
+    public ArAgingBar setEmptyState(String text) {
+        emptyStateTitle = text;
+        if (currentSegments.isEmpty()) {
+            syncEmptyState();
+        } else {
+            removeEmptyState();
+        }
         return this;
     }
 
@@ -487,6 +517,7 @@ public class ArAgingBar extends Div {
         div.addClassName("arb__seg");
         div.addClassName("arb__seg--" + seg.color().getCssModifier());
         div.getStyle().set("flex", "0 0 " + seg.percent() + "%");
+        div.getElement().setProperty("aria-label", (seg.key() != null ? seg.key() : "") + " " + (int) seg.percent() + "%");
         if (seg.value() != null && !seg.value().isBlank()) {
             Span lbl = new Span(seg.value());
             lbl.addClassName("arb__seg-lbl");
@@ -506,4 +537,54 @@ public class ArAgingBar extends Div {
         item.add(swatch, new Span(seg.key() != null ? seg.key() : ""));
         return item;
     }
+
+    private void syncEmptyState() {
+        boolean empty = currentSegments.isEmpty();
+        trackDiv.setVisible(!empty);
+        legendDiv.setVisible(!empty);
+
+        removeEmptyState();
+        if (empty) {
+            Component emptyState = buildEmptyState();
+            if (emptyState != null) {
+                panel.addComponentAtIndex(getContentInsertIndex(), emptyState);
+            }
+        }
+    }
+
+    private Component buildEmptyState() {
+        if (emptyStateTitle == null || emptyStateTitle.isBlank()) {
+            return null;
+        }
+        Empty emptyState = new Empty();
+        emptyState.setTitle(emptyStateTitle);
+        return emptyState;
+    }
+
+    private void removeEmptyState() {
+        panel.getChildren()
+                .filter(component -> component instanceof Empty)
+                .findFirst()
+                .ifPresent(panel::remove);
+    }
+
+    private int getContentInsertIndex() {
+        List<Component> children = panel.getChildren().toList();
+        int footerIndex = children.indexOf(footerDiv);
+        return footerIndex >= 0 ? footerIndex : children.size();
+    }
+
+    private static Div findOrCreateFooter(Panel panel, Span leftStatSpan, Span centerStatSpan, Span rightStatSpan) {
+        return panel.getChildren()
+                .filter(component -> component instanceof Div div && div.hasClassName("arb__footer"))
+                .map(component -> (Div) component)
+                .findFirst()
+                .orElseGet(() -> {
+                    Div footerDiv = new Div(leftStatSpan, centerStatSpan, rightStatSpan);
+                    footerDiv.addClassName("arb__footer");
+                    panel.setContent(footerDiv);
+                    return footerDiv;
+                });
+    }
+
 }

@@ -98,8 +98,6 @@ public class MasterDetailLayoutDemo extends Div {
                                     .withTertiaryText(p -> String.valueOf(p.getPrice()))
                                     .build()
                     )
-                    .gridHeader("")
-                    .gridHeader(Components.button().preset(ButtonPreset.DELETE).build())
                     .pageSizes(10, 25, 50)
                     .defaultPageSize(10)
                     .search("Search products...")

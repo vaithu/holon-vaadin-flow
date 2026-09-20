@@ -15,6 +15,8 @@
  */
 package com.holonplatform.vaadin.flow.internal.components.builders;
 
+import com.vaadin.flow.function.SerializableFunction;
+
 import com.holonplatform.core.internal.utils.ObjectUtils;
 import com.holonplatform.vaadin.flow.components.Input;
 import com.holonplatform.vaadin.flow.components.ValueHolder.ValueChangeEvent;
@@ -73,7 +75,7 @@ public abstract class AbstractInputConfigurator<T, E extends ValueChangeEvent<T>
 	}
 
 	@Override
-	public <A> B withAdapter(Class<A> type, Function<Input<T>, A> adapter) {
+	public <A> B withAdapter(Class<A> type, SerializableFunction<Input<T>, A> adapter) {
 		adapters.setAdapter(type, adapter);
 		return getConfigurator();
 	}

@@ -1418,7 +1418,7 @@ public class DefaultFilterableSingleSelectInputBuilder<T, ITEM> extends
 
 		@Override
 		public <A> ValidatableFilterableSingleSelectInputBuilder<T, ITEM> withAdapter(Class<A> type,
-				Function<Input<T>, A> adapter) {
+				SerializableFunction<Input<T>, A> adapter) {
 			builder.withAdapter(type, adapter);
 			return this;
 		}
@@ -2040,7 +2040,7 @@ public class DefaultFilterableSingleSelectInputBuilder<T, ITEM> extends
 
 		@Override
 		public <A> DatastoreFilterableSingleSelectInputBuilder<T, ITEM> withAdapter(Class<A> type,
-				Function<Input<T>, A> adapter) {
+				SerializableFunction<Input<T>, A> adapter) {
 			builder.withAdapter(type, adapter);
 			return this;
 		}
@@ -2764,7 +2764,7 @@ public class DefaultFilterableSingleSelectInputBuilder<T, ITEM> extends
 
 		@Override
 		public <A> ValidatableDatastoreFilterableSingleSelectInputBuilder<T, ITEM> withAdapter(Class<A> type,
-				Function<Input<T>, A> adapter) {
+				SerializableFunction<Input<T>, A> adapter) {
 			builder.withAdapter(type, adapter);
 			return this;
 		}
