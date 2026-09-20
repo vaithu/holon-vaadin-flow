@@ -178,7 +178,7 @@ public interface PropertyListingConfigurator<C extends PropertyListingConfigurat
 			if (item.contains(property)) {
 				viewComponent.setValue(item.getValue(property));
 			}
-            return viewComponent.getContentComponent().orElseGet(() -> Components.div().build());
+            return viewComponent.getContentComponent().orElseGet(() -> new Div());
 		});
 	}
 

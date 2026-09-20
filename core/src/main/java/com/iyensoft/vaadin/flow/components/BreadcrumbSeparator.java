@@ -1,7 +1,7 @@
 package com.iyensoft.vaadin.flow.components;
 
 import java.io.Serial;
-import com.holonplatform.vaadin.flow.components.Components;
+import com.iyensoft.vaadin.flow.components.Components;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.html.ListItem;
 import com.vaadin.flow.component.html.Span;

@@ -608,7 +608,7 @@ class TestInputOTP {
     @Test
     void fullComposition_Components_factory() {
         // Verify the Components.inputOTP() integration point
-        InputOTP otp = com.holonplatform.vaadin.flow.components.Components.inputOTP()
+        InputOTP otp = com.iyensoft.vaadin.flow.components.Components.inputOTP()
                 .group(3)
                 .separator()
                 .group(3)

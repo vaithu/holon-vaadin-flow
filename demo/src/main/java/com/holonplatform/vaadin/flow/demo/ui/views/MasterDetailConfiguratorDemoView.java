@@ -3,7 +3,7 @@ package com.holonplatform.vaadin.flow.demo.ui.views;
 import com.holonplatform.core.property.PathProperty;
 import com.holonplatform.core.property.PropertyBox;
 import com.holonplatform.core.property.PropertySet;
-import com.holonplatform.vaadin.flow.components.Components;
+import com.iyensoft.vaadin.flow.components.Components;
 import com.holonplatform.vaadin.flow.components.css.CSSUtility;
 import com.holonplatform.vaadin.flow.demo.data.entity.Product;
 import com.holonplatform.vaadin.flow.demo.data.service.ProductService;

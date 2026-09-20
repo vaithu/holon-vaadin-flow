@@ -37,7 +37,7 @@ import com.holonplatform.core.property.PropertyRendererRegistry.NoSuitableRender
 import com.holonplatform.core.property.PropertySet;
 import com.holonplatform.core.property.StringProperty;
 import com.holonplatform.core.property.VirtualProperty;
-import com.holonplatform.vaadin.flow.components.Components;
+import com.iyensoft.vaadin.flow.components.Components;
 import com.holonplatform.vaadin.flow.components.PropertyViewForm;
 import com.holonplatform.vaadin.flow.components.ViewComponent;
 import com.holonplatform.vaadin.flow.test.util.ComponentTestUtils;

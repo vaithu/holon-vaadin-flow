@@ -30,7 +30,7 @@ import com.holonplatform.core.property.PropertyBox;
 import com.holonplatform.core.property.PropertySet;
 import com.holonplatform.core.property.StringProperty;
 import com.holonplatform.core.property.VirtualProperty;
-import com.holonplatform.vaadin.flow.components.Components;
+import com.iyensoft.vaadin.flow.components.Components;
 import com.holonplatform.vaadin.flow.components.PropertyViewGroup;
 import com.holonplatform.vaadin.flow.components.ViewComponent;
 import com.holonplatform.vaadin.flow.components.ViewComponent.ViewComponentPropertyRenderer;

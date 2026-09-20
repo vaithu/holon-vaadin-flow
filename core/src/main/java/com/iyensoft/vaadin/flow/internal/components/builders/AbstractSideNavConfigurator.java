@@ -1,7 +1,7 @@
 package com.iyensoft.vaadin.flow.internal.components.builders;
 
 import com.holonplatform.core.i18n.Localizable;
-import com.holonplatform.vaadin.flow.components.Components;
+import com.iyensoft.vaadin.flow.components.Components;
 import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
 import com.holonplatform.vaadin.flow.internal.components.builders.AbstractComponentConfigurator;
 import com.iyensoft.vaadin.flow.components.builders.SideNavConfigurator;

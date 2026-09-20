@@ -1,6 +1,6 @@
 package com.holonplatform.vaadin.flow.test;
 
-import com.holonplatform.vaadin.flow.components.Components;
+import com.iyensoft.vaadin.flow.components.Components;
 import com.iyensoft.vaadin.flow.components.ListingBundle;
 import com.vaadin.flow.component.grid.Grid;
 import org.junit.jupiter.api.Test;

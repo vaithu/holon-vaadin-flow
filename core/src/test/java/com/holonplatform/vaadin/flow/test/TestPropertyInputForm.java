@@ -18,7 +18,7 @@ package com.holonplatform.vaadin.flow.test;
 import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.core.property.*;
 import com.holonplatform.core.property.PropertyRendererRegistry.NoSuitableRendererAvailableException;
-import com.holonplatform.vaadin.flow.components.Components;
+import com.iyensoft.vaadin.flow.components.Components;
 import com.holonplatform.vaadin.flow.components.Input;
 import com.holonplatform.vaadin.flow.components.PropertyInputForm;
 import com.holonplatform.vaadin.flow.internal.components.DefaultPropertyInputForm;

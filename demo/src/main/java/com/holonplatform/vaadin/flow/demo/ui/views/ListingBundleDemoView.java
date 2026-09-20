@@ -4,7 +4,7 @@ import com.holonplatform.core.property.PathProperty;
 import com.holonplatform.core.property.PropertyBox;
 import com.holonplatform.core.property.PropertySet;
 import com.holonplatform.core.property.StringProperty;
-import com.holonplatform.vaadin.flow.components.Components;
+import com.iyensoft.vaadin.flow.components.Components;
 import com.holonplatform.vaadin.flow.components.ItemListing;
 import com.iyensoft.vaadin.flow.components.ItemListingPaginationBar;
 import com.holonplatform.vaadin.flow.demo.data.entity.Product;

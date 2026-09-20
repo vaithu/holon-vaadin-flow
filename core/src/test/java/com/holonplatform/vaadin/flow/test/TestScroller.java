@@ -25,7 +25,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.junit.jupiter.api.Test;
 
-import com.holonplatform.vaadin.flow.components.Components;
+import com.iyensoft.vaadin.flow.components.Components;
 import com.holonplatform.vaadin.flow.components.builders.ScrollerBuilder;
 import com.holonplatform.vaadin.flow.components.support.Unit;
 import com.vaadin.flow.component.Component;

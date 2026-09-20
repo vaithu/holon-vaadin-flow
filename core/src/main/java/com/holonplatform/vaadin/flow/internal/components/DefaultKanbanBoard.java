@@ -1,5 +1,7 @@
 package com.holonplatform.vaadin.flow.internal.components;
 
+import com.holonplatform.vaadin.flow.components.utils.UIUtils;
+
 import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.core.internal.utils.ObjectUtils;
 import com.holonplatform.core.query.QueryFilter;
@@ -47,7 +49,7 @@ public class DefaultKanbanBoard<T, C> extends Div implements KanbanBoard<T, C> {
     private final List<KanbanMoveAuditEntry<C>> moveAuditTrail = new ArrayList<>();
     private final Map<String, List<KanbanComment>> commentsByItemId = new HashMap<>();
 
-    private final Div columnsLayout = Components.div().build();
+    private final Div columnsLayout = new Div();
 
     private KanbanCardRenderer<T> cardRenderer = item -> Components.span().text(String.valueOf(item)).build();
     private KanbanCardActionHandler<T> cardActionHandler;
@@ -376,12 +378,12 @@ public class DefaultKanbanBoard<T, C> extends Div implements KanbanBoard<T, C> {
     }
 
     private Div buildColumnComponent(KanbanColumn<C> column, String serializedColumnId) {
-        final Div columnRoot = Components.div().styleName("kanban-board-column").build();
+        final Div columnRoot = UIUtils.div("kanban-board-column");
         if (column.className() != null && !column.className().isBlank()) {
             columnRoot.addClassName(column.className());
         }
 
-        final Div header = Components.div().styleName("kanban-board-column-header").build();
+        final Div header = UIUtils.div("kanban-board-column-header");
 
         final Span title = Components.span().text(column.label()).styleName("kanban-board-column-title").build();
 
@@ -395,13 +397,13 @@ public class DefaultKanbanBoard<T, C> extends Div implements KanbanBoard<T, C> {
                 })
                 .build();
 
-        final Div cards = Components.div().styleName("kanban-board-column-cards").build();
+        final Div cards = UIUtils.div("kanban-board-column-cards");
         wireDropTarget(cards, serializedColumnId);
 
         final List<T> items = fetchColumnItems(column.id());
         final Span count = Components.span().text(String.valueOf(resolveColumnCount(column.id(), items.size()))).styleName("kanban-board-column-count").build();
 
-        final Div heading = Components.div().add(title, count).styleName("kanban-board-column-heading").build();
+        final Div heading = UIUtils.div("kanban-board-column-heading", title, count);
         header.add(heading, optionsButton);
         columnRoot.add(header, cards);
 
@@ -448,7 +450,7 @@ public class DefaultKanbanBoard<T, C> extends Div implements KanbanBoard<T, C> {
     }
 
     private Div buildCardComponent(T item) {
-        final Div card = Components.div().styleName("kanban-board-card").build();
+        final Div card = UIUtils.div("kanban-board-card");
 
         final Component rendered = cardRenderer.apply(item);
         if (rendered != null) {
@@ -456,7 +458,7 @@ public class DefaultKanbanBoard<T, C> extends Div implements KanbanBoard<T, C> {
         }
 
         if (cardActionHandler != null) {
-            final Div actions = Components.div().styleName("kanban-board-card-actions").build();
+            final Div actions = UIUtils.div("kanban-board-card-actions");
 
             final Button openButton = Components.button().text(resolveLabel(i18n.getOpen())).styleName("kanban-board-card-action-open").withClickListener(event -> cardActionHandler.onOpen(item)).build();
             final Button editButton = Components.button().text(resolveLabel(i18n.getEdit())).styleName("kanban-board-card-action-edit").withClickListener(event -> cardActionHandler.onEdit(item)).build();
@@ -468,9 +470,9 @@ public class DefaultKanbanBoard<T, C> extends Div implements KanbanBoard<T, C> {
 
         final Collection<KanbanComment> comments = getComments(item);
         if (!comments.isEmpty()) {
-            final Div commentsContainer = Components.div().styleName("kanban-board-card-comments").build();
+            final Div commentsContainer = UIUtils.div("kanban-board-card-comments");
             for (KanbanComment comment : comments) {
-                final Div commentRow = Components.div().styleName("kanban-board-card-comment").build();
+                final Div commentRow = UIUtils.div("kanban-board-card-comment");
                 commentRow.getElement().setText(comment.message());
                 commentsContainer.add(commentRow);
             }

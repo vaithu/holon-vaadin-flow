@@ -38,7 +38,7 @@ import com.holonplatform.core.property.PropertyBox;
 import com.holonplatform.core.property.PropertySet;
 import com.holonplatform.core.property.StringProperty;
 import com.holonplatform.core.query.QueryFilter;
-import com.holonplatform.vaadin.flow.components.Components;
+import com.iyensoft.vaadin.flow.components.Components;
 import com.holonplatform.vaadin.flow.components.FilterInput;
 import com.holonplatform.vaadin.flow.components.FilterInputGroup;
 import com.holonplatform.vaadin.flow.components.Input;

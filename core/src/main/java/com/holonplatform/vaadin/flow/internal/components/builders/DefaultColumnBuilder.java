@@ -14,7 +14,7 @@ public class DefaultColumnBuilder implements ColumnBuilder {
     private final Div columnDiv;
 
     public DefaultColumnBuilder() {
-        columnDiv = Components.div().build();
+        columnDiv = new Div();
     }
 
     // -------------------------------------------------------------------------

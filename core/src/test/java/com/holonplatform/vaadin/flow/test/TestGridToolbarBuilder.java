@@ -1,7 +1,7 @@
 package com.holonplatform.vaadin.flow.test;
 
 import com.holonplatform.core.i18n.Localizable;
-import com.holonplatform.vaadin.flow.components.Components;
+import com.iyensoft.vaadin.flow.components.Components;
 import com.holonplatform.vaadin.flow.components.BeanListing;
 import com.holonplatform.vaadin.flow.components.Selectable;
 import com.iyensoft.vaadin.flow.components.DynamicFilterPanel;

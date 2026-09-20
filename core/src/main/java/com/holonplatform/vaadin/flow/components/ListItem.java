@@ -141,7 +141,7 @@ public class ListItem extends FlexBoxLayout {
 
     public void setPrefix(Component... components) {
         if (prefix == null) {
-            prefix = Components.div().build();
+            prefix = new Div();
             prefix.setClassName(CLASS_NAME + "__prefix");
             getElement().insertChild(0, prefix.getElement());
             getElement().setAttribute("with-prefix", true);
@@ -152,7 +152,7 @@ public class ListItem extends FlexBoxLayout {
 
     public void setSuffix(Component... components) {
         if (suffix == null) {
-            suffix = Components.div().build();
+            suffix = new Div();
             suffix.setClassName(CLASS_NAME + "__suffix");
             getElement().insertChild(getElement().getChildCount(),
                     suffix.getElement());

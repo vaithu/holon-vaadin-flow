@@ -15,7 +15,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import com.holonplatform.vaadin.flow.components.Components;
+import com.iyensoft.vaadin.flow.components.Components;
 import com.iyensoft.vaadin.flow.components.MasterDetailLayout;
 import com.iyensoft.vaadin.flow.components.builders.MasterDetailBuilder;
 import com.holonplatform.vaadin.flow.components.support.ViewMode;

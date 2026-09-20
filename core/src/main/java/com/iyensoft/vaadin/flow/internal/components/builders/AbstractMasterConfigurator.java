@@ -2,7 +2,7 @@ package com.iyensoft.vaadin.flow.internal.components.builders;
 
 import com.holonplatform.core.property.PropertyBox;
 import com.holonplatform.core.property.PropertySet;
-import com.holonplatform.vaadin.flow.components.Components;
+import com.iyensoft.vaadin.flow.components.Components;
 import com.iyensoft.vaadin.flow.components.ListingBundle;
 import com.holonplatform.vaadin.flow.internal.components.builders.AbstractComponentConfigurator;
 import com.iyensoft.vaadin.flow.internal.components.builders.AbstractFooterConfigurator;

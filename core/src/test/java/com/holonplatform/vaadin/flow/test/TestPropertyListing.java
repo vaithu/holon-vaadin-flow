@@ -27,7 +27,7 @@ import com.holonplatform.core.query.QueryFilter;
 import com.holonplatform.datastore.jdbc.JdbcDatastore;
 import com.holonplatform.jdbc.BasicDataSource;
 import com.holonplatform.jdbc.DatabasePlatform;
-import com.holonplatform.vaadin.flow.components.Components;
+import com.iyensoft.vaadin.flow.components.Components;
 import com.holonplatform.vaadin.flow.components.FilterInput;
 import com.holonplatform.vaadin.flow.components.FilterInputForm;
 import com.holonplatform.vaadin.flow.components.Input;

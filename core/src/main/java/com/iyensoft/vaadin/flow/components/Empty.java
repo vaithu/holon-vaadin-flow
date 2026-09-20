@@ -17,7 +17,7 @@ package com.iyensoft.vaadin.flow.components;
 
 import java.io.Serial;
 import com.holonplatform.core.i18n.Localizable;
-import com.holonplatform.vaadin.flow.components.Components;
+import com.iyensoft.vaadin.flow.components.Components;
 import com.iyensoft.vaadin.flow.components.builders.EmptyBuilder;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.dependency.StyleSheet;

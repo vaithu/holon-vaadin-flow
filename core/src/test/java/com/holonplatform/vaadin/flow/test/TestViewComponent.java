@@ -31,7 +31,7 @@ import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.core.property.BooleanProperty;
 import com.holonplatform.core.property.NumericProperty;
 import com.holonplatform.core.property.StringProperty;
-import com.holonplatform.vaadin.flow.components.Components;
+import com.iyensoft.vaadin.flow.components.Components;
 import com.holonplatform.vaadin.flow.components.ViewComponent;
 import com.holonplatform.vaadin.flow.components.builders.ViewComponentBuilder;
 import com.holonplatform.vaadin.flow.components.support.Unit;

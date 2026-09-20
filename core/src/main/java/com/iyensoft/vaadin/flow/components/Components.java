@@ -13,8 +13,14 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package com.holonplatform.vaadin.flow.components;
+package com.iyensoft.vaadin.flow.components;
 
+import com.holonplatform.vaadin.flow.components.*;
+import com.holonplatform.vaadin.flow.components.Input;
+
+import com.iyensoft.vaadin.flow.internal.components.builders.DefaultFooterBuilder;
+import com.iyensoft.vaadin.flow.internal.components.builders.DefaultHeaderBuilder;
+import com.iyensoft.vaadin.flow.internal.components.builders.DefaultListingBundleBuilder;
 
 import com.holonplatform.core.Context;
 import com.holonplatform.core.config.ConfigProperty;
@@ -51,8 +57,11 @@ import com.holonplatform.vaadin.flow.components.events.ClickEventListener;
 import com.holonplatform.vaadin.flow.components.utils.UIUtils;
 import com.holonplatform.vaadin.flow.data.ItemConverter;
 import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
+import com.iyensoft.vaadin.flow.internal.components.DefaultFormFooter;
 import com.holonplatform.vaadin.flow.internal.components.DefaultTimeline;
 import com.holonplatform.vaadin.flow.internal.components.builders.*;
+import com.iyensoft.vaadin.flow.components.builders.*;
+import com.iyensoft.vaadin.flow.internal.components.builders.MobileGridColumnBuilder;
 import com.vaadin.flow.component.ClickNotifier;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HtmlContainer;
@@ -191,7 +200,13 @@ public interface Components {
         return FlexLayoutConfigurator.configure(layout);
     }
 
+    static DivConfigurator.BaseDivConfigurator configure(Div div) {
+        return DivConfigurator.configure(div);
+    }
 
+    static LayoutConfigurator.BaseLayoutConfigurator configure(Layout layout) {
+        return LayoutConfigurator.configure(layout);
+    }
 
 
     static NotificationConfigurator.BaseNotificationConfigurator configure(Notification notification) {
@@ -202,12 +217,33 @@ public interface Components {
         return NotificationBuilder.create();
     }
 
+    static GridHeaderBuilder gridHeader(String title) {
+        return GridHeaderBuilder.create(title);
+    }
 
+    static GridHeaderBuilder gridHeader(LabelBuilder<?> labelBuilder) {
+        return GridHeaderBuilder.create(labelBuilder);
+    }
 
+    static GridToolbarBuilder gridToolbar() {
+        return GridToolbarBuilder.create();
+    }
 
+    static GridToolbarBuilder gridToolbar(Component... components) {
+        return GridToolbarBuilder.create(components);
+    }
 
+    static TabsBuilder tabs() {
+        return TabsBuilder.create();
+    }
 
+    static LazyTabsBuilder lazyTabs() {
+        return LazyTabsBuilder.create();
+    }
 
+    static TabsConfigurator.BaseTabsConfigurator configure(Tabs tabs) {
+        return TabsConfigurator.configure(tabs);
+    }
 
     static TabBuilder tab() {
         return TabBuilder.create();
@@ -229,7 +265,13 @@ public interface Components {
         return AccordionBuilder.create();
     }
 
+    static SideNavBuilder sideNav() {
+        return SideNavBuilder.create();
+    }
 
+    static SideNavBuilder configure(SideNav sideNav) {
+        return SideNavBuilder.configure(sideNav);
+    }
 
     static DefaultAccordionHeaderBuilder accordionHeader() {
         return new DefaultAccordionHeaderBuilder();
@@ -271,9 +313,62 @@ public interface Components {
         return FlexBoxLayoutBuilder.create();
     }
 
+    /**
+     * Obtain a {@link SheetBuilder} for a {@link Sheet.Side#BOTTOM} sheet
+     * (slides up from the bottom  primary mobile pattern).
+     *
+     * @return a new {@link SheetBuilder}
+     */
+    static SheetBuilder sheet() {
+        return SheetBuilder.create();
+    }
 
+    /**
+     * Obtain a {@link SheetBuilder} for the given slide direction.
+     *
+     * @param side the edge from which the panel slides in (not null)
+     * @return a new {@link SheetBuilder}
+     */
+    static SheetBuilder sheet(Sheet.Side side) {
+        return SheetBuilder.create(side);
+    }
 
+    /**
+     * Obtain a configurator for an already-created {@link Sheet} instance.
+     *
+     * @param sheet the sheet to configure (not null)
+     * @return a {@link SheetConfigurator.BaseSheetConfigurator}
+     */
+    static SheetConfigurator.BaseSheetConfigurator configure(Sheet sheet) {
+        return SheetConfigurator.configure(sheet);
+    }
 
+    /**
+     * Create a {@link SheetStack} that slides sheets in from the given edge.
+     *
+     * <p>A {@link SheetStack} is a bounded navigation stack backed by a
+     * {@link com.holonplatform.core.utils.SizedStack}. Each {@code push(title, content)}
+     * call creates, configures, and opens a new sheet, applying stacking rules
+     * automatically:</p>
+     * <ul>
+     *   <li>Root sheet  {@code backdropVisible(true)}: dims the app content behind it.</li>
+     *   <li>Child sheets  {@code backdropVisible(false)}: parent not visible through overlay.</li>
+     *   <li>All sheets  {@code fullscreenOnMobile(true)}: full viewport on mobile.</li>
+     * </ul>
+     *
+     * <pre>{@code
+     * var stack = Components.sheetStack(Sheet.Side.RIGHT);
+     * openBtn.addClickListener(e -> stack.push("Categories", categoryList));
+     * catRow.addClickListener(e -> stack.push(cat.name(), productList));
+     * viewBtn.addClickListener(e -> stack.push("Detail", detailView));
+     * }</pre>
+     *
+     * @param side the edge from which all sheets in this stack slide in (not null)
+     * @return a new {@link SheetStack}
+     */
+    static SheetStack sheetStack(Sheet.Side side) {
+        return new SheetStack(side);
+    }
 
 
     // Builders
@@ -396,8 +491,35 @@ public interface Components {
         return LabelBuilder.h6();
     }
 
+    /**
+     * Gets a builder to create an anonymous {@link Avatar}.
+     *
+     * @return A new {@link AvatarBuilder}
+     */
+    static AvatarBuilder avatar() {
+        return AvatarBuilder.create();
+    }
 
+    /**
+     * Gets a builder to create a named {@link Avatar}.
+     *
+     * @param name display name shown in the tooltip; auto-generates initials
+     * @return A new {@link AvatarBuilder}
+     */
+    static AvatarBuilder avatar(String name) {
+        return AvatarBuilder.create(name);
+    }
 
+    /**
+     * Gets a builder to create a named {@link Avatar} with a profile image.
+     *
+     * @param name     display name
+     * @param imageUrl profile-image URL
+     * @return A new {@link AvatarBuilder}
+     */
+    static AvatarBuilder avatar(String name, String imageUrl) {
+        return AvatarBuilder.create(name, imageUrl);
+    }
 
     /**
      * Gets a builder to create an empty {@link com.vaadin.flow.component.popover.Popover}.
@@ -418,9 +540,43 @@ public interface Components {
         return PopoverBuilder.create(components);
     }
 
+    /**
+     * Gets a builder to create an empty Material 3 app bar.
+     *
+     * @return a new {@link MaterialAppBarBuilder}
+     */
+    static MaterialAppBarBuilder materialAppBar() {
+        return MaterialAppBarBuilder.create();
+    }
 
+    /**
+     * Gets a builder to create a Material 3 app bar with leading components.
+     *
+     * @param components components to add to the leading slot
+     * @return a new {@link MaterialAppBarBuilder}
+     */
+    static MaterialAppBarBuilder materialAppBar(Component... components) {
+        return MaterialAppBarBuilder.create(components);
+    }
 
+    /**
+     * Gets a builder to create an empty standalone Material 3 content header.
+     *
+     * @return a new {@link MaterialHeaderBuilder}
+     */
+    static MaterialHeaderBuilder materialHeader() {
+        return MaterialHeaderBuilder.create();
+    }
 
+    /**
+     * Gets a builder to create a Material 3 content header with leading components.
+     *
+     * @param components components to add to the leading slot
+     * @return a new {@link MaterialHeaderBuilder}
+     */
+    static MaterialHeaderBuilder materialHeader(Component... components) {
+        return MaterialHeaderBuilder.create(components);
+    }
 
     /**
      * Gets a builder to create an empty {@link com.vaadin.flow.component.avatar.AvatarGroup}.
@@ -440,17 +596,53 @@ public interface Components {
         return ButtonBuilder.create();
     }
 
+    static LayoutBuilder layout(Component... components) {
+        return LayoutBuilder.create(components);
+    }
 
+    static LayoutBuilder layout() {
+        return LayoutBuilder.create();
+    }
 
+    static HeaderBuilder header(String title) {
+        return HeaderBuilder.create(title);
+    }
 
+    static HeaderBuilder header(LabelBuilder<?> labelBuilder) {
+        return HeaderBuilder.create(labelBuilder);
+    }
 
+    static HeaderBuilder configure(Header header) {
+        return new DefaultHeaderBuilder(header);
+    }
 
+    static FooterBuilder footer() {
+        return FooterBuilder.create();
+    }
 
+    static FooterBuilder configure(Footer footer) {
+        return new DefaultFooterBuilder(footer);
+    }
 
+    static FooterConfigurator.BaseFooterConfigurator footer(Footer footer) {
+        return FooterConfigurator.configure(footer);
+    }
 
+    static BreadcrumbBuilder breadcrumb() {
+        return BreadcrumbBuilder.create();
+    }
 
+    static BreadcrumbBuilder breadcrumb(Breadcrumb breadcrumb) {
+        return BreadcrumbBuilder.create(breadcrumb);
+    }
 
+    static MobileGridColumnBuilder mobileGridColumn() {
+        return MobileGridColumnBuilder.create();
+    }
 
+    static MobileGridColumnBuilder mobileGridColumn(Layout layout) {
+        return MobileGridColumnBuilder.create(layout);
+    }
 
     /**
      * Get a {@link LitRendererBuilder.MobileGridColumnBuilder} to create a client-side Lit renderer
@@ -478,95 +670,558 @@ public interface Components {
     // Alert (shadcn/ui-inspired inline notification banner)
     // -----------------------------------------------------------------------
 
+    /**
+     * Get an {@link AlertBuilder} to create an {@link Alert} with the default variant.
+     *
+     * @return a new {@link AlertBuilder}
+     */
+    static AlertBuilder alert() {
+        return AlertBuilder.create();
+    }
 
+    /**
+     * Get an {@link AlertBuilder} to create an {@link Alert} with the given variant.
+     *
+     * @param variant the alert variant (not null)
+     * @return a new {@link AlertBuilder}
+     */
+    static AlertBuilder alert(Alert.Variant variant) {
+        return AlertBuilder.create(variant);
+    }
 
+    /**
+     * Get an {@link AlertConfigurator} to configure an existing {@link Alert}.
+     *
+     * @param alert the alert to configure (not null)
+     * @return a {@link AlertConfigurator.BaseAlertConfigurator}
+     */
+    static AlertConfigurator.BaseAlertConfigurator configure(Alert alert) {
+        return AlertConfigurator.configure(alert);
+    }
 
     // -----------------------------------------------------------------------
     // AlertModal (shadcn/ui-inspired dismissible modal notification)
     // -----------------------------------------------------------------------
 
+    /**
+     * Get an {@link AlertModalBuilder} to create an {@link AlertModal} with the default variant.
+     *
+     * @return a new {@link AlertModalBuilder}
+     */
+    static AlertModalBuilder alertModal() {
+        return AlertModalBuilder.create();
+    }
 
+    /**
+     * Get an {@link AlertModalBuilder} to create an {@link AlertModal} with the given variant.
+     *
+     * @param variant the alert variant (not null)
+     * @return a new {@link AlertModalBuilder}
+     */
+    static AlertModalBuilder alertModal(Alert.Variant variant) {
+        return AlertModalBuilder.create(variant);
+    }
 
+    /**
+     * Get an {@link AlertModalConfigurator} to configure an existing {@link AlertModal}.
+     *
+     * @param modal the modal to configure (not null)
+     * @return a {@link AlertModalConfigurator.BaseAlertModalConfigurator}
+     */
+    static AlertModalConfigurator.BaseAlertModalConfigurator configure(AlertModal modal) {
+        return AlertModalConfigurator.configure(modal);
+    }
 
     // -----------------------------------------------------------------------
     // AlertDialog (shadcn/ui-inspired non-dismissible confirmation dialog)
     // -----------------------------------------------------------------------
 
+    /**
+     * Get an {@link AlertDialogBuilder} to create an {@link AlertDialog}  the
+     * shadcn/ui-inspired confirmation dialog that forces an explicit user choice.
+     *
+     * <p>By default the dialog is non-dismissible (no ESC, no click-outside).
+     * Use for dangerous or irreversible operations such as deletion or sign-out.</p>
+     *
+     * <pre>{@code
+     * Components.alertDialog()
+     *     .title("Are you absolutely sure?")
+     *     .description("This action cannot be undone.")
+     *     .variant(Alert.Variant.DESTRUCTIVE)
+     *     .confirmText("Yes, delete account")
+     *     .onConfirm(() -> accountService.delete(currentUser))
+     *     .open();
+     * }</pre>
+     *
+     * @return a new {@link AlertDialogBuilder}
+     */
+    static AlertDialogBuilder alertDialog() {
+        return AlertDialogBuilder.create();
+    }
 
+    /**
+     * Get an {@link AlertDialogConfigurator} to configure an existing {@link AlertDialog}.
+     *
+     * @param dialog the dialog to configure (not null)
+     * @return a {@link AlertDialogConfigurator.BaseAlertDialogConfigurator}
+     */
+    static AlertDialogConfigurator.BaseAlertDialogConfigurator configure(AlertDialog dialog) {
+        return AlertDialogConfigurator.configure(dialog);
+    }
 
     // -----------------------------------------------------------------------
     // IconBadge  circular tinted icon container
     // -----------------------------------------------------------------------
 
+    /**
+     * Get an {@link IconBadgeBuilder} for a neutral badge (no icon pre-set).
+     *
+     * <pre>{@code
+     * IconBadge badge = Components.iconBadge()
+     *     .icon(VaadinIcon.CHECK_CIRCLE)
+     *     .variant(Alert.Variant.SUCCESS)
+     *     .size(IconBadge.Size.LG)
+     *     .build();
+     * }</pre>
+     *
+     * @return a new {@link IconBadgeBuilder}
+     */
+    static IconBadgeBuilder iconBadge() {
+        return IconBadgeBuilder.create();
+    }
 
+    /**
+     * Get an {@link IconBadgeBuilder} pre-configured with the given icon.
+     *
+     * @param icon the VaadinIcon to display (not null)
+     * @return a new {@link IconBadgeBuilder}
+     */
+    static IconBadgeBuilder iconBadge(Icon icon) {
+        return IconBadgeBuilder.create(icon);
+    }
 
+    /**
+     * Get an {@link IconBadgeBuilder} pre-configured with icon and variant.
+     *
+     * <pre>{@code
+     * // Green circle + checkmark, large
+     * Components.iconBadge(VaadinIcon.CHECK_CIRCLE, Alert.Variant.SUCCESS)
+     *     .size(IconBadge.Size.LG).build();
+     * }</pre>
+     *
+     * @param icon    the VaadinIcon to display (not null)
+     * @param variant the semantic color variant (null = neutral)
+     * @return a new {@link IconBadgeBuilder}
+     */
+    static IconBadgeBuilder iconBadge(Icon icon, Alert.Variant variant) {
+        return IconBadgeBuilder.create(icon, variant);
+    }
 
+    /**
+     * Get a fully-specified {@link IconBadgeBuilder}.
+     *
+     * @param icon    the VaadinIcon to display (not null)
+     * @param variant the semantic color variant (null = neutral)
+     * @param size    the size preset (not null)
+     * @return a new {@link IconBadgeBuilder}
+     */
+    static IconBadgeBuilder iconBadge(Icon icon, Alert.Variant variant, IconBadge.Size size) {
+        return IconBadgeBuilder.create(icon, variant, size);
+    }
 
+    /**
+     * Get an {@link IconBadgeConfigurator} to configure an existing {@link IconBadge}.
+     *
+     * @param badge the badge to configure (not null)
+     * @return a {@link IconBadgeConfigurator.BaseIconBadgeConfigurator}
+     */
+    static IconBadgeConfigurator.BaseIconBadgeConfigurator configure(IconBadge badge) {
+        return IconBadgeConfigurator.configure(badge);
+    }
 
     // -----------------------------------------------------------------------
     // Empty (shadcn/ui-inspired empty-state component)
     // -----------------------------------------------------------------------
 
+    /**
+     * Get an {@link EmptyBuilder} to create an {@link Empty} empty-state component.
+     *
+     * <p>Use this component to communicate that a collection, list, or data set
+     * contains no items  and give the user a clear path forward.</p>
+     *
+     * @return a new {@link EmptyBuilder}
+     */
+    static EmptyBuilder empty() {
+        return EmptyBuilder.create();
+    }
 
+    /**
+     * Get an {@link EmptyConfigurator} to configure an existing {@link Empty} instance.
+     *
+     * @param empty the empty component to configure (not null)
+     * @return a {@link EmptyConfigurator.BaseEmptyConfigurator}
+     */
+    static EmptyConfigurator.BaseEmptyConfigurator configure(Empty empty) {
+        return EmptyConfigurator.configure(empty);
+    }
 
     // -----------------------------------------------------------------------
     // InputGroup (shadcn/ui-inspired unified input-field grouping container)
     // -----------------------------------------------------------------------
 
+    /**
+     * Get an {@link InputGroupBuilder} to create an {@link InputGroup}  a horizontal
+     * flex container that merges input fields, buttons, and text addons into a single
+     * unified control.
+     *
+     * <pre>{@code
+     * InputGroup group = Components.inputGroup()
+     *     .content(new InputGroupText("@"))
+     *     .content(new TextField())
+     *     .content(new Button("Go"))
+     *     .build();
+     * }</pre>
+     *
+     * @return a new {@link InputGroupBuilder}
+     */
+    static InputGroupBuilder inputGroup() {
+        return InputGroupBuilder.create();
+    }
 
+    /**
+     * Get an {@link InputGroupLayoutConfigurator} to configure an existing {@link InputGroup} instance.
+     *
+     * @param inputGroup the group to configure (not null)
+     * @return a {@link InputGroupLayoutConfigurator.BaseInputGroupLayoutConfigurator}
+     */
+    static InputGroupLayoutConfigurator.BaseInputGroupLayoutConfigurator configure(InputGroup inputGroup) {
+        return InputGroupLayoutConfigurator.configure(inputGroup);
+    }
 
     // -----------------------------------------------------------------------
     // ButtonGroup (shadcn/ui-inspired button group)
     // -----------------------------------------------------------------------
 
+    /**
+     * Get a {@link ButtonGroupBuilder} to create a {@link com.iyensoft.vaadin.flow.components.ButtonGroup}.
+     *
+     * <pre>{@code
+     * ButtonGroup group = Components.buttonGroup()
+     *     .content(new Button("Day"), new Button("Week"), new Button("Month"))
+     *     .build();
+     * }</pre>
+     *
+     * @return a new {@link ButtonGroupBuilder}
+     */
+    static ButtonGroupBuilder buttonGroup() {
+        return ButtonGroupBuilder.create();
+    }
 
+    /**
+     * Get a {@link ButtonGroupConfigurator} to configure an existing
+     * {@link com.iyensoft.vaadin.flow.components.ButtonGroup} instance.
+     *
+     * @param buttonGroup the group to configure (not null)
+     * @return a {@link ButtonGroupConfigurator.BaseButtonGroupConfigurator}
+     */
+    static ButtonGroupConfigurator.BaseButtonGroupConfigurator configure(
+            ButtonGroup buttonGroup) {
+        return ButtonGroupConfigurator.configure(buttonGroup);
+    }
 
     // -----------------------------------------------------------------------
     // InputOTP (shadcn/ui-inspired one-time password input)
     // -----------------------------------------------------------------------
 
+    /**
+     * Get an {@link InputOTPBuilder} to create an {@link InputOTP} one-time password input.
+     *
+     * <pre>{@code
+     * InputOTP otp = Components.inputOTP()
+     *     .group(3).separator().group(3)
+     *     .pattern("[0-9]")
+     *     .onComplete(value -> verifyCode(value))
+     *     .build();
+     * }</pre>
+     *
+     * @return a new {@link InputOTPBuilder}
+     */
+    static InputOTPBuilder inputOTP() {
+        return InputOTPBuilder.create();
+    }
 
+    /**
+     * Get an {@link InputOTPConfigurator} to configure an existing {@link InputOTP} instance.
+     *
+     * @param otp the OTP component to configure (not null)
+     * @return a {@link InputOTPConfigurator.BaseInputOTPConfigurator}
+     */
+    static InputOTPConfigurator.BaseInputOTPConfigurator configure(InputOTP otp) {
+        return InputOTPConfigurator.configure(otp);
+    }
 
     // -----------------------------------------------------------------------
     // Ribbon (card decorated with a corner/edge ribbon label, TailAdmin inspired)
     // -----------------------------------------------------------------------
 
+    /**
+     * Get a {@link RibbonBuilder} to create a {@link Ribbon} — a card decorated with a
+     * corner/edge ribbon label.
+     *
+     * <pre>{@code
+     * Ribbon card = Components.ribbon()
+     *     .variant(Ribbon.Variant.ROUNDED)
+     *     .color(Ribbon.Color.SUCCESS)
+     *     .label("Popular")
+     *     .content(new H3("Featured"), new Paragraph("..."))
+     *     .build();
+     * }</pre>
+     *
+     * @return a new {@link RibbonBuilder}
+     */
+    static RibbonBuilder ribbon() {
+        return RibbonBuilder.create();
+    }
 
+    /**
+     * Get a {@link RibbonBuilder} to build the given {@link Ribbon} instance.
+     *
+     * @param ribbon the ribbon to build (not null)
+     * @return a new {@link RibbonBuilder}
+     */
+    static RibbonBuilder ribbon(Ribbon ribbon) {
+        return RibbonBuilder.create(ribbon);
+    }
 
+    /**
+     * Get a {@link RibbonConfigurator} to configure an existing {@link Ribbon} instance.
+     *
+     * @param ribbon the ribbon to configure (not null)
+     * @return a {@link RibbonConfigurator.BaseRibbonConfigurator}
+     */
+    static RibbonConfigurator.BaseRibbonConfigurator configure(Ribbon ribbon) {
+        return RibbonConfigurator.configure(ribbon);
+    }
 
     // -----------------------------------------------------------------------
     // Separator (shadcn/ui-inspired separator)
     // -----------------------------------------------------------------------
 
+    /**
+     * Get a {@link SeparatorBuilder} to create a {@link Separator} component.
+     *
+     * <pre>{@code
+     * // Horizontal rule (default)
+     * Separator sep = Components.separator().build();
+     *
+     * // Vertical rule
+     * Separator sep = Components.separator()
+     *     .orientation(Separator.Orientation.VERTICAL)
+     *     .build();
+     *
+     * // Decorative (hidden from assistive technologies)
+     * Separator sep = Components.separator()
+     *     .decorative(true)
+     *     .build();
+     * }</pre>
+     *
+     * @return a new {@link SeparatorBuilder}
+     */
+    static SeparatorBuilder separator() {
+        return SeparatorBuilder.create();
+    }
 
+    /**
+     * Get a {@link SeparatorConfigurator} to configure an existing {@link Separator} instance.
+     *
+     * @param separator the separator to configure (not null)
+     * @return a {@link SeparatorConfigurator.BaseSeparatorConfigurator}
+     */
+    static SeparatorConfigurator.BaseSeparatorConfigurator configure(Separator separator) {
+        return SeparatorConfigurator.configure(separator);
+    }
 
     // -----------------------------------------------------------------------
     // Stepper
     // -----------------------------------------------------------------------
 
+    /**
+     * Get a {@link StepperBuilder} to create a {@link FlowStepper} component.
+     *
+     * <pre>{@code
+     * // Horizontal stepper (default)
+     * FlowStepper stepper = Components.stepper()
+     *     .steps("Account", "Details", "Review", "Confirm")
+     *     .build();
+     *
+     * // Vertical stepper starting at step 1
+     * FlowStepper stepper = Components.stepper()
+     *     .steps("Choose Plan", "Payment", "Go Live")
+     *     .currentStep(1)
+     *     .orientation(FlowStepper.Orientation.VERTICAL)
+     *     .build();
+     * }</pre>
+     *
+     * @return a new {@link StepperBuilder}
+     */
+    static StepperBuilder stepper() {
+        return StepperBuilder.create();
+    }
 
+    /**
+     * Get a {@link StepperConfigurator} to configure an existing {@link FlowStepper} instance.
+     *
+     * @param stepper the stepper to configure (not null)
+     * @return a {@link StepperConfigurator.BaseStepperConfigurator}
+     */
+    static StepperConfigurator.BaseStepperConfigurator configure(FlowStepper stepper) {
+        return StepperConfigurator.configure(stepper);
+    }
 
     // -----------------------------------------------------------------------
     // Fab (Material Design 3 Floating Action Button)
     // -----------------------------------------------------------------------
 
+    /**
+     * Get a {@link FabBuilder} to create a {@link Fab} — the Material Design 3
+     * <a href="https://m3.material.io/components/floating-action-button/overview">Floating
+     * Action Button</a> — with a {@link com.vaadin.flow.component.icon.VaadinIcon#PLUS} icon,
+     * default size and surface color.
+     *
+     * @return a new {@link FabBuilder}
+     */
+    static FabBuilder fab() {
+        return FabBuilder.create();
+    }
 
+    /**
+     * Get a {@link FabBuilder} to create a {@link Fab} pre-configured with the given icon.
+     *
+     * @param icon the icon to display (not null)
+     * @return a new {@link FabBuilder}
+     */
+    static FabBuilder fab(com.vaadin.flow.component.icon.VaadinIcon icon) {
+        return FabBuilder.create(icon);
+    }
 
+    /**
+     * Get a {@link FabBuilder} to create a {@link Fab} pre-configured with icon and color.
+     *
+     * <pre>{@code
+     * Fab fab = Components.fab(VaadinIcon.EDIT, Fab.Color.PRIMARY)
+     *     .size(Fab.Size.LARGE)
+     *     .position(Fab.Position.BOTTOM_END)
+     *     .onClick(e -> compose())
+     *     .build();
+     * }</pre>
+     *
+     * @param icon  the icon to display (not null)
+     * @param color the color scheme ({@code null} = {@link Fab.Color#SURFACE})
+     * @return a new {@link FabBuilder}
+     */
+    static FabBuilder fab(com.vaadin.flow.component.icon.VaadinIcon icon, Fab.Color color) {
+        return FabBuilder.create(icon, color);
+    }
 
+    /**
+     * Get a {@link FabConfigurator.BaseFabConfigurator} to configure an existing {@link Fab}.
+     *
+     * @param fab the FAB to configure (not null)
+     * @return a {@link FabConfigurator.BaseFabConfigurator}
+     */
+    static FabConfigurator.BaseFabConfigurator configure(Fab fab) {
+        return FabConfigurator.configure(fab);
+    }
 
     // -----------------------------------------------------------------------
     // FabMenu (Material Design 3 FAB Menu / "speed-dial")
     // -----------------------------------------------------------------------
 
+    /**
+     * Get a {@link FabMenuBuilder} to create a {@link FabMenu} — a Material Design 3
+     * <a href="https://m3.material.io/components/floating-action-button/overview">FAB Menu</a>
+     * — with a {@link com.vaadin.flow.component.icon.VaadinIcon#PLUS} trigger and primary color.
+     *
+     * @return a new {@link FabMenuBuilder}
+     */
+    static FabMenuBuilder fabMenu() {
+        return FabMenuBuilder.create();
+    }
 
+    /**
+     * Get a {@link FabMenuBuilder} to create a {@link FabMenu} pre-configured with the given
+     * trigger icon.
+     *
+     * @param icon the trigger's closed-state icon (not null)
+     * @return a new {@link FabMenuBuilder}
+     */
+    static FabMenuBuilder fabMenu(com.vaadin.flow.component.icon.VaadinIcon icon) {
+        return FabMenuBuilder.create(icon);
+    }
 
+    /**
+     * Get a {@link FabMenuBuilder} to create a {@link FabMenu} pre-configured with trigger icon
+     * and color.
+     *
+     * <pre>{@code
+     * FabMenu menu = Components.fabMenu(VaadinIcon.PLUS, Fab.Color.PRIMARY)
+     *     .position(Fab.Position.BOTTOM_END)
+     *     .item(VaadinIcon.EDIT, "Compose", e -> compose())
+     *     .item(VaadinIcon.CAMERA, "Photo", e -> takePhoto())
+     *     .build();
+     * }</pre>
+     *
+     * @param icon  the trigger's closed-state icon (not null)
+     * @param color the trigger (and default item) color scheme
+     * @return a new {@link FabMenuBuilder}
+     */
+    static FabMenuBuilder fabMenu(com.vaadin.flow.component.icon.VaadinIcon icon, Fab.Color color) {
+        return FabMenuBuilder.create(icon, color);
+    }
 
+    /**
+     * Get a {@link FabMenuConfigurator.BaseFabMenuConfigurator} to configure an existing
+     * {@link FabMenu}.
+     *
+     * @param menu the menu to configure (not null)
+     * @return a {@link FabMenuConfigurator.BaseFabMenuConfigurator}
+     */
+    static FabMenuConfigurator.BaseFabMenuConfigurator configure(FabMenu menu) {
+        return FabMenuConfigurator.configure(menu);
+    }
 
     // -----------------------------------------------------------------------
     // Timeline Stepper (audit log)
     // -----------------------------------------------------------------------
 
+    /**
+     * Get a {@link TimelineStepperBuilder} to create a {@link TimelineStepper} component.
+     *
+     * <pre>{@code
+     * TimelineStepper tl = Components.timelineStepper()
+     *     .pageSize(20)
+     *     .hasMore(true)
+     *     .width("100%")
+     *     .onLoadMore(e -> tl.appendEntries(service.getPage(e.getPage())))
+     *     .build();
+     * }</pre>
+     *
+     * @return a new {@link TimelineStepperBuilder}
+     */
+    static TimelineStepperBuilder timelineStepper() {
+        return TimelineStepperBuilder.create();
+    }
 
+    /**
+     * Get a {@link TimelineStepperConfigurator} to configure an existing
+     * {@link TimelineStepper} instance.
+     *
+     * @param timeline the timeline to configure (not null)
+     * @return a {@link TimelineStepperConfigurator.BaseTimelineStepperConfigurator}
+     */
+    static TimelineStepperConfigurator.BaseTimelineStepperConfigurator configure(TimelineStepper timeline) {
+        return TimelineStepperConfigurator.configure(timeline);
+    }
 
     interface utils {
         static FormResponsiveStepBuilder responsiveSteps() {
@@ -576,6 +1231,9 @@ public interface Components {
 
     }
 
+    static CardBuilder card() {
+        return CardBuilder.create();
+    }
 
     static RowBuilder row() {
         return RowBuilder.create();
@@ -585,46 +1243,335 @@ public interface Components {
         return ColumnBuilder.create();
     }
 
+    static PanelBuilder panel() {
+        return PanelBuilder.create();
+    }
 
+    static PanelBuilder panel(Panel panel) {
+        return PanelBuilder.create(panel);
+    }
 
     // -----------------------------------------------------------------------
     // SignInPage (generic split sign-in layout, TailAdmin inspired)
     // -----------------------------------------------------------------------
 
+    /**
+     * Get a {@link SignInPageBuilder} to create a {@link SignInPage} — a generic,
+     * theme-agnostic split sign-in layout.
+     *
+     * <pre>{@code
+     * SignInPage page = Components.signInPage()
+     *     .heading("Sign In")
+     *     .brandingTitle("Acme")
+     *     .withSignInListener(e -> authenticate(e.getEmail(), e.getPassword()))
+     *     .build();
+     * }</pre>
+     *
+     * @return a new {@link SignInPageBuilder}
+     */
+    static SignInPageBuilder signInPage() {
+        return SignInPageBuilder.create();
+    }
 
+    /**
+     * Get a {@link SignInPageBuilder} to build the given {@link SignInPage} instance.
+     *
+     * @param signInPage the sign-in page to build (not null)
+     * @return a new {@link SignInPageBuilder}
+     */
+    static SignInPageBuilder signInPage(SignInPage signInPage) {
+        return SignInPageBuilder.create(signInPage);
+    }
 
+    /**
+     * Get a {@link SignInPageConfigurator} to configure an existing {@link SignInPage} instance.
+     *
+     * @param signInPage the sign-in page to configure (not null)
+     * @return a {@link SignInPageConfigurator.BaseSignInPageConfigurator}
+     */
+    static SignInPageConfigurator.BaseSignInPageConfigurator configure(SignInPage signInPage) {
+        return SignInPageConfigurator.configure(signInPage);
+    }
 
     // -----------------------------------------------------------------------
     // SignUpPage (generic split sign-up layout, TailAdmin inspired)
     // -----------------------------------------------------------------------
 
+    /**
+     * Get a {@link SignUpPageBuilder} to create a {@link SignUpPage} — a generic,
+     * theme-agnostic split sign-up layout.
+     *
+     * <pre>{@code
+     * SignUpPage page = Components.signUpPage()
+     *     .heading("Sign Up")
+     *     .brandingTitle("Acme")
+     *     .withSignUpListener(e -> register(e.getEmail(), e.getPassword()))
+     *     .build();
+     * }</pre>
+     *
+     * @return a new {@link SignUpPageBuilder}
+     */
+    static SignUpPageBuilder signUpPage() {
+        return SignUpPageBuilder.create();
+    }
 
+    /**
+     * Get a {@link SignUpPageBuilder} to build the given {@link SignUpPage} instance.
+     *
+     * @param signUpPage the sign-up page to build (not null)
+     * @return a new {@link SignUpPageBuilder}
+     */
+    static SignUpPageBuilder signUpPage(SignUpPage signUpPage) {
+        return SignUpPageBuilder.create(signUpPage);
+    }
 
+    /**
+     * Get a {@link SignUpPageConfigurator} to configure an existing {@link SignUpPage} instance.
+     *
+     * @param signUpPage the sign-up page to configure (not null)
+     * @return a {@link SignUpPageConfigurator.BaseSignUpPageConfigurator}
+     */
+    static SignUpPageConfigurator.BaseSignUpPageConfigurator configure(SignUpPage signUpPage) {
+        return SignUpPageConfigurator.configure(signUpPage);
+    }
 
     // -----------------------------------------------------------------------
     // ResetPasswordPage (generic split reset-password layout, TailAdmin inspired)
     // -----------------------------------------------------------------------
 
+    /**
+     * Get a {@link ResetPasswordPageBuilder} to create a {@link ResetPasswordPage} — a generic,
+     * theme-agnostic split reset-password ("forgot password") layout.
+     *
+     * <pre>{@code
+     * ResetPasswordPage page = Components.resetPasswordPage()
+     *     .heading("Forgot Your Password?")
+     *     .brandingTitle("Acme")
+     *     .withResetPasswordListener(e -> sendResetLink(e.getEmail()))
+     *     .build();
+     * }</pre>
+     *
+     * @return a new {@link ResetPasswordPageBuilder}
+     */
+    static ResetPasswordPageBuilder resetPasswordPage() {
+        return ResetPasswordPageBuilder.create();
+    }
 
+    /**
+     * Get a {@link ResetPasswordPageBuilder} to build the given {@link ResetPasswordPage} instance.
+     *
+     * @param resetPasswordPage the reset-password page to build (not null)
+     * @return a new {@link ResetPasswordPageBuilder}
+     */
+    static ResetPasswordPageBuilder resetPasswordPage(ResetPasswordPage resetPasswordPage) {
+        return ResetPasswordPageBuilder.create(resetPasswordPage);
+    }
 
+    /**
+     * Get a {@link ResetPasswordPageConfigurator} to configure an existing {@link ResetPasswordPage}
+     * instance.
+     *
+     * @param resetPasswordPage the reset-password page to configure (not null)
+     * @return a {@link ResetPasswordPageConfigurator.BaseResetPasswordPageConfigurator}
+     */
+    static ResetPasswordPageConfigurator.BaseResetPasswordPageConfigurator configure(
+            ResetPasswordPage resetPasswordPage) {
+        return ResetPasswordPageConfigurator.configure(resetPasswordPage);
+    }
 
     // -----------------------------------------------------------------------
     // TwoStepVerificationPage (generic split 2-step verification layout, TailAdmin inspired)
     // -----------------------------------------------------------------------
 
+    /**
+     * Get a {@link TwoStepVerificationPageBuilder} to create a {@link TwoStepVerificationPage} — a
+     * generic, theme-agnostic split two-step verification layout with a six-digit code field.
+     *
+     * <pre>{@code
+     * TwoStepVerificationPage page = Components.twoStepVerificationPage()
+     *     .heading("Two Step Verification")
+     *     .brandingTitle("Acme")
+     *     .withVerifyCodeListener(e -> verifyCode(e.getCode()))
+     *     .withResendCodeListener(e -> resendCode())
+     *     .build();
+     * }</pre>
+     *
+     * @return a new {@link TwoStepVerificationPageBuilder}
+     */
+    static TwoStepVerificationPageBuilder twoStepVerificationPage() {
+        return TwoStepVerificationPageBuilder.create();
+    }
 
+    /**
+     * Get a {@link TwoStepVerificationPageBuilder} to build the given
+     * {@link TwoStepVerificationPage} instance.
+     *
+     * @param twoStepVerificationPage the two-step verification page to build (not null)
+     * @return a new {@link TwoStepVerificationPageBuilder}
+     */
+    static TwoStepVerificationPageBuilder twoStepVerificationPage(
+            TwoStepVerificationPage twoStepVerificationPage) {
+        return TwoStepVerificationPageBuilder.create(twoStepVerificationPage);
+    }
 
+    /**
+     * Get a {@link TwoStepVerificationPageConfigurator} to configure an existing
+     * {@link TwoStepVerificationPage} instance.
+     *
+     * @param twoStepVerificationPage the two-step verification page to configure (not null)
+     * @return a {@link TwoStepVerificationPageConfigurator.BaseTwoStepVerificationPageConfigurator}
+     */
+    static TwoStepVerificationPageConfigurator.BaseTwoStepVerificationPageConfigurator configure(
+            TwoStepVerificationPage twoStepVerificationPage) {
+        return TwoStepVerificationPageConfigurator.configure(twoStepVerificationPage);
+    }
 
     // -----------------------------------------------------------------------
     // NotFoundPage (generic centered 404 error layout, TailAdmin inspired)
     // -----------------------------------------------------------------------
 
+    /**
+     * Get a {@link NotFoundPageBuilder} to create a {@link NotFoundPage} — a generic,
+     * theme-agnostic centered 404 "page not found" layout.
+     *
+     * <pre>{@code
+     * NotFoundPage page = Components.notFoundPage()
+     *     .message("We can't find that page.")
+     *     .homeTarget(HomeView.class)
+     *     .build();
+     * }</pre>
+     *
+     * @return a new {@link NotFoundPageBuilder}
+     */
+    static NotFoundPageBuilder notFoundPage() {
+        return NotFoundPageBuilder.create();
+    }
 
+    /**
+     * Get a {@link NotFoundPageBuilder} to build the given {@link NotFoundPage} instance.
+     *
+     * @param notFoundPage the not-found page to build (not null)
+     * @return a new {@link NotFoundPageBuilder}
+     */
+    static NotFoundPageBuilder notFoundPage(NotFoundPage notFoundPage) {
+        return NotFoundPageBuilder.create(notFoundPage);
+    }
 
+    /**
+     * Get a {@link NotFoundPageConfigurator} to configure an existing {@link NotFoundPage} instance.
+     *
+     * @param notFoundPage the not-found page to configure (not null)
+     * @return a {@link NotFoundPageConfigurator.BaseNotFoundPageConfigurator}
+     */
+    static NotFoundPageConfigurator.BaseNotFoundPageConfigurator configure(NotFoundPage notFoundPage) {
+        return NotFoundPageConfigurator.configure(notFoundPage);
+    }
 
+    /**
+     * Creates a typed {@link MasterDetailBuilder} for the given bean type.
+     * Enables no-arg {@code listing()}, type-witness-free {@code withSelectionKey},
+     * and uncast {@code withDetailSync} lambdas.
+     *
+     * <pre>{@code
+     * MasterDetailLayout<Order> mdl = Components.masterDetail(Order.class)
+     *     .master()
+     *         .listing().fetch((q, t) -> service.fetch(q)).add()
+     *         .withSelectionKey(Order::getId).add()
+     *     .detail()
+     *         .withDetailSync(o -> populate(o)).add()
+     *     .build();
+     * mdl.selectFirst(viewMode);
+     * mdl.notifyDataChanged();
+     * }</pre>
+     *
+     * @param <T>      item type
+     * @param beanType bean class (not null)
+     * @return a new typed {@link MasterDetailBuilder}
+     */
+    static <T> MasterDetailBuilder<T> masterDetail(Class<T> beanType) {
+        return MasterDetailBuilder.create(beanType);
+    }
 
+    /**
+     * Creates a {@link MasterDetailBuilder} backed by a Holon {@link PropertySet}.
+     * The item type is fixed to {@link PropertyBox}; enables no-arg {@code .master().listing()}
+     * which constructs a {@link PropertyListing} from the supplied property set.
+     *
+     * <pre>{@code
+     * MasterDetailLayout<PropertyBox> mdl = Components.masterDetail(PRODUCT_SET)
+     *     .master()
+     *         .listing()
+     *             .search("Search…")
+     *             .fetch((q, text, sort) -> datastore.query(TARGET)
+     *                 .restrict(q.getLimit(), q.getOffset())
+     *                 .stream(PRODUCT_SET))
+     *             .add()
+     *         .withSelectionKey(pb -> pb.getValue(ID))
+     *         .add()
+     *     .detail()
+     *         .withDetailSync(pb -> populate(pb))
+     *         .add()
+     *     .build();
+     * }</pre>
+     *
+     * @param propertySet the Holon property set that drives the listing (not null)
+     * @return a new {@link MasterDetailBuilder}{@code <PropertyBox>}
+     */
+    static MasterDetailBuilder<PropertyBox> masterDetail(PropertySet<?> propertySet) {
+        return MasterDetailBuilder.create(propertySet);
+    }
 
+    /**
+     * Creates a new {@link ItemLineEditorBuilder} for the given row bean type — a generic,
+     * domain-agnostic editable line-item list (invoice lines, quotation lines, shopping cart
+     * lines, pawn-ticket appraisal items, purchase-order lines, etc.), driven by pluggable
+     * {@link ItemLineEditor.Column} definitions.
+     *
+     * <pre>{@code
+     * ItemLineEditor<InvoiceLine> editor = Components.itemLineEditor(InvoiceLine.class)
+     *     .title("Invoice Items")
+     *     .rowFactory(InvoiceLine::new)
+     *     .addColumn(Column.of("description", "Description", line -> descriptionField(line)).flexGrow(2))
+     *     .addColumn(Column.of("qty", "Qty", line -> qtyField(line)).width("90px"))
+     *     .footer(lines -> TotalsCard.builder()
+     *         .row("Total", format(total(lines)), TotalsRow.Variant.GRAND_TOTAL)
+     *         .build())
+     *     .build();
+     * }</pre>
+     *
+     * @param <T> the row bean type
+     * @param itemType the row bean class (not null)
+     * @return a new {@link ItemLineEditorBuilder}
+     */
+    static <T> ItemLineEditorBuilder<T> itemLineEditor(Class<T> itemType) {
+        return ItemLineEditorBuilder.create(itemType);
+    }
 
+    /**
+     * Creates a {@link PanelConfigurator.BasePanelConfigurator} for the given
+     * {@link Panel} instance.
+     *
+     * <pre>{@code
+     * Panel panel = new Panel();
+     * Components.configure(panel)
+     *     .header()
+     *         .heading("Deployment status")
+     *         .details(new Span("Last updated just now"))
+     *         .actions(new Button("Open details"), new Button("Archive"))
+     *         .add()
+     *     .content(new Div(new Span("Body content")))
+     *     .footer()
+     *         .meta(new Span("Status: Ready"))
+     *         .add();
+     * }</pre>
+     *
+     * @param panel the panel to configure (not null)
+     * @return a configurator for the provided panel
+     * @since 10.0.0
+     */
+    static PanelConfigurator.BasePanelConfigurator configure(Panel panel) {
+        return PanelConfigurator.configure(panel);
+    }
 
 
     static LabelBuilder<H4> title() {
@@ -726,6 +1673,9 @@ public interface Components {
         return new DefaultOptionsButtonBuilder();
     }
 
+    static DefaultFormFooter formFooter() {
+        return new DefaultFormFooter();
+    }
 
     static FlexLayoutBuilder flexLayout() {
         return FlexLayoutBuilder.create();
@@ -973,7 +1923,26 @@ public interface Components {
         // AlertDialog (shadcn/ui-inspired non-dismissible confirmation dialog)
         // -----------------------------------------------------------------------
 
+        /**
+         * Get an {@link AlertDialogBuilder} to create an {@link AlertDialog}  the
+         * shadcn/ui-inspired confirmation dialog that forces an explicit user choice.
+         * <p>By default the dialog is non-dismissible (no ESC, no click-outside).</p>
+         *
+         * @return a new {@link AlertDialogBuilder}
+         */
+        static AlertDialogBuilder alertDialog() {
+            return AlertDialogBuilder.create();
+        }
 
+        /**
+         * Get an {@link AlertDialogConfigurator} to configure an existing {@link AlertDialog}.
+         *
+         * @param dialog the dialog to configure (not null)
+         * @return a {@link AlertDialogConfigurator.BaseAlertDialogConfigurator}
+         */
+        static AlertDialogConfigurator.BaseAlertDialogConfigurator configure(AlertDialog dialog) {
+            return AlertDialogConfigurator.configure(dialog);
+        }
 
         /**
          * Show a question dialog with given localizable message text.
@@ -2425,8 +3394,43 @@ public interface Components {
     // Carousel
     // -----------------------------------------------------------------------
 
+    /**
+     * Get a {@link CarouselBuilder} to create a horizontal {@link Carousel}.
+     *
+     * <p>Usage:
+     * <pre>{@code
+     * Carousel carousel = Components.carousel()
+     *     .loop(true)
+     *     .addItem(card1, card2, card3)
+     *     .build();
+     * }</pre>
+     *
+     * @return a new {@link CarouselBuilder}
+     */
+    static CarouselBuilder carousel() {
+        return CarouselBuilder.create();
+    }
 
+    /**
+     * Get a {@link CarouselBuilder} to create a {@link Carousel} with the given orientation.
+     *
+     * @param orientation the scroll axis (not null)
+     * @return a new {@link CarouselBuilder}
+     */
+    static CarouselBuilder carousel(Carousel.Orientation orientation) {
+        return CarouselBuilder.create(orientation);
+    }
 
+    /**
+     * Get a {@link CarouselConfigurator.BaseCarouselConfigurator} to configure an
+     * existing {@link Carousel} instance.
+     *
+     * @param carousel the carousel to configure (not null)
+     * @return a new {@link CarouselConfigurator.BaseCarouselConfigurator}
+     */
+    static CarouselConfigurator.BaseCarouselConfigurator configure(Carousel carousel) {
+        return CarouselConfigurator.configure(carousel);
+    }
 
     // ------- localization
 
@@ -2611,88 +3615,809 @@ public interface Components {
     // Page-size selector
     // -----------------------------------------------------------------------
 
+    /**
+     * Starts building a <em>"Show N entries"</em> page-size selector bound to
+     * the given {@link ItemListing}.
+     *
+     * <pre>{@code
+     * BeanListing<Person> listing = ...;
+     *
+     * ItemListingPageSizeSelector<Person, String> selector =
+     *         Components.pageSizeSelector(listing)
+     *             .withOptions(10, 25, 50, 100)
+     *             .withDefaultSize(25)
+     *             .build();
+     * }</pre>
+     *
+     * @param listing the listing to control (not null)
+     * @param <T>     item type
+     * @param <P>     property type
+     * @return a new {@link ItemListingPageSizeSelector.Builder}
+     * @since 10.0.1
+     */
+    static <T, P> ItemListingPageSizeSelector.Builder<T, P> pageSizeSelector(ItemListing<T, P> listing) {
+        return ItemListingPageSizeSelector.of(listing);
+    }
 
+    /**
+     * Starts building a <em>"Show N entries"</em> page-size selector bound to
+     * the given {@link PropertyListing}.
+     *
+     * <p>Convenience overload that avoids the verbose wildcard generics at call
+     * sites when working with {@link PropertyListing}.</p>
+     *
+     * <pre>{@code
+     * PropertyListing listing = ...;
+     *
+     * ItemListingPageSizeSelector<PropertyBox, Property<?>> selector =
+     *         Components.pageSizeSelector(listing)
+     *             .withOptions(10, 25, 50, 100)
+     *             .withDefaultSize(25)
+     *             .build();
+     * }</pre>
+     *
+     * @param listing the property listing to control (not null)
+     * @return a new {@link ItemListingPageSizeSelector.Builder}
+     * @since 10.0.1
+     */
+    static ItemListingPageSizeSelector.Builder<PropertyBox, Property<?>> pageSizeSelector(PropertyListing listing) {
+        return ItemListingPageSizeSelector.of(listing);
+    }
 
     // -----------------------------------------------------------------------
     // Pagination bar
     // -----------------------------------------------------------------------
 
+    /**
+     * Creates a pagination bar bound to the given {@link ItemListing}.
+     *
+     * <p>The bar renders <em>Previous / numbered pages / Next</em> navigation and
+     * uses a look-ahead fetch to detect the last page without issuing a
+     * {@code COUNT(*)} query.</p>
+     *
+     * <pre>{@code
+     * BeanListing<Person> listing = ...;
+     * ItemListingPaginationBar<Person, String> bar = Components.paginationBar(listing);
+     * layout.content(listing.getComponent(), bar);
+     * }</pre>
+     *
+     * @param listing the listing to paginate (not null)
+     * @param <T>     item type
+     * @param <P>     property type
+     * @return a new {@link ItemListingPaginationBar}
+     * @since 10.0.1
+     */
+    static <T, P> ItemListingPaginationBar<T, P> paginationBar(ItemListing<T, P> listing) {
+        return new ItemListingPaginationBar<>(listing);
+    }
 
+    /**
+     * Creates a pagination bar bound to the given {@link PropertyListing}.
+     *
+     * <p>Convenience overload that avoids verbose wildcard generics at call sites
+     * when working with {@link PropertyListing}.</p>
+     *
+     * <pre>{@code
+     * PropertyListing listing = ...;
+     * ItemListingPaginationBar<PropertyBox, Property<?>> bar = Components.paginationBar(listing);
+     * layout.content(listing.getComponent(), bar);
+     * }</pre>
+     *
+     * @param listing the property listing to paginate (not null)
+     * @return a new {@link ItemListingPaginationBar}
+     * @since 10.0.1
+     */
+    static ItemListingPaginationBar<PropertyBox, Property<?>> paginationBar(PropertyListing listing) {
+        return new ItemListingPaginationBar<>(listing);
+    }
 
     // -----------------------------------------------------------------------
     // Listing bundle builder
     // -----------------------------------------------------------------------
 
+    /**
+     * Creates a fluent {@link ListingBundleBuilder} that assembles a fully pre-wired
+     * {@link ListingBundle} &mdash; listing, pagination bar, page-size selector, optional
+     * search field, and optional filter panel &mdash; in a single chained call.
+     *
+     * <p>{@link ListingBundle} extends {@link com.vaadin.flow.component.Composite Composite&lt;Div&gt;} and
+     * self-assembles toolbar, grid, and footer in its constructor &mdash; just add the bundle
+     * directly to your view layout:</p>
+     *
+     * <pre>{@code
+     * var bundle = Components.listing(Product.class)
+     *     .columns("id", "name", "category", "price")
+     *     .pageSizes(10, 25, 50)
+     *     .search("Search products…")
+     *     .fetch((q, text) -> service.fetch(q, text))
+     *     .build();
+     *
+     * add(bundle);  // toolbar + grid + footer are already assembled inside the bundle
+     *
+     * // Only call toolbar()/grid()/footer() individually when you need to place the
+     * // three pieces in different layout slots (e.g. toolbar in an AppLayout header):
+     * // add(bundle.toolbar());
+     * // setContent(bundle.grid());
+     * }</pre>
+     *
+     * @param beanType the bean class to introspect for columns (not null)
+     * @param <T>      item type
+     * @return a new {@link ListingBundleBuilder}
+     * @since 10.0.1
+     */
+    static <T> ListingBundleBuilder<T> listing(Class<T> beanType) {
+        return new DefaultListingBundleBuilder<>(beanType);
+    }
 
+    /**
+     * Creates a fluent {@link PropertyListingBundleBuilder} from an explicit set of
+     * Holon {@link Property} objects.
+     *
+     * <pre>{@code
+     * var bundle = Components.listing(NAME, CATEGORY, PRICE, STATUS)
+     *     .header(NAME,  "Product Name")
+     *     .header(PRICE, "Price (€)")
+     *     .pageSizes(10, 25, 50)
+     *     .search("Search products…")
+     *     .fetch((q, text) -> service.fetch(q, text))
+     *     .build();
+     *
+     * add(bundle);  // toolbar + grid + footer are already assembled inside the bundle
+     * }</pre>
+     *
+     * @param properties the properties to display as listing columns (not null)
+     * @return a new {@link PropertyListingBundleBuilder}
+     * @since 10.0.1
+     */
+    static PropertyListingBundleBuilder listing(Property<?>... properties) {
+        return new PropertyListingBundleBuilder(properties);
+    }
 
+    /**
+     * Creates a fluent {@link PropertyListingBundleBuilder} from a Holon {@link PropertySet}.
+     *
+     * <pre>{@code
+     * var bundle = Components.listing(PRODUCT_SET)
+     *     .pageSizes(10, 25, 50)
+     *     .withFilterPanel()
+     *     .fetch((q, text, filter) -> {
+     *         var q2 = datastore.query(TARGET).restrict(q.getLimit(), q.getOffset());
+     *         if (filter != null) q2.filter(filter);
+     *         return q2.stream(PRODUCT_SET);
+     *     })
+     *     .build();
+     * }</pre>
+     *
+     * @param propertySet the property set to display (not null)
+     * @return a new {@link PropertyListingBundleBuilder}
+     * @since 10.0.1
+     */
+    static PropertyListingBundleBuilder listing(PropertySet<?> propertySet) {
+        return new PropertyListingBundleBuilder(propertySet);
+    }
 
     // -----------------------------------------------------------------------
     // Highlight KPI card
     // -----------------------------------------------------------------------
 
+    /**
+     * Creates a fluent {@link HighlightBuilder} for a KPI / metric card with the
+     * given heading label and value text.
+     *
+     * <pre>{@code
+     * Highlight card = Components.highlight("Total Revenue", "$128,430")
+     *     .valueFirst()
+     *     .accentColor(Highlight.AccentColor.PURPLE)
+     *     .valueFontSize(Font.Size.XXLARGE)
+     *     .details(trendSpan)
+     *     .suffix(IconBadge.of(VaadinIcon.DOLLAR, Alert.Variant.INFO))
+     *     .ariaLabel("Total Revenue KPI card")
+     *     .build();
+     * }</pre>
+     *
+     * @param heading the heading label text (not null)
+     * @param value   the value text (not null)
+     * @return a new {@link HighlightBuilder}
+     * @since 10.0.0
+     */
+    static HighlightBuilder highlight(
+            String heading, String value) {
+        return HighlightBuilder.create(heading, value);
+    }
 
+    /**
+     * Creates a fluent {@link HighlightBuilder} for a prefix + heading + value card.
+     *
+     * <pre>{@code
+     * Highlight card = Components.highlight(
+     *         IconBadge.of(VaadinIcon.USER, Alert.Variant.INFO),
+     *         "Active Users", "4,291")
+     *     .details(trendSpan)
+     *     .build();
+     * }</pre>
+     *
+     * @param prefix  the prefix component (left icon / avatar slot)
+     * @param heading the heading label text (not null)
+     * @param value   the value text (not null)
+     * @return a new {@link HighlightBuilder}
+     * @since 10.0.0
+     */
+    static HighlightBuilder highlight(
+            Component prefix, String heading, String value) {
+        return HighlightBuilder.create(prefix, heading, value);
+    }
 
     // -----------------------------------------------------------------------
     // EntityFormPanel
     // -----------------------------------------------------------------------
 
+    /**
+     * Creates an {@link EntityFormPanel.BeanBuilder} for a form panel driven by the
+     * given bean class.
+     *
+     * <p>The form panel wraps a {@link BeanPropertyInputForm} and provides a standard
+     * button footer with mandatory <em>Save</em> and <em>Clear</em> buttons plus
+     * optional <em>Save &amp; New</em> and <em>Cancel</em> buttons.
+     * ENTER-key navigation between inputs is enabled by default.
+     *
+     * <pre>{@code
+     * EntityFormPanel<Customer> panel = Components.<Customer>entityFormPanel(Customer.class)
+     *     .configure(fb -> fb.excludeFields("id"))
+     *     .saveButton(btn -> btn.primary().withText("Save"),
+     *                 customer -> service.save(customer))
+     *     .clearButton(btn -> btn.tertiary().withText("Reset"))
+     *     .cancelButton(btn -> btn.tertiary().withText("Cancel"),
+     *                   () -> dialog.close())
+     *     .build();
+     * }</pre>
+     *
+     * @param <T>       bean type
+     * @param beanClass the bean class to introspect (not null)
+     * @return a new {@link EntityFormPanel.BeanBuilder}
+     * @since 10.0.0
+     */
+    static <T> EntityFormPanel.BeanBuilder<T> entityFormPanel(Class<T> beanClass) {
+        return EntityFormPanel.bean(beanClass);
+    }
 
+    /**
+     * Creates an {@link EntityFormPanel.BeanBuilder} for a bean-driven form panel
+     * using the given layout mode.
+     *
+     * @param <T>        bean type
+     * @param beanClass  the bean class to introspect (not null)
+     * @param layoutMode the layout mode to use (not null)
+     * @return a new {@link EntityFormPanel.BeanBuilder}
+     * @since 10.0.0
+     */
+    static <T> EntityFormPanel.BeanBuilder<T> entityFormPanel(Class<T> beanClass, EntityFormPanel.LayoutMode layoutMode) {
+        return EntityFormPanel.bean(beanClass).layout(layoutMode);
+    }
 
+    /**
+     * Creates an {@link EntityFormPanel.DivBeanBuilder} for a bean-driven form
+     * panel using a {@link com.vaadin.flow.component.html.Div} grid container.
+     *
+     * @param <T>       bean type
+     * @param beanClass the bean class to introspect (not null)
+     * @return a new {@link EntityFormPanel.DivBeanBuilder}
+     * @since 10.0.0
+     */
+    static <T> EntityFormPanel.DivBeanBuilder<T> entityFormPanelDiv(Class<T> beanClass) {
+        return EntityFormPanel.beanDiv(beanClass);
+    }
 
+    /**
+     * Creates an {@link EntityFormPanel.PropertyBuilder} for a form panel driven by
+     * the given {@link PropertySet}.
+     *
+     * <pre>{@code
+     * EntityFormPanel<PropertyBox> panel = Components.entityFormPanel(CUSTOMER_SET)
+     *     .saveButton(btn -> btn.primary().withText("Save"),
+     *                 pb -> service.save(pb))
+     *     .clearButton(btn -> btn.tertiary().withText("Reset"))
+     *     .build();
+     * }</pre>
+     *
+     * @param propertySet the property set that defines the form fields (not null)
+     * @return a new {@link EntityFormPanel.PropertyBuilder}
+     * @since 10.0.0
+     */
+    static EntityFormPanel.PropertyBuilder entityFormPanel(PropertySet<?> propertySet) {
+        return EntityFormPanel.properties(propertySet);
+    }
 
+    /**
+     * Creates an {@link EntityFormPanel.PropertyBuilder} for a property-set driven
+     * form panel using the given layout mode.
+     *
+     * @param propertySet the property set that defines the form fields (not null)
+     * @param layoutMode  the layout mode to use (not null)
+     * @return a new {@link EntityFormPanel.PropertyBuilder}
+     * @since 10.0.0
+     */
+    static EntityFormPanel.PropertyBuilder entityFormPanel(PropertySet<?> propertySet, EntityFormPanel.LayoutMode layoutMode) {
+        return EntityFormPanel.properties(propertySet).layout(layoutMode);
+    }
 
+    /**
+     * Creates an {@link EntityFormPanel.DivPropertyBuilder} for a property-set
+     * driven form panel using a {@link com.vaadin.flow.component.html.Div} grid container.
+     *
+     * @param propertySet the property set that defines the form fields (not null)
+     * @return a new {@link EntityFormPanel.DivPropertyBuilder}
+     * @since 10.0.0
+     */
+    static EntityFormPanel.DivPropertyBuilder entityFormPanelDiv(PropertySet<?> propertySet) {
+        return EntityFormPanel.propertiesDiv(propertySet);
+    }
 
+    /**
+     * Creates an {@link EntityFormPanel.PropertyBuilder} for a form panel driven by
+     * the given properties (varargs).
+     *
+     * <pre>{@code
+     * EntityFormPanel<PropertyBox> panel = Components.entityFormPanel(NAME, EMAIL, PHONE)
+     *     .saveButton(btn -> btn.primary().withText("Save"),
+     *                 pb -> service.save(pb))
+     *     .clearButton(btn -> btn.tertiary().withText("Reset"))
+     *     .build();
+     * }</pre>
+     *
+     * @param properties the properties that define the form fields (not null)
+     * @return a new {@link EntityFormPanel.PropertyBuilder}
+     * @since 10.0.0
+     */
+    static EntityFormPanel.PropertyBuilder entityFormPanel(Property<?>... properties) {
+        return EntityFormPanel.properties(properties);
+    }
 
+    /**
+     * Creates an {@link EntityFormPanel.PropertyBuilder} for a property-list driven
+     * form panel using the given layout mode.
+     *
+     * @param layoutMode the layout mode to use (not null)
+     * @param properties the properties that define the form fields (not null)
+     * @return a new {@link EntityFormPanel.PropertyBuilder}
+     * @since 10.0.0
+     */
+    static EntityFormPanel.PropertyBuilder entityFormPanel(EntityFormPanel.LayoutMode layoutMode, Property<?>... properties) {
+        return EntityFormPanel.properties(properties).layout(layoutMode);
+    }
 
+    /**
+     * Creates an {@link EntityFormPanel.DivPropertyBuilder} for a property-list
+     * driven form panel using a {@link com.vaadin.flow.component.html.Div} grid container.
+     *
+     * @param properties the properties that define the form fields (not null)
+     * @return a new {@link EntityFormPanel.DivPropertyBuilder}
+     * @since 10.0.0
+     */
+    static EntityFormPanel.DivPropertyBuilder entityFormPanelDiv(Property<?>... properties) {
+        return EntityFormPanel.propertiesDiv(properties);
+    }
 
     // -----------------------------------------------------------------------
     // KeyValueList
     // -----------------------------------------------------------------------
 
+    /**
+     * Creates an empty {@link KeyValueList}.
+     *
+     * <p>Items can be added fluently:
+     * <pre>{@code
+     * Components.keyValueList()
+     *     .addItem(KeyValueItem.of("Name",  "Jane Smith"))
+     *     .addItem(KeyValueItem.of("Email", "jane@example.com"));
+     * }</pre>
+     *
+     * @return a new empty {@link KeyValueList}
+     * @since 10.0.0
+     */
+    static KeyValueList keyValueList() {
+        return new KeyValueList();
+    }
 
+    /**
+     * Creates a {@link KeyValueList} pre-populated with the given items.
+     *
+     * <pre>{@code
+     * Components.keyValueList(
+     *     KeyValueItem.of("Name",  "Jane Smith"),
+     *     KeyValueItem.of("Email", "jane@example.com")
+     * );
+     * }</pre>
+     *
+     * @param items the {@link KeyValueItem} rows to content (not null)
+     * @return a new {@link KeyValueList} containing the provided items
+     * @since 10.0.0
+     */
+    static KeyValueList keyValueList(KeyValueItem... items) {
+        var list = new KeyValueList();
+        for (KeyValueItem item : items) {
+            list.addItem(item);
+        }
+        return list;
+    }
 
     // -----------------------------------------------------------------------
     // LineItemGrid
     // -----------------------------------------------------------------------
 
+    /**
+     * Creates a new {@link com.iyensoft.vaadin.flow.components.LineItemGrid.Builder}
+     * for a keyboard-centric inline document line-item spreadsheet.
+     *
+     * <p>All rows are rendered without virtual scrolling so the browser's native Tab order
+     * covers every cell. {@code Enter} moves to the same column in the next row (Excel
+     * behaviour). On mobile viewports the table switches automatically to a card-list view
+     * with a {@link com.iyensoft.vaadin.flow.components.Sheet} edit panel.</p>
+     *
+     * <pre>{@code
+     * LineItemGrid grid = Components.lineItemGrid()
+     *     .title("Invoice Lines")
+     *     .withItemSuggestion("Laptop", "SKU-001", 1299.00)
+     *     .withTaxOption("GST 10%", 0.10)
+     *     .withInitialRows(2)
+     *     .build();
+     * }</pre>
+     *
+     * @return a new {@link com.iyensoft.vaadin.flow.components.LineItemGrid.Builder}
+     * @since 10.0.0
+     */
+    static LineItemGrid.Builder lineItemGrid() {
+        return LineItemGrid.builder();
+    }
 
+    static DivBuilder div() {
+        return DivBuilder.create();
+    }
 
+    static MasterBuilder master() {
+        return MasterBuilder.create();
+    }
 
+    static DetailBuilder detail() {
+        return DetailBuilder.create();
+    }
 
     // -----------------------------------------------------------------------
     // StatusBadge
     // -----------------------------------------------------------------------
 
+    /**
+     * Creates a neutral (gray) {@link StatusBadge} — a non-interactive dot-prefix status pill.
+     *
+     * <pre>{@code
+     * Components.statusBadge("ASN: NW-2281")
+     * }</pre>
+     *
+     * @param label badge label text (not null)
+     * @return a new {@link StatusBadge} with {@link StatusBadge.Variant#DEFAULT}
+     * @since 10.0.0
+     */
+    static StatusBadge statusBadge(String label) {
+        return StatusBadge.of(label);
+    }
 
+    /**
+     * Creates a {@link StatusBadge} with a semantic colour variant.
+     *
+     * <pre>{@code
+     * Components.statusBadge("Posted",          StatusBadge.Variant.SUCCESS)
+     * Components.statusBadge("Partial receipt", StatusBadge.Variant.WARNING)
+     * Components.statusBadge("In progress",     StatusBadge.Variant.INFO)
+     * Components.statusBadge("Quality check",   StatusBadge.Variant.VIOLET)
+     * }</pre>
+     *
+     * @param label   badge label text (not null)
+     * @param variant semantic colour variant
+     * @return a new {@link StatusBadge}
+     * @since 10.0.0
+     */
+    static StatusBadge statusBadge(String label, StatusBadge.Variant variant) {
+        return StatusBadge.of(label, variant);
+    }
 
     // -----------------------------------------------------------------------
     // ArAgingBar
     // -----------------------------------------------------------------------
 
+    /**
+     * Returns a fluent builder for {@link ArAgingBar} — a proportional segmented bar card
+     * for visualising distributions such as AR aging buckets, pipeline stages, budget
+     * breakdowns, or recruitment funnels.
+     *
+     * <p>The builder uses nested sub-builders with {@code Consumer<>} overloads:</p>
+     *
+     * <pre>{@code
+     * Components.arAgingBar()
+     *     .header(h -> h
+     *         .icon("€")
+     *         .title("AR aging · Helix Robotics")
+     *         .variant(ArAgingBar.Variant.INFO))
+     *     .content(c -> c
+     *         .segment(s -> s.key("Current").value("Current · €35K").percent(56).variant(Variant.SUCCESS))
+     *         .segment(s -> s.key("1–30d")  .value("1-30d · €18.7K").percent(30).variant(Variant.INFO))
+     *         .segment(s -> s.key("31–60d") .value("31-60d · €8.7K").percent(14).variant(Variant.WARNING)))
+     *     .footer(f -> f
+     *         .left("€0 owed").center("€0 overdue").right("€62.4K total open"))
+     *     .build();
+     * }</pre>
+     *
+     * @return a new {@link ArAgingBarBuilder}
+     */
+    static ArAgingBarBuilder arAgingBar() {
+        return ArAgingBarBuilder.create();
+    }
 
     // -----------------------------------------------------------------------
     // HeroStrip
     // -----------------------------------------------------------------------
 
+    /**
+     * Returns a fluent builder for {@link HeroStrip} — a gradient card showing an optional
+     * thumbnail/name/meta header row, an optional row of status tag pills, and N key
+     * performance indicators in equally-wide columns.
+     *
+     * <pre>{@code
+     * Components.heroStrip()
+     *     .variant(HeroStrip.Variant.INFO)
+     *     .header(h -> h.thumbIcon(VaadinIcon.BUILDING.create())
+     *         .ribbon("T1")
+     *         .name("Helix Robotics SE")
+     *         .starred(true)
+     *         .meta("C-2026-0023 · Munich · since 1.9 yr"))
+     *     .tag("● Active", HeroStrip.TagVariant.OK)
+     *     .tag("★ T1", HeroStrip.TagVariant.PRI)
+     *     .tag("EMEA · DACH", HeroStrip.TagVariant.PRIM)
+     *     .cell(c -> c.header("Open pipeline").content("€182K").footer("4 active deals").pulse(true))
+     *     .cell(c -> c.header("Booked YTD").content("€624K").footer("14 orders").valueVariant(HeroStrip.ValueVariant.OK))
+     *     .cell(c -> c.header("AR balance").content("€62,400").footer("3 open · all on-time"))
+     *     .build();
+     * }</pre>
+     *
+     * @return a new {@link HeroStripBuilder}
+     */
+    static HeroStripBuilder heroStrip() {
+        return HeroStripBuilder.create();
+    }
 
     // -----------------------------------------------------------------------
     // Chip / ChipGroup
     // -----------------------------------------------------------------------
 
+    /**
+     * Creates a label-only {@link Chip} — an interactive pill-shaped filter chip.
+     *
+     * <pre>{@code
+     * Components.chip("All").active(true)
+     * }</pre>
+     *
+     * @param label chip label text (not null)
+     * @return a new {@link Chip}
+     * @since 10.0.0
+     */
+    static Chip chip(String label) {
+        return Chip.of(label);
+    }
 
+    /**
+     * Creates a {@link Chip} with a trailing numeric count badge.
+     *
+     * <pre>{@code
+     * Components.chip("All", 2418).active(true)
+     * Components.chip("Open", 14)
+     * }</pre>
+     *
+     * @param label chip label text (not null)
+     * @param count count badge value
+     * @return a new {@link Chip}
+     * @since 10.0.0
+     */
+    static Chip chip(String label, long count) {
+        return Chip.of(label, count);
+    }
 
+    /**
+     * Creates a new empty {@link ChipGroup} — a mutually exclusive toggle group of {@link Chip}s.
+     *
+     * <pre>{@code
+     * Components.chipGroup()
+     *     .addChip(Components.chip("All",       2418), true)
+     *     .addChip(Components.chip("Open",        14))
+     *     .addChip(Components.chip("Posted",    2376))
+     *     .addChip(Components.chip("QC Issues",    3))
+     *     .onSelect(e -> applyFilter(e.getLabel()))
+     *     .build();
+     * }</pre>
+     *
+     * @return a new {@link ChipGroup}
+     * @since 10.0.0
+     */
+    static ChipGroup chipGroup() {
+        return ChipGroup.create();
+    }
 
     // -----------------------------------------------------------------------
     // AppShellLayout
     // -----------------------------------------------------------------------
 
+    /**
+     * Creates a new {@link com.iyensoft.vaadin.flow.components.builders.AppShellLayoutBuilder}
+     * for the standard enterprise application shell.
+     *
+     * <p>The builder assembles an {@link com.iyensoft.vaadin.flow.components.AppBar}
+     * in the navbar with an optional
+     * {@link com.vaadin.flow.component.applayout.DrawerToggle}, brand, search,
+     * notification bell, language selector, dark/light theme toggle, and user avatar —
+     * plus an optional drawer header and navigation wrapper.
+     *
+     * <h4>Option A — standalone (demo / prototype)</h4>
+     * <pre>{@code
+     * AppShellLayout shell = Components.appShell()
+     *     .navbarBrand("My App", "v1.0", HomeView.class)
+     *     .search("Search…")
+     *     .notifications(3, "Deployment done", "New message")
+     *     .languages("English", "Deutsch", "Francais")
+     *     .themeToggle()
+     *     .user(u -> u
+     *         .name("Jane Smith")
+     *         .avatar("/avatars/jane.png")
+     *         .menu(m -> m
+     *             .item("Profile")
+     *             .item("Sign out")))
+     *     .drawerBrand(logoComponent)
+     *     .nav(Components.sideNav()...buildWrapper())
+     *     .build();
+     * }</pre>
+     *
+     * <h4>Option B — per-user with Spring injection (production)</h4>
+     * <pre>{@code
+     * @SpringComponent @UIScope
+     * public class MyAppLayout extends AppLayout {
+     *     @Autowired
+     *     public MyAppLayout(SecurityService sec, NotificationService notifs) {
+     *         var me = sec.currentUser();
+     *         Components.appShell()
+     *             .navbarBrand(me.getCompanyName(), HomeView.class)
+     *             .notifications(notifs.countUnread(me),
+     *                            notifs.topItems(me, 5).toArray(String[]::new))
+     *             .themeToggle()
+     *             .user(u -> u
+     *                 .name(me.getFullName())
+     *                 .avatar(me.getAvatarUrl())
+     *             .menu(m -> m
+     *                 .item("Profile")
+     *                 .item("Sign out")))
+     *             .nav(buildNav(me.getRoles()))
+     *             .configure(this);   // applies to THIS AppLayout instance
+     *     }
+     * }
+     * }</pre>
+     *
+     * @return a new {@link com.iyensoft.vaadin.flow.components.builders.AppShellLayoutBuilder}
+     * @since 10.0.0
+     */
+    static AppShellLayoutBuilder appShell() {
+        return AppShellLayoutBuilder.create();
+    }
 
     // ── VaadinPlus custom components ──────────────────────────────────────
 
+    /**
+     * Creates a new {@link LivePreviewCard} with the given eyebrow label.
+     *
+     * <p>A dark-gradient summary card for displaying a live preview of structured form data.
+     * Typically used as a reactive sidebar alongside a multi-step form.</p>
+     *
+     * @param eyebrow small uppercase caption shown above the title (e.g. {@code "Live preview"})
+     * @return a new {@link LivePreviewCard}
+     */
+    static LivePreviewCard livePreviewCard(String eyebrow) {
+        return new LivePreviewCard(eyebrow);
+    }
 
+    /**
+     * Creates an empty {@link ChecklistPanel}.
+     *
+     * <p>A vertical checklist showing ordered steps with DONE / CURRENT / PENDING visual states.
+     * Add items via {@link ChecklistPanel#addItem} and advance via {@link ChecklistPanel#advance()}.</p>
+     *
+     * @return a new empty {@link ChecklistPanel}
+     */
+    static ChecklistPanel checklistPanel() {
+        return new ChecklistPanel();
+    }
 
+    /**
+     * Creates a new {@link AssignmentPickerRow} with the given name and description.
+     *
+     * <p>A clickable row displaying an avatar (with auto-derived initials), a name, a role/description,
+     * and an optional "Change" action link.</p>
+     *
+     * @param name        display name of the assigned person (initials derived automatically)
+     * @param description secondary description, e.g. role or department (may be {@code null})
+     * @return a new {@link AssignmentPickerRow}
+     */
+    static AssignmentPickerRow assignmentPickerRow(String name, String description) {
+        return new AssignmentPickerRow(name, description);
+    }
 
+    /**
+     * Creates an empty {@link StickyActionBar}.
+     *
+     * <p>A generic fixed bottom action bar with an optional status indicator, an optional progress
+     * display, and action buttons. Automatically respects the Vaadin AppLayout drawer width so it
+     * never overlaps a {@code SideNav} sidebar.</p>
+     *
+     * <p>Configure with {@link StickyActionBar#setStatus}, {@link StickyActionBar#setProgress},
+     * and {@link StickyActionBar#addAction}.</p>
+     *
+     * @return a new empty {@link StickyActionBar}
+     */
+    static StickyActionBar stickyActionBar() {
+        return new StickyActionBar();
+    }
 
+    /**
+     * Gets a builder to create a {@link FormStepCard}.
+     *
+     * <p>A Panel-based card representing one step in a multi-step form.
+     * The builder composes a step badge, heading, subtitle, "STEP N OF M" counter,
+     * form content, and optional help-text footer into a fully structured panel.</p>
+     *
+     * <pre>{@code
+     * FormStepCard card = Components.formStepCard()
+     *     .stepNumber(2)
+     *     .totalSteps(6)
+     *     .title("Primary contact")
+     *     .subtitle("Name, email, phone")
+     *     .state(FormStepCard.StepState.CURRENT)
+     *     .helpText("At least one contact is required before saving.")
+     *     .content(nameField, emailField)
+     *     .build();
+     * }</pre>
+     *
+     * @return a new {@link FormStepCardBuilder}
+     */
+    static FormStepCardBuilder formStepCard() {
+        return FormStepCardBuilder.create();
+    }
 
+    /**
+     * Creates a new {@link EntityCreationFormBuilder} for building a generic multi-step
+     * entity creation form.
+     *
+     * <p>A full-page layout that composes a page header (breadcrumb + title + draft badge +
+     * actions), a vertically stacked list of {@link FormStepCard} steps, and a
+     * {@link StickyActionBar} at the bottom.  The side column (LivePreviewCard, ChecklistPanel)
+     * is intentionally absent — it is a single-column, focused creation flow.</p>
+     *
+     * <pre>{@code
+     * EntityCreationForm form = Components.entityCreationForm()
+     *     .breadcrumb(
+     *         new BreadcrumbItem(new Span("Products")),
+     *         new BreadcrumbPage("New product")
+     *     )
+     *     .title("New product")
+     *     .subtitle("All required fields are marked with *")
+     *     .draftBadge("Unsaved draft")
+     *     .headerAction(Components.button().text("Discard").build())
+     *     .headerAction(Components.button().text("Save product").primary().build())
+     *     .step(detailsStep)
+     *     .step(pricingStep)
+     *     .status("Auto-saved · 2 sec ago", StickyActionBar.Variant.SUCCESS)
+     *     .progress("Setup", 50)
+     *     .barAction(Components.button().text("Discard").build())
+     *     .barAction(Components.button().text("Save product").primary().build())
+     *     .build();
+     * }</pre>
+     *
+     * @return a new {@link EntityCreationFormBuilder}
+     */
+    static EntityCreationFormBuilder entityCreationForm() {
+        return EntityCreationFormBuilder.create();
+    }
 
 }

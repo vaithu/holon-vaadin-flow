@@ -10,6 +10,7 @@ import com.holonplatform.vaadin.flow.components.Selectable.SelectionMode;
 import com.holonplatform.vaadin.flow.demo.ui.DemoExample;
 import com.holonplatform.vaadin.flow.demo.ui.DemoMainLayout;
 import com.iyensoft.vaadin.flow.components.*;
+import com.iyensoft.vaadin.flow.components.Components;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;
