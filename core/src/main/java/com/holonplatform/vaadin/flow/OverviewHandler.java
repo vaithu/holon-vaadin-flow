@@ -8,6 +8,7 @@ import com.holonplatform.core.property.PropertySet;
 import com.holonplatform.core.query.QueryFilter;
 import com.holonplatform.vaadin.flow.components.utils.UIUtils;
 import com.holonplatform.vaadin.flow.vaadinplus.KeyValuePairs;
+import com.iyensoft.vaadin.flow.utils.LayoutUtils;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 
 import java.lang.reflect.InvocationTargetException;
@@ -26,7 +27,7 @@ public class OverviewHandler<T> {
 
     public void configureLayoutWithKeyValuePairs(PropertyBox propertyBox) {
         UIUtils.clearContainer(container);
-        final KeyValuePairs keyValuePairs = UIUtils.createKeyValuePairs(propertyBox);
+        final KeyValuePairs keyValuePairs = LayoutUtils.createKeyValuePairs(propertyBox);
         container.add(keyValuePairs);
     }
 

@@ -16,10 +16,6 @@ import com.holonplatform.vaadin.flow.components.support.Unit;
 import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
 import com.holonplatform.vaadin.flow.internal.components.support.BreakPoint;
 import com.holonplatform.vaadin.flow.internal.lumo.SeparatorColor;
-import com.holonplatform.vaadin.flow.vaadinplus.KeyValuePair;
-import com.holonplatform.vaadin.flow.vaadinplus.KeyValuePairs;
-import com.holonplatform.vaadin.flow.vaadinplus.Layout;
-import com.holonplatform.vaadin.flow.vaadinplus.components.Separator;
 import com.holonplatform.vaadin.flow.components.support.ButtonPreset;
 import com.holonplatform.vaadin.flow.components.support.ViewMode;
 import com.vaadin.flow.component.*;
@@ -336,10 +332,6 @@ public class UIUtils {
         container.removeAll();
     }
 
-    public static void clearContainer(Layout container) {
-        container.removeAll();
-    }
-
     public static void clearContainer(Div container) {
         container.removeAll();
     }
@@ -351,37 +343,10 @@ public class UIUtils {
 
     }
 
-    public static void handleNoValuesFound(Layout container) {
-        Components.configure(container)
-                .fullSize()
-                .add(createImage("no-values-found.png", "No values found"));
-
-    }
-
     public static void handleNoRecordsFound(VerticalLayout container) {
         Components.configure(container)
                 .fullSize()
                 .add(createNoRecordsFoundImage());
-    }
-
-    public static void handleNoRecordsFound(Layout container) {
-        Components.configure(container)
-                .fullSize()
-                .add(createNoRecordsFoundImage());
-    }
-
-    public static Separator separator(SeparatorColor color) {
-        return Separator.builder()
-                .orientation(Separator.Orientation.VERTICAL)
-                .decorative(true)
-                .styleNames(color.getClassName(), CSSUtility.Bootstrap.D_NONE, CSSUtility.Bootstrap.D_SM_FLEX)
-                .build();
-    }
-
-    public static void removeAll(Layout layout) {
-        if (layout != null) {
-            layout.removeAll();
-        }
     }
 
     /****************************************/
@@ -1603,14 +1568,6 @@ public class UIUtils {
 
     public static Image createImage(String imageName, String altText) {
         return new Image(String.format("images/%s", imageName), altText);
-    }
-
-    @SuppressWarnings("unchecked")
-    public static KeyValuePairs createKeyValuePairs(PropertyBox propertyBox) {
-        KeyValuePairs keyValuePairs = new KeyValuePairs();
-
-        propertyBox.forEach(property -> keyValuePairs.add(new KeyValuePair(property.getMessage() != null ? property.getMessage() : property.getName(), String.valueOf(propertyBox.getValue(property)))));
-        return keyValuePairs;
     }
 
     public static BreakPoint getBreakPoint(int width) {
