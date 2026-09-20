@@ -1,4 +1,4 @@
-package com.holonplatform.vaadin.flow.core.events;
+package com.iyensoft.vaadin.flow.core.events;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;

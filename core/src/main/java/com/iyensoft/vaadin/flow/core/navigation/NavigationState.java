@@ -1,4 +1,4 @@
-package com.holonplatform.vaadin.flow.core.navigation;
+package com.iyensoft.vaadin.flow.core.navigation;
 
 import java.io.Serializable;
 
