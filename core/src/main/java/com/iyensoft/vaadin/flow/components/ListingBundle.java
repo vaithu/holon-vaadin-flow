@@ -17,7 +17,7 @@ package com.iyensoft.vaadin.flow.components;
 
 import com.holonplatform.vaadin.flow.components.Components;
 import com.holonplatform.vaadin.flow.components.ItemListing;
-import com.holonplatform.vaadin.flow.components.ItemListingPageSizeSelector;
+import com.iyensoft.vaadin.flow.components.ItemListingPageSizeSelector;
 
 import com.holonplatform.core.internal.utils.FormatUtils;
 import com.holonplatform.vaadin.flow.components.utils.UIUtils;

@@ -45,7 +45,7 @@ import static org.junit.jupiter.api.Assertions.*;
  *       the built-in "Apply filter" button, <strong>not</strong> on programmatic apply or reset.</li>
  *   <li>{@link FilterInputGroup#queryFilterSignal()} signal bridge — the {@link Signal}
  *       updates whenever the filter changes, enabling reactive wiring to
- *       {@link com.holonplatform.vaadin.flow.components.ItemListingPageSizeSelector}.</li>
+ *       {@link com.iyensoft.vaadin.flow.components.ItemListingPageSizeSelector}.</li>
  *   <li>In-memory {@link DynamicFilterPanel#toPredicate()} evaluation for EQUALS / CONTAINS
  *       type operators.</li>
  * </ol>

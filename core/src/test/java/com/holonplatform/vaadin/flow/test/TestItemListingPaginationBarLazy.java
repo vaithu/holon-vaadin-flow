@@ -20,7 +20,7 @@ import com.holonplatform.core.property.Property;
 import com.holonplatform.vaadin.flow.components.FilterInput;
 import com.holonplatform.vaadin.flow.components.FilterInputGroup;
 import com.holonplatform.vaadin.flow.components.ItemListing;
-import com.holonplatform.vaadin.flow.components.ItemListingPageSizeSelector;
+import com.iyensoft.vaadin.flow.components.ItemListingPageSizeSelector;
 import com.iyensoft.vaadin.flow.components.ItemListingPaginationBar;
 import com.holonplatform.vaadin.flow.components.events.FilterChangeListener;
 import com.vaadin.flow.component.Component;

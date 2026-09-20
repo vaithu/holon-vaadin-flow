@@ -999,7 +999,7 @@ public class BeanListingDemoView extends Div {
     // ── Example 10 — ItemListingPaginationBar + PageSizeSelector + search ────
 
     /**
-     * 10. Demonstrates {@link ItemListingPaginationBar} + {@link com.holonplatform.vaadin.flow.components.ItemListingPageSizeSelector}
+     * 10. Demonstrates {@link ItemListingPaginationBar} + {@link com.iyensoft.vaadin.flow.components.ItemListingPageSizeSelector}
      * wired together with a search {@link TextField}.
      *
      * <p>Key points:
