@@ -1,6 +1,6 @@
 package com.iyensoft.vaadin.flow.internal.components.masterdetail;
 
-import com.iyensoft.vaadin.flow.enums.ViewMode;
+import com.holonplatform.vaadin.flow.components.support.ViewMode;
 import com.vaadin.flow.dom.Element;
 
 import java.util.Objects;

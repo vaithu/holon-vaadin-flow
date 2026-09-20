@@ -1,4 +1,4 @@
-package com.iyensoft.vaadin.flow.enums;
+package com.holonplatform.vaadin.flow.components.support;
 
 /**
  * Column-span constants for use with

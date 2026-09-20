@@ -10,7 +10,7 @@ import com.holonplatform.vaadin.flow.components.Selectable;
 import com.holonplatform.vaadin.flow.components.builders.ButtonBuilder;
 import com.holonplatform.vaadin.flow.components.utils.UIUtils;
 import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
-import com.iyensoft.vaadin.flow.enums.ButtonPreset;
+import com.holonplatform.vaadin.flow.components.support.ButtonPreset;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasTheme;
 import com.vaadin.flow.component.button.Button;

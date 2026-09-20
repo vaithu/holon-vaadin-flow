@@ -21,7 +21,7 @@ import com.holonplatform.vaadin.flow.components.Components;
 import com.holonplatform.vaadin.flow.vaadinplus.components.Sheet;
 import com.iyensoft.vaadin.flow.components.DetailSyncAware;
 import com.iyensoft.vaadin.flow.components.MasterDetailLayout;
-import com.iyensoft.vaadin.flow.enums.ViewMode;
+import com.holonplatform.vaadin.flow.components.support.ViewMode;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Span;
 

@@ -7,7 +7,7 @@ import com.vaadin.flow.component.HasEnabled;
 import com.vaadin.flow.component.HasSize;
 import com.vaadin.flow.component.HasStyle;
 import com.vaadin.flow.component.shared.HasTooltip;
-import com.iyensoft.vaadin.flow.enums.ViewMode;
+import com.holonplatform.vaadin.flow.components.support.ViewMode;
 
 import java.util.Optional;
 

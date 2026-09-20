@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test;
 import com.holonplatform.vaadin.flow.vaadinplus.Layout;
 import com.holonplatform.vaadin.flow.vaadinplus.components.Sheet;
 import com.iyensoft.vaadin.flow.components.DetailSyncAware;
-import com.iyensoft.vaadin.flow.enums.ViewMode;
+import com.holonplatform.vaadin.flow.components.support.ViewMode;
 import com.iyensoft.vaadin.flow.internal.components.masterdetail.ResponsiveDetailHost;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.html.Div;

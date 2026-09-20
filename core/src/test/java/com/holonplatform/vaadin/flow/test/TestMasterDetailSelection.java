@@ -18,7 +18,7 @@ import org.junit.jupiter.api.Test;
 import com.holonplatform.vaadin.flow.components.Components;
 import com.iyensoft.vaadin.flow.components.MasterDetailLayout;
 import com.iyensoft.vaadin.flow.components.builders.MasterDetailBuilder;
-import com.iyensoft.vaadin.flow.enums.ViewMode;
+import com.holonplatform.vaadin.flow.components.support.ViewMode;
 import com.vaadin.flow.router.Location;
 import com.vaadin.flow.router.QueryParameters;
 

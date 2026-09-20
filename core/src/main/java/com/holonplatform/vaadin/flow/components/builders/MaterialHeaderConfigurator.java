@@ -4,7 +4,7 @@ import com.holonplatform.vaadin.flow.vaadinplus.components.MaterialHeader.Varian
 import com.holonplatform.vaadin.flow.vaadinplus.components.Breadcrumb;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.html.ListItem;
-import com.iyensoft.vaadin.flow.enums.ViewMode;
+import com.holonplatform.vaadin.flow.components.support.ViewMode;
 
 /** Fluent configuration for Material 3 content header slots and actions. */
 public interface MaterialHeaderConfigurator<C extends MaterialHeaderConfigurator<C>>
