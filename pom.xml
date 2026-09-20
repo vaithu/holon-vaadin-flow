@@ -175,6 +175,11 @@
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
+				<groupId>com.iyensoft.vaadin</groupId>
+				<artifactId>iyen-core</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
 				<groupId>com.holon-platform.vaadin</groupId>
 				<artifactId>holon-vaadin-flow-navigator</artifactId>
 				<version>${project.version}</version>
@@ -393,6 +398,7 @@
 
 	<modules>
 		<module>core</module>
+		<module>iyen-core</module>
 		<module>chartjs</module>
 		<module>calendar</module>
 		<module>navigator</module>

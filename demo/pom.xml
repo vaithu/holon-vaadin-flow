@@ -33,6 +33,12 @@
             <artifactId>holon-vaadin-flow</artifactId>
         </dependency>
 
+        <!-- IyenSoft component library -->
+        <dependency>
+            <groupId>com.iyensoft.vaadin</groupId>
+            <artifactId>iyen-core</artifactId>
+        </dependency>
+
         <!-- Chart.js integration -->
         <dependency>
             <groupId>com.holon-platform.vaadin</groupId>

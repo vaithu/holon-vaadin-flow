@@ -141,6 +141,15 @@
 						</manifestEntries>
 					</archive>
 				</configuration>
+				<executions>
+					<!-- Shared test utilities are consumed by the iyen-core module tests -->
+					<execution>
+						<id>test-jar</id>
+						<goals>
+							<goal>test-jar</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>
