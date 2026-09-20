@@ -1,7 +1,7 @@
 package com.holonplatform.vaadin.flow.test;
 
-import com.holonplatform.vaadin.flow.vaadinplus.components.ComponentView;
-import com.holonplatform.vaadin.flow.vaadinplus.components.Preview;
+import com.iyensoft.vaadin.flow.components.ComponentView;
+import com.iyensoft.vaadin.flow.components.Preview;
 import com.vaadin.flow.component.html.Span;
 import org.junit.jupiter.api.Test;
 

@@ -4,8 +4,8 @@ Accessible breadcrumb navigation component inspired by shadcn/ui {@code Breadcru
 
 ## Class
 
-- **Package:** `com.holonplatform.vaadin.flow.vaadinplus.components`
-- **Source:** `core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/Breadcrumb.java`
+- **Package:** `com.iyensoft.vaadin.flow.components`
+- **Source:** `core/src/main/java/com/iyensoft/vaadin/flow/components/Breadcrumb.java`
 - **Signature:** `public class Breadcrumb extends Nav`
 
 ## Key APIs

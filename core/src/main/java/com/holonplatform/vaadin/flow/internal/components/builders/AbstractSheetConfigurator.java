@@ -17,9 +17,9 @@ package com.holonplatform.vaadin.flow.internal.components.builders;
 
 import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.vaadin.flow.components.builders.SheetConfigurator;
-import com.holonplatform.vaadin.flow.vaadinplus.components.Sheet;
-import com.holonplatform.vaadin.flow.vaadinplus.components.SheetDescription;
-import com.holonplatform.vaadin.flow.vaadinplus.components.SheetTitle;
+import com.iyensoft.vaadin.flow.components.Sheet;
+import com.iyensoft.vaadin.flow.components.SheetDescription;
+import com.iyensoft.vaadin.flow.components.SheetTitle;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasEnabled;
 import com.vaadin.flow.component.HasSize;
@@ -106,7 +106,7 @@ public abstract class AbstractSheetConfigurator<C extends SheetConfigurator<C>>
     }
 
     @Override
-    public C header(com.holonplatform.vaadin.flow.vaadinplus.components.Header header) {
+    public C header(com.iyensoft.vaadin.flow.components.Header header) {
         getComponent().setHeader(header);
         return getConfigurator();
     }
@@ -196,7 +196,7 @@ public abstract class AbstractSheetConfigurator<C extends SheetConfigurator<C>>
     }
 
     @Override
-    public C footer(com.holonplatform.vaadin.flow.vaadinplus.components.Footer footer) {
+    public C footer(com.iyensoft.vaadin.flow.components.Footer footer) {
         getComponent().setFooter(footer);
         return getConfigurator();
     }

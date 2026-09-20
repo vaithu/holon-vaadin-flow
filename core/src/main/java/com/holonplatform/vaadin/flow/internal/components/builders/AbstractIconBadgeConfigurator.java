@@ -1,8 +1,8 @@
 package com.holonplatform.vaadin.flow.internal.components.builders;
 
 import com.holonplatform.vaadin.flow.components.builders.IconBadgeConfigurator;
-import com.holonplatform.vaadin.flow.vaadinplus.components.Alert;
-import com.holonplatform.vaadin.flow.vaadinplus.components.IconBadge;
+import com.iyensoft.vaadin.flow.components.Alert;
+import com.iyensoft.vaadin.flow.components.IconBadge;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasEnabled;
 import com.vaadin.flow.component.HasSize;

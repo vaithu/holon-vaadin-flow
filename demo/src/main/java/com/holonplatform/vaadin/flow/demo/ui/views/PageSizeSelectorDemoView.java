@@ -6,7 +6,7 @@ import com.holonplatform.vaadin.flow.components.ItemListingPageSizeSelector;
 import com.holonplatform.vaadin.flow.components.ItemListingPaginationBar;
 import com.holonplatform.vaadin.flow.demo.ui.DemoExample;
 import com.holonplatform.vaadin.flow.demo.ui.DemoMainLayout;
-import com.holonplatform.vaadin.flow.vaadinplus.components.DynamicFilterPanel;
+import com.iyensoft.vaadin.flow.components.DynamicFilterPanel;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.Paragraph;
@@ -15,7 +15,7 @@ import com.vaadin.flow.router.Route;
 
 import java.util.ArrayList;
 import java.util.List;
-import com.holonplatform.vaadin.flow.vaadinplus.ResponsiveDiv;
+import com.iyensoft.vaadin.flow.components.ResponsiveDiv;
 
 
 /**

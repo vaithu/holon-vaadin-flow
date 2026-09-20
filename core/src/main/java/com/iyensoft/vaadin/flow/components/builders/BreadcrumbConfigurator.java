@@ -2,10 +2,10 @@ package com.iyensoft.vaadin.flow.components.builders;
 
 import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.vaadin.flow.components.builders.ComponentConfigurator;
-import com.holonplatform.vaadin.flow.vaadinplus.components.Breadcrumb;
-import com.holonplatform.vaadin.flow.vaadinplus.components.BreadcrumbItem;
-import com.holonplatform.vaadin.flow.vaadinplus.components.BreadcrumbPage;
-import com.holonplatform.vaadin.flow.vaadinplus.components.BreadcrumbSeparator;
+import com.iyensoft.vaadin.flow.components.Breadcrumb;
+import com.iyensoft.vaadin.flow.components.BreadcrumbItem;
+import com.iyensoft.vaadin.flow.components.BreadcrumbPage;
+import com.iyensoft.vaadin.flow.components.BreadcrumbSeparator;
 import com.iyensoft.vaadin.flow.internal.components.builders.DefaultBreadcrumbConfigurator;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.html.ListItem;

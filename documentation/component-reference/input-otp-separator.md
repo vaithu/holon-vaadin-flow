@@ -4,8 +4,8 @@ A visual separator between {@link InputOTPGroup}s inside an {@link InputOTP}.
 
 ## Class
 
-- **Package:** `com.holonplatform.vaadin.flow.vaadinplus.components`
-- **Source:** `core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/InputOTPSeparator.java`
+- **Package:** `com.iyensoft.vaadin.flow.components`
+- **Source:** `core/src/main/java/com/iyensoft/vaadin/flow/components/InputOTPSeparator.java`
 - **Signature:** `public class InputOTPSeparator extends Div`
 
 ## Key APIs

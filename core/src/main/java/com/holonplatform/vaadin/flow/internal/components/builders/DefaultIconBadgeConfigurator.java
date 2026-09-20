@@ -1,7 +1,7 @@
 package com.holonplatform.vaadin.flow.internal.components.builders;
 
 import com.holonplatform.vaadin.flow.components.builders.IconBadgeConfigurator;
-import com.holonplatform.vaadin.flow.vaadinplus.components.IconBadge;
+import com.iyensoft.vaadin.flow.components.IconBadge;
 
 /**
  * Default {@link IconBadgeConfigurator.BaseIconBadgeConfigurator} implementation.

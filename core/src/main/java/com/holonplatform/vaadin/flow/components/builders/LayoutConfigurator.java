@@ -2,7 +2,7 @@ package com.holonplatform.vaadin.flow.components.builders;
 
 import com.holonplatform.vaadin.flow.internal.components.builders.DefaultLayoutConfigurator;
 import com.holonplatform.vaadin.flow.internal.lumo.*;
-import com.holonplatform.vaadin.flow.vaadinplus.Layout;
+import com.iyensoft.vaadin.flow.components.Layout;
 import com.holonplatform.vaadin.flow.components.support.ViewMode;
 import com.vaadin.flow.component.Component;
 
@@ -140,7 +140,7 @@ public interface LayoutConfigurator<C extends LayoutConfigurator<C>> extends Com
      *
      * @param background the background colour to apply (not null)
      */
-    default C background(com.holonplatform.vaadin.flow.vaadinplus.utilities.Color.Background background) {
+    default C background(com.iyensoft.vaadin.flow.utils.Color.Background background) {
         return styleName(background.getClassName());
     }
 
@@ -149,7 +149,7 @@ public interface LayoutConfigurator<C extends LayoutConfigurator<C>> extends Com
      *
      * @param color the text colour to apply (not null)
      */
-    default C textColor(com.holonplatform.vaadin.flow.vaadinplus.utilities.Color.Text color) {
+    default C textColor(com.iyensoft.vaadin.flow.utils.Color.Text color) {
         return styleName(color.getClassName());
     }
 

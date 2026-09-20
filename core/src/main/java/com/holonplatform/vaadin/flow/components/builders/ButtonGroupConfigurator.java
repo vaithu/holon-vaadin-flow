@@ -16,7 +16,7 @@
 package com.holonplatform.vaadin.flow.components.builders;
 
 import com.holonplatform.vaadin.flow.internal.components.builders.DefaultButtonGroupConfigurator;
-import com.holonplatform.vaadin.flow.vaadinplus.components.ButtonGroup;
+import com.iyensoft.vaadin.flow.components.ButtonGroup;
 import com.vaadin.flow.component.button.Button;
 
 /**

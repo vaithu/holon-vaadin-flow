@@ -1,6 +1,6 @@
 package com.iyensoft.vaadin.flow.internal.components.builders;
 
-import com.holonplatform.vaadin.flow.vaadinplus.Layout;
+import com.iyensoft.vaadin.flow.components.Layout;
 
 public class DefaultMobileGridColumnBuilder extends AbstractMobileGridColumnConfigurator<MobileGridColumnBuilder> implements MobileGridColumnBuilder {
 

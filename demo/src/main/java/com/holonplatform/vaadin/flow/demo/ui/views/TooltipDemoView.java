@@ -11,7 +11,7 @@ import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import com.holonplatform.vaadin.flow.vaadinplus.ResponsiveDiv;
+import com.iyensoft.vaadin.flow.components.ResponsiveDiv;
 
 
 @PageTitle("Tooltip – Holon Demo")

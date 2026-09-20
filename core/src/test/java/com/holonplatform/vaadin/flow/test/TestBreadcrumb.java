@@ -17,7 +17,7 @@ package com.holonplatform.vaadin.flow.test;
 
 import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.vaadin.flow.test.util.LocalizationTestUtils;
-import com.holonplatform.vaadin.flow.vaadinplus.components.*;
+import com.iyensoft.vaadin.flow.components.*;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.router.AfterNavigationEvent;

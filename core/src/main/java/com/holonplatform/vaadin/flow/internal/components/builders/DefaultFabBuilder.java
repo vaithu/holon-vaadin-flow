@@ -16,7 +16,7 @@
 package com.holonplatform.vaadin.flow.internal.components.builders;
 
 import com.holonplatform.vaadin.flow.components.builders.FabBuilder;
-import com.holonplatform.vaadin.flow.vaadinplus.components.Fab;
+import com.iyensoft.vaadin.flow.components.Fab;
 import com.vaadin.flow.component.icon.VaadinIcon;
 
 /**

@@ -12,7 +12,7 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.signals.Signal;
 import com.vaadin.flow.signals.local.ValueSignal;
-import com.holonplatform.vaadin.flow.vaadinplus.ResponsiveDiv;
+import com.iyensoft.vaadin.flow.components.ResponsiveDiv;
 
 
 /**

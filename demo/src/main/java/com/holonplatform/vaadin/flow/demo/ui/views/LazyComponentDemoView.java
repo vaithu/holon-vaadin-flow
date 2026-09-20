@@ -17,7 +17,7 @@ import com.vaadin.flow.router.Route;
 
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
-import com.holonplatform.vaadin.flow.vaadinplus.ResponsiveDiv;
+import com.iyensoft.vaadin.flow.components.ResponsiveDiv;
 
 
 /**

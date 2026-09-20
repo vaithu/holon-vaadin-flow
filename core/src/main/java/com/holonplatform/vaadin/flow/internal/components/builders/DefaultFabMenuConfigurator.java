@@ -16,7 +16,7 @@
 package com.holonplatform.vaadin.flow.internal.components.builders;
 
 import com.holonplatform.vaadin.flow.components.builders.FabMenuConfigurator;
-import com.holonplatform.vaadin.flow.vaadinplus.components.FabMenu;
+import com.iyensoft.vaadin.flow.components.FabMenu;
 
 /**
  * Default {@link FabMenuConfigurator.BaseFabMenuConfigurator} implementation.

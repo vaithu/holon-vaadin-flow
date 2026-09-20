@@ -2,7 +2,7 @@ package com.holonplatform.vaadin.flow.internal.components.builders;
 
 import com.holonplatform.vaadin.flow.components.builders.GridHeaderBuilder;
 import com.holonplatform.vaadin.flow.components.builders.LabelBuilder;
-import com.holonplatform.vaadin.flow.vaadinplus.components.GridHeader;
+import com.iyensoft.vaadin.flow.components.GridHeader;
 
 public class DefaultGridHeaderBuilder extends  AbstractGridHeaderConfigurator<GridHeaderBuilder>
         implements GridHeaderBuilder {

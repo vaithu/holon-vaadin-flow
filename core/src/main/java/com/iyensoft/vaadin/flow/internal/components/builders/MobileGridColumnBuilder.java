@@ -1,7 +1,7 @@
 package com.iyensoft.vaadin.flow.internal.components.builders;
 
 import com.holonplatform.vaadin.flow.components.builders.ComponentBuilder;
-import com.holonplatform.vaadin.flow.vaadinplus.Layout;
+import com.iyensoft.vaadin.flow.components.Layout;
 
 public interface MobileGridColumnBuilder extends MobileGridColumnConfigurator<MobileGridColumnBuilder>, ComponentBuilder<Layout, MobileGridColumnBuilder> {
 

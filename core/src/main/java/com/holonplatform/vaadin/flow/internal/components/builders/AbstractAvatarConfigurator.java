@@ -5,7 +5,7 @@ import com.holonplatform.vaadin.flow.components.builders.AvatarColor;
 import com.holonplatform.vaadin.flow.components.builders.AvatarConfigurator;
 import com.holonplatform.vaadin.flow.components.builders.LabelBuilder;
 import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
-import com.holonplatform.vaadin.flow.vaadinplus.components.Alert;
+import com.iyensoft.vaadin.flow.components.Alert;
 import com.vaadin.flow.component.HasEnabled;
 import com.vaadin.flow.component.HasSize;
 import com.vaadin.flow.component.HasStyle;

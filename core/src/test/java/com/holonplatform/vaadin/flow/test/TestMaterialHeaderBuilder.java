@@ -2,12 +2,12 @@ package com.holonplatform.vaadin.flow.test;
 
 import com.holonplatform.vaadin.flow.components.Components;
 import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
-import com.holonplatform.vaadin.flow.vaadinplus.components.MaterialHeader;
+import com.iyensoft.vaadin.flow.components.MaterialHeader;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Span;
-import com.holonplatform.vaadin.flow.vaadinplus.components.BreadcrumbItem;
-import com.holonplatform.vaadin.flow.vaadinplus.components.BreadcrumbPage;
+import com.iyensoft.vaadin.flow.components.BreadcrumbItem;
+import com.iyensoft.vaadin.flow.components.BreadcrumbPage;
 import com.holonplatform.vaadin.flow.components.support.ViewMode;
 import org.junit.jupiter.api.Test;
 

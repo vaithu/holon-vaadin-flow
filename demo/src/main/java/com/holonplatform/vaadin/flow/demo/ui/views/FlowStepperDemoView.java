@@ -2,8 +2,8 @@ package com.holonplatform.vaadin.flow.demo.ui.views;
 
 import com.holonplatform.vaadin.flow.demo.ui.DemoExample;
 import com.holonplatform.vaadin.flow.demo.ui.DemoMainLayout;
-import com.holonplatform.vaadin.flow.vaadinplus.components.FlowStepper;
-import com.holonplatform.vaadin.flow.vaadinplus.ResponsiveDiv;
+import com.iyensoft.vaadin.flow.components.FlowStepper;
+import com.iyensoft.vaadin.flow.components.ResponsiveDiv;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;

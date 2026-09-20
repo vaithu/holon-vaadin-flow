@@ -1,9 +1,9 @@
 package com.holonplatform.vaadin.flow.components.builders;
 
 import com.holonplatform.vaadin.flow.internal.components.builders.DefaultArAgingBarConfigurator;
-import com.holonplatform.vaadin.flow.vaadinplus.components.ArAgingBar;
-import com.holonplatform.vaadin.flow.vaadinplus.components.ArAgingBar.Segment;
-import com.holonplatform.vaadin.flow.vaadinplus.components.ArAgingBar.Variant;
+import com.iyensoft.vaadin.flow.components.ArAgingBar;
+import com.iyensoft.vaadin.flow.components.ArAgingBar.Segment;
+import com.iyensoft.vaadin.flow.components.ArAgingBar.Variant;
 
 import java.util.List;
 import java.util.function.Consumer;

@@ -1,6 +1,6 @@
 package com.holonplatform.vaadin.flow.test;
 
-import com.holonplatform.vaadin.flow.vaadinplus.utilities.Color;
+import com.iyensoft.vaadin.flow.utils.Color;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

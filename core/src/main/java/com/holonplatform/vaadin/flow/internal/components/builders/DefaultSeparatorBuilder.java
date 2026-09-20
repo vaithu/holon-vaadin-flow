@@ -16,7 +16,7 @@
 package com.holonplatform.vaadin.flow.internal.components.builders;
 
 import com.holonplatform.vaadin.flow.components.builders.SeparatorBuilder;
-import com.holonplatform.vaadin.flow.vaadinplus.components.Separator;
+import com.iyensoft.vaadin.flow.components.Separator;
 
 /**
  * Default {@link SeparatorBuilder} implementation.

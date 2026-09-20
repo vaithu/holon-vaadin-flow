@@ -16,7 +16,7 @@
 package com.holonplatform.vaadin.flow.internal.components.builders;
 
 import com.holonplatform.vaadin.flow.components.builders.RibbonConfigurator;
-import com.holonplatform.vaadin.flow.vaadinplus.components.Ribbon;
+import com.iyensoft.vaadin.flow.components.Ribbon;
 
 /**
  * Default {@link RibbonConfigurator.BaseRibbonConfigurator} implementation.

@@ -4,7 +4,7 @@ import java.util.Optional;
 
 import com.holonplatform.vaadin.flow.components.ListingBundle;
 import com.holonplatform.vaadin.flow.internal.components.builders.DefaultBaseListingBundleConfigurator;
-import com.holonplatform.vaadin.flow.vaadinplus.components.DynamicFilterPanel;
+import com.iyensoft.vaadin.flow.components.DynamicFilterPanel;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.ItemClickEvent;

@@ -4,8 +4,8 @@ No class-level description found.
 
 ## Class
 
-- **Package:** `com.holonplatform.vaadin.flow.vaadinplus`
-- **Source:** `core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/KeyValuePairs.java`
+- **Package:** `com.iyensoft.vaadin.flow.components`
+- **Source:** `core/src/main/java/com/iyensoft/vaadin/flow/components/KeyValuePairs.java`
 - **Signature:** `public class KeyValuePairs extends DescriptionList implements HasTheme`
 
 ## Key APIs

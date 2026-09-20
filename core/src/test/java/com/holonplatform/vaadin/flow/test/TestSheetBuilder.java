@@ -1,7 +1,7 @@
 package com.holonplatform.vaadin.flow.test;
 
 import com.holonplatform.vaadin.flow.components.builders.SheetBuilder;
-import com.holonplatform.vaadin.flow.vaadinplus.components.Sheet;
+import com.iyensoft.vaadin.flow.components.Sheet;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Span;
 import org.junit.jupiter.api.Nested;

@@ -4,8 +4,8 @@ Two-panel dialog for adding multiple items in bulk with configurable quantities.
 
 ## Class
 
-- **Package:** `com.holonplatform.vaadin.flow.vaadinplus.components`
-- **Source:** `core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/BulkItemPickerDialog.java`
+- **Package:** `com.iyensoft.vaadin.flow.components`
+- **Source:** `core/src/main/java/com/iyensoft/vaadin/flow/components/BulkItemPickerDialog.java`
 - **Signature:** `public class BulkItemPickerDialog extends Dialog`
 
 ## Key APIs

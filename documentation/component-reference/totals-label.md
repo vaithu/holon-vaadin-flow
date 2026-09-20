@@ -5,8 +5,8 @@ Label slot of a [`TotalsRow`](totals-row.md). Supports plain text, Holon `Locali
 
 ## Class
 
-- **Package:** `com.holonplatform.vaadin.flow.vaadinplus.components`
-- **Source:** `core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/TotalsLabel.java`
+- **Package:** `com.iyensoft.vaadin.flow.components`
+- **Source:** `core/src/main/java/com/iyensoft/vaadin/flow/components/TotalsLabel.java`
 - **Signature:** `public class TotalsLabel extends Span`
 
 ## Key APIs

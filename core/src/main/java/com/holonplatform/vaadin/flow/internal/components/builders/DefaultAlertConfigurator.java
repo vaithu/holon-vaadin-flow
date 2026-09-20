@@ -16,7 +16,7 @@
 package com.holonplatform.vaadin.flow.internal.components.builders;
 
 import com.holonplatform.vaadin.flow.components.builders.AlertConfigurator;
-import com.holonplatform.vaadin.flow.vaadinplus.components.Alert;
+import com.iyensoft.vaadin.flow.components.Alert;
 
 /**
  * Default {@link AlertConfigurator.BaseAlertConfigurator} implementation.

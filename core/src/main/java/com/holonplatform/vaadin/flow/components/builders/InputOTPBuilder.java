@@ -16,7 +16,7 @@
 package com.holonplatform.vaadin.flow.components.builders;
 
 import com.holonplatform.vaadin.flow.internal.components.builders.DefaultInputOTPBuilder;
-import com.holonplatform.vaadin.flow.vaadinplus.components.InputOTP;
+import com.iyensoft.vaadin.flow.components.InputOTP;
 
 /**
  * Fluent builder to create and configure {@link InputOTP} components.

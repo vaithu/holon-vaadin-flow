@@ -1,6 +1,6 @@
 package com.holonplatform.vaadin.flow.test;
 
-import com.holonplatform.vaadin.flow.vaadinplus.components.EntityFormPanel;
+import com.iyensoft.vaadin.flow.components.EntityFormPanel;
 import com.holonplatform.vaadin.flow.components.BeanPropertyInputForm;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.html.Div;

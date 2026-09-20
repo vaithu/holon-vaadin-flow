@@ -4,8 +4,8 @@ A full-featured form panel that wraps a {@link BeanPropertyInputForm} or a {@lin
 
 ## Class
 
-- **Package:** `com.holonplatform.vaadin.flow.vaadinplus.components`
-- **Source:** `core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/EntityFormPanel.java`
+- **Package:** `com.iyensoft.vaadin.flow.components`
+- **Source:** `core/src/main/java/com/iyensoft/vaadin/flow/components/EntityFormPanel.java`
 - **Signature:** `public class EntityFormPanel<T> extends Div`
 
 ## Key APIs

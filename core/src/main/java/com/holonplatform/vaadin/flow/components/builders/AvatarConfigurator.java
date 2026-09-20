@@ -2,7 +2,7 @@ package com.holonplatform.vaadin.flow.components.builders;
 
 import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.vaadin.flow.internal.components.builders.DefaultAvatarConfigurator;
-import com.holonplatform.vaadin.flow.vaadinplus.components.Alert;
+import com.iyensoft.vaadin.flow.components.Alert;
 import com.vaadin.flow.component.avatar.Avatar;
 import com.vaadin.flow.component.avatar.AvatarVariant;
 import com.vaadin.flow.server.streams.DownloadHandler;
@@ -166,7 +166,7 @@ public interface AvatarConfigurator<C extends AvatarConfigurator<C>>
 
     /**
      * Applies an {@link Alert.Variant} tinted background to the avatar, matching
-     * the exact same palette used by {@link com.holonplatform.vaadin.flow.vaadinplus.components.IconBadge}.
+     * the exact same palette used by {@link com.iyensoft.vaadin.flow.components.IconBadge}.
      *
      * <p>This lets the developer choose between two visual styles:
      * <ul>

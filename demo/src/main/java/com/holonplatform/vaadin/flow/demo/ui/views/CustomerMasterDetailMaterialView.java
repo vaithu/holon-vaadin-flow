@@ -9,11 +9,11 @@ import com.holonplatform.vaadin.flow.components.builders.LitRendererBuilder.Mobi
 import com.holonplatform.vaadin.flow.demo.data.entity.Product;
 import com.holonplatform.vaadin.flow.demo.data.service.ProductService;
 import com.holonplatform.vaadin.flow.demo.ui.DemoMainLayout;
-import com.holonplatform.vaadin.flow.vaadinplus.components.Alert.Variant;
-import com.holonplatform.vaadin.flow.vaadinplus.components.*;
-import com.holonplatform.vaadin.flow.vaadinplus.components.IconBadge.Size;
-import com.holonplatform.vaadin.flow.vaadinplus.components.TimelineStepper.AuditEntry;
-import com.holonplatform.vaadin.flow.vaadinplus.components.TimelineStepper.Severity;
+import com.iyensoft.vaadin.flow.components.Alert.Variant;
+import com.iyensoft.vaadin.flow.components.*;
+import com.iyensoft.vaadin.flow.components.IconBadge.Size;
+import com.iyensoft.vaadin.flow.components.TimelineStepper.AuditEntry;
+import com.iyensoft.vaadin.flow.components.TimelineStepper.Severity;
 import com.iyensoft.vaadin.flow.components.DetailSyncAware;
 import com.iyensoft.vaadin.flow.components.MasterDetailLayout;
 import com.iyensoft.vaadin.flow.components.builders.LazyTabsBuilder;

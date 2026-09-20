@@ -1,8 +1,8 @@
 package com.holonplatform.vaadin.flow.components.builders;
 
 import com.holonplatform.vaadin.flow.internal.components.builders.DefaultFooterConfigurator;
-import com.holonplatform.vaadin.flow.vaadinplus.components.Footer;
-import com.holonplatform.vaadin.flow.vaadinplus.utilities.Color;
+import com.iyensoft.vaadin.flow.components.Footer;
+import com.iyensoft.vaadin.flow.utils.Color;
 import com.vaadin.flow.component.Component;
 
 public interface FooterConfigurator<C extends FooterConfigurator<C>> extends LayoutConfigurator<C> {

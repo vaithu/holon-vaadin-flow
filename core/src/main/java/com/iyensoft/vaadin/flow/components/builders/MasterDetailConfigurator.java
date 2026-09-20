@@ -9,7 +9,7 @@ import com.holonplatform.vaadin.flow.components.builders.HasSizeConfigurator;
 import com.holonplatform.vaadin.flow.components.builders.HasStyleConfigurator;
 import com.holonplatform.vaadin.flow.components.builders.HeaderConfigurator;
 import com.holonplatform.vaadin.flow.components.builders.MaterialHeaderConfigurator;
-import com.holonplatform.vaadin.flow.vaadinplus.components.Sheet;
+import com.iyensoft.vaadin.flow.components.Sheet;
 import com.iyensoft.vaadin.flow.components.MasterDetailAccent;
 import com.iyensoft.vaadin.flow.components.MasterDetailLayout;
 import com.holonplatform.vaadin.flow.components.support.ViewMode;

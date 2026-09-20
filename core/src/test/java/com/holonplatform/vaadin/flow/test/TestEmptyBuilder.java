@@ -1,7 +1,7 @@
 package com.holonplatform.vaadin.flow.test;
 
 import com.holonplatform.vaadin.flow.components.builders.EmptyBuilder;
-import com.holonplatform.vaadin.flow.vaadinplus.components.Empty;
+import com.iyensoft.vaadin.flow.components.Empty;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;

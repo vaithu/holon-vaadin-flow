@@ -4,12 +4,12 @@ import com.holonplatform.vaadin.flow.components.KanbanBoard;
 import com.holonplatform.vaadin.flow.components.builders.DivBuilder;
 import com.holonplatform.vaadin.flow.components.builders.LabelBuilder;
 import com.holonplatform.vaadin.flow.components.kanban.*;
-import com.holonplatform.vaadin.flow.vaadinplus.components.DynamicFilterPanel;
+import com.iyensoft.vaadin.flow.components.DynamicFilterPanel;
 import com.holonplatform.vaadin.flow.demo.ui.DemoExample;
 import com.holonplatform.vaadin.flow.demo.ui.DemoMainLayout;
-import com.holonplatform.vaadin.flow.vaadinplus.components.TimelineStepper;
-import com.holonplatform.vaadin.flow.vaadinplus.components.TimelineStepper.AuditEntry;
-import com.holonplatform.vaadin.flow.vaadinplus.components.TimelineStepper.Severity;
+import com.iyensoft.vaadin.flow.components.TimelineStepper;
+import com.iyensoft.vaadin.flow.components.TimelineStepper.AuditEntry;
+import com.iyensoft.vaadin.flow.components.TimelineStepper.Severity;
 import com.iyensoft.vaadin.flow.components.builders.CardBuilder;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dialog.Dialog;
@@ -32,7 +32,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import com.holonplatform.vaadin.flow.vaadinplus.ResponsiveDiv;
+import com.iyensoft.vaadin.flow.components.ResponsiveDiv;
 
 
 /**

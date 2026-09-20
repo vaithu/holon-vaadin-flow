@@ -203,7 +203,7 @@ public class ProductService {
 
     /**
      * Paginated stream filtered by both a text search and an arbitrary {@link QueryFilter}
-     * (e.g. the one produced by {@link com.holonplatform.vaadin.flow.vaadinplus.components.DynamicFilterPanel}).
+     * (e.g. the one produced by {@link com.iyensoft.vaadin.flow.components.DynamicFilterPanel}).
      * Both filters are AND-combined when both are non-null/non-blank.
      * Applies the given {@link QuerySort} if non-null, otherwise falls back to name ascending.
      */

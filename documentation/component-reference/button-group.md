@@ -4,8 +4,8 @@ A visually unified group of {@link Button} instances — borders between adjacen
 
 ## Class
 
-- **Package:** `com.holonplatform.vaadin.flow.vaadinplus.components`
-- **Source:** `core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/ButtonGroup.java`
+- **Package:** `com.iyensoft.vaadin.flow.components`
+- **Source:** `core/src/main/java/com/iyensoft/vaadin/flow/components/ButtonGroup.java`
 - **Signature:** `public class ButtonGroup extends Div`
 
 ## Key APIs

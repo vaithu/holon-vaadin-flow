@@ -2,7 +2,7 @@ package com.holonplatform.vaadin.flow.test;
 
 import com.holonplatform.vaadin.flow.components.builders.MaterialAppBarBuilder;
 import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
-import com.holonplatform.vaadin.flow.vaadinplus.components.MaterialAppBar;
+import com.iyensoft.vaadin.flow.components.MaterialAppBar;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Span;

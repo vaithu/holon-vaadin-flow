@@ -1,6 +1,6 @@
 package com.holonplatform.vaadin.flow.test;
 
-import com.holonplatform.vaadin.flow.vaadinplus.components.InputGroupText;
+import com.iyensoft.vaadin.flow.components.InputGroupText;
 import com.vaadin.flow.component.html.Span;
 import org.junit.jupiter.api.Test;
 

@@ -4,8 +4,8 @@ A group of adjacent {@link InputOTPSlot}s inside an {@link InputOTP}.
 
 ## Class
 
-- **Package:** `com.holonplatform.vaadin.flow.vaadinplus.components`
-- **Source:** `core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/InputOTPGroup.java`
+- **Package:** `com.iyensoft.vaadin.flow.components`
+- **Source:** `core/src/main/java/com/iyensoft/vaadin/flow/components/InputOTPGroup.java`
 - **Signature:** `public class InputOTPGroup extends Div`
 
 ## Key APIs

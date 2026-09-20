@@ -4,8 +4,8 @@ The "Next slide" navigation button inside a {@link Carousel}.
 
 ## Class
 
-- **Package:** `com.holonplatform.vaadin.flow.vaadinplus.components`
-- **Source:** `core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/CarouselNext.java`
+- **Package:** `com.iyensoft.vaadin.flow.components`
+- **Source:** `core/src/main/java/com/iyensoft/vaadin/flow/components/CarouselNext.java`
 - **Signature:** `public class CarouselNext extends Div`
 
 ## Key APIs

@@ -25,7 +25,7 @@ import com.holonplatform.vaadin.flow.internal.lumo.ColumnSpan;
 import com.holonplatform.vaadin.flow.internal.lumo.FlexDirection;
 import com.holonplatform.vaadin.flow.internal.lumo.Gap;
 import com.holonplatform.vaadin.flow.internal.lumo.RowSpan;
-import com.holonplatform.vaadin.flow.vaadinplus.components.Separator;
+import com.iyensoft.vaadin.flow.components.Separator;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasEnabled;
 import com.vaadin.flow.component.HasSize;

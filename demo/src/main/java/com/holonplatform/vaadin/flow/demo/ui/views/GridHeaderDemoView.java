@@ -2,10 +2,10 @@ package com.holonplatform.vaadin.flow.demo.ui.views;
 
 import com.holonplatform.vaadin.flow.demo.ui.DemoExample;
 import com.holonplatform.vaadin.flow.demo.ui.DemoMainLayout;
-import com.holonplatform.vaadin.flow.vaadinplus.components.GridHeader;
-import com.holonplatform.vaadin.flow.vaadinplus.components.Header;
-import com.holonplatform.vaadin.flow.vaadinplus.utilities.Color;
-import com.holonplatform.vaadin.flow.vaadinplus.utilities.Font;
+import com.iyensoft.vaadin.flow.components.GridHeader;
+import com.iyensoft.vaadin.flow.components.Header;
+import com.iyensoft.vaadin.flow.utils.Color;
+import com.iyensoft.vaadin.flow.utils.Font;
 import com.iyensoft.vaadin.flow.enums.HeadingLevel;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
@@ -19,7 +19,7 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
 import java.util.List;
-import com.holonplatform.vaadin.flow.vaadinplus.ResponsiveDiv;
+import com.iyensoft.vaadin.flow.components.ResponsiveDiv;
 
 
 /**

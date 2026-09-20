@@ -1,7 +1,7 @@
 package com.holonplatform.vaadin.flow.internal.components.builders;
 
 import com.holonplatform.vaadin.flow.components.builders.HeroStripBuilder;
-import com.holonplatform.vaadin.flow.vaadinplus.components.HeroStrip;
+import com.iyensoft.vaadin.flow.components.HeroStrip;
 
 /**
  * Default {@link HeroStripBuilder} implementation.

@@ -3,8 +3,8 @@ package com.holonplatform.vaadin.flow.test;
 import com.holonplatform.vaadin.flow.internal.lumo.Background;
 import com.holonplatform.vaadin.flow.internal.lumo.Breakpoint;
 import com.holonplatform.vaadin.flow.internal.lumo.GridColumns;
-import com.holonplatform.vaadin.flow.vaadinplus.KeyValuePair;
-import com.holonplatform.vaadin.flow.vaadinplus.KeyValuePairs;
+import com.iyensoft.vaadin.flow.components.KeyValuePair;
+import com.iyensoft.vaadin.flow.components.KeyValuePairs;
 import com.vaadin.flow.component.Unit;
 import org.junit.jupiter.api.Test;
 

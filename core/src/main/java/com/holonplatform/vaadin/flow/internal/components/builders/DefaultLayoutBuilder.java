@@ -1,7 +1,7 @@
 package com.holonplatform.vaadin.flow.internal.components.builders;
 
 import com.holonplatform.vaadin.flow.components.builders.LayoutBuilder;
-import com.holonplatform.vaadin.flow.vaadinplus.Layout;
+import com.iyensoft.vaadin.flow.components.Layout;
 import com.vaadin.flow.component.Component;
 
 public class DefaultLayoutBuilder

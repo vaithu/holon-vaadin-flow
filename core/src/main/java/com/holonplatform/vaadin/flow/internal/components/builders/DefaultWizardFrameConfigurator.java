@@ -5,7 +5,7 @@ import com.holonplatform.vaadin.flow.components.builders.WizardFrameConfigurator
 /**
  * Default {@link WizardFrameConfigurator.BaseWizardFrameConfigurator} implementation.
  *
- * <p>Returned by {@link WizardFrameConfigurator#configure(com.holonplatform.vaadin.flow.vaadinplus.components.WizardFrame)}.
+ * <p>Returned by {@link WizardFrameConfigurator#configure(com.iyensoft.vaadin.flow.components.WizardFrame)}.
  * Accumulates configuration state; call {@code buildWizardFrame()} to produce the assembled frame.</p>
  */
 public class DefaultWizardFrameConfigurator

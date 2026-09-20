@@ -4,8 +4,8 @@ Confirmation alert dialog inspired by shadcn/ui {@code AlertDialog} and Tailwind
 
 ## Class
 
-- **Package:** `com.holonplatform.vaadin.flow.vaadinplus.components`
-- **Source:** `core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/AlertDialog.java`
+- **Package:** `com.iyensoft.vaadin.flow.components`
+- **Source:** `core/src/main/java/com/iyensoft/vaadin/flow/components/AlertDialog.java`
 - **Signature:** `public class AlertDialog extends Dialog`
 
 ## Key APIs

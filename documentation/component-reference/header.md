@@ -4,8 +4,8 @@ No class-level description found.
 
 ## Class
 
-- **Package:** `com.holonplatform.vaadin.flow.vaadinplus.components`
-- **Source:** `core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/Header.java`
+- **Package:** `com.iyensoft.vaadin.flow.components`
+- **Source:** `core/src/main/java/com/iyensoft/vaadin/flow/components/Header.java`
 - **Signature:** `public class Header extends Layout implements HasTheme`
 
 ## Key APIs

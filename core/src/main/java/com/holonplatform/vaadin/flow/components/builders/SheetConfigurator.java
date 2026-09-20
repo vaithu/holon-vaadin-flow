@@ -17,11 +17,11 @@ package com.holonplatform.vaadin.flow.components.builders;
 
 import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.vaadin.flow.internal.components.builders.DefaultSheetConfigurator;
-import com.holonplatform.vaadin.flow.vaadinplus.components.Footer;
-import com.holonplatform.vaadin.flow.vaadinplus.components.Header;
-import com.holonplatform.vaadin.flow.vaadinplus.components.Sheet;
-import com.holonplatform.vaadin.flow.vaadinplus.components.SheetDescription;
-import com.holonplatform.vaadin.flow.vaadinplus.components.SheetTitle;
+import com.iyensoft.vaadin.flow.components.Footer;
+import com.iyensoft.vaadin.flow.components.Header;
+import com.iyensoft.vaadin.flow.components.Sheet;
+import com.iyensoft.vaadin.flow.components.SheetDescription;
+import com.iyensoft.vaadin.flow.components.SheetTitle;
 import com.vaadin.flow.component.Component;
 
 import java.util.function.IntConsumer;

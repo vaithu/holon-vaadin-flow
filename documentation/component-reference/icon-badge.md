@@ -4,8 +4,8 @@ Circular tinted icon badge — a {@link Div} wrapper that renders a vaadin-icon 
 
 ## Class
 
-- **Package:** `com.holonplatform.vaadin.flow.vaadinplus.components`
-- **Source:** `core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/IconBadge.java`
+- **Package:** `com.iyensoft.vaadin.flow.components`
+- **Source:** `core/src/main/java/com/iyensoft/vaadin/flow/components/IconBadge.java`
 - **Signature:** `public class IconBadge extends Div`
 
 ## Key APIs

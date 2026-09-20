@@ -16,7 +16,7 @@
 package com.holonplatform.vaadin.flow.internal.components.builders;
 
 import com.holonplatform.vaadin.flow.components.builders.FabConfigurator;
-import com.holonplatform.vaadin.flow.vaadinplus.components.Fab;
+import com.iyensoft.vaadin.flow.components.Fab;
 
 /**
  * Default {@link FabConfigurator.BaseFabConfigurator} implementation.

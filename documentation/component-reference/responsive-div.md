@@ -4,8 +4,8 @@ A responsive container {@link Div} with a fluent builder API covering the five u
 
 ## Class
 
-- **Package:** `com.holonplatform.vaadin.flow.vaadinplus`
-- **Source:** `core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/ResponsiveDiv.java`
+- **Package:** `com.iyensoft.vaadin.flow.components`
+- **Source:** `core/src/main/java/com/iyensoft/vaadin/flow/components/ResponsiveDiv.java`
 - **Signature:** `public class ResponsiveDiv extends Div`
 
 ## Key APIs

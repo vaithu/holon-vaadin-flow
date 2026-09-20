@@ -1,7 +1,7 @@
 package com.holonplatform.vaadin.flow.internal.components.builders;
 
 import com.holonplatform.vaadin.flow.components.builders.AlertModalConfigurator;
-import com.holonplatform.vaadin.flow.vaadinplus.components.AlertModal;
+import com.iyensoft.vaadin.flow.components.AlertModal;
 
 public class DefaultAlertModalConfigurator
         extends AbstractAlertModalConfigurator<AlertModalConfigurator.BaseAlertModalConfigurator>

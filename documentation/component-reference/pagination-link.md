@@ -4,8 +4,8 @@ A clickable page-number button inside a {@link PaginationItem}.
 
 ## Class
 
-- **Package:** `com.holonplatform.vaadin.flow.vaadinplus.components`
-- **Source:** `core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/PaginationLink.java`
+- **Package:** `com.iyensoft.vaadin.flow.components`
+- **Source:** `core/src/main/java/com/iyensoft/vaadin/flow/components/PaginationLink.java`
 - **Signature:** `public class PaginationLink extends Div`
 
 ## Key APIs

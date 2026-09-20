@@ -14,7 +14,7 @@ import com.vaadin.flow.router.Route;
 
 import java.util.List;
 import java.util.Map;
-import com.holonplatform.vaadin.flow.vaadinplus.ResponsiveDiv;
+import com.iyensoft.vaadin.flow.components.ResponsiveDiv;
 
 
 /**

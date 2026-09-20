@@ -1,7 +1,7 @@
-package com.holonplatform.vaadin.flow.vaadinplus.components;
+package com.iyensoft.vaadin.flow.components;
 
 import com.holonplatform.vaadin.flow.components.Components;
-import com.holonplatform.vaadin.flow.vaadinplus.utilities.Color;
+import com.iyensoft.vaadin.flow.utils.Color;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Span;
 import org.junit.jupiter.api.Test;

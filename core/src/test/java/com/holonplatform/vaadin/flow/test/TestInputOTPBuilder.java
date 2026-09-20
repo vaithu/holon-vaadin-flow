@@ -1,7 +1,7 @@
 package com.holonplatform.vaadin.flow.test;
 
 import com.holonplatform.vaadin.flow.components.builders.InputOTPBuilder;
-import com.holonplatform.vaadin.flow.vaadinplus.components.InputOTP;
+import com.iyensoft.vaadin.flow.components.InputOTP;
 import com.vaadin.flow.component.html.Span;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;

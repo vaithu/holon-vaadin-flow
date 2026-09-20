@@ -18,8 +18,8 @@ package com.holonplatform.vaadin.flow.test;
 import com.holonplatform.vaadin.flow.components.Components;
 import com.holonplatform.vaadin.flow.components.builders.TimelineStepperBuilder;
 import com.holonplatform.vaadin.flow.components.builders.TimelineStepperConfigurator;
-import com.holonplatform.vaadin.flow.vaadinplus.components.TimelineStepper;
-import com.holonplatform.vaadin.flow.vaadinplus.components.TimelineStepper.AuditEntry;
+import com.iyensoft.vaadin.flow.components.TimelineStepper;
+import com.iyensoft.vaadin.flow.components.TimelineStepper.AuditEntry;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;

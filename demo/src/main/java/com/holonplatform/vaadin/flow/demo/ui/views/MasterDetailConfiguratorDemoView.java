@@ -9,7 +9,7 @@ import com.holonplatform.vaadin.flow.demo.data.entity.Product;
 import com.holonplatform.vaadin.flow.demo.data.service.ProductService;
 import com.holonplatform.vaadin.flow.demo.ui.DemoExample;
 import com.holonplatform.vaadin.flow.demo.ui.DemoMainLayout;
-import com.holonplatform.vaadin.flow.vaadinplus.components.Sheet;
+import com.iyensoft.vaadin.flow.components.Sheet;
 import com.iyensoft.vaadin.flow.components.DetailSyncAware;
 import com.iyensoft.vaadin.flow.components.MasterDetailAccent;
 import com.iyensoft.vaadin.flow.components.MasterDetailLayout;

@@ -4,8 +4,8 @@ The "Previous slide" navigation button inside a {@link Carousel}.
 
 ## Class
 
-- **Package:** `com.holonplatform.vaadin.flow.vaadinplus.components`
-- **Source:** `core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/CarouselPrevious.java`
+- **Package:** `com.iyensoft.vaadin.flow.components`
+- **Source:** `core/src/main/java/com/iyensoft/vaadin/flow/components/CarouselPrevious.java`
 - **Signature:** `public class CarouselPrevious extends Div`
 
 ## Key APIs

@@ -8,8 +8,8 @@ import com.holonplatform.vaadin.flow.internal.components.builders.AbstractCompon
 import com.holonplatform.vaadin.flow.internal.components.builders.AbstractFooterConfigurator;
 import com.holonplatform.vaadin.flow.internal.components.builders.AbstractHeaderConfigurator;
 import com.holonplatform.vaadin.flow.internal.components.builders.AbstractListingBundleConfigurer;
-import com.holonplatform.vaadin.flow.vaadinplus.components.Footer;
-import com.holonplatform.vaadin.flow.vaadinplus.components.Header;
+import com.iyensoft.vaadin.flow.components.Footer;
+import com.iyensoft.vaadin.flow.components.Header;
 import com.iyensoft.vaadin.flow.components.builders.MasterConfigurator;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasEnabled;

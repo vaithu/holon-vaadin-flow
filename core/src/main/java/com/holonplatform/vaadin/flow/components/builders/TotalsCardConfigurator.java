@@ -17,9 +17,9 @@ package com.holonplatform.vaadin.flow.components.builders;
 
 import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.vaadin.flow.internal.components.builders.DefaultTotalsCardConfigurator;
-import com.holonplatform.vaadin.flow.vaadinplus.components.TotalsCard;
-import com.holonplatform.vaadin.flow.vaadinplus.components.TotalsGauge;
-import com.holonplatform.vaadin.flow.vaadinplus.components.TotalsRow;
+import com.iyensoft.vaadin.flow.components.TotalsCard;
+import com.iyensoft.vaadin.flow.components.TotalsGauge;
+import com.iyensoft.vaadin.flow.components.TotalsRow;
 
 import java.util.List;
 import java.util.function.Consumer;

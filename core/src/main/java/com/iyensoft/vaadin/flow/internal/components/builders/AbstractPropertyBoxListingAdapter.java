@@ -10,7 +10,7 @@ import com.holonplatform.vaadin.flow.components.ListingBundle;
 import com.holonplatform.vaadin.flow.components.ListingBundleConfigurer;
 import com.holonplatform.vaadin.flow.components.PropertyListingBundleBuilder;
 import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
-import com.holonplatform.vaadin.flow.vaadinplus.components.Empty;
+import com.iyensoft.vaadin.flow.components.Empty;
 import com.holonplatform.vaadin.flow.components.support.ViewMode;
 import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.Component;

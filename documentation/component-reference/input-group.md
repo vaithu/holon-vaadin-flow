@@ -4,8 +4,8 @@ A horizontal flex container that groups input fields, buttons, and text addons i
 
 ## Class
 
-- **Package:** `com.holonplatform.vaadin.flow.vaadinplus.components`
-- **Source:** `core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/InputGroup.java`
+- **Package:** `com.iyensoft.vaadin.flow.components`
+- **Source:** `core/src/main/java/com/iyensoft/vaadin/flow/components/InputGroup.java`
 - **Signature:** `public class InputGroup extends Div`
 
 ## Key APIs

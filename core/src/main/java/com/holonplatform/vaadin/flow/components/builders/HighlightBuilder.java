@@ -16,7 +16,7 @@
 package com.holonplatform.vaadin.flow.components.builders;
 
 import com.holonplatform.vaadin.flow.internal.components.builders.DefaultHighlightBuilder;
-import com.holonplatform.vaadin.flow.vaadinplus.components.Highlight;
+import com.iyensoft.vaadin.flow.components.Highlight;
 
 /**
  * Builder to create and configure {@link Highlight} KPI card components.

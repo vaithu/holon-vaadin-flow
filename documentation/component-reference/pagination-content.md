@@ -4,8 +4,8 @@ The {@code <ul>} flex container that holds {@link PaginationItem}s inside a {@li
 
 ## Class
 
-- **Package:** `com.holonplatform.vaadin.flow.vaadinplus.components`
-- **Source:** `core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/PaginationContent.java`
+- **Package:** `com.iyensoft.vaadin.flow.components`
+- **Source:** `core/src/main/java/com/iyensoft/vaadin/flow/components/PaginationContent.java`
 - **Signature:** `public class PaginationContent extends UnorderedList`
 
 ## Key APIs

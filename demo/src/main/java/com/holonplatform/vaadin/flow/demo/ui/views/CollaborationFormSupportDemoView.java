@@ -2,9 +2,9 @@ package com.holonplatform.vaadin.flow.demo.ui.views;
 
 import com.holonplatform.vaadin.flow.demo.ui.DemoExample;
 import com.holonplatform.vaadin.flow.demo.ui.DemoMainLayout;
-import com.holonplatform.vaadin.flow.vaadinplus.ResponsiveDiv;
-import com.holonplatform.vaadin.flow.vaadinplus.components.Alert;
-import com.holonplatform.vaadin.flow.vaadinplus.components.CollaborationFormSupport;
+import com.iyensoft.vaadin.flow.components.ResponsiveDiv;
+import com.iyensoft.vaadin.flow.components.Alert;
+import com.iyensoft.vaadin.flow.components.CollaborationFormSupport;
 import com.vaadin.collaborationengine.UserInfo;
 import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.button.Button;

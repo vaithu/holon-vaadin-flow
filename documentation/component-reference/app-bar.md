@@ -4,8 +4,8 @@ No class-level description found.
 
 ## Class
 
-- **Package:** `com.holonplatform.vaadin.flow.vaadinplus.components`
-- **Source:** `core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/AppBar.java`
+- **Package:** `com.iyensoft.vaadin.flow.components`
+- **Source:** `core/src/main/java/com/iyensoft/vaadin/flow/components/AppBar.java`
 - **Signature:** `public class AppBar extends Header implements HasTheme`
 
 ## Key APIs

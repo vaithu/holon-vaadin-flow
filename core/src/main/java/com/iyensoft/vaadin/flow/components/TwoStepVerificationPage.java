@@ -3,7 +3,7 @@ package com.iyensoft.vaadin.flow.components;
 import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.vaadin.flow.components.builders.ButtonBuilder;
 import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
-import com.holonplatform.vaadin.flow.vaadinplus.components.InputOTP;
+import com.iyensoft.vaadin.flow.components.InputOTP;
 import com.iyensoft.vaadin.flow.components.i18n.TwoStepVerificationI18N;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ComponentEvent;

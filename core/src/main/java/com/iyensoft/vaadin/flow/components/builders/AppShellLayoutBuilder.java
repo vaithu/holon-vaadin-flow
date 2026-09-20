@@ -1,13 +1,13 @@
 package com.iyensoft.vaadin.flow.components.builders;
 
-import com.holonplatform.vaadin.flow.vaadinplus.components.AppShellLayout;
+import com.iyensoft.vaadin.flow.components.AppShellLayout;
 import com.iyensoft.vaadin.flow.internal.components.builders.DefaultAppShellLayoutBuilder;
 import com.vaadin.flow.component.applayout.AppLayout;
 
 /**
  * Fluent builder for {@link AppShellLayout}.
  *
- * <p>Assembles the standard enterprise application shell: an {@link com.holonplatform.vaadin.flow.vaadinplus.components.AppBar} in the
+ * <p>Assembles the standard enterprise application shell: an {@link com.iyensoft.vaadin.flow.components.AppBar} in the
  * navbar with optional {@link com.vaadin.flow.component.applayout.DrawerToggle}, brand,
  * search, notification bell, language selector, dark/light theme toggle, and user
  * avatar — plus an optional drawer header and navigation wrapper.

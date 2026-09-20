@@ -4,8 +4,8 @@ Empty-state component inspired by shadcn/ui {@code EmptyState}.
 
 ## Class
 
-- **Package:** `com.holonplatform.vaadin.flow.vaadinplus.components`
-- **Source:** `core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/Empty.java`
+- **Package:** `com.iyensoft.vaadin.flow.components`
+- **Source:** `core/src/main/java/com/iyensoft/vaadin/flow/components/Empty.java`
 - **Signature:** `public class Empty extends Div`
 
 ## Key APIs

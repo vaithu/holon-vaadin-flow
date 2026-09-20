@@ -2,8 +2,8 @@ package com.holonplatform.vaadin.flow.demo.ui.views;
 
 import com.holonplatform.vaadin.flow.demo.ui.DemoExample;
 import com.holonplatform.vaadin.flow.demo.ui.DemoMainLayout;
-import com.holonplatform.vaadin.flow.vaadinplus.components.Alert;
-import com.holonplatform.vaadin.flow.vaadinplus.components.Preview;
+import com.iyensoft.vaadin.flow.components.Alert;
+import com.iyensoft.vaadin.flow.components.Preview;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;
@@ -12,7 +12,7 @@ import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import com.holonplatform.vaadin.flow.vaadinplus.ResponsiveDiv;
+import com.iyensoft.vaadin.flow.components.ResponsiveDiv;
 
 
 /**

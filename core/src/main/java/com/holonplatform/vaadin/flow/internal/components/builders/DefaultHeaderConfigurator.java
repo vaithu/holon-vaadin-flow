@@ -1,7 +1,7 @@
 package com.holonplatform.vaadin.flow.internal.components.builders;
 
 import com.holonplatform.vaadin.flow.components.builders.HeaderConfigurator;
-import com.holonplatform.vaadin.flow.vaadinplus.components.Header;
+import com.iyensoft.vaadin.flow.components.Header;
 
 public class DefaultHeaderConfigurator extends AbstractHeaderConfigurator<HeaderConfigurator.BaseHeaderConfigurator>
         implements HeaderConfigurator.BaseHeaderConfigurator {

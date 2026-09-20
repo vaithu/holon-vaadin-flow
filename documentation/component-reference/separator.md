@@ -4,8 +4,8 @@ A visual separator that divides content horizontally or vertically.
 
 ## Class
 
-- **Package:** `com.holonplatform.vaadin.flow.vaadinplus.components`
-- **Source:** `core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/Separator.java`
+- **Package:** `com.iyensoft.vaadin.flow.components`
+- **Source:** `core/src/main/java/com/iyensoft/vaadin/flow/components/Separator.java`
 - **Signature:** `public class Separator extends Div`
 
 ## Key APIs

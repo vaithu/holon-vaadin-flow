@@ -4,8 +4,8 @@ Title slot of an {@link Alert}.
 
 ## Class
 
-- **Package:** `com.holonplatform.vaadin.flow.vaadinplus.components`
-- **Source:** `core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/AlertTitle.java`
+- **Package:** `com.iyensoft.vaadin.flow.components`
+- **Source:** `core/src/main/java/com/iyensoft/vaadin/flow/components/AlertTitle.java`
 - **Signature:** `public class AlertTitle extends Div`
 
 ## Key APIs

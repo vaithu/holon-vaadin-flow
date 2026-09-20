@@ -6,8 +6,8 @@ individually muted via `setMuted(boolean)`, independently of the owning row's va
 
 ## Class
 
-- **Package:** `com.holonplatform.vaadin.flow.vaadinplus.components`
-- **Source:** `core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/TotalsValue.java`
+- **Package:** `com.iyensoft.vaadin.flow.components`
+- **Source:** `core/src/main/java/com/iyensoft/vaadin/flow/components/TotalsValue.java`
 - **Signature:** `public class TotalsValue extends Span`
 
 ## Key APIs

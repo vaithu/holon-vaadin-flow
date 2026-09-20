@@ -1,8 +1,8 @@
 package com.holonplatform.vaadin.flow.internal.components.builders;
 
 import com.holonplatform.vaadin.flow.components.builders.TransferListConfigurator;
-import com.holonplatform.vaadin.flow.vaadinplus.components.TransferItem;
-import com.holonplatform.vaadin.flow.vaadinplus.components.TransferList;
+import com.iyensoft.vaadin.flow.components.TransferItem;
+import com.iyensoft.vaadin.flow.components.TransferList;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.HasEnabled;
 import com.vaadin.flow.component.HasSize;

@@ -5,10 +5,10 @@ import com.holonplatform.vaadin.flow.components.Components;
 import com.holonplatform.vaadin.flow.components.css.CSSUtility;
 import com.holonplatform.vaadin.flow.components.utils.UIUtils;
 import com.holonplatform.vaadin.flow.internal.lumo.SeparatorColor;
-import com.holonplatform.vaadin.flow.vaadinplus.KeyValuePair;
-import com.holonplatform.vaadin.flow.vaadinplus.KeyValuePairs;
-import com.holonplatform.vaadin.flow.vaadinplus.Layout;
-import com.holonplatform.vaadin.flow.vaadinplus.components.Separator;
+import com.iyensoft.vaadin.flow.components.KeyValuePair;
+import com.iyensoft.vaadin.flow.components.KeyValuePairs;
+import com.iyensoft.vaadin.flow.components.Layout;
+import com.iyensoft.vaadin.flow.components.Separator;
 
 /**
  * UI helpers that operate on components owned by this library, kept separate

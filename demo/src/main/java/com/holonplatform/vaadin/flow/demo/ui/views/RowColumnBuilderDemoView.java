@@ -5,8 +5,8 @@ import com.holonplatform.vaadin.flow.components.builders.RowBuilder;
 import com.holonplatform.vaadin.flow.demo.ui.DemoExample;
 import com.holonplatform.vaadin.flow.demo.ui.DemoMainLayout;
 import com.holonplatform.vaadin.flow.components.support.ColSpan;
-import com.holonplatform.vaadin.flow.vaadinplus.components.Highlight;
-import com.holonplatform.vaadin.flow.vaadinplus.utilities.Font;
+import com.iyensoft.vaadin.flow.components.Highlight;
+import com.iyensoft.vaadin.flow.utils.Font;
 import com.holonplatform.vaadin.flow.components.support.ViewMode;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;
@@ -14,7 +14,7 @@ import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import com.holonplatform.vaadin.flow.vaadinplus.ResponsiveDiv;
+import com.iyensoft.vaadin.flow.components.ResponsiveDiv;
 
 
 /**

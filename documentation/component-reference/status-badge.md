@@ -4,8 +4,8 @@ Non-interactive status pill — a coloured dot + label inside a tinted pill shap
 
 ## Class
 
-- **Package:** `com.holonplatform.vaadin.flow.vaadinplus.components`
-- **Source:** `core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/StatusBadge.java`
+- **Package:** `com.iyensoft.vaadin.flow.components`
+- **Source:** `core/src/main/java/com/iyensoft/vaadin/flow/components/StatusBadge.java`
 - **Signature:** `public class StatusBadge extends Span`
 
 ## Key APIs

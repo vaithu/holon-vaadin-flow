@@ -2,12 +2,12 @@ package com.holonplatform.vaadin.flow.demo.ui.views;
 
 import com.holonplatform.vaadin.flow.components.Components;
 import com.holonplatform.vaadin.flow.demo.ui.DemoMainLayout;
-import com.holonplatform.vaadin.flow.vaadinplus.KeyValueItem;
-import com.holonplatform.vaadin.flow.vaadinplus.KeyValueItem.Category;
-import com.holonplatform.vaadin.flow.vaadinplus.KeyValueItem.DeltaDirection;
-import com.holonplatform.vaadin.flow.vaadinplus.KeyValueItem.PillVariant;
-import com.holonplatform.vaadin.flow.vaadinplus.KeyValueList;
-import com.holonplatform.vaadin.flow.vaadinplus.ResponsiveDiv;
+import com.iyensoft.vaadin.flow.components.KeyValueItem;
+import com.iyensoft.vaadin.flow.components.KeyValueItem.Category;
+import com.iyensoft.vaadin.flow.components.KeyValueItem.DeltaDirection;
+import com.iyensoft.vaadin.flow.components.KeyValueItem.PillVariant;
+import com.iyensoft.vaadin.flow.components.KeyValueList;
+import com.iyensoft.vaadin.flow.components.ResponsiveDiv;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;

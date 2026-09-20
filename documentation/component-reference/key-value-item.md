@@ -4,8 +4,8 @@ Responsive key-value row that flattens into the parent {@link KeyValueList} thre
 
 ## Class
 
-- **Package:** `com.holonplatform.vaadin.flow.vaadinplus`
-- **Source:** `core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/KeyValueItem.java`
+- **Package:** `com.iyensoft.vaadin.flow.components`
+- **Source:** `core/src/main/java/com/iyensoft/vaadin/flow/components/KeyValueItem.java`
 - **Signature:** `public class KeyValueItem extends Div implements HasTooltip`
 
 ## Key APIs

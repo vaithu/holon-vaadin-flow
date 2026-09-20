@@ -4,8 +4,8 @@ A mobile-first slide-in panel inspired by shadcn/ui {@code Sheet}.
 
 ## Class
 
-- **Package:** `com.holonplatform.vaadin.flow.vaadinplus.components`
-- **Source:** `core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/Sheet.java`
+- **Package:** `com.iyensoft.vaadin.flow.components`
+- **Source:** `core/src/main/java/com/iyensoft/vaadin/flow/components/Sheet.java`
 - **Signature:** `public class Sheet extends Div`
 
 ## Key APIs

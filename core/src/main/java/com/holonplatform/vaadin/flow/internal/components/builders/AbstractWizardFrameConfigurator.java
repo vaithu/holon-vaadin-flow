@@ -2,9 +2,9 @@ package com.holonplatform.vaadin.flow.internal.components.builders;
 
 import com.holonplatform.vaadin.flow.components.builders.ButtonBuilder;
 import com.holonplatform.vaadin.flow.components.builders.WizardFrameConfigurator;
-import com.holonplatform.vaadin.flow.vaadinplus.components.Breadcrumb;
-import com.holonplatform.vaadin.flow.vaadinplus.components.Header;
-import com.holonplatform.vaadin.flow.vaadinplus.components.WizardFrame;
+import com.iyensoft.vaadin.flow.components.Breadcrumb;
+import com.iyensoft.vaadin.flow.components.Header;
+import com.iyensoft.vaadin.flow.components.WizardFrame;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.html.ListItem;
 

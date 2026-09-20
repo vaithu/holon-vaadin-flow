@@ -7,7 +7,7 @@ import com.holonplatform.core.property.PropertyBox;
 import com.holonplatform.core.property.PropertySet;
 import com.holonplatform.core.query.QueryFilter;
 import com.holonplatform.vaadin.flow.components.utils.UIUtils;
-import com.holonplatform.vaadin.flow.vaadinplus.KeyValuePairs;
+import com.iyensoft.vaadin.flow.components.KeyValuePairs;
 import com.iyensoft.vaadin.flow.utils.LayoutUtils;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 

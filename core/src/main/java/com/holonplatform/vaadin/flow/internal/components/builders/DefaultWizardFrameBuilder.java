@@ -1,7 +1,7 @@
 package com.holonplatform.vaadin.flow.internal.components.builders;
 
 import com.holonplatform.vaadin.flow.components.builders.WizardFrameBuilder;
-import com.holonplatform.vaadin.flow.vaadinplus.components.WizardFrame;
+import com.iyensoft.vaadin.flow.components.WizardFrame;
 
 /**
  * Default {@link WizardFrameBuilder} implementation.

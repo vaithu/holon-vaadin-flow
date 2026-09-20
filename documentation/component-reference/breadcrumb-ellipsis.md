@@ -4,8 +4,8 @@ Ellipsis placeholder used to collapse the middle section of a long {@link Breadc
 
 ## Class
 
-- **Package:** `com.holonplatform.vaadin.flow.vaadinplus.components`
-- **Source:** `core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/BreadcrumbEllipsis.java`
+- **Package:** `com.iyensoft.vaadin.flow.components`
+- **Source:** `core/src/main/java/com/iyensoft/vaadin/flow/components/BreadcrumbEllipsis.java`
 - **Signature:** `public class BreadcrumbEllipsis extends ListItem`
 
 ## Key APIs

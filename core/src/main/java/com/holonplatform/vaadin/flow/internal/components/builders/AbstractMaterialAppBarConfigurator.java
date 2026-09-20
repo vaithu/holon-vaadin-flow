@@ -1,7 +1,7 @@
 package com.holonplatform.vaadin.flow.internal.components.builders;
 
 import com.holonplatform.vaadin.flow.components.builders.MaterialAppBarConfigurator;
-import com.holonplatform.vaadin.flow.vaadinplus.components.MaterialAppBar;
+import com.iyensoft.vaadin.flow.components.MaterialAppBar;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasEnabled;
 import com.vaadin.flow.component.HasSize;

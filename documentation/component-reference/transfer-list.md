@@ -4,8 +4,8 @@ Dual-panel shuttle component for moving {@link TransferItem} items between an "A
 
 ## Class
 
-- **Package:** `com.holonplatform.vaadin.flow.vaadinplus.components`
-- **Source:** `core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/TransferList.java`
+- **Package:** `com.iyensoft.vaadin.flow.components`
+- **Source:** `core/src/main/java/com/iyensoft/vaadin/flow/components/TransferList.java`
 - **Signature:** `public class TransferList extends Div`
 
 ## Key APIs
