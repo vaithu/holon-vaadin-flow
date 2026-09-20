@@ -58,7 +58,6 @@ import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HtmlContainer;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.accordion.Accordion;
-import com.vaadin.flow.component.avatar.Avatar;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.checkbox.CheckboxGroup;
 import com.vaadin.flow.component.combobox.ComboBox;
@@ -66,7 +65,6 @@ import com.vaadin.flow.component.contextmenu.ContextMenu;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.*;
-import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.listbox.ListBox;
 import com.vaadin.flow.component.listbox.MultiSelectListBox;
 import com.vaadin.flow.component.notification.Notification;
@@ -77,11 +75,9 @@ import com.vaadin.flow.component.orderedlayout.Scroller.ScrollDirection;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
 import com.vaadin.flow.component.select.Select;
-import com.vaadin.flow.component.sidenav.SideNav;
 import com.vaadin.flow.component.splitlayout.SplitLayout;
 import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.TabSheet;
-import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.i18n.I18NProvider;
 import com.vaadin.flow.server.VaadinService;
 
@@ -475,94 +471,6 @@ public interface Components {
     }
 
     // -----------------------------------------------------------------------
-    // Alert (shadcn/ui-inspired inline notification banner)
-    // -----------------------------------------------------------------------
-
-
-
-
-    // -----------------------------------------------------------------------
-    // AlertModal (shadcn/ui-inspired dismissible modal notification)
-    // -----------------------------------------------------------------------
-
-
-
-
-    // -----------------------------------------------------------------------
-    // AlertDialog (shadcn/ui-inspired non-dismissible confirmation dialog)
-    // -----------------------------------------------------------------------
-
-
-
-    // -----------------------------------------------------------------------
-    // IconBadge  circular tinted icon container
-    // -----------------------------------------------------------------------
-
-
-
-
-
-
-    // -----------------------------------------------------------------------
-    // Empty (shadcn/ui-inspired empty-state component)
-    // -----------------------------------------------------------------------
-
-
-
-    // -----------------------------------------------------------------------
-    // InputGroup (shadcn/ui-inspired unified input-field grouping container)
-    // -----------------------------------------------------------------------
-
-
-
-    // -----------------------------------------------------------------------
-    // ButtonGroup (shadcn/ui-inspired button group)
-    // -----------------------------------------------------------------------
-
-
-
-    // -----------------------------------------------------------------------
-    // InputOTP (shadcn/ui-inspired one-time password input)
-    // -----------------------------------------------------------------------
-
-
-
-    // -----------------------------------------------------------------------
-    // Ribbon (card decorated with a corner/edge ribbon label, TailAdmin inspired)
-    // -----------------------------------------------------------------------
-
-
-
-
-    // -----------------------------------------------------------------------
-    // Separator (shadcn/ui-inspired separator)
-    // -----------------------------------------------------------------------
-
-
-
-    // -----------------------------------------------------------------------
-    // Stepper
-    // -----------------------------------------------------------------------
-
-
-
-    // -----------------------------------------------------------------------
-    // Fab (Material Design 3 Floating Action Button)
-    // -----------------------------------------------------------------------
-
-
-
-
-
-    // -----------------------------------------------------------------------
-    // FabMenu (Material Design 3 FAB Menu / "speed-dial")
-    // -----------------------------------------------------------------------
-
-
-
-
-
-    // -----------------------------------------------------------------------
     // Timeline Stepper (audit log)
     // -----------------------------------------------------------------------
 
@@ -584,34 +492,6 @@ public interface Components {
     static ColumnBuilder column() {
         return ColumnBuilder.create();
     }
-
-
-
-    // -----------------------------------------------------------------------
-    // SignInPage (generic split sign-in layout, TailAdmin inspired)
-    // -----------------------------------------------------------------------
-
-
-
-
-    // -----------------------------------------------------------------------
-    // SignUpPage (generic split sign-up layout, TailAdmin inspired)
-    // -----------------------------------------------------------------------
-
-
-
-
-    // -----------------------------------------------------------------------
-    // ResetPasswordPage (generic split reset-password layout, TailAdmin inspired)
-    // -----------------------------------------------------------------------
-
-
-
-
-    // -----------------------------------------------------------------------
-    // TwoStepVerificationPage (generic split 2-step verification layout, TailAdmin inspired)
-    // -----------------------------------------------------------------------
-
 
 
 
@@ -2421,13 +2301,6 @@ public interface Components {
 
     }
 
-    // -----------------------------------------------------------------------
-    // Carousel
-    // -----------------------------------------------------------------------
-
-
-
-
     // ------- localization
 
     /**
@@ -2606,93 +2479,4 @@ public interface Components {
 
         return LocalizationProvider.localize(defaultMessage, messageCode, arguments);
     }
-
-    // -----------------------------------------------------------------------
-    // Page-size selector
-    // -----------------------------------------------------------------------
-
-
-
-    // -----------------------------------------------------------------------
-    // Pagination bar
-    // -----------------------------------------------------------------------
-
-
-
-    // -----------------------------------------------------------------------
-    // Listing bundle builder
-    // -----------------------------------------------------------------------
-
-
-
-
-    // -----------------------------------------------------------------------
-    // Highlight KPI card
-    // -----------------------------------------------------------------------
-
-
-
-    // -----------------------------------------------------------------------
-    // EntityFormPanel
-    // -----------------------------------------------------------------------
-
-
-
-
-
-
-
-
-
-
-    // -----------------------------------------------------------------------
-    // KeyValueList
-    // -----------------------------------------------------------------------
-
-
-
-    // -----------------------------------------------------------------------
-    // LineItemGrid
-    // -----------------------------------------------------------------------
-
-
-
-
-
-    // -----------------------------------------------------------------------
-    // StatusBadge
-    // -----------------------------------------------------------------------
-
-
-
-    // -----------------------------------------------------------------------
-    // ArAgingBar
-    // -----------------------------------------------------------------------
-
-
-    // -----------------------------------------------------------------------
-    // HeroStrip
-    // -----------------------------------------------------------------------
-
-
-    // -----------------------------------------------------------------------
-    // Chip / ChipGroup
-    // -----------------------------------------------------------------------
-
-
-
-
-    // -----------------------------------------------------------------------
-    // AppShellLayout
-    // -----------------------------------------------------------------------
-
-
-    // ── VaadinPlus custom components ──────────────────────────────────────
-
-
-
-
-
-
-
 }

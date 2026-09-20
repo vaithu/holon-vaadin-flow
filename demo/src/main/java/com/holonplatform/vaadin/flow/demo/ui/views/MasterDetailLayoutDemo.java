@@ -12,7 +12,6 @@ import com.iyensoft.vaadin.flow.components.KeyValueList;
 import com.iyensoft.vaadin.flow.components.ResponsiveDiv;
 import com.iyensoft.vaadin.flow.components.Header;
 import com.iyensoft.vaadin.flow.components.Sheet;
-import com.holonplatform.vaadin.flow.components.support.ButtonPreset;
 import com.holonplatform.vaadin.flow.components.support.ViewMode;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.avatar.Avatar;

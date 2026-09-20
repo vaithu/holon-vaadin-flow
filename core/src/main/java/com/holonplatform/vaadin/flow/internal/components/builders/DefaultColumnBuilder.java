@@ -1,6 +1,5 @@
 package com.holonplatform.vaadin.flow.internal.components.builders;
 
-import com.holonplatform.vaadin.flow.components.Components;
 import com.holonplatform.vaadin.flow.components.builders.ColumnBuilder;
 import com.holonplatform.vaadin.flow.components.support.ColSpan;
 import com.holonplatform.vaadin.flow.internal.components.DefaultXPanel;

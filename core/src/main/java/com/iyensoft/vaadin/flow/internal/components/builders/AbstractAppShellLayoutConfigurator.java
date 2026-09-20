@@ -1,7 +1,6 @@
 package com.iyensoft.vaadin.flow.internal.components.builders;
 
 import com.iyensoft.vaadin.flow.components.AppBar;
-import com.iyensoft.vaadin.flow.components.AppShellLayout;
 import com.iyensoft.vaadin.flow.components.builders.AppShellLayoutConfigurator;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.applayout.AppLayout;

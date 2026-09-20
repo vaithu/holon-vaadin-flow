@@ -2,12 +2,9 @@ package com.iyensoft.vaadin.flow.components;
 
 import com.iyensoft.vaadin.flow.components.Components;
 import com.iyensoft.vaadin.flow.components.Empty;
-import com.iyensoft.vaadin.flow.components.Footer;
-import com.iyensoft.vaadin.flow.components.Header;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.component.html.Span;
 
 import java.util.ArrayList;
 import java.util.List;

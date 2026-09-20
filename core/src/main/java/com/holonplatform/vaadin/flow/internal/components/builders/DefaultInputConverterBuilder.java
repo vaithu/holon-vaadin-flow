@@ -34,7 +34,6 @@ import com.vaadin.flow.data.converter.Converter;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Function;
 
 /**
  * Default {@link InputConverterBuilder} implementation.

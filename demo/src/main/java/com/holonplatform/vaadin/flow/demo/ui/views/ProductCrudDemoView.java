@@ -23,7 +23,6 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
 import java.time.Instant;
-import java.time.LocalDate;
 import java.util.Locale;
 
 /**

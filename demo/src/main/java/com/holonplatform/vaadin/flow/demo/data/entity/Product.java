@@ -1,8 +1,6 @@
 package com.holonplatform.vaadin.flow.demo.data.entity;
 
 import com.holonplatform.core.beans.Identifier;
-import com.holonplatform.core.beans.Converter;
-import com.holonplatform.core.beans.Converter.BUILTIN;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 
