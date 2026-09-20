@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Nexus — Grid Toolbar Component</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap');
+
+  :root{
+    /* Nexus tokens (approx OKLCH-derived) */
+    --slate-25:  #f9fafb;
+    --slate-50:  #f4f5f8;
+    --slate-100: #e9ebf1;
+    --slate-200: #dcdfe8;
+    --slate-300: #c2c6d4;
+    --slate-400: #9198ac;
+    --slate-500: #6b7288;
+    --slate-600: #4f5568;
+    --slate-700: #383c4c;
+    --slate-800: #262936;
+    --slate-900: #171922;
+
+    --violet-500: #7c5cfc;
+    --violet-600: #6a45f9;
+
+    --accent-50:  #eef4ff;
+    --accent-100: #dce8ff;
+    --accent-500: #3b73f0;
+    --accent-600: #2f5fd6;
+    --accent-700: #274fb3;
+
+    --red-500: #e0473f;
+    --red-50:  #fdeeed;
+
+    --radius: 10px;
+    --shadow-sm: 0 1px 2px rgba(23,25,34,0.06);
+    --shadow-md: 0 4px 16px rgba(23,25,34,0.08);
+  }
+
+  *{ box-sizing: border-box; }
+
+  body{
+    margin:0;
+    font-family: 'DM Sans', -apple-system, sans-serif;
+    background: var(--slate-25);
+    color: var(--slate-800);
+    padding: 48px 24px;
+  }
+
+  .wrap{ max-width: 920px; margin: 0 auto; }
+
+  .page-head{ margin-bottom: 28px; }
+  .page-head h1{
+    font-size: 20px;
+    font-weight: 700;
+    margin: 0 0 4px;
+    color: var(--slate-900);
+  }
+  .page-head p{
+    margin: 0;
+    font-size: 13.5px;
+    color: var(--slate-500);
+  }
+
+  .panel{
+    background: #fff;
+    border: 1px solid var(--slate-200);
+    border-radius: 14px;
+    box-shadow: var(--shadow-sm);
+    overflow: visible;
+    container-type: inline-size;
+    container-name: nexus-panel;
+    transition: max-width 260ms ease;
+  }
+  .panel.mobile-preview{
+    max-width: 380px;
+  }
+
+  .demo-controls{
+    display:flex; justify-content:flex-end; margin-bottom: 10px;
+  }
+  .demo-toggle{
+    display:inline-flex; align-items:center; gap:6px;
+    background:#fff; border:1px solid var(--slate-200);
+    border-radius: 7px; height: 30px; padding: 0 12px;
+    font-family:inherit; font-size:12.5px; font-weight:500;
+    color: var(--slate-600); cursor:pointer;
+  }
+  .demo-toggle:hover{ border-color: var(--slate-300); }
+  .demo-toggle.active{
+    background: var(--violet-500); border-color: var(--violet-500); color:#fff;
+  }
+
+  /* ===== Toolbar ===== */
+  .toolbar{
+    position: relative;
+    height: 56px;
+    border-bottom: 1px solid var(--slate-200);
+    background: var(--slate-25);
+    transition: background 220ms ease, border-color 220ms ease;
+  }
+  .toolbar.is-selected{
+    background: var(--accent-50);
+    border-bottom-color: var(--accent-100);
+  }
+
+  .toolbar-row{
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 16px;
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 180ms ease, transform 180ms ease;
+  }
+  .toolbar-row.hidden{
+    opacity: 0;
+    transform: translateY(-4px);
+    pointer-events: none;
+  }
+
+  /* --- default state --- */
+  .search-field{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    background:#fff;
+    border:1px solid var(--slate-200);
+    border-radius: 8px;
+    height: 36px;
+    padding: 0 10px 0 10px;
+    width: 260px;
+    transition: border-color 150ms ease, box-shadow 150ms ease;
+  }
+  .search-field:focus-within{
+    border-color: var(--violet-500);
+    box-shadow: 0 0 0 3px rgba(124,92,252,0.15);
+  }
+  .search-field svg{ flex-shrink:0; color: var(--slate-400); }
+  .search-field input{
+    border:0; outline:0; font-family:inherit; font-size:13.5px;
+    width:100%; color: var(--slate-800); background:transparent;
+  }
+  .search-field input::placeholder{ color: var(--slate-400); }
+
+  .left-cluster, .right-cluster{ display:flex; align-items:center; gap:10px; }
+
+  .btn{
+    display:inline-flex; align-items:center; gap:6px;
+    height: 36px; padding: 0 14px;
+    border-radius: 8px;
+    font-family:inherit; font-size:13.5px; font-weight:500;
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: background 150ms ease, border-color 150ms ease, color 150ms ease, transform 100ms ease;
+    white-space: nowrap;
+  }
+  .btn:active{ transform: translateY(1px); }
+
+  .btn-ghost{
+    background:#fff; border-color: var(--slate-200); color: var(--slate-700);
+  }
+  .btn-ghost:hover{ background: var(--slate-50); border-color: var(--slate-300); }
+
+  .btn-primary{
+    background: var(--violet-500); color:#fff;
+  }
+  .btn-primary:hover{ background: var(--violet-600); }
+
+  .filter-btn{ position:relative; }
+  .filter-badge{
+    position:absolute; top:-6px; right:-6px;
+    background: var(--violet-500); color:#fff;
+    font-size:10.5px; font-weight:700;
+    min-width:16px; height:16px; border-radius:999px;
+    display:flex; align-items:center; justify-content:center;
+    padding: 0 3px;
+    border: 2px solid var(--slate-25);
+  }
+
+  /* --- selection state --- */
+  .selection-info{
+    display:flex; align-items:center; gap:12px;
+  }
+  .selection-count{
+    display:flex; align-items:center; gap:8px;
+    font-size: 13.5px; font-weight:600; color: var(--accent-700);
+  }
+  .selection-count .count-chip{
+    background: var(--accent-500); color:#fff;
+    font-size:12px; font-weight:700;
+    min-width:22px; height:22px; padding:0 6px;
+    border-radius:999px;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .clear-link{
+    background:none; border:0; cursor:pointer;
+    font-family:inherit; font-size:13px; font-weight:500;
+    color: var(--accent-600);
+    display:flex; align-items:center; gap:4px;
+    padding: 4px 6px; border-radius:6px;
+  }
+  .clear-link:hover{ background: var(--accent-100); }
+
+  .bulk-actions{ display:flex; align-items:center; gap:8px; }
+  .divider{
+    width:1px; height:22px; background: var(--accent-100);
+    margin: 0 4px;
+  }
+
+  .btn-bulk{
+    background:#fff; border: 1px solid var(--accent-100); color: var(--accent-700);
+  }
+  .btn-bulk:hover{ background: var(--accent-100); }
+
+  .btn-danger{
+    background:#fff; border: 1px solid var(--slate-200); color: var(--red-500);
+  }
+  .btn-danger:hover{ background: var(--red-50); border-color: #f3c9c6; }
+
+  /* ===== Grid ===== */
+  .grid-scroll{ overflow-x: auto; }
+  table{ width:100%; min-width: 560px; border-collapse: collapse; font-size:13.5px; }
+  thead th{
+    text-align:left;
+    font-weight:600;
+    color: var(--slate-500);
+    font-size: 12px;
+    padding: 8px 16px;
+    border-bottom: 1px solid var(--slate-200);
+    background: var(--slate-25);
+  }
+  thead th.chk, tbody td.chk{ width:40px; }
+  tbody td{
+    padding: 9px 16px;
+    border-bottom: 1px solid var(--slate-100);
+    color: var(--slate-700);
+  }
+  tbody tr:last-child td{ border-bottom:0; }
+  tbody tr{ transition: background 120ms ease; }
+  tbody tr:hover{ background: var(--slate-50); }
+  tbody tr.row-selected{ background: var(--accent-50); }
+
+  input[type="checkbox"]{
+    width:16px; height:16px;
+    accent-color: var(--accent-500);
+    cursor:pointer;
+  }
+
+  .status{
+    display:inline-flex; align-items:center; gap:6px;
+    font-size:12px; font-weight:600;
+    padding: 3px 9px; border-radius:999px;
+  }
+  .status.active{ background:#e8f6ee; color:#1f8a4c; }
+  .status.pending{ background:#fff4e5; color:#b06a05; }
+
+  /* ===== Bulk actions overflow (narrow container) ===== */
+  .more-wrap{ position: relative; display:none; }
+  .more-trigger{
+    width:36px; height:36px; border-radius:8px;
+    background:#fff; border:1px solid var(--accent-100);
+    color: var(--accent-700);
+    display:flex; align-items:center; justify-content:center;
+    cursor:pointer;
+  }
+  .more-trigger:hover{ background: var(--accent-100); }
+
+  .more-menu{
+    position:absolute; top: calc(100% + 8px); right:0;
+    width: 180px;
+    background:#fff; border:1px solid var(--slate-200);
+    border-radius: 10px; box-shadow: var(--shadow-md);
+    padding: 6px; z-index: 30;
+    opacity:0; transform: translateY(-6px) scale(0.98);
+    pointer-events:none; transition: opacity 140ms ease, transform 140ms ease;
+  }
+  .more-menu.open{ opacity:1; transform: translateY(0) scale(1); pointer-events:auto; }
+  .more-menu button{
+    width:100%; display:flex; align-items:center; gap:8px;
+    background:none; border:0; text-align:left; cursor:pointer;
+    font-family:inherit; font-size:13px; color: var(--slate-700);
+    padding: 8px 8px; border-radius:6px;
+  }
+  .more-menu button:hover{ background: var(--slate-50); }
+  .more-menu button.danger{ color: var(--red-500); }
+  .more-menu button.danger:hover{ background: var(--red-50); }
+  .more-menu .menu-divider{ height:1px; background: var(--slate-100); margin: 4px 2px; }
+
+  /* below this container width: hide individual bulk buttons, show overflow trigger */
+  @container nexus-panel (max-width: 480px){
+    .search-field{ width: auto; flex: 1; min-width: 0; }
+    .bulk-actions > .btn-bulk,
+    .bulk-actions > .divider,
+    .bulk-actions > .btn-danger{ display:none; }
+    .more-wrap{ display:block; }
+  }
+
+  /* ===== Filter popover ===== */
+  .filter-wrap{ position: relative; }
+  .popover{
+    position:absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    width: 280px;
+    background:#fff;
+    border: 1px solid var(--slate-200);
+    border-radius: 12px;
+    box-shadow: var(--shadow-md);
+    padding: 14px;
+    z-index: 20;
+    opacity: 0;
+    transform: translateY(-6px) scale(0.98);
+    pointer-events: none;
+    transition: opacity 140ms ease, transform 140ms ease;
+  }
+  .popover.open{
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    pointer-events: auto;
+  }
+  .popover-title{
+    font-size: 12.5px; font-weight:700; color: var(--slate-800);
+    margin-bottom: 12px;
+  }
+  .field-group{ margin-bottom: 12px; }
+  .field-group label{
+    display:block; font-size:11.5px; font-weight:600;
+    color: var(--slate-500); margin-bottom: 5px;
+  }
+  .field-group select{
+    width:100%; height:34px; border-radius:7px;
+    border:1px solid var(--slate-200); background:#fff;
+    font-family:inherit; font-size:13px; color: var(--slate-700);
+    padding: 0 8px;
+  }
+  .field-group select:focus{
+    outline:none; border-color: var(--violet-500);
+    box-shadow: 0 0 0 3px rgba(124,92,252,0.15);
+  }
+  .popover-actions{
+    display:flex; justify-content:space-between; align-items:center;
+    margin-top: 4px; padding-top: 10px;
+    border-top: 1px solid var(--slate-100);
+  }
+  .popover-actions .btn{ height:32px; padding: 0 12px; font-size:12.5px; }
+  .reset-text{
+    background:none; border:0; cursor:pointer;
+    font-family:inherit; font-size:12.5px; font-weight:500;
+    color: var(--slate-500);
+  }
+  .reset-text:hover{ color: var(--slate-700); }
+
+  .hint{
+    margin-top: 16px;
+    font-size: 12.5px;
+    color: var(--slate-400);
+    text-align:center;
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="page-head">
+    <h1>Applicants</h1>
+    <p>Grid toolbar — default (search / filter) and selection (bulk action) states. Try selecting rows below.</p>
+  </div>
+
+  <div class="demo-controls">
+    <button class="demo-toggle" id="mobileToggle">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/></svg>
+      Simulate mobile width (380px)
+    </button>
+  </div>
+
+  <div class="panel" id="panel">
+
+    <!-- TOOLBAR -->
+    <div class="toolbar" id="toolbar">
+
+      <!-- default state -->
+      <div class="toolbar-row" id="rowDefault">
+        <div class="left-cluster">
+          <div class="search-field">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+            <input type="text" placeholder="Search applicants…">
+          </div>
+        </div>
+        <div class="right-cluster">
+          <div class="filter-wrap">
+            <button class="btn btn-ghost filter-btn" id="filterToggle">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M7 12h10M10 18h4"/></svg>
+              Filter
+              <span class="filter-badge" id="filterBadge">2</span>
+            </button>
+            <div class="popover" id="filterPopover">
+              <div class="popover-title">Filter applicants</div>
+              <div class="field-group">
+                <label>Stage</label>
+                <select id="stageFilter">
+                  <option value="">Any stage</option>
+                  <option value="screening" selected>Screening</option>
+                  <option value="interview" selected>Interview</option>
+                  <option value="offer">Offer</option>
+                </select>
+              </div>
+              <div class="field-group">
+                <label>Status</label>
+                <select id="statusFilter">
+                  <option value="">Any status</option>
+                  <option value="active">Active</option>
+                  <option value="pending">Pending</option>
+                </select>
+              </div>
+              <div class="popover-actions">
+                <button class="reset-text" id="resetFilters">Reset</button>
+                <button class="btn btn-primary" id="applyFilters">Apply</button>
+              </div>
+            </div>
+          </div>
+          <button class="btn btn-primary">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+            Add applicant
+          </button>
+        </div>
+      </div>
+
+      <!-- selection state -->
+      <div class="toolbar-row hidden" id="rowSelected">
+        <div class="selection-info">
+          <div class="selection-count">
+            <span class="count-chip" id="countChip">0</span>
+            <span id="countLabel">selected</span>
+          </div>
+          <button class="clear-link" id="clearBtn">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+            Clear
+          </button>
+        </div>
+        <div class="bulk-actions">
+          <button class="btn btn-bulk">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
+            Export
+          </button>
+          <button class="btn btn-bulk">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8ZM22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            Assign
+          </button>
+          <div class="divider"></div>
+          <button class="btn btn-danger">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0-1 14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2L4 6"/></svg>
+            Delete
+          </button>
+
+          <div class="more-wrap">
+            <button class="more-trigger" id="moreTrigger" aria-label="More bulk actions">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+            </button>
+            <div class="more-menu" id="moreMenu">
+              <button>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
+                Export
+              </button>
+              <button>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8ZM22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                Assign
+              </button>
+              <div class="menu-divider"></div>
+              <button class="danger">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0-1 14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2L4 6"/></svg>
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- GRID -->
+    <div class="grid-scroll">
+    <table>
+      <thead>
+        <tr>
+          <th class="chk"><input type="checkbox" id="selectAll"></th>
+          <th>Name</th>
+          <th>Role applied</th>
+          <th>Stage</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody id="gridBody">
+        <tr data-row>
+          <td class="chk"><input type="checkbox" class="row-check"></td>
+          <td>Maria Torres</td>
+          <td>Senior Java Developer</td>
+          <td>Interview</td>
+          <td><span class="status active">Active</span></td>
+        </tr>
+        <tr data-row>
+          <td class="chk"><input type="checkbox" class="row-check"></td>
+          <td>James Okafor</td>
+          <td>Recruiter</td>
+          <td>Screening</td>
+          <td><span class="status pending">Pending</span></td>
+        </tr>
+        <tr data-row>
+          <td class="chk"><input type="checkbox" class="row-check"></td>
+          <td>Priya Natarajan</td>
+          <td>QA Engineer</td>
+          <td>Offer</td>
+          <td><span class="status active">Active</span></td>
+        </tr>
+        <tr data-row>
+          <td class="chk"><input type="checkbox" class="row-check"></td>
+          <td>Daniel Kim</td>
+          <td>DevOps Engineer</td>
+          <td>Screening</td>
+          <td><span class="status pending">Pending</span></td>
+        </tr>
+        <tr data-row>
+          <td class="chk"><input type="checkbox" class="row-check"></td>
+          <td>Sofia Marchetti</td>
+          <td>Business Analyst</td>
+          <td>Interview</td>
+          <td><span class="status active">Active</span></td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+
+  </div>
+
+  <p class="hint">Toolbar crossfades between states — accent tint (CRM Blue) signals selection mode without relying on text alone.</p>
+</div>
+
+<script>
+  const toolbar = document.getElementById('toolbar');
+  const rowDefault = document.getElementById('rowDefault');
+  const rowSelected = document.getElementById('rowSelected');
+  const countChip = document.getElementById('countChip');
+  const countLabel = document.getElementById('countLabel');
+  const selectAll = document.getElementById('selectAll');
+  const clearBtn = document.getElementById('clearBtn');
+  const rowChecks = () => Array.from(document.querySelectorAll('.row-check'));
+
+  function updateState(){
+    const checks = rowChecks();
+    const selected = checks.filter(c => c.checked);
+    const n = selected.length;
+
+    toolbar.classList.toggle('is-selected', n > 0);
+    rowDefault.classList.toggle('hidden', n > 0);
+    rowSelected.classList.toggle('hidden', n === 0);
+
+    countChip.textContent = n;
+    countLabel.textContent = n === 1 ? 'selected' : 'selected';
+
+    checks.forEach(c => {
+      c.closest('tr').classList.toggle('row-selected', c.checked);
+    });
+
+    selectAll.checked = n > 0 && n === checks.length;
+    selectAll.indeterminate = n > 0 && n < checks.length;
+  }
+
+  rowChecks().forEach(c => c.addEventListener('change', updateState));
+
+  selectAll.addEventListener('change', () => {
+    rowChecks().forEach(c => c.checked = selectAll.checked);
+    updateState();
+  });
+
+  clearBtn.addEventListener('click', () => {
+    rowChecks().forEach(c => c.checked = false);
+    updateState();
+  });
+
+  // --- filter popover ---
+  const filterToggle = document.getElementById('filterToggle');
+  const filterPopover = document.getElementById('filterPopover');
+  const filterBadge = document.getElementById('filterBadge');
+  const stageFilter = document.getElementById('stageFilter');
+  const statusFilter = document.getElementById('statusFilter');
+  const resetFilters = document.getElementById('resetFilters');
+  const applyFilters = document.getElementById('applyFilters');
+
+  function updateBadge(){
+    const active = [stageFilter.value, statusFilter.value].filter(Boolean).length;
+    filterBadge.style.display = active > 0 ? 'flex' : 'none';
+    filterBadge.textContent = active;
+  }
+
+  filterToggle.addEventListener('click', (e) => {
+    e.stopPropagation();
+    filterPopover.classList.toggle('open');
+  });
+
+  document.addEventListener('click', (e) => {
+    if (!filterPopover.contains(e.target) && e.target !== filterToggle){
+      filterPopover.classList.remove('open');
+    }
+  });
+
+  applyFilters.addEventListener('click', () => {
+    updateBadge();
+    filterPopover.classList.remove('open');
+  });
+
+  resetFilters.addEventListener('click', () => {
+    stageFilter.value = '';
+    statusFilter.value = '';
+    updateBadge();
+  });
+
+  updateBadge();
+
+  // --- mobile width simulation ---
+  const panel = document.getElementById('panel');
+  const mobileToggle = document.getElementById('mobileToggle');
+  mobileToggle.addEventListener('click', () => {
+    panel.classList.toggle('mobile-preview');
+    mobileToggle.classList.toggle('active');
+  });
+
+  // --- bulk actions overflow menu ---
+  const moreTrigger = document.getElementById('moreTrigger');
+  const moreMenu = document.getElementById('moreMenu');
+  moreTrigger.addEventListener('click', (e) => {
+    e.stopPropagation();
+    moreMenu.classList.toggle('open');
+  });
+  document.addEventListener('click', (e) => {
+    if (!moreMenu.contains(e.target) && e.target !== moreTrigger){
+      moreMenu.classList.remove('open');
+    }
+  });
+</script>
+
+</body>
+</html>

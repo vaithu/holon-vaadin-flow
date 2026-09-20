@@ -689,6 +689,31 @@ public class EntityFormPanel<T> extends Div {
     }
 
     /**
+     * Cache of the required-field metadata derived by reflection from a bean class.
+     *
+     * <p>Deriving it is expensive — a full {@code getDeclaredFields()} walk of the class
+     * hierarchy plus {@code getAnnotations()} and a reflective {@code message()} invocation per
+     * annotated field — and the result is a pure function of the bean {@link Class}. It was
+     * previously recomputed on <em>every</em> form build, i.e. once per user opening the form.
+     * Caching it turns a per-user reflection cost into a one-off per bean type.</p>
+     *
+     * <p>Growth is bounded by the number of bean classes the application declares, not by the
+     * number of users or sessions, and the keys are {@link Class} objects held alive by their own
+     * class loader anyway — so this is a bounded cache, not a leak.</p>
+     */
+    private static final java.util.Map<Class<?>, List<RequiredFieldMeta>> REQUIRED_META_CACHE =
+            new java.util.concurrent.ConcurrentHashMap<>();
+
+    /**
+     * Required-field metadata derived from a bean-validation annotation.
+     *
+     * @param fieldName     the declaring field name
+     * @param customMessage the explicit annotation message, or {@code null} to use Holon's default
+     */
+    private record RequiredFieldMeta(String fieldName, String customMessage) {
+    }
+
+    /**
      * Scans {@code beanClass} for {@code @NotBlank} / {@code @NotNull} / {@code @NotEmpty}
      * annotations and wires each field through the builder-level {@code required()} API so that:
      * <ul>
@@ -712,13 +737,36 @@ public class EntityFormPanel<T> extends Div {
                         .map(RequiredBinding::fieldName)
                         .collect(java.util.stream.Collectors.toSet());
 
+        for (RequiredFieldMeta meta : requiredFieldMeta(beanClass)) {
+            if (explicitFields.contains(meta.fieldName())) {
+                continue; // explicit required() call already handles this field
+            }
+            final String customMessage = meta.customMessage();
+            beanFormBuilder.property(meta.fieldName()).ifPresent(p -> {
+                if (customMessage != null) {
+                    beanFormBuilder.configure(f -> f.required((Property) p, Localizable.of(customMessage)));
+                } else {
+                    beanFormBuilder.configure(f -> f.required((Property) p));
+                }
+            });
+        }
+    }
+
+    /**
+     * Returns the cached required-field metadata for {@code beanClass}, computing it on first use.
+     *
+     * @param beanClass the bean type to introspect
+     * @return the required-field metadata, in declaration order; never {@code null}
+     */
+    private static List<RequiredFieldMeta> requiredFieldMeta(Class<?> beanClass) {
+        return REQUIRED_META_CACHE.computeIfAbsent(beanClass, EntityFormPanel::computeRequiredFieldMeta);
+    }
+
+    private static List<RequiredFieldMeta> computeRequiredFieldMeta(Class<?> beanClass) {
+        final List<RequiredFieldMeta> meta = new ArrayList<>();
         Class<?> cls = beanClass;
         while (cls != null && cls != Object.class) {
             for (java.lang.reflect.Field field : cls.getDeclaredFields()) {
-                final String fieldName = field.getName();
-                if (explicitFields.contains(fieldName)) {
-                    continue; // explicit required() call already handles this field
-                }
                 Optional<java.lang.annotation.Annotation> requiredAnnotation = java.util.Arrays
                         .stream(field.getAnnotations())
                         .filter(ann -> {
@@ -739,19 +787,12 @@ public class EntityFormPanel<T> extends Div {
                             || rawMessage.startsWith("{jakarta.")
                             || rawMessage.startsWith("{javax.");
 
-                    final String customMessage = isDefaultKey ? null : rawMessage;
-
-                    beanFormBuilder.property(fieldName).ifPresent(p -> {
-                        if (customMessage != null) {
-                            beanFormBuilder.configure(f -> f.required((Property) p, Localizable.of(customMessage)));
-                        } else {
-                            beanFormBuilder.configure(f -> f.required((Property) p));
-                        }
-                    });
+                    meta.add(new RequiredFieldMeta(field.getName(), isDefaultKey ? null : rawMessage));
                 }
             }
             cls = cls.getSuperclass();
         }
+        return List.copyOf(meta);
     }
 
     // -----------------------------------------------------------------------

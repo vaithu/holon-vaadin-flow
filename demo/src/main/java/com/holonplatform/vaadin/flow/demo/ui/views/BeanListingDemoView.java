@@ -57,9 +57,9 @@ public class BeanListingDemoView extends Div {
         private String name;
         private String category;
         private double price;
-        private boolean active;
         private Status status;
         private LocalDate addedOn;
+        private boolean active;
 
         /**
          * No-arg constructor required by bean introspection.
@@ -67,8 +67,8 @@ public class BeanListingDemoView extends Div {
         public Product() {
         }
 
-        public Product(long id, String name, String category, double price,
-                       boolean active, Status status, LocalDate addedOn) {
+        public Product(long id, String name, String category, double price,boolean active,
+                       Status status, LocalDate addedOn) {
             this.id = id;
             this.name = name;
             this.category = category;
@@ -92,10 +92,6 @@ public class BeanListingDemoView extends Div {
 
         public double getPrice() {
             return price;
-        }
-
-        public boolean isActive() {
-            return active;
         }
 
         public Status getStatus() {
@@ -122,10 +118,6 @@ public class BeanListingDemoView extends Div {
             this.price = price;
         }
 
-        public void setActive(boolean active) {
-            this.active = active;
-        }
-
         public void setStatus(Status status) {
             this.status = status;
         }
@@ -133,9 +125,13 @@ public class BeanListingDemoView extends Div {
         public void setAddedOn(LocalDate d) {
             this.addedOn = d;
         }
+
+        public Boolean isActive() {
+            return active;
+        }
     }
 
-    // ── Holon properties – used as keys for FilterInput bindings ────────────
+    // ── Holon properties – used as keys for FilterInput bindings ─────��──────
     private static final StringProperty NAME_PROP = StringProperty.create("name");
     private static final PathProperty<Double> PRICE_PROP = PathProperty.create("price", Double.class);
     private static final PathProperty<Boolean> ACTIVE_PROP = PathProperty.create("active", Boolean.class);
@@ -219,10 +215,10 @@ public class BeanListingDemoView extends Div {
                     .header("price",    "Price (€)")
                     .height("280px")
                     .build();
-                
+
                 // Supply data as a List or varargs.
                 listing.setItems(products);
-                
+
                 // Get the underlying Vaadin component (e.g. to embed in a layout):
                 Component grid = listing.getComponent();
                 """);
@@ -272,13 +268,13 @@ public class BeanListingDemoView extends Div {
                     .height("280px")
                     .build();
                 listing.setItems(products);
-                
+
                 // React to row selection:
                 listing.addSelectionListener(e -> {
                     Set<Product> selected = e.getAllSelectedItems();
                     label.setText(selected.size() + " selected");
                 });
-                
+
                 // Programmatic selection control:
                 listing.select(product);
                 listing.deselectAll();
@@ -340,33 +336,33 @@ public class BeanListingDemoView extends Div {
                 PathProperty<Boolean>   ACTIVE_PROP = PathProperty.create("active",  Boolean.class);
                 PathProperty<Status>    STATUS_PROP = PathProperty.create("status",  Status.class);
                 PathProperty<LocalDate> DATE_PROP   = PathProperty.create("addedOn", LocalDate.class);
-                
+
                 // String: case-insensitive "contains"
                 FilterInput<String> nameFilter = FilterInput.string(NAME_PROP);
-                
+
                 // Number: exact equality
                 FilterInput<Double> priceFilter = FilterInput.number(PRICE_PROP, Double.class);
-                
+
                 // Number range: from ≤ value ≤ to  (either bound may be null → open-ended)
                 FilterInput<FilterInput.Range<Double>> rangeFilter
                     = FilterInput.numberRange(PRICE_PROP, Double.class);
                 // Programmatically set a range value:
                 rangeFilter.getInput().setValue(new FilterInput.Range<>(10.0, 200.0));
-                
+
                 // Boolean tri-state: null = no filter, TRUE, FALSE
                 FilterInput<Boolean> activeFilter = FilterInput.bool(ACTIVE_PROP);
-                
+
                 // Enum: exact – constants auto-populated from Status.getEnumConstants()
                 FilterInput<Status> statusFilter
                     = FilterInput.enumeration(STATUS_PROP, Status.class);
-                
+
                 // LocalDate: exact date
                 FilterInput<LocalDate> dateFilter = FilterInput.localDate(DATE_PROP);
-                
+
                 // LocalDate range
                 FilterInput<FilterInput.Range<LocalDate>> dateRange
                     = FilterInput.localDateRange(DATE_PROP);
-                
+
                 // Custom: any Input + a FilterConverter lambda
                 FilterInput<String> customFilter = FilterInput.from(
                     Input.string().build(),
@@ -374,10 +370,10 @@ public class BeanListingDemoView extends Div {
                         ? Optional.of(QueryFilter.eq(NAME_PROP, value))
                         : Optional.empty()
                 );
-                
+
                 // Auto-infer from property type (String→string, Boolean→bool, Enum→enum, …)
                 FilterInput<?> autoFilter = FilterInput.of(NAME_PROP);
-                
+
                 // Core API on any FilterInput:
                 boolean active  = filter.isActive();           // has a non-empty value?
                 Optional<QueryFilter> qf = filter.getQueryFilter();
@@ -453,20 +449,20 @@ public class BeanListingDemoView extends Div {
                 FilterInput<String>  nameFilter   = FilterInput.string(NAME_PROP);
                 FilterInput<Boolean> activeFilter = FilterInput.bool(ACTIVE_PROP);
                 FilterInput<Status>  statusFilter = FilterInput.enumeration(STATUS_PROP, Status.class);
-                
+
                 // 2. Compose into a group — combined filter is the AND of all active inputs
                 FilterInputGroup group = FilterInputGroup.builder()
                     .withFilter(NAME_PROP,   nameFilter)
                     .withFilter(ACTIVE_PROP, activeFilter)
                     .withFilter(STATUS_PROP, statusFilter)
                     .build();
-                
+
                 // 3. Place each filter's UI component manually in a layout
                 filterBar.add(
                     nameFilter.getComponent(),
                     activeFilter.getComponent(),
                     statusFilter.getComponent());
-                
+
                 // 4. React to any filter change
                 group.addFilterChangeListener(e -> {
                     // In a real app: re-run Datastore query with the combined QueryFilter.
@@ -474,16 +470,16 @@ public class BeanListingDemoView extends Div {
                     // Demo: manual in-memory re-filter.
                     listing.setItems(applyFilter(data, nameFilter, activeFilter, statusFilter));
                 });
-                
+
                 // 5. Reset all inputs at once
                 resetButton.addClickListener(e -> group.resetAll());
-                
+
                 // 6. Check if any filter is active
                 boolean anyActive = group.isAnyActive();
-                
+
                 // 7. Access a specific filter by property key
                 Optional<FilterInput<String>> fi = group.getFilterInput(NAME_PROP);
-                
+
                 // ── Reactive / Signal-based (Vaadin 25) ──
                 Signal<Optional<QueryFilter>> filterSignal = group.queryFilterSignal();
                 Signal<Boolean> anyActiveSignal            = group.anyActiveSignal();
@@ -663,21 +659,21 @@ public class BeanListingDemoView extends Div {
                 // 1. Create the panel – bean properties are introspected automatically
                 DynamicFilterPanel<Product> panel = DynamicFilterPanel.of(Product.class);
                 add(panel);  // embed in your view
-                
+
                 // 2. (Optional) switch to OR-combine mode
                 panel.setMatchAll(false);  // default is AND
-                
+
                 // ── In-memory wiring ──────────────────────────────────────────────────
                 var shown = new ArrayList<>(allProducts);
                 listing.setItems(q -> shown.stream().skip(q.getOffset()).limit(q.getLimit()));
-                
+
                 panel.addFilterChangeListener(e -> {
                     // toPredicate() evaluates the last applied filter via reflection
                     shown.clear();
                     shown.addAll(allProducts.stream().filter(panel.toPredicate()).toList());
                     listing.getDataProvider().refreshAll();
                 });
-                
+
                 // ── Datastore wiring (production) ─────────────────────────────────────
                 listing.setItems(panel, (query, filter) -> {
                     // filter = combined QueryFilter from panel.getQueryFilter()
@@ -686,7 +682,7 @@ public class BeanListingDemoView extends Div {
                     return q.stream(BeanProjection.of(Product.class));
                 });
                 listing.refreshOnFilterChange(panel);  // refresh on every Apply click
-                
+
                 // ── Supported operators by type ────────────────────────────────────────
                 // String   : Equals, Not Equals, Contains, Not Contains, Starts With, Ends With,
                 //            Is Empty, Is Not Empty
@@ -763,14 +759,14 @@ public class BeanListingDemoView extends Div {
                 PathProperty<LocalDate>     DATE     = PathProperty.create("addedOn", LocalDate.class);
                 PathProperty<Status>        STATUS   = PathProperty.create("status",  Status.class);
                 var propertySet = PropertySet.of(NAME, PRICE, DATE, STATUS);
-                
+
                 // ── Build a PropertyListing ───────────────────────────────────────────
                 PropertyListing listing = PropertyListing.builder(propertySet)
                     .header(NAME,  "Product Name")
                     .header(PRICE, "Price (€)")
                     .height("240px").build();
                 listing.setItems(q -> shown.stream().skip(q.getOffset()).limit(q.getLimit()));
-                
+
                 // ── Create the panel from the same property set ───────────────────────
                 // DynamicFilterPanel.ofProperties(…) keeps the actual Property objects,
                 // so queries use them directly as filter operands, and toPredicate()
@@ -778,17 +774,17 @@ public class BeanListingDemoView extends Div {
                 DynamicFilterPanel<PropertyBox> panel =
                     DynamicFilterPanel.ofProperties(NAME, PRICE, DATE, STATUS);
                 add(panel);
-                
+
                 // ── OR use ofPropertySet(…) ───────────────────────────────────────────
                 DynamicFilterPanel<PropertyBox> panel2 = DynamicFilterPanel.ofPropertySet(propertySet);
-                
+
                 // ── In-memory wiring (Predicate<PropertyBox>) ─────────────────────────
                 panel.addFilterChangeListener(e -> {
                     shown.clear();
                     shown.addAll(allBoxes.stream().filter(panel.toPredicate()).toList());
                     listing.getDataProvider().refreshAll();
                 });
-                
+
                 // ── Datastore wiring (production, QueryFilter) ────────────────────────
                 listing.setItems(panel, (query, filter) -> {
                     var q = datastore.query(TARGET).restrict(query.getLimit(), query.getOffset());
@@ -862,22 +858,22 @@ public class BeanListingDemoView extends Div {
                 // Each row 2+ gains:
                 //   • A connector selector on the left  (And / Or / And Not / Or Not / Nand / Nor / Xor)
                 //   • A NOT toggle on the right — negates the row's own condition first
-                
+
                 // ── 2. Register items for multi-value operators ───────────────────────
                 // String properties: register a static list so that "Is One Of" / "Is Not One Of"
                 // renders a searchable MultiSelectComboBox instead of a plain text field.
                 panel.setItems("category", List.of("Electronics", "Accessories", "Office"));
-                
+
                 // Enum properties auto-populate from their constants — no registration needed.
                 // Status.AVAILABLE / OUT_OF_STOCK / DISCONTINUED appear automatically.
-                
+
                 // ── 3. Lazy (database-backed) multi-select ────────────────────────────
                 panel.setLazyItems("team",
                     query -> teamService.find(
                         query.getFilter().orElse(""),   // text typed in the search box
                         query.getOffset(), query.getLimit()),
                     query -> teamService.count(query.getFilter().orElse("")));
-                
+
                 // ── 4. Wire filtering (identical to simple mode) ──────────────────────
                 panel.addFilterChangeListener(e -> {
                     shown.clear();
@@ -885,7 +881,7 @@ public class BeanListingDemoView extends Div {
                     shown.addAll(allProducts.stream().filter(panel.toPredicate()).toList());
                     listing.getDataProvider().refreshAll();
                 });
-                
+
                 // ── Datastore wiring (production) — getQueryFilter() returns the combined filter ──
                 listing.setItems(panel, (query, filter) -> {
                     var q = datastore.query(TARGET).restrict(query.getLimit(), query.getOffset());
@@ -893,7 +889,7 @@ public class BeanListingDemoView extends Div {
                     return q.stream(BeanProjection.of(Product.class));
                 });
                 listing.refreshOnFilterChange(panel);
-                
+
                 // ── Available connectors (rows 2+) ────────────────────────────────────
                 // AND      → acc AND cond
                 // OR       → acc OR  cond
@@ -902,7 +898,7 @@ public class BeanListingDemoView extends Div {
                 // NAND     → NOT(acc AND cond)
                 // NOR      → NOT(acc OR  cond)
                 // XOR      → (acc AND NOT cond) OR (NOT acc AND cond)
-                
+
                 // ── Operators available for multi-value (IN/NOT_IN) ───────────────────
                 // String  → Is One Of,     Is Not One Of   (requires setItems / setLazyItems)
                 // Enum    → Is One Of,     Is Not One Of   (auto-populated)
@@ -949,7 +945,7 @@ public class BeanListingDemoView extends Div {
                 final int PAGE_SIZE   = 5;
                 final int totalPages  = (int) Math.ceil((double) total / PAGE_SIZE);
                 final int[] page      = {1};
-                
+
                 // Mutable buffer drives the fetch callback — no re-wiring of data provider needed.
                 List<Product> pageBuffer = new ArrayList<>(getPage(1));
                 BeanListing<Product> listing = BeanListing.builder(Product.class, true)
@@ -957,7 +953,7 @@ public class BeanListingDemoView extends Div {
                     .allRowsVisible(true)   // show all rows without inner grid scroll
                     .build();
                 listing.setItems(q -> pageBuffer.stream());
-                
+
                 // Navigate to a page: update buffer and refresh the data provider.
                 void goToPage(int p) {
                     page[0] = p;
@@ -968,33 +964,33 @@ public class BeanListingDemoView extends Div {
                     listing.getDataProvider().refreshAll();
                     rebuildPagination(holder, page, totalPages);
                 }
-                
+
                 // Rebuild Pagination component on each page change:
                 void rebuildPagination(Div holder, int[] page, int totalPages) {
                     holder.removeAll();
                     Pagination pg = new Pagination();
                     PaginationContent c = pg.getContent();
-                
+
                     PaginationPrevious prev = new PaginationPrevious();
                     prev.setDisabled(page[0] == 1);
                     prev.addClickListener(e -> { if (page[0] > 1) goToPage(page[0] - 1); });
                     c.add(new PaginationItem(prev));
-                
+
                     for (int p = 1; p <= totalPages; p++) {
                         final int target = p;
                         PaginationLink link = new PaginationLink(p, p == page[0]);
                         link.addClickListener(e -> goToPage(target));
                         c.add(new PaginationItem(link));
                     }
-                
+
                     PaginationNext next = new PaginationNext();
                     next.setDisabled(page[0] == totalPages);
                     next.addClickListener(e -> { if (page[0] < totalPages) goToPage(page[0] + 1); });
                     c.add(new PaginationItem(next));
-                
+
                     holder.add(pg);
                 }
-                
+
                 // Combining with FilterInputGroup (reset to page 1 on filter change):
                 filterGroup.addFilterChangeListener(e -> { page[0] = 1; goToPage(1); });
                 """);
@@ -1186,9 +1182,6 @@ public class BeanListingDemoView extends Div {
         }
     }
 }
-
-
-
 
 
 

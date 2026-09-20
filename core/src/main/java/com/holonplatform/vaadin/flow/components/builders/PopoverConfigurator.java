@@ -27,13 +27,6 @@ public interface PopoverConfigurator<C extends PopoverConfigurator<C>> extends C
     C backdropVisible(boolean backdropVisible);
 
     /**
-     * Sets the CSS class names of the popover overlay element.
-     * @param className
-     * @return
-     */
-    C className(String className);
-
-    /**
      * Sets whether this popover can be closed by pressing the Esc key or not.
      * @param closeOnEsc
      * @return
@@ -147,18 +140,25 @@ public interface PopoverConfigurator<C extends PopoverConfigurator<C>> extends C
     C openOnHover(boolean openOnHover);
 
     /**
-     * Sets the ARIA role for the overlay element, used by screen readers.
-     * @param role
-     * @return
-     */
-    C overlayRole(String role);
-
-    /**
      * Sets position of the popover with respect to its target.
      * @param position
      * @return
      */
     C position(PopoverPosition position);
+
+    /**
+     * Sets the ARIA role for the popover host element.
+     * @param role
+     * @return
+     */
+    C role(String role);
+
+    /**
+     * Sets whether keyboard tab focus is enabled for this popover.
+     * @param tabFocusEnabled
+     * @return
+     */
+    C tabFocusEnabled(boolean tabFocusEnabled);
 
     /**
      * Sets the target component for this popover.

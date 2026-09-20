@@ -17,7 +17,7 @@ package com.holonplatform.vaadin.flow.internal.components.support;
 
 import com.vaadin.flow.component.HasValue;
 
-import java.util.function.Function;
+import com.vaadin.flow.function.SerializableFunction;
 
 /**
  * An is empty supplier for {@link String} type Inputs with empty and blank value support.
@@ -26,7 +26,7 @@ import java.util.function.Function;
  *
  * @since 5.2.0
  */
-public class StringInputValueSupplier<V extends HasValue<?, String>> implements Function<V, String> {
+public class StringInputValueSupplier<V extends HasValue<?, String>> implements SerializableFunction<V, String> {
 
 	private final boolean emptyValuesAsNull;
 	private final boolean blankValuesAsNull;

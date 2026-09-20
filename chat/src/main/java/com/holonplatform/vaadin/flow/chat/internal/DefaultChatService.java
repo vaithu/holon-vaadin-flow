@@ -81,6 +81,7 @@ public class DefaultChatService implements ChatService {
     // ================================================================== //
 
     @Override
+    @SuppressWarnings("deprecation")
     public List<ChatRoom> findAllChannels() {
         try (Stream<ChatRoom> s = rooms.findAll(ROOM_TYPE.eq(ChatRoom.Type.CHANNEL.name()))) {
             return s.sorted(Comparator.comparing(ChatRoom::getName)).toList();

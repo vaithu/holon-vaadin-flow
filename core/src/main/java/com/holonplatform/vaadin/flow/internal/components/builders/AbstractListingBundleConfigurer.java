@@ -8,9 +8,11 @@ import com.holonplatform.core.property.Property;
 import com.holonplatform.core.query.QueryFilter;
 import com.holonplatform.core.query.QuerySort;
 import com.holonplatform.vaadin.flow.components.*;
+import com.holonplatform.vaadin.flow.components.builders.GridToolbarBuilder;
 import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
 import com.holonplatform.vaadin.flow.vaadinplus.components.DynamicFilterPanel;
 import com.holonplatform.vaadin.flow.vaadinplus.components.Empty;
+import com.holonplatform.vaadin.flow.vaadinplus.components.GridToolbar;
 import com.iyensoft.vaadin.flow.enums.ViewMode;
 import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.Component;
@@ -19,10 +21,13 @@ import com.vaadin.flow.component.DetachEvent;
 import com.vaadin.flow.component.contextmenu.MenuItem;
 import com.vaadin.flow.component.contextmenu.SubMenu;
 import com.vaadin.flow.component.grid.ItemClickEvent;
+import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.menubar.MenuBar;
 import com.vaadin.flow.component.menubar.MenuBarVariant;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.provider.CallbackDataProvider;
 import com.vaadin.flow.data.provider.QuerySortOrder;
@@ -60,7 +65,6 @@ public abstract class AbstractListingBundleConfigurer<T, C extends ListingBundle
     private ComponentEventListener<ItemClickEvent<T>> globalItemClickListener;
     private Supplier<ViewMode> viewModeSupplier;
     private Component mobileViewHeaderComponent;
-    private Component[] gridHeaderContextComponents;
     private boolean filterPanelAdvancedMode;
     private List<String> columns = List.of();
     private List<String> hiddenColumns = List.of();
@@ -72,23 +76,22 @@ public abstract class AbstractListingBundleConfigurer<T, C extends ListingBundle
     private ListingBundleConfigurer.FetchCallback<T> fetchCallback;
     private ListingBundleConfigurer.FilteredFetchCallback<T> filteredFetchCallback;
     private ListingBundleConfigurer.ColumnAwareFilteredFetchCallback<T> columnAwareFilteredFetchCallback;
-    private final List<ListingBundle.MenuAction> menuActions = new ArrayList<>();
-    private Runnable importAction;
-    private Runnable exportAction;
     private String advancedSearchLabel = "Advanced Search";
     private boolean retainFilterValues = true;
     private boolean multiSelect;
-    private String gridHeaderTitle;
     private boolean autoCreateColumns = true;
     private boolean paginatedMode;
     private Renderer<T> mobileColumnRenderer;
     private boolean mobileViewColumn;
     private String mobileViewHeaderText;
     private Consumer<ItemListing<T, ?>> postProcessor;
+    private Consumer<GridToolbarBuilder> toolbarCustomizer;
     private final List<ListingBundleConfigurer.RowAction<T>> rowActions = new ArrayList<>();
     private boolean highPerformanceActions;
     private Empty emptyState;
     private Empty noResultsState;
+    private String gridHeaderTitle;
+    private Component[] gridHeaderContextComponents;
 
     protected AbstractListingBundleConfigurer(Class<T> beanType) {
         this.beanType = Objects.requireNonNull(beanType, "beanType must not be null");
@@ -100,38 +103,34 @@ public abstract class AbstractListingBundleConfigurer<T, C extends ListingBundle
     // ── ListingBundleConfigurer implementation ────────────────────────────────
 
     @Override
-    public C gridHeader(Component... components) {
-        this.gridHeaderContextComponents = components != null ? Arrays.copyOf(components, components.length) : null;
-        return getConfigurator();
-    }
-
-    @Override
-    public C gridHeader(String title, Component... contextActions) {
-        this.gridHeaderTitle = Objects.requireNonNull(title);
-        this.gridHeaderContextComponents = contextActions != null ? Arrays.copyOf(contextActions, contextActions.length) : null;
-        return getConfigurator();
-    }
-
-    @Override
-    public C gridHeader(String title) {
-        return gridHeader(title, (Component[]) null);
-    }
-
-    @Override
-    public C header(String column, String label) {
+    public C columnHeader(String column, String label) {
         headers.put(column, Localizable.builder().message(label).build());
         return getConfigurator();
     }
 
     @Override
-    public C header(String column, Localizable localizable) {
+    public C columnHeader(String column, Localizable localizable) {
         headers.put(column, Objects.requireNonNull(localizable));
         return getConfigurator();
     }
 
     @Override
-    public C header(String column, String defaultLabel, String messageCode) {
+    public C columnHeader(String column, String defaultLabel, String messageCode) {
         headers.put(column, Localizable.builder().message(defaultLabel).messageCode(messageCode).build());
+        return getConfigurator();
+    }
+
+    @Override
+    public C gridHeader(String header) {
+        this.gridHeaderTitle = Objects.requireNonNull(header, "header must not be null");
+        return getConfigurator();
+    }
+
+    @Override
+    public C gridHeader(Component... contextActions) {
+        this.gridHeaderContextComponents = contextActions != null
+                ? Arrays.copyOf(contextActions, contextActions.length)
+                : null;
         return getConfigurator();
     }
 
@@ -239,18 +238,6 @@ public abstract class AbstractListingBundleConfigurer<T, C extends ListingBundle
     }
 
     @Override
-    public C withMenuAction(String label, Runnable action) {
-        menuActions.add(ListingBundle.MenuAction.of(Objects.requireNonNull(label), Objects.requireNonNull(action)));
-        return getConfigurator();
-    }
-
-    @Override
-    public C withMenuAction(VaadinIcon icon, String label, Runnable action) {
-        menuActions.add(ListingBundle.MenuAction.of(Objects.requireNonNull(icon), Objects.requireNonNull(label), Objects.requireNonNull(action)));
-        return getConfigurator();
-    }
-
-    @Override
     public C multiSelect() {
         this.multiSelect = true;
         return getConfigurator();
@@ -259,18 +246,6 @@ public abstract class AbstractListingBundleConfigurer<T, C extends ListingBundle
     @Override
     public C autoCreateColumns(boolean autoCreate) {
         this.autoCreateColumns = autoCreate;
-        return getConfigurator();
-    }
-
-    @Override
-    public C importAction(Runnable action) {
-        this.importAction = Objects.requireNonNull(action);
-        return getConfigurator();
-    }
-
-    @Override
-    public C exportAction(Runnable action) {
-        this.exportAction = Objects.requireNonNull(action);
         return getConfigurator();
     }
 
@@ -306,8 +281,30 @@ public abstract class AbstractListingBundleConfigurer<T, C extends ListingBundle
     }
 
     @Override
+    public C mobileViewHeader(String column1, String column2) {
+        Span startLabel = new Span(column1);
+        startLabel.addClassName("mobile-grid-header-start");
+        Span endLabel = new Span(column2);
+        endLabel.addClassName("mobile-grid-header-end");
+
+        HorizontalLayout header = Components.hl()
+                .addToStart(startLabel)
+                .styleName("mobile-grid-header")
+                .addToEnd(endLabel)
+                .build();
+
+        return mobileViewHeader(header);
+    }
+
+    @Override
     public C withListingPostProcessor(Consumer<ItemListing<T, ?>> postProcessor) {
         this.postProcessor = Objects.requireNonNull(postProcessor);
+        return getConfigurator();
+    }
+
+    @Override
+    public C withToolbarCustomizer(Consumer<GridToolbarBuilder> customizer) {
+        this.toolbarCustomizer = Objects.requireNonNull(customizer);
         return getConfigurator();
     }
 
@@ -431,17 +428,10 @@ public abstract class AbstractListingBundleConfigurer<T, C extends ListingBundle
             }
         }
 
-        var bar = new ItemListingPaginationBar<>(listing);
-
-        TextField search = null;
-        if (searchLocalizable != null) {
-            search = new TextField();
-            String ph = LocalizationProvider.localize(searchLocalizable)
-                    .orElseGet(() -> searchLocalizable.getMessage() != null ? searchLocalizable.getMessage() : "");
-            search.setPlaceholder(ph);
-            search.setPrefixComponent(new Icon(VaadinIcon.SEARCH));
-            search.setClearButtonVisible(true);
-            search.addClassName("listing-toolbar__search");
+        if (mobileViewColumn) {
+            listing.setMobileColumn(mobileColumnRenderer);
+            if (mobileViewHeaderText != null) listing.setMobileHeader(mobileViewHeaderText);
+            else if (mobileViewHeaderComponent != null) listing.setMobileHeader(mobileViewHeaderComponent);
         }
 
         DynamicFilterPanel<T> panel = null;
@@ -450,12 +440,42 @@ public abstract class AbstractListingBundleConfigurer<T, C extends ListingBundle
             panel.setAdvancedMode(filterPanelAdvancedMode);
         }
 
-        final TextField fSearch = search;
+        // Build the visible GridToolbar up front so its own search field and filter dialog can be
+        // wired directly into the fetch closure and page-size selector below — no headless duplicate
+        // search TextField needed.
+        var toolbarBuilder = Components.gridToolbar(gridHeaderContextComponents).selectionListing(listing);
+        if (searchLocalizable != null) {
+            toolbarBuilder.searchPlaceholder(searchLocalizable);
+        }
+        if (panel != null) {
+            toolbarBuilder.filterPanel(panel);
+        }
+        // Escape hatch: let callers add toolbar-level customisations (primaryAction, bulkAction,
+        // optionsMenuAction, etc.) before the toolbar is built, without disturbing the auto
+        // search/filter/pagination wiring above and below.
+        if (toolbarCustomizer != null) {
+            toolbarCustomizer.accept(toolbarBuilder);
+        }
+        GridToolbar toolbar = toolbarBuilder.build();
+
+        // GridToolbar retains filter values across open/close by default; reset on every open when disabled.
+        if (panel != null && !retainFilterValues) {
+            final DynamicFilterPanel<T> resetPanel = panel;
+            toolbar.getFilterDialog().addOpenedChangeListener(e -> {
+                if (e.isOpened()) {
+                    resetPanel.resetAll();
+                }
+            });
+        }
+
+        final boolean fSearchEnabled = searchLocalizable != null;
+        final TextField fSearch = toolbar.getSearchField();
         final DynamicFilterPanel<T> fPanel = panel;
 
         var sb = (ItemListingPageSizeSelector.Builder) ItemListingPageSizeSelector.of(listing);
         sb.withOptions(new ArrayList<>(pageSizes));
         sb.withDefaultSize(defaultPageSize);
+        var bar = new ItemListingPaginationBar<>(listing);
         sb.withPaginationBar(bar);
 
         if (fetchCallback != null || filteredFetchCallback != null || columnAwareFilteredFetchCallback != null) {
@@ -469,7 +489,7 @@ public abstract class AbstractListingBundleConfigurer<T, C extends ListingBundle
             final ListingBundleConfigurer.ColumnAwareFilteredFetchCallback<T> fColAware = this.columnAwareFilteredFetchCallback;
             final Class<T> fBeanType = this.beanType;
             CallbackDataProvider.FetchCallback<T, Void> wrappedFetch = q -> {
-                String text = fSearch != null ? fSearch.getValue() : "";
+                String text = fSearchEnabled ? fSearch.getValue() : "";
                 QueryFilter qf = fPanel != null ? fPanel.getQueryFilter().orElse(null) : null;
                 QuerySort sort = toQuerySort(q.getSortOrders(), fBeanType);
                 if (fColAware != null)
@@ -481,31 +501,24 @@ public abstract class AbstractListingBundleConfigurer<T, C extends ListingBundle
             sb.withLazyFetch(wrappedFetch, null);
         }
 
-        if (search != null) sb.withSearchField(search);
+        if (fSearchEnabled) sb.withSearchField(fSearch);
         if (panel != null) sb.withFilterResetSignal(panel);
-
-        if (mobileViewColumn) {
-            listing.setMobileColumn(mobileColumnRenderer);
-            if (mobileViewHeaderText != null) listing.setMobileHeader(mobileViewHeaderText);
-            else if (mobileViewHeaderComponent != null) listing.setMobileHeader(mobileViewHeaderComponent);
-        }
 
         ItemListingPageSizeSelector<T, ?> selector = sb.build();
 
-        // ── Post-processor ────────────────────────────────────────────────────
-        if (postProcessor != null) {
-            postProcessor.accept(listing);
-        }
-
-        ListingBundle<T> bundle = new ListingBundle<>(listing, bar, selector, search, panel,
-                menuActions, importAction, exportAction,
-                advancedSearchLabel, retainFilterValues,
-                gridHeaderTitle, gridHeaderContextComponents, columns, paginatedMode,
+        ListingBundle<T> bundle = new ListingBundle<>(listing, bar, selector, toolbar, panel,
+                gridHeaderTitle, paginatedMode,
                 emptyState, noResultsState);
+
 
         // Wire item-count listener so the bundle can update empty-state visibility after each fetch.
         if (emptyState != null || noResultsState != null) {
             selector.setItemCountListener(bundle::onDataFetched);
+        }
+
+        // ── Post-processor ────────────────────────────────────────────────────
+        if (postProcessor != null) {
+            postProcessor.accept(listing);
         }
 
         return bundle;

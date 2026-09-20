@@ -2,6 +2,7 @@ package com.iyensoft.vaadin.flow.internal.components.builders;
 
 import com.holonplatform.vaadin.flow.vaadinplus.components.Header;
 import com.holonplatform.vaadin.flow.internal.components.builders.AbstractHeaderConfigurator;
+import com.holonplatform.vaadin.flow.vaadinplus.components.MaterialHeader;
 import com.iyensoft.vaadin.flow.components.Panel;
 import com.iyensoft.vaadin.flow.components.builders.PanelConfigurator;
 

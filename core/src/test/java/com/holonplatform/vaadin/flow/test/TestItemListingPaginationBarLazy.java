@@ -24,6 +24,7 @@ import com.holonplatform.vaadin.flow.components.ItemListingPageSizeSelector;
 import com.holonplatform.vaadin.flow.components.ItemListingPaginationBar;
 import com.holonplatform.vaadin.flow.components.events.FilterChangeListener;
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.grid.dataview.GridLazyDataView;
 import com.vaadin.flow.data.provider.CallbackDataProvider;
@@ -156,6 +157,12 @@ class TestItemListingPaginationBarLazy {
         @Override public void deselectAll()                             { throw new UnsupportedOperationException(); }
         @Override public com.holonplatform.core.Registration addSelectionListener(com.holonplatform.vaadin.flow.components.Selectable.SelectionListener<String> l) { throw new UnsupportedOperationException(); }
         @Override public java.util.Optional<String> getFirstItem()     { throw new UnsupportedOperationException(); }
+
+        @Override
+        public List<com.vaadin.flow.component.grid.GridSortOrder<String>> getGridSortOrders() {throw new UnsupportedOperationException();}
+
+        @Override
+        public Grid<String> getGrid() {throw new UnsupportedOperationException();}
     }
 
     // -------------------------------------------------------------------------

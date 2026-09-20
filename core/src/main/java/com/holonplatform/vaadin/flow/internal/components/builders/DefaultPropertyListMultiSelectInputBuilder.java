@@ -15,6 +15,8 @@
  */
 package com.holonplatform.vaadin.flow.internal.components.builders;
 
+import com.vaadin.flow.function.SerializableFunction;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -260,7 +262,7 @@ public class DefaultPropertyListMultiSelectInputBuilder<T> extends AbstractPrope
 	}
 
 	@Override
-	public <A> PropertyListMultiSelectInputBuilder<T> withAdapter(Class<A> type, Function<Input<Set<T>>, A> adapter) {
+	public <A> PropertyListMultiSelectInputBuilder<T> withAdapter(Class<A> type, SerializableFunction<Input<Set<T>>, A> adapter) {
 		builder.withAdapter(type, adapter);
 		return this;
 	}
@@ -1057,7 +1059,7 @@ public class DefaultPropertyListMultiSelectInputBuilder<T> extends AbstractPrope
 
 		@Override
 		public <A> ValidatablePropertyListMultiSelectInputBuilder<T> withAdapter(Class<A> type,
-				Function<Input<Set<T>>, A> adapter) {
+				SerializableFunction<Input<Set<T>>, A> adapter) {
 			builder.withAdapter(type, adapter);
 			return this;
 		}
@@ -1300,7 +1302,7 @@ public class DefaultPropertyListMultiSelectInputBuilder<T> extends AbstractPrope
 
 		@Override
 		public <A> DatastorePropertyListMultiSelectInputBuilder<T> withAdapter(Class<A> type,
-				Function<Input<Set<T>>, A> adapter) {
+				SerializableFunction<Input<Set<T>>, A> adapter) {
 			builder.withAdapter(type, adapter);
 			return this;
 		}
@@ -2072,7 +2074,7 @@ public class DefaultPropertyListMultiSelectInputBuilder<T> extends AbstractPrope
 
 		@Override
 		public <A> ValidatableDatastorePropertyListMultiSelectInputBuilder<T> withAdapter(Class<A> type,
-				Function<Input<Set<T>>, A> adapter) {
+				SerializableFunction<Input<Set<T>>, A> adapter) {
 			builder.withAdapter(type, adapter);
 			return this;
 		}

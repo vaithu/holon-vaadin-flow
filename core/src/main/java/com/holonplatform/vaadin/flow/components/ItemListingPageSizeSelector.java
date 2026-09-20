@@ -22,6 +22,7 @@ import java.util.function.Supplier;
 
 import com.holonplatform.core.internal.utils.ObjectUtils;
 import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
+import com.holonplatform.vaadin.flow.internal.data.RedundantCallbackGuard;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.dependency.StyleSheet;
@@ -35,6 +36,7 @@ import com.vaadin.flow.data.provider.CallbackDataProvider;
 import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.data.provider.Query;
 import com.vaadin.flow.data.value.ValueChangeMode;
+import com.vaadin.flow.signals.Signal;
 
 /**
  * A <em>"Show N entries"</em> selector that controls the page size of an
@@ -43,13 +45,13 @@ import com.vaadin.flow.data.value.ValueChangeMode;
  * <p>
  * Renders as:
  * </p>
- * 
+ *
  * <pre>
  *   Show  [10 ▾]  entries
  * </pre>
  *
  * <h4>Standalone (lazy listing, no pagination bar)</h4>
- * 
+ *
  * <pre>{@code
  * listing.setItems(q -> employees.stream().skip(q.getOffset()).limit(q.getLimit()));
  *
@@ -66,7 +68,7 @@ import com.vaadin.flow.data.value.ValueChangeMode;
  * the callback with a mutable page offset so that navigating pages actually
  * replaces the visible data rather than just scrolling the viewport.
  * </p>
- * 
+ *
  * <pre>{@code
  * ItemListingPaginationBar<Employee, String> bar = new ItemListingPaginationBar<>(listing);
  *
@@ -122,6 +124,15 @@ public class ItemListingPageSizeSelector<T, P> extends Div {
      * when the page size changes.
      */
     private GridLazyDataView<T> managedDataView;
+
+    /**
+     * Guards the item-count callback state (capped/full) so it is only re-applied
+     * on an actual transition. See {@link RedundantCallbackGuard} javadoc: setting
+     * an equivalent {@code setItemCountCallback} re-entrantly from within the fetch
+     * callback itself makes Vaadin schedule a redundant extra data request, causing
+     * the same backend query to run twice per page load.
+     */
+    private final RedundantCallbackGuard<Boolean> itemCountCapped = new RedundantCallbackGuard<>();
 
     /**
      * Optional count supplier passed via {@link Builder#withLazyFetch}.
@@ -240,6 +251,7 @@ public class ItemListingPageSizeSelector<T, P> extends Div {
             managedDataView.setItemCountUnknown();
         } else {
             managedDataView.setItemCountCallback(cq -> currentPageSz[0]);
+            itemCountCapped.markApplied(Boolean.FALSE);
         }
 
         // Always recompute bar page count from the count supplier when available —
@@ -342,15 +354,20 @@ public class ItemListingPageSizeSelector<T, P> extends Div {
                     paginationBar.setHasNextPage(next);
                 }
                 // Partial page: update count so subsequent renders don't show blanks,
-                // and notify user they've reached the end.
+                // and notify user they've reached the end. Routed through
+                // RedundantCallbackGuard: skip the setItemCountCallback() call when the
+                // capped/full state has not actually changed — re-setting an equivalent
+                // callback re-entrantly from within this very fetch callback makes
+                // Vaadin schedule a redundant extra data request (see guard javadoc).
                 if (actualCount < currentPageSz[0] && actualCount > 0) {
-                    managedDataView.setItemCountCallback(cq -> lastFetchedCount[0]);
+                    itemCountCapped.applyIfChanged(Boolean.TRUE,
+                            capped -> managedDataView.setItemCountCallback(cq -> lastFetchedCount[0]));
                     Notification.show(
                             "Reached end of data", 2000,
                             Notification.Position.BOTTOM_CENTER);
                 } else if (actualCount == currentPageSz[0]) {
-                    // Full page — restore count to page size for next fetch cycle
-                    managedDataView.setItemCountCallback(cq -> currentPageSz[0]);
+                    itemCountCapped.applyIfChanged(Boolean.FALSE,
+                            capped -> managedDataView.setItemCountCallback(cq -> currentPageSz[0]));
                 }
             }
             return rows.stream().limit(limit);
@@ -358,6 +375,7 @@ public class ItemListingPageSizeSelector<T, P> extends Div {
 
         // Initial count = pageSize so the grid requests a full page on first load
         managedDataView.setItemCountCallback(q -> currentPageSz[0]);
+        itemCountCapped.markApplied(Boolean.FALSE);
 
         // Set initial grid page size so ItemListingPaginationBar.getPageSize() works
         if (listing.getComponent() instanceof Grid<?> grid) {
@@ -372,6 +390,7 @@ public class ItemListingPageSizeSelector<T, P> extends Div {
                 // Without this, navigating back from a partial last page would still
                 // use the reduced count, causing the same partial result + notification.
                 managedDataView.setItemCountCallback(cq -> currentPageSz[0]);
+                itemCountCapped.markApplied(Boolean.FALSE);
                 managedDataView.refreshAll();
             });
             // Seed initial page count from the count supplier (if provided).
@@ -387,6 +406,11 @@ public class ItemListingPageSizeSelector<T, P> extends Div {
         // paginated defaults that were set above — unknown count + larger page size.
         if (!paginatedMode) {
             managedDataView.setItemCountUnknown();
+            // Larger initial estimate + increase step so Vaadin's undefined-size
+            // growth algorithm re-verifies/re-fetches far less often while scrolling
+            // (see ItemListing#setItems(FilterInputGroup, FilteredFetchCallback)).
+            managedDataView.setItemCountEstimate(1000);
+            managedDataView.setItemCountEstimateIncrease(500);
             if (listing.getComponent() instanceof Grid<?> g) {
                 g.setPageSize(50);
             }
@@ -436,6 +460,7 @@ public class ItemListingPageSizeSelector<T, P> extends Div {
             // a redundant backend query that the user never asked for.
             currentPageOffset[0] = 0;
             managedDataView.setItemCountCallback(cq -> currentPageSz[0]);
+            itemCountCapped.markApplied(Boolean.FALSE);
             if (listing.getComponent() instanceof Grid<?> grid) {
                 grid.setPageSize(currentPageSz[0]);
             }
@@ -452,6 +477,8 @@ public class ItemListingPageSizeSelector<T, P> extends Div {
             // scrolls.
             currentPageOffset[0] = 0;
             managedDataView.setItemCountUnknown();
+            managedDataView.setItemCountEstimate(1000);
+            managedDataView.setItemCountEstimateIncrease(500);
             if (listing.getComponent() instanceof Grid<?> grid) {
                 grid.setPageSize(50);
             }
@@ -786,7 +813,7 @@ public class ItemListingPageSizeSelector<T, P> extends Div {
          * The {@code countSupplier} passed to {@link #withLazyFetch} should be
          * a closure that reads the current filter at call time:
          * </p>
-         * 
+         *
          * <pre>{@code
          * .withLazyFetch(
          *     q -> service.fetch(q.getOffset(), q.getLimit(), filterPanel.getQueryFilter()),
@@ -845,7 +872,7 @@ public class ItemListingPageSizeSelector<T, P> extends Div {
          * The fetch callback you pass to {@link #withLazyFetch} should read the
          * field value via closure at call time:
          * </p>
-         * 
+         *
          * <pre>{@code
          * TextField search = new TextField();
          *

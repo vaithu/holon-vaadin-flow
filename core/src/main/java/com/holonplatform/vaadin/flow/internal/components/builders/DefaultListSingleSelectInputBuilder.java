@@ -15,6 +15,8 @@
  */
 package com.holonplatform.vaadin.flow.internal.components.builders;
 
+import com.vaadin.flow.function.SerializableFunction;
+
 import com.holonplatform.core.Validator;
 import com.holonplatform.core.datastore.DataTarget;
 import com.holonplatform.core.datastore.Datastore;
@@ -979,7 +981,7 @@ public class DefaultListSingleSelectInputBuilder<T, ITEM>
 
 		@Override
 		public <A> ValidatableListSingleSelectInputBuilder<T, ITEM> withAdapter(Class<A> type,
-				Function<Input<T>, A> adapter) {
+				SerializableFunction<Input<T>, A> adapter) {
 			builder.withAdapter(type, adapter);
 			return this;
 		}
@@ -1494,7 +1496,7 @@ public class DefaultListSingleSelectInputBuilder<T, ITEM>
 
 		@Override
 		public <A> DatastoreListSingleSelectInputBuilder<T, ITEM> withAdapter(Class<A> type,
-				Function<Input<T>, A> adapter) {
+				SerializableFunction<Input<T>, A> adapter) {
 			builder.withAdapter(type, adapter);
 			return this;
 		}
@@ -2052,7 +2054,7 @@ public class DefaultListSingleSelectInputBuilder<T, ITEM>
 
 		@Override
 		public <A> ValidatableDatastoreListSingleSelectInputBuilder<T, ITEM> withAdapter(Class<A> type,
-				Function<Input<T>, A> adapter) {
+				SerializableFunction<Input<T>, A> adapter) {
 			builder.withAdapter(type, adapter);
 			return this;
 		}

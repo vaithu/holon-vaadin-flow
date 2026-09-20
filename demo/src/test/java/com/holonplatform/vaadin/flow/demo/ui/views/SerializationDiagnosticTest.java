@@ -12,6 +12,7 @@ import java.util.*;
 import java.util.stream.Stream;
 
 import static org.mockito.ArgumentMatchers.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
 /**
@@ -29,8 +30,12 @@ class SerializationDiagnosticTest extends AbstractViewSessionTest {
                 .thenReturn(Stream.empty());
         ProductCrudDemoView view = new ProductCrudDemoView(productService);
         System.out.println("\n=== Diagnosing ProductCrudDemoView (reflection hidden-class scan) ===");
-        findHiddenNonSerializable(view, "view", new IdentityHashMap<>(), 0);
+        List<String> findings = new ArrayList<>();
+        findHiddenNonSerializable(view, "view", new IdentityHashMap<>(), 0, findings);
         System.out.println("=== Done ===\n");
+        assertTrue(findings.isEmpty(),
+                "Non-serializable lambdas are reachable from the view; they would break VaadinSession replication:" + System.lineSeparator()
+                        + String.join(System.lineSeparator(), findings));
     }
 
 
@@ -43,8 +48,12 @@ class SerializationDiagnosticTest extends AbstractViewSessionTest {
                 .thenReturn(Stream.empty());
         ListingBundleDemoView view = new ListingBundleDemoView(productService);
         System.out.println("\n=== Diagnosing ListingBundleDemoView (reflection hidden-class scan) ===");
-        findHiddenNonSerializable(view, "view", new IdentityHashMap<>(), 0);
+        List<String> findings = new ArrayList<>();
+        findHiddenNonSerializable(view, "view", new IdentityHashMap<>(), 0, findings);
         System.out.println("=== Done ===\n");
+        assertTrue(findings.isEmpty(),
+                "Non-serializable lambdas are reachable from the view; they would break VaadinSession replication:" + System.lineSeparator()
+                        + String.join(System.lineSeparator(), findings));
     }
 
     // -----------------------------------------------------------------------
@@ -58,7 +67,7 @@ class SerializationDiagnosticTest extends AbstractViewSessionTest {
      * throws before writeClassDescriptor is called.
      */
     private static void findHiddenNonSerializable(Object obj, String path,
-            IdentityHashMap<Object, Boolean> visited, int depth) {
+            IdentityHashMap<Object, Boolean> visited, int depth, List<String> findings) {
         if (obj == null || depth > 12) return;
         if (visited.containsKey(obj)) return;
         visited.put(obj, Boolean.TRUE);
@@ -67,6 +76,7 @@ class SerializationDiagnosticTest extends AbstractViewSessionTest {
 
         // Report non-serializable hidden classes (lambdas)
         if (cls.isHidden() && !(obj instanceof Serializable)) {
+            findings.add(path + "  class=" + cls.getName());
             System.out.println("[BAD LAMBDA] " + path + "  class=" + cls.getName());
             // Print captured fields
             for (Field f : cls.getDeclaredFields()) {
@@ -91,23 +101,23 @@ class SerializationDiagnosticTest extends AbstractViewSessionTest {
                 if (val == null) continue;
                 String fpath = path + "." + f.getDeclaringClass().getSimpleName() + "." + f.getName()
                         + "<" + val.getClass().getSimpleName() + ">";
-                findHiddenNonSerializable(val, fpath, visited, depth + 1);
+                findHiddenNonSerializable(val, fpath, visited, depth + 1, findings);
                 // Collections / arrays
                 if (val instanceof Iterable<?> iter) {
                     int idx = 0;
                     for (Object elem : iter) {
                         if (elem != null && !visited.containsKey(elem)) {
-                            findHiddenNonSerializable(elem, fpath + "[" + idx + "]", visited, depth + 1);
+                            findHiddenNonSerializable(elem, fpath + "[" + idx + "]", visited, depth + 1, findings);
                         }
                         if (++idx > 50) break;
                     }
                 } else if (val instanceof Map<?,?> map) {
                     for (Map.Entry<?,?> entry : map.entrySet()) {
                         if (entry.getValue() != null && !visited.containsKey(entry.getValue())) {
-                            findHiddenNonSerializable(entry.getValue(), fpath + "{" + entry.getKey() + "}", visited, depth + 1);
+                            findHiddenNonSerializable(entry.getValue(), fpath + "{" + entry.getKey() + "}", visited, depth + 1, findings);
                         }
                         if (entry.getKey() != null && !visited.containsKey(entry.getKey())) {
-                            findHiddenNonSerializable(entry.getKey(), fpath + "{key:" + entry.getKey() + "}", visited, depth + 1);
+                            findHiddenNonSerializable(entry.getKey(), fpath + "{key:" + entry.getKey() + "}", visited, depth + 1, findings);
                         }
                     }
                 } else if (val.getClass().isArray() && !val.getClass().getComponentType().isPrimitive()) {
@@ -115,7 +125,7 @@ class SerializationDiagnosticTest extends AbstractViewSessionTest {
                     for (int i = 0; i < Math.min(len, 30); i++) {
                         Object elem = java.lang.reflect.Array.get(val, i);
                         if (elem != null && !visited.containsKey(elem)) {
-                            findHiddenNonSerializable(elem, fpath + "[" + i + "]", visited, depth + 1);
+                            findHiddenNonSerializable(elem, fpath + "[" + i + "]", visited, depth + 1, findings);
                         }
                     }
                 }
@@ -126,7 +136,7 @@ class SerializationDiagnosticTest extends AbstractViewSessionTest {
         if (obj instanceof Component comp) {
             comp.getChildren().forEach(child -> {
                 if (!visited.containsKey(child)) {
-                    findHiddenNonSerializable(child, path + "->" + child.getClass().getSimpleName(), visited, depth + 1);
+                    findHiddenNonSerializable(child, path + "->" + child.getClass().getSimpleName(), visited, depth + 1, findings);
                 }
             });
         }

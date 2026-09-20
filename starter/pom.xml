@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>com.holon-platform.vaadin</groupId>
 		<artifactId>holon-vaadin-flow-root</artifactId>
-		<version>12.0.0</version>
+		<version>12.0.1-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>holon-starter-vaadin-flow</artifactId>
@@ -43,6 +43,14 @@
 			<groupId>io.micrometer</groupId>
 			<artifactId>micrometer-registry-prometheus</artifactId>
 		</dependency>
+
+			<!-- Spring DevTools for live reload of CSS and templates -->
+			<dependency>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-devtools</artifactId>
+				<scope>runtime</scope>
+				<optional>true</optional>
+			</dependency>
 
 
 	</dependencies>

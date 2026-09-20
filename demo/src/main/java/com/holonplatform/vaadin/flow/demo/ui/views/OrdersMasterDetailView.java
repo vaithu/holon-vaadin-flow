@@ -21,8 +21,6 @@ import com.holonplatform.vaadin.flow.components.builders.LitRendererBuilder.Docu
 import com.holonplatform.vaadin.flow.demo.data.entity.Product;
 import com.holonplatform.vaadin.flow.demo.data.service.ProductService;
 import com.holonplatform.vaadin.flow.demo.ui.DemoMainLayout;
-import com.holonplatform.vaadin.flow.navigator.annotations.OnShow;
-import com.holonplatform.vaadin.flow.navigator.annotations.QueryParameter;
 import com.holonplatform.vaadin.flow.vaadinplus.ResponsiveDiv;
 import com.holonplatform.vaadin.flow.vaadinplus.components.Alert.Variant;
 import com.holonplatform.vaadin.flow.vaadinplus.components.Breadcrumb;
@@ -76,10 +74,6 @@ public class OrdersMasterDetailView extends Div {
 
     // ── URL sync ──────────���───────────────────────────────────────────────────
 
-    @QueryParameter("id")
-    private String urlId;
-
-    private MasterDetailLayout<Product> desktopLayout;
 
     // ── Live detail refs (assigned in detailXxx() methods) ────────────────────
 
@@ -108,6 +102,8 @@ public class OrdersMasterDetailView extends Div {
                 .withUrlSync(
                         p  -> String.valueOf(p.getId()),
                         id -> productService.findById(Long.parseLong(id)))
+                .withInitialItem(productService::findFirst)
+                .withAutoSelect()
                 .master(m -> m
                         .header(h -> h
                                 .heading("Purchase Orders")
@@ -132,27 +128,10 @@ public class OrdersMasterDetailView extends Div {
                         .withDetailSync(this::syncDetail))
                 .build();
 
-        if (!viewMode.isMobile()) {
-            desktopLayout = layout;
-            layout.addAttachListener(e -> initDesktopSelection());
-        }
         return layout;
     }
 
     // ── Navigation lifecycle ──────────────────────────────────────────────────
-
-    @OnShow
-    private void onShow() {
-        if (desktopLayout != null) initDesktopSelection();
-    }
-
-    private void initDesktopSelection() {
-        if (urlId != null && !urlId.isBlank()) {
-            desktopLayout.restoreFromUrl(urlId);
-        } else {
-            desktopLayout.selectFirst(ViewMode.DESKTOP);
-        }
-    }
 
     // ── Master helpers ────────────────────────────────────────────────────────
 
@@ -240,9 +219,6 @@ public class OrdersMasterDetailView extends Div {
         statusBadge.setText(statusLabel(p));
         statusBadge.setClassName(statusType(p).toCssClass());
 
-        if (desktopLayout != null) {
-            desktopLayout.pushUrlState(getElement(), p, ViewMode.DESKTOP);
-        }
     }
 
     // ── Field mapping helpers (static — usable as method references) ──────────
@@ -289,5 +265,3 @@ public class OrdersMasterDetailView extends Div {
         return StatusType.PENDING;
     }
 }
-
-

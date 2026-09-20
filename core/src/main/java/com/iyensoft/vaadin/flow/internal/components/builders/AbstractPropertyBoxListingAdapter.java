@@ -104,11 +104,22 @@ abstract class AbstractPropertyBoxListingAdapter<SELF> {
         return header(column, Localizable.builder().message(defaultLabel).messageCode(messageCode).build());
     }
 
-    // ── Grid header ───────────────────────────────────────────────────────────
+    /** No-op: PropertyListing columns are fixed by the PropertySet. */
+    public SELF columnHeader(String column, String label) { return self(); }
 
-    public SELF gridHeader(Component... components)                   { delegate.gridHeader(components);          return self(); }
-    public SELF gridHeader(String title, Component... contextActions) { delegate.gridHeader(title, contextActions); return self(); }
-    public SELF gridHeader(String title)                              { delegate.gridHeader(title);               return self(); }
+    /** No-op: PropertyListing columns are fixed by the PropertySet. */
+    public SELF columnHeader(String column, Localizable localizable) { return self(); }
+
+    /** No-op: PropertyListing columns are fixed by the PropertySet. */
+    public SELF columnHeader(String column, String defaultLabel, String messageCode) { return self(); }
+
+    public SELF gridHeader(String header) {
+        delegate.gridHeader(header); return self();
+    }
+
+    public SELF gridHeader(Component... contextActions) {
+        delegate.gridHeader(contextActions); return self();
+    }
 
     // ── Pagination ────────────────────────────────────────────────────────────
 
@@ -149,16 +160,10 @@ abstract class AbstractPropertyBoxListingAdapter<SELF> {
     public SELF advancedSearchLabel(String label)     { delegate.advancedSearchLabel(label); return self(); }
     public SELF retainFilterValues(boolean retain)    { delegate.retainFilterValues(retain); return self(); }
 
-    // ── Menu actions ──────────────────────────────────────────────────────────
-
-    public SELF withMenuAction(String label, Runnable action)                  { delegate.withMenuAction(label, action);      return self(); }
-    public SELF withMenuAction(VaadinIcon icon, String label, Runnable action) { delegate.withMenuAction(icon, label, action); return self(); }
-    public SELF importAction(Runnable action)                                  { delegate.importAction(action);               return self(); }
-    public SELF exportAction(Runnable action)                                  { delegate.exportAction(action);               return self(); }
-
     // ── No-ops (not applicable to PropertyListing) ────────────────────────────
 
-    public SELF multiSelect()                                                                                { return self(); }
+    public SELF multiSelect()                                                                                {
+        return self(); }
     public SELF autoCreateColumns(boolean autoCreate)                                                        { return self(); }
     public SELF onItemClick(ComponentEventListener<ItemClickEvent<PropertyBox>> listener)                    { return self(); }
     public SELF onItemClickListener(ViewMode mode, ComponentEventListener<ItemClickEvent<PropertyBox>> l)    { return self(); }
@@ -166,6 +171,8 @@ abstract class AbstractPropertyBoxListingAdapter<SELF> {
     public SELF mobileViewColumn(Renderer<PropertyBox> renderer)                                             { return self(); }
     public SELF mobileViewHeader(String text)                                                                { return self(); }
     public SELF mobileViewHeader(Component component)                                                        { return self(); }
+    public SELF mobileViewHeader(String column1, String column2)                                             {
+        return self(); }
 
     // ── Row actions ───────────────────────────────────────────────────────────
 
@@ -185,6 +192,7 @@ abstract class AbstractPropertyBoxListingAdapter<SELF> {
     // ── Post-processor ────────────────────────────────────────────────────────
 
     public SELF withListingPostProcessor(Consumer<ItemListing<PropertyBox, ?>> postProcessor)  { delegate.withListingPostProcessor(postProcessor);  return self(); }
+    public SELF withToolbarCustomizer(Consumer<com.holonplatform.vaadin.flow.components.builders.GridToolbarBuilder> customizer) { delegate.withToolbarCustomizer(customizer); return self(); }
 
     // ── Size no-ops ───────────────────────────────────────────────────────────
 

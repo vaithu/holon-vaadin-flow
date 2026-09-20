@@ -125,14 +125,23 @@ public class DefaultLocalizationProvider implements LocalizationProvider {
 		// check I18nProvider  cache to avoid double Optional allocation
 		final Optional<I18NProvider> provider = getI18nProvider();
 		if (provider.isPresent()) {
-			return Optional.ofNullable(provider
-					.map(p -> p.getTranslation(messageCode, locale, messageArgs))
-					.orElseGet(() -> localizable.getMessage()));
+			return resolveTranslation(provider.get(), messageCode, locale, messageArgs, localizable.getMessage());
 		}
 		// check LocalizationContext
 		return Optional.ofNullable(getLocalizationContext()
 				.flatMap(l -> l.asMessageResolver().getMessage(locale, messageCode, messageArgs))
 				.orElse(localizable.getMessage()));
+	}
+
+	private static Optional<String> resolveTranslation(I18NProvider provider, String messageCode, Locale locale, Object[] messageArgs, String defaultMessage) {
+		String translation = provider.getTranslation(messageCode, locale, messageArgs);
+		if (translation != null && !translation.equals(messageCode) && !translation.startsWith("!")) {
+			return Optional.of(translation);
+		}
+		if (defaultMessage != null) {
+			return Optional.of(defaultMessage);
+		}
+		return Optional.ofNullable(translation);
 	}
 
 	/**
@@ -211,9 +220,7 @@ public class DefaultLocalizationProvider implements LocalizationProvider {
 		// check I18nProvider  cache to avoid double ThreadLocal lookup + Optional allocation
 		final Optional<I18NProvider> provider = getCurrentI18nProvider();
 		if (provider.isPresent()) {
-			return Optional.ofNullable(provider
-					.map(p -> p.getTranslation(messageCode, locale, messageArgs))
-					.orElseGet(() -> localizable.getMessage()));
+			return resolveTranslation(provider.get(), messageCode, locale, messageArgs, localizable.getMessage());
 		}
 		// check LocalizationContext
 		return Optional.ofNullable(LocalizationContext.getCurrent()

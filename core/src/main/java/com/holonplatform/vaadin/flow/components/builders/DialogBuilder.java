@@ -18,6 +18,7 @@ package com.holonplatform.vaadin.flow.components.builders;
 import com.holonplatform.vaadin.flow.components.PropertyInputForm;
 import com.holonplatform.vaadin.flow.components.builders.ButtonConfigurator.BaseButtonConfigurator;
 import com.holonplatform.vaadin.flow.internal.components.builders.*;
+import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.dialog.Dialog;
 
 import java.util.function.Consumer;
@@ -31,7 +32,24 @@ import java.util.function.Consumer;
  */
 public interface DialogBuilder<B extends DialogBuilder<B>> extends DialogConfigurator<B> {
 
+	/**
+	 * Gets a builder for a plain {@link Dialog}.
+	 *
+	 * @return a new dialog builder
+	 */
+	static PlainDialogBuilder create() {
+		return new DefaultDialogBuilder();
+	}
 
+	/**
+	 * Gets a builder for a plain {@link Dialog} with the given initial body content.
+	 *
+	 * @param components the initial dialog body components
+	 * @return a new dialog builder
+	 */
+	static PlainDialogBuilder create(Component... components) {
+		return new DefaultDialogBuilder(components);
+	}
 
 	/**
 	 * Build the {@link Dialog} component.
@@ -191,6 +209,11 @@ public interface DialogBuilder<B extends DialogBuilder<B>> extends DialogConfigu
 			extends DialogBuilder<MessageDialogBuilder>, ClosableDialogConfigurator<MessageDialogBuilder> {
 
 	}
+
+    /** Plain {@link Dialog} builder. */
+    interface PlainDialogBuilder extends DialogBuilder<PlainDialogBuilder> {
+
+    }
 
 	/**
 	 * Confirm {@link Dialog} builder.

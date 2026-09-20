@@ -22,6 +22,7 @@ public interface ArAgingBarConfigurator<C extends ArAgingBarConfigurator<C>>
     C segment(Segment segment);
     C segments(List<Segment> segments);
     C segment(String key, String value, double percent, Variant color);
+    C emptyState(String title);
     C leftStat(String text);
     C centerStat(String text);
     C rightStat(String text);
@@ -45,6 +46,7 @@ public interface ArAgingBarConfigurator<C extends ArAgingBarConfigurator<C>>
         ContentSection segment(Segment segment);
         ContentSection segment(String key, String value, double percent, Variant color);
         ContentSection segment(Consumer<SegmentSection> configurator);
+        ContentSection emptyState(String title);
     }
 
     interface FooterSection {

@@ -1,0 +1,109 @@
+/* -----------------------------------------------------------------------
+ * NotFoundPage — generic centered 404 error layout (TailAdmin inspired)
+ * ----------------------------------------------------------------------- */
+
+.iyen-notfound {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 2.5rem 1.5rem;
+  text-align: center;
+  color: #1a2231;
+  font-family: var(--lumo-font-family, "Inter", system-ui, sans-serif);
+  background-color: var(--surface-0, #ffffff);
+  background-image:
+    linear-gradient(rgba(70, 95, 255, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(70, 95, 255, 0.06) 1px, transparent 1px);
+  background-size: 44px 44px;
+  background-position: center;
+}
+
+/* Demo / embedded usage: constrain height instead of full viewport. */
+.iyen-notfound--boxed {
+  min-height: 620px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.iyen-notfound__brand-logo {
+  display: inline-flex;
+  color: #465fff;
+  margin-bottom: 2.5rem;
+}
+
+.iyen-notfound__content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
+  max-width: 480px;
+  margin: auto;
+}
+
+.iyen-notfound__eyebrow {
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: #465fff;
+}
+
+.iyen-notfound__illustration {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.iyen-notfound__code {
+  font-size: clamp(6rem, 22vw, 12rem);
+  font-weight: 800;
+  line-height: 1;
+  background: linear-gradient(135deg, #1a2231 0%, #465fff 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.iyen-notfound__message {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 500;
+  color: #344054;
+  line-height: 1.5;
+}
+
+.iyen-notfound__button {
+  height: 3rem;
+  padding: 0 1.5rem;
+  border-radius: 10px;
+  background: #465fff;
+  color: #ffffff;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: background 0.15s ease;
+}
+
+.iyen-notfound__button:hover {
+  background: #3641f5;
+}
+
+.iyen-notfound__footer {
+  margin: 2.5rem 0 0;
+  color: #98a2b3;
+  font-size: 0.875rem;
+}
+
+/* ── Responsive ────────────────────────────────────────────────────────── */
+
+@media (max-width: 480px) {
+  .iyen-notfound__message {
+    font-size: 1.0625rem;
+  }
+}

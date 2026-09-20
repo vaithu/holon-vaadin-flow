@@ -1,0 +1,131 @@
+/*
+ * ribbon.css
+ *
+ * Styles for Ribbon — a card decorated with a corner/edge ribbon label.
+ * Inspired by the TailAdmin "Ribbons" template.
+ *
+ * BEM namespace: .ribbon-card
+ *
+ * Structure:
+ *   .ribbon-card              — <div> root card (position: relative, clips ribbons)
+ *   .ribbon-card__content     — card content wrapper
+ *   .ribbon                   — the ribbon label
+ *   .ribbon--rounded          — rounded pill (top-left)
+ *   .ribbon--shape            — flag-shaped ribbon with notch + fold (top-left)
+ *   .ribbon--filed            — diagonal corner banner (top-right)
+ *   .ribbon--{color}          — colour modifiers
+ */
+
+/* -----------------------------------------------------------------------
+ * Card
+ * ----------------------------------------------------------------------- */
+
+.ribbon-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 12px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  background: var(--surface-0, #ffffff);
+  box-shadow: 0 1px 3px rgba(16, 24, 40, 0.06);
+}
+
+.ribbon-card__content {
+  padding: 2.75rem 1.5rem 1.5rem;
+  color: #344054;
+  font-size: 0.9375rem;
+  line-height: 1.6;
+}
+
+/* -----------------------------------------------------------------------
+ * Ribbon — base label
+ * ----------------------------------------------------------------------- */
+
+.ribbon {
+  position: absolute;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+/* ── Rounded ─────────────────────────────────────────────────────────────
+ * A pill anchored to the top-left edge, rounded on the right side.
+ */
+.ribbon--rounded {
+  top: 1.25rem;
+  left: 0;
+  padding: 0.5rem 1rem;
+  border-radius: 0 9999px 9999px 0;
+}
+
+/* ── Shape ───────────────────────────────────────────────────────────────
+ * A flag-shaped ribbon with a notched (chevron) tail on the right and a
+ * small folded corner beneath the left edge.
+ */
+.ribbon--shape {
+  top: 1.25rem;
+  left: 0;
+  padding: 0.5rem 1.5rem 0.5rem 1rem;
+  clip-path: polygon(0 0, 100% 0, calc(100% - 0.75rem) 50%, 100% 100%, 0 100%);
+}
+
+/* Folded corner: a darker triangle just below the ribbon's left edge. */
+.ribbon--shape::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 100%;
+  border-width: 0 0.5rem 0.5rem 0;
+  border-style: solid;
+  border-color: transparent;
+}
+
+/* ── Filed ───────────────────────────────────────────────────────────────
+ * A diagonal banner across the top-right corner (45deg). The card's
+ * overflow:hidden clips the banner ends into a clean corner.
+ */
+.ribbon--filed {
+  top: 1.15rem;
+  right: -2.75rem;
+  width: 10rem;
+  padding: 0.375rem 0;
+  transform: rotate(45deg);
+  box-shadow: 0 1px 2px rgba(16, 24, 40, 0.25);
+}
+
+/* -----------------------------------------------------------------------
+ * Colour modifiers
+ * ----------------------------------------------------------------------- */
+
+.ribbon--primary { background: #465fff; }
+.ribbon--primary.ribbon--shape::after { border-bottom-color: #2f43cc; }
+
+.ribbon--success { background: #12b76a; }
+.ribbon--success.ribbon--shape::after { border-bottom-color: #0e9355; }
+
+.ribbon--warning { background: #f79009; }
+.ribbon--warning.ribbon--shape::after { border-bottom-color: #c56f05; }
+
+.ribbon--error { background: #f04438; }
+.ribbon--error.ribbon--shape::after { border-bottom-color: #c1352b; }
+
+.ribbon--info { background: #36bffa; }
+.ribbon--info.ribbon--shape::after { border-bottom-color: #0ba5ec; }
+
+.ribbon--dark { background: #1d2939; }
+.ribbon--dark.ribbon--shape::after { border-bottom-color: #101828; }
+
+/* -----------------------------------------------------------------------
+ * Card grid — a wrapping responsive layout for a group of ribbon cards
+ * ----------------------------------------------------------------------- */
+
+.ribbon-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+}

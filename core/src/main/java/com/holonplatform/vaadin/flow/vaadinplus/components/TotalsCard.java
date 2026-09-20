@@ -20,6 +20,7 @@ import com.holonplatform.vaadin.flow.components.Components;
 import com.holonplatform.vaadin.flow.components.Input;
 import com.holonplatform.vaadin.flow.components.builders.TotalsCardBuilder;
 import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
+import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.html.Div;
@@ -143,6 +144,7 @@ public class TotalsCard extends Div {
     private TotalsGauge gauge;
 
     private Div rowsContainer;
+    private String emptyStateTitle;
 
     private Div termsDiv;
     private Div sliderRow;
@@ -202,6 +204,7 @@ public class TotalsCard extends Div {
             return;
         }
         rows.add(row);
+        removeEmptyState();
         rowsContainer().add(row);
     }
 
@@ -245,6 +248,7 @@ public class TotalsCard extends Div {
     public void removeRow(TotalsRow row) {
         if (row != null && rows.remove(row) && rowsContainer != null) {
             rowsContainer.remove(row);
+            syncEmptyState();
         }
     }
 
@@ -256,6 +260,7 @@ public class TotalsCard extends Div {
             rows.forEach(rowsContainer::remove);
         }
         rows.clear();
+        syncEmptyState();
     }
 
     private Div rowsContainer() {
@@ -265,6 +270,18 @@ public class TotalsCard extends Div {
             add(rowsContainer);
         }
         return rowsContainer;
+    }
+
+    /**
+     * Sets the empty-state title shown when the card has no rows.
+     *
+     * @param title empty-state title; {@code null} clears it
+     * @return this (fluent)
+     */
+    public TotalsCard setEmptyState(String title) {
+        this.emptyStateTitle = title;
+        syncEmptyState();
+        return this;
     }
 
     // -----------------------------------------------------------------------
@@ -421,6 +438,26 @@ public class TotalsCard extends Div {
      */
     public TotalsGauge getGauge() {
         return gauge;
+    }
+
+    /**
+     * Returns the primary action {@link Button}, if configured (e.g. for per-user
+     * visibility/authorization control).
+     *
+     * @return the primary action button, or {@code null} if not configured
+     */
+    public Button getPrimaryActionButton() {
+        return primaryActionButton;
+    }
+
+    /**
+     * Returns the secondary action {@link Button}, if configured (e.g. for per-user
+     * visibility/authorization control).
+     *
+     * @return the secondary action button, or {@code null} if not configured
+     */
+    public Button getSecondaryActionButton() {
+        return secondaryActionButton;
     }
 
     // -----------------------------------------------------------------------
@@ -601,5 +638,24 @@ public class TotalsCard extends Div {
         return LocalizationProvider.localize(localizable)
                 .orElseGet(() -> localizable.getMessage() != null ? localizable.getMessage() : "");
     }
-}
 
+    private void syncEmptyState() {
+        removeEmptyState();
+        if (rows.isEmpty() && emptyStateTitle != null && !emptyStateTitle.isBlank()) {
+            add(buildEmptyState());
+        }
+    }
+
+    private Empty buildEmptyState() {
+        Empty emptyState = new Empty();
+        emptyState.setTitle(emptyStateTitle);
+        return emptyState;
+    }
+
+    private void removeEmptyState() {
+        getChildren()
+                .filter(component -> component instanceof Empty)
+                .findFirst()
+                .ifPresent(this::remove);
+    }
+}

@@ -6,6 +6,7 @@ import com.holonplatform.vaadin.flow.components.HasComponent;
 import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
 import com.holonplatform.vaadin.flow.vaadinplus.components.ItemLineEditor.Column;
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.Composite;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.dependency.StyleSheet;
@@ -386,7 +387,20 @@ public class LineItemGrid extends Composite<Div> implements HasComponent {
     }
 
     private static String fmt(double value) {
-        return NumberFormat.getNumberInstance(Locale.US).format(value);
+        // Per-user locale, not a hardcoded Locale.US: grouping and decimal separators differ
+        // per tenant and getNumberInstance is cheap enough to resolve per call.
+        return NumberFormat.getNumberInstance(currentLocale()).format(value);
+    }
+
+    /**
+     * @return the locale of the current user, falling back to the JVM default only outside a UI
+     */
+    private static Locale currentLocale() {
+        final UI ui = UI.getCurrent();
+        if (ui != null && ui.getLocale() != null) {
+            return ui.getLocale();
+        }
+        return LocalizationProvider.getCurrentLocale().orElseGet(Locale::getDefault);
     }
 
     // ── Builder ───────────────────────────────────────────────────────────────

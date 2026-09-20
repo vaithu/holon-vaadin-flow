@@ -31,6 +31,7 @@ public interface HeroStripConfigurator<C extends HeroStripConfigurator<C>>
     C cell(HeroStrip.Cell cell);
     C cells(List<HeroStrip.Cell> cells);
     C cell(Consumer<CellSection> configurator);
+    C emptyState(String title);
 
     static BaseHeroStripConfigurator configure(HeroStrip strip) {
         return new DefaultHeroStripConfigurator(strip);
@@ -55,4 +56,3 @@ public interface HeroStripConfigurator<C extends HeroStripConfigurator<C>>
         HeaderSection meta(String meta);
     }
 }
-

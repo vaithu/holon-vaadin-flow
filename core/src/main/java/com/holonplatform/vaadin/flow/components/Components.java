@@ -60,6 +60,11 @@ import com.holonplatform.vaadin.flow.vaadinplus.components.*;
 import com.holonplatform.vaadin.flow.vaadinplus.components.Footer;
 import com.holonplatform.vaadin.flow.vaadinplus.components.Header;
 import com.iyensoft.vaadin.flow.components.Panel;
+import com.iyensoft.vaadin.flow.components.NotFoundPage;
+import com.iyensoft.vaadin.flow.components.ResetPasswordPage;
+import com.iyensoft.vaadin.flow.components.SignInPage;
+import com.iyensoft.vaadin.flow.components.SignUpPage;
+import com.iyensoft.vaadin.flow.components.TwoStepVerificationPage;
 import com.iyensoft.vaadin.flow.components.builders.*;
 import com.iyensoft.vaadin.flow.internal.components.builders.MobileGridColumnBuilder;
 import com.vaadin.flow.component.ClickNotifier;
@@ -223,6 +228,14 @@ public interface Components {
 
     static GridHeaderBuilder gridHeader(LabelBuilder<?> labelBuilder) {
         return GridHeaderBuilder.create(labelBuilder);
+    }
+
+    static GridToolbarBuilder gridToolbar() {
+        return GridToolbarBuilder.create();
+    }
+
+    static GridToolbarBuilder gridToolbar(Component... components) {
+        return GridToolbarBuilder.create(components);
     }
 
     static TabsBuilder tabs() {
@@ -511,6 +524,63 @@ public interface Components {
      */
     static AvatarBuilder avatar(String name, String imageUrl) {
         return AvatarBuilder.create(name, imageUrl);
+    }
+
+    /**
+     * Gets a builder to create an empty {@link com.vaadin.flow.component.popover.Popover}.
+     *
+     * @return A new {@link PopoverBuilder}
+     */
+    static PopoverBuilder popover() {
+        return PopoverBuilder.create();
+    }
+
+    /**
+     * Gets a builder to create a {@link com.vaadin.flow.component.popover.Popover} with initial content.
+     *
+     * @param components Initial popover content
+     * @return A new {@link PopoverBuilder}
+     */
+    static PopoverBuilder popover(Component... components) {
+        return PopoverBuilder.create(components);
+    }
+
+    /**
+     * Gets a builder to create an empty Material 3 app bar.
+     *
+     * @return a new {@link MaterialAppBarBuilder}
+     */
+    static MaterialAppBarBuilder materialAppBar() {
+        return MaterialAppBarBuilder.create();
+    }
+
+    /**
+     * Gets a builder to create a Material 3 app bar with leading components.
+     *
+     * @param components components to add to the leading slot
+     * @return a new {@link MaterialAppBarBuilder}
+     */
+    static MaterialAppBarBuilder materialAppBar(Component... components) {
+        return MaterialAppBarBuilder.create(components);
+    }
+
+    /**
+     * Gets a builder to create an empty standalone Material 3 content header.
+     *
+     * @return a new {@link MaterialHeaderBuilder}
+     */
+    static MaterialHeaderBuilder materialHeader() {
+        return MaterialHeaderBuilder.create();
+    }
+
+    /**
+     * Gets a builder to create a Material 3 content header with leading components.
+     *
+     * @param components components to add to the leading slot
+     * @return a new {@link MaterialHeaderBuilder}
+     */
+    static MaterialHeaderBuilder materialHeader(Component... components) {
+        return MaterialHeaderBuilder.create(components);
     }
 
     /**
@@ -896,6 +966,49 @@ public interface Components {
     }
 
     // -----------------------------------------------------------------------
+    // Ribbon (card decorated with a corner/edge ribbon label, TailAdmin inspired)
+    // -----------------------------------------------------------------------
+
+    /**
+     * Get a {@link RibbonBuilder} to create a {@link Ribbon} — a card decorated with a
+     * corner/edge ribbon label.
+     *
+     * <pre>{@code
+     * Ribbon card = Components.ribbon()
+     *     .variant(Ribbon.Variant.ROUNDED)
+     *     .color(Ribbon.Color.SUCCESS)
+     *     .label("Popular")
+     *     .content(new H3("Featured"), new Paragraph("..."))
+     *     .build();
+     * }</pre>
+     *
+     * @return a new {@link RibbonBuilder}
+     */
+    static RibbonBuilder ribbon() {
+        return RibbonBuilder.create();
+    }
+
+    /**
+     * Get a {@link RibbonBuilder} to build the given {@link Ribbon} instance.
+     *
+     * @param ribbon the ribbon to build (not null)
+     * @return a new {@link RibbonBuilder}
+     */
+    static RibbonBuilder ribbon(Ribbon ribbon) {
+        return RibbonBuilder.create(ribbon);
+    }
+
+    /**
+     * Get a {@link RibbonConfigurator} to configure an existing {@link Ribbon} instance.
+     *
+     * @param ribbon the ribbon to configure (not null)
+     * @return a {@link RibbonConfigurator.BaseRibbonConfigurator}
+     */
+    static RibbonConfigurator.BaseRibbonConfigurator configure(Ribbon ribbon) {
+        return RibbonConfigurator.configure(ribbon);
+    }
+
+    // -----------------------------------------------------------------------
     // Separator (shadcn/ui-inspired separator)
     // -----------------------------------------------------------------------
 
@@ -1141,6 +1254,222 @@ public interface Components {
 
     static PanelBuilder panel(Panel panel) {
         return PanelBuilder.create(panel);
+    }
+
+    // -----------------------------------------------------------------------
+    // SignInPage (generic split sign-in layout, TailAdmin inspired)
+    // -----------------------------------------------------------------------
+
+    /**
+     * Get a {@link SignInPageBuilder} to create a {@link SignInPage} — a generic,
+     * theme-agnostic split sign-in layout.
+     *
+     * <pre>{@code
+     * SignInPage page = Components.signInPage()
+     *     .heading("Sign In")
+     *     .brandingTitle("Acme")
+     *     .withSignInListener(e -> authenticate(e.getEmail(), e.getPassword()))
+     *     .build();
+     * }</pre>
+     *
+     * @return a new {@link SignInPageBuilder}
+     */
+    static SignInPageBuilder signInPage() {
+        return SignInPageBuilder.create();
+    }
+
+    /**
+     * Get a {@link SignInPageBuilder} to build the given {@link SignInPage} instance.
+     *
+     * @param signInPage the sign-in page to build (not null)
+     * @return a new {@link SignInPageBuilder}
+     */
+    static SignInPageBuilder signInPage(SignInPage signInPage) {
+        return SignInPageBuilder.create(signInPage);
+    }
+
+    /**
+     * Get a {@link SignInPageConfigurator} to configure an existing {@link SignInPage} instance.
+     *
+     * @param signInPage the sign-in page to configure (not null)
+     * @return a {@link SignInPageConfigurator.BaseSignInPageConfigurator}
+     */
+    static SignInPageConfigurator.BaseSignInPageConfigurator configure(SignInPage signInPage) {
+        return SignInPageConfigurator.configure(signInPage);
+    }
+
+    // -----------------------------------------------------------------------
+    // SignUpPage (generic split sign-up layout, TailAdmin inspired)
+    // -----------------------------------------------------------------------
+
+    /**
+     * Get a {@link SignUpPageBuilder} to create a {@link SignUpPage} — a generic,
+     * theme-agnostic split sign-up layout.
+     *
+     * <pre>{@code
+     * SignUpPage page = Components.signUpPage()
+     *     .heading("Sign Up")
+     *     .brandingTitle("Acme")
+     *     .withSignUpListener(e -> register(e.getEmail(), e.getPassword()))
+     *     .build();
+     * }</pre>
+     *
+     * @return a new {@link SignUpPageBuilder}
+     */
+    static SignUpPageBuilder signUpPage() {
+        return SignUpPageBuilder.create();
+    }
+
+    /**
+     * Get a {@link SignUpPageBuilder} to build the given {@link SignUpPage} instance.
+     *
+     * @param signUpPage the sign-up page to build (not null)
+     * @return a new {@link SignUpPageBuilder}
+     */
+    static SignUpPageBuilder signUpPage(SignUpPage signUpPage) {
+        return SignUpPageBuilder.create(signUpPage);
+    }
+
+    /**
+     * Get a {@link SignUpPageConfigurator} to configure an existing {@link SignUpPage} instance.
+     *
+     * @param signUpPage the sign-up page to configure (not null)
+     * @return a {@link SignUpPageConfigurator.BaseSignUpPageConfigurator}
+     */
+    static SignUpPageConfigurator.BaseSignUpPageConfigurator configure(SignUpPage signUpPage) {
+        return SignUpPageConfigurator.configure(signUpPage);
+    }
+
+    // -----------------------------------------------------------------------
+    // ResetPasswordPage (generic split reset-password layout, TailAdmin inspired)
+    // -----------------------------------------------------------------------
+
+    /**
+     * Get a {@link ResetPasswordPageBuilder} to create a {@link ResetPasswordPage} — a generic,
+     * theme-agnostic split reset-password ("forgot password") layout.
+     *
+     * <pre>{@code
+     * ResetPasswordPage page = Components.resetPasswordPage()
+     *     .heading("Forgot Your Password?")
+     *     .brandingTitle("Acme")
+     *     .withResetPasswordListener(e -> sendResetLink(e.getEmail()))
+     *     .build();
+     * }</pre>
+     *
+     * @return a new {@link ResetPasswordPageBuilder}
+     */
+    static ResetPasswordPageBuilder resetPasswordPage() {
+        return ResetPasswordPageBuilder.create();
+    }
+
+    /**
+     * Get a {@link ResetPasswordPageBuilder} to build the given {@link ResetPasswordPage} instance.
+     *
+     * @param resetPasswordPage the reset-password page to build (not null)
+     * @return a new {@link ResetPasswordPageBuilder}
+     */
+    static ResetPasswordPageBuilder resetPasswordPage(ResetPasswordPage resetPasswordPage) {
+        return ResetPasswordPageBuilder.create(resetPasswordPage);
+    }
+
+    /**
+     * Get a {@link ResetPasswordPageConfigurator} to configure an existing {@link ResetPasswordPage}
+     * instance.
+     *
+     * @param resetPasswordPage the reset-password page to configure (not null)
+     * @return a {@link ResetPasswordPageConfigurator.BaseResetPasswordPageConfigurator}
+     */
+    static ResetPasswordPageConfigurator.BaseResetPasswordPageConfigurator configure(
+            ResetPasswordPage resetPasswordPage) {
+        return ResetPasswordPageConfigurator.configure(resetPasswordPage);
+    }
+
+    // -----------------------------------------------------------------------
+    // TwoStepVerificationPage (generic split 2-step verification layout, TailAdmin inspired)
+    // -----------------------------------------------------------------------
+
+    /**
+     * Get a {@link TwoStepVerificationPageBuilder} to create a {@link TwoStepVerificationPage} — a
+     * generic, theme-agnostic split two-step verification layout with a six-digit code field.
+     *
+     * <pre>{@code
+     * TwoStepVerificationPage page = Components.twoStepVerificationPage()
+     *     .heading("Two Step Verification")
+     *     .brandingTitle("Acme")
+     *     .withVerifyCodeListener(e -> verifyCode(e.getCode()))
+     *     .withResendCodeListener(e -> resendCode())
+     *     .build();
+     * }</pre>
+     *
+     * @return a new {@link TwoStepVerificationPageBuilder}
+     */
+    static TwoStepVerificationPageBuilder twoStepVerificationPage() {
+        return TwoStepVerificationPageBuilder.create();
+    }
+
+    /**
+     * Get a {@link TwoStepVerificationPageBuilder} to build the given
+     * {@link TwoStepVerificationPage} instance.
+     *
+     * @param twoStepVerificationPage the two-step verification page to build (not null)
+     * @return a new {@link TwoStepVerificationPageBuilder}
+     */
+    static TwoStepVerificationPageBuilder twoStepVerificationPage(
+            TwoStepVerificationPage twoStepVerificationPage) {
+        return TwoStepVerificationPageBuilder.create(twoStepVerificationPage);
+    }
+
+    /**
+     * Get a {@link TwoStepVerificationPageConfigurator} to configure an existing
+     * {@link TwoStepVerificationPage} instance.
+     *
+     * @param twoStepVerificationPage the two-step verification page to configure (not null)
+     * @return a {@link TwoStepVerificationPageConfigurator.BaseTwoStepVerificationPageConfigurator}
+     */
+    static TwoStepVerificationPageConfigurator.BaseTwoStepVerificationPageConfigurator configure(
+            TwoStepVerificationPage twoStepVerificationPage) {
+        return TwoStepVerificationPageConfigurator.configure(twoStepVerificationPage);
+    }
+
+    // -----------------------------------------------------------------------
+    // NotFoundPage (generic centered 404 error layout, TailAdmin inspired)
+    // -----------------------------------------------------------------------
+
+    /**
+     * Get a {@link NotFoundPageBuilder} to create a {@link NotFoundPage} — a generic,
+     * theme-agnostic centered 404 "page not found" layout.
+     *
+     * <pre>{@code
+     * NotFoundPage page = Components.notFoundPage()
+     *     .message("We can't find that page.")
+     *     .homeTarget(HomeView.class)
+     *     .build();
+     * }</pre>
+     *
+     * @return a new {@link NotFoundPageBuilder}
+     */
+    static NotFoundPageBuilder notFoundPage() {
+        return NotFoundPageBuilder.create();
+    }
+
+    /**
+     * Get a {@link NotFoundPageBuilder} to build the given {@link NotFoundPage} instance.
+     *
+     * @param notFoundPage the not-found page to build (not null)
+     * @return a new {@link NotFoundPageBuilder}
+     */
+    static NotFoundPageBuilder notFoundPage(NotFoundPage notFoundPage) {
+        return NotFoundPageBuilder.create(notFoundPage);
+    }
+
+    /**
+     * Get a {@link NotFoundPageConfigurator} to configure an existing {@link NotFoundPage} instance.
+     *
+     * @param notFoundPage the not-found page to configure (not null)
+     * @return a {@link NotFoundPageConfigurator.BaseNotFoundPageConfigurator}
+     */
+    static NotFoundPageConfigurator.BaseNotFoundPageConfigurator configure(NotFoundPage notFoundPage) {
+        return NotFoundPageConfigurator.configure(notFoundPage);
     }
 
     /**
@@ -3823,8 +4152,8 @@ public interface Components {
      *
      * @return a new {@link ArAgingBarBuilder}
      */
-    static com.holonplatform.vaadin.flow.components.builders.ArAgingBarBuilder arAgingBar() {
-        return com.holonplatform.vaadin.flow.components.builders.ArAgingBarBuilder.create();
+    static ArAgingBarBuilder arAgingBar() {
+        return ArAgingBarBuilder.create();
     }
 
     // -----------------------------------------------------------------------
@@ -3855,8 +4184,8 @@ public interface Components {
      *
      * @return a new {@link HeroStripBuilder}
      */
-    static com.holonplatform.vaadin.flow.components.builders.HeroStripBuilder heroStrip() {
-        return com.holonplatform.vaadin.flow.components.builders.HeroStripBuilder.create();
+    static HeroStripBuilder heroStrip() {
+        return HeroStripBuilder.create();
     }
 
     // -----------------------------------------------------------------------
@@ -4057,8 +4386,8 @@ public interface Components {
      *
      * @return a new {@link FormStepCardBuilder}
      */
-    static com.holonplatform.vaadin.flow.components.builders.FormStepCardBuilder formStepCard() {
-        return com.holonplatform.vaadin.flow.components.builders.FormStepCardBuilder.create();
+    static FormStepCardBuilder formStepCard() {
+        return FormStepCardBuilder.create();
     }
 
     /**
@@ -4092,8 +4421,8 @@ public interface Components {
      *
      * @return a new {@link EntityCreationFormBuilder}
      */
-    static com.holonplatform.vaadin.flow.components.builders.EntityCreationFormBuilder entityCreationForm() {
-        return com.holonplatform.vaadin.flow.components.builders.EntityCreationFormBuilder.create();
+    static EntityCreationFormBuilder entityCreationForm() {
+        return EntityCreationFormBuilder.create();
     }
 
 }

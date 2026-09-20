@@ -63,6 +63,12 @@ public abstract class AbstractArAgingBarConfigurator<C extends ArAgingBarConfigu
     }
 
     @Override
+    public C emptyState(String title) {
+        getComponent().setEmptyState(title);
+        return getConfigurator();
+    }
+
+    @Override
     public C leftStat(String text) {
         getComponent().setLeftStat(text);
         return getConfigurator();
@@ -136,6 +142,11 @@ public abstract class AbstractArAgingBarConfigurator<C extends ArAgingBarConfigu
                         });
                         getComponent().addSegment(new Segment(key[0], value[0], pct[0], color[0]));
                     }
+                    return this;
+                }
+                @Override
+                public ArAgingBarConfigurator.ContentSection emptyState(String title) {
+                    getComponent().setEmptyState(title);
                     return this;
                 }
             });

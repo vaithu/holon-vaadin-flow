@@ -21,6 +21,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
  * wiring is needed.  Tests cover both positive paths and error/edge cases.
  */
 @DisplayName("ChatService unit tests")
+@SuppressWarnings("deprecation")
 class DefaultChatServiceTest {
 
     // We test via an in-memory stub that mirrors the DefaultChatService contract,
@@ -42,6 +43,7 @@ class DefaultChatServiceTest {
 
         @Test
         @DisplayName("findAllChannels returns only CHANNEL type rooms sorted by name")
+        @SuppressWarnings("deprecation")
         void findAllChannels_returnsChannelsSortedByName() {
             service.saveRoom(ChatRoom.channel("b", "beta", null));
             service.saveRoom(ChatRoom.channel("a", "alpha", null));

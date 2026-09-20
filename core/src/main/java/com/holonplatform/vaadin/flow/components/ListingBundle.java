@@ -16,33 +16,24 @@
 package com.holonplatform.vaadin.flow.components;
 
 import com.holonplatform.core.internal.utils.FormatUtils;
+import com.holonplatform.vaadin.flow.components.utils.UIUtils;
+import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
 import com.holonplatform.vaadin.flow.vaadinplus.ResponsiveDiv;
 import com.holonplatform.vaadin.flow.vaadinplus.components.DynamicFilterPanel;
 import com.holonplatform.vaadin.flow.vaadinplus.components.Empty;
-import com.holonplatform.vaadin.flow.vaadinplus.components.GridHeader;
+import com.holonplatform.vaadin.flow.vaadinplus.components.GridToolbar;
 import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.combobox.ComboBox;
-import com.vaadin.flow.component.contextmenu.ContextMenu;
-import com.vaadin.flow.component.contextmenu.MenuItem;
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridSortOrder;
 import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.component.html.Span;
-import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
-import com.vaadin.flow.component.menubar.MenuBar;
-import com.vaadin.flow.component.menubar.MenuBarVariant;
-import com.vaadin.flow.component.orderedlayout.FlexComponent;
-import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
-import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.provider.SortDirection;
-import com.vaadin.flow.theme.lumo.LumoIcon;
+import org.vaadin.lineawesome.LineAwesomeIcon;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -99,117 +90,75 @@ import java.util.Optional;
 @StyleSheet("context://mobile-list-lit-renderer.css")
 public final class ListingBundle<T> extends Div {
 
-    /**
-     * An extra item contributed to the options menu via
-     * {@link ListingBundleBuilder#withMenuAction(String, Runnable)} or
-     * {@link ListingBundleBuilder#withMenuAction(VaadinIcon, String, Runnable)}.
-     *
-     * @param icon   optional icon shown to the left of the label ({@code null} = text-only)
-     * @param label  display text of the menu item
-     * @param action action to execute when the item is clicked
-     */
-    public record MenuAction(VaadinIcon icon, String label, Runnable action) {
-        /** Convenience factory — no icon. */
-        public static MenuAction of(String label, Runnable action) { return new MenuAction(null, label, action); }
-        /** Convenience factory — with icon. */
-        public static MenuAction of(VaadinIcon icon, String label, Runnable action) { return new MenuAction(icon, label, action); }
-    }
+    // Sort dialog constants
+    private static final String SORT_DIR_ASCENDING = "Ascending";
+    private static final String SORT_DIR_DESCENDING = "Descending";
 
-    private final ItemListing<T, ?>                listing;
-    private final ItemListingPaginationBar<T, ?>    bar;
+    private final ItemListing<T, ?> listing;
+    private final ItemListingPaginationBar<T, ?> bar;
     private final ItemListingPageSizeSelector<T, ?> selector;
-    /** {@code null} when {@code search(String)} was not called on the builder. */
-    private final TextField                         search;
-    /** {@code null} when {@code withFilterPanel()} was not called on the builder. */
-    private final DynamicFilterPanel<T>             filterPanel;
-    private final List<MenuAction>                  menuActions;
-    /** Optional import action; when {@code null} the Import menu item is hidden. */
-    private final Runnable                          importAction;
-    /** Optional export action; when {@code null} the Export menu item is hidden. */
-    private final Runnable                          exportAction;
-    private final String                            advancedSearchLabel;
-    /** Explicit column keys supplied by the builder via {@code columns(...)}. */
-    private final List<String>                      columnKeys;
     /**
-     * When {@code true} (default) the filter dialog retains its values between
-     * open/close cycles.  When {@code false} the panel is reset every time the
-     * dialog is opened so the user always starts with a blank slate.
+     * {@code null} when {@code withFilterPanel()} was not called on the builder.
      */
-    private final boolean                           retainFilterValues;
-    /** Title for the GridHeader (null = legacy toolbar mode). */
-    private final String                            gridHeaderTitle;
-    /** Context actions to show in the GridHeader when rows are selected. */
-    private final Component[]                       gridHeaderContextComponents;
-    /** Cached standalone grid header component, created lazily. */
-    private GridHeader                              gridHeader;
-    /** Lazily-created dialog that hosts the {@link DynamicFilterPanel}. Created once on first call to {@link #toolbar()}. */
-    private Dialog                                  filterDialog;
-    /** Trigger component that opens the options menu. */
-    private Component                               filterOptionsTrigger;
-    /** The Advanced Search menu item, when rendered. */
-    private MenuItem                                advancedSearchMenuItem;
-    /** Small badge shown when filters are active. */
-    private Span                                    filterIndicatorBadge;
-    /** Prevent duplicate filter-change listener registration. */
-    private boolean                                 filterIndicatorListenerRegistered;
-    /** Whether the grid is currently in paginated mode (true) or default virtual scroll mode (false). Default is virtual scroll. */
-    private boolean                                 paginatedMode;
-    /** Cached toolbar div so repeated access returns the same instance. */
-    private Div                                     toolbarDiv;
-    /** Cached footer div so visibility can be toggled. */
-    private Div                                     footerDiv;
-    /** Shown when the dataset is genuinely empty (no search/filter active). {@code null} = feature disabled. */
-    private final Empty                             emptyState;
-    /** Shown when search/filter is active but yields no results. {@code null} = feature disabled. */
-    private final Empty                             noResultsState;
+    private final DynamicFilterPanel<T> filterPanel;
+    /**
+     * Cached plain title label, created lazily.
+     */
+    private Component headerTitle;
+    /**
+     * Whether the grid is currently in paginated mode (true) or default virtual scroll mode (false). Default is virtual scroll.
+     */
+    private boolean paginatedMode;
+    /**
+     * Cached toolbar so repeated access returns the same instance.
+     */
+    private GridToolbar gridToolbar;
+    /**
+     * Cached footer div so visibility can be toggled.
+     */
+    private Div footerDiv;
+    /**
+     * Shown when the dataset is genuinely empty (no search/filter active). {@code null} = feature disabled.
+     */
+    private final Empty emptyState;
+    /**
+     * Shown when search/filter is active but yields no results. {@code null} = feature disabled.
+     */
+    private final Empty noResultsState;
 
-    public ListingBundle(ItemListing<T, ?>                listing,
-                         ItemListingPaginationBar<T, ?>    bar,
+    public ListingBundle(ItemListing<T, ?> listing,
+                         ItemListingPaginationBar<T, ?> bar,
                          ItemListingPageSizeSelector<T, ?> selector,
-                         TextField                         search,
-                         DynamicFilterPanel<T>             filterPanel,
-                         List<MenuAction>                  menuActions,
-                         Runnable                          importAction,
-                         Runnable                          exportAction,
-                         String                            advancedSearchLabel,
-                         boolean                           retainFilterValues,
-                         String                            gridHeaderTitle,
-                         Component[]                       gridHeaderContextComponents,
-                         List<String>                      columnKeys,
-                         boolean                           paginatedMode,
-                         Empty                             emptyState,
-                         Empty                             noResultsState) {
+                         GridToolbar toolbar,
+                         DynamicFilterPanel<T> filterPanel,
+                         String title,
+                         boolean paginatedMode,
+                         Empty emptyState,
+                         Empty noResultsState) {
         super();
-        this.listing             = listing;
-        this.bar                 = bar;
-        this.selector            = selector;
-        this.search              = search;
-        this.filterPanel         = filterPanel;
-        this.menuActions         = menuActions != null ? menuActions : List.of();
-        this.importAction        = importAction;
-        this.exportAction        = exportAction;
-        this.advancedSearchLabel = advancedSearchLabel != null ? advancedSearchLabel : "Advanced Search";
-        this.columnKeys          = columnKeys != null ? List.copyOf(columnKeys) : List.of();
-        this.retainFilterValues  = retainFilterValues;
-        this.gridHeaderTitle     = gridHeaderTitle;
-        this.gridHeaderContextComponents = gridHeaderContextComponents != null ? gridHeaderContextComponents.clone() : null;
-        this.paginatedMode       = paginatedMode;
-        this.emptyState          = emptyState;
-        this.noResultsState      = noResultsState;
+        this.listing = listing;
+        this.bar = bar;
+        this.selector = selector;
+        this.filterPanel = filterPanel;
+        this.paginatedMode = paginatedMode;
+        this.emptyState = emptyState;
+        this.noResultsState = noResultsState;
 
         // When explicitly starting in paginated mode, switch the selector (which defaults to
         // virtual-scroll) so the first data fetch uses page-based offsets and fixed count.
         if (paginatedMode && selector != null) {
             selector.setPaginatedMode(true);
         }
-
         // Make the grid fill its container by default — avoids every view having
         // to set width/flex manually. The rule lives in pagination.css.
         listing.getComponent().addClassName("listing-bundle-grid");
 
-        var header = header();
-        if (header != null) {
-            add(header);
+        if (title != null) {
+            headerTitle = Components.h2()
+                    .text(title)
+                    .styleName("listing-header-title")
+                    .build();
+            add(headerTitle);
         }
 
         if (emptyState != null || noResultsState != null) {
@@ -218,8 +167,10 @@ public final class ListingBundle<T> extends Div {
                 // slot is occupied by the wrapper; onDataFetched() toggles each child's
                 // visibility inside the wrapper to show the correct state.
                 noResultsState.setVisible(false); // emptyState is shown by default
-                var wrapper = new Div(emptyState, noResultsState);
-                wrapper.addClassName("listing-empty-state-wrapper");
+                var wrapper = Components.div()
+                        .styleName("listing-empty-state-wrapper")
+                        .add(emptyState, noResultsState)
+                        .build();
                 listing.setEmptyStateComponent(wrapper);
             } else {
                 // Single state: set it directly; the Grid shows/hides it automatically.
@@ -227,11 +178,69 @@ public final class ListingBundle<T> extends Div {
             }
         }
 
-        add(toolbar(), listing.getComponent(), footer());
+        gridToolbar = toolbar;
+        if (selector != null) {
+            gridToolbar.addComponentAsFirst(selector);
+        }
+
+        // Configure options menu - set what features are available
+//        var grid = (Grid<T>) listing.getComponent();
+        var managedColumns = getManagedColumns(listing);
+        boolean hasColumnManagement = managedColumns.size() > 1;
+
+        gridToolbar.enableOptionsMenu();
+        gridToolbar.refresh(true);
+        gridToolbar.sort(hasColumnManagement);
+        gridToolbar.resetColumnWidths(hasColumnManagement);
+        gridToolbar.showHideColumns(hasColumnManagement);
+        gridToolbar.viewModeToggle(true);
+
+        // Now add the actual implementations in the options menu
+        if (gridToolbar.isRefreshEnabled()) {
+            gridToolbar.addOptionsMenuAction(LineAwesomeIcon.SYNC_SOLID.create(), "Refresh",
+                                             "grid_toolbar.options_refresh",
+                                             () -> listing.getDataProvider().refreshAll());
+        }
+
+        if (gridToolbar.isSortEnabled()) {
+            gridToolbar.addOptionsMenuAction(LineAwesomeIcon.SORT_SOLID.create(), "Sort…",
+                                             "grid_toolbar.options_sort",
+                                             () -> openSortDialog(listing, managedColumns));
+        }
+
+        if (gridToolbar.isResetColumnWidthsEnabled()) {
+            gridToolbar.addOptionsMenuAction(LineAwesomeIcon.COMPRESS_ARROWS_ALT_SOLID.create(),
+                                             "Reset column widths", "grid_toolbar.options_reset_widths",
+                                             () -> managedColumns.forEach(col -> col.setAutoWidth(true)));
+        }
+
+        if (gridToolbar.isShowHideColumnsEnabled()) {
+            gridToolbar.addOptionsMenuAction(LineAwesomeIcon.COLUMNS_SOLID.create(), "Show/Hide columns…",
+                                             "grid_toolbar.options_show_hide",
+                                             () -> openShowHideColumnsDialog(managedColumns));
+        }
+
+        if (gridToolbar.isViewModeToggleEnabled()) {
+            gridToolbar.addOptionsMenuAction(LineAwesomeIcon.TH_LARGE_SOLID.create(), "Toggle view mode",
+                                             "grid_toolbar.options_view_mode",
+                                             this::toggleViewMode);
+        }
+
+        add(gridToolbar, listing.getComponent(), footer());
 
         Components.configure(this)
                 .styleName("listing-bundle");
 
+    }
+
+    /**
+     * Sets the grid header component, adding it as the first child of the ListingBundle.
+     */
+    public void setGridHeader(Component header) {
+        if (header != null) {
+            this.headerTitle = header;
+            addComponentAsFirst(header);
+        }
     }
 
     // ── Accessors ──────────────────────────────────────────────────────────
@@ -240,39 +249,52 @@ public final class ListingBundle<T> extends Div {
      * The underlying {@link ItemListing} ({@link BeanListing} or {@link PropertyListing}).
      * Cast to the specific subtype when you need listing-specific methods.
      */
-    public ItemListing<T, ?> listing() { return listing; }
+    public ItemListing<T, ?> listing() {return listing;}
 
-    /** The pagination bar. */
-    public ItemListingPaginationBar<T, ?> bar() { return bar; }
+    /**
+     * The pagination bar.
+     */
+    public ItemListingPaginationBar<T, ?> bar() {return bar;}
 
-    /** The underlying grid component. */
-    @SuppressWarnings("unchecked")
+    /**
+     * The underlying grid component.
+     */
     public Grid<T> grid() {
-        return (Grid<T>) listing.getComponent();
+        return listing.getGrid();
     }
 
-    /** The toolbar container. */
+    /**
+     * The toolbar container.
+     */
     public Div toolbar() {
-        return createToolbar();
+        return gridToolbar;
     }
 
-    /** The footer container. */
+    /**
+     * The footer container.
+     */
     public Div footer() {
         return createFooter();
     }
 
-    /** Optional access to the search field. */
+    /**
+     * Optional access to the search field, backed by the {@link GridToolbar}'s own search input.
+     */
     public Optional<TextField> getSearchOptional() {
-        return Optional.ofNullable(search);
+        return Optional.ofNullable(gridToolbar).map(GridToolbar::getSearchField);
     }
 
-    /** Optional access to the filter panel. */
+    /**
+     * Optional access to the filter panel.
+     */
     public Optional<DynamicFilterPanel<T>> getFilterPanelOptional() {
         return Optional.ofNullable(filterPanel);
     }
 
-    /** The page-size selector (also owns the data binding in managed-fetch mode). */
-    public ItemListingPageSizeSelector<T, ?> selector() { return selector; }
+    /**
+     * The page-size selector (also owns the data binding in managed-fetch mode).
+     */
+    public ItemListingPageSizeSelector<T, ?> selector() {return selector;}
 
     /**
      * Adds an item click listener to the grid and applies a pointer cursor CSS class
@@ -320,7 +342,7 @@ public final class ListingBundle<T> extends Div {
             }
         }
 
-        if (emptyState != null)     emptyState.setVisible(emptyState == toShow);
+        if (emptyState != null) emptyState.setVisible(emptyState == toShow);
         if (noResultsState != null) noResultsState.setVisible(noResultsState == toShow);
     }
 
@@ -329,7 +351,7 @@ public final class ListingBundle<T> extends Div {
      * Used to differentiate "empty dataset" from "search / filter returned no results".
      */
     private boolean isFiltered() {
-        boolean searchActive = search != null && !search.getValue().isBlank();
+        boolean searchActive = gridToolbar != null && !gridToolbar.getSearchField().getValue().isBlank();
         boolean filterActive = filterPanel != null && filterPanel.isAnyActive();
         return searchActive || filterActive;
     }
@@ -337,222 +359,88 @@ public final class ListingBundle<T> extends Div {
     // ── Layout helpers ─────────────────────────────────────────────────────
 
     /**
-     * Returns the {@link GridHeader} when {@code gridHeader(String)} was configured.
-     * The header integrates:
-     * <ul>
-     *   <li>Title (selection-aware — shows "N selected" when rows are selected)</li>
-     *   <li>Default actions: page-size selector + search field + single options menu</li>
-     *   <li>Context actions: Delete / Export (shown when rows are selected)</li>
-     * </ul>
+     * Returns the plain title heading when {@code gridHeader(String)} was configured on the
+     * builder, or {@code null} otherwise.
      *
-     * <p>The returned {@code GridHeader} can be further customized (e.g. content breadcrumbs,
-     * change heading level, set prefix icons). If the builder supplied context actions via
-     * {@code ListingBundleBuilder#gridHeader(Component...)}, those actions are wired here and
-     * shown automatically when rows are selected.</p>
-     *
-     * <p>When no grid header was configured, returns {@code null}.</p>
+     * <p>Search, filter, sort/column-management, view-mode toggle, and selection feedback
+     * (context actions / bulk actions) all live in {@link #toolbar()} regardless of whether
+     * a title is configured — this heading is a static label only.</p>
      */
-    public GridHeader header() {
-        if (gridHeaderTitle == null) return null;
-        if (gridHeader != null) return gridHeader;
+    public Component header() {
+        return headerTitle;
+    }
 
-        // ── Single options menu (⚙ button + ContextMenu) ──────────────────
-        // Using Button+ContextMenu instead of MenuBar avoids the MenuBar overflow
-        // behaviour that collapses the cog icon into a "..." button when the header
-        // row is tight on desktop.
-        var menuButton = new Button(LumoIcon.COG.create());
-        menuButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY, ButtonVariant.LUMO_ICON);
-        menuButton.getElement().setAttribute("title", "Grid options");
-        menuButton.addClassName("listing-header__options");
-
-        filterIndicatorBadge = new Span();
-        filterIndicatorBadge.addClassName("listing-filter-indicator");
-
-        var menuTrigger = new Div(menuButton, filterIndicatorBadge);
-        menuTrigger.addClassName("listing-filter-trigger");
-        filterOptionsTrigger = menuTrigger;
-
-        var subMenu = new ContextMenu(menuButton);
-        subMenu.setOpenOnClick(true);
-
-        updateFilterIndicator();
-        registerFilterIndicatorListener();
-
-        var managedColumns = managedColumns(listingGrid());
-
-        // Only show column-management actions when there is more than one managed column.
-        // When explicit columns were provided, they define the sort/show-hide universe.
-        boolean hasColumnManagement = managedColumns.size() > 1;
-
-        // Sort (opens dialog — indicated by "...")
-        if (hasColumnManagement) {
-            subMenu.addItem(createMenuItemContent(VaadinIcon.SORT, "Sort…"))
-                    .addClickListener(e -> openSortDialog(listingGrid(), managedColumns));
+    /**
+     * Builds and caches the footer {@link Div} with the page-size selector on the left
+     * and the pagination bar on the right.
+     * Applies the {@code listing-footer} CSS class from core {@code pagination.css}.
+     */
+    private Div createFooter() {
+        if (footerDiv != null) return footerDiv;
+        footerDiv = Components.div().styleName("listing-footer").build();
+        // Hidden by default — only shown when the user switches to paginated mode via the menu.
+        footerDiv.setVisible(paginatedMode);
+        if (selector != null) {
+            footerDiv.add(selector);
         }
+        footerDiv.add(bar);
+        return footerDiv;
+    }
 
-        // Refresh
-        subMenu.addItem(createMenuItemContent(VaadinIcon.REFRESH, "Refresh"))
-                .addClickListener(e -> listing.getDataProvider().refreshAll());
-
-        // Import — only shown when an importAction was registered
-        if (importAction != null) {
-            subMenu.addItem(createMenuItemContent(VaadinIcon.UPLOAD, "Import"))
-                    .addClickListener(e -> importAction.run());
-        }
-
-        // Export — only shown when an exportAction was registered
-        if (exportAction != null) {
-            subMenu.addItem(createMenuItemContent(VaadinIcon.DOWNLOAD, "Export"))
-                    .addClickListener(e -> exportAction.run());
-        }
-
-        // ── Separator — only rendered when there is something above it (Import or Export) ──
-        if (importAction != null || exportAction != null) {
-            var sep1 = subMenu.addItem("");
-            sep1.setEnabled(false);
-            sep1.addClassName("listing-menu-separator");
-        }
-
-        // Reset column widths / Show-Hide — only when real columns exist
-        if (hasColumnManagement) {
-            subMenu.addItem(createMenuItemContent(VaadinIcon.ARROWS_LONG_H, "Reset column widths"))
-                    .addClickListener(e -> managedColumns.forEach(col -> col.setAutoWidth(true)));
-
-            subMenu.addItem(createMenuItemContent(VaadinIcon.EYE, "Show/Hide columns…"))
-                    .addClickListener(e -> openShowHideColumnsDialog(managedColumns));
-        }
-
-        // Toggle paginated / default (virtual scroll) view.
-        // Initial label reflects the current mode: offer to switch to the *other* mode.
-        var viewToggleItem = subMenu.addItem(paginatedMode
-                ? createMenuItemContent(VaadinIcon.LIST,  "Default view")
-                : createMenuItemContent(VaadinIcon.TABLE, "Paginated view"));
-        viewToggleItem.addClickListener(e -> {
-            paginatedMode = !paginatedMode;
-            if (footerDiv != null) {
-                footerDiv.setVisible(paginatedMode);
+    /**
+     * Managed columns for Sort / Show-Hide, in the exact order they were added to the grid —
+     * which already matches the builder's {@code columns(...)} order when one was configured.
+     */
+    private List<Grid.Column<T>> getManagedColumns(Grid<T> grid) {
+        var columnsByKey = new LinkedHashMap<String, Grid.Column<T>>();
+        for (Grid.Column<T> column : grid.getColumns()) {
+            String key = column.getKey();
+            if (key != null) {
+                columnsByKey.putIfAbsent(key, column);
             }
-            if (selector != null) {
-                selector.setPaginatedMode(paginatedMode);
-            }
-            if (paginatedMode) {
-                viewToggleItem.removeAll();
-                viewToggleItem.add(createMenuItemContent(VaadinIcon.LIST, "Default view"));
-            } else {
-                viewToggleItem.removeAll();
-                viewToggleItem.add(createMenuItemContent(VaadinIcon.TABLE, "Paginated view"));
+        }
+        return new ArrayList<>(columnsByKey.values());
+    }
+
+    /**
+     * Managed columns for Sort / Show-Hide, in the exact order they were added to the grid —
+     * which already matches the builder's {@code columns(...)} order when one was configured.
+     */
+    private List<Grid.Column<T>> getManagedColumns(ItemListing<T, ?> listing) {
+        var columnsByKey = new LinkedHashMap<String, Grid.Column<T>>();
+        listing.getAllColumns().forEach(column -> {
+            String key = column.getKey();
+            if (key != null) {
+                columnsByKey.putIfAbsent(key, column);
             }
         });
-
-        // Filter panel (if configured) — single entry point, no duplicate button
-        if (filterPanel != null) {
-            var sep2 = subMenu.addItem("");
-            sep2.setEnabled(false);
-            sep2.addClassName("listing-menu-separator");
-            advancedSearchMenuItem = subMenu.addItem(createMenuItemContent(VaadinIcon.FILTER, advancedSearchLabel + "…"));
-            advancedSearchMenuItem.addClickListener(e -> getOrCreateFilterDialog().open());
-            advancedSearchMenuItem.addClassName("listing-menu-item--filter");
-            advancedSearchMenuItem.setCheckable(true);
-        }
-
-        // Extra menu actions — separator only added when there are items to separate
-        if (!menuActions.isEmpty()) {
-            var sepExtra = subMenu.addItem("");
-            sepExtra.setEnabled(false);
-            sepExtra.addClassName("listing-menu-separator");
-            for (MenuAction action : menuActions) {
-                var content = action.icon() != null
-                        ? createMenuItemContent(action.icon(), action.label())
-                        : new Span(action.label());
-                subMenu.addItem(content).addClickListener(e -> action.action().run());
-            }
-        }
-
-        // ── Default actions: [search] + [menu] ─────────────────────────────
-        var actionComponents = new ArrayList<Component>();
-        if (search != null) {
-            search.addClassName("listing-header__search");
-            actionComponents.add(search);
-        }
-        actionComponents.add(menuTrigger);
-
-        gridHeader = Components.gridHeader(gridHeaderTitle)
-                .listing((BeanListing<?>) listing)
-                .styleName("listing-header")
-                .build();
-
-        gridHeader.setDefaultActions(actionComponents.toArray(Component[]::new));
-        if (gridHeaderContextComponents != null) {
-            gridHeader.setContextActions(gridHeaderContextComponents);
-        }
-        return gridHeader;
+        return new ArrayList<>(columnsByKey.values());
     }
 
-    private Component createMenuItemContent(VaadinIcon icon, String text) {
-        var iconComp = icon.create();
-        iconComp.addClassName("listing-menu-icon");
-        var span = new Span(text);
-        var layout = new HorizontalLayout(iconComp, span);
-        layout.setAlignItems(FlexComponent.Alignment.CENTER);
-        layout.setSpacing(true);
-        layout.setPadding(false);
-        return layout;
-    }
-
-    private void registerFilterIndicatorListener() {
-        if (filterPanel == null || filterIndicatorListenerRegistered) {
-            return;
+    private void toggleViewMode() {
+        paginatedMode = !paginatedMode;
+        if (footerDiv != null) {
+            footerDiv.setVisible(paginatedMode);
         }
-
-        filterIndicatorListenerRegistered = true;
-        filterPanel.addFilterChangeListener(event -> updateFilterIndicator());
-    }
-
-    private void updateFilterIndicator() {
-        if (filterIndicatorBadge == null) {
-            return;
-        }
-
-        boolean hasFilters = filterPanel != null && filterPanel.isAnyActive();
-        filterIndicatorBadge.setVisible(hasFilters);
-        filterIndicatorBadge.setText(hasFilters ? String.valueOf(Math.max(filterPanel.getActiveFilterCount(), 1)) : "");
-
-        if (advancedSearchMenuItem != null) {
-            advancedSearchMenuItem.setCheckable(true);
-            advancedSearchMenuItem.setChecked(hasFilters);
-            advancedSearchMenuItem.getElement().setAttribute("aria-pressed", String.valueOf(hasFilters));
-            advancedSearchMenuItem.getElement().setAttribute("data-filter-active", String.valueOf(hasFilters));
-            if (hasFilters) {
-                advancedSearchMenuItem.addClassName("listing-menu-item--filter-active");
-            } else {
-                advancedSearchMenuItem.removeClassName("listing-menu-item--filter-active");
-            }
-        }
-
-        if (filterOptionsTrigger != null) {
-            filterOptionsTrigger.getElement().setAttribute("title", hasFilters
-                    ? "Grid options, filters applied"
-                    : "Grid options");
+        if (selector != null) {
+            selector.setPaginatedMode(paginatedMode);
         }
     }
 
-    @SuppressWarnings("unchecked")
-    private Grid<T> listingGrid() {
-        return (Grid<T>) listing.getComponent();
-    }
-
-    private void openSortDialog(Grid<T> grid, List<Grid.Column<T>> availableColumns) {
+    private void openSortDialog(ItemListing<T, ?> listing, List<Grid.Column<T>> availableColumns) {
         var dialog = new Dialog();
-        dialog.setHeaderTitle("Sort");
+        dialog.setHeaderTitle(LocalizationProvider.localize("Sort", "listing_bundle.sort_dialog.title"));
         dialog.setWidth("min(500px, 90vw)");
 
-        var sortRows = new VerticalLayout();
-        sortRows.setPadding(false);
-        sortRows.setSpacing(true);
-        sortRows.setWidthFull();
+        var sortRows = Components.verticalLayout()
+                .padding(false)
+                .spacing(true)
+                .fullWidth()
+                .build();
 
         // Each sort row: column combo + direction combo + remove button
-        record SortRow(ComboBox<String> columnCombo, ComboBox<String> directionCombo, Div container) {}
+        record SortRow(ComboBox<String> columnCombo, ComboBox<String> directionCombo, Div container) {
+        }
         var rows = new ArrayList<SortRow>();
         final boolean[] refreshing = {false};
 
@@ -581,22 +469,28 @@ public final class ListingBundle<T> extends Div {
 
         // Creates a new sort row, optionally pre-filled with column key + direction
         java.util.function.BiConsumer<String, String> addRowWithValues = (colKey, direction) -> {
-            var colCombo = new ComboBox<String>("Column");
+            var colCombo = new ComboBox<String>(
+                    LocalizationProvider.localize("Column", "listing_bundle.sort_dialog.column_label"));
             colCombo.setItems(availableColumns.stream()
-                    .map(Grid.Column::getKey)
-                    .toList());
+                                      .map(Grid.Column::getKey)
+                                      .toList());
             colCombo.setItemLabelGenerator(item -> FormatUtils.toSentenceCase(item));
             colCombo.addClassName("flex-grow-1");
 
-            var dirCombo = new ComboBox<String>("Direction");
-            dirCombo.setItems("Ascending", "Descending");
-            dirCombo.setValue(direction != null ? direction : "Ascending");
+            var dirCombo = new ComboBox<String>(
+                    LocalizationProvider.localize("Direction", "listing_bundle.sort_dialog.direction_label"));
+            dirCombo.setItems(SORT_DIR_ASCENDING, SORT_DIR_DESCENDING);
+            dirCombo.setItemLabelGenerator(item -> SORT_DIR_DESCENDING.equals(item)
+                                                   ? LocalizationProvider.localize("Descending", "listing_bundle.sort_dialog.descending")
+                                                   : LocalizationProvider.localize("Ascending", "listing_bundle.sort_dialog.ascending"));
+            dirCombo.setValue(direction != null ? direction : SORT_DIR_ASCENDING);
             dirCombo.addClassName("flex-grow-1");
 
             var removeBtn = Components.button()
                     .icon(VaadinIcon.CLOSE_SMALL)
                     .error()
-                    .tooltip("Remove selected option")
+                    .ariaLabel("Remove sort level", "listing_bundle.sort_dialog.remove_aria")
+                    .tooltip("Remove sort level", "listing_bundle.sort_dialog.remove_tooltip")
                     .styleName("filter-panel__remove")
                     .build();
 
@@ -642,11 +536,11 @@ public final class ListingBundle<T> extends Div {
         Runnable addRow = () -> addRowWithValues.accept(null, null);
 
         // Pre-populate with current grid sort state
-        List<GridSortOrder<T>> currentSort = grid.getSortOrder();
+        List<GridSortOrder<T>> currentSort = listing.getGridSortOrders();
         if (currentSort != null && !currentSort.isEmpty()) {
             for (GridSortOrder<T> order : currentSort) {
                 String colKey = order.getSorted().getKey();
-                String dir = order.getDirection() == SortDirection.DESCENDING ? "Descending" : "Ascending";
+                String dir = order.getDirection() == SortDirection.DESCENDING ? SORT_DIR_DESCENDING : SORT_DIR_ASCENDING;
                 addRowWithValues.accept(colKey, dir);
             }
         } else {
@@ -656,52 +550,65 @@ public final class ListingBundle<T> extends Div {
 
         refreshAvailableColumns.run();
 
-        var addSortBtn = new Button("Add sort level", new Icon(VaadinIcon.PLUS));
-        addSortBtn.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
-        addSortBtn.addClickListener(e -> addRow.run());
+        var addSortBtn = Components.button()
+                .text("Add sort level", "listing_bundle.sort_dialog.add_level")
+                .icon(VaadinIcon.PLUS)
+                .tertiary()
+                .onClick(e -> addRow.run())
+                .build();
 
-        var content = new VerticalLayout(sortRows, addSortBtn);
-        content.setPadding(false);
+        var content = Components.verticalLayout()
+                .padding(false)
+                .add(sortRows, addSortBtn)
+                .build();
         dialog.add(content);
 
+        Grid<T> grid = listing.getGrid();
+
         // Footer
-        var applyBtn = new Button("Apply", e -> {
-            List<GridSortOrder<T>> sortOrders = new ArrayList<>();
-            for (var row : rows) {
-                String colKey = row.columnCombo().getValue();
-                String dir = row.directionCombo().getValue();
-                if (colKey != null && !colKey.isBlank()) {
-                    Grid.Column<T> col = grid.getColumnByKey(colKey);
-                    if (col != null) {
-                        SortDirection sortDir = "Descending".equals(dir)
-                                ? SortDirection.DESCENDING : SortDirection.ASCENDING;
-                        sortOrders.add(new GridSortOrder<>(col, sortDir));
+        var applyBtn = Components.button()
+                .text("Apply", "listing_bundle.sort_dialog.apply")
+                .primary()
+                .onClick(e -> {
+                    List<GridSortOrder<T>> sortOrders = new ArrayList<>();
+                    for (var row : rows) {
+                        String colKey = row.columnCombo().getValue();
+                        String dir = row.directionCombo().getValue();
+                        if (colKey != null && !colKey.isBlank()) {
+                            Grid.Column<T> col = grid.getColumnByKey(colKey);
+                            if (col != null) {
+                                SortDirection sortDir = SORT_DIR_DESCENDING.equals(dir)
+                                                        ? SortDirection.DESCENDING : SortDirection.ASCENDING;
+                                sortOrders.add(new GridSortOrder<>(col, sortDir));
+                            }
+                        }
                     }
-                }
-            }
-            grid.sort(sortOrders);
-            dialog.close();
-        });
-        applyBtn.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+                    grid.sort(sortOrders);
+                    dialog.close();
+                })
+                .build();
 
-        var clearBtn = new Button("Clear sort", e -> {
-            // Reset grid sorting to initial state
-            grid.sort(List.of());
-            // Reset all rows to empty state
-            refreshing[0] = true;
-            try {
-                for (var row : rows) {
-                    row.columnCombo().clear();
-                    row.directionCombo().setValue("Ascending");
-                }
-            } finally {
-                refreshing[0] = false;
-            }
-        });
-        clearBtn.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
+        var clearBtn = Components.button()
+                .text("Clear sort", "listing_bundle.sort_dialog.clear")
+                .tertiary()
+                .onClick(e -> {
+                    // Reset grid sorting to initial state
+                    grid.sort(List.of());
+                    // Reset all rows to empty state
+                    refreshing[0] = true;
+                    try {
+                        for (var row : rows) {
+                            row.columnCombo().clear();
+                            row.directionCombo().setValue("Ascending");
+                        }
+                    } finally {
+                        refreshing[0] = false;
+                    }
+                })
+                .build();
 
-        var closeBtn = new Button("Cancel", e -> dialog.close());
-        closeBtn.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
+        var closeBtn = UIUtils.Buttons.createCloseButton();
+        closeBtn.addClickListener(e -> dialog.close());
 
         dialog.getFooter().add(clearBtn, closeBtn, applyBtn);
         dialog.open();
@@ -709,12 +616,13 @@ public final class ListingBundle<T> extends Div {
 
     private void openShowHideColumnsDialog(List<Grid.Column<T>> managedColumns) {
         var dialog = new Dialog();
-        dialog.setHeaderTitle("Show/Hide Columns");
+        dialog.setHeaderTitle(LocalizationProvider.localize("Show/Hide Columns", "listing_bundle.columns_dialog.title"));
         dialog.setWidth("min(400px, 90vw)");
 
-        var content = new VerticalLayout();
-        content.setPadding(false);
-        content.setSpacing(true);
+        var content = Components.verticalLayout()
+                .padding(false)
+                .spacing(true)
+                .build();
 
         managedColumns.forEach(col -> {
             var cb = new Checkbox(FormatUtils.toSentenceCase(col.getKey()));
@@ -725,188 +633,11 @@ public final class ListingBundle<T> extends Div {
 
         dialog.add(content);
 
-        var closeBtn = new Button("Close", e -> dialog.close());
-        closeBtn.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
+        var closeBtn = UIUtils.Buttons.createCloseButton();
+        closeBtn.setText(LocalizationProvider.localize("Close", "listing_bundle.columns_dialog.close"));
+        closeBtn.addClickListener(e -> dialog.close());
         dialog.getFooter().add(closeBtn);
         dialog.open();
-    }
-
-    /**
-     * Builds and caches the toolbar {@link Div}.
-     *
-     * <p>When {@code gridHeader(String)} is configured, all controls (page-size selector,
-     * search, filter) are rendered inside the {@link #header()} — the toolbar remains part
-     * of the composite but is hidden via CSS.</p>
-     *
-     * <p>When no gridHeader is set, the toolbar includes the page-size selector on the left
-     * and a right-aligned group with search + filter options button.</p>
-     */
-    private Div createToolbar() {
-        if (toolbarDiv != null) {
-            return toolbarDiv;
-        }
-
-        var toolbarRow = new Div();
-        toolbarRow.addClassName("listing-toolbar");
-
-        // When gridHeader is active, everything is in the header — hide toolbar.
-        if (gridHeaderTitle != null) {
-            toolbarRow.setVisible(false);
-            return toolbarRow;
-        }
-
-        if (selector != null) toolbarRow.add(selector);
-
-        // Right group: search field + optional filter options button
-        if (search != null || filterPanel != null) {
-            var rightGroup = new Div();
-            rightGroup.addClassName("listing-toolbar__right");
-
-            if (search != null)  {
-                rightGroup.add(search);
-            }
-
-            if (filterPanel != null) {
-                var menuBar = new MenuBar();
-                menuBar.addThemeVariants(MenuBarVariant.LUMO_TERTIARY, MenuBarVariant.LUMO_ICON);
-                menuBar.addClassName("listing-toolbar__options");
-
-                var triggerItem = menuBar.addItem(new Icon(VaadinIcon.FILTER));
-                triggerItem.getElement().setAttribute("title", "Search options");
-                var subMenu = triggerItem.getSubMenu();
-
-                // "Advanced Search" — opens the filter dialog
-                advancedSearchMenuItem = subMenu.addItem(advancedSearchLabel);
-                advancedSearchMenuItem.addClickListener(e -> getOrCreateFilterDialog().open());
-                advancedSearchMenuItem.addClassName("listing-menu-item--filter");
-                advancedSearchMenuItem.setCheckable(true);
-
-                // Extra items contributed by the builder
-                for (MenuAction action : menuActions) {
-                    var content = action.icon() != null
-                            ? createMenuItemContent(action.icon(), action.label())
-                            : new Span(action.label());
-                    subMenu.addItem(content).addClickListener(e -> action.action().run());
-                }
-
-                filterIndicatorBadge = new Span();
-                filterIndicatorBadge.addClassName("listing-filter-indicator");
-
-                var menuTrigger = new Div(menuBar, filterIndicatorBadge);
-                menuTrigger.addClassName("listing-filter-trigger");
-                filterOptionsTrigger = menuTrigger;
-
-                updateFilterIndicator();
-                registerFilterIndicatorListener();
-
-                rightGroup.add(menuTrigger);
-            }
-
-            toolbarRow.add(rightGroup);
-        }
-
-        toolbarDiv = toolbarRow;
-        return toolbarDiv;
-    }
-
-    /**
-     * Lazily creates and caches the {@link Dialog} that hosts the {@link DynamicFilterPanel}.
-     * Only created once; subsequent calls return the cached instance so filter state is
-     * retained between open/close cycles (unless {@code retainFilterValues} is {@code false}).
-     *
-     * <p><strong>Data refresh contract:</strong> the {@link ItemListingPageSizeSelector} is
-     * wired via {@code withFilterResetSignal(filterPanel)} during build, which registers a
-     * {@link com.vaadin.flow.signals.Signal#effect Signal.effect} on the selector component.
-     * Whenever the filter panel fires a filter-change event (on Apply <em>or</em> row removal),
-     * the Signal updates and the lifecycle-bound effect calls {@code resetToPage1()}, which
-     * resets the page offset and triggers {@code GridLazyDataView.refreshAll()} — re-fetching
-     * with the current filter without any additional wiring here.</p>
-     */
-    private Dialog getOrCreateFilterDialog() {
-        if (filterDialog != null) return filterDialog;
-
-        filterDialog = new Dialog();
-        filterDialog.setHeaderTitle(advancedSearchLabel);
-        filterDialog.setWidth("min(750px, 95vw)");
-        filterDialog.addClassName("listing-filter-dialog");
-        filterDialog.setDraggable(true);
-        filterDialog.setResizable(true);
-        // Wrap the panel so CSS can target it without shadow-DOM tricks
-        var body = new Div(filterPanel);
-        body.addClassName("listing-filter-dialog__body");
-        filterDialog.add(body);
-
-        // If retain-values is disabled, reset on every open so the user starts blank.
-        // resetAll() fires FilterChangeEvent → queryFilterSignal updates → Signal.effect
-        // fires resetToPage1() in the selector → grid refreshes with empty filter.
-        if (!retainFilterValues) {
-            filterDialog.addOpenedChangeListener(e -> {
-                if (e.isOpened()) {
-                    filterPanel.resetAll();
-                }
-            });
-        }
-
-        // The panel's "Apply filter" button: close the dialog and directly trigger a
-        // page reset + data refresh. Although the selector's Signal.effect (wired via
-        // withFilterResetSignal during build) handles the reactive case, we also call
-        // selector.resetToPage1() directly here as a reliable, lifecycle-independent path.
-        // resetToPage1() is a no-op if managedDataView is null (non-managed mode).
-        filterPanel.addApplyListener(() -> {
-            filterDialog.close();
-            if (selector != null) {
-                selector.resetToPage1();
-            }
-        });
-
-        // Footer: only [Close] — "Clear all" in the panel actions bar already handles row reset.
-        // Having both "Reset All" (footer) and "Clear all" (panel) was redundant.
-        var closeBtn = new Button("Close", e -> filterDialog.close());
-        closeBtn.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
-        filterDialog.getFooter().add(closeBtn);
-
-        return filterDialog;
-    }
-
-    /**
-     * Builds and caches the footer {@link Div} with the page-size selector on the left
-     * and the pagination bar on the right.
-     * Applies the {@code listing-footer} CSS class from core {@code pagination.css}.
-     */
-    private Div createFooter() {
-        if (footerDiv != null) return footerDiv;
-        footerDiv = new Div();
-        footerDiv.addClassName("listing-footer");
-        // Hidden by default — only shown when the user switches to paginated mode via the menu.
-        footerDiv.setVisible(paginatedMode);
-        if (selector != null) {
-            footerDiv.add(selector);
-        }
-        footerDiv.add(bar);
-        return footerDiv;
-    }
-
-    private List<Grid.Column<T>> managedColumns(Grid<T> grid) {
-        var columnsByKey = new LinkedHashMap<String, Grid.Column<T>>();
-        for (Grid.Column<T> column : grid.getColumns()) {
-            String key = column.getKey();
-            if (key != null) {
-                columnsByKey.putIfAbsent(key, column);
-            }
-        }
-
-        if (!columnKeys.isEmpty()) {
-            var explicitColumns = new ArrayList<Grid.Column<T>>(columnKeys.size());
-            for (String key : columnKeys) {
-                Grid.Column<T> column = columnsByKey.get(key);
-                if (column != null) {
-                    explicitColumns.add(column);
-                }
-            }
-            return explicitColumns;
-        }
-
-        return new ArrayList<>(columnsByKey.values());
     }
 }
 

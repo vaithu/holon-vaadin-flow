@@ -13,8 +13,7 @@ import com.vaadin.flow.component.textfield.TextField;
 
 /**
  * Fluent post-build configurator for a {@link ListingBundle} — exposes
- * grid-header mutations (via the inherited {@link GridHeaderConfigurator}),
- * a row-click hook, and read-only accessors to the bundle's sub-components.
+ * a row-click hook and read-only accessors to the bundle's sub-components.
  *
  * <p>Build-time-only operations such as {@code columns()}, {@code fetch()},
  * {@code pageSizes()}, {@code search()}, {@code withFilterPanel()}, and
@@ -25,8 +24,7 @@ import com.vaadin.flow.component.textfield.TextField;
  * @param <C> concrete configurator type (self-type)
  * @since 10.0.1
  */
-public interface ListingBundleConfigurator<T, C extends ListingBundleConfigurator<T, C>>
-        extends GridHeaderConfigurator<C> {
+public interface ListingBundleConfigurator<T, C extends ListingBundleConfigurator<T, C>> {
 
     // ---------- Row click ----------
 
@@ -51,9 +49,8 @@ public interface ListingBundleConfigurator<T, C extends ListingBundleConfigurato
     /**
      * Configure an existing {@link ListingBundle} using the fluent API.
      *
-     * <p>The returned configurator exposes the full {@link GridHeaderConfigurator}
-     * surface (heading, actions, …) plus {@link #onItemClick} and the read-only
-     * accessors.  Build-time operations ({@code columns()}, {@code fetch()},
+     * <p>The returned configurator exposes {@link #onItemClick} and the read-only
+     * accessors. Build-time operations ({@code columns()}, {@code fetch()},
      * {@code pageSizes()}, etc.) are only available on
      * {@link com.holonplatform.vaadin.flow.components.ListingBundleBuilder}.</p>
      *

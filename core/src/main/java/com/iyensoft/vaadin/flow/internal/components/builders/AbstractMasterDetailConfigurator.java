@@ -5,12 +5,19 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Supplier;
+
+import com.vaadin.flow.function.SerializableConsumer;
+import com.vaadin.flow.function.SerializableFunction;
+import com.vaadin.flow.function.SerializableSupplier;
 
 import com.holonplatform.core.property.PropertyBox;
 import com.holonplatform.core.property.PropertySet;
 import com.holonplatform.vaadin.flow.components.ListingBundle;
 import com.holonplatform.vaadin.flow.components.builders.FooterConfigurator;
 import com.holonplatform.vaadin.flow.components.builders.HeaderConfigurator;
+import com.holonplatform.vaadin.flow.components.builders.MaterialHeaderBuilder;
+import com.holonplatform.vaadin.flow.components.builders.MaterialHeaderConfigurator;
 import com.holonplatform.vaadin.flow.internal.components.builders.AbstractComponentConfigurator;
 import com.holonplatform.vaadin.flow.internal.components.builders.AbstractListingBundleConfigurer;
 import com.holonplatform.vaadin.flow.vaadinplus.components.Footer;
@@ -28,6 +35,7 @@ import com.vaadin.flow.component.HasSize;
 import com.vaadin.flow.component.HasStyle;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.shared.HasTooltip;
+import com.vaadin.flow.data.provider.ItemIndexProvider;
 
 /**
  * Abstract base for all {@link MasterDetailConfigurator} implementations.
@@ -58,7 +66,10 @@ public abstract class AbstractMasterDetailConfigurator<T, C extends MasterDetail
     private String highlightPartName;
 
     /** Optional per-item accent CSS class provider. */
-    private Function<T, String> accentColorProvider;
+    private SerializableFunction<T, String> accentColorProvider;
+
+    /** Optional per-item, always-on row status CSS part name provider (see {@link #withRowPartNameGenerator}). */
+    private SerializableFunction<T, String> rowPartNameGenerator;
 
     /** Bean-typed constructor. */
     protected AbstractMasterDetailConfigurator(MasterDetailLayout<T> component, Class<T> beanType) {
@@ -83,14 +94,22 @@ public abstract class AbstractMasterDetailConfigurator<T, C extends MasterDetail
     }
 
     @Override
-    public C withAccentColorProvider(Function<T, String> cssClassProvider) {
+    public C withAccentColorProvider(SerializableFunction<T, String> cssClassProvider) {
         this.accentColorProvider = cssClassProvider;
+        getComponent().setAccentColorProvider(cssClassProvider);
+        return getConfigurator();
+    }
+
+    @Override
+    public C withRowPartNameGenerator(SerializableFunction<T, String> partNameGenerator) {
+        this.rowPartNameGenerator = partNameGenerator;
         return getConfigurator();
     }
 
     @Override
     public C viewMode(ViewMode viewMode) {
         this.viewMode = viewMode;
+        getComponent().setViewMode(viewMode);
         return getConfigurator();
     }
 
@@ -112,7 +131,7 @@ public abstract class AbstractMasterDetailConfigurator<T, C extends MasterDetail
     }
 
     @Override
-    public C withDetailSync(Consumer<T> handler) {
+    public C withDetailSync(SerializableConsumer<T> handler) {
         getComponent().addSyncDispatcher(handler);
         return getConfigurator();
     }
@@ -141,7 +160,7 @@ public abstract class AbstractMasterDetailConfigurator<T, C extends MasterDetail
         // DefaultDetailOptions (and any view-level captures) are immediately eligible for GC.
         final Sheet localSheet = mobileSheet;
         final MasterDetailLayout<T> layout = getComponent();
-        final List<Consumer<Object>> dispatchers = new ArrayList<>();
+        final List<SerializableConsumer<Object>> dispatchers = new ArrayList<>();
         final boolean[] initialized = { false };
 
         @SuppressWarnings("unchecked")
@@ -164,6 +183,7 @@ public abstract class AbstractMasterDetailConfigurator<T, C extends MasterDetail
                 if (dh != null) {
                     dh.addActions(localSheet.getCloseButton());
                     localSheet.setHeader(dh);
+                    localSheet.addClassName("mdl-rich-header");
                 }
                 if (!body.isEmpty()) {
                     localSheet.setContent(body.toArray(new Component[0]));
@@ -189,9 +209,9 @@ public abstract class AbstractMasterDetailConfigurator<T, C extends MasterDetail
      * appends {@code div} as a direct child.
      */
     private static <T> void wireDetailDiv(Div div,
-                                          List<Consumer<Object>> syncHandlers,
+                                          List<SerializableConsumer<Object>> syncHandlers,
                                           MasterDetailLayout<T> layout) {
-        List<Consumer<Object>> dispatchers = new ArrayList<>();
+        List<SerializableConsumer<Object>> dispatchers = new ArrayList<>();
         collectSyncAware(div, dispatchers);
         dispatchers.addAll(syncHandlers);
         dispatchers.forEach(h -> layout.addSyncDispatcher(item -> h.accept(item)));
@@ -199,12 +219,38 @@ public abstract class AbstractMasterDetailConfigurator<T, C extends MasterDetail
     }
 
     @Override
-    public C withUrlSync(Function<T, String> idExtractor,
-                         Function<String, Optional<T>> itemLoader) {
+    public C withUrlSync(SerializableFunction<T, String> idExtractor,
+                         SerializableFunction<String, Optional<T>> itemLoader) {
+        return withUrlSync(idExtractor, itemLoader, UrlSelectionSync.DEFAULT_PARAM_NAME);
+    }
+
+    @Override
+    public C withUrlSync(SerializableFunction<T, String> idExtractor,
+                         SerializableFunction<String, Optional<T>> itemLoader,
+                         String paramName) {
         getComponent().setUrlSync(UrlSelectionSync.<T>builder()
                 .idExtractor(idExtractor)
                 .itemLoader(itemLoader)
+                .paramName(paramName)
                 .build());
+        return getConfigurator();
+    }
+
+    @Override
+    public C withAutoSelect() {
+        getComponent().enableAutoSelect();
+        return getConfigurator();
+    }
+
+    @Override
+    public C withInitialItem(SerializableSupplier<Optional<T>> initialItemLoader) {
+        getComponent().setInitialItemSupplier(initialItemLoader);
+        return getConfigurator();
+    }
+
+    @Override
+    public C withItemIndexProvider(ItemIndexProvider<T, ?> itemIndexProvider) {
+        getComponent().setItemIndexProvider(itemIndexProvider);
         return getConfigurator();
     }
 
@@ -222,7 +268,7 @@ public abstract class AbstractMasterDetailConfigurator<T, C extends MasterDetail
 
     @Override
     public C master(Consumer<MasterDetailConfigurator.MasterOptions<T>> configure) {
-        DefaultMasterOptions<T> opts = new DefaultMasterOptions<>(new Div(), getComponent(), beanType, propertySet, highlightPartName, accentColorProvider);
+        DefaultMasterOptions<T> opts = new DefaultMasterOptions<>(new Div(), getComponent(), beanType, propertySet, highlightPartName, accentColorProvider, rowPartNameGenerator);
         configure.accept(opts);
         opts.wire();
         return getConfigurator();
@@ -261,7 +307,7 @@ public abstract class AbstractMasterDetailConfigurator<T, C extends MasterDetail
      * <p>If no detail header was configured the Sheet keeps its built-in back/close header.</p>
      */
     private void wireMobileSheet(DefaultDetailOptions<T> opts, Sheet sheet) {
-        List<Consumer<Object>> dispatchers = new ArrayList<>();
+        List<SerializableConsumer<Object>> dispatchers = new ArrayList<>();
         collectSyncAware(opts.getDiv(), dispatchers);
         dispatchers.addAll(opts.getSyncHandlers());
 
@@ -273,6 +319,7 @@ public abstract class AbstractMasterDetailConfigurator<T, C extends MasterDetail
             // Preserve close UX: inject the Sheet's own close button into the custom header.
             detailHeader.addActions(sheet.getCloseButton());
             sheet.setHeader(detailHeader);
+            sheet.addClassName("mdl-rich-header");
         }
         if (!body.isEmpty()) {
             sheet.setContent(body.toArray(new Component[0]));
@@ -316,18 +363,18 @@ public abstract class AbstractMasterDetailConfigurator<T, C extends MasterDetail
      * the Consumer-based {@code header/footer/content/styleName} methods so neither
      * subclass duplicates that logic.
      */
-    private static abstract class AbstractPanelOptions<SELF> {
+    private static abstract class AbstractPanelOptions<C> {
 
         protected final Div div;
-        protected final List<Consumer<Object>> syncHandlers = new ArrayList<>();
+        protected final List<SerializableConsumer<Object>> syncHandlers = new ArrayList<>();
 
         AbstractPanelOptions(Div div) {
             this.div = div;
         }
 
-        protected abstract SELF self();
+        protected abstract C self();
 
-        public SELF header(Consumer<HeaderConfigurator<?>> configure) {
+        public C header(Consumer<HeaderConfigurator<?>> configure) {
             if (configure != null) {
                 Header h = new Header("");
                 configure.accept(HeaderConfigurator.configure(h));
@@ -336,7 +383,16 @@ public abstract class AbstractMasterDetailConfigurator<T, C extends MasterDetail
             return self();
         }
 
-        public SELF footer(Consumer<FooterConfigurator<?>> configure) {
+        public C materialHeader(Consumer<MaterialHeaderConfigurator<?>> configure) {
+            if (configure != null) {
+                MaterialHeaderBuilder builder = MaterialHeaderBuilder.create();
+                configure.accept(builder);
+                div.addComponentAsFirst(builder.build());
+            }
+            return self();
+        }
+
+        public C footer(Consumer<FooterConfigurator<?>> configure) {
             if (configure != null) {
                 Footer f = new Footer();
                 configure.accept(FooterConfigurator.configure(f));
@@ -345,18 +401,18 @@ public abstract class AbstractMasterDetailConfigurator<T, C extends MasterDetail
             return self();
         }
 
-        public SELF content(Component... components) {
+        public C content(Component... components) {
             if (components != null) div.add(components);
             return self();
         }
 
-        public SELF styleName(String... styleNames) {
+        public C styleName(String... styleNames) {
             if (styleNames != null) div.addClassNames(styleNames);
             return self();
         }
 
         Div getDiv() { return div; }
-        List<Consumer<Object>> getSyncHandlers() { return syncHandlers; }
+        List<SerializableConsumer<Object>> getSyncHandlers() { return syncHandlers; }
     }
 
     // ── Inner: DefaultMasterOptions ───────────────────────────────────────────
@@ -374,19 +430,22 @@ public abstract class AbstractMasterDetailConfigurator<T, C extends MasterDetail
         private final Class<T> beanType;
         private final PropertySet<?> propertySet;
         private final String highlightPartName;
-        private final Function<T, String> accentColorProvider;
-        private Function<T, ?> selectionKeyExtractor;
+        private final SerializableFunction<T, String> accentColorProvider;
+        private final SerializableFunction<T, String> rowPartNameGenerator;
+        private SerializableFunction<T, ?> selectionKeyExtractor;
         private ListingBundle<?> builtBundle;
 
         DefaultMasterOptions(Div div, MasterDetailLayout<T> layout,
                              Class<T> beanType, PropertySet<?> propertySet,
-                             String highlightPartName, Function<T, String> accentColorProvider) {
+                             String highlightPartName, SerializableFunction<T, String> accentColorProvider,
+                             SerializableFunction<T, String> rowPartNameGenerator) {
             super(div);
             this.layout = layout;
             this.beanType = beanType;
             this.propertySet = propertySet;
             this.highlightPartName = highlightPartName;
             this.accentColorProvider = accentColorProvider;
+            this.rowPartNameGenerator = rowPartNameGenerator;
             div.addClassNames("master-view", "master-view-content");
         }
 
@@ -430,7 +489,7 @@ public abstract class AbstractMasterDetailConfigurator<T, C extends MasterDetail
         }
 
         @Override
-        public MasterDetailConfigurator.MasterOptions<T> selectionKey(Function<T, ?> keyExtractor) {
+        public MasterDetailConfigurator.MasterOptions<T> selectionKey(SerializableFunction<T, ?> keyExtractor) {
             this.selectionKeyExtractor = keyExtractor;
             return this;
         }
@@ -465,23 +524,19 @@ public abstract class AbstractMasterDetailConfigurator<T, C extends MasterDetail
                 typedBundle.listing().getComponent().addClassName("mdl-master-grid");
 
                 // Resolve effective key extractor.
-                Function<T, ?> effectiveKey = selectionKeyExtractor;
+                SerializableFunction<T, ?> effectiveKey = selectionKeyExtractor;
                 if (effectiveKey == null && beanType != null) {
                     effectiveKey = detectIdentifierExtractor(beanType);
                 }
 
                 SelectionHighlighter<T> highlighter =
-                        new SelectionHighlighter<>(typedBundle.listing(), effectiveKey, highlightPartName);
+                        new SelectionHighlighter<>(typedBundle.listing(), effectiveKey, highlightPartName,
+                                rowPartNameGenerator);
                 layout.setMasterBundle(typedBundle);
                 layout.setMasterHighlighter(highlighter);
 
-                typedBundle.listing().addItemClickListener(event -> {
-                    highlighter.setHighlighted(event.getItem());
-                    if (accentColorProvider != null) {
-                        layout.setAccentClass(accentColorProvider.apply(event.getItem()));
-                    }
-                    layout.dispatchSync(event.getItem());
-                });
+                typedBundle.listing().addItemClickListener(event ->
+                        layout.selectItem(event.getItem()));
             }
             layout.add(div);
         }
@@ -496,7 +551,7 @@ public abstract class AbstractMasterDetailConfigurator<T, C extends MasterDetail
          * Walks the class hierarchy.  Returns {@code null} when nothing is found, so
          * {@link SelectionHighlighter} falls back to {@code Function.identity()}.
          */
-        private static <B> Function<B, ?> detectIdentifierExtractor(Class<B> beanType) {
+        private static <B> SerializableFunction<B, ?> detectIdentifierExtractor(Class<B> beanType) {
             Class<?> cls = beanType;
             while (cls != null && cls != Object.class) {
                 for (java.lang.reflect.Field field : cls.getDeclaredFields()) {
@@ -574,7 +629,7 @@ public abstract class AbstractMasterDetailConfigurator<T, C extends MasterDetail
 
         @Override
         @SuppressWarnings("unchecked")
-        public MasterDetailConfigurator.DetailOptions<T> withDetailSync(Consumer<T> handler) {
+        public MasterDetailConfigurator.DetailOptions<T> withDetailSync(SerializableConsumer<T> handler) {
             if (handler != null) {
                 syncHandlers.add(item -> handler.accept((T) item));
             }
@@ -639,7 +694,7 @@ public abstract class AbstractMasterDetailConfigurator<T, C extends MasterDetail
      * appending a typed dispatch {@link Consumer} for each one to {@code out}.
      */
     @SuppressWarnings("unchecked")
-    private static void collectSyncAware(Component root, List<Consumer<Object>> out) {
+    private static void collectSyncAware(Component root, List<SerializableConsumer<Object>> out) {
         if (root instanceof DetailSyncAware<?> aware) {
             out.add(item -> ((DetailSyncAware<Object>) aware).onItemSelected(item));
         }

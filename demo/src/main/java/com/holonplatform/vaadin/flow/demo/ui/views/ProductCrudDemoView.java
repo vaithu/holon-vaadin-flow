@@ -17,10 +17,12 @@ import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.Notification.Position;
 import com.vaadin.flow.component.notification.NotificationVariant;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.data.renderer.NumberRenderer;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.util.Locale;
 
@@ -107,6 +109,16 @@ public class ProductCrudDemoView extends Div {
                 "All data survives page navigation and is reset on application restart.");
         heading.addClassName("app-page-header");
 
+        var addButton = Components.button()
+                .text("Add product")
+                .icon(VaadinIcon.PLUS)
+                .primary()
+                .onClick(e -> openForm(null))
+                .build();
+        var headerRow = new HorizontalLayout(heading, addButton);
+        headerRow.setWidthFull();
+        headerRow.setFlexGrow(1, heading);
+
         // ── Info banner ───────────────────────────────────────────────────────
         var infoAlert = Alert.builder(Alert.Variant.INFO)
                 .title("Listing-bundle row actions + high-performance mode")
@@ -121,7 +133,7 @@ public class ProductCrudDemoView extends Div {
 
         var content = new Div();
         content.addClassName("listing-page");
-        content.add(heading, subTitle, infoAlert, bundle);
+        content.add(headerRow, subTitle, infoAlert, bundle);
         add(content);
     }
 
@@ -135,21 +147,17 @@ public class ProductCrudDemoView extends Div {
                 .columns("id", "name", "category", "price", "active", "createdDate")
                 .withFilterPanel(true)
                 .multiSelect()
-                .gridHeader("Product Catalogue")
-                .header("id",          "ID")
-                .header("name",        "Name")
-                .header("category",    "Category")
-                .header("price",       "Price (USD)")
-                .header("active",      "Active")
-                .header("createdDate", "Created")
+                .columnHeader("id",          "ID")
+                .columnHeader("name",        "Name")
+                .columnHeader("category",    "Category")
+                .columnHeader("price",       "Price (USD)")
+                .columnHeader("active",      "Active")
+                .columnHeader("createdDate", "Created")
                 .pageSizes(10, 25, 50)
                 .search("Search by name or category…")
                 .fetch((q, text, filter, sort) ->
                         productService.fetch(q.getOffset(), q.getLimit(), text, filter, sort))
 
-                // ── Header menu action ────────────────────────────────────────
-                // Adds an "Add product" item to the ⋮ header options menu.
-                .withMenuAction(VaadinIcon.PLUS, "Add product", () -> openForm(null))
 
                 // ── Fluent row actions ────────────────────────────────────────
                 // These replace the old manual addComponentColumn + raw Button pattern.
@@ -226,7 +234,7 @@ public class ProductCrudDemoView extends Div {
                         product -> {
                             try {
                                 if (isNew) {
-                                    product.setCreatedDate(LocalDate.now());
+                                    product.setCreatedDate(Instant.now());
                                 } else {
                                     product.setId(existing.getId());
                                     product.setCreatedDate(existing.getCreatedDate());

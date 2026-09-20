@@ -98,7 +98,9 @@ public class HeroStrip extends Div {
         /** Red gradient. */
         DANGER("danger"),
         /** Violet gradient — default for contact strips. */
-        VIOLET("violet");
+        VIOLET("violet"),
+        /** Dark navy gradient — matches the CRM Customer 360 account-health strip. */
+        DARK("dark");
 
         @Serial
         private static final long serialVersionUID = 1L;
@@ -216,7 +218,7 @@ public class HeroStrip extends Div {
     /**
      * Colour variant for a {@link Tag} pill rendered in the strip's tags row.
      */
-    public enum TagVariant implements Serializable {
+    public enum TagVariant  {
 
         /** Green — active / positive status (e.g. {@code "● Active"}). */
         OK("ok"),
@@ -292,6 +294,7 @@ public class HeroStrip extends Div {
     private Header header;
     private final List<Tag> tags = new ArrayList<>();
     private final List<Cell> cellList = new ArrayList<>();
+    private String emptyStateTitle;
 
     // ── Constructor (use HeroStripBuilder or direct construction) ─────────
 
@@ -516,6 +519,18 @@ public class HeroStrip extends Div {
         return this;
     }
 
+    /**
+     * Sets the empty-state title shown when the strip has no cells.
+     *
+     * @param title empty-state title; {@code null} clears it
+     * @return this (fluent)
+     */
+    public HeroStrip setEmptyState(String title) {
+        this.emptyStateTitle = title;
+        render();
+        return this;
+    }
+
     // ── Internal helpers ───────────────────────────────────────────────────
 
     private Div metricsDiv;
@@ -539,6 +554,10 @@ public class HeroStrip extends Div {
             }
             add(metricsDiv);
             applyMetricsColumns();
+        } else if (emptyStateTitle != null && !emptyStateTitle.isBlank()) {
+            Empty emptyState = new Empty();
+            emptyState.setTitle(emptyStateTitle);
+            add(emptyState);
         }
     }
 

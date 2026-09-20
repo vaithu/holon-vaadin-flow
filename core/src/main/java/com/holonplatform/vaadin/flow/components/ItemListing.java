@@ -23,6 +23,7 @@ import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.grid.GridSortOrder;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.grid.ItemClickEvent;
 import com.vaadin.flow.component.grid.dataview.GridLazyDataView;
@@ -424,6 +425,10 @@ public interface ItemListing<T, P> extends ItemSet, Selectable<T>, HasComponent 
      * @since 5.2.3
      */
     List<QuerySortOrder> getColumnSorts();
+
+    List<GridSortOrder<T>> getGridSortOrders();
+
+    Grid<T> getGrid();
 
     /**
      * Get whether the listing is <em>frozen</em>.

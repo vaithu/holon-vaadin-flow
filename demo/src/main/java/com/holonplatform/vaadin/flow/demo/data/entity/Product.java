@@ -1,11 +1,13 @@
 package com.holonplatform.vaadin.flow.demo.data.entity;
 
 import com.holonplatform.core.beans.Identifier;
+import com.holonplatform.core.beans.Converter;
+import com.holonplatform.core.beans.Converter.BUILTIN;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.time.Instant;
 
 /**
  * Demo JPA entity: a catalogue product.
@@ -15,7 +17,11 @@ import java.time.LocalDate;
  * distinguish INSERT from UPDATE without relying on the value being zero/null).
  */
 @Entity(name = "product")
-@Table(name = "product")
+@Table(name = "product",
+       // The listing's default sort, and the range count behind withItemIndexProvider
+       // (see ProductService#indexOf), both order by name — without this index that count
+       // degrades to a full table scan.
+       indexes = @Index(name = "idx_product_name", columnList = "name"))
 public class Product {
 
     @Identifier
@@ -36,13 +42,11 @@ public class Product {
     @Column(name = "price", precision = 12, scale = 2)
     private BigDecimal price;
 
-    @Column(name = "active")
+    @Column(name = "active", nullable = false)
     private boolean active = true;
 
     @Column(name = "created_date")
-    private LocalDate createdDate;
-
-    // ── Constructors ──────────────────────────────────────────────────────────
+    private Instant createdDate;
 
     public Product() { /* JPA */ }
 
@@ -51,28 +55,26 @@ public class Product {
         this.category    = category;
         this.price       = price;
         this.active      = true;
-        this.createdDate = LocalDate.now();
+        this.createdDate = Instant.now();
     }
 
-    // ── Accessors ─────────────────────────────────────────────────────────────
-
     public Long getId()                       { return id; }
-    public void setId(Long id)               { this.id = id; }
+    public void setId(Long id)                { this.id = id; }
 
-    public String getName()                  { return name; }
-    public void setName(String name)         { this.name = name; }
+    public String getName()                   { return name; }
+    public void setName(String name)          { this.name = name; }
 
-    public String getCategory()              { return category; }
-    public void setCategory(String category) { this.category = category; }
+    public String getCategory()               { return category; }
+    public void setCategory(String category)  { this.category = category; }
 
-    public BigDecimal getPrice()             { return price; }
-    public void setPrice(BigDecimal price)   { this.price = price; }
+    public BigDecimal getPrice()              { return price; }
+    public void setPrice(BigDecimal price)    { this.price = price; }
 
-    public boolean isActive()                { return active; }
-    public void setActive(boolean active)    { this.active = active; }
+    public boolean isActive()                 { return active; }
+    public void setActive(boolean active)     { this.active = active; }
 
-    public LocalDate getCreatedDate()                  { return createdDate; }
-    public void setCreatedDate(LocalDate createdDate)  { this.createdDate = createdDate; }
+    public Instant getCreatedDate()                 { return createdDate; }
+    public void setCreatedDate(Instant createdDate) { this.createdDate = createdDate; }
 
     @Override
     public boolean equals(Object o) {
@@ -95,8 +97,3 @@ public class Product {
         return "Product[id=" + id + ", name=" + name + "]";
     }
 }
-
-
-
-
-

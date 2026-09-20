@@ -15,6 +15,8 @@
  */
 package com.holonplatform.vaadin.flow.internal.components.builders;
 
+import com.vaadin.flow.function.SerializableFunction;
+
 import com.holonplatform.core.internal.utils.ObjectUtils;
 import com.holonplatform.vaadin.flow.components.Input;
 import com.holonplatform.vaadin.flow.components.ValueHolder.ValueChangeEvent;
@@ -111,7 +113,7 @@ public class DefaultInputConverterBuilder<T, V> extends
 	}
 
 	@Override
-	public <A> InputConverterBuilder<T, V> withAdapter(Class<A> type, Function<Input<T>, A> adapter) {
+	public <A> InputConverterBuilder<T, V> withAdapter(Class<A> type, SerializableFunction<Input<T>, A> adapter) {
 		input.setAdapter(type, adapter);
 		return this;
 	}
@@ -137,7 +139,7 @@ public class DefaultInputConverterBuilder<T, V> extends
 	}
 
 	@Override
-	public <A> InputConverterBuilder<T, V> withAdapters(Map<Class<A>, Function<Input<T>, A>> adapters) {
+	public <A> InputConverterBuilder<T, V> withAdapters(Map<Class<A>, SerializableFunction<Input<T>, A>> adapters) {
 		if (adapters != null) {
 			adapters.forEach((t, a) -> input.setAdapter(t, a));
 		}

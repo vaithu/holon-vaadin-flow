@@ -306,7 +306,8 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
      *
      * @return the grid component
      */
-    protected Grid<T> getGrid() {
+    @Override
+    public Grid<T> getGrid() {
         return grid;
     }
 
@@ -406,9 +407,14 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
      */
     @Override
     public List<QuerySortOrder> getColumnSorts() {
-        return getGrid().getSortOrder().stream()
+        return getGridSortOrders().stream()
                 .flatMap(order -> order.getSorted().getSortOrder(order.getDirection()))
                 .toList();
+    }
+
+    @Override
+    public List<GridSortOrder<T>> getGridSortOrders() {
+        return getGrid().getSortOrder();
     }
 
     /**
@@ -3491,7 +3497,10 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
 
         @Override
         public C numberRenderer(P property) {
-            final Locale currentLocale = Locale.getDefault();
+            // Resolve the *user's* locale, not the JVM default: the JVM default is an arbitrary
+            // server property, so using it here rendered every tenant's numbers with the server's
+            // grouping and decimal conventions.
+            final Locale currentLocale = LocalizationProvider.getCurrentLocale().orElseGet(Locale::getDefault);
             return renderer(property, new NumberRenderer<>(value -> (Number) value, NumberFormat.getInstance(currentLocale)));
         }
 

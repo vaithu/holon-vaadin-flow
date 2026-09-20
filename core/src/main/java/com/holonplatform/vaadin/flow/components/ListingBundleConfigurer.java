@@ -4,6 +4,7 @@ import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.core.query.QueryFilter;
 import com.holonplatform.core.query.QuerySort;
 import com.holonplatform.vaadin.flow.components.builders.ComponentConfigurator;
+import com.holonplatform.vaadin.flow.components.builders.GridToolbarBuilder;
 import com.holonplatform.vaadin.flow.components.builders.HasSizeConfigurator;
 import com.holonplatform.vaadin.flow.components.builders.HasStyleConfigurator;
 import com.holonplatform.vaadin.flow.vaadinplus.components.Empty;
@@ -82,21 +83,24 @@ public interface ListingBundleConfigurer<T, C extends ListingBundleConfigurer<T,
         Stream<T> fetch(Query<T, Void> query, String searchText, QueryFilter filter, QuerySort sort, List<String> columns);
     }
 
-    // ── Grid-header ──────────────────────────────────────────────────────────
+    /**
+     * Sets a plain title heading shown above the listing.
+     */
+    C gridHeader(String header);
 
-    C gridHeader(Component... components);
-
-    C gridHeader(String title, Component... contextActions);
-
-    C gridHeader(String title);
+    /**
+     * Wires the given components into the {@code ListingBundle} toolbar as context actions,
+     * independently of any title configured through {@link #gridHeader(String)}.
+     */
+    C gridHeader(Component... contextActions);
 
     // ── Column header labels ──────────────────────────────────────────────────
 
-    C header(String column, String label);
+    C columnHeader(String column, String label);
 
-    C header(String column, Localizable localizable);
+    C columnHeader(String column, Localizable localizable);
 
-    C header(String column, String defaultLabel, String messageCode);
+    C columnHeader(String column, String defaultLabel, String messageCode);
 
     // ── Columns ───────────────────────────────────────────────────────────────
 
@@ -142,21 +146,11 @@ public interface ListingBundleConfigurer<T, C extends ListingBundleConfigurer<T,
 
     C retainFilterValues(boolean retain);
 
-    // ── Menu actions ──────────────────────────────────────────────────────────
-
-    C withMenuAction(String label, Runnable action);
-
-    C withMenuAction(VaadinIcon icon, String label, Runnable action);
-
     // ── Misc ──────────────────────────────────────────────────────────────────
 
     C multiSelect();
 
     C autoCreateColumns(boolean autoCreate);
-
-    C importAction(Runnable action);
-
-    C exportAction(Runnable action);
 
     // ── Item click ────────────────────────────────────────────────────────────
 
@@ -174,6 +168,8 @@ public interface ListingBundleConfigurer<T, C extends ListingBundleConfigurer<T,
     C mobileViewHeader(String text);
 
     C mobileViewHeader(Component component);
+    C mobileViewHeader(String column1, String column2);
+
 
     // ── Post-processor ────────────────────────────────────────────────────────
 
@@ -200,6 +196,27 @@ public interface ListingBundleConfigurer<T, C extends ListingBundleConfigurer<T,
      * }</pre>
      */
     C withListingPostProcessor(Consumer<ItemListing<T, ?>> postProcessor);
+
+    /**
+     * Registers a callback that is invoked on the {@link GridToolbarBuilder} used internally
+     * to assemble the bundle's toolbar, <em>before</em> it is built.
+     *
+     * <p>The bundle wires the search field, filter panel and selection listing into the
+     * toolbar builder itself (so auto-search, filter-panel and pagination integration keep
+     * working); this hook runs after that wiring but before {@code build()} is called on it,
+     * so it is the place to add toolbar-level customisations not covered by the fluent API —
+     * e.g. {@code primaryAction(...)}, {@code bulkAction(...)}, {@code optionsMenuAction(...)}.</p>
+     *
+     * <pre>{@code
+     * Components.listing(Product.class)
+     *     .columns("id", "name", "price")
+     *     .withToolbarCustomizer(toolbar -> toolbar
+     *         .primaryAction(new Button("New product", e -> openCreateDialog()))
+     *         .bulkAction("Export selected", this::exportSelected))
+     *     .build();
+     * }</pre>
+     */
+    C withToolbarCustomizer(Consumer<GridToolbarBuilder> customizer);
 
     // ── Per-row actions column ────────────────────────────────────────────────
 

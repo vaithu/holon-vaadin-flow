@@ -4,12 +4,12 @@
 	<parent>
 		<groupId>com.holon-platform</groupId>
 		<artifactId>parent</artifactId>
-		<version>1.1.7</version>
+		<version>2.0.2</version>
 	</parent>
 
 	<groupId>com.holon-platform.vaadin</groupId>
 	<artifactId>holon-vaadin-flow-root</artifactId>
-	<version>12.0.0</version>
+	<version>12.0.1-SNAPSHOT</version>
 
 	<packaging>pom</packaging>
 
@@ -65,6 +65,7 @@
 		<!-- Vaadin -->
 		<vaadin.version>25.2.1</vaadin.version>
 		<spring-boot.version>4.1.0</spring-boot.version>
+		<junit.jupiter.version>6.0.3</junit.jupiter.version>
 
 		<!-- Servlet API — must match what vaadin flow-server 25.2.x declares (6.1.0 / Jakarta EE 11). -->
 		<servlet.version>6.1.0</servlet.version>
@@ -167,13 +168,6 @@
 				<version>${holon.jdbc.datastore.version}</version>
 			</dependency>
 
-			<!-- Holon JPA Datastore  used via DefaultBeanCrud for CRUD -->
-			<dependency>
-				<groupId>com.holon-platform.jpa</groupId>
-				<artifactId>holon-datastore-jpa-spring-boot</artifactId>
-				<version>${holon.jpa.datastore.version}</version>
-			</dependency>
-
 			<!-- This project modules -->
 			<dependency>
 				<groupId>com.holon-platform.vaadin</groupId>
@@ -192,7 +186,7 @@
 			</dependency>
 			<dependency>
 				<groupId>com.holon-platform.vaadin</groupId>
-				<artifactId>holon-vaadin-flow-customer</artifactId>
+				<artifactId>holon-vaadin-flow-ai-assistant</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
@@ -246,6 +240,16 @@
 				<groupId>org.mockito</groupId>
 				<artifactId>mockito-core</artifactId>
 				<version>${mockito.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.junit.jupiter</groupId>
+				<artifactId>junit-jupiter-api</artifactId>
+				<version>${junit.jupiter.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.junit.jupiter</groupId>
+				<artifactId>junit-jupiter-engine</artifactId>
+				<version>${junit.jupiter.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.google.guava</groupId>
@@ -304,6 +308,14 @@
 				<groupId>p6spy</groupId>
 				<artifactId>p6spy</artifactId>
 				<version>3.9.1</version>
+			</dependency>
+
+			<!-- P6Spy DataSource decorator auto-configuration. holon-core declares this as an
+			     optional dependency, so applications that want SQL logging must opt in. -->
+			<dependency>
+				<groupId>com.github.gavlyukovskiy</groupId>
+				<artifactId>p6spy-spring-boot-starter</artifactId>
+				<version>2.0.1</version>
 			</dependency>
 
 			<!-- HikariCP — explicit version pin; Spring Boot 4.1 manages this transitively
@@ -388,7 +400,7 @@
 		<module>spring-boot</module>
 		<module>starter</module>
 		<module>chat</module>
-		<module>customer</module>
+		<module>ai-assistant</module>
 		<module>bom</module>
 		<module>documentation</module>
 		<module>demo</module>

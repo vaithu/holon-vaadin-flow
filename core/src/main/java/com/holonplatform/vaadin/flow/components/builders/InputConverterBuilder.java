@@ -15,6 +15,8 @@
  */
 package com.holonplatform.vaadin.flow.components.builders;
 
+import com.vaadin.flow.function.SerializableFunction;
+
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
@@ -60,7 +62,7 @@ public interface InputConverterBuilder<T, V>
 	 * @param adapters The adapters to content
 	 * @return this
 	 */
-	<A> InputConverterBuilder<T, V> withAdapters(Map<Class<A>, Function<Input<T>, A>> adapters);
+	<A> InputConverterBuilder<T, V> withAdapters(Map<Class<A>, SerializableFunction<Input<T>, A>> adapters);
 
 	/**
 	 * Add a set of adapters.

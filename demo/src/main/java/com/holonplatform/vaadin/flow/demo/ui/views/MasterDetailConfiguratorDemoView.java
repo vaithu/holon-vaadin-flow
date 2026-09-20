@@ -243,7 +243,8 @@ public class MasterDetailConfiguratorDemoView extends Div {
                     : "Signal: (nothing selected)");
         });
 
-        // Runtime operation buttons — call these post-build from @OnShow, button handlers, or after save
+        // Runtime operation buttons — call these post-build from button handlers or after a save.
+        // For initial selection prefer withAutoSelect(), which drives selectFirst/restoreFromUrl itself.
         var selectFirstBtn = new Button("selectFirst(DESKTOP)", e -> layout.selectFirst(ViewMode.DESKTOP));
         selectFirstBtn.addThemeVariants(ButtonVariant.LUMO_SMALL);
         var clearBtn = new Button("clearSelection()", e -> layout.clearSelection());
@@ -286,7 +287,8 @@ public class MasterDetailConfiguratorDemoView extends Div {
                     signalLabel.setText(o != null ? "$ " + o.getAmount() : "(none)");
                 });
 
-                // 3. Runtime operations — call post-build, e.g. from @OnShow or button handlers
+                // 3. Runtime operations — call post-build from button handlers or after a save.
+                //    For initial selection prefer withAutoSelect() over calling these manually.
                 layout.selectFirst(ViewMode.DESKTOP); // highlight first row (desktop only)
                 layout.clearSelection();              // un-highlight + reset signal → null
                 layout.notifyDataChanged();           // re-fire sync with current item (e.g. after save)
@@ -481,8 +483,9 @@ public class MasterDetailConfiguratorDemoView extends Div {
      *       {@link MasterDetailLayout} instance created elsewhere (e.g. injected, pre-styled,
      *       or provided by a framework).</li>
      *   <li>{@code withUrlSync} — wire URL {@code ?id=} deep-link support at build time.
-     *       The code snippet shows the full pattern including {@code restoreFromUrl},
-     *       {@code pushUrlState}, {@code clearUrlState}, and {@code notifyDataChanged}.</li>
+     *       The code snippet shows the full pattern including {@code withAutoSelect},
+     *       {@code withItemIndexProvider}, {@code clearUrlState} and
+     *       {@code notifyDataChanged}.</li>
      * </ol>
      */
     private DemoExample configureExistingLayoutExample() {
@@ -525,26 +528,30 @@ public class MasterDetailConfiguratorDemoView extends Div {
                         .withDetailSync((DemoOrder o) -> label.setText(o.getCustomer()))
                         .content(label));
 
-                // ── withUrlSync — URL ?id= deep-link ────────────────────────────────────
-                // Wire at build time; no-op until restoreFromUrl() or pushUrlState() is called.
+                // ── withUrlSync + withAutoSelect — URL ?id= deep-link ───────────────────
+                // withAutoSelect() makes the layout resolve its own target from the browser
+                // URL on attach and on every later navigation: the ?id= item when present,
+                // otherwise the first row. No @QueryParameter, no @OnShow, no manual wiring.
                 MasterDetailLayout<DemoOrder> mdl = MasterDetailBuilder.create(DemoOrder.class)
                     .withUrlSync(
                         o -> String.valueOf(o.getId()),
                         id -> orderService.findById(Long.parseLong(id))
                     )
+                    .withInitialItem(orderService::findFirst)  // must use the listing's sort order
+                    .withItemIndexProvider((o, q) -> orderService.indexOf(o).orElse(null))
+                    .withAutoSelect()                          // replaces the old @OnShow wiring
                     .master(m -> m.listing(l -> l.fetch((q, text, sort) -> ...)).selectionKey(Order::getId))
                     .detail(d -> d.withDetailSync((DemoOrder o) -> populate(o)))
                     .build();
 
-                // In the routed view with @QueryParameter:
-                @QueryParameter("id") String id;
+                // withInitialItem must apply the same default sort as the listing's fetch,
+                // otherwise selectFirst() opens a row the Grid may not even have rendered.
+                // withItemIndexProvider is optional: it lets a deep link to a row further
+                // down the list scroll that row into view (one count query, deep links only).
 
-                @OnShow void onShow() {
-                    if (id != null) mdl.restoreFromUrl(id);  // highlight + sync from URL ?id=1001
-                    else            mdl.selectFirst(viewMode);
-                }
-
-                // Optional: push URL on row click (listing auto-syncs; push is for manual updates)
+                // Selection is a single funnel — row click, deep link and first row all go
+                // through selectItem(), which highlights, applies the accent, fires the
+                // detail sync and pushes ?id= for you.
                 void onSaved(DemoOrder saved) {
                     mdl.notifyDataChanged();                     // re-fire sync with current item
                 }
@@ -681,9 +688,9 @@ public class MasterDetailConfiguratorDemoView extends Div {
                 .styleName(CSSUtility.Common.GAP_3)
                 .master(m -> m
                     .listing(l -> l
-                        .header("customer", "Customer")
-                        .header("amount",   "Amount")
-                        .header("status",   "Status")
+                        .columnHeader("customer", "Customer")
+                        .columnHeader("amount",   "Amount")
+                        .columnHeader("status",   "Status")
                         .search("Search orders…")
                         .withFilterPanel()             // advancedMode no-op documented in adapter
                         .fetch((q, text, filter, sort) -> {
@@ -873,4 +880,3 @@ public class MasterDetailConfiguratorDemoView extends Div {
         return row;
     }
 }
-

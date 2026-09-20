@@ -695,6 +695,46 @@ public class AlertDialog extends Dialog {
         return descriptionEl.isVisible() ? descriptionEl.getText() : null;
     }
 
+    // -----------------------------------------------------------------------
+    // Action buttons access (e.g. for per-user visibility/authorization control)
+    // -----------------------------------------------------------------------
+
+    /**
+     * Returns the dialog's cancel action {@link Button}.
+     *
+     * @return the cancel button
+     */
+    public Button getCancelButton() {
+        return cancelButton;
+    }
+
+    /**
+     * Returns the dialog's secondary action {@link Button}.
+     *
+     * @return the secondary action button
+     */
+    public Button getSecondaryActionButton() {
+        return secondaryActionButton;
+    }
+
+    /**
+     * Returns the dialog's primary action {@link Button}.
+     *
+     * @return the action button
+     */
+    public Button getActionButton() {
+        return actionButton;
+    }
+
+    /**
+     * Returns the dialog's header close (Ã—) {@link Button}.
+     *
+     * @return the close button
+     */
+    public Button getCloseButton() {
+        return closeButton;
+    }
+
     /**
      * Sets the dialog description from a plain string.
      *

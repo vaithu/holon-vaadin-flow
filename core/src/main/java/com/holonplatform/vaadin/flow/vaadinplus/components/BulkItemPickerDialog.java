@@ -481,6 +481,30 @@ public class BulkItemPickerDialog extends Dialog {
         return buildEntries();
     }
 
+    // -----------------------------------------------------------------------
+    // Action buttons access (e.g. for per-user visibility/authorization control)
+    // -----------------------------------------------------------------------
+
+    /** Returns the "Add items" confirmation {@link Button}. */
+    public Button getAddItemsButton() {
+        return addItemsBtn;
+    }
+
+    /** Returns the "Cancel" {@link Button}. */
+    public Button getCancelButton() {
+        return cancelBtn;
+    }
+
+    /** Returns the pagination "Previous page" {@link Button}. */
+    public Button getPreviousPageButton() {
+        return prevBtn;
+    }
+
+    /** Returns the pagination "Next page" {@link Button}. */
+    public Button getNextPageButton() {
+        return nextBtn;
+    }
+
     /**
      * Clears all item selections without closing the dialog.
      */

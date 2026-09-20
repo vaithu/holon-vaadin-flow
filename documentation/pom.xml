@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>com.holon-platform.vaadin</groupId>
 		<artifactId>holon-vaadin-flow-root</artifactId>
-		<version>12.0.0</version>
+		<version>12.0.1-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>documentation-vaadin-flow</artifactId>
@@ -31,6 +31,24 @@
 			<plugin>
 				<groupId>org.asciidoctor</groupId>
 				<artifactId>asciidoctor-maven-plugin</artifactId>
+				<configuration combine.self="override">
+					<sourceDirectory>src/docs/asciidoc/reference</sourceDirectory>
+					<attributes>
+						<source-highlighter>coderay</source-highlighter>
+						<endpoint-url>https://holon-platform.com</endpoint-url>
+						<sourcedir>${project.build.sourceDirectory}</sourcedir>
+						<project-version>${project.version}</project-version>
+						<examplesdir>${project.basedir}/src/main/java</examplesdir>
+						<icons>font</icons>
+						<idprefix />
+						<idseparator>-</idseparator>
+						<docinfo1>true</docinfo1>
+						<docinfodir>${project.build.directory}/maven-shared-archive-resources/documentation</docinfodir>
+						<last-update-label>false</last-update-label>
+						<theme>flask</theme>
+						<tabsize>2</tabsize>
+					</attributes>
+				</configuration>
 			</plugin>
 			<!-- Assembly docs -->
 			<plugin>

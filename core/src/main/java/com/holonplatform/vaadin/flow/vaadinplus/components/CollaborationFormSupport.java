@@ -500,6 +500,15 @@ public final class CollaborationFormSupport<T> implements Serializable {
         return null;
     }
 
+    /**
+     * Returns the collaboration toggle {@link Button} (e.g. for per-user visibility/authorization control).
+     *
+     * @return the toggle button
+     */
+    public Button getToggleButton() {
+        return toggleBtn;
+    }
+
     static String toLabel(String name) {
         if (name == null || name.isBlank()) return name;
         String spaced = CAMEL_SPLIT.matcher(name).replaceAll(" ");

@@ -8,6 +8,7 @@ import com.holonplatform.vaadin.flow.components.builders.FooterConfigurator;
 import com.holonplatform.vaadin.flow.components.builders.HasSizeConfigurator;
 import com.holonplatform.vaadin.flow.components.builders.HasStyleConfigurator;
 import com.holonplatform.vaadin.flow.components.builders.HeaderConfigurator;
+import com.holonplatform.vaadin.flow.components.builders.MaterialHeaderConfigurator;
 import com.holonplatform.vaadin.flow.vaadinplus.components.Sheet;
 import com.iyensoft.vaadin.flow.components.MasterDetailAccent;
 import com.iyensoft.vaadin.flow.components.MasterDetailLayout;
@@ -15,10 +16,16 @@ import com.iyensoft.vaadin.flow.enums.ViewMode;
 import com.iyensoft.vaadin.flow.internal.components.builders.DefaultMasterDetailConfigurator;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.data.provider.ItemIndexProvider;
 
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Supplier;
+
+import com.vaadin.flow.function.SerializableConsumer;
+import com.vaadin.flow.function.SerializableFunction;
+import com.vaadin.flow.function.SerializableSupplier;
 
 /**
  * Fluent builder-phase interface for {@link MasterDetailLayout}.
@@ -117,7 +124,7 @@ public interface MasterDetailConfigurator<T, C extends MasterDetailConfigurator<
      *     .build();
      * }</pre>
      */
-    C withDetailSync(Consumer<T> handler);
+    C withDetailSync(SerializableConsumer<T> handler);
 
     /**
      * On mobile, wraps the detail panel inside the supplied {@link Sheet} and auto-opens it
@@ -149,7 +156,92 @@ public interface MasterDetailConfigurator<T, C extends MasterDetailConfigurator<
      * Wires URL {@code ?id=} deep-link synchronisation. The extractor converts an item to its
      * URL string; the loader finds an item by that string.
      */
-    C withUrlSync(Function<T, String> idExtractor, Function<String, Optional<T>> itemLoader);
+    C withUrlSync(SerializableFunction<T, String> idExtractor, SerializableFunction<String, Optional<T>> itemLoader);
+
+    /**
+     * Wires URL deep-link synchronisation on a custom query-parameter name.
+     *
+     * @param idExtractor converts an item to its URL string
+     * @param itemLoader  finds an item by that string
+     * @param paramName   the query-parameter name to read and write (e.g. {@code "customer"});
+     *                    {@code null} or blank falls back to {@code id}
+     */
+    C withUrlSync(SerializableFunction<T, String> idExtractor, SerializableFunction<String, Optional<T>> itemLoader,
+                  String paramName);
+
+    /**
+     * Lets the layout select its own initial row on desktop: the {@code ?id=} item when the
+     * URL carries one, otherwise the first row (see {@link #withInitialItem(SerializableSupplier)}).
+     *
+     * <p>Prefer this over wiring the initial selection from the view with an attach listener
+     * and/or a navigation callback such as {@code @OnShow}. The layout resolves the target
+     * from the browser {@code Location} itself, so it does not depend on navigator-injected
+     * fields being populated yet — a deep link selects the requested item directly instead
+     * of first selecting row one and then replacing it, which costs an extra backend query.
+     * Re-navigation to a different {@code ?id=} is picked up too, and the same target is
+     * never applied twice.</p>
+     *
+     * <pre>{@code
+     * Components.masterDetail(Product.class)
+     *     .viewMode(mode)
+     *     .withUrlSync(p -> String.valueOf(p.getId()), id -> service.findById(Long.parseLong(id)))
+     *     .withInitialItem(service::findFirst)
+     *     .withAutoSelect()
+     *     .master(...)
+     *     .build();
+     * }</pre>
+     */
+    C withAutoSelect();
+
+    /**
+     * Supplies a direct backend loader used to auto-select the first master row on desktop
+     * (see {@code MasterDetailLayout#selectFirst}), instead of pulling it from the master
+     * listing's lazy data view.
+     *
+     * <p>Without this, the auto-select-first-row feature calls
+     * {@code ItemListing.getFirstItem()}, which — on a lazy {@code CallbackDataProvider} —
+     * issues its <strong>own</strong> backend query (via {@code GridLazyDataView.getItem(0)})
+     * whenever index 0 is not yet cached. Since this typically runs before the master grid's
+     * own rendering fetch completes, every initial page load ends up firing two separate
+     * backend queries for what is effectively the same data set. Passing a direct loader
+     * (e.g. {@code productService::findFirst}) avoids that redundant fetch entirely.</p>
+     *
+     * <pre>{@code
+     * Components.masterDetail(Product.class)
+     *     .withInitialItem(productService::findFirst)
+     *     .master(m -> m.listing(l -> l.fetch((q, t, f, s) -> productService.fetch(...))))
+     *     .build();
+     * }</pre>
+     *
+     * @param initialItemLoader supplier resolving the item to auto-select first (not null)
+     */
+    C withInitialItem(SerializableSupplier<Optional<T>> initialItemLoader);
+
+    /**
+     * Registers the callback that resolves an item's row index in the master listing, so a
+     * programmatically selected row — the deep-linked {@code ?id=} item, or the first row —
+     * is scrolled into view.
+     *
+     * <p>A Grid renders only a window of rows. Without this callback a lazily loaded listing
+     * cannot locate a row it has not fetched, so a deep link to an item further down the list
+     * populates the detail panel while the master row stays off-screen and apparently
+     * unselected.</p>
+     *
+     * <p>The callback runs at most once per programmatic selection and never on a row click,
+     * so a single lightweight "how many rows sort before this one" query is enough. Return
+     * {@code null} when the item is not part of the current data set.</p>
+     *
+     * <pre>{@code
+     * Components.masterDetail(Product.class)
+     *     .withInitialItem(productService::findFirst)
+     *     .withItemIndexProvider((item, query) -> productService.indexOf(item).orElse(null))
+     *     .build();
+     * }</pre>
+     *
+     * @param itemIndexProvider maps an item to its zero-based row index (not null)
+     */
+    C withItemIndexProvider(ItemIndexProvider<T, ?> itemIndexProvider);
+
 
     /**
      * Dynamically changes the accent colour of the left-bar selection indicator per item.
@@ -185,7 +277,36 @@ public interface MasterDetailConfigurator<T, C extends MasterDetailConfigurator<
      *                         may return {@code null} to revert to the default blue
      * @return this configurator
      */
-    C withAccentColorProvider(Function<T, String> cssClassProvider);
+    C withAccentColorProvider(SerializableFunction<T, String> cssClassProvider);
+
+    /**
+     * Adds a per-item, always-on CSS part name to every cell of the master row —
+     * independent of grid selection — so a business/status condition can tint the
+     * <em>whole</em> row (including columns rendered outside the item's own content,
+     * e.g. an auto-added multi-select checkbox column) rather than just the content
+     * cell itself.
+     *
+     * <p>The returned part name (or {@code null} for no part) is combined with the
+     * grid-selection part name ({@link #withHighlightPartName(String)}) when both are
+     * present on the same row, so the two indicators never conflict.</p>
+     *
+     * <pre>{@code
+     * Components.masterDetail(Product.class)
+     *     .master(m -> m.listing(l -> l
+     *             .mobileViewColumn(mobileColumn(product -> product.isActive()
+     *                     ? RowVariant.SELECTED : RowVariant.EXCEPTION))))
+     *     .withRowPartNameGenerator(product -> product.isActive() ? "mdl-active" : null)
+     *     .build();
+     *
+     * // CSS: .mdl-master-grid::part(mdl-active) { background-color: var(--primary-soft); }
+     * }</pre>
+     *
+     * @param partNameGenerator function that maps an item to a CSS part name, or
+     *                          {@code null} for no extra part; may itself return
+     *                          {@code null} for individual items
+     * @return this configurator
+     */
+    C withRowPartNameGenerator(SerializableFunction<T, String> partNameGenerator);
 
     // ── Inner options (no add(), no C back-reference) ─────────────────────────
 
@@ -197,9 +318,12 @@ public interface MasterDetailConfigurator<T, C extends MasterDetailConfigurator<
         /** Embeds a listing bundle. The full {@link ListingBundleConfigurer} API is available inside. */
         MasterOptions<T> listing(Consumer<ListingOptions<T>> configure);
         /** Stable selection key — enables row highlighting after data refresh. */
-        MasterOptions<T> selectionKey(Function<T, ?> keyExtractor);
+        MasterOptions<T> selectionKey(SerializableFunction<T, ?> keyExtractor);
         /** Configures the master panel header. */
         MasterOptions<T> header(Consumer<HeaderConfigurator<?>> configure);
+
+        /** Configures the master panel header using a Material 3 header instead. */
+        MasterOptions<T> materialHeader(Consumer<MaterialHeaderConfigurator<?>> configure);
         /** Configures the master panel footer. */
         MasterOptions<T> footer(Consumer<FooterConfigurator<?>> configure);
         /** Appends raw components to the master panel body. */
@@ -217,12 +341,15 @@ public interface MasterDetailConfigurator<T, C extends MasterDetailConfigurator<
     interface DetailOptions<T> {
         /** Configures the detail panel header. */
         DetailOptions<T> header(Consumer<HeaderConfigurator<?>> configure);
+
+        /** Configures the detail panel header using a Material 3 header instead. */
+        DetailOptions<T> materialHeader(Consumer<MaterialHeaderConfigurator<?>> configure);
         /** Configures the detail panel footer. */
         DetailOptions<T> footer(Consumer<FooterConfigurator<?>> configure);
         /** Appends raw components to the detail panel body. */
         DetailOptions<T> content(Component... components);
         /** Registers a handler called on every row selection in the master grid. */
-        DetailOptions<T> withDetailSync(Consumer<T> handler);
+        DetailOptions<T> withDetailSync(SerializableConsumer<T> handler);
         /** Adds one or more CSS class names to the detail panel. */
         DetailOptions<T> styleName(String... styleNames);
     }

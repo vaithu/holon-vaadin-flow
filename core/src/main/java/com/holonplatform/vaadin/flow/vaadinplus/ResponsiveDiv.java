@@ -6,7 +6,6 @@ import com.iyensoft.vaadin.flow.enums.ViewMode;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.page.WindowSize;
-import com.vaadin.flow.shared.Registration;
 import com.vaadin.flow.signals.Signal;
 
 import java.util.EnumMap;
@@ -14,7 +13,11 @@ import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import com.vaadin.flow.function.SerializableConsumer;
+import com.vaadin.flow.function.SerializableSupplier;
+
 import com.iyensoft.vaadin.flow.utils.responsive.WindowSizeTracker;
+import com.iyensoft.vaadin.flow.utils.responsive.ViewModeContext;
 
 /**
  * A responsive container {@link Div} with a fluent builder API covering the five
@@ -206,48 +209,36 @@ public class ResponsiveDiv extends Div {
      */
     public static final class ModeSwitchBuilder extends BaseBuilder<ModeSwitchBuilder, ResponsiveDiv> {
 
-        private Supplier<Component> mobileSupplier;
-        private Supplier<Component> desktopSupplier;
+        private SerializableSupplier<Component> mobileSupplier;
+        private SerializableSupplier<Component> desktopSupplier;
         private Component mobileComponent;
         private Component desktopComponent;
         private ViewMode currentMode;
-        private Registration resizeRegistration;
-        private Consumer<ViewMode> modeChangeListener;
+        private SerializableConsumer<ViewMode> modeChangeListener;
 
         private ModeSwitchBuilder() {
         }
 
-        public ModeSwitchBuilder mobile(Supplier<Component> supplier) {
+        public ModeSwitchBuilder mobile(SerializableSupplier<Component> supplier) {
             this.mobileSupplier = supplier;
             return this;
         }
 
-        public ModeSwitchBuilder desktop(Supplier<Component> supplier) {
+        public ModeSwitchBuilder desktop(SerializableSupplier<Component> supplier) {
             this.desktopSupplier = supplier;
             return this;
         }
 
-        public ModeSwitchBuilder onModeChange(Consumer<ViewMode> listener) {
+        public ModeSwitchBuilder onModeChange(SerializableConsumer<ViewMode> listener) {
             this.modeChangeListener = listener;
             return this;
         }
 
         @Override
         public ResponsiveDiv build() {
-            div.addAttachListener(event -> {
-                if (resizeRegistration != null) {
-                    resizeRegistration.remove();
-                }
-                resizeRegistration = WindowSizeTracker.track(event.getUI(), div, this::applyMode);
-            });
-
-            div.addDetachListener(event -> {
-                if (resizeRegistration != null) {
-                    resizeRegistration.remove();
-                    resizeRegistration = null;
-                }
-            });
-
+            // this::applyMode pins this builder for the lifetime of the div, which lives in the
+            // VaadinSession — hence the serializable field types and the Serializable base class.
+            WindowSizeTracker.enable(div, (SerializableConsumer<ViewMode>) this::applyMode);
             return div;
         }
 
@@ -299,22 +290,39 @@ public class ResponsiveDiv extends Div {
     // ── Base Builder ──────────────────────────────────────────────────────────
 
     /**
-     * Static WeakHashMap registry for slot suppliers. Static fields are never serialized,
-     * so non-serializable Supplier lambdas stored here are invisible to Java serialization.
-     * WeakHashMap ensures Div instances can be GC'd once there are no other references.
-     * After session deserialization the Div is a new instance — the registry returns null
-     * and the attach listener is a graceful no-op.
+     * Slot suppliers used to live in two process-wide
+     * {@code Collections.synchronizedMap(new WeakHashMap<>())} registries keyed by the {@link Div}
+     * being built. That had two costs that only show up under load:
+     *
+     * <ul>
+     *   <li><strong>A single global monitor on a hot path.</strong> Every builder {@code build()}
+     *       and every first attach took the same lock. With thousands of concurrent users
+     *       rendering responsive containers, all of them serialize through one mutex for work
+     *       that is entirely per-component.</li>
+     *   <li><strong>An unbounded leak for containers that are never attached.</strong> Entries
+     *       were only removed by the attach listener, so a {@code build()} whose result is
+     *       discarded before attach left its suppliers pinned until a GC happened to clear the
+     *       weak key — and the weak key could not help at all while the div was still reachable
+     *       from the session.</li>
+     * </ul>
+     *
+     * <p>The registries existed only to keep non-serializable {@link Supplier} lambdas out of the
+     * session. Declaring the slots as {@link SerializableSupplier}/{@link SerializableConsumer}
+     * removes that reason entirely: the suppliers can now be captured directly by the attach
+     * listener, which is itself serializable. The result is no shared lock, no cross-component
+     * map, and slot state that survives session replication instead of silently disappearing.</p>
      */
-    @SuppressWarnings("rawtypes")
-    private static final Map<Div, Map> SLOT_REGISTRY =
-            java.util.Collections.synchronizedMap(new java.util.WeakHashMap<>());
 
     /**
      * Shared builder state and operations for both {@link FlexBuilder} and {@link GridBuilder}.
      *
      * @param <B> concrete builder subtype for fluent method chaining
      */
-    public abstract static class BaseBuilder<B extends BaseBuilder<B, D>, D extends Div> {
+    public abstract static class BaseBuilder<B extends BaseBuilder<B, D>, D extends Div>
+            implements java.io.Serializable {
+
+        @java.io.Serial
+        private static final long serialVersionUID = 1L;
 
         protected final D div;
 
@@ -424,9 +432,33 @@ public class ResponsiveDiv extends Div {
          * @param supplier called at most once when the viewport matches {@code mode}
          * @return this builder
          */
-        public B slotOnce(ViewMode mode, Supplier<Component> supplier) {
+        public B slotOnce(ViewMode mode, SerializableSupplier<Component> supplier) {
             if (slots == null) slots = new EnumMap<>(ViewMode.class);
             slots.put(mode, supplier);
+            return self();
+        }
+
+        /**
+         * Registers a <em>lazy</em>, no-return-value action for a specific {@link ViewMode},
+         * called at most once on first attach when the viewport matches. Unlike
+         * {@link #slotOnce(ViewMode, Supplier)}, the action does not need to return a single
+         * wrapper {@link Component} — it can add any number of components directly to the
+         * container built by this builder.
+         *
+         * <pre>{@code
+         * ResponsiveDiv.flex().column()
+         *     .slotOnce(ViewMode.MOBILE,  v -> add(new MobileHeader(), new MobileBody()))
+         *     .slotOnce(ViewMode.DESKTOP, v -> add(new DesktopSidebar(), new DesktopBody()))
+         *     .build();
+         * }</pre>
+         *
+         * @param mode   the viewport mode this action should run for
+         * @param action called at most once when the viewport matches {@code mode}
+         * @return this builder
+         */
+        public B slotOnce(ViewMode mode, SerializableConsumer<Void> action) {
+            if (directSlots == null) directSlots = new EnumMap<>(ViewMode.class);
+            directSlots.put(mode, action);
             return self();
         }
 
@@ -436,52 +468,71 @@ public class ResponsiveDiv extends Div {
          * @return the built component
          */
         public D build() {
-            if (slots != null && !slots.isEmpty()) {
-                // Store slot suppliers in the static WeakHashMap (never serialized).
-                // After session deserialization the div is a new instance — registry returns null
-                // and the attach listener below is a graceful no-op.
+            if ((slots != null && !slots.isEmpty()) || (directSlots != null && !directSlots.isEmpty())) {
                 final D capturedDiv = div;
-                @SuppressWarnings("unchecked")
-                Map<ViewMode, Supplier<Component>> slotsCopy = new java.util.HashMap<>(slots);
-                SLOT_REGISTRY.put(capturedDiv, slotsCopy);
+                // Hold the slot maps in one-element arrays so the (serializable) attach listener
+                // can release them after the first attach, making the unused suppliers and
+                // everything they capture immediately eligible for GC.
+                final Map<ViewMode, SerializableSupplier<Component>>[] slotsRef =
+                        newHolder(slots == null || slots.isEmpty() ? null : new EnumMap<>(slots));
+                final Map<ViewMode, SerializableConsumer<Void>>[] directSlotsRef =
+                        newHolder(directSlots == null || directSlots.isEmpty() ? null : new EnumMap<>(directSlots));
+
                 capturedDiv.addAttachListener(event -> {
-                    @SuppressWarnings("unchecked")
-                    Map<ViewMode, Supplier<Component>> stored =
-                            (Map<ViewMode, Supplier<Component>>) SLOT_REGISTRY.remove(capturedDiv);
-                    if (stored == null) return;   // after deserialization: graceful no-op
+                    Map<ViewMode, SerializableSupplier<Component>> storedSlots = slotsRef[0];
+                    Map<ViewMode, SerializableConsumer<Void>> storedDirectSlots = directSlotsRef[0];
+                    if (storedSlots == null && storedDirectSlots == null) {
+                        return; // already realized on a previous attach
+                    }
+                    slotsRef[0] = null;
+                    directSlotsRef[0] = null;
                     WindowSize size = Signal.untracked(
                             () -> event.getUI().getPage().windowSizeSignal().get());
-                    if (size != null) {
-                        ViewMode mode = UIUtils.getViewMode(size.width(), size.height());
-                        Supplier<Component> s = resolveSlot(stored, mode);
+                    if (size == null) return;
+                    ViewMode mode = UIUtils.getViewMode(size.width(), size.height());
+                    ViewModeContext.setCurrent(mode);
+                    if (storedSlots != null) {
+                        Supplier<Component> s = resolveSlot(storedSlots, mode);
                         if (s != null) capturedDiv.add(s.get());
+                    }
+                    if (storedDirectSlots != null) {
+                        Consumer<Void> a = resolveSlot(storedDirectSlots, mode);
+                        if (a != null) a.accept(null);
                     }
                 });
             }
             return div;
         }
 
+        @SuppressWarnings("unchecked")
+        private static <V> Map<ViewMode, V>[] newHolder(Map<ViewMode, V> value) {
+            return new Map[] { value };
+        }
+
         // ── slot resolution ───────────────────────────────────────────────────
 
-        /** Lazy slot registry — null until first {@link #slotOnce} call. */
-        private Map<ViewMode, Supplier<Component>> slots = null;
+        /** Lazy slot registry — null until first {@link #slotOnce(ViewMode, SerializableSupplier)} call. */
+        private Map<ViewMode, SerializableSupplier<Component>> slots = null;
+
+        /** Lazy direct-action registry — null until first {@link #slotOnce(ViewMode, SerializableConsumer)} call. */
+        private Map<ViewMode, SerializableConsumer<Void>> directSlots = null;
 
         /**
-         * Resolves the best-matching supplier for the given mode using a priority fallback chain.
+         * Resolves the best-matching entry for the given mode using a priority fallback chain.
          * Exact match is always preferred; falls back by semantic proximity.
          */
-        private static Supplier<Component> resolveSlot(Map<ViewMode, Supplier<Component>> slots, ViewMode mode) {
-            Supplier<Component> exact = slots.get(mode);
+        private static <T> T resolveSlot(Map<ViewMode, T> slots, ViewMode mode) {
+            T exact = slots.get(mode);
             if (exact != null) return exact;
             return switch (mode) {
                 case MOBILE_PORTRAIT, MOBILE_LANDSCAPE -> {
-                    Supplier<Component> s = slots.get(ViewMode.MOBILE);
+                    T s = slots.get(ViewMode.MOBILE);
                     if (s != null) yield s;
                     s = slots.get(ViewMode.TABLET);
                     yield s != null ? s : slots.get(ViewMode.DESKTOP);
                 }
                 case TABLET -> {
-                    Supplier<Component> s = slots.get(ViewMode.DESKTOP);
+                    T s = slots.get(ViewMode.DESKTOP);
                     yield s != null ? s : slots.get(ViewMode.MOBILE);
                 }
                 case LARGE_DESKTOP, ULTRA_WIDE -> slots.get(ViewMode.DESKTOP);

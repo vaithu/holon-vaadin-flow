@@ -5,9 +5,53 @@
             "type": "java",
             "name": "Debug using Hotswap Agent",
             "request": "launch",
-            "javaExec": "C:\\Users\\sxp267\\.vaadin\\jdk\\jbrsdk-25-windows-x64-b176.4\\bin\\java.exe",
+            "javaExec": "C:/Users/V846281/.vaadin/jdk/jbrsdk-25.0.4-windows-x64-b508.27/bin/java.exe",
             "mainClass": "com.holonplatform.vaadin.flow.demo.DemoApplication",
-            "vmArgs": "--add-opens java.base/sun.nio.ch=ALL-UNNAMED --add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.lang.reflect=ALL-UNNAMED --add-opens java.base/java.io=ALL-UNNAMED --add-opens java.base/sun.security.action=ALL-UNNAMED --add-opens java.desktop/java.beans=ALL-UNNAMED --add-opens java.desktop/com.sun.beans=ALL-UNNAMED --add-opens java.desktop/com.sun.beans.introspect=ALL-UNNAMED --add-opens java.desktop/com.sun.beans.util=ALL-UNNAMED --add-opens java.base/jdk.internal.loader=ALL-UNNAMED -XX:+AllowEnhancedClassRedefinition -XX:+ClassUnloading -javaagent:C:\\Users\\sxp267\\.vaadin\\vscode-plugin\\hotswap-agent.jar"
+            "vmArgs": "--add-opens java.base/sun.nio.ch=ALL-UNNAMED --add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.lang.reflect=ALL-UNNAMED --add-opens java.base/java.io=ALL-UNNAMED --add-opens java.base/sun.security.action=ALL-UNNAMED --add-opens java.desktop/java.beans=ALL-UNNAMED --add-opens java.desktop/com.sun.beans=ALL-UNNAMED --add-opens java.desktop/com.sun.beans.introspect=ALL-UNNAMED --add-opens java.desktop/com.sun.beans.util=ALL-UNNAMED --add-opens java.base/jdk.internal.loader=ALL-UNNAMED -XX:+AllowEnhancedClassRedefinition -XX:+ClassUnloading -javaagent:C:\\Users\\V846281\\.vaadin\\vscode-plugin\\hotswap-agent.jar"
+        },
+        {
+            "request": "launch",
+            "type": "dfdl",
+            "name": "Debug using Hotswap Agent Copy",
+            "schema": {
+                "path": "${command:AskForSchemaName}",
+                "rootName": null,
+                "rootNamespace": null
+            },
+            "data": "${command:AskForDataName}",
+            "debugServer": 4711,
+            "infosetFormat": "xml",
+            "infosetOutput": {
+                "type": "file",
+                "path": "${workspaceFolder}/target/infoset.xml"
+            },
+            "tdmlConfig": {
+                "action": "generate",
+                "name": "Default Test Case",
+                "path": "${command:AskForValidatedTDMLPath}"
+            },
+            "trace": true,
+            "stopOnEntry": true,
+            "useExistingServer": false,
+            "openDataEditor": false,
+            "openInfosetView": false,
+            "openInfosetDiffView": false,
+            "daffodilDebugClasspath": [],
+            "dataEditor": {
+                "port": 9000,
+                "logging": {
+                    "file": "${workspaceFolder}/dataEditor-${omegaEditPort}.log",
+                    "level": "info"
+                }
+            },
+            "dfdlDebugger": {
+                "daffodilVersion": "3.11.0",
+                "timeout": "10s",
+                "logging": {
+                    "file": "${workspaceFolder}/daffodil-debugger.log",
+                    "level": "INFO"
+                }
+            }
         }
     ]
 }

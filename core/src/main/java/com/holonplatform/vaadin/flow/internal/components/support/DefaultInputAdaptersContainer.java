@@ -15,6 +15,8 @@
  */
 package com.holonplatform.vaadin.flow.internal.components.support;
 
+import com.vaadin.flow.function.SerializableFunction;
+
 import java.io.Serial;
 import java.util.Collections;
 import java.util.HashMap;
@@ -38,17 +40,17 @@ public class DefaultInputAdaptersContainer<T> implements InputAdaptersContainer<
 	@Serial
 	private static final long serialVersionUID = -7264567264012024353L;
 
-	private Map<Class<?>, Function<Input<T>, Object>> adapters;
+	private Map<Class<?>, SerializableFunction<Input<T>, Object>> adapters;
 
 	@SuppressWarnings({ "cast", "unchecked", "rawtypes" })
 	@Override
-	public <A> void setAdapter(Class<A> type, Function<Input<T>, A> adapter) {
+	public <A> void setAdapter(Class<A> type, SerializableFunction<Input<T>, A> adapter) {
 		ObjectUtils.argumentNotNull(type, "Type must be not null");
 		if (adapter != null) {
 			if (adapters == null) {
 				adapters = new HashMap<>(4);
 			}
-			adapters.put(type, (Function<Input<T>, Object>) (Function) adapter);
+			adapters.put(type, (SerializableFunction<Input<T>, Object>) (Function) adapter);
 		} else {
 			if (adapters != null) {
 				adapters.remove(type);
@@ -62,7 +64,7 @@ public class DefaultInputAdaptersContainer<T> implements InputAdaptersContainer<
 		ObjectUtils.argumentNotNull(input, "Input must be not null");
 		ObjectUtils.argumentNotNull(type, "Type must be not null");
 		if (adapters != null) {
-			final Function<Input<T>, Object> adapter = adapters.get(type);
+			final SerializableFunction<Input<T>, Object> adapter = adapters.get(type);
 			if (adapter != null) {
 				final Object value = adapter.apply(input);
 				if (value != null) {
@@ -75,7 +77,7 @@ public class DefaultInputAdaptersContainer<T> implements InputAdaptersContainer<
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
-	public <A> Map<Class<A>, Function<Input<T>, A>> getAdapters() {
+	public <A> Map<Class<A>, SerializableFunction<Input<T>, A>> getAdapters() {
 		return (adapters != null) ? (Map) adapters : Collections.emptyMap();
 	}
 

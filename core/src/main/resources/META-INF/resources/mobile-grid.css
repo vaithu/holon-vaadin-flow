@@ -3,17 +3,17 @@
    ===================================================== */
 
 .mobile-grid-column {
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    align-items: center;
-    padding-right: 1%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  align-items: center;
+  padding-right: 1%;
 }
 
 /* When rendered inside a row-based parent */
 .mobile-grid-column.flex-row {
-    flex-direction: row;
-    gap: var(--lumo-space-m);
+  flex-direction: row;
+  gap: var(--lumo-space-m);
 }
 
 /* =====================================================
@@ -23,7 +23,7 @@
 .mobile-grid-primary,
 .mobile-grid-secondary,
 .mobile-grid-tertiary {
-    display: flex;
+  display: flex;
 }
 
 /* ---------- Primary ----------
@@ -31,8 +31,8 @@
    -------------------------------- */
 
 .mobile-grid-primary {
-    align-items: center;
-    gap: var(--lumo-space-xs);
+  align-items: center;
+  gap: var(--lumo-space-xs);
 }
 
 /* ---------- Secondary ----------
@@ -40,9 +40,9 @@
    -------------------------------- */
 
 .mobile-grid-secondary {
-    flex-direction: column;
-    flex-grow: 1;
-    align-items: flex-start;
+  flex-direction: column;
+  flex-grow: 1;
+  align-items: flex-start;
 }
 
 /* ---------- Tertiary ----------
@@ -50,8 +50,8 @@
    -------------------------------- */
 
 .mobile-grid-tertiary {
-    flex-direction: column;
-    align-items: flex-start;
+  flex-direction: column;
+  align-items: flex-start;
 }
 
 /* =====================================================
@@ -61,42 +61,42 @@
 /* ---------- Primary text ---------- */
 
 .mobile-grid-primary-text {
-    font-size: var(--lumo-font-size-m);
-    font-weight: 500;
-    color: var(--lumo-header-text-color);
+  font-size: var(--lumo-font-size-m);
+  font-weight: 500;
+  color: var(--lumo-header-text-color);
 
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 /* ---------- Secondary text ---------- */
 
 .mobile-grid-secondary-text {
-    font-size: var(--lumo-font-size-s);
-    font-weight: 600; /* semibold */
-    color: var(--lumo-body-text-color);
+  font-size: var(--lumo-font-size-s);
+  font-weight: 600; /* semibold */
+  color: var(--lumo-body-text-color);
 
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 
-    margin-bottom: var(--lumo-space-s);
+  margin-bottom: var(--lumo-space-s);
 }
 
 /* ---------- Tertiary value ---------- */
 
 .mobile-grid-tertiary-value {
-    font-weight: bold;
-    line-height: 1.2;
-    flex-grow: 1;
+  font-weight: bold;
+  line-height: 1.2;
+  flex-grow: 1;
 }
 
 /* ---------- Tertiary date ---------- */
 
 .mobile-grid-tertiary-date {
-    font-size: var(--lumo-font-size-xs);
-    color: var(--lumo-tertiary-text-color);
+  font-size: var(--lumo-font-size-xs);
+  color: var(--lumo-tertiary-text-color);
 }
 
 /* =====================================================
@@ -104,16 +104,72 @@
    ===================================================== */
 
 .mobile-grid-currency {
-    font-family: monospace;
-    letter-spacing: 0.02em;
+  font-family: monospace;
+  letter-spacing: 0.02em;
 }
 
 .mobile-grid-positive {
-    color: var(--lumo-success-text-color);
+  color: var(--lumo-success-text-color);
 }
 
 .mobile-grid-negative {
-    color: var(--lumo-error-text-color);
+  color: var(--lumo-error-text-color);
+}
+
+/* =====================================================
+   Mobile Grid Header (two-column header, e.g. set via
+   mobileViewHeader(String column1, String column2))
+   ===================================================== */
+
+.mobile-grid-header {
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--lumo-space-s);
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  padding: var(--lumo-space-xs) var(--lumo-space-s);
+  background: transparent;
+}
+
+.mobile-grid-header-start,
+.mobile-grid-header-end {
+  font-weight: 600;
+  font-size: 14px;
+  padding-right: 3px;
+
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/* The header cell content wrapper reset to let .mobile-grid-header's
+   padding take over the full header cell edge-to-edge. */
+vaadin-grid-cell-content:has(> .mobile-grid-header) {
+  padding: 0;
+}
+
+/* Color the whole header row — every header cell, not just the one
+   holding .mobile-grid-header — so the gray background spans the full
+   row width instead of stopping at a single column. Scoped to grids
+   rendered inside a ListingBundle.
+   Uses a flat opaque gray (not an alpha-based --lumo-contrast-* token)
+   so the sticky header stays fully opaque and doesn't let scrolled
+   body rows show through underneath it.
+   position/z-index are re-asserted (not just inherited from the grid's
+   own internal styles) because some browsers drop the sticky
+   positioning's stacking priority during fast scroll, letting the next
+   body row's content briefly render on top of the header row. */
+.listing-bundle vaadin-grid::part(header-cell) {
+  background: #f4f5f8;
+  border-bottom: 1px solid #dcdfe8;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+.listing-bundle vaadin-grid::part(row) {
+  z-index: 1;
 }
 
 /* =====================================================
@@ -121,9 +177,9 @@
    ===================================================== */
 
 .mobile-grid-image {
-    width: var(--lumo-size-m);
-    height: var(--lumo-size-m);
-    flex-shrink: 0;
+  width: var(--lumo-size-m);
+  height: var(--lumo-size-m);
+  flex-shrink: 0;
 }
 
 /* =====================================================
@@ -134,12 +190,12 @@
 .mobile-grid-primary:empty,
 .mobile-grid-secondary:empty,
 .mobile-grid-tertiary:empty {
-    display: none;
+  display: none;
 }
 
 /* Tight vertical alignment for compact rows */
 .mobile-grid-compact .mobile-grid-secondary-text {
-    margin-bottom: 0;
+  margin-bottom: 0;
 }
 
 /* =====================================================
@@ -147,20 +203,20 @@
    ===================================================== */
 
 @media (max-width: 600px) {
-    .mobile-grid-column {
-        gap: var(--lumo-space-s);
-    }
+  .mobile-grid-column {
+    gap: var(--lumo-space-s);
+  }
 
-    .mobile-grid-primary-text {
-        font-size: var(--lumo-font-size-s);
-    }
+  .mobile-grid-primary-text {
+    font-size: var(--lumo-font-size-s);
+  }
 
-    .mobile-grid-tertiary-value {
-        font-size: var(--lumo-font-size-s);
-    }
+  .mobile-grid-tertiary-value {
+    font-size: var(--lumo-font-size-s);
+  }
 }
 
 /* Target vaadin-grid-cell-content that contains the specific mobile grid layout */
 vaadin-grid-cell-content:has(> .mobile-grid-column.flex-row) {
-    padding-left: 0 !important;
+  padding-left: 0 !important;
 }

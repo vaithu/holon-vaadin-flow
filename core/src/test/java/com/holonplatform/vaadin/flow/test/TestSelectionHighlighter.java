@@ -20,6 +20,7 @@ import com.iyensoft.vaadin.flow.internal.components.masterdetail.SelectionHighli
 import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.grid.GridSortOrder;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.grid.ItemClickEvent;
 import com.vaadin.flow.component.grid.dataview.GridLazyDataView;
@@ -377,6 +378,11 @@ class TestSelectionHighlighter {
         @Override public void deselectAll()                                    { throw new UnsupportedOperationException(); }
         @Override public Registration addSelectionListener(SelectionListener<T> l) { throw new UnsupportedOperationException(); }
         @Override public Optional<T> getFirstItem()                            { throw new UnsupportedOperationException(); }
+
+        @Override
+        public List<GridSortOrder<T>> getGridSortOrders() {throw new UnsupportedOperationException();}
+        @Override
+        public Grid<T> getGrid() {throw new UnsupportedOperationException();}
     }
 }
 

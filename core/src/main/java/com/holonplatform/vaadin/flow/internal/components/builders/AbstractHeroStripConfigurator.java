@@ -112,6 +112,12 @@ public abstract class AbstractHeroStripConfigurator<C extends HeroStripConfigura
     }
 
     @Override
+    public C emptyState(String title) {
+        getComponent().setEmptyState(title);
+        return getConfigurator();
+    }
+
+    @Override
     public C cell(Consumer<HeroStripConfigurator.CellSection> configurator) {
         if (configurator != null) {
             final String[] header  = {null};

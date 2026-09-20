@@ -15,11 +15,12 @@
  */
 package com.holonplatform.vaadin.flow.internal.components.support;
 
-import java.util.function.BiFunction;
+import java.io.Serial;
 
 import com.holonplatform.core.internal.utils.ObjectUtils;
-import com.holonplatform.core.operation.TriConsumer;
 import com.holonplatform.vaadin.flow.components.Input.PropertyHandler;
+import com.holonplatform.vaadin.flow.components.Input.PropertyHandler.PropertyGetter;
+import com.holonplatform.vaadin.flow.components.Input.PropertyHandler.PropertySetter;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasValue;
 
@@ -36,10 +37,13 @@ import com.vaadin.flow.component.HasValue;
 public class CallbackPropertyHandler<P, T, V extends HasValue<?, T>, C extends Component>
 		implements PropertyHandler<P, T, V, C> {
 
-	private final BiFunction<V, C, P> getter;
-	private final TriConsumer<V, C, P> setter;
+	@Serial
+	private static final long serialVersionUID = 1L;
 
-	public CallbackPropertyHandler(BiFunction<V, C, P> getter, TriConsumer<V, C, P> setter) {
+	private final PropertyGetter<P, T, V, C> getter;
+	private final PropertySetter<P, T, V, C> setter;
+
+	public CallbackPropertyHandler(PropertyGetter<P, T, V, C> getter, PropertySetter<P, T, V, C> setter) {
 		super();
 		ObjectUtils.argumentNotNull(getter, "The property value getter function must be not null");
 		ObjectUtils.argumentNotNull(setter, "The property value setter function must be not null");

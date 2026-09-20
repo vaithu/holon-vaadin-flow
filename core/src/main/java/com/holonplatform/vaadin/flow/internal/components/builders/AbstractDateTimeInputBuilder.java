@@ -15,6 +15,8 @@
  */
 package com.holonplatform.vaadin.flow.internal.components.builders;
 
+import com.vaadin.flow.function.SerializableFunction;
+
 import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.core.internal.utils.ObjectUtils;
 import com.holonplatform.vaadin.flow.components.Input;
@@ -660,7 +662,7 @@ public abstract class AbstractDateTimeInputBuilder<C extends DateTimeInputConfig
 	}
 
 	@Override
-	public <A> C withAdapter(Class<A> type, Function<Input<Date>, A> adapter) {
+	public <A> C withAdapter(Class<A> type, SerializableFunction<Input<Date>, A> adapter) {
 		adapters.setAdapter(type, adapter);
 		return getConfigurator();
 	}

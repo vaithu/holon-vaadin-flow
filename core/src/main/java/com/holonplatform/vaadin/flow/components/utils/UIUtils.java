@@ -8,9 +8,11 @@ import com.holonplatform.vaadin.flow.components.Components;
 import com.holonplatform.vaadin.flow.components.HasComponent;
 import com.holonplatform.vaadin.flow.components.PropertyInputForm;
 import com.holonplatform.vaadin.flow.components.builders.ButtonConfigurator;
+import com.holonplatform.vaadin.flow.components.builders.DialogBuilder;
 import com.holonplatform.vaadin.flow.components.builders.LabelBuilder;
 import com.holonplatform.vaadin.flow.components.css.CSSUtility;
 import com.holonplatform.vaadin.flow.components.css.WhiteSpace;
+import com.holonplatform.vaadin.flow.components.support.Unit;
 import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
 import com.holonplatform.vaadin.flow.internal.components.support.BreakPoint;
 import com.holonplatform.vaadin.flow.internal.lumo.SeparatorColor;
@@ -18,6 +20,7 @@ import com.holonplatform.vaadin.flow.vaadinplus.KeyValuePair;
 import com.holonplatform.vaadin.flow.vaadinplus.KeyValuePairs;
 import com.holonplatform.vaadin.flow.vaadinplus.Layout;
 import com.holonplatform.vaadin.flow.vaadinplus.components.Separator;
+import com.iyensoft.vaadin.flow.enums.ButtonPreset;
 import com.iyensoft.vaadin.flow.enums.ViewMode;
 import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.button.Button;
@@ -29,6 +32,7 @@ import com.vaadin.flow.component.contextmenu.HasMenuItems;
 import com.vaadin.flow.component.contextmenu.MenuItem;
 import com.vaadin.flow.component.contextmenu.SubMenu;
 import com.vaadin.flow.component.details.Details;
+import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
@@ -121,7 +125,40 @@ public class UIUtils {
             </div>
             """;
 
-    private static NumberFormat currencyFormat = NumberFormat.getCurrencyInstance();
+    /**
+     * Returns a {@link NumberFormat} for currency in the current UI locale.
+     *
+     * <p>Deliberately returns a new instance per call rather than caching one in a static
+     * field. {@link NumberFormat} is mutable and <strong>not thread-safe</strong>: a shared
+     * instance formatted concurrently by several UI threads interleaves internal
+     * {@code DigitList} state, which silently yields wrong amounts or throws. Sharing one is
+     * especially damaging here because the values are monetary.</p>
+     *
+     * <p>Resolving the locale per call also means each user sees their own currency and
+     * grouping conventions, instead of whichever locale the JVM happened to start with.</p>
+     */
+    private static NumberFormat currencyFormat() {
+        return NumberFormat.getCurrencyInstance(currentLocale());
+    }
+
+    /**
+     * Resolves the locale of the <em>current user</em>, falling back to the JVM default only when
+     * there is no UI and no localization context (e.g. a plain background thread).
+     *
+     * <p>In a multi-tenant deployment the JVM default locale is an arbitrary server property and
+     * has nothing to do with any particular user, so it must never be the primary source of
+     * formatting conventions.</p>
+     *
+     * @return the current user locale, never {@code null}
+     */
+    private static Locale currentLocale() {
+        final UI ui = UI.getCurrent();
+        if (ui != null && ui.getLocale() != null) {
+            return ui.getLocale();
+        }
+        return com.holonplatform.vaadin.flow.i18n.LocalizationProvider.getCurrentLocale()
+                .orElseGet(Locale::getDefault);
+    }
 
     public static com.holonplatform.vaadin.flow.components.Input<String> createSearchField() {
         return Components.input.string()
@@ -129,6 +166,45 @@ public class UIUtils {
                 .blankValuesAsNull(true)
                 .emptyValuesAsNull(true)
                 .build();
+    }
+
+    /**
+     * Creates a standard advanced-filter dialog with the shared listing presentation.
+     *
+     * @param title the dialog title
+     * @param filterContent the filter component to wrap in the dialog body
+     * @param footerComponents optional components for the dialog footer
+     * @return the configured dialog
+     */
+    public static Dialog createFilterDialog(String title, Component filterContent, Component... footerComponents) {
+
+        var body = new Div(filterContent);
+        body.addClassName("listing-filter-dialog__body");
+
+         Dialog filterDialog = new Dialog(body);
+        filterDialog.addClassName("listing-filter-dialog");
+        filterDialog.setHeaderTitle(title);
+        filterDialog.setWidth("min(750px,95vm)");
+        filterDialog.setDraggable(true);
+        filterDialog.setResizable(true);
+
+        filterDialog.getFooter().add(footerComponents);
+
+        // Footer: only [Close] — "Clear all" in the panel actions bar already handles row reset.
+        // Having both "Reset All" (footer) and "Clear all" (panel) was redundant.
+        var closeBtn = Components.button()
+                .tertiary()
+                .preset(ButtonPreset.CLOSE)
+                .onClick(event -> filterDialog.close())
+                .build();
+
+        filterDialog.getFooter().add(closeBtn);
+
+
+
+        return filterDialog;
+
+
     }
 
     public static String[] getTitleStyles() {
@@ -372,12 +448,26 @@ public class UIUtils {
 
 
     /**
-     * Thread-unsafe formatters.
+     * Amount pattern used by {@link #formatAmount(Double)} and {@link #formatAmount(int)}.
+     *
+     * <p>Only the <em>pattern</em> is shared — a {@link DecimalFormat} instance never is.
+     * {@code DecimalFormat} is documented as not thread-safe, and it was previously held in a
+     * static {@link ThreadLocal}. That was wrong twice over: the symbols were pinned to
+     * {@link Locale#US} so every user saw US grouping and decimal separators regardless of their
+     * own locale, and the instance was pinned for the lifetime of a pooled request thread, which
+     * both retains it indefinitely and lets it drift across the different users that the pooled
+     * thread serves over time.</p>
      */
-    private static final ThreadLocal<DecimalFormat> decimalFormat = ThreadLocal
-            .withInitial(() -> new DecimalFormat("###,###.00", DecimalFormatSymbols.getInstance(Locale.US)));
-    private static final ThreadLocal<DateTimeFormatter> dateFormat = ThreadLocal
-            .withInitial(() -> DateTimeFormatter.ofPattern("MMM dd, yyyy"));
+    private static final String AMOUNT_PATTERN = "###,###.00";
+
+    /**
+     * Date pattern used by {@link #formatDate(java.time.LocalDate)}.
+     *
+     * <p>A locale-resolved {@link DateTimeFormatter} is built per call rather than cached in a
+     * {@link ThreadLocal}: the formatter must follow the current user's locale, and the previous
+     * thread-pinned instance rendered {@code MMM} using whichever locale the thread first saw.</p>
+     */
+    private static final String DATE_PATTERN = "MMM dd, yyyy";
 
     /* ==== BUTTONS ==== */
 
@@ -430,16 +520,24 @@ public class UIUtils {
     /* === NUMBERS === */
 
     public static String formatAmount(Double amount) {
-        return decimalFormat.get().format(amount);
+        return amountFormat().format(amount);
     }
 
     public static String formatAmount(int amount) {
-        return decimalFormat.get().format(amount);
+        return amountFormat().format(amount);
     }
 
+    /**
+     * Creates a fresh, locale-correct amount formatter for the current user.
+     *
+     * @return a {@link DecimalFormat} that must not be shared between threads
+     */
+    private static DecimalFormat amountFormat() {
+        return new DecimalFormat(AMOUNT_PATTERN, DecimalFormatSymbols.getInstance(currentLocale()));
+    }
 
     public static String formatUnits(int units) {
-        return NumberFormat.getIntegerInstance().format(units);
+        return NumberFormat.getIntegerInstance(currentLocale()).format(units);
     }
 
     public static H3 createUnitsLabel(int units) {
@@ -450,14 +548,11 @@ public class UIUtils {
     }
 
     public static String getCurrencySymbol() {
-        return NumberFormat.getCurrencyInstance().getCurrency().getSymbol();
-        //new Locale("en", "IN")
+        return currencyFormat().getCurrency().getSymbol(currentLocale());
     }
 
     public static Double formatNumber(String number) throws ParseException {
-        return NumberFormat.getInstance().parse(number).doubleValue();
-//        LocalizationContext context = LocalizationContext.builder().build();
-//        return Double.parseDouble(context.format(NumberUtils.createNumber(number), NumberFormatFeature.DISABLE_GROUPING));
+        return NumberFormat.getInstance(currentLocale()).parse(number).doubleValue();
     }
 
     public static void setTextColor(String textColor, Component... components) {
@@ -479,7 +574,7 @@ public class UIUtils {
     /* === DATES === */
 
     public static String formatDate(LocalDate date) {
-        return dateFormat.get().format(date);
+        return DateTimeFormatter.ofPattern(DATE_PATTERN, currentLocale()).format(date);
     }
 
     /* === NOTIFICATIONS === */
@@ -537,7 +632,7 @@ public class UIUtils {
     public static Div createWrapper() {
         final var wrapper = Components.div().styleName("margin-h-auto").build();
         wrapper.setWidthFull();
-        wrapper.setMaxWidth(1024, Unit.PIXELS);
+        wrapper.setMaxWidth("1024px");
         return wrapper;
     }
 
@@ -695,23 +790,7 @@ public class UIUtils {
 
     public static final int MOBILE_BREAKPOINT = 480;
 
-    @SuppressWarnings("deprecation")
-    public static boolean isMobile(AttachEvent attachEvent) {
-        final List<Boolean> mobile = new ArrayList<>();
-        Page page = attachEvent.getUI().getPage();
-        page.retrieveExtendedClientDetails(details -> {
-            if (details.getWindowInnerWidth() < 740) {
-                mobile.add(Boolean.TRUE);
-            }
-        });
-        page.addBrowserWindowResizeListener(e -> {
-            if (e.getWidth() < 740) {
-                mobile.add(Boolean.TRUE);
-            }
-        });
 
-        return !mobile.isEmpty();
-    }
 
     public static boolean isMobile(int width) {
         return width < MOBILE_BREAKPOINT;
@@ -1003,7 +1082,7 @@ public class UIUtils {
         com.vaadin.flow.component.icon.Icon i = icon.create();
         i.addClassNames("box-border", "padding-xsmall");
 
-        String balance = currencyFormat.format(accountBalance);
+        String balance = currencyFormat().format(accountBalance);
         Span badge = Components.span().build();
         badge.add(i, Components.span().text(prefix + balance).build());
         badge.getElement().getThemeList().add(theme);
@@ -1560,9 +1639,32 @@ public class UIUtils {
     }
 
     public static ViewMode getViewMode(int width, int height) {
+        return getViewMode(width, height, null);
+    }
 
-        if (width <= 600) {
-            return (width > height) ? ViewMode.MOBILE_LANDSCAPE : ViewMode.MOBILE_PORTRAIT;
+    /**
+     * Same as {@link #getViewMode(int, int)}, but uses the browser's real
+     * {@link com.vaadin.flow.component.screenorientation.ScreenOrientationType} (from the Screen
+     * Orientation API) to decide MOBILE_LANDSCAPE vs. MOBILE_PORTRAIT when available, instead of
+     * guessing from the width/height comparison. Falls back to the width/height heuristic when
+     * {@code orientation} is {@code null}, {@code UNKNOWN} (not yet reported by the client) or
+     * {@code UNSUPPORTED} (browser doesn't implement the API).
+     *
+     * @param width       viewport width in pixels
+     * @param height      viewport height in pixels
+     * @param orientation the current {@code ScreenOrientationType}, or {@code null} if not available
+     * @return the corresponding {@link ViewMode}
+     */
+    public static ViewMode getViewMode(int width, int height,
+            com.vaadin.flow.component.screenorientation.ScreenOrientationType orientation) {
+
+        // Use the shorter side for the mobile check: a landscape phone has a large width
+        // (e.g. 844px) but a small height, so checking width alone would misclassify it as TABLET.
+        if (Math.min(width, height) <= 600) {
+            boolean landscape = (orientation != null && (orientation.isLandscape() || orientation.isPortrait()))
+                    ? orientation.isLandscape()
+                    : width > height;
+            return landscape ? ViewMode.MOBILE_LANDSCAPE : ViewMode.MOBILE_PORTRAIT;
         } else if (width <= 1024) {
             return ViewMode.TABLET;
 
@@ -1712,11 +1814,8 @@ public class UIUtils {
         }
 
         public static Button createCloseBtn(Notification notification) {
-            Button closeBtn = Components.button()
-                    .icon(VaadinIcon.CLOSE_SMALL)
-                    .tertiaryInline()
-                    .withClickListener(e -> notification.close())
-                    .build();
+            Button closeBtn = createCloseButton();
+            closeBtn.addClickListener(e -> notification.close());
             return closeBtn;
         }
 
@@ -1728,12 +1827,16 @@ public class UIUtils {
         }
 
         public static Button createCloseButton() {
-            Button closeBtn = Components.button()
+            return Components.button()
                     .icon(Icon.createCloseIcon())
+                    .iconAfterText(true)
+                    .ariaLabel("Close", "close.code")
+                    .tooltip("Close", "close.code")
                     .tertiaryInline()
+                    .error()
+                    .small()
+                    .withThemeVariants(ButtonVariant.LUMO_ICON)
                     .build();
-            closeBtn.addThemeVariants(ButtonVariant.LUMO_ICON);
-            return closeBtn;
         }
 
         public static Button createPrimaryButton(String text) {

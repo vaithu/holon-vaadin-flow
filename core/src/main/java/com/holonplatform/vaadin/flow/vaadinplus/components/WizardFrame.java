@@ -195,6 +195,25 @@ public class WizardFrame extends Panel {
         return steps.size();
     }
 
+    // -----------------------------------------------------------------------
+    // Navigation buttons access (e.g. for per-user visibility/authorization control)
+    // -----------------------------------------------------------------------
+
+    /** Returns the "Back" navigation {@link Button}. */
+    public Button getBackButton() {
+        return backButton;
+    }
+
+    /** Returns the "Next" navigation {@link Button}. */
+    public Button getNextButton() {
+        return nextButton;
+    }
+
+    /** Returns the "Finish" navigation {@link Button}. */
+    public Button getFinishButton() {
+        return finishButton;
+    }
+
     // ── Internal navigation ────────────────────────────────────────────────
 
     private void goNext() {

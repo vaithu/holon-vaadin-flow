@@ -86,6 +86,12 @@ public abstract class AbstractTotalsCardConfigurator<C extends TotalsCardConfigu
         return getConfigurator();
     }
 
+    @Override
+    public C emptyState(String title) {
+        getComponent().setEmptyState(title);
+        return getConfigurator();
+    }
+
     // -----------------------------------------------------------------------
     // Variant
     // -----------------------------------------------------------------------
@@ -202,4 +208,3 @@ public abstract class AbstractTotalsCardConfigurator<C extends TotalsCardConfigu
         return Optional.empty();
     }
 }
-

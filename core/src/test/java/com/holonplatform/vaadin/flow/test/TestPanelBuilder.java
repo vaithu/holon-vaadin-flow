@@ -1,6 +1,7 @@
 package com.holonplatform.vaadin.flow.test;
 
 import com.holonplatform.vaadin.flow.components.Components;
+import com.holonplatform.vaadin.flow.vaadinplus.components.Empty;
 import com.holonplatform.vaadin.flow.vaadinplus.components.Footer;
 import com.holonplatform.vaadin.flow.vaadinplus.components.Header;
 import com.iyensoft.vaadin.flow.components.Panel;
@@ -117,5 +118,57 @@ class TestPanelBuilder {
         assertEquals(3, children.size());
         assertSame(header, children.get(0));
         assertSame(footer, children.get(2));
+    }
+
+    @Test
+    void emptyState_isAddedOnlyWhenContentIsEmpty() {
+        Panel panel = new Panel();
+        Header header = new Header("Header");
+        Footer footer = new Footer();
+        footer.setMeta(new Span("Footer"));
+
+        panel.setHeader(header);
+        panel.setFooter(footer);
+        assertFalse(panel.getChildren().anyMatch(Empty.class::isInstance));
+
+        panel.setEmptyState("No panel content");
+
+        List<com.vaadin.flow.component.Component> children = panel.getChildren().toList();
+        assertEquals(3, children.size());
+        assertSame(header, children.get(0));
+        assertTrue(children.get(1) instanceof Empty);
+        assertSame(footer, children.get(2));
+        assertEquals("No panel content", ((Empty) children.get(1)).getEmptyTitle().getText());
+    }
+
+    @Test
+    void setContent_removesPreviouslyRenderedEmptyState() {
+        Panel panel = new Panel();
+        panel.setEmptyState("No panel content");
+
+        panel.setContent(new Div(new Span("Body")));
+
+        assertFalse(panel.getChildren().anyMatch(Empty.class::isInstance));
+    }
+
+    @Test
+    void builder_emptyState_addsPlaceholderBetweenHeaderAndFooterWhenContentMissing() {
+        Footer footer = new Footer();
+        footer.setMeta(new Span("Footer"));
+
+        Panel panel = PanelBuilder.create()
+                .header()
+                    .heading("Header")
+                    .add()
+                .emptyState("No panel content")
+                .footer(footer)
+                .build();
+
+        List<com.vaadin.flow.component.Component> children = panel.getChildren().toList();
+        assertEquals(3, children.size());
+        assertTrue(children.get(0) instanceof Header);
+        assertTrue(children.get(1) instanceof Empty);
+        assertSame(footer, children.get(2));
+        assertEquals("No panel content", ((Empty) children.get(1)).getEmptyTitle().getText());
     }
 }

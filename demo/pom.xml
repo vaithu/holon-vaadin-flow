@@ -5,7 +5,7 @@
     <parent>
         <groupId>com.holon-platform.vaadin</groupId>
         <artifactId>holon-vaadin-flow-root</artifactId>
-        <version>12.0.0</version>
+        <version>12.0.1-SNAPSHOT</version>
     </parent>
 
     <artifactId>holon-vaadin-flow-demo</artifactId>
@@ -14,6 +14,12 @@
     <description>Holon Vaadin Flow  interactive component showcase</description>
 
     <dependencies>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+
 
         <!-- Spring Boot starter: web + Holon boot auto-config + Vaadin -->
         <dependency>
@@ -58,16 +64,17 @@
             <optional>true</optional>
         </dependency>
 
-        <!-- Customer CRUD module -->
-        <dependency>
-            <groupId>com.holon-platform.vaadin</groupId>
-            <artifactId>holon-vaadin-flow-customer</artifactId>
-        </dependency>
-
         <!-- Spring Data JPA + Hibernate (schema creation via ddl-auto) -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+
+        <!-- Holon JPA Datastore + Spring Boot auto-config (provides the Datastore bean) -->
+        <dependency>
+            <groupId>com.holon-platform.jpa</groupId>
+            <artifactId>holon-datastore-jpa-spring-boot</artifactId>
+            <version>${holon.jpa.datastore.version}</version>
         </dependency>
 
         <!-- Spring Boot persistence module  provides @EntityScan (moved here in Spring Boot 4) -->
@@ -81,13 +88,6 @@
             <artifactId>spring-boot-starter-test</artifactId>
         </dependency>
 
-        <!-- Holon JPA Datastore  auto-configures a Datastore from Spring's EntityManagerFactory.
-             DefaultBeanCrud resolves it from Holon Context at runtime. -->
-        <dependency>
-            <groupId>com.holon-platform.jpa</groupId>
-            <artifactId>holon-datastore-jpa-spring-boot</artifactId>
-        </dependency>
-
         <!-- H2 in-memory database (demo persistence) -->
         <dependency>
             <groupId>com.h2database</groupId>
@@ -95,11 +95,21 @@
             <scope>runtime</scope>
         </dependency>
 
-        <!-- P6Spy — SQL logging proxy (raw library, no Spring Boot starter needed) -->
+        <!-- P6Spy — SQL logging proxy (raw library, no Spring Boot starter needed).
+             Compile scope: the demo provides a custom MessageFormattingStrategy
+             (SqlCallerLogFormat) that implements a P6Spy interface. -->
         <dependency>
             <groupId>p6spy</groupId>
             <artifactId>p6spy</artifactId>
-            <scope>runtime</scope>
+        </dependency>
+
+        <!-- P6Spy DataSource decorator: wraps the DataSource so every statement is logged.
+             Declared explicitly because holon-core exposes it as an optional dependency.
+             Do NOT combine this with a `jdbc:p6spy:` URL / P6SpyDriver — that double-proxies
+             the connection and every statement gets logged twice. -->
+        <dependency>
+            <groupId>com.github.gavlyukovskiy</groupId>
+            <artifactId>p6spy-spring-boot-starter</artifactId>
         </dependency>
 
         <!-- Logging -->
