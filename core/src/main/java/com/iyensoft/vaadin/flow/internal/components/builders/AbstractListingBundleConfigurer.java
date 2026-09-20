@@ -1,0 +1,740 @@
+package com.iyensoft.vaadin.flow.internal.components.builders;
+
+import com.holonplatform.core.beans.BeanPropertySet;
+import com.holonplatform.core.i18n.Localizable;
+import com.holonplatform.core.internal.utils.TypeUtils;
+import com.holonplatform.core.property.PathProperty;
+import com.holonplatform.core.property.Property;
+import com.holonplatform.core.query.QueryFilter;
+import com.holonplatform.core.query.QuerySort;
+import com.holonplatform.vaadin.flow.components.*;
+import com.iyensoft.vaadin.flow.components.builders.GridToolbarBuilder;
+import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
+import com.iyensoft.vaadin.flow.components.DynamicFilterPanel;
+import com.iyensoft.vaadin.flow.components.Empty;
+import com.iyensoft.vaadin.flow.components.GridToolbar;
+import com.holonplatform.vaadin.flow.components.support.ViewMode;
+import com.vaadin.flow.component.AttachEvent;
+import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.ComponentEventListener;
+import com.vaadin.flow.component.DetachEvent;
+import com.vaadin.flow.component.contextmenu.MenuItem;
+import com.vaadin.flow.component.contextmenu.SubMenu;
+import com.vaadin.flow.component.grid.ItemClickEvent;
+import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.icon.Icon;
+import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.menubar.MenuBar;
+import com.vaadin.flow.component.menubar.MenuBarVariant;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.data.provider.CallbackDataProvider;
+import com.vaadin.flow.data.provider.QuerySortOrder;
+import com.vaadin.flow.data.renderer.ComponentRenderer;
+import com.vaadin.flow.data.renderer.LitRenderer;
+import com.vaadin.flow.data.renderer.Renderer;
+import com.vaadin.flow.dom.DomEventListener;
+import com.vaadin.flow.dom.Element;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.*;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
+
+/**
+ * Shared state and implementation for all listing bundle configurers.
+ *
+ * <p>Subclasses decide the terminal operation — {@code build()} for standalone builders,
+ * {@code add()} for embedded nodes — but both share all configuration methods here.</p>
+ *
+ * @param <T> bean item type
+ * @param <C> concrete self-type (returned from every fluent method)
+ */
+public abstract class AbstractListingBundleConfigurer<T, C extends ListingBundleConfigurer<T, C>>
+        implements ListingBundleConfigurer<T, C> {
+
+    private static final Logger log = LoggerFactory.getLogger(AbstractListingBundleConfigurer.class);
+
+    // ── Configuration state ────────────────────────────────────────────────────
+
+    protected final Class<T> beanType;
+
+    private final Map<ViewMode, ComponentEventListener<ItemClickEvent<T>>> itemClickListeners = new LinkedHashMap<>();
+    private ComponentEventListener<ItemClickEvent<T>> globalItemClickListener;
+    private Supplier<ViewMode> viewModeSupplier;
+    private Component mobileViewHeaderComponent;
+    private boolean filterPanelAdvancedMode;
+    private List<String> columns = List.of();
+    private List<String> hiddenColumns = List.of();
+    private final Map<String, Localizable> headers = new LinkedHashMap<>();
+    private List<Integer> pageSizes = List.of(10, 25, 50, 100);
+    private int defaultPageSize = 10;
+    private Localizable searchLocalizable;
+    private boolean includeFilterPanel;
+    private ListingBundleConfigurer.FetchCallback<T> fetchCallback;
+    private ListingBundleConfigurer.FilteredFetchCallback<T> filteredFetchCallback;
+    private ListingBundleConfigurer.ColumnAwareFilteredFetchCallback<T> columnAwareFilteredFetchCallback;
+    private String advancedSearchLabel = "Advanced Search";
+    private boolean retainFilterValues = true;
+    private boolean multiSelect;
+    private boolean autoCreateColumns = true;
+    private boolean paginatedMode;
+    private Renderer<T> mobileColumnRenderer;
+    private boolean mobileViewColumn;
+    private String mobileViewHeaderText;
+    private Consumer<ItemListing<T, ?>> postProcessor;
+    private Consumer<GridToolbarBuilder> toolbarCustomizer;
+    private final List<ListingBundleConfigurer.RowAction<T>> rowActions = new ArrayList<>();
+    private boolean highPerformanceActions;
+    private Empty emptyState;
+    private Empty noResultsState;
+    private String gridHeaderTitle;
+    private Component[] gridHeaderContextComponents;
+
+    protected AbstractListingBundleConfigurer(Class<T> beanType) {
+        this.beanType = Objects.requireNonNull(beanType, "beanType must not be null");
+    }
+
+    /** Returns {@code this} cast to the concrete self-type. */
+    protected abstract C getConfigurator();
+
+    // ── ListingBundleConfigurer implementation ────────────────────────────────
+
+    @Override
+    public C columnHeader(String column, String label) {
+        headers.put(column, Localizable.builder().message(label).build());
+        return getConfigurator();
+    }
+
+    @Override
+    public C columnHeader(String column, Localizable localizable) {
+        headers.put(column, Objects.requireNonNull(localizable));
+        return getConfigurator();
+    }
+
+    @Override
+    public C columnHeader(String column, String defaultLabel, String messageCode) {
+        headers.put(column, Localizable.builder().message(defaultLabel).messageCode(messageCode).build());
+        return getConfigurator();
+    }
+
+    @Override
+    public C gridHeader(String header) {
+        this.gridHeaderTitle = Objects.requireNonNull(header, "header must not be null");
+        return getConfigurator();
+    }
+
+    @Override
+    public C gridHeader(Component... contextActions) {
+        this.gridHeaderContextComponents = contextActions != null
+                ? Arrays.copyOf(contextActions, contextActions.length)
+                : null;
+        return getConfigurator();
+    }
+
+    @Override
+    public C columns(String... cols) {
+        this.columns = Arrays.asList(cols);
+        return getConfigurator();
+    }
+
+    @Override
+    public C hidden(String... cols) {
+        this.hiddenColumns = Arrays.asList(cols);
+        return getConfigurator();
+    }
+
+    @Override
+    public C fetch(ListingBundleConfigurer.FetchCallback<T> callback) {
+        this.fetchCallback = Objects.requireNonNull(callback);
+        return getConfigurator();
+    }
+
+    @Override
+    public C fetch(ListingBundleConfigurer.FilteredFetchCallback<T> callback) {
+        this.filteredFetchCallback = Objects.requireNonNull(callback);
+        return getConfigurator();
+    }
+
+    @Override
+    public C fetch(ListingBundleConfigurer.ColumnAwareFilteredFetchCallback<T> callback) {
+        this.columnAwareFilteredFetchCallback = Objects.requireNonNull(callback);
+        return getConfigurator();
+    }
+
+    @Override
+    public C pageSizes(Integer... sizes) {
+        this.pageSizes = Arrays.asList(sizes);
+        return getConfigurator();
+    }
+
+    @Override
+    public C defaultPageSize(int size) {
+        if (size <= 0) throw new IllegalArgumentException("defaultPageSize must be > 0");
+        this.defaultPageSize = size;
+        return getConfigurator();
+    }
+
+    @Override
+    public C paginated() {
+        this.paginatedMode = true;
+        return getConfigurator();
+    }
+
+    @Override
+    public C virtualScroll() {
+        this.paginatedMode = false;
+        return getConfigurator();
+    }
+
+    @Override
+    public C paginated(boolean paginated) {
+        this.paginatedMode = paginated;
+        return getConfigurator();
+    }
+
+    @Override
+    public C search(String placeholder) {
+        this.searchLocalizable = Localizable.builder().message(placeholder).build();
+        return getConfigurator();
+    }
+
+    @Override
+    public C search(Localizable localizable) {
+        this.searchLocalizable = Objects.requireNonNull(localizable);
+        return getConfigurator();
+    }
+
+    @Override
+    public C search(String defaultPlaceholder, String messageCode) {
+        this.searchLocalizable = Localizable.builder().message(defaultPlaceholder).messageCode(messageCode).build();
+        return getConfigurator();
+    }
+
+    @Override
+    public C withFilterPanel() {
+        return withFilterPanel(false);
+    }
+
+    @Override
+    public C withFilterPanel(boolean advancedMode) {
+        this.includeFilterPanel = true;
+        this.filterPanelAdvancedMode = advancedMode;
+        return getConfigurator();
+    }
+
+    @Override
+    public C advancedSearchLabel(String label) {
+        this.advancedSearchLabel = Objects.requireNonNull(label);
+        return getConfigurator();
+    }
+
+    @Override
+    public C retainFilterValues(boolean retain) {
+        this.retainFilterValues = retain;
+        return getConfigurator();
+    }
+
+    @Override
+    public C multiSelect() {
+        this.multiSelect = true;
+        return getConfigurator();
+    }
+
+    @Override
+    public C autoCreateColumns(boolean autoCreate) {
+        this.autoCreateColumns = autoCreate;
+        return getConfigurator();
+    }
+
+    @Override
+    public C onItemClickListener(ViewMode viewMode, ComponentEventListener<ItemClickEvent<T>> listener) {
+        itemClickListeners.put(Objects.requireNonNull(viewMode), Objects.requireNonNull(listener));
+        return getConfigurator();
+    }
+
+    @Override
+    public C viewModeSupplier(Supplier<ViewMode> supplier) {
+        this.viewModeSupplier = Objects.requireNonNull(supplier);
+        return getConfigurator();
+    }
+
+    @Override
+    public C mobileViewColumn(Renderer<T> renderer) {
+        this.mobileColumnRenderer = Objects.requireNonNull(renderer);
+        this.mobileViewColumn = true;
+        return getConfigurator();
+    }
+
+    @Override
+    public C mobileViewHeader(String text) {
+        this.mobileViewHeaderText = Objects.requireNonNull(text);
+        return getConfigurator();
+    }
+
+    @Override
+    public C mobileViewHeader(Component component) {
+        this.mobileViewHeaderComponent = Objects.requireNonNull(component);
+        return getConfigurator();
+    }
+
+    @Override
+    public C mobileViewHeader(String column1, String column2) {
+        Span startLabel = new Span(column1);
+        startLabel.addClassName("mobile-grid-header-start");
+        Span endLabel = new Span(column2);
+        endLabel.addClassName("mobile-grid-header-end");
+
+        HorizontalLayout header = Components.hl()
+                .addToStart(startLabel)
+                .styleName("mobile-grid-header")
+                .addToEnd(endLabel)
+                .build();
+
+        return mobileViewHeader(header);
+    }
+
+    @Override
+    public C withListingPostProcessor(Consumer<ItemListing<T, ?>> postProcessor) {
+        this.postProcessor = Objects.requireNonNull(postProcessor);
+        return getConfigurator();
+    }
+
+    @Override
+    public C withToolbarCustomizer(Consumer<GridToolbarBuilder> customizer) {
+        this.toolbarCustomizer = Objects.requireNonNull(customizer);
+        return getConfigurator();
+    }
+
+    @Override
+    public C withEditAction(Consumer<T> onEdit) {
+        rowActions.add(ListingBundleConfigurer.RowAction.of(VaadinIcon.EDIT, "Edit", Objects.requireNonNull(onEdit)));
+        return getConfigurator();
+    }
+
+    @Override
+    public C withDeleteAction(Consumer<T> onDelete) {
+        rowActions.add(ListingBundleConfigurer.RowAction.of(
+                VaadinIcon.TRASH, "Delete", Objects.requireNonNull(onDelete), true));
+        return getConfigurator();
+    }
+
+    @Override
+    public C withRowAction(VaadinIcon icon, String label, Consumer<T> handler) {
+        rowActions.add(ListingBundleConfigurer.RowAction.of(
+                icon,
+                Objects.requireNonNull(label),
+                Objects.requireNonNull(handler)));
+        return getConfigurator();
+    }
+
+    @Override
+    public C withRowAction(String label, Consumer<T> handler) {
+        rowActions.add(ListingBundleConfigurer.RowAction.of(
+                Objects.requireNonNull(label),
+                Objects.requireNonNull(handler)));
+        return getConfigurator();
+    }
+
+    @Override
+    public C withHighPerformanceActions() {
+        this.highPerformanceActions = true;
+        return getConfigurator();
+    }
+
+    @Override
+    public C emptyState(Empty emptyState) {
+        this.emptyState = Objects.requireNonNull(emptyState, "emptyState must not be null");
+        return getConfigurator();
+    }
+
+    @Override
+    public C emptyState() {
+        return emptyState(Empty.builder()
+                .icon(new Icon(VaadinIcon.INBOX))
+                .title(LocalizationProvider.localize("No items", "listing.empty_title"))
+                .description(LocalizationProvider.localize("There are no items to display.", "listing.empty_description"))
+                .build());
+    }
+
+    @Override
+    public C noResultsState(Empty noResultsState) {
+        this.noResultsState = Objects.requireNonNull(noResultsState, "noResultsState must not be null");
+        return getConfigurator();
+    }
+
+    @Override
+    public C noResultsState() {
+        return noResultsState(Empty.builder()
+                .icon(new Icon(VaadinIcon.SEARCH))
+                .title(LocalizationProvider.localize("No results found", "listing.no_results_title"))
+                .description(LocalizationProvider.localize("No records match the current search or filter criteria. Try adjusting your search.", "listing.no_results_description"))
+                .build());
+    }
+
+    // ── Shared build logic ────────────────────────────────────────────────────
+
+    /**
+     * Assembles and returns a fully wired {@link ListingBundle} from the current
+     * configuration state. Safe to call from both {@code build()} and {@code add()}.
+     */
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    protected ListingBundle<T> buildBundle() {
+        // When autoCreateColumns is explicitly false, columns() is for querying only —
+        // no grid columns are auto-generated; only manually-added columns are rendered.
+        var lb = BeanListing.builder(beanType, autoCreateColumns);
+        if (autoCreateColumns && !columns.isEmpty()) lb.visibleColumns(columns);
+        if (!hiddenColumns.isEmpty()) lb.hiddenColumns(hiddenColumns);
+        headers.forEach(lb::header);
+        BeanListing<T> listing = lb.build();
+
+        if (multiSelect) listing.setSelectionMode(Selectable.SelectionMode.MULTI);
+
+        var grid = (com.vaadin.flow.component.grid.Grid<T>) listing.getComponent();
+        grid.setMultiSort(true);
+
+        if (!itemClickListeners.isEmpty() && viewModeSupplier != null) {
+            final var modeSupplier = viewModeSupplier;
+            final var listeners = Map.copyOf(itemClickListeners);
+            listing.addItemClickListener(event -> {
+                var handler = listeners.get(modeSupplier.get());
+                if (handler != null) handler.onComponentEvent(event);
+            });
+        }
+        if (globalItemClickListener != null) listing.addItemClickListener(globalItemClickListener);
+
+        if (autoCreateColumns && !columns.isEmpty()) {
+            for (String colKey : columns) {
+                if (isNumericBeanProperty(beanType, colKey)) {
+                    listing.getAllColumns().stream()
+                            .filter(col -> colKey.equals(col.getKey()))
+                            .findFirst()
+                            .ifPresent(col -> {
+                                col.setPartNameGenerator(item -> "col-numeric");
+                                col.setHeaderPartName("col-numeric");
+                            });
+                }
+            }
+        }
+
+        // ── Actions column ────────────────────────────────────────────────────
+        if (!rowActions.isEmpty()) {
+            if (highPerformanceActions) {
+                addHighPerformanceActionColumn(grid, List.copyOf(rowActions));
+            } else {
+                addActionColumn(grid, List.copyOf(rowActions));
+            }
+        }
+
+        if (mobileViewColumn) {
+            listing.setMobileColumn(mobileColumnRenderer);
+            if (mobileViewHeaderText != null) listing.setMobileHeader(mobileViewHeaderText);
+            else if (mobileViewHeaderComponent != null) listing.setMobileHeader(mobileViewHeaderComponent);
+        }
+
+        DynamicFilterPanel<T> panel = null;
+        if (includeFilterPanel) {
+            panel = createFilterPanel();
+            panel.setAdvancedMode(filterPanelAdvancedMode);
+        }
+
+        // Build the visible GridToolbar up front so its own search field and filter dialog can be
+        // wired directly into the fetch closure and page-size selector below — no headless duplicate
+        // search TextField needed.
+        var toolbarBuilder = Components.gridToolbar(gridHeaderContextComponents).selectionListing(listing);
+        if (searchLocalizable != null) {
+            toolbarBuilder.searchPlaceholder(searchLocalizable);
+        }
+        if (panel != null) {
+            toolbarBuilder.filterPanel(panel);
+        }
+        // Escape hatch: let callers add toolbar-level customisations (primaryAction, bulkAction,
+        // optionsMenuAction, etc.) before the toolbar is built, without disturbing the auto
+        // search/filter/pagination wiring above and below.
+        if (toolbarCustomizer != null) {
+            toolbarCustomizer.accept(toolbarBuilder);
+        }
+        GridToolbar toolbar = toolbarBuilder.build();
+
+        // GridToolbar retains filter values across open/close by default; reset on every open when disabled.
+        if (panel != null && !retainFilterValues) {
+            final DynamicFilterPanel<T> resetPanel = panel;
+            toolbar.getFilterDialog().addOpenedChangeListener(e -> {
+                if (e.isOpened()) {
+                    resetPanel.resetAll();
+                }
+            });
+        }
+
+        final boolean fSearchEnabled = searchLocalizable != null;
+        final TextField fSearch = toolbar.getSearchField();
+        final DynamicFilterPanel<T> fPanel = panel;
+
+        var sb = (ItemListingPageSizeSelector.Builder) ItemListingPageSizeSelector.of(listing);
+        sb.withOptions(new ArrayList<>(pageSizes));
+        sb.withDefaultSize(defaultPageSize);
+        var bar = new ItemListingPaginationBar<>(listing);
+        sb.withPaginationBar(bar);
+
+        if (fetchCallback != null || filteredFetchCallback != null || columnAwareFilteredFetchCallback != null) {
+            if (includeFilterPanel && filteredFetchCallback == null && columnAwareFilteredFetchCallback == null) {
+                log.warn("ListingBundleConfigurer: withFilterPanel() is active but the fetch callback does not accept a QueryFilter. " +
+                        "Use .fetch((q, text, filter, sort) -> ...) so the filter is applied to your query.");
+            }
+            final List<String> fColumns = List.copyOf(columns);
+            final ListingBundleConfigurer.FetchCallback<T> fCallback = this.fetchCallback;
+            final ListingBundleConfigurer.FilteredFetchCallback<T> fFiltered = this.filteredFetchCallback;
+            final ListingBundleConfigurer.ColumnAwareFilteredFetchCallback<T> fColAware = this.columnAwareFilteredFetchCallback;
+            final Class<T> fBeanType = this.beanType;
+            CallbackDataProvider.FetchCallback<T, Void> wrappedFetch = q -> {
+                String text = fSearchEnabled ? fSearch.getValue() : "";
+                QueryFilter qf = fPanel != null ? fPanel.getQueryFilter().orElse(null) : null;
+                QuerySort sort = toQuerySort(q.getSortOrders(), fBeanType);
+                if (fColAware != null)
+                    return fColAware.fetch(q, text, qf, sort, fColumns);
+                if (fFiltered != null)
+                    return fFiltered.fetch(q, text, qf, sort);
+                return fCallback.fetch(q, text, sort);
+            };
+            sb.withLazyFetch(wrappedFetch, null);
+        }
+
+        if (fSearchEnabled) sb.withSearchField(fSearch);
+        if (panel != null) sb.withFilterResetSignal(panel);
+
+        ItemListingPageSizeSelector<T, ?> selector = sb.build();
+
+        ListingBundle<T> bundle = new ListingBundle<>(listing, bar, selector, toolbar, panel,
+                gridHeaderTitle, paginatedMode,
+                emptyState, noResultsState);
+
+
+        // Wire item-count listener so the bundle can update empty-state visibility after each fetch.
+        if (emptyState != null || noResultsState != null) {
+            selector.setItemCountListener(bundle::onDataFetched);
+        }
+
+        // ── Post-processor ────────────────────────────────────────────────────
+        if (postProcessor != null) {
+            postProcessor.accept(listing);
+        }
+
+        return bundle;
+    }
+
+    /**
+     * Adds a frozen-to-end actions column to the grid.  Each row renders a
+     * {@code MenuBar} (tertiary-inline, icon-only) with an ellipsis trigger;
+     * clicking opens a sub-menu listing all registered {@link ListingBundleConfigurer.RowAction}s.
+     *
+     * <p><b>Cost:</b> O(rows) — one {@code MenuBar} instance per visible row.</p>
+     */
+    @SuppressWarnings("unchecked")
+    private void addActionColumn(com.vaadin.flow.component.grid.Grid<T> grid,
+                                 List<ListingBundleConfigurer.RowAction<T>> actions) {
+        var col = grid.addColumn(new ComponentRenderer<>(item -> {
+            MenuBar menuBar = new MenuBar();
+            menuBar.addThemeVariants(MenuBarVariant.LUMO_TERTIARY_INLINE);
+            menuBar.addClassName("action-column__menu");
+            MenuItem trigger = menuBar.addItem(new Icon(VaadinIcon.ELLIPSIS_DOTS_V));
+            SubMenu subMenu = trigger.getSubMenu();
+            for (ListingBundleConfigurer.RowAction<T> action : actions) {
+                MenuItem actionItem = subMenu.addItem(action.label(),
+                        e -> action.handler().accept(item));
+                if (action.icon() != null) {
+                    actionItem.addComponentAsFirst(new Icon(action.icon()));
+                }
+                if (action.destructive()) {
+                    actionItem.getElement().setAttribute("theme", "error");
+                }
+            }
+            return menuBar;
+        }));
+        col.setKey("__actions");
+        col.setHeader("");
+        col.setAutoWidth(true);
+        col.setFlexGrow(0);
+        col.setFrozenToEnd(true);
+        col.addClassName("action-column");
+    }
+
+    /**
+     * High-performance variant of the actions column.
+     *
+     * <p><b>Cost:</b> O(1) server-side — <em>zero</em> server-side components per row.
+     * The entire cell is rendered client-side by a {@code LitRenderer}: one icon button
+     * per registered action, each wired to its own {@code withFunction} handler.</p>
+     *
+     * <p><b>Correct Vaadin 25 {@code LitRenderer} pattern (from the official example):</b>
+     * <pre>{@code
+     * // Template: direct binding — no arrow-function wrapper
+     * @click="${action0}"
+     *
+     * // Java: item-only SerializableConsumer
+     * .withFunction("action0", item -> handler.accept(item))
+     * }</pre>
+     * An arrow-function wrapper {@code (e) => action0(...)} looks up {@code action0}
+     * as a closure variable in the browser scope, finds nothing, and silently does nothing.</p>
+     *
+     * <p><b>Visual:</b> renders individual icon buttons per row (e.g. [✏][🗑]) rather
+     * than a ⋮ dropdown.  For the ⋮ dropdown style omit {@code withHighPerformanceActions()}
+     * and use the default {@code ComponentRenderer} path.</p>
+     */
+    @SuppressWarnings("unchecked")
+    private void addHighPerformanceActionColumn(com.vaadin.flow.component.grid.Grid<T> grid,
+                                                List<ListingBundleConfigurer.RowAction<T>> actions) {
+        // Build the Lit template — one <vaadin-button> per action.
+        // Function names "action0", "action1", ... avoid any browser-global name collision.
+        StringBuilder tpl = new StringBuilder("<span class=\"action-column__wrap\">");
+        for (int i = 0; i < actions.size(); i++) {
+            ListingBundleConfigurer.RowAction<T> a = actions.get(i);
+            if (a.icon() != null) {
+                // EDIT → vaadin:edit,  ELLIPSIS_DOTS_V → vaadin:ellipsis-dots-v
+                String iconName = "vaadin:" + a.icon().name().toLowerCase().replace('_', '-');
+                // Destructive actions (e.g. Delete) get the "error" Lumo theme → red icon
+                String btnTheme = a.destructive() ? "icon tertiary error" : "icon tertiary";
+                tpl.append(String.format(
+                        "<vaadin-button theme=\"%s\" @click=\"${action%d}\" title=\"%s\">" +
+                        "<vaadin-icon icon=\"%s\"></vaadin-icon></vaadin-button>",
+                        btnTheme, i, a.label(), iconName));
+            } else {
+                String btnTheme = a.destructive() ? "tertiary error" : "tertiary";
+                tpl.append(String.format(
+                        "<vaadin-button theme=\"%s\" @click=\"${action%d}\">%s</vaadin-button>",
+                        btnTheme, i, a.label()));
+            }
+        }
+        tpl.append("</span>");
+
+        // Register one withFunction per action — the exact pattern from the Vaadin 25
+        // LitRenderer documentation. Each handler receives the row item directly.
+        LitRenderer<T> litRenderer = LitRenderer.of(tpl.toString());
+        for (int i = 0; i < actions.size(); i++) {
+            final ListingBundleConfigurer.RowAction<T> action = actions.get(i);
+            litRenderer = litRenderer.withFunction("action" + i,
+                    item -> action.handler().accept(item));
+        }
+
+        var col = grid.addColumn(litRenderer);
+        col.setKey("__actions");
+        col.setHeader("Actions");
+        col.setAutoWidth(true);
+        col.setFlexGrow(0);
+        col.setFrozenToEnd(true);
+        col.addClassName("action-column");
+    }
+
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    private DynamicFilterPanel<T> createFilterPanel() {
+        List<Property<?>> filterProperties = resolveFilterPanelProperties();
+        if (filterProperties.isEmpty()) {
+            return DynamicFilterPanel.of(beanType);
+        }
+
+        Property<?>[] properties = filterProperties.toArray(new Property<?>[0]);
+        return (DynamicFilterPanel) DynamicFilterPanel.ofProperties(properties);
+    }
+
+    private List<Property<?>> resolveFilterPanelProperties() {
+        BeanPropertySet<T> beanPropertySet = BeanPropertySet.create(beanType);
+        Set<String> hidden = hiddenColumns.isEmpty() ? Set.of() : new LinkedHashSet<>(hiddenColumns);
+
+        if (!autoCreateColumns) {
+            return allVisibleBeanProperties(beanPropertySet, hidden);
+        }
+
+        if (!columns.isEmpty()) {
+            List<Property<?>> configured = configuredVisibleBeanProperties(beanPropertySet, columns, hidden);
+            if (!configured.isEmpty()) {
+                return configured;
+            }
+        }
+
+        return allVisibleBeanProperties(beanPropertySet, hidden);
+    }
+
+    private static List<Property<?>> allVisibleBeanProperties(BeanPropertySet<?> beanPropertySet, Set<String> hidden) {
+        List<Property<?>> properties = new ArrayList<>();
+        for (PathProperty<?> property : beanPropertySet) {
+            if (!hidden.contains(property.relativeName())) {
+                properties.add(property);
+            }
+        }
+        return properties;
+    }
+
+    private static List<Property<?>> configuredVisibleBeanProperties(BeanPropertySet<?> beanPropertySet,
+                                                                    Iterable<String> propertyNames,
+                                                                    Set<String> hidden) {
+        List<Property<?>> properties = new ArrayList<>();
+        for (String propertyName : propertyNames) {
+            if (propertyName == null || propertyName.isBlank() || hidden.contains(propertyName)) {
+                continue;
+            }
+            beanPropertySet.getProperty(propertyName).ifPresent(properties::add);
+        }
+        return properties;
+    }
+
+    // ── ComponentConfigurator / HasSizeConfigurator / HasStyleConfigurator no-ops ─
+    // ListingBundle sizing and styling are managed at the container level, not here.
+
+    @Override public C id(String id) { return getConfigurator(); }
+    @Override public C visible(boolean visible) { return getConfigurator(); }
+    @Override public C elementConfiguration(Consumer<Element> element) { return getConfigurator(); }
+    @Override public C withThemeName(String themeName) { return getConfigurator(); }
+    @Override public C withEventListener(String eventType, DomEventListener listener) { return getConfigurator(); }
+    @Override public C withEventListener(String eventType, DomEventListener listener, String filter) { return getConfigurator(); }
+    @Override public C withAttachListener(ComponentEventListener<AttachEvent> listener) { return getConfigurator(); }
+    @Override public C withDetachListener(ComponentEventListener<DetachEvent> listener) { return getConfigurator(); }
+    @Override public C width(String width) { return getConfigurator(); }
+    @Override public C height(String height) { return getConfigurator(); }
+    @Override public C minWidth(String minWidth) { return getConfigurator(); }
+    @Override public C maxWidth(String maxWidth) { return getConfigurator(); }
+    @Override public C minHeight(String minHeight) { return getConfigurator(); }
+    @Override public C maxHeight(String maxHeight) { return getConfigurator(); }
+    @Override public C styleNames(String... styleNames) { return getConfigurator(); }
+    @Override public C styleName(String styleName) { return getConfigurator(); }
+    @SuppressWarnings("unused")
+    public C enabled(boolean enabled) { return getConfigurator(); }
+
+    // ── Private helpers ────────────────────────────────────────────────────────
+
+    @Override
+    public C onItemClick(ComponentEventListener<ItemClickEvent<T>> listener) {
+        this.globalItemClickListener = Objects.requireNonNull(listener);
+        return getConfigurator();
+    }
+
+    private static boolean isNumericBeanProperty(Class<?> beanType, String propertyName) {
+        try {
+            var field = beanType.getDeclaredField(propertyName);
+            if (!TypeUtils.isNumber(field.getType())) return false;
+            if ("id".equalsIgnoreCase(propertyName)) return false;
+            for (var annotation : field.getAnnotations()) {
+                String name = annotation.annotationType().getSimpleName();
+                if ("Id".equals(name) || "Identifier".equals(name)) return false;
+            }
+            return true;
+        } catch (NoSuchFieldException e) {
+            return false;
+        }
+    }
+
+    private static QuerySort toQuerySort(List<QuerySortOrder> sortOrders, Class<?> beanType) {
+        if (sortOrders == null || sortOrders.isEmpty()) return null;
+        List<QuerySort> sorts = new ArrayList<>(sortOrders.size());
+        for (QuerySortOrder order : sortOrders) {
+            String prop = order.getSorted();
+            if (prop == null || prop.isBlank()) continue;
+            var direction = order.getDirection() == com.vaadin.flow.data.provider.SortDirection.DESCENDING
+                    ? QuerySort.SortDirection.DESCENDING : QuerySort.SortDirection.ASCENDING;
+            Class<?> type = isNumericBeanProperty(beanType, prop) ? Number.class : Object.class;
+            sorts.add(QuerySort.of(PathProperty.create(prop, type), direction));
+        }
+        if (sorts.isEmpty()) return null;
+        return sorts.size() == 1 ? sorts.getFirst() : QuerySort.of(sorts);
+    }
+}

@@ -17,8 +17,8 @@ package com.iyensoft.vaadin.flow.components;
 
 import java.io.Serial;
 import com.holonplatform.core.i18n.Localizable;
-import com.holonplatform.vaadin.flow.components.builders.ButtonGroupBuilder;
-import com.holonplatform.vaadin.flow.components.builders.ButtonGroupConfigurator;
+import com.iyensoft.vaadin.flow.components.builders.ButtonGroupBuilder;
+import com.iyensoft.vaadin.flow.components.builders.ButtonGroupConfigurator;
 import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.StyleSheet;

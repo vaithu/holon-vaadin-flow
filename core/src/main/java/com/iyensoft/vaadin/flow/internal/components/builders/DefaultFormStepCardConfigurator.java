@@ -1,0 +1,21 @@
+package com.iyensoft.vaadin.flow.internal.components.builders;
+
+import com.iyensoft.vaadin.flow.components.builders.FormStepCardConfigurator;
+import com.iyensoft.vaadin.flow.components.FormStepCard;
+
+/**
+ * Default {@link FormStepCardConfigurator.BaseFormStepCardConfigurator} implementation.
+ */
+public class DefaultFormStepCardConfigurator
+        extends AbstractFormStepCardConfigurator<FormStepCardConfigurator.BaseFormStepCardConfigurator>
+        implements FormStepCardConfigurator.BaseFormStepCardConfigurator {
+
+    public DefaultFormStepCardConfigurator(FormStepCard card) {
+        super(card);
+    }
+
+    @Override
+    protected FormStepCardConfigurator.BaseFormStepCardConfigurator getConfigurator() {
+        return this;
+    }
+}

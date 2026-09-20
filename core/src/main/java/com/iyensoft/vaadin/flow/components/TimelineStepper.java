@@ -16,8 +16,8 @@
 package com.iyensoft.vaadin.flow.components;
 
 import java.io.Serial;
-import com.holonplatform.vaadin.flow.components.builders.TimelineStepperBuilder;
-import com.holonplatform.vaadin.flow.components.builders.TimelineStepperConfigurator;
+import com.iyensoft.vaadin.flow.components.builders.TimelineStepperBuilder;
+import com.iyensoft.vaadin.flow.components.builders.TimelineStepperConfigurator;
 import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
 import com.vaadin.flow.component.*;

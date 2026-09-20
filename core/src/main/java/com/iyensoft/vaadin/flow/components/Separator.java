@@ -16,8 +16,8 @@
 package com.iyensoft.vaadin.flow.components;
 
 import java.io.Serial;
-import com.holonplatform.vaadin.flow.components.builders.SeparatorBuilder;
-import com.holonplatform.vaadin.flow.components.builders.SeparatorConfigurator;
+import com.iyensoft.vaadin.flow.components.builders.SeparatorBuilder;
+import com.iyensoft.vaadin.flow.components.builders.SeparatorConfigurator;
 import com.iyensoft.vaadin.flow.utils.Color;
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.html.Div;

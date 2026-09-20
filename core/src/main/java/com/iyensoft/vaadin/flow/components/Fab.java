@@ -15,8 +15,8 @@
  */
 package com.iyensoft.vaadin.flow.components;
 
-import com.holonplatform.vaadin.flow.components.builders.FabBuilder;
-import com.holonplatform.vaadin.flow.components.builders.FabConfigurator;
+import com.iyensoft.vaadin.flow.components.builders.FabBuilder;
+import com.iyensoft.vaadin.flow.components.builders.FabConfigurator;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.StyleSheet;

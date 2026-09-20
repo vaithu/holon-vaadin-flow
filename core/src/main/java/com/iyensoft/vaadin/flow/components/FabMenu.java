@@ -15,8 +15,8 @@
  */
 package com.iyensoft.vaadin.flow.components;
 
-import com.holonplatform.vaadin.flow.components.builders.FabMenuBuilder;
-import com.holonplatform.vaadin.flow.components.builders.FabMenuConfigurator;
+import com.iyensoft.vaadin.flow.components.builders.FabMenuBuilder;
+import com.iyensoft.vaadin.flow.components.builders.FabMenuConfigurator;
 import com.holonplatform.vaadin.flow.internal.components.support.ComponentClickListenerAdapter;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.dependency.StyleSheet;

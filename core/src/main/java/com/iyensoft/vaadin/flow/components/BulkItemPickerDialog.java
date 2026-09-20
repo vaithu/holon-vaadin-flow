@@ -2,7 +2,7 @@ package com.iyensoft.vaadin.flow.components;
 
 import java.io.Serial;
 import com.holonplatform.vaadin.flow.components.Components;
-import com.holonplatform.vaadin.flow.components.builders.BulkItemPickerDialogBuilder;
+import com.iyensoft.vaadin.flow.components.builders.BulkItemPickerDialogBuilder;
 import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
 import com.vaadin.flow.component.ComponentEvent;
 import com.vaadin.flow.component.ComponentEventListener;

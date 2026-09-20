@@ -15,6 +15,10 @@
  */
 package com.holonplatform.vaadin.flow.components;
 
+import com.iyensoft.vaadin.flow.internal.components.builders.DefaultFooterBuilder;
+import com.iyensoft.vaadin.flow.internal.components.builders.DefaultHeaderBuilder;
+import com.iyensoft.vaadin.flow.internal.components.builders.DefaultListingBundleBuilder;
+
 import com.holonplatform.core.Context;
 import com.holonplatform.core.config.ConfigProperty;
 import com.holonplatform.core.i18n.Localizable;

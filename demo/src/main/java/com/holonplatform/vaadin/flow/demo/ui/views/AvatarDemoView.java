@@ -1,7 +1,7 @@
 package com.holonplatform.vaadin.flow.demo.ui.views;
 
 import com.holonplatform.core.i18n.Localizable;
-import com.holonplatform.vaadin.flow.components.builders.AvatarBuilder;
+import com.iyensoft.vaadin.flow.components.builders.AvatarBuilder;
 import com.holonplatform.vaadin.flow.components.builders.AvatarColor;
 import com.holonplatform.vaadin.flow.components.builders.AvatarGroupBuilder;
 import com.holonplatform.vaadin.flow.demo.ui.DemoExample;

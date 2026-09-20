@@ -192,7 +192,7 @@ abstract class AbstractPropertyBoxListingAdapter<SELF> {
     // ── Post-processor ────────────────────────────────────────────────────────
 
     public SELF withListingPostProcessor(Consumer<ItemListing<PropertyBox, ?>> postProcessor)  { delegate.withListingPostProcessor(postProcessor);  return self(); }
-    public SELF withToolbarCustomizer(Consumer<com.holonplatform.vaadin.flow.components.builders.GridToolbarBuilder> customizer) { delegate.withToolbarCustomizer(customizer); return self(); }
+    public SELF withToolbarCustomizer(Consumer<com.iyensoft.vaadin.flow.components.builders.GridToolbarBuilder> customizer) { delegate.withToolbarCustomizer(customizer); return self(); }
 
     // ── Size no-ops ───────────────────────────────────────────────────────────
 

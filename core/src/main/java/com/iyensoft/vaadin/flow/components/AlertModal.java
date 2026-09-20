@@ -17,7 +17,7 @@ package com.iyensoft.vaadin.flow.components;
 
 import java.io.Serial;
 import com.holonplatform.core.i18n.Localizable;
-import com.holonplatform.vaadin.flow.components.builders.AlertModalBuilder;
+import com.iyensoft.vaadin.flow.components.builders.AlertModalBuilder;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.dialog.Dialog;

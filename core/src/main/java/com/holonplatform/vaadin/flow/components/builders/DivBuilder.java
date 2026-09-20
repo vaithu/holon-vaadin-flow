@@ -15,7 +15,7 @@
  */
 package com.holonplatform.vaadin.flow.components.builders;
 
-import com.holonplatform.vaadin.flow.internal.components.builders.DefaultDivBuilder;
+import com.iyensoft.vaadin.flow.internal.components.builders.DefaultDivBuilder;
 import com.vaadin.flow.component.html.Div;
 
 /**

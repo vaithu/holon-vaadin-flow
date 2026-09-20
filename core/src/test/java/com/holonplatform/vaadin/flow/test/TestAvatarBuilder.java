@@ -1,9 +1,9 @@
 package com.holonplatform.vaadin.flow.test;
 
 import com.holonplatform.core.i18n.Localizable;
-import com.holonplatform.vaadin.flow.components.builders.AvatarBuilder;
+import com.iyensoft.vaadin.flow.components.builders.AvatarBuilder;
 import com.holonplatform.vaadin.flow.components.builders.AvatarColor;
-import com.holonplatform.vaadin.flow.components.builders.AvatarConfigurator;
+import com.iyensoft.vaadin.flow.components.builders.AvatarConfigurator;
 import com.holonplatform.vaadin.flow.components.builders.AvatarGroupBuilder;
 import com.holonplatform.vaadin.flow.components.builders.AvatarGroupConfigurator;
 import com.holonplatform.vaadin.flow.test.util.LocalizationTestUtils;

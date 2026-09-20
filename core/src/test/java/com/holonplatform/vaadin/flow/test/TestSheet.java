@@ -16,8 +16,8 @@
 package com.holonplatform.vaadin.flow.test;
 
 import com.holonplatform.core.i18n.Localizable;
-import com.holonplatform.vaadin.flow.components.builders.SheetBuilder;
-import com.holonplatform.vaadin.flow.components.builders.SheetConfigurator;
+import com.iyensoft.vaadin.flow.components.builders.SheetBuilder;
+import com.iyensoft.vaadin.flow.components.builders.SheetConfigurator;
 import com.holonplatform.vaadin.flow.test.util.LocalizationTestUtils;
 import com.iyensoft.vaadin.flow.components.Sheet;
 import com.iyensoft.vaadin.flow.components.SheetDescription;

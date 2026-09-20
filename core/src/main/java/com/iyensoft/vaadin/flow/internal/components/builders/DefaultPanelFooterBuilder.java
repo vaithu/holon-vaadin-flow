@@ -1,7 +1,7 @@
 package com.iyensoft.vaadin.flow.internal.components.builders;
 
 import com.iyensoft.vaadin.flow.components.Footer;
-import com.holonplatform.vaadin.flow.internal.components.builders.AbstractFooterConfigurator;
+import com.iyensoft.vaadin.flow.internal.components.builders.AbstractFooterConfigurator;
 import com.iyensoft.vaadin.flow.components.Panel;
 import com.iyensoft.vaadin.flow.components.builders.PanelConfigurator;
 

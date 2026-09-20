@@ -1,0 +1,50 @@
+package com.iyensoft.vaadin.flow.components.builders;
+
+import com.holonplatform.vaadin.flow.components.builders.ComponentConfigurator;
+import com.holonplatform.vaadin.flow.components.builders.HasEnabledConfigurator;
+import com.holonplatform.vaadin.flow.components.builders.HasSizeConfigurator;
+import com.holonplatform.vaadin.flow.components.builders.HasStyleConfigurator;
+
+import com.holonplatform.vaadin.flow.components.BeanListing;
+import com.holonplatform.vaadin.flow.components.PropertyListing;
+import com.iyensoft.vaadin.flow.enums.HeadingLevel;
+import com.iyensoft.vaadin.flow.utils.Font;
+import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.grid.Grid;
+
+/**
+ * Configurator interface for GridHeader.
+ *
+ * @param <C> the concrete configurator type
+ */
+public interface GridHeaderConfigurator<C extends GridHeaderConfigurator<C>> extends ComponentConfigurator<C>,
+        HasSizeConfigurator<C>, HasStyleConfigurator<C>, HasEnabledConfigurator<C> {
+
+
+    default C heading(Component component) {
+        return heading(component, HeadingLevel.NONE);
+    }
+
+    C heading(Component component, HeadingLevel headingLevel);
+
+    default C heading(String title) {
+        return heading(title, HeadingLevel.H2);
+    }
+
+    C heading(String title, HeadingLevel headingLevel);
+
+    C withSize(Font.Size size);
+
+    C withoutBorder();
+
+    C grid(Grid<?> grid);
+
+    C listing(BeanListing<?> beanListing);
+
+    C listing(PropertyListing propertyListing);
+
+    C defaultActions(Component... components);
+
+    C contextActions(Component... components);
+
+}

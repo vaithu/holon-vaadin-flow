@@ -1,0 +1,35 @@
+package com.iyensoft.vaadin.flow.internal.components.builders;
+
+import com.iyensoft.vaadin.flow.components.builders.IconBadgeBuilder;
+import com.iyensoft.vaadin.flow.components.Alert;
+import com.iyensoft.vaadin.flow.components.IconBadge;
+import com.vaadin.flow.component.icon.Icon;
+import com.vaadin.flow.component.icon.VaadinIcon;
+
+/**
+ * Default {@link IconBadgeBuilder} implementation.
+ */
+public class DefaultIconBadgeBuilder
+        extends AbstractIconBadgeConfigurator<IconBadgeBuilder>
+        implements IconBadgeBuilder {
+
+    public DefaultIconBadgeBuilder(Icon icon, Alert.Variant variant, IconBadge.Size size) {
+        super(new IconBadge(
+                icon != null ? icon : VaadinIcon.CIRCLE.create(),
+                variant,
+                size != null ? size : IconBadge.Size.DEFAULT));
+    }
+
+    @Override
+    protected IconBadgeBuilder getConfigurator() {
+        return this;
+    }
+
+    @Override
+    public IconBadge build() {
+        return getComponent();
+    }
+}
+
+
+
