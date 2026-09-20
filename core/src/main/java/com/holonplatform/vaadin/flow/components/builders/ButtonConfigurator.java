@@ -17,8 +17,8 @@ package com.holonplatform.vaadin.flow.components.builders;
 
 import com.holonplatform.vaadin.flow.components.events.ClickEvent;
 import com.holonplatform.vaadin.flow.components.events.ClickEventListener;
-import com.iyensoft.vaadin.flow.enums.ButtonPreset;
-import com.iyensoft.vaadin.flow.enums.ButtonSize;
+import com.holonplatform.vaadin.flow.components.support.ButtonPreset;
+import com.holonplatform.vaadin.flow.components.support.ButtonSize;
 import com.holonplatform.vaadin.flow.internal.components.builders.DefaultButtonConfigurator;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;

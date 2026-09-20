@@ -13,7 +13,7 @@ import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
 import com.holonplatform.vaadin.flow.vaadinplus.components.DynamicFilterPanel;
 import com.holonplatform.vaadin.flow.vaadinplus.components.Empty;
 import com.holonplatform.vaadin.flow.vaadinplus.components.GridToolbar;
-import com.iyensoft.vaadin.flow.enums.ViewMode;
+import com.holonplatform.vaadin.flow.components.support.ViewMode;
 import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ComponentEventListener;

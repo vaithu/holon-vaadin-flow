@@ -1,7 +1,7 @@
 package com.holonplatform.vaadin.flow.test;
 
 import com.holonplatform.vaadin.flow.components.builders.ButtonBuilder;
-import com.iyensoft.vaadin.flow.enums.ButtonPreset;
+import com.holonplatform.vaadin.flow.components.support.ButtonPreset;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import org.junit.jupiter.api.Nested;

@@ -6,7 +6,7 @@ import com.holonplatform.vaadin.flow.demo.ui.DemoMainLayout;
 import com.holonplatform.vaadin.flow.vaadinplus.ResponsiveDiv;
 import com.holonplatform.vaadin.flow.vaadinplus.components.MaterialAppBar;
 import com.holonplatform.vaadin.flow.vaadinplus.components.MaterialHeader;
-import com.iyensoft.vaadin.flow.enums.ViewMode;
+import com.holonplatform.vaadin.flow.components.support.ViewMode;
 import com.iyensoft.vaadin.flow.utils.responsive.ViewModeContext;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;

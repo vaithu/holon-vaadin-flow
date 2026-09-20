@@ -17,8 +17,8 @@ import com.holonplatform.vaadin.flow.vaadinplus.components.TimelineStepper.Sever
 import com.iyensoft.vaadin.flow.components.DetailSyncAware;
 import com.iyensoft.vaadin.flow.components.MasterDetailLayout;
 import com.iyensoft.vaadin.flow.components.builders.LazyTabsBuilder;
-import com.iyensoft.vaadin.flow.enums.ButtonPreset;
-import com.iyensoft.vaadin.flow.enums.ViewMode;
+import com.holonplatform.vaadin.flow.components.support.ButtonPreset;
+import com.holonplatform.vaadin.flow.components.support.ViewMode;
 import com.iyensoft.vaadin.flow.utils.responsive.ViewModeContext;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.avatar.Avatar;

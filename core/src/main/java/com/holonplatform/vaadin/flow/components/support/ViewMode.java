@@ -1,4 +1,4 @@
-package com.iyensoft.vaadin.flow.enums;
+package com.holonplatform.vaadin.flow.components.support;
 
 import com.holonplatform.vaadin.flow.internal.lumo.Breakpoint;
 import com.vaadin.flow.component.Component;

@@ -16,7 +16,7 @@ import com.iyensoft.vaadin.flow.components.MasterDetailLayout;
 import com.iyensoft.vaadin.flow.components.builders.LazyTabsBuilder;
 import com.iyensoft.vaadin.flow.components.builders.MasterDetailBuilder;
 import com.iyensoft.vaadin.flow.components.builders.MasterDetailConfigurator;
-import com.iyensoft.vaadin.flow.enums.ViewMode;
+import com.holonplatform.vaadin.flow.components.support.ViewMode;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.html.Div;

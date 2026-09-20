@@ -2,7 +2,7 @@ package com.holonplatform.vaadin.flow.components.builders;
 
 import com.holonplatform.vaadin.flow.vaadinplus.components.MaterialAppBar.Variant;
 import com.vaadin.flow.component.Component;
-import com.iyensoft.vaadin.flow.enums.ViewMode;
+import com.holonplatform.vaadin.flow.components.support.ViewMode;
 
 /** Fluent configuration for Material 3 app bar variants and content slots. */
 public interface MaterialAppBarConfigurator<C extends MaterialAppBarConfigurator<C>>

@@ -25,7 +25,7 @@ import org.junit.jupiter.api.Test;
 import com.holonplatform.vaadin.flow.vaadinplus.ResponsiveDiv;
 import com.holonplatform.vaadin.flow.vaadinplus.components.FormSection;
 import com.iyensoft.vaadin.flow.components.MasterDetailLayout;
-import com.iyensoft.vaadin.flow.enums.ViewMode;
+import com.holonplatform.vaadin.flow.components.support.ViewMode;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.textfield.TextField;
 

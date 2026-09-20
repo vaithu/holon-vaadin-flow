@@ -5,7 +5,7 @@ import java.util.Optional;
 import com.holonplatform.core.Context;
 import com.holonplatform.core.ContextScope;
 import com.holonplatform.vaadin.flow.VaadinSessionScope;
-import com.iyensoft.vaadin.flow.enums.ViewMode;
+import com.holonplatform.vaadin.flow.components.support.ViewMode;
 import com.vaadin.flow.signals.Signal;
 import com.vaadin.flow.signals.local.ValueSignal;
 

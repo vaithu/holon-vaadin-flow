@@ -2,9 +2,9 @@ package com.holonplatform.vaadin.flow.internal.components.builders;
 
 import com.holonplatform.vaadin.flow.components.Components;
 import com.holonplatform.vaadin.flow.components.builders.ColumnBuilder;
-import com.iyensoft.vaadin.flow.enums.ColSpan;
+import com.holonplatform.vaadin.flow.components.support.ColSpan;
 import com.holonplatform.vaadin.flow.internal.components.DefaultXPanel;
-import com.iyensoft.vaadin.flow.enums.ViewMode;
+import com.holonplatform.vaadin.flow.components.support.ViewMode;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.dom.Element;
