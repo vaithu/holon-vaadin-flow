@@ -16,7 +16,7 @@
 package com.holonplatform.vaadin.flow.components.builders;
 
 import com.holonplatform.vaadin.flow.internal.components.builders.DefaultInputOTPConfigurator;
-import com.holonplatform.vaadin.flow.vaadinplus.components.InputOTP;
+import com.iyensoft.vaadin.flow.components.InputOTP;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.function.SerializableConsumer;
 import com.vaadin.flow.function.SerializableFunction;
@@ -42,7 +42,7 @@ public interface InputOTPConfigurator<C extends InputOTPConfigurator<C>>
     // -----------------------------------------------------------------------
 
     /**
-     * Appends a new {@link com.holonplatform.vaadin.flow.vaadinplus.components.InputOTPGroup}
+     * Appends a new {@link com.iyensoft.vaadin.flow.components.InputOTPGroup}
      * containing {@code count} empty slots.
      *
      * <pre>{@code
@@ -55,7 +55,7 @@ public interface InputOTPConfigurator<C extends InputOTPConfigurator<C>>
     C group(int count);
 
     /**
-     * Appends an {@link com.holonplatform.vaadin.flow.vaadinplus.components.InputOTPSeparator}
+     * Appends an {@link com.iyensoft.vaadin.flow.components.InputOTPSeparator}
      * with the default en-dash ({@code –}) glyph.
      *
      * @return this configurator for chaining
@@ -63,7 +63,7 @@ public interface InputOTPConfigurator<C extends InputOTPConfigurator<C>>
     C separator();
 
     /**
-     * Appends an {@link com.holonplatform.vaadin.flow.vaadinplus.components.InputOTPSeparator}
+     * Appends an {@link com.iyensoft.vaadin.flow.components.InputOTPSeparator}
      * with custom content.
      *
      * @param content the separator component (null falls back to the default en-dash)

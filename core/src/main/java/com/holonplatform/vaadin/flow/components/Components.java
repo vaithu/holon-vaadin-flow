@@ -53,12 +53,12 @@ import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
 import com.holonplatform.vaadin.flow.internal.components.DefaultFormFooter;
 import com.holonplatform.vaadin.flow.internal.components.DefaultTimeline;
 import com.holonplatform.vaadin.flow.internal.components.builders.*;
-import com.holonplatform.vaadin.flow.vaadinplus.KeyValueItem;
-import com.holonplatform.vaadin.flow.vaadinplus.KeyValueList;
-import com.holonplatform.vaadin.flow.vaadinplus.Layout;
-import com.holonplatform.vaadin.flow.vaadinplus.components.*;
-import com.holonplatform.vaadin.flow.vaadinplus.components.Footer;
-import com.holonplatform.vaadin.flow.vaadinplus.components.Header;
+import com.iyensoft.vaadin.flow.components.KeyValueItem;
+import com.iyensoft.vaadin.flow.components.KeyValueList;
+import com.iyensoft.vaadin.flow.components.Layout;
+import com.iyensoft.vaadin.flow.components.*;
+import com.iyensoft.vaadin.flow.components.Footer;
+import com.iyensoft.vaadin.flow.components.Header;
 import com.iyensoft.vaadin.flow.components.Panel;
 import com.iyensoft.vaadin.flow.components.NotFoundPage;
 import com.iyensoft.vaadin.flow.components.ResetPasswordPage;
@@ -908,7 +908,7 @@ public interface Components {
     // -----------------------------------------------------------------------
 
     /**
-     * Get a {@link ButtonGroupBuilder} to create a {@link com.holonplatform.vaadin.flow.vaadinplus.components.ButtonGroup}.
+     * Get a {@link ButtonGroupBuilder} to create a {@link com.iyensoft.vaadin.flow.components.ButtonGroup}.
      *
      * <pre>{@code
      * ButtonGroup group = Components.buttonGroup()
@@ -924,7 +924,7 @@ public interface Components {
 
     /**
      * Get a {@link ButtonGroupConfigurator} to configure an existing
-     * {@link com.holonplatform.vaadin.flow.vaadinplus.components.ButtonGroup} instance.
+     * {@link com.iyensoft.vaadin.flow.components.ButtonGroup} instance.
      *
      * @param buttonGroup the group to configure (not null)
      * @return a {@link ButtonGroupConfigurator.BaseButtonGroupConfigurator}
@@ -4050,13 +4050,13 @@ public interface Components {
     // -----------------------------------------------------------------------
 
     /**
-     * Creates a new {@link com.holonplatform.vaadin.flow.vaadinplus.components.LineItemGrid.Builder}
+     * Creates a new {@link com.iyensoft.vaadin.flow.components.LineItemGrid.Builder}
      * for a keyboard-centric inline document line-item spreadsheet.
      *
      * <p>All rows are rendered without virtual scrolling so the browser's native Tab order
      * covers every cell. {@code Enter} moves to the same column in the next row (Excel
      * behaviour). On mobile viewports the table switches automatically to a card-list view
-     * with a {@link com.holonplatform.vaadin.flow.vaadinplus.components.Sheet} edit panel.</p>
+     * with a {@link com.iyensoft.vaadin.flow.components.Sheet} edit panel.</p>
      *
      * <pre>{@code
      * LineItemGrid grid = Components.lineItemGrid()
@@ -4067,7 +4067,7 @@ public interface Components {
      *     .build();
      * }</pre>
      *
-     * @return a new {@link com.holonplatform.vaadin.flow.vaadinplus.components.LineItemGrid.Builder}
+     * @return a new {@link com.iyensoft.vaadin.flow.components.LineItemGrid.Builder}
      * @since 10.0.0
      */
     static LineItemGrid.Builder lineItemGrid() {
@@ -4252,7 +4252,7 @@ public interface Components {
      * Creates a new {@link com.iyensoft.vaadin.flow.components.builders.AppShellLayoutBuilder}
      * for the standard enterprise application shell.
      *
-     * <p>The builder assembles an {@link com.holonplatform.vaadin.flow.vaadinplus.components.AppBar}
+     * <p>The builder assembles an {@link com.iyensoft.vaadin.flow.components.AppBar}
      * in the navbar with an optional
      * {@link com.vaadin.flow.component.applayout.DrawerToggle}, brand, search,
      * notification bell, language selector, dark/light theme toggle, and user avatar —

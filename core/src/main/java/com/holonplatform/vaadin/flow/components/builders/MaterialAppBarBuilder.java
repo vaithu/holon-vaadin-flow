@@ -1,7 +1,7 @@
 package com.holonplatform.vaadin.flow.components.builders;
 
 import com.holonplatform.vaadin.flow.internal.components.builders.DefaultMaterialAppBarBuilder;
-import com.holonplatform.vaadin.flow.vaadinplus.components.MaterialAppBar;
+import com.iyensoft.vaadin.flow.components.MaterialAppBar;
 import com.vaadin.flow.component.Component;
 
 /** Fluent builder for Material 3 {@link MaterialAppBar} components. */

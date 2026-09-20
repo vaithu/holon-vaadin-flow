@@ -2,9 +2,9 @@ package com.holonplatform.vaadin.flow.demo.ui.views;
 
 import com.holonplatform.vaadin.flow.demo.ui.DemoExample;
 import com.holonplatform.vaadin.flow.demo.ui.DemoMainLayout;
-import com.holonplatform.vaadin.flow.vaadinplus.ResponsiveDiv;
-import com.holonplatform.vaadin.flow.vaadinplus.components.Fab;
-import com.holonplatform.vaadin.flow.vaadinplus.components.FabMenu;
+import com.iyensoft.vaadin.flow.components.ResponsiveDiv;
+import com.iyensoft.vaadin.flow.components.Fab;
+import com.iyensoft.vaadin.flow.components.FabMenu;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.Paragraph;

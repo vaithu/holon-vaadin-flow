@@ -1,7 +1,7 @@
 package com.holonplatform.vaadin.flow.test;
 
 import com.holonplatform.vaadin.flow.components.builders.GridHeaderBuilder;
-import com.holonplatform.vaadin.flow.vaadinplus.components.GridHeader;
+import com.iyensoft.vaadin.flow.components.GridHeader;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.html.Span;

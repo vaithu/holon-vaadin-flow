@@ -16,7 +16,7 @@
 package com.holonplatform.vaadin.flow.internal.components.builders;
 
 import com.holonplatform.vaadin.flow.components.builders.StepperConfigurator;
-import com.holonplatform.vaadin.flow.vaadinplus.components.FlowStepper;
+import com.iyensoft.vaadin.flow.components.FlowStepper;
 
 /**
  * Default {@link StepperConfigurator.BaseStepperConfigurator} implementation.

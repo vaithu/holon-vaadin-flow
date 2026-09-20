@@ -1,6 +1,6 @@
 package com.holonplatform.vaadin.flow.test;
 
-import com.holonplatform.vaadin.flow.vaadinplus.KeyValuePair;
+import com.iyensoft.vaadin.flow.components.KeyValuePair;
 import com.holonplatform.vaadin.flow.internal.lumo.Breakpoint;
 import com.vaadin.flow.component.Unit;
 import com.vaadin.flow.component.html.Span;

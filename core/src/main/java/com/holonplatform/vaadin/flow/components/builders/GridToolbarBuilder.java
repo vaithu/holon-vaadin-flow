@@ -1,7 +1,7 @@
 package com.holonplatform.vaadin.flow.components.builders;
 
 import com.holonplatform.vaadin.flow.internal.components.builders.DefaultGridToolbarBuilder;
-import com.holonplatform.vaadin.flow.vaadinplus.components.GridToolbar;
+import com.iyensoft.vaadin.flow.components.GridToolbar;
 import com.vaadin.flow.component.Component;
 
 /** Fluent builder for grid search, filter, selection, and bulk-action toolbars. */

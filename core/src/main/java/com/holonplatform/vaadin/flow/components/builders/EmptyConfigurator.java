@@ -17,10 +17,10 @@ package com.holonplatform.vaadin.flow.components.builders;
 
 import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.vaadin.flow.internal.components.builders.DefaultEmptyConfigurator;
-import com.holonplatform.vaadin.flow.vaadinplus.components.Empty;
-import com.holonplatform.vaadin.flow.vaadinplus.components.EmptyAction;
-import com.holonplatform.vaadin.flow.vaadinplus.components.EmptyDescription;
-import com.holonplatform.vaadin.flow.vaadinplus.components.EmptyTitle;
+import com.iyensoft.vaadin.flow.components.Empty;
+import com.iyensoft.vaadin.flow.components.EmptyAction;
+import com.iyensoft.vaadin.flow.components.EmptyDescription;
+import com.iyensoft.vaadin.flow.components.EmptyTitle;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.icon.Icon;
 

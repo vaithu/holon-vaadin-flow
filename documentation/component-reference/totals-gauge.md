@@ -9,8 +9,8 @@ Fully driven by CSS (`totals-gauge.css`); no inline styles or Lumo tokens are us
 
 ## Class
 
-- **Package:** `com.holonplatform.vaadin.flow.vaadinplus.components`
-- **Source:** `core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/TotalsGauge.java`
+- **Package:** `com.iyensoft.vaadin.flow.components`
+- **Source:** `core/src/main/java/com/iyensoft/vaadin/flow/components/TotalsGauge.java`
 - **Signature:** `public class TotalsGauge extends Div`
 
 ## Key APIs

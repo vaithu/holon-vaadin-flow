@@ -16,7 +16,7 @@
 package com.holonplatform.vaadin.flow.internal.components.builders;
 
 import com.holonplatform.vaadin.flow.components.builders.TimelineStepperConfigurator;
-import com.holonplatform.vaadin.flow.vaadinplus.components.TimelineStepper;
+import com.iyensoft.vaadin.flow.components.TimelineStepper;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.HasEnabled;
 import com.vaadin.flow.component.HasSize;

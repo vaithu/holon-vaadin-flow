@@ -16,9 +16,9 @@
 package com.holonplatform.vaadin.flow.test;
 
 import com.holonplatform.vaadin.flow.components.Components;
-import com.holonplatform.vaadin.flow.vaadinplus.components.Breadcrumb;
-import com.holonplatform.vaadin.flow.vaadinplus.components.BreadcrumbItem;
-import com.holonplatform.vaadin.flow.vaadinplus.components.BreadcrumbPage;
+import com.iyensoft.vaadin.flow.components.Breadcrumb;
+import com.iyensoft.vaadin.flow.components.BreadcrumbItem;
+import com.iyensoft.vaadin.flow.components.BreadcrumbPage;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.router.RouterLink;
 import org.junit.jupiter.api.Test;

@@ -4,8 +4,8 @@ A single character input slot inside an {@link InputOTPGroup} / {@link InputOTP}
 
 ## Class
 
-- **Package:** `com.holonplatform.vaadin.flow.vaadinplus.components`
-- **Source:** `core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/InputOTPSlot.java`
+- **Package:** `com.iyensoft.vaadin.flow.components`
+- **Source:** `core/src/main/java/com/iyensoft/vaadin/flow/components/InputOTPSlot.java`
 - **Signature:** `public class InputOTPSlot extends Div`
 
 ## Key APIs

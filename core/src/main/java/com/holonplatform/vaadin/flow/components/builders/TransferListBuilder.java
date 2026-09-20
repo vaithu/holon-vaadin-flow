@@ -1,7 +1,7 @@
 package com.holonplatform.vaadin.flow.components.builders;
 
 import com.holonplatform.vaadin.flow.internal.components.builders.DefaultTransferListBuilder;
-import com.holonplatform.vaadin.flow.vaadinplus.components.TransferList;
+import com.iyensoft.vaadin.flow.components.TransferList;
 
 /**
  * Holon Fluent Builder for {@link TransferList}.

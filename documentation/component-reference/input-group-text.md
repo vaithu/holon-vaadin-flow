@@ -4,8 +4,8 @@ A static text or icon addon for use inside an {@link InputGroup}.
 
 ## Class
 
-- **Package:** `com.holonplatform.vaadin.flow.vaadinplus.components`
-- **Source:** `core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/InputGroupText.java`
+- **Package:** `com.iyensoft.vaadin.flow.components`
+- **Source:** `core/src/main/java/com/iyensoft/vaadin/flow/components/InputGroupText.java`
 - **Signature:** `public class InputGroupText extends Span`
 
 ## Key APIs

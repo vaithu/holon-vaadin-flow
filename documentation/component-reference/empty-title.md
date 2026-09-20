@@ -4,8 +4,8 @@ Title slot of an {@link Empty} component.
 
 ## Class
 
-- **Package:** `com.holonplatform.vaadin.flow.vaadinplus.components`
-- **Source:** `core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/EmptyTitle.java`
+- **Package:** `com.iyensoft.vaadin.flow.components`
+- **Source:** `core/src/main/java/com/iyensoft/vaadin/flow/components/EmptyTitle.java`
 - **Signature:** `public class EmptyTitle extends Div`
 
 ## Key APIs

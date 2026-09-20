@@ -3,8 +3,8 @@ package com.holonplatform.vaadin.flow.demo.ui.views;
 import com.holonplatform.vaadin.flow.components.builders.HeaderBuilder;
 import com.holonplatform.vaadin.flow.demo.ui.DemoExample;
 import com.holonplatform.vaadin.flow.demo.ui.DemoMainLayout;
-import com.holonplatform.vaadin.flow.vaadinplus.components.BreadcrumbItem;
-import com.holonplatform.vaadin.flow.vaadinplus.components.Header;
+import com.iyensoft.vaadin.flow.components.BreadcrumbItem;
+import com.iyensoft.vaadin.flow.components.Header;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.Paragraph;
@@ -15,7 +15,7 @@ import com.vaadin.flow.component.avatar.AvatarVariant;
 import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import com.holonplatform.vaadin.flow.vaadinplus.ResponsiveDiv;
+import com.iyensoft.vaadin.flow.components.ResponsiveDiv;
 
 
 /**

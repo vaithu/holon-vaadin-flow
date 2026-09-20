@@ -1,9 +1,9 @@
 package com.holonplatform.vaadin.flow.components.builders;
 
 import com.holonplatform.vaadin.flow.internal.components.builders.DefaultEntityCreationFormConfigurator;
-import com.holonplatform.vaadin.flow.vaadinplus.components.EntityCreationForm;
-import com.holonplatform.vaadin.flow.vaadinplus.components.FormStepCard;
-import com.holonplatform.vaadin.flow.vaadinplus.components.StickyActionBar;
+import com.iyensoft.vaadin.flow.components.EntityCreationForm;
+import com.iyensoft.vaadin.flow.components.FormStepCard;
+import com.iyensoft.vaadin.flow.components.StickyActionBar;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.html.ListItem;
 

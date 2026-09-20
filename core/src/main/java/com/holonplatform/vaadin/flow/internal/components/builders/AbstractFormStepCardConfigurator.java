@@ -1,7 +1,7 @@
 package com.holonplatform.vaadin.flow.internal.components.builders;
 
 import com.holonplatform.vaadin.flow.components.builders.FormStepCardConfigurator;
-import com.holonplatform.vaadin.flow.vaadinplus.components.FormStepCard;
+import com.iyensoft.vaadin.flow.components.FormStepCard;
 import com.iyensoft.vaadin.flow.components.builders.PanelConfigurator;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasEnabled;

@@ -1,9 +1,9 @@
 package com.holonplatform.vaadin.flow.components.builders;
 
 import com.holonplatform.vaadin.flow.internal.components.builders.DefaultWizardFrameConfigurator;
-import com.holonplatform.vaadin.flow.vaadinplus.components.Breadcrumb;
-import com.holonplatform.vaadin.flow.vaadinplus.components.Header;
-import com.holonplatform.vaadin.flow.vaadinplus.components.WizardFrame;
+import com.iyensoft.vaadin.flow.components.Breadcrumb;
+import com.iyensoft.vaadin.flow.components.Header;
+import com.iyensoft.vaadin.flow.components.WizardFrame;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.html.ListItem;
 
@@ -27,8 +27,8 @@ public interface WizardFrameConfigurator<C extends WizardFrameConfigurator<C>> {
     /**
      * Sets a breadcrumb trail above the header title.
      * <p>
-     * Build items with {@link com.holonplatform.vaadin.flow.vaadinplus.components.BreadcrumbItem} (clickable link)
-     * and {@link com.holonplatform.vaadin.flow.vaadinplus.components.BreadcrumbPage} (current page, non-clickable).
+     * Build items with {@link com.iyensoft.vaadin.flow.components.BreadcrumbItem} (clickable link)
+     * and {@link com.iyensoft.vaadin.flow.components.BreadcrumbPage} (current page, non-clickable).
      * Both extend {@link ListItem}.
      * </p>
      *
@@ -107,7 +107,7 @@ public interface WizardFrameConfigurator<C extends WizardFrameConfigurator<C>> {
     /**
      * Adds a wizard step.
      *
-     * @param label   step label shown in the {@link com.holonplatform.vaadin.flow.vaadinplus.components.FlowStepper}
+     * @param label   step label shown in the {@link com.iyensoft.vaadin.flow.components.FlowStepper}
      * @param content the step content component (e.g. {@code EntityFormPanel.bean(Foo.class).noFooter().build()})
      * @return this configurator for chaining
      */

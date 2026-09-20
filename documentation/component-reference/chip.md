@@ -4,8 +4,8 @@ Interactive pill-shaped filter chip rendered as a native {@code <button>}.
 
 ## Class
 
-- **Package:** `com.holonplatform.vaadin.flow.vaadinplus.components`
-- **Source:** `core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/Chip.java`
+- **Package:** `com.iyensoft.vaadin.flow.components`
+- **Source:** `core/src/main/java/com/iyensoft/vaadin/flow/components/Chip.java`
 - **Signature:** `public class Chip extends Component implements ClickNotifier<Chip>`
 
 ## Key APIs

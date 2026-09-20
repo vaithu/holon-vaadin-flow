@@ -7,7 +7,7 @@ import com.holonplatform.vaadin.flow.components.builders.ComponentConfigurator;
 import com.holonplatform.vaadin.flow.components.builders.GridToolbarBuilder;
 import com.holonplatform.vaadin.flow.components.builders.HasSizeConfigurator;
 import com.holonplatform.vaadin.flow.components.builders.HasStyleConfigurator;
-import com.holonplatform.vaadin.flow.vaadinplus.components.Empty;
+import com.iyensoft.vaadin.flow.components.Empty;
 import com.holonplatform.vaadin.flow.components.support.ViewMode;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ComponentEventListener;

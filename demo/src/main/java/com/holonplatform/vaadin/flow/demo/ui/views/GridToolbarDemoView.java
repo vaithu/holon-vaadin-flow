@@ -5,7 +5,7 @@ import com.holonplatform.vaadin.flow.demo.data.entity.Product;
 import com.holonplatform.vaadin.flow.demo.data.service.ProductService;
 import com.holonplatform.vaadin.flow.demo.ui.DemoExample;
 import com.holonplatform.vaadin.flow.demo.ui.DemoMainLayout;
-import com.holonplatform.vaadin.flow.vaadinplus.components.DynamicFilterPanel;
+import com.iyensoft.vaadin.flow.components.DynamicFilterPanel;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;
@@ -21,7 +21,7 @@ import com.vaadin.flow.router.Route;
 import java.io.Serial;
 
 /**
- * Demo and visual test fixture for the {@link com.holonplatform.vaadin.flow.vaadinplus.components.GridToolbar}
+ * Demo and visual test fixture for the {@link com.iyensoft.vaadin.flow.components.GridToolbar}
  * component backed by JPA entity data ({@link Product}) via {@link ProductService} and Holon Datastore.
  */
 @PageTitle("Grid Toolbar - Holon Demo")

@@ -4,8 +4,8 @@ The scroll viewport inside a {@link Carousel}.
 
 ## Class
 
-- **Package:** `com.holonplatform.vaadin.flow.vaadinplus.components`
-- **Source:** `core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/CarouselContent.java`
+- **Package:** `com.iyensoft.vaadin.flow.components`
+- **Source:** `core/src/main/java/com/iyensoft/vaadin/flow/components/CarouselContent.java`
 - **Signature:** `public class CarouselContent extends Div`
 
 ## Key APIs

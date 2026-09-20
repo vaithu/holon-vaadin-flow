@@ -16,9 +16,9 @@
 package com.holonplatform.vaadin.flow.components.builders;
 
 import com.holonplatform.core.i18n.Localizable;
-import com.holonplatform.vaadin.flow.vaadinplus.components.ItemLineEditor;
-import com.holonplatform.vaadin.flow.vaadinplus.components.ItemLineEditor.Column;
-import com.holonplatform.vaadin.flow.vaadinplus.components.TotalsCard;
+import com.iyensoft.vaadin.flow.components.ItemLineEditor;
+import com.iyensoft.vaadin.flow.components.ItemLineEditor.Column;
+import com.iyensoft.vaadin.flow.components.TotalsCard;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.icon.VaadinIcon;
 

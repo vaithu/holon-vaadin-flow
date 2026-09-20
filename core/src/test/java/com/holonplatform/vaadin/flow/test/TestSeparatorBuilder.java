@@ -2,8 +2,8 @@ package com.holonplatform.vaadin.flow.test;
 
 import com.holonplatform.vaadin.flow.components.builders.SeparatorBuilder;
 import com.holonplatform.vaadin.flow.components.builders.SeparatorConfigurator;
-import com.holonplatform.vaadin.flow.vaadinplus.components.Separator;
-import com.holonplatform.vaadin.flow.vaadinplus.utilities.Color;
+import com.iyensoft.vaadin.flow.components.Separator;
+import com.iyensoft.vaadin.flow.utils.Color;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 

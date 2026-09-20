@@ -1,9 +1,9 @@
 package com.holonplatform.vaadin.flow.test;
 
 import com.holonplatform.vaadin.flow.components.Components;
-import com.holonplatform.vaadin.flow.vaadinplus.components.Empty;
-import com.holonplatform.vaadin.flow.vaadinplus.components.Footer;
-import com.holonplatform.vaadin.flow.vaadinplus.components.Header;
+import com.iyensoft.vaadin.flow.components.Empty;
+import com.iyensoft.vaadin.flow.components.Footer;
+import com.iyensoft.vaadin.flow.components.Header;
 import com.iyensoft.vaadin.flow.components.Panel;
 import com.iyensoft.vaadin.flow.components.builders.PanelBuilder;
 import com.vaadin.flow.component.button.Button;

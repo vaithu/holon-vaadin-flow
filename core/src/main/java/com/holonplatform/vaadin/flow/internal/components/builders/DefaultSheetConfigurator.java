@@ -16,7 +16,7 @@
 package com.holonplatform.vaadin.flow.internal.components.builders;
 
 import com.holonplatform.vaadin.flow.components.builders.SheetConfigurator;
-import com.holonplatform.vaadin.flow.vaadinplus.components.Sheet;
+import com.iyensoft.vaadin.flow.components.Sheet;
 
 /**
  * Default {@link SheetConfigurator.BaseSheetConfigurator} implementation.

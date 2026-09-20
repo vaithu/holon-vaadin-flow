@@ -4,8 +4,8 @@ The "Next page" control inside a {@link PaginationItem}.
 
 ## Class
 
-- **Package:** `com.holonplatform.vaadin.flow.vaadinplus.components`
-- **Source:** `core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/PaginationNext.java`
+- **Package:** `com.iyensoft.vaadin.flow.components`
+- **Source:** `core/src/main/java/com/iyensoft/vaadin/flow/components/PaginationNext.java`
 - **Signature:** `public class PaginationNext extends Div`
 
 ## Key APIs

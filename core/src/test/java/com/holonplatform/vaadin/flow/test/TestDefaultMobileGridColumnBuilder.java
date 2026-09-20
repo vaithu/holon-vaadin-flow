@@ -2,7 +2,7 @@ package com.holonplatform.vaadin.flow.test;
 
 import com.holonplatform.vaadin.flow.components.Badge;
 import com.holonplatform.vaadin.flow.internal.lumo.FlexDirection;
-import com.holonplatform.vaadin.flow.vaadinplus.Layout;
+import com.iyensoft.vaadin.flow.components.Layout;
 import com.iyensoft.vaadin.flow.internal.components.builders.DefaultMobileGridColumnBuilder;
 import com.iyensoft.vaadin.flow.internal.components.builders.MobileGridColumnBuilder;
 import com.vaadin.flow.component.Component;

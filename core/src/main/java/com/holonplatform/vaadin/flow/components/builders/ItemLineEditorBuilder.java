@@ -16,7 +16,7 @@
 package com.holonplatform.vaadin.flow.components.builders;
 
 import com.holonplatform.vaadin.flow.internal.components.builders.DefaultItemLineEditorBuilder;
-import com.holonplatform.vaadin.flow.vaadinplus.components.ItemLineEditor;
+import com.iyensoft.vaadin.flow.components.ItemLineEditor;
 
 /**
  * Builder to create and configure {@link ItemLineEditor} components.

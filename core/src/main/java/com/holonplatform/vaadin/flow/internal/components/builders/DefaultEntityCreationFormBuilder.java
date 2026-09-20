@@ -1,7 +1,7 @@
 package com.holonplatform.vaadin.flow.internal.components.builders;
 
 import com.holonplatform.vaadin.flow.components.builders.EntityCreationFormBuilder;
-import com.holonplatform.vaadin.flow.vaadinplus.components.EntityCreationForm;
+import com.iyensoft.vaadin.flow.components.EntityCreationForm;
 
 /**
  * Default {@link EntityCreationFormBuilder} implementation.

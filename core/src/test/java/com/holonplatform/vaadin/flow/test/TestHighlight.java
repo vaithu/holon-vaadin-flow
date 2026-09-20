@@ -1,7 +1,7 @@
 package com.holonplatform.vaadin.flow.test;
 
-import com.holonplatform.vaadin.flow.vaadinplus.components.Highlight;
-import com.holonplatform.vaadin.flow.vaadinplus.utilities.Font;
+import com.iyensoft.vaadin.flow.components.Highlight;
+import com.iyensoft.vaadin.flow.utils.Font;
 import com.iyensoft.vaadin.flow.enums.HeadingLevel;
 import com.vaadin.flow.component.html.Span;
 import org.junit.jupiter.api.Test;

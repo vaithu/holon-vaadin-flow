@@ -2,11 +2,11 @@ package com.holonplatform.vaadin.flow.demo.ui.views;
 
 import com.holonplatform.vaadin.flow.demo.ui.DemoExample;
 import com.holonplatform.vaadin.flow.demo.ui.DemoMainLayout;
-import com.holonplatform.vaadin.flow.vaadinplus.KeyValueItem;
-import com.holonplatform.vaadin.flow.vaadinplus.KeyValueList;
-import com.holonplatform.vaadin.flow.vaadinplus.ResponsiveDiv;
-import com.holonplatform.vaadin.flow.vaadinplus.components.Tag;
-import com.holonplatform.vaadin.flow.vaadinplus.utilities.Font;
+import com.iyensoft.vaadin.flow.components.KeyValueItem;
+import com.iyensoft.vaadin.flow.components.KeyValueList;
+import com.iyensoft.vaadin.flow.components.ResponsiveDiv;
+import com.iyensoft.vaadin.flow.components.Tag;
+import com.iyensoft.vaadin.flow.utils.Font;
 import com.holonplatform.vaadin.flow.components.support.ViewMode;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.grid.Grid;

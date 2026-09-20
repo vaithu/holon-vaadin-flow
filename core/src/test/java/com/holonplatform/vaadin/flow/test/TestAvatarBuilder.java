@@ -7,7 +7,7 @@ import com.holonplatform.vaadin.flow.components.builders.AvatarConfigurator;
 import com.holonplatform.vaadin.flow.components.builders.AvatarGroupBuilder;
 import com.holonplatform.vaadin.flow.components.builders.AvatarGroupConfigurator;
 import com.holonplatform.vaadin.flow.test.util.LocalizationTestUtils;
-import com.holonplatform.vaadin.flow.vaadinplus.components.Alert;
+import com.iyensoft.vaadin.flow.components.Alert;
 import com.vaadin.flow.component.avatar.Avatar;
 import com.vaadin.flow.component.avatar.AvatarGroup;
 import com.vaadin.flow.component.avatar.AvatarVariant;

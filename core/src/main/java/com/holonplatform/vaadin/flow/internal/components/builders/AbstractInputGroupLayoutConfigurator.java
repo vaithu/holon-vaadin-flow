@@ -18,7 +18,7 @@ package com.holonplatform.vaadin.flow.internal.components.builders;
 import com.holonplatform.vaadin.flow.components.HasComponent;
 import com.holonplatform.vaadin.flow.components.Input;
 import com.holonplatform.vaadin.flow.components.builders.InputGroupLayoutConfigurator;
-import com.holonplatform.vaadin.flow.vaadinplus.components.InputGroup;
+import com.iyensoft.vaadin.flow.components.InputGroup;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasEnabled;
 import com.vaadin.flow.component.HasSize;

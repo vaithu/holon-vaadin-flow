@@ -1,6 +1,6 @@
 package com.iyensoft.vaadin.flow.internal.components.builders;
 
-import com.holonplatform.vaadin.flow.vaadinplus.components.AppShellLayout;
+import com.iyensoft.vaadin.flow.components.AppShellLayout;
 import com.iyensoft.vaadin.flow.components.builders.AppShellLayoutBuilder;
 import com.vaadin.flow.component.applayout.AppLayout;
 

@@ -4,8 +4,8 @@ A {@code <li>} wrapper for a single pagination control ({@link PaginationLink}, 
 
 ## Class
 
-- **Package:** `com.holonplatform.vaadin.flow.vaadinplus.components`
-- **Source:** `core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/PaginationItem.java`
+- **Package:** `com.iyensoft.vaadin.flow.components`
+- **Source:** `core/src/main/java/com/iyensoft/vaadin/flow/components/PaginationItem.java`
 - **Signature:** `public class PaginationItem extends ListItem`
 
 ## Key APIs

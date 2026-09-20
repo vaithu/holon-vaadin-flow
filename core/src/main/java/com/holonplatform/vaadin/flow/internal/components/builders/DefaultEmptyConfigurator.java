@@ -16,7 +16,7 @@
 package com.holonplatform.vaadin.flow.internal.components.builders;
 
 import com.holonplatform.vaadin.flow.components.builders.EmptyConfigurator;
-import com.holonplatform.vaadin.flow.vaadinplus.components.Empty;
+import com.iyensoft.vaadin.flow.components.Empty;
 
 /**
  * Default {@link EmptyConfigurator.BaseEmptyConfigurator} implementation.

@@ -1,10 +1,10 @@
 package com.holonplatform.vaadin.flow.internal.components.builders;
 
 import com.holonplatform.vaadin.flow.components.builders.BulkItemPickerDialogConfigurator;
-import com.holonplatform.vaadin.flow.vaadinplus.components.BulkItemPickerDialog;
-import com.holonplatform.vaadin.flow.vaadinplus.components.BulkPickerEntry;
-import com.holonplatform.vaadin.flow.vaadinplus.components.BulkPickerFetchQuery;
-import com.holonplatform.vaadin.flow.vaadinplus.components.BulkPickerItem;
+import com.iyensoft.vaadin.flow.components.BulkItemPickerDialog;
+import com.iyensoft.vaadin.flow.components.BulkPickerEntry;
+import com.iyensoft.vaadin.flow.components.BulkPickerFetchQuery;
+import com.iyensoft.vaadin.flow.components.BulkPickerItem;
 import com.vaadin.flow.component.HasEnabled;
 import com.vaadin.flow.component.HasSize;
 import com.vaadin.flow.component.HasStyle;

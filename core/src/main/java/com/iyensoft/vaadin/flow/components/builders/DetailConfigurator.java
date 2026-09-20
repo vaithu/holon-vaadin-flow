@@ -1,8 +1,8 @@
 package com.iyensoft.vaadin.flow.components.builders;
 
 import com.holonplatform.vaadin.flow.components.builders.*;
-import com.holonplatform.vaadin.flow.vaadinplus.components.Footer;
-import com.holonplatform.vaadin.flow.vaadinplus.components.Header;
+import com.iyensoft.vaadin.flow.components.Footer;
+import com.iyensoft.vaadin.flow.components.Header;
 import com.vaadin.flow.component.Component;
 
 import java.util.Optional;

@@ -3,7 +3,7 @@ package com.holonplatform.vaadin.flow.demo.ui.views;
 import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.vaadin.flow.demo.ui.DemoExample;
 import com.holonplatform.vaadin.flow.demo.ui.DemoMainLayout;
-import com.holonplatform.vaadin.flow.vaadinplus.ResponsiveDiv;
+import com.iyensoft.vaadin.flow.components.ResponsiveDiv;
 import com.iyensoft.vaadin.flow.components.builders.TabsBuilder;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.html.Div;

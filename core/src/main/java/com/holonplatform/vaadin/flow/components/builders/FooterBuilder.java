@@ -1,7 +1,7 @@
 package com.holonplatform.vaadin.flow.components.builders;
 
 import com.holonplatform.vaadin.flow.internal.components.builders.DefaultFooterBuilder;
-import com.holonplatform.vaadin.flow.vaadinplus.components.Footer;
+import com.iyensoft.vaadin.flow.components.Footer;
 
 public interface FooterBuilder extends FooterConfigurator<FooterBuilder>, ComponentBuilder<Footer, FooterBuilder> {
 

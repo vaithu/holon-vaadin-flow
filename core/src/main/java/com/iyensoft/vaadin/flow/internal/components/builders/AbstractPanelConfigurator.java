@@ -1,14 +1,14 @@
 package com.iyensoft.vaadin.flow.internal.components.builders;
 
 import com.holonplatform.vaadin.flow.internal.components.builders.DefaultMaterialHeaderBuilder;
-import com.holonplatform.vaadin.flow.vaadinplus.components.MaterialHeader;
+import com.iyensoft.vaadin.flow.components.MaterialHeader;
 import com.iyensoft.vaadin.flow.components.builders.PanelConfigurator;
 
 import java.util.Optional;
 
 import com.holonplatform.vaadin.flow.internal.components.builders.AbstractComponentConfigurator;
-import com.holonplatform.vaadin.flow.vaadinplus.components.Footer;
-import com.holonplatform.vaadin.flow.vaadinplus.components.Header;
+import com.iyensoft.vaadin.flow.components.Footer;
+import com.iyensoft.vaadin.flow.components.Header;
 import com.iyensoft.vaadin.flow.components.Panel;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasEnabled;

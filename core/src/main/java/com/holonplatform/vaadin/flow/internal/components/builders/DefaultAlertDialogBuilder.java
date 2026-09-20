@@ -16,7 +16,7 @@
 package com.holonplatform.vaadin.flow.internal.components.builders;
 
 import com.holonplatform.vaadin.flow.components.builders.AlertDialogBuilder;
-import com.holonplatform.vaadin.flow.vaadinplus.components.AlertDialog;
+import com.iyensoft.vaadin.flow.components.AlertDialog;
 
 /**
  * Default {@link AlertDialogBuilder} implementation.

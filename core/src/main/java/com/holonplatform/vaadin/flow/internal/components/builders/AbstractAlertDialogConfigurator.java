@@ -17,8 +17,8 @@ package com.holonplatform.vaadin.flow.internal.components.builders;
 
 import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.vaadin.flow.components.builders.AlertDialogConfigurator;
-import com.holonplatform.vaadin.flow.vaadinplus.components.Alert;
-import com.holonplatform.vaadin.flow.vaadinplus.components.AlertDialog;
+import com.iyensoft.vaadin.flow.components.Alert;
+import com.iyensoft.vaadin.flow.components.AlertDialog;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.HasEnabled;

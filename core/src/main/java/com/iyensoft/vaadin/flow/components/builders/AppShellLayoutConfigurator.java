@@ -1,7 +1,7 @@
 package com.iyensoft.vaadin.flow.components.builders;
 
-import com.holonplatform.vaadin.flow.vaadinplus.components.AppBar;
-import com.holonplatform.vaadin.flow.vaadinplus.components.AppShellLayout;
+import com.iyensoft.vaadin.flow.components.AppBar;
+import com.iyensoft.vaadin.flow.components.AppShellLayout;
 import com.iyensoft.vaadin.flow.internal.components.builders.DefaultAppShellLayoutConfigurator;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.html.Div;

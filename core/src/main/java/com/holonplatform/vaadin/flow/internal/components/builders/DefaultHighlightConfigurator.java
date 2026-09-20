@@ -16,7 +16,7 @@
 package com.holonplatform.vaadin.flow.internal.components.builders;
 
 import com.holonplatform.vaadin.flow.components.builders.HighlightConfigurator;
-import com.holonplatform.vaadin.flow.vaadinplus.components.Highlight;
+import com.iyensoft.vaadin.flow.components.Highlight;
 
 /**
  * Default {@link HighlightConfigurator.BaseHighlightConfigurator} implementation.

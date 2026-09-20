@@ -16,7 +16,7 @@
 package com.holonplatform.vaadin.flow.components.builders;
 
 import com.holonplatform.vaadin.flow.internal.components.builders.DefaultCarouselBuilder;
-import com.holonplatform.vaadin.flow.vaadinplus.components.Carousel;
+import com.iyensoft.vaadin.flow.components.Carousel;
 
 /**
  * Builder to create and configure {@link Carousel} components.

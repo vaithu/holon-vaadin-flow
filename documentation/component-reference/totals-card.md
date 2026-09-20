@@ -6,8 +6,8 @@ optionally ending with an emphasised grand-total row. Fully driven by CSS
 
 ## Class
 
-- **Package:** `com.holonplatform.vaadin.flow.vaadinplus.components`
-- **Source:** `core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/TotalsCard.java`
+- **Package:** `com.iyensoft.vaadin.flow.components`
+- **Source:** `core/src/main/java/com/iyensoft/vaadin/flow/components/TotalsCard.java`
 - **Signature:** `public class TotalsCard extends Div`
 
 ## Key APIs

@@ -17,7 +17,7 @@ package com.holonplatform.vaadin.flow.components.builders;
 
 import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.vaadin.flow.internal.components.builders.DefaultRibbonConfigurator;
-import com.holonplatform.vaadin.flow.vaadinplus.components.Ribbon;
+import com.iyensoft.vaadin.flow.components.Ribbon;
 import com.vaadin.flow.component.Component;
 
 /**

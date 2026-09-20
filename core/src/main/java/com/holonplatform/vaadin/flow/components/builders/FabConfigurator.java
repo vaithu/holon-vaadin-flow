@@ -16,7 +16,7 @@
 package com.holonplatform.vaadin.flow.components.builders;
 
 import com.holonplatform.vaadin.flow.internal.components.builders.DefaultFabConfigurator;
-import com.holonplatform.vaadin.flow.vaadinplus.components.Fab;
+import com.iyensoft.vaadin.flow.components.Fab;
 
 /**
  * {@link Fab} (Material Design 3 Floating Action Button) component configurator.

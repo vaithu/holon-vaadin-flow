@@ -2,7 +2,7 @@ package com.holonplatform.vaadin.flow.test;
 
 import com.holonplatform.vaadin.flow.components.builders.ButtonGroupBuilder;
 import com.holonplatform.vaadin.flow.components.builders.ButtonGroupConfigurator;
-import com.holonplatform.vaadin.flow.vaadinplus.components.ButtonGroup;
+import com.iyensoft.vaadin.flow.components.ButtonGroup;
 import com.vaadin.flow.component.button.Button;
 import org.junit.jupiter.api.Test;
 

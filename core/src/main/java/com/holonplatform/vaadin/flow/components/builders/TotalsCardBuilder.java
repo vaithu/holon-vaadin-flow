@@ -16,7 +16,7 @@
 package com.holonplatform.vaadin.flow.components.builders;
 
 import com.holonplatform.vaadin.flow.internal.components.builders.DefaultTotalsCardBuilder;
-import com.holonplatform.vaadin.flow.vaadinplus.components.TotalsCard;
+import com.iyensoft.vaadin.flow.components.TotalsCard;
 
 /**
  * Builder to create and configure {@link TotalsCard} components.

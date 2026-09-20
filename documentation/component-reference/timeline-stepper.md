@@ -4,8 +4,8 @@ Vertical audit-log / event-history timeline with infinite-scroll lazy loading.
 
 ## Class
 
-- **Package:** `com.holonplatform.vaadin.flow.vaadinplus.components`
-- **Source:** `core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/TimelineStepper.java`
+- **Package:** `com.iyensoft.vaadin.flow.components`
+- **Source:** `core/src/main/java/com/iyensoft/vaadin/flow/components/TimelineStepper.java`
 - **Signature:** `public class TimelineStepper extends Component implements HasSize, HasEnabled`
 
 ## Key APIs

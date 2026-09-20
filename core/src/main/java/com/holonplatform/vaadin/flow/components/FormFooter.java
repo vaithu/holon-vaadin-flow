@@ -2,7 +2,7 @@ package com.holonplatform.vaadin.flow.components;
 
 import com.holonplatform.vaadin.flow.components.builders.ButtonConfigurator;
 import com.holonplatform.vaadin.flow.components.builders.ComponentConfigurator;
-import com.holonplatform.vaadin.flow.vaadinplus.Layout;
+import com.iyensoft.vaadin.flow.components.Layout;
 import com.vaadin.flow.component.Component;
 
 import java.util.function.Consumer;

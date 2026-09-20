@@ -10,8 +10,8 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import com.holonplatform.vaadin.flow.vaadinplus.Layout;
-import com.holonplatform.vaadin.flow.vaadinplus.components.Sheet;
+import com.iyensoft.vaadin.flow.components.Layout;
+import com.iyensoft.vaadin.flow.components.Sheet;
 import com.iyensoft.vaadin.flow.components.DetailSyncAware;
 import com.holonplatform.vaadin.flow.components.support.ViewMode;
 import com.iyensoft.vaadin.flow.internal.components.masterdetail.ResponsiveDetailHost;

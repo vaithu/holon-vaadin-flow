@@ -1,8 +1,8 @@
 package com.holonplatform.vaadin.flow.internal.components.builders;
 
 import com.holonplatform.vaadin.flow.components.builders.MaterialHeaderConfigurator;
-import com.holonplatform.vaadin.flow.vaadinplus.components.Breadcrumb;
-import com.holonplatform.vaadin.flow.vaadinplus.components.MaterialHeader;
+import com.iyensoft.vaadin.flow.components.Breadcrumb;
+import com.iyensoft.vaadin.flow.components.MaterialHeader;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasEnabled;
 import com.vaadin.flow.component.HasSize;

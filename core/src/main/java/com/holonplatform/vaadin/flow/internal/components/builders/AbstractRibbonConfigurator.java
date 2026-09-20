@@ -19,7 +19,7 @@ import java.util.Optional;
 
 import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.vaadin.flow.components.builders.RibbonConfigurator;
-import com.holonplatform.vaadin.flow.vaadinplus.components.Ribbon;
+import com.iyensoft.vaadin.flow.components.Ribbon;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasEnabled;
 import com.vaadin.flow.component.HasSize;

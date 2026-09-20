@@ -4,8 +4,8 @@ A flex row of mutually exclusive {@link Chip}s that behaves like a radio-button 
 
 ## Class
 
-- **Package:** `com.holonplatform.vaadin.flow.vaadinplus.components`
-- **Source:** `core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/ChipGroup.java`
+- **Package:** `com.iyensoft.vaadin.flow.components`
+- **Source:** `core/src/main/java/com/iyensoft/vaadin/flow/components/ChipGroup.java`
 - **Signature:** `public class ChipGroup extends Div`
 
 ## Key APIs

@@ -17,7 +17,7 @@ package com.holonplatform.vaadin.flow.components.builders;
 
 import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.vaadin.flow.internal.components.builders.DefaultStepperConfigurator;
-import com.holonplatform.vaadin.flow.vaadinplus.components.FlowStepper;
+import com.iyensoft.vaadin.flow.components.FlowStepper;
 import com.vaadin.flow.component.ComponentEventListener;
 
 import java.util.List;

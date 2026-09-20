@@ -18,7 +18,7 @@ package com.holonplatform.vaadin.flow.test;
 import com.holonplatform.core.property.PathProperty;
 import com.holonplatform.core.query.QueryFilter;
 import com.holonplatform.vaadin.flow.components.FilterInputGroup;
-import com.holonplatform.vaadin.flow.vaadinplus.components.DynamicFilterPanel;
+import com.iyensoft.vaadin.flow.components.DynamicFilterPanel;
 import com.vaadin.flow.component.ComponentUtil;
 import com.vaadin.flow.signals.Signal;
 import org.junit.jupiter.api.Test;

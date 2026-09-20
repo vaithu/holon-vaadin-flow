@@ -6,15 +6,15 @@ import com.holonplatform.vaadin.flow.internal.lumo.Background;
 import com.holonplatform.vaadin.flow.internal.lumo.Breakpoint;
 import com.holonplatform.vaadin.flow.internal.lumo.ColumnSpan;
 import com.holonplatform.vaadin.flow.internal.lumo.GridColumns;
-import com.holonplatform.vaadin.flow.vaadinplus.KeyValuePair;
-import com.holonplatform.vaadin.flow.vaadinplus.KeyValuePairs;
+import com.iyensoft.vaadin.flow.components.KeyValuePair;
+import com.iyensoft.vaadin.flow.components.KeyValuePairs;
 import com.vaadin.flow.component.Unit;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import com.holonplatform.vaadin.flow.vaadinplus.ResponsiveDiv;
+import com.iyensoft.vaadin.flow.components.ResponsiveDiv;
 
 
 /**

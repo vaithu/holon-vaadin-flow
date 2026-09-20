@@ -1,7 +1,7 @@
 package com.holonplatform.vaadin.flow.components.builders;
 
 import com.holonplatform.vaadin.flow.internal.components.builders.DefaultArAgingBarBuilder;
-import com.holonplatform.vaadin.flow.vaadinplus.components.ArAgingBar;
+import com.iyensoft.vaadin.flow.components.ArAgingBar;
 
 /**
  * Builder to create and configure {@link ArAgingBar} components.

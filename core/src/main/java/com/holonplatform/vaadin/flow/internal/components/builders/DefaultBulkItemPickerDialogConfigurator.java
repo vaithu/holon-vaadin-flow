@@ -1,7 +1,7 @@
 package com.holonplatform.vaadin.flow.internal.components.builders;
 
 import com.holonplatform.vaadin.flow.components.builders.BulkItemPickerDialogConfigurator;
-import com.holonplatform.vaadin.flow.vaadinplus.components.BulkItemPickerDialog;
+import com.iyensoft.vaadin.flow.components.BulkItemPickerDialog;
 
 /**
  * Default {@link BulkItemPickerDialogConfigurator.BaseBulkItemPickerDialogConfigurator}

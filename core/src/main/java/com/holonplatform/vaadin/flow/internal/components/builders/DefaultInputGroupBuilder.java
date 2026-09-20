@@ -16,7 +16,7 @@
 package com.holonplatform.vaadin.flow.internal.components.builders;
 
 import com.holonplatform.vaadin.flow.components.builders.InputGroupBuilder;
-import com.holonplatform.vaadin.flow.vaadinplus.components.InputGroup;
+import com.iyensoft.vaadin.flow.components.InputGroup;
 
 /**
  * Default {@link InputGroupBuilder} implementation.

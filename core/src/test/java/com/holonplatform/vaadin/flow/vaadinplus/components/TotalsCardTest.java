@@ -1,4 +1,4 @@
-package com.holonplatform.vaadin.flow.vaadinplus.components;
+package com.iyensoft.vaadin.flow.components;
 
 import com.vaadin.flow.component.Component;
 import org.junit.jupiter.api.Test;

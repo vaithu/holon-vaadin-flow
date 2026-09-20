@@ -16,10 +16,10 @@
 package com.holonplatform.vaadin.flow.internal.components.builders;
 
 import com.holonplatform.vaadin.flow.components.builders.InputOTPConfigurator;
-import com.holonplatform.vaadin.flow.vaadinplus.components.InputOTP;
-import com.holonplatform.vaadin.flow.vaadinplus.components.InputOTPGroup;
-import com.holonplatform.vaadin.flow.vaadinplus.components.InputOTPSeparator;
-import com.holonplatform.vaadin.flow.vaadinplus.components.InputOTPSlot;
+import com.iyensoft.vaadin.flow.components.InputOTP;
+import com.iyensoft.vaadin.flow.components.InputOTPGroup;
+import com.iyensoft.vaadin.flow.components.InputOTPSeparator;
+import com.iyensoft.vaadin.flow.components.InputOTPSlot;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasEnabled;
 import com.vaadin.flow.component.HasSize;

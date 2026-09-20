@@ -17,10 +17,10 @@ package com.holonplatform.vaadin.flow.components.builders;
 
 import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.vaadin.flow.internal.components.builders.DefaultAlertConfigurator;
-import com.holonplatform.vaadin.flow.vaadinplus.components.Alert;
-import com.holonplatform.vaadin.flow.vaadinplus.components.AlertAction;
-import com.holonplatform.vaadin.flow.vaadinplus.components.AlertDescription;
-import com.holonplatform.vaadin.flow.vaadinplus.components.AlertTitle;
+import com.iyensoft.vaadin.flow.components.Alert;
+import com.iyensoft.vaadin.flow.components.AlertAction;
+import com.iyensoft.vaadin.flow.components.AlertDescription;
+import com.iyensoft.vaadin.flow.components.AlertTitle;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.icon.Icon;
 

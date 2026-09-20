@@ -4,8 +4,8 @@ A titled form section — a labeled {@link FormLayout} wrapped in a {@code <div>
 
 ## Class
 
-- **Package:** `com.holonplatform.vaadin.flow.vaadinplus.components`
-- **Source:** `core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/FormSection.java`
+- **Package:** `com.iyensoft.vaadin.flow.components`
+- **Source:** `core/src/main/java/com/iyensoft/vaadin/flow/components/FormSection.java`
 - **Signature:** `public class FormSection extends Div`
 
 ## Key APIs

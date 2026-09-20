@@ -22,8 +22,8 @@ import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import com.holonplatform.vaadin.flow.vaadinplus.ResponsiveDiv;
-import com.holonplatform.vaadin.flow.vaadinplus.components.FormSection;
+import com.iyensoft.vaadin.flow.components.ResponsiveDiv;
+import com.iyensoft.vaadin.flow.components.FormSection;
 import com.iyensoft.vaadin.flow.components.MasterDetailLayout;
 import com.holonplatform.vaadin.flow.components.support.ViewMode;
 import com.vaadin.flow.component.html.Span;

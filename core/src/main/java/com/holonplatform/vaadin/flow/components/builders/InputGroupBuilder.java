@@ -16,7 +16,7 @@
 package com.holonplatform.vaadin.flow.components.builders;
 
 import com.holonplatform.vaadin.flow.internal.components.builders.DefaultInputGroupBuilder;
-import com.holonplatform.vaadin.flow.vaadinplus.components.InputGroup;
+import com.iyensoft.vaadin.flow.components.InputGroup;
 
 /**
  * Fluent builder to create and configure {@link InputGroup} layout components.

@@ -4,8 +4,8 @@ A One-Time Password (OTP) input that groups individual character slots into a si
 
 ## Class
 
-- **Package:** `com.holonplatform.vaadin.flow.vaadinplus.components`
-- **Source:** `core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/components/InputOTP.java`
+- **Package:** `com.iyensoft.vaadin.flow.components`
+- **Source:** `core/src/main/java/com/iyensoft/vaadin/flow/components/InputOTP.java`
 - **Signature:** `public class InputOTP extends Div`
 
 ## Key APIs

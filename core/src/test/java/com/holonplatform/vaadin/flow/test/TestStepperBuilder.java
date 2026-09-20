@@ -1,7 +1,7 @@
 package com.holonplatform.vaadin.flow.test;
 
 import com.holonplatform.vaadin.flow.components.builders.StepperBuilder;
-import com.holonplatform.vaadin.flow.vaadinplus.components.FlowStepper;
+import com.iyensoft.vaadin.flow.components.FlowStepper;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 

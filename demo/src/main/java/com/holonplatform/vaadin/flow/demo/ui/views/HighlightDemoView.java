@@ -6,11 +6,11 @@ import com.holonplatform.vaadin.flow.components.chartjs.ChartJsDataset;
 import com.holonplatform.vaadin.flow.components.chartjs.ChartType;
 import com.holonplatform.vaadin.flow.demo.ui.DemoExample;
 import com.holonplatform.vaadin.flow.demo.ui.DemoMainLayout;
-import com.holonplatform.vaadin.flow.vaadinplus.components.Alert;
-import com.holonplatform.vaadin.flow.vaadinplus.components.Highlight;
-import com.holonplatform.vaadin.flow.vaadinplus.components.Highlight.AccentColor;
-import com.holonplatform.vaadin.flow.vaadinplus.components.IconBadge;
-import com.holonplatform.vaadin.flow.vaadinplus.utilities.Font;
+import com.iyensoft.vaadin.flow.components.Alert;
+import com.iyensoft.vaadin.flow.components.Highlight;
+import com.iyensoft.vaadin.flow.components.Highlight.AccentColor;
+import com.iyensoft.vaadin.flow.components.IconBadge;
+import com.iyensoft.vaadin.flow.utils.Font;
 import com.iyensoft.vaadin.flow.enums.HeadingLevel;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;
@@ -19,7 +19,7 @@ import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import com.holonplatform.vaadin.flow.vaadinplus.ResponsiveDiv;
+import com.iyensoft.vaadin.flow.components.ResponsiveDiv;
 
 
 /**

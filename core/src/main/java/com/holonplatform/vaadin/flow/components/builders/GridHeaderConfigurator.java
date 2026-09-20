@@ -3,7 +3,7 @@ package com.holonplatform.vaadin.flow.components.builders;
 import com.holonplatform.vaadin.flow.components.BeanListing;
 import com.holonplatform.vaadin.flow.components.PropertyListing;
 import com.iyensoft.vaadin.flow.enums.HeadingLevel;
-import com.holonplatform.vaadin.flow.vaadinplus.utilities.Font;
+import com.iyensoft.vaadin.flow.utils.Font;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.grid.Grid;
 

@@ -8,7 +8,7 @@ public class DefaultMaterialAppBarBuilder extends AbstractMaterialAppBarConfigur
         implements MaterialAppBarBuilder {
 
     public DefaultMaterialAppBarBuilder(Component... components) {
-        super(new com.holonplatform.vaadin.flow.vaadinplus.components.MaterialAppBar());
+        super(new com.iyensoft.vaadin.flow.components.MaterialAppBar());
         leading(components);
     }
 
@@ -18,7 +18,7 @@ public class DefaultMaterialAppBarBuilder extends AbstractMaterialAppBarConfigur
     }
 
     @Override
-    public com.holonplatform.vaadin.flow.vaadinplus.components.MaterialAppBar build() {
+    public com.iyensoft.vaadin.flow.components.MaterialAppBar build() {
         applyPostProcessors();
         return getComponent();
     }

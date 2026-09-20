@@ -4,8 +4,8 @@ Container for {@link KeyValueItem} rows rendered as a flat 3-column CSS grid: <p
 
 ## Class
 
-- **Package:** `com.holonplatform.vaadin.flow.vaadinplus`
-- **Source:** `core/src/main/java/com/holonplatform/vaadin/flow/vaadinplus/KeyValueList.java`
+- **Package:** `com.iyensoft.vaadin.flow.components`
+- **Source:** `core/src/main/java/com/iyensoft/vaadin/flow/components/KeyValueList.java`
 - **Signature:** `public class KeyValueList extends Composite<Div>`
 
 ## Key APIs

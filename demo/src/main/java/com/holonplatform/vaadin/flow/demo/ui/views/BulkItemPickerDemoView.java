@@ -2,9 +2,9 @@ package com.holonplatform.vaadin.flow.demo.ui.views;
 
 import com.holonplatform.vaadin.flow.demo.ui.DemoExample;
 import com.holonplatform.vaadin.flow.demo.ui.DemoMainLayout;
-import com.holonplatform.vaadin.flow.vaadinplus.ResponsiveDiv;
-import com.holonplatform.vaadin.flow.vaadinplus.components.BulkItemPickerDialog;
-import com.holonplatform.vaadin.flow.vaadinplus.components.BulkPickerItem;
+import com.iyensoft.vaadin.flow.components.ResponsiveDiv;
+import com.iyensoft.vaadin.flow.components.BulkItemPickerDialog;
+import com.iyensoft.vaadin.flow.components.BulkPickerItem;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.html.Div;
