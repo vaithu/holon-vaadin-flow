@@ -1,5 +1,7 @@
 package com.holonplatform.vaadin.flow.components;
 
+import com.holonplatform.vaadin.flow.components.utils.UIUtils;
+
 import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.Composite;
@@ -35,18 +37,18 @@ public class SplitViewFrame extends Composite<Div> {
     public SplitViewFrame() {
         addClassName(CLASS_NAME);
 
-        header = Components.div().styleName(CLASS_NAME + "__header").build();
+        header = UIUtils.div(CLASS_NAME + "__header");
         header.getElement().setAttribute("role", "banner");
 
         wrapper = new FlexBoxLayout();
         wrapper.setSizeFull();
         wrapper.addClassName(CLASS_NAME + "__wrapper");
 
-        content = Components.div().styleName(CLASS_NAME + "__content").build();
+        content = UIUtils.div(CLASS_NAME + "__content");
         content.getElement().setAttribute("role", "main");
-        details = Components.div().styleName(CLASS_NAME + "__details").build();
+        details = UIUtils.div(CLASS_NAME + "__details");
         details.getElement().setAttribute("role", "complementary");
-        footer = Components.div().styleName(CLASS_NAME + "__footer").build();
+        footer = UIUtils.div(CLASS_NAME + "__footer");
         footer.getElement().setAttribute("role", "contentinfo");
 
         wrapper.add(content, details);

@@ -17,7 +17,7 @@ package com.holonplatform.vaadin.flow.test;
 
 import com.holonplatform.core.property.PathProperty;
 import com.holonplatform.core.query.QueryFilter;
-import com.holonplatform.vaadin.flow.components.Components;
+import com.iyensoft.vaadin.flow.components.Components;
 import com.iyensoft.vaadin.flow.components.ListingBundle;
 import com.iyensoft.vaadin.flow.components.DynamicFilterPanel;
 import com.vaadin.flow.component.ComponentUtil;

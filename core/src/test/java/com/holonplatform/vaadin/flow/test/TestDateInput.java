@@ -16,7 +16,7 @@
 package com.holonplatform.vaadin.flow.test;
 
 import com.holonplatform.core.i18n.Localizable;
-import com.holonplatform.vaadin.flow.components.Components;
+import com.iyensoft.vaadin.flow.components.Components;
 import com.holonplatform.vaadin.flow.components.Input;
 import com.holonplatform.vaadin.flow.components.builders.DateInputBuilder;
 import com.holonplatform.vaadin.flow.components.support.Unit;

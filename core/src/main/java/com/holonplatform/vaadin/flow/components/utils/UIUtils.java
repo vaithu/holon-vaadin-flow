@@ -95,6 +95,21 @@ import static com.vaadin.flow.component.button.ButtonVariant.LUMO_TERTIARY_INLIN
 
 public class UIUtils {
 
+    /**
+     * Create a {@link Div} with the given CSS class name and children.
+     *
+     * @param className  CSS class name to add, or {@code null} for none
+     * @param children   optional child components
+     * @return the created {@link Div}
+     */
+    public static Div div(String className, com.vaadin.flow.component.Component... children) {
+        final Div div = new Div(children);
+        if (className != null && !className.isEmpty()) {
+            div.addClassName(className);
+        }
+        return div;
+    }
+
     public static final String IMG_PATH = "images/";
     public static final String MIN_DESKTOP_WIDTH = "700px";
     public static final String MARGIN_RIGHT = "margin-right";
@@ -595,14 +610,14 @@ public class UIUtils {
     }
 
     public static Div createWrapper() {
-        final var wrapper = Components.div().styleName("margin-h-auto").build();
+        final var wrapper = UIUtils.div("margin-h-auto");
         wrapper.setWidthFull();
         wrapper.setMaxWidth("1024px");
         return wrapper;
     }
 
     public static Div createCard(Component... components) {
-        final var div = Components.div().add(components).styleName("card").build();
+        final var div = UIUtils.div("card", components);
         return div;
     }
 
@@ -670,7 +685,7 @@ public class UIUtils {
     }
 
     public static Div createWrapDiv(Component... components) {
-        Div wrapDiv = Components.div().add(components).build();
+        Div wrapDiv = new Div(components);
         wrapDiv.addClassNames("flex", "flex-wrap", "margin-top-medium", "padding-start-small");
         return wrapDiv;
     }
@@ -744,7 +759,7 @@ public class UIUtils {
 
 
     public static Div addDummyDiv(String size) {
-        Div dummyDiv = Components.div().build();
+        Div dummyDiv = new Div();
         dummyDiv.setHeight(size);
         return dummyDiv;
     }

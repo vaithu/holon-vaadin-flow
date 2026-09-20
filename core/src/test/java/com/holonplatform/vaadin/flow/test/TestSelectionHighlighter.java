@@ -10,7 +10,7 @@ import java.util.Set;
 import java.util.stream.Stream;
 
 import com.holonplatform.core.Registration;
-import com.holonplatform.vaadin.flow.components.Components;
+import com.iyensoft.vaadin.flow.components.Components;
 import com.holonplatform.vaadin.flow.components.ItemListing;
 import com.holonplatform.vaadin.flow.components.Selectable;
 import com.holonplatform.vaadin.flow.components.Selectable.SelectionListener;

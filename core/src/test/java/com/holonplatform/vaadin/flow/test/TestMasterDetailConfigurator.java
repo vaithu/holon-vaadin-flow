@@ -14,7 +14,7 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import com.holonplatform.vaadin.flow.components.Components;
+import com.iyensoft.vaadin.flow.components.Components;
 import com.iyensoft.vaadin.flow.components.Header;
 import com.iyensoft.vaadin.flow.components.Sheet;
 import com.iyensoft.vaadin.flow.components.DetailSyncAware;

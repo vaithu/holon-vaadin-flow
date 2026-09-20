@@ -2,7 +2,7 @@ package com.iyensoft.vaadin.flow.internal.components.builders;
 
 import com.holonplatform.core.internal.utils.ObjectUtils;
 import com.holonplatform.vaadin.flow.components.Badge;
-import com.holonplatform.vaadin.flow.components.Components;
+import com.iyensoft.vaadin.flow.components.Components;
 import com.holonplatform.vaadin.flow.components.builders.ButtonConfigurator;
 import com.holonplatform.vaadin.flow.components.builders.FlexLayoutConfigurator;
 import com.holonplatform.vaadin.flow.components.css.BadgeColor;

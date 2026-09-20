@@ -1,7 +1,7 @@
 package com.iyensoft.vaadin.flow.utils;
 
 import com.holonplatform.core.property.PropertyBox;
-import com.holonplatform.vaadin.flow.components.Components;
+import com.iyensoft.vaadin.flow.components.Components;
 import com.holonplatform.vaadin.flow.components.css.CSSUtility;
 import com.holonplatform.vaadin.flow.components.utils.UIUtils;
 import com.holonplatform.vaadin.flow.internal.lumo.SeparatorColor;

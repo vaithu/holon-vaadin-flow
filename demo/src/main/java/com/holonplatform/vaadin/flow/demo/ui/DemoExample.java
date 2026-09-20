@@ -1,6 +1,6 @@
 package com.holonplatform.vaadin.flow.demo.ui;
 
-import com.holonplatform.vaadin.flow.components.Components;
+import com.iyensoft.vaadin.flow.components.Components;
 import com.iyensoft.vaadin.flow.components.ResponsiveDiv;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.html.Div;

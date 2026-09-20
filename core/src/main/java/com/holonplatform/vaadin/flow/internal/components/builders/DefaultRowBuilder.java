@@ -1,5 +1,7 @@
 package com.holonplatform.vaadin.flow.internal.components.builders;
 
+import com.holonplatform.vaadin.flow.components.utils.UIUtils;
+
 import com.holonplatform.vaadin.flow.components.Components;
 import com.holonplatform.vaadin.flow.components.builders.ColumnBuilder;
 import com.holonplatform.vaadin.flow.components.builders.RowBuilder;
@@ -15,7 +17,7 @@ public class DefaultRowBuilder implements RowBuilder {
     private final Div divRow;
 
     public DefaultRowBuilder() {
-        divRow = Components.div().styleName("row").build();
+        divRow = UIUtils.div("row");
     }
 
     @Override

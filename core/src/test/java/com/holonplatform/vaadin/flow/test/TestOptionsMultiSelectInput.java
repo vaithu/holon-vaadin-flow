@@ -25,7 +25,7 @@ import com.holonplatform.core.property.StringProperty;
 import com.holonplatform.datastore.jdbc.JdbcDatastore;
 import com.holonplatform.jdbc.BasicDataSource;
 import com.holonplatform.jdbc.DatabasePlatform;
-import com.holonplatform.vaadin.flow.components.Components;
+import com.iyensoft.vaadin.flow.components.Components;
 import com.holonplatform.vaadin.flow.components.Input;
 import com.holonplatform.vaadin.flow.components.MultiSelect;
 import com.holonplatform.vaadin.flow.components.Selectable.SelectionMode;

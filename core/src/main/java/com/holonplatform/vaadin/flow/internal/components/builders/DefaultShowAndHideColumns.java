@@ -41,8 +41,8 @@ public class DefaultShowAndHideColumns<T> implements ShowAndHideColumns<T> {
         popover.setPosition(PopoverPosition.BOTTOM_END);
         popover.setTarget(this.showHideBtn );
 
-        Div heading = Components.div().add(Components.span()
-                .text(LocalizationProvider.localize("Configure columns", "grid.configure_columns")).build()).build();
+        Div heading = new Div(Components.span()
+                .text(LocalizationProvider.localize("Configure columns", "grid.configure_columns")).build());
         heading.getStyle().set("font-weight", "600");
         heading.getStyle().set("padding", "var(--lumo-space-xs)");
 

@@ -2,7 +2,7 @@ package com.iyensoft.vaadin.flow.internal.components.builders;
 
 import com.holonplatform.vaadin.flow.internal.components.builders.AbstractComponentConfigurator;
 
-import com.holonplatform.vaadin.flow.components.Components;
+import com.iyensoft.vaadin.flow.components.Components;
 import com.holonplatform.vaadin.flow.components.builders.ButtonConfigurator;
 import com.iyensoft.vaadin.flow.components.builders.HeaderConfigurator;
 import com.holonplatform.vaadin.flow.components.css.CSSUtility;

@@ -15,6 +15,8 @@
  */
 package com.holonplatform.vaadin.flow.internal.components;
 
+import com.holonplatform.vaadin.flow.components.utils.UIUtils;
+
 import com.holonplatform.vaadin.flow.components.Components;
 import com.holonplatform.vaadin.flow.components.ValidationStatusHandler;
 import com.holonplatform.vaadin.flow.components.builders.DialogBuilder.ConfirmDialogBuilder;
@@ -57,7 +59,7 @@ public class DialogValidationStatusHandler<S> implements ValidationStatusHandler
 				if (messages.size() > 1) {
 					for (int i = 1; i < messages.size(); i++) {
 						final String text = messages.get(i);
-						final Div message = Components.div().styleName("message").build();
+						final Div message = UIUtils.div("message");
 						message.setText((text != null) ? text : "");
 						builder.withComponent(message);
 					}

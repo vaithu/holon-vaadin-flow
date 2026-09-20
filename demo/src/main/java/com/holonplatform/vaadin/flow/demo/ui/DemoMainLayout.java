@@ -1,6 +1,6 @@
 package com.holonplatform.vaadin.flow.demo.ui;
 
-import com.holonplatform.vaadin.flow.components.Components;
+import com.iyensoft.vaadin.flow.components.Components;
 import com.holonplatform.vaadin.flow.demo.ui.views.*;
 import com.iyensoft.vaadin.flow.components.builders.SideNavBuilder;
 import com.iyensoft.vaadin.flow.utils.responsive.WindowSizeTracker;

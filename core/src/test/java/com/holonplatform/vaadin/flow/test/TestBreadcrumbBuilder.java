@@ -15,7 +15,7 @@
  */
 package com.holonplatform.vaadin.flow.test;
 
-import com.holonplatform.vaadin.flow.components.Components;
+import com.iyensoft.vaadin.flow.components.Components;
 import com.iyensoft.vaadin.flow.components.Breadcrumb;
 import com.iyensoft.vaadin.flow.components.BreadcrumbItem;
 import com.iyensoft.vaadin.flow.components.BreadcrumbPage;

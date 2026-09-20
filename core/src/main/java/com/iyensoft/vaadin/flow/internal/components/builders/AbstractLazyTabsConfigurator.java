@@ -1,7 +1,7 @@
 package com.iyensoft.vaadin.flow.internal.components.builders;
 
 import com.holonplatform.core.i18n.Localizable;
-import com.holonplatform.vaadin.flow.components.Components;
+import com.iyensoft.vaadin.flow.components.Components;
 import com.holonplatform.vaadin.flow.components.builders.DeferrableLocalizationConfigurator;
 import com.holonplatform.vaadin.flow.components.utils.UIUtils;
 import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;

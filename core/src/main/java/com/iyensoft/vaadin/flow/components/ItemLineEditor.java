@@ -18,7 +18,7 @@ package com.iyensoft.vaadin.flow.components;
 import com.holonplatform.core.Validator;
 import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.core.internal.utils.ObjectUtils;
-import com.holonplatform.vaadin.flow.components.Components;
+import com.iyensoft.vaadin.flow.components.Components;
 import com.holonplatform.vaadin.flow.components.HasComponent;
 import com.iyensoft.vaadin.flow.components.builders.ItemLineEditorBuilder;
 import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;

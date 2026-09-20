@@ -15,7 +15,7 @@
  */
 package com.holonplatform.vaadin.flow.test;
 
-import com.holonplatform.vaadin.flow.components.Components;
+import com.iyensoft.vaadin.flow.components.Components;
 import com.iyensoft.vaadin.flow.components.builders.TimelineStepperBuilder;
 import com.iyensoft.vaadin.flow.components.builders.TimelineStepperConfigurator;
 import com.iyensoft.vaadin.flow.components.TimelineStepper;

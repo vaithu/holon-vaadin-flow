@@ -26,7 +26,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.junit.jupiter.api.Test;
 
 import com.holonplatform.core.i18n.Localizable;
-import com.holonplatform.vaadin.flow.components.Components;
+import com.iyensoft.vaadin.flow.components.Components;
 import com.holonplatform.vaadin.flow.components.builders.NativeButtonBuilder;
 import com.holonplatform.vaadin.flow.components.support.Unit;
 import com.holonplatform.vaadin.flow.test.util.LocalizationTestUtils;

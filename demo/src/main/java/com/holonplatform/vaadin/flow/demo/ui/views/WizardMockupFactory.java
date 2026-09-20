@@ -1,7 +1,7 @@
 package com.holonplatform.vaadin.flow.demo.ui.views;
 
 import com.holonplatform.core.i18n.Caption;
-import com.holonplatform.vaadin.flow.components.Components;
+import com.iyensoft.vaadin.flow.components.Components;
 import com.holonplatform.vaadin.flow.components.Input;
 import com.iyensoft.vaadin.flow.components.KeyValueList;
 import com.iyensoft.vaadin.flow.components.*;

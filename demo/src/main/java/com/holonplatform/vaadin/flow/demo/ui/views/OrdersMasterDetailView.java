@@ -15,7 +15,7 @@
  */
 package com.holonplatform.vaadin.flow.demo.ui.views;
 
-import com.holonplatform.vaadin.flow.components.Components;
+import com.iyensoft.vaadin.flow.components.Components;
 import com.holonplatform.vaadin.flow.components.builders.LitRendererBuilder;
 import com.holonplatform.vaadin.flow.components.builders.LitRendererBuilder.DocumentRowBuilder.StatusType;
 import com.holonplatform.vaadin.flow.demo.data.entity.Product;

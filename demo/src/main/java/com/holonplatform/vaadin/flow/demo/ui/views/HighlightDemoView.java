@@ -1,6 +1,6 @@
 package com.holonplatform.vaadin.flow.demo.ui.views;
 
-import com.holonplatform.vaadin.flow.components.Components;
+import com.iyensoft.vaadin.flow.components.Components;
 import com.holonplatform.vaadin.flow.components.chartjs.ChartJs;
 import com.holonplatform.vaadin.flow.components.chartjs.ChartJsDataset;
 import com.holonplatform.vaadin.flow.components.chartjs.ChartType;
