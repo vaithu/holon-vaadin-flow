@@ -2,7 +2,7 @@ package com.holonplatform.vaadin.flow.demo.ui.views;
 
 import com.holonplatform.vaadin.flow.components.BeanListing;
 import com.holonplatform.vaadin.flow.components.Components;
-import com.holonplatform.vaadin.flow.components.ItemListingPageSizeSelector;
+import com.iyensoft.vaadin.flow.components.ItemListingPageSizeSelector;
 import com.iyensoft.vaadin.flow.components.ItemListingPaginationBar;
 import com.holonplatform.vaadin.flow.demo.ui.DemoExample;
 import com.holonplatform.vaadin.flow.demo.ui.DemoMainLayout;
