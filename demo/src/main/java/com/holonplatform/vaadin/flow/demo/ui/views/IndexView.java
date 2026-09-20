@@ -26,7 +26,7 @@ public class IndexView extends Div {
         var title = new H1("Holon Vaadin Flow Components");
 
         var desc = new Paragraph(
-                "A live showcase of all vaadinplus components available in the core module. " +
+                "A live showcase of all IyenSoft components available in the core module. " +
                         "Select a component from the sidebar — or pick a card below — to explore its " +
                         "variants and copy-ready usage examples.");
 

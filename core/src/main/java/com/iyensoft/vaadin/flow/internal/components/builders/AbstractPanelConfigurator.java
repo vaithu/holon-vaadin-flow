@@ -1,7 +1,5 @@
 package com.iyensoft.vaadin.flow.internal.components.builders;
 
-import com.iyensoft.vaadin.flow.internal.components.builders.DefaultMaterialHeaderBuilder;
-import com.iyensoft.vaadin.flow.components.MaterialHeader;
 import com.iyensoft.vaadin.flow.components.builders.PanelConfigurator;
 
 import java.util.Optional;

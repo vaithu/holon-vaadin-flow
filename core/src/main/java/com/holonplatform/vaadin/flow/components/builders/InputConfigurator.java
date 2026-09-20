@@ -23,7 +23,6 @@ import com.holonplatform.vaadin.flow.components.ValueHolder.ValueChangeListener;
 import com.holonplatform.vaadin.flow.components.events.ReadonlyChangeListener;
 import com.vaadin.flow.signals.Signal;
 
-import java.util.function.Function;
 
 /**
  * Interface to create an {@link Input}.

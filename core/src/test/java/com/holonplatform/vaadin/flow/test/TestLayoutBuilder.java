@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * Unit tests for {@link LayoutBuilder} and the vaadinplus {@link Layout} component.
+ * Unit tests for {@link LayoutBuilder} and the IyenSoft {@link Layout} component.
  */
 class TestLayoutBuilder {
 

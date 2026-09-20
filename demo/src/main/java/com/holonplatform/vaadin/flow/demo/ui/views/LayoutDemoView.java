@@ -23,7 +23,7 @@ public class LayoutDemoView extends Div {
         var title = new H1("Layout");
 
         var desc = new Paragraph(
-                "Layout is the foundation layout component from the vaadinplus package. "
+                "Layout is the foundation layout component from the IyenSoft component library. "
                 + "It extends Div with flex/grid CSS utility methods: "
                 + "horizontal(), vertical(), center(), wrap(), gap(), columns(), and more.");
 

@@ -20,7 +20,6 @@ import com.iyensoft.vaadin.flow.components.Components;
 import com.holonplatform.vaadin.flow.components.Input;
 import com.iyensoft.vaadin.flow.components.builders.TotalsCardBuilder;
 import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
-import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.html.Div;

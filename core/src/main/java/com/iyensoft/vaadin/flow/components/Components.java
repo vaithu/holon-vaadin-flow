@@ -4303,7 +4303,7 @@ public interface Components {
         return AppShellLayoutBuilder.create();
     }
 
-    // ── VaadinPlus custom components ──────────────────────────────────────
+    // ── IyenSoft custom components ──────────────────────────────────────
 
     /**
      * Creates a new {@link LivePreviewCard} with the given eyebrow label.

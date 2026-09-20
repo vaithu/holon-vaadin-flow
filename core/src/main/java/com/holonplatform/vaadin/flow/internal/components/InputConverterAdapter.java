@@ -36,7 +36,6 @@ import com.vaadin.flow.data.value.HasValueChangeMode;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
 import java.util.Optional;
-import java.util.function.Function;
 
 /**
  * Adapter class to build a {@link Input} of a different value type from another {@link Input}, using a suitable

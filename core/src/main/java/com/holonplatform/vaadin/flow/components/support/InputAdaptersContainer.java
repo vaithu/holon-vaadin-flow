@@ -20,7 +20,6 @@ import com.vaadin.flow.function.SerializableFunction;
 import java.io.Serializable;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Function;
 
 import com.holonplatform.vaadin.flow.components.Input;
 import com.holonplatform.vaadin.flow.internal.components.support.DefaultInputAdaptersContainer;

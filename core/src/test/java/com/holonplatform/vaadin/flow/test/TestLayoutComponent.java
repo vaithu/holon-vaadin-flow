@@ -7,7 +7,7 @@ import com.vaadin.flow.component.textfield.TextField;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class TestVaadinPlusLayout {
+public class TestLayoutComponent {
 
     TextField name = new TextField();
 

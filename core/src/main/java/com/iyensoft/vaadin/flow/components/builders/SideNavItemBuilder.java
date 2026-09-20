@@ -1,15 +1,7 @@
 package com.iyensoft.vaadin.flow.components.builders;
 
-import com.holonplatform.core.i18n.Localizable;
-import com.holonplatform.vaadin.flow.components.builders.HasEnabledConfigurator;
-import com.holonplatform.vaadin.flow.components.builders.HasPrefixAndSuffixConfigurator;
-import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.sidenav.SideNavItem;
-import com.vaadin.flow.router.QueryParameters;
-import com.vaadin.flow.router.RouteParameters;
 
-import java.util.List;
-import java.util.Set;
 
 /**
  * Fluent builder for a single {@link SideNavItem}.
