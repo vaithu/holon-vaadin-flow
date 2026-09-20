@@ -1,8 +1,8 @@
 package com.iyensoft.vaadin.flow.internal.components.builders;
 
 import com.holonplatform.vaadin.flow.internal.components.builders.AbstractComponentConfigurator;
-import com.holonplatform.vaadin.flow.internal.components.builders.AbstractFooterConfigurator;
-import com.holonplatform.vaadin.flow.internal.components.builders.AbstractHeaderConfigurator;
+import com.iyensoft.vaadin.flow.internal.components.builders.AbstractFooterConfigurator;
+import com.iyensoft.vaadin.flow.internal.components.builders.AbstractHeaderConfigurator;
 import com.iyensoft.vaadin.flow.components.Footer;
 import com.iyensoft.vaadin.flow.components.Header;
 import com.iyensoft.vaadin.flow.components.builders.DetailConfigurator;

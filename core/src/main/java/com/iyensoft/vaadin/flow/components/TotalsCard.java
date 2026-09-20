@@ -18,7 +18,7 @@ package com.iyensoft.vaadin.flow.components;
 import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.vaadin.flow.components.Components;
 import com.holonplatform.vaadin.flow.components.Input;
-import com.holonplatform.vaadin.flow.components.builders.TotalsCardBuilder;
+import com.iyensoft.vaadin.flow.components.builders.TotalsCardBuilder;
 import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;

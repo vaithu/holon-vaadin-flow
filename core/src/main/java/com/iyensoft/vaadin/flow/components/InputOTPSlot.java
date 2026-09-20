@@ -35,7 +35,7 @@ import com.vaadin.flow.data.value.ValueChangeMode;
  * <p>Slots are added to an {@link InputOTPGroup}, which is then added to the root
  * {@link InputOTP}.  Direct construction is only needed when building the OTP manually;
  * the fluent builder creates slots automatically via
- * {@link com.holonplatform.vaadin.flow.components.builders.InputOTPConfigurator#group(int)}.
+ * {@link com.iyensoft.vaadin.flow.components.builders.InputOTPConfigurator#group(int)}.
  *
  * <p>All visual styling is defined in {@code input-otp.css}.
  *

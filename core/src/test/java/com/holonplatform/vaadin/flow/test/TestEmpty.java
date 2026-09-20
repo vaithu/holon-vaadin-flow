@@ -16,8 +16,8 @@
 package com.holonplatform.vaadin.flow.test;
 
 import com.holonplatform.core.i18n.Localizable;
-import com.holonplatform.vaadin.flow.components.builders.EmptyBuilder;
-import com.holonplatform.vaadin.flow.components.builders.EmptyConfigurator;
+import com.iyensoft.vaadin.flow.components.builders.EmptyBuilder;
+import com.iyensoft.vaadin.flow.components.builders.EmptyConfigurator;
 import com.holonplatform.vaadin.flow.test.util.LocalizationTestUtils;
 import com.iyensoft.vaadin.flow.components.Empty;
 import com.iyensoft.vaadin.flow.components.EmptyAction;

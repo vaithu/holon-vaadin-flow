@@ -1,6 +1,6 @@
 package com.iyensoft.vaadin.flow.components;
 
-import com.holonplatform.vaadin.flow.components.builders.IconBadgeBuilder;
+import com.iyensoft.vaadin.flow.components.builders.IconBadgeBuilder;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.html.Div;

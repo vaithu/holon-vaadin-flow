@@ -16,7 +16,7 @@
 package com.holonplatform.vaadin.flow.components.builders;
 
 import com.holonplatform.vaadin.flow.components.HasComponent;
-import com.holonplatform.vaadin.flow.internal.components.builders.DefaultDivConfigurator;
+import com.iyensoft.vaadin.flow.internal.components.builders.DefaultDivConfigurator;
 import com.holonplatform.vaadin.flow.internal.lumo.*;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.html.Div;

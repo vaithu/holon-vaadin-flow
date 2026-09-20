@@ -1,8 +1,8 @@
 package com.holonplatform.vaadin.flow.test;
 
 import com.holonplatform.core.i18n.Localizable;
-import com.holonplatform.vaadin.flow.components.builders.AlertModalBuilder;
-import com.holonplatform.vaadin.flow.components.builders.AlertModalConfigurator;
+import com.iyensoft.vaadin.flow.components.builders.AlertModalBuilder;
+import com.iyensoft.vaadin.flow.components.builders.AlertModalConfigurator;
 import com.holonplatform.vaadin.flow.test.util.LocalizationTestUtils;
 import com.iyensoft.vaadin.flow.components.Alert;
 import com.iyensoft.vaadin.flow.components.AlertAction;

@@ -128,8 +128,8 @@ public class EntityCreationForm extends Div {
 
     /**
      * Creates a new {@link EntityCreationForm}, assembling its DOM internally.
-     * Use {@link com.holonplatform.vaadin.flow.components.builders.EntityCreationFormBuilder} or
-     * configure via {@link com.holonplatform.vaadin.flow.components.builders.EntityCreationFormConfigurator}.
+     * Use {@link com.iyensoft.vaadin.flow.components.builders.EntityCreationFormBuilder} or
+     * configure via {@link com.iyensoft.vaadin.flow.components.builders.EntityCreationFormConfigurator}.
      */
     public EntityCreationForm() {
         addClassName(CSS_ROOT);

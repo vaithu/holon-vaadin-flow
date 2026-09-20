@@ -16,8 +16,8 @@
 package com.holonplatform.vaadin.flow.test;
 
 import com.holonplatform.core.i18n.Localizable;
-import com.holonplatform.vaadin.flow.components.builders.AlertDialogBuilder;
-import com.holonplatform.vaadin.flow.components.builders.AlertDialogConfigurator;
+import com.iyensoft.vaadin.flow.components.builders.AlertDialogBuilder;
+import com.iyensoft.vaadin.flow.components.builders.AlertDialogConfigurator;
 import com.holonplatform.vaadin.flow.test.util.LocalizationTestUtils;
 import com.iyensoft.vaadin.flow.components.Alert;
 import com.iyensoft.vaadin.flow.components.AlertDialog;

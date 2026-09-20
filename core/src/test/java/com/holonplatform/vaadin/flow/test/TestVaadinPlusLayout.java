@@ -1,7 +1,7 @@
 package com.holonplatform.vaadin.flow.test;
 
 import com.holonplatform.vaadin.flow.components.Components;
-import com.holonplatform.vaadin.flow.components.builders.LayoutBuilder;
+import com.iyensoft.vaadin.flow.components.builders.LayoutBuilder;
 import com.iyensoft.vaadin.flow.components.Layout;
 import com.vaadin.flow.component.textfield.TextField;
 import org.assertj.core.api.Assertions;

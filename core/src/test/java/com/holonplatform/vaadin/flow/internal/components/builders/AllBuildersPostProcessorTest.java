@@ -1,13 +1,13 @@
 package com.holonplatform.vaadin.flow.internal.components.builders;
 
 import com.holonplatform.vaadin.flow.components.builders.AccordionBuilder;
-import com.holonplatform.vaadin.flow.components.builders.AlertBuilder;
-import com.holonplatform.vaadin.flow.components.builders.AlertDialogBuilder;
-import com.holonplatform.vaadin.flow.components.builders.AlertModalBuilder;
-import com.holonplatform.vaadin.flow.components.builders.AvatarBuilder;
+import com.iyensoft.vaadin.flow.components.builders.AlertBuilder;
+import com.iyensoft.vaadin.flow.components.builders.AlertDialogBuilder;
+import com.iyensoft.vaadin.flow.components.builders.AlertModalBuilder;
+import com.iyensoft.vaadin.flow.components.builders.AvatarBuilder;
 import com.holonplatform.vaadin.flow.components.builders.AvatarGroupBuilder;
-import com.holonplatform.vaadin.flow.components.builders.BulkItemPickerDialogBuilder;
-import com.holonplatform.vaadin.flow.components.builders.ButtonGroupBuilder;
+import com.iyensoft.vaadin.flow.components.builders.BulkItemPickerDialogBuilder;
+import com.iyensoft.vaadin.flow.components.builders.ButtonGroupBuilder;
 import com.iyensoft.vaadin.flow.components.Alert;
 import com.iyensoft.vaadin.flow.components.AlertDialog;
 import com.iyensoft.vaadin.flow.components.AlertModal;

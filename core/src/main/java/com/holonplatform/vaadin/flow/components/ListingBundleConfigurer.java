@@ -4,7 +4,7 @@ import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.core.query.QueryFilter;
 import com.holonplatform.core.query.QuerySort;
 import com.holonplatform.vaadin.flow.components.builders.ComponentConfigurator;
-import com.holonplatform.vaadin.flow.components.builders.GridToolbarBuilder;
+import com.iyensoft.vaadin.flow.components.builders.GridToolbarBuilder;
 import com.holonplatform.vaadin.flow.components.builders.HasSizeConfigurator;
 import com.holonplatform.vaadin.flow.components.builders.HasStyleConfigurator;
 import com.iyensoft.vaadin.flow.components.Empty;

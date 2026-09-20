@@ -17,8 +17,8 @@ package com.holonplatform.vaadin.flow.test;
 
 import com.holonplatform.vaadin.flow.components.HasComponent;
 import com.holonplatform.vaadin.flow.components.Input;
-import com.holonplatform.vaadin.flow.components.builders.InputGroupBuilder;
-import com.holonplatform.vaadin.flow.components.builders.InputGroupLayoutConfigurator;
+import com.iyensoft.vaadin.flow.components.builders.InputGroupBuilder;
+import com.iyensoft.vaadin.flow.components.builders.InputGroupLayoutConfigurator;
 import com.iyensoft.vaadin.flow.components.InputGroup;
 import com.iyensoft.vaadin.flow.components.InputGroupText;
 import com.vaadin.flow.component.button.Button;

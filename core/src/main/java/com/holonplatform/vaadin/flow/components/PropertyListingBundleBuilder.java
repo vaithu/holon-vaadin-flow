@@ -160,7 +160,7 @@ public final class PropertyListingBundleBuilder {
      * Optional post-processor applied to the built listing before assembling the bundle.
      */
     private Consumer<ItemListing<PropertyBox, ?>> postProcessor;
-    private Consumer<com.holonplatform.vaadin.flow.components.builders.GridToolbarBuilder> toolbarCustomizer;
+    private Consumer<com.iyensoft.vaadin.flow.components.builders.GridToolbarBuilder> toolbarCustomizer;
     /** Optional empty state shown when dataset is genuinely empty (no search/filter). */
     private Empty emptyState;
     /** Optional empty state shown when search/filter is active but yields no results. */
@@ -440,13 +440,13 @@ public final class PropertyListingBundleBuilder {
     }
 
     /**
-     * Registers a callback invoked on the internal {@link com.holonplatform.vaadin.flow.components.builders.GridToolbarBuilder}
+     * Registers a callback invoked on the internal {@link com.iyensoft.vaadin.flow.components.builders.GridToolbarBuilder}
      * before it is built, allowing toolbar-level customisations (e.g. {@code primaryAction},
      * {@code bulkAction}, {@code optionsMenuAction}) not covered by the fluent API.
      *
      * @see ListingBundleConfigurer#withToolbarCustomizer(Consumer)
      */
-    public PropertyListingBundleBuilder withToolbarCustomizer(Consumer<com.holonplatform.vaadin.flow.components.builders.GridToolbarBuilder> customizer) {
+    public PropertyListingBundleBuilder withToolbarCustomizer(Consumer<com.iyensoft.vaadin.flow.components.builders.GridToolbarBuilder> customizer) {
         this.toolbarCustomizer = Objects.requireNonNull(customizer, "customizer must not be null");
         return this;
     }

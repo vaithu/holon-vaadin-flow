@@ -17,8 +17,8 @@ package com.iyensoft.vaadin.flow.components;
 
 import java.io.Serial;
 import com.holonplatform.core.i18n.Localizable;
-import com.holonplatform.vaadin.flow.components.builders.StepperBuilder;
-import com.holonplatform.vaadin.flow.components.builders.StepperConfigurator;
+import com.iyensoft.vaadin.flow.components.builders.StepperBuilder;
+import com.iyensoft.vaadin.flow.components.builders.StepperConfigurator;
 import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
 import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.dependency.JsModule;
