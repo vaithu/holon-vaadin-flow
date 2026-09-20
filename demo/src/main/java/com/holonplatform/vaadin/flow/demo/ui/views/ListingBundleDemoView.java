@@ -6,7 +6,7 @@ import com.holonplatform.core.property.PropertySet;
 import com.holonplatform.core.property.StringProperty;
 import com.holonplatform.vaadin.flow.components.Components;
 import com.holonplatform.vaadin.flow.components.ItemListing;
-import com.holonplatform.vaadin.flow.components.ItemListingPaginationBar;
+import com.iyensoft.vaadin.flow.components.ItemListingPaginationBar;
 import com.holonplatform.vaadin.flow.demo.data.entity.Product;
 import com.holonplatform.vaadin.flow.demo.data.service.ProductService;
 import com.holonplatform.vaadin.flow.demo.ui.DemoExample;
@@ -24,8 +24,8 @@ import java.math.BigDecimal;
 import java.util.stream.Stream;
 
 /**
- * Demo page for {@link com.holonplatform.vaadin.flow.components.ListingBundleBuilder} and
- * {@link com.holonplatform.vaadin.flow.components.PropertyListingBundleBuilder}.
+ * Demo page for {@link com.iyensoft.vaadin.flow.components.ListingBundleBuilder} and
+ * {@link com.iyensoft.vaadin.flow.components.PropertyListingBundleBuilder}.
  *
  * <p>All examples are backed by real JPA data via {@link ProductService} + Holon Datastore.
  * Lazy loading is used throughout — the grid only fetches the current page from the DB each time.

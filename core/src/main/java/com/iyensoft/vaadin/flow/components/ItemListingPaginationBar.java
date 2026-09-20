@@ -13,7 +13,10 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package com.holonplatform.vaadin.flow.components;
+package com.iyensoft.vaadin.flow.components;
+
+import com.holonplatform.vaadin.flow.components.FilterInputGroup;
+import com.holonplatform.vaadin.flow.components.ItemListing;
 
 import com.holonplatform.core.internal.utils.ObjectUtils;
 import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;

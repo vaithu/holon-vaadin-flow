@@ -1,7 +1,7 @@
 package com.iyensoft.vaadin.flow.components;
 
 import com.holonplatform.vaadin.flow.components.Components;
-import com.holonplatform.vaadin.flow.components.ListingBundle;
+import com.iyensoft.vaadin.flow.components.ListingBundle;
 import com.holonplatform.vaadin.flow.components.support.ViewMode;
 import com.iyensoft.vaadin.flow.internal.components.masterdetail.SelectionHighlighter;
 import com.iyensoft.vaadin.flow.internal.components.masterdetail.UrlSelectionSync;

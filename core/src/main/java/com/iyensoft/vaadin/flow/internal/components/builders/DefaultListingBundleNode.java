@@ -2,7 +2,7 @@ package com.iyensoft.vaadin.flow.internal.components.builders;
 
 import java.util.Objects;
 
-import com.holonplatform.vaadin.flow.components.ListingBundle;
+import com.iyensoft.vaadin.flow.components.ListingBundle;
 import com.iyensoft.vaadin.flow.internal.components.builders.AbstractListingBundleConfigurer;
 import com.iyensoft.vaadin.flow.components.builders.MasterConfigurator;
 

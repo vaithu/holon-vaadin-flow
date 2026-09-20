@@ -15,7 +15,7 @@
  */
 package com.holonplatform.vaadin.flow.test;
 
-import com.holonplatform.vaadin.flow.components.ItemListingPaginationBar;
+import com.iyensoft.vaadin.flow.components.ItemListingPaginationBar;
 import com.iyensoft.vaadin.flow.components.*;
 import org.junit.jupiter.api.Test;
 

@@ -20,7 +20,7 @@ import java.io.Serial;
  * a {@code SideNav} / drawer sidebar.</p>
  *
  * <p>For an inline (non-sticky) action footer embedded in a form or dialog, use
- * {@link com.holonplatform.vaadin.flow.components.FormFooter} instead.</p>
+ * {@link com.iyensoft.vaadin.flow.components.FormFooter} instead.</p>
  *
  * <h3>Structure</h3>
  * <pre>

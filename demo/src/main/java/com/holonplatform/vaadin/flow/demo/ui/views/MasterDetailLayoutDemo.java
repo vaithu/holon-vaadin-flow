@@ -1,7 +1,7 @@
 package com.holonplatform.vaadin.flow.demo.ui.views;
 
 import com.holonplatform.vaadin.flow.components.Components;
-import com.holonplatform.vaadin.flow.components.ListingBundle;
+import com.iyensoft.vaadin.flow.components.ListingBundle;
 import com.iyensoft.vaadin.flow.components.builders.SheetBuilder;
 import com.holonplatform.vaadin.flow.demo.data.entity.Product;
 import com.holonplatform.vaadin.flow.demo.data.service.ProductService;

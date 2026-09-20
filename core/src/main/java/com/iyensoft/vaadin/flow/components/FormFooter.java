@@ -1,4 +1,4 @@
-package com.holonplatform.vaadin.flow.components;
+package com.iyensoft.vaadin.flow.components;
 
 import com.holonplatform.vaadin.flow.components.builders.ButtonConfigurator;
 import com.holonplatform.vaadin.flow.components.builders.ComponentConfigurator;

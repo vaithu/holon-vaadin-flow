@@ -1,6 +1,6 @@
 package com.iyensoft.vaadin.flow.internal.components.builders;
 
-import com.holonplatform.vaadin.flow.components.builders.DivConfigurator;
+import com.iyensoft.vaadin.flow.components.builders.DivConfigurator;
 import com.vaadin.flow.component.html.Div;
 
 public class DefaultDivConfigurator extends AbstractDivConfigurator<DivConfigurator.BaseDivConfigurator>

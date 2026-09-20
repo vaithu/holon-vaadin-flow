@@ -1,7 +1,7 @@
 package com.iyensoft.vaadin.flow.internal.components.builders;
 
-import com.holonplatform.vaadin.flow.components.ListingBundle;
-import com.holonplatform.vaadin.flow.components.ListingBundleBuilder;
+import com.iyensoft.vaadin.flow.components.ListingBundle;
+import com.iyensoft.vaadin.flow.components.ListingBundleBuilder;
 
 import java.util.ArrayList;
 import java.util.List;

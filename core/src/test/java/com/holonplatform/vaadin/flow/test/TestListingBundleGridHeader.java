@@ -16,7 +16,7 @@
 package com.holonplatform.vaadin.flow.test;
 
 import com.holonplatform.vaadin.flow.components.Components;
-import com.holonplatform.vaadin.flow.components.ListingBundle;
+import com.iyensoft.vaadin.flow.components.ListingBundle;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasText;
 import com.vaadin.flow.component.button.Button;
@@ -27,7 +27,7 @@ import java.util.stream.Stream;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * Tests for {@link com.holonplatform.vaadin.flow.components.ListingBundleBuilder#gridHeader(String)}
+ * Tests for {@link com.iyensoft.vaadin.flow.components.ListingBundleBuilder#gridHeader(String)}
  * and the {@code gridHeader(Component...)} context-action wiring — the title is a plain heading and
  * context actions are wired into the {@link ListingBundle#toolbar()}'s bulk-actions row.
  */
