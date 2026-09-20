@@ -1,7 +1,7 @@
 package com.holonplatform.vaadin.flow.test;
 
-import com.holonplatform.vaadin.flow.components.builders.DivBuilder;
-import com.holonplatform.vaadin.flow.components.builders.DivConfigurator;
+import com.iyensoft.vaadin.flow.components.builders.DivBuilder;
+import com.iyensoft.vaadin.flow.components.builders.DivConfigurator;
 import com.holonplatform.vaadin.flow.internal.lumo.ColumnSpan;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Paragraph;

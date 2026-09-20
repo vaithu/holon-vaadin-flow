@@ -1,7 +1,7 @@
-package com.holonplatform.vaadin.flow.internal.components;
+package com.iyensoft.vaadin.flow.internal.components;
 
 import com.holonplatform.vaadin.flow.components.Components;
-import com.holonplatform.vaadin.flow.components.FormFooter;
+import com.iyensoft.vaadin.flow.components.FormFooter;
 import com.holonplatform.vaadin.flow.components.builders.ButtonConfigurator;
 import com.holonplatform.vaadin.flow.internal.components.builders.AbstractComponentConfigurator;
 import com.iyensoft.vaadin.flow.components.Layout;

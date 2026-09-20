@@ -13,7 +13,12 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package com.holonplatform.vaadin.flow.components;
+package com.iyensoft.vaadin.flow.components;
+
+import com.holonplatform.vaadin.flow.components.Components;
+import com.holonplatform.vaadin.flow.components.ItemListing;
+import com.holonplatform.vaadin.flow.components.ItemListingPageSizeSelector;
+import com.holonplatform.vaadin.flow.components.PropertyListing;
 
 import com.holonplatform.core.property.PathProperty;
 import com.holonplatform.core.property.Property;
@@ -168,12 +173,12 @@ public final class PropertyListingBundleBuilder {
 
     // ── Package constructors ───────────────────────────────────────────────
 
-    PropertyListingBundleBuilder(Property<?>... properties) {
+    public PropertyListingBundleBuilder(Property<?>... properties) {
         Objects.requireNonNull(properties, "properties must not be null");
         this.propertySet = PropertySet.of(properties);
     }
 
-    PropertyListingBundleBuilder(PropertySet<?> propertySet) {
+    public PropertyListingBundleBuilder(PropertySet<?> propertySet) {
         this.propertySet = Objects.requireNonNull(propertySet, "propertySet must not be null");
     }
 

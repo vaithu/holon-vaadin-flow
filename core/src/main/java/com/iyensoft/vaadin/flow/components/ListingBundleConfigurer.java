@@ -1,4 +1,6 @@
-package com.holonplatform.vaadin.flow.components;
+package com.iyensoft.vaadin.flow.components;
+
+import com.holonplatform.vaadin.flow.components.ItemListing;
 
 import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.core.query.QueryFilter;

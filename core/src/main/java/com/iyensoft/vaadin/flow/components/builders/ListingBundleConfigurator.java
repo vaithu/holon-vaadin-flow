@@ -2,7 +2,7 @@ package com.iyensoft.vaadin.flow.components.builders;
 
 import java.util.Optional;
 
-import com.holonplatform.vaadin.flow.components.ListingBundle;
+import com.iyensoft.vaadin.flow.components.ListingBundle;
 import com.iyensoft.vaadin.flow.internal.components.builders.DefaultBaseListingBundleConfigurator;
 import com.iyensoft.vaadin.flow.components.DynamicFilterPanel;
 import com.vaadin.flow.component.ComponentEventListener;
@@ -18,7 +18,7 @@ import com.vaadin.flow.component.textfield.TextField;
  * <p>Build-time-only operations such as {@code columns()}, {@code fetch()},
  * {@code pageSizes()}, {@code search()}, {@code withFilterPanel()}, and
  * {@code mobileViewColumn()} live exclusively on
- * {@link com.holonplatform.vaadin.flow.components.ListingBundleBuilder}.</p>
+ * {@link com.iyensoft.vaadin.flow.components.ListingBundleBuilder}.</p>
  *
  * @param <T> item type carried by the bundle
  * @param <C> concrete configurator type (self-type)
@@ -52,7 +52,7 @@ public interface ListingBundleConfigurator<T, C extends ListingBundleConfigurato
      * <p>The returned configurator exposes {@link #onItemClick} and the read-only
      * accessors. Build-time operations ({@code columns()}, {@code fetch()},
      * {@code pageSizes()}, etc.) are only available on
-     * {@link com.holonplatform.vaadin.flow.components.ListingBundleBuilder}.</p>
+     * {@link com.iyensoft.vaadin.flow.components.ListingBundleBuilder}.</p>
      *
      * @param bundle the {@link ListingBundle} to configure (not null)
      * @param <T>    item type

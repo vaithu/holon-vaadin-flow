@@ -21,7 +21,7 @@ import com.holonplatform.vaadin.flow.components.FilterInput;
 import com.holonplatform.vaadin.flow.components.FilterInputGroup;
 import com.holonplatform.vaadin.flow.components.ItemListing;
 import com.holonplatform.vaadin.flow.components.ItemListingPageSizeSelector;
-import com.holonplatform.vaadin.flow.components.ItemListingPaginationBar;
+import com.iyensoft.vaadin.flow.components.ItemListingPaginationBar;
 import com.holonplatform.vaadin.flow.components.events.FilterChangeListener;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.grid.Grid;

@@ -15,6 +15,8 @@
  */
 package com.holonplatform.vaadin.flow.components;
 
+import com.iyensoft.vaadin.flow.components.ItemListingPaginationBar;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;

@@ -1,6 +1,6 @@
 package com.holonplatform.vaadin.flow.demo.ui.views;
 
-import com.holonplatform.vaadin.flow.components.builders.DivBuilder;
+import com.iyensoft.vaadin.flow.components.builders.DivBuilder;
 import com.holonplatform.vaadin.flow.demo.ui.DemoExample;
 import com.holonplatform.vaadin.flow.demo.ui.DemoMainLayout;
 import com.holonplatform.vaadin.flow.components.support.ColSpan;

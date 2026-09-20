@@ -13,7 +13,9 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package com.holonplatform.vaadin.flow.components.builders;
+package com.iyensoft.vaadin.flow.components.builders;
+
+import com.holonplatform.vaadin.flow.components.builders.ComponentBuilder;
 
 import com.iyensoft.vaadin.flow.internal.components.builders.DefaultDivBuilder;
 import com.vaadin.flow.component.html.Div;

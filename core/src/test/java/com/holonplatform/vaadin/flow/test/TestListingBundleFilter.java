@@ -18,7 +18,7 @@ package com.holonplatform.vaadin.flow.test;
 import com.holonplatform.core.property.PathProperty;
 import com.holonplatform.core.query.QueryFilter;
 import com.holonplatform.vaadin.flow.components.Components;
-import com.holonplatform.vaadin.flow.components.ListingBundle;
+import com.iyensoft.vaadin.flow.components.ListingBundle;
 import com.iyensoft.vaadin.flow.components.DynamicFilterPanel;
 import com.vaadin.flow.component.ComponentUtil;
 import com.vaadin.flow.signals.Signal;
@@ -43,7 +43,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * verifying that:
  * <ol>
  *   <li>The {@link DynamicFilterPanel} is properly created when
- *       {@link com.holonplatform.vaadin.flow.components.ListingBundleBuilder#withFilterPanel()}
+ *       {@link com.iyensoft.vaadin.flow.components.ListingBundleBuilder#withFilterPanel()}
  *       is called.</li>
  *   <li>Applying a filter via {@link DynamicFilterPanel#applyFilterProgrammatically(QueryFilter)}
  *       triggers the signal wiring that resets the page and causes
@@ -142,7 +142,7 @@ class TestListingBundleFilter extends AbstractSessionTest {
     // ────────────────────────────────────────────────────────────────────────
 
     /**
-     * POSITIVE PATH: When {@link com.holonplatform.vaadin.flow.components.ListingBundleBuilder.FilteredFetchCallback}
+     * POSITIVE PATH: When {@link com.iyensoft.vaadin.flow.components.ListingBundleBuilder.FilteredFetchCallback}
      * is provided with {@code withFilterPanel()}, the filter IS passed to the
      * callback on each fetch invocation.
      *

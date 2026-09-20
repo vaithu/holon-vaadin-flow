@@ -1,7 +1,7 @@
 package com.holonplatform.vaadin.flow.demo.ui.views;
 
 import com.holonplatform.vaadin.flow.components.KanbanBoard;
-import com.holonplatform.vaadin.flow.components.builders.DivBuilder;
+import com.iyensoft.vaadin.flow.components.builders.DivBuilder;
 import com.holonplatform.vaadin.flow.components.builders.LabelBuilder;
 import com.holonplatform.vaadin.flow.components.kanban.*;
 import com.iyensoft.vaadin.flow.components.DynamicFilterPanel;

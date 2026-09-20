@@ -13,7 +13,7 @@ import com.vaadin.flow.function.SerializableSupplier;
 
 import com.holonplatform.core.property.PropertyBox;
 import com.holonplatform.core.property.PropertySet;
-import com.holonplatform.vaadin.flow.components.ListingBundle;
+import com.iyensoft.vaadin.flow.components.ListingBundle;
 import com.iyensoft.vaadin.flow.components.builders.FooterConfigurator;
 import com.iyensoft.vaadin.flow.components.builders.HeaderConfigurator;
 import com.iyensoft.vaadin.flow.components.builders.MaterialHeaderBuilder;

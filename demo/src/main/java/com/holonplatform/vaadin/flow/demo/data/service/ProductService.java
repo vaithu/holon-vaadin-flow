@@ -254,7 +254,7 @@ public class ProductService {
     }
 
     /**
-     * Column-aware paginated stream for {@link com.holonplatform.vaadin.flow.components.ListingBundleBuilder.ColumnAwareFilteredFetchCallback}.
+     * Column-aware paginated stream for {@link com.iyensoft.vaadin.flow.components.ListingBundleBuilder.ColumnAwareFilteredFetchCallback}.
      *
      * <p>The {@code columns} list carries the visible column property names configured
      * via {@code .columns("name", "price", ...)} in the listing builder. Use it to

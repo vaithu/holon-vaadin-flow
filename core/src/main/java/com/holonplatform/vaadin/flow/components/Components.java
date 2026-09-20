@@ -54,7 +54,7 @@ import com.holonplatform.vaadin.flow.components.events.ClickEventListener;
 import com.holonplatform.vaadin.flow.components.utils.UIUtils;
 import com.holonplatform.vaadin.flow.data.ItemConverter;
 import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
-import com.holonplatform.vaadin.flow.internal.components.DefaultFormFooter;
+import com.iyensoft.vaadin.flow.internal.components.DefaultFormFooter;
 import com.holonplatform.vaadin.flow.internal.components.DefaultTimeline;
 import com.holonplatform.vaadin.flow.internal.components.builders.*;
 import com.iyensoft.vaadin.flow.components.KeyValueItem;
