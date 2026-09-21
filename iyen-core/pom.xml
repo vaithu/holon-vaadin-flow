@@ -14,6 +14,36 @@
 	<name>${project.groupId}:${project.artifactId}</name>
 	<description>IyenSoft Vaadin Flow component library</description>
 
+	<url>https://github.com/vaithu/holon-vaadin-flow</url>
+	<inceptionYear>2024</inceptionYear>
+
+	<!-- This module is authored and maintained independently of the upstream
+	     Holon Platform project, so it overrides the inherited provenance
+	     metadata rather than claiming to be published by them. -->
+	<organization>
+		<name>IyenSoft</name>
+		<url>https://github.com/vaithu</url>
+	</organization>
+
+	<developers>
+		<developer>
+			<id>vaithu</id>
+			<organization>IyenSoft</organization>
+			<organizationUrl>https://github.com/vaithu</organizationUrl>
+		</developer>
+	</developers>
+
+	<issueManagement>
+		<system>GitHub Issues</system>
+		<url>https://github.com/vaithu/holon-vaadin-flow/issues</url>
+	</issueManagement>
+
+	<scm>
+		<connection>scm:git:https://github.com/vaithu/holon-vaadin-flow.git</connection>
+		<developerConnection>scm:git:https://github.com/vaithu/holon-vaadin-flow.git</developerConnection>
+		<url>https://github.com/vaithu/holon-vaadin-flow/tree/main/iyen-core</url>
+	</scm>
+
 	<dependencies>
 
 		<!-- Holon Vaadin Flow core. This dependency is strictly one-way:
