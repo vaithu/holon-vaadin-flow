@@ -1,6 +1,6 @@
 package com.holonplatform.vaadin.flow.internal.components.builders;
 
-import com.holonplatform.vaadin.flow.components.Components;
+import com.holonplatform.vaadin.flow.components.builders.ButtonBuilder;
 import com.holonplatform.vaadin.flow.components.builders.ButtonConfigurator;
 import com.holonplatform.vaadin.flow.components.builders.HasCloseButtonConfigurator;
 import com.vaadin.flow.component.*;
@@ -33,7 +33,7 @@ public abstract class AbstractCloseButtonConfigurator<C extends HasCloseButtonCo
     }
 
     private static Button getCloseBtn() {
-        return Components.button()
+        return ButtonBuilder.create()
                 .tertiaryInline()
                 .icon(LumoIcon.CROSS.create())
                 .tooltipText("Close")

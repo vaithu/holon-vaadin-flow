@@ -1,6 +1,6 @@
 package com.holonplatform.vaadin.flow.internal.components.builders;
 
-import com.holonplatform.vaadin.flow.components.Components;
+import com.holonplatform.vaadin.flow.components.builders.ButtonBuilder;
 import com.holonplatform.vaadin.flow.components.builders.ButtonConfigurator;
 import com.holonplatform.vaadin.flow.components.builders.HasOptionsButtonConfigurator;
 import com.vaadin.flow.component.*;
@@ -40,7 +40,7 @@ public abstract class AbstractOptionsButtonConfigurator<C extends HasOptionsButt
     }
 
     private static Button getOptionsBtn() {
-        return Components.button()
+        return ButtonBuilder.create()
                 .tertiaryInline()
                 .icon(VaadinIcon.ELLIPSIS_DOTS_V)
                 .withFocusShortcutKey(Key.KEY_O, KeyModifier.ALT)

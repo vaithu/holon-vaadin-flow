@@ -4,6 +4,7 @@ import com.holonplatform.core.i18n.Localizable;
 import com.iyensoft.vaadin.flow.components.Components;
 import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
 import com.holonplatform.vaadin.flow.internal.components.builders.AbstractComponentConfigurator;
+import com.iyensoft.vaadin.flow.components.ShellColor;
 import com.iyensoft.vaadin.flow.components.builders.SideNavConfigurator;
 import com.iyensoft.vaadin.flow.components.builders.SideNavItemBuilder;
 import com.vaadin.flow.component.Component;
@@ -30,6 +31,8 @@ public abstract class AbstractSideNavConfigurator<C extends SideNavConfigurator<
     protected boolean searchEnabled     = false;
     protected String  searchPlaceholder = "Search...";
     protected boolean collapseEnabled   = false;
+    protected ShellColor colorTheme;
+    protected Component footerComponent;
 
     public AbstractSideNavConfigurator(SideNav sideNav) {
         super(sideNav);
@@ -101,6 +104,12 @@ public abstract class AbstractSideNavConfigurator<C extends SideNavConfigurator<
     }
 
     @Override
+    public C colorTheme(ShellColor color) {
+        this.colorTheme = java.util.Objects.requireNonNull(color, "color");
+        return getConfigurator();
+    }
+
+    @Override
     public List<SideNavItem> getItems() {
         return sideNav.getItems();
     }
@@ -126,6 +135,12 @@ public abstract class AbstractSideNavConfigurator<C extends SideNavConfigurator<
     @Override
     public C withCollapse() {
         this.collapseEnabled = true;
+        return getConfigurator();
+    }
+
+    @Override
+    public C withFooter(Component footer) {
+        this.footerComponent = footer;
         return getConfigurator();
     }
 
@@ -160,6 +175,9 @@ public abstract class AbstractSideNavConfigurator<C extends SideNavConfigurator<
     public Div buildWrapper() {
         var host = Components.div().styleName("sidenav-host").build();
         host.addAttachListener(e -> e.getUI().getPage().addStyleSheet("context://menu.css"));
+        if (colorTheme != null) {
+            host.addClassName(colorTheme.cssClassName());
+        }
         if (searchEnabled) {
             Input<String> searchField = Components.input.string()
                     .placeholder(searchPlaceholder)
@@ -172,6 +190,11 @@ public abstract class AbstractSideNavConfigurator<C extends SideNavConfigurator<
             host.add(searchField.getComponent());
         }
         host.add(sideNav);
+        if (footerComponent != null) {
+            var footer = Components.div().styleName("sidenav-footer").build();
+            footer.add(footerComponent);
+            host.add(footer);
+        }
         if (collapseEnabled) {
             // Icon stays CHEVRON_LEFT at all times; menu.css rotates it 180° when
             // sidenav-host--collapsed is present, giving the visual expand/collapse cue.

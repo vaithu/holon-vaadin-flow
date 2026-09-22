@@ -5,9 +5,9 @@ import com.holonplatform.vaadin.flow.components.utils.UIUtils;
 import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.core.internal.utils.ObjectUtils;
 import com.holonplatform.core.query.QueryFilter;
-import com.holonplatform.vaadin.flow.components.Components;
 import com.holonplatform.vaadin.flow.components.FilterInputGroup;
 import com.holonplatform.vaadin.flow.components.KanbanBoard;
+import com.holonplatform.vaadin.flow.components.builders.ButtonBuilder;
 import com.holonplatform.vaadin.flow.components.builders.KanbanBoardBuilder;
 import com.holonplatform.vaadin.flow.components.kanban.*;
 import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
@@ -51,7 +51,7 @@ public class DefaultKanbanBoard<T, C> extends Div implements KanbanBoard<T, C> {
 
     private final Div columnsLayout = new Div();
 
-    private KanbanCardRenderer<T> cardRenderer = item -> Components.span().text(String.valueOf(item)).build();
+    private KanbanCardRenderer<T> cardRenderer = item -> new Span(String.valueOf(item));
     private KanbanCardActionHandler<T> cardActionHandler;
     private KanbanColumnActionHandler<C> columnActionHandler;
     private Function<T, String> itemIdentifierProvider;
@@ -385,9 +385,10 @@ public class DefaultKanbanBoard<T, C> extends Div implements KanbanBoard<T, C> {
 
         final Div header = UIUtils.div("kanban-board-column-header");
 
-        final Span title = Components.span().text(column.label()).styleName("kanban-board-column-title").build();
+        final Span title = new Span(column.label());
+        title.addClassName("kanban-board-column-title");
 
-        final Button optionsButton = Components.button()
+        final Button optionsButton = ButtonBuilder.create()
                 .text(resolveLabel(i18n.getColumnOptions()))
                 .styleName("kanban-board-column-options")
                 .withClickListener(event -> {
@@ -401,14 +402,15 @@ public class DefaultKanbanBoard<T, C> extends Div implements KanbanBoard<T, C> {
         wireDropTarget(cards, serializedColumnId);
 
         final List<T> items = fetchColumnItems(column.id());
-        final Span count = Components.span().text(String.valueOf(resolveColumnCount(column.id(), items.size()))).styleName("kanban-board-column-count").build();
+        final Span count = new Span(String.valueOf(resolveColumnCount(column.id(), items.size())));
+        count.addClassName("kanban-board-column-count");
 
         final Div heading = UIUtils.div("kanban-board-column-heading", title, count);
         header.add(heading, optionsButton);
         columnRoot.add(header, cards);
 
         if (columnActionHandler != null) {
-            final Button addCardButton = Components.button()
+            final Button addCardButton = ButtonBuilder.create()
                     .text(resolveLabel(i18n.getAddCard()))
                     .styleName("kanban-board-column-content-card")
                     .withClickListener(event -> columnActionHandler.onAddCard(column.id()))
@@ -460,9 +462,9 @@ public class DefaultKanbanBoard<T, C> extends Div implements KanbanBoard<T, C> {
         if (cardActionHandler != null) {
             final Div actions = UIUtils.div("kanban-board-card-actions");
 
-            final Button openButton = Components.button().text(resolveLabel(i18n.getOpen())).styleName("kanban-board-card-action-open").withClickListener(event -> cardActionHandler.onOpen(item)).build();
-            final Button editButton = Components.button().text(resolveLabel(i18n.getEdit())).styleName("kanban-board-card-action-edit").withClickListener(event -> cardActionHandler.onEdit(item)).build();
-            final Button deleteButton = Components.button().text(resolveLabel(i18n.getDelete())).styleName("kanban-board-card-action-delete").withClickListener(event -> cardActionHandler.onDelete(item)).build();
+            final Button openButton = ButtonBuilder.create().text(resolveLabel(i18n.getOpen())).styleName("kanban-board-card-action-open").withClickListener(event -> cardActionHandler.onOpen(item)).build();
+            final Button editButton = ButtonBuilder.create().text(resolveLabel(i18n.getEdit())).styleName("kanban-board-card-action-edit").withClickListener(event -> cardActionHandler.onEdit(item)).build();
+            final Button deleteButton = ButtonBuilder.create().text(resolveLabel(i18n.getDelete())).styleName("kanban-board-card-action-delete").withClickListener(event -> cardActionHandler.onDelete(item)).build();
 
             actions.add(openButton, editButton, deleteButton);
             card.add(actions);

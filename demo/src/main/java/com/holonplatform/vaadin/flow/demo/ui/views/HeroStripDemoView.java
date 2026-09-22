@@ -5,6 +5,7 @@ import com.holonplatform.vaadin.flow.demo.ui.DemoExample;
 import com.holonplatform.vaadin.flow.demo.ui.DemoMainLayout;
 import com.iyensoft.vaadin.flow.components.ResponsiveDiv;
 import com.iyensoft.vaadin.flow.components.HeroStrip;
+import com.iyensoft.vaadin.flow.components.builders.HeroStripBuilder;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.Paragraph;
@@ -73,7 +74,7 @@ public class HeroStripDemoView extends Div {
 
         for (HeroStrip.Variant v : HeroStrip.Variant.values()) {
             preview.add(
-                Components.heroStrip()
+                    HeroStripBuilder.create()
                     .variant(v)
                     .cell(c -> c.header("Metric A").content("1,234").footer("sub-label · detail"))
                     .cell(c -> c.header("Metric B").content("56%").footer("another metric"))

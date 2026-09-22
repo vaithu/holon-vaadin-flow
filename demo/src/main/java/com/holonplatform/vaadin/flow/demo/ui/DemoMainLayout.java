@@ -2,32 +2,35 @@ package com.holonplatform.vaadin.flow.demo.ui;
 
 import com.iyensoft.vaadin.flow.components.Components;
 import com.holonplatform.vaadin.flow.demo.ui.views.*;
+import com.iyensoft.vaadin.flow.components.MaterialAppBar;
+import com.iyensoft.vaadin.flow.components.ShellColor;
 import com.iyensoft.vaadin.flow.components.builders.SideNavBuilder;
 import com.iyensoft.vaadin.flow.utils.responsive.WindowSizeTracker;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.applayout.AppLayout;
+import com.vaadin.flow.component.applayout.DrawerToggle;
+import com.vaadin.flow.component.avatar.Avatar;
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.contextmenu.ContextMenu;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.sidenav.SideNavItem;
+import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.dom.Style;
+import com.vaadin.flow.theme.lumo.Lumo;
 import com.vaadin.flow.theme.lumo.LumoIcon;
 import org.vaadin.lineawesome.LineAwesomeIcon;
 
 /**
  * Root application layout -- shared by every demo view.
  *
- * <p>Built entirely via {@link Components#appShell()} -- see
- * {@link com.iyensoft.vaadin.flow.components.builders.AppShellLayoutBuilder} for the full API.
- *
- * <p>Demonstrates the three new AppShellLayoutBuilder features:
- * <ol>
- *   <li><b>Brand logo</b> -- small icon before the brand name in the navbar start slot.</li>
- *   <li><b>DrawerToggle</b> -- hamburger button in the navbar start slot (default; shown explicitly).</li>
- *   <li><b>Desktop MenuBar flip</b> -- grid-icon button in the navbar end slot that switches
- *       between sidebar and a horizontal MenuBar in the navbar middle slot.</li>
- * </ol>
+ * <p>Navbar is a {@link MaterialAppBar} (Material 3 style) rather than the default
+ * shell {@code AppBar}, colored with {@link MaterialAppBar.Color#AMBER}; the drawer
+ * {@link com.iyensoft.vaadin.flow.components.builders.SideNavBuilder} uses the matching
+ * {@link ShellColor#AMBER} theme -- both share the same "amber" palette.
  */
 public final class DemoMainLayout extends AppLayout {
 
@@ -38,7 +41,8 @@ public final class DemoMainLayout extends AppLayout {
 
         // Sidebar nav
         var nav = SideNavBuilder.create()
-                .withSearch("Filter components\u2026")
+                .colorTheme(ShellColor.AMBER)
+                .withSearch("Filter components")
                 .withCollapse();
 
         // Layout & Structure
@@ -244,56 +248,96 @@ public final class DemoMainLayout extends AppLayout {
                 )
                 .add();
 
-        // Build nav: get both the SideNav reference (for MenuBar conversion) and
-        // the wrapper Div (for the drawer). build() applies post-processors and returns
-        // the SideNav; buildWrapper() wraps that same instance in the sidenav-host Div.
-        var sideNav    = nav.build();
+        // Build nav wrapper for the drawer.
         var navWrapper = nav.buildWrapper();
 
-        // Assemble shell
-        Components.appShell()
-                // Feature 1: Brand logo -- small icon rendered before the brand name.
-                .navbarBrandLogo(createNavbarLogo())
-                .navbarBrand("Holon Components", "v10", IndexView.class)
-                // Feature 2: DrawerToggle -- hamburger auto-injected (default; shown explicitly).
-                .drawerToggle(true)
-                .search("Search docs, components\u2026")
-                .notifications(3,
-                        "\uD83D\uDD14 New release: Vaadin 25.2",
-                        "\u2705 Build passed -- 847 tests",
-                        "\uD83D\uDCE6 3 dependencies outdated")
-                .languages(
-                        "\uD83C\uDDFA\uD83C\uDDF8 English (US)",
-                        "\uD83C\uDDE9\uD83C\uDDEA Deutsch",
-                        "\uD83C\uDDEB\uD83C\uDDF7 Fran\u00E7ais",
-                        "\uD83C\uDDEF\uD83C\uDDF5 \u65E5\u672C\u8A9E")
-                .themeToggle()
-                .user(u -> u
-                        .name("Jane Smith")
-                        .menu(m -> m
-                                .item("Profile & settings")
-                                .item("Switch workspace")
-                                .item("Sign out")))
-                .drawerBrand(createDrawerHeader())
-                // Feature 3: Desktop MenuBar flip -- nav(wrapper, sideNav) gives the builder
-                //             the SideNav items for conversion; desktopMenuBar() adds the
-                //             grid-icon toggle button to the navbar end slot.
-                //             To hide the button on mobile:
-                //             @media(max-width:768px){.app-bar__layout-toggle{display:none!important}}
-                .nav(navWrapper, sideNav)
-                .desktopMenuBar()
-                .configure(this);
+        // Navbar: MaterialAppBar (Material 3 style) colored to match the SideNav's
+        // ShellColor.AMBER theme via MaterialAppBar.Color.AMBER.
+        var appBar = Components.materialAppBar()
+                .color(MaterialAppBar.Color.AMBER)
+                .leading(new DrawerToggle(), createNavbarLogo())
+                .headline("Holon Components")
+                .actions(
+                        createSearchField(),
+                        createNotificationsButton(),
+                        createLanguagesButton(),
+                        createThemeToggleButton(),
+                        createUserAvatar())
+                .build();
+
+        // Assemble shell manually: navbar (MaterialAppBar) + drawer (header + SideNav).
+        setPrimarySection(AppLayout.Section.DRAWER);
+        addToNavbar(true, appBar);
+        addToDrawer(createDrawerHeader(), navWrapper);
     }
 
     /**
      * Small brand logo for the navbar start slot (20 px, primary colour).
-     * Feature 1 demo: rendered immediately before the brand name.
      */
     private static Component createNavbarLogo() {
         var icon = LineAwesomeIcon.CUBES_SOLID.create();
         icon.setSize("20px");
         icon.setColor("var(--lumo-primary-color)");
         return icon;
+    }
+
+    private static Component createSearchField() {
+        var search = new TextField();
+        search.setPlaceholder("Search docs, components\u2026");
+        search.setPrefixComponent(VaadinIcon.SEARCH.create());
+        search.addClassName("app-bar__search");
+        return search;
+    }
+
+    private static Component createNotificationsButton() {
+        var button = new Button(VaadinIcon.BELL.create());
+        button.addThemeVariants(ButtonVariant.LUMO_TERTIARY, ButtonVariant.LUMO_ICON);
+        var menu = new ContextMenu(button);
+        menu.setOpenOnClick(true);
+        menu.addItem("\uD83D\uDD14 New release: Vaadin 25.2");
+        menu.addItem("\u2705 Build passed -- 847 tests");
+        menu.addItem("\uD83D\uDCE6 3 dependencies outdated");
+        return button;
+    }
+
+    private static Component createLanguagesButton() {
+        var button = new Button(VaadinIcon.GLOBE.create());
+        button.addThemeVariants(ButtonVariant.LUMO_TERTIARY, ButtonVariant.LUMO_ICON);
+        var menu = new ContextMenu(button);
+        menu.setOpenOnClick(true);
+        menu.addItem("\uD83C\uDDFA\uD83C\uDDF8 English (US)");
+        menu.addItem("\uD83C\uDDE9\uD83C\uDDEA Deutsch");
+        menu.addItem("\uD83C\uDDEB\uD83C\uDDF7 Fran\u00E7ais");
+        menu.addItem("\uD83C\uDDEF\uD83C\uDDF5 \u65E5\u672C\u8A9E");
+        return button;
+    }
+
+    private static Component createThemeToggleButton() {
+        var button = new Button(VaadinIcon.MOON.create());
+        button.addThemeVariants(ButtonVariant.LUMO_TERTIARY, ButtonVariant.LUMO_ICON);
+        button.addClickListener(e -> {
+            var ui = e.getSource().getUI().orElseThrow();
+            var themeList = ui.getElement().getThemeList();
+            if (themeList.contains(Lumo.DARK)) {
+                themeList.remove(Lumo.DARK);
+                button.setIcon(VaadinIcon.MOON.create());
+            } else {
+                themeList.add(Lumo.DARK);
+                button.setIcon(VaadinIcon.SUN_O.create());
+            }
+        });
+        return button;
+    }
+
+    private static Component createUserAvatar() {
+        var avatar = new Avatar("Jane Smith");
+        var menu = new ContextMenu(avatar);
+        menu.setOpenOnClick(true);
+        menu.addItem("Jane Smith");
+        menu.addItem("Profile & settings");
+        menu.addItem("Switch workspace");
+        menu.addItem("Sign out");
+        return avatar;
     }
 
     /**
@@ -311,4 +355,5 @@ public final class DemoMainLayout extends AppLayout {
         header.setAlignItems(FlexComponent.Alignment.CENTER);
         return header;
     }
+
 }

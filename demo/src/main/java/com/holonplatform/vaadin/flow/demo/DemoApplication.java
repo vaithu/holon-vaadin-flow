@@ -67,7 +67,7 @@ import org.springframework.boot.persistence.autoconfigure.EntityScan;
 @StyleSheet("context://segmented-tabs.css")
 public class DemoApplication implements AppShellConfigurator {
 
-    public static void main(String[] args) {
+    static void main(String[] args) {
         SpringApplication.run(DemoApplication.class, args);
     }
 }

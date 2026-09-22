@@ -1,6 +1,6 @@
 package com.holonplatform.vaadin.flow.internal.components.builders;
 
-import com.holonplatform.vaadin.flow.components.Components;
+import com.holonplatform.vaadin.flow.components.builders.ButtonBuilder;
 import com.holonplatform.vaadin.flow.components.builders.ButtonConfigurator;
 import com.holonplatform.vaadin.flow.components.builders.NotificationConfigurator;
 import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
@@ -142,7 +142,7 @@ public abstract class AbstractNotificationConfigurator<C extends NotificationCon
 
     @Override
     public C closeButton(Consumer<ButtonConfigurator<?>> buttonConfigurator) {
-        Button closeButton = Components.button().build();
+        Button closeButton = ButtonBuilder.create().build();
         buttonConfigurator.accept(ButtonConfigurator.configure(closeButton));
         add(closeButton);
         return getConfigurator();
@@ -174,7 +174,7 @@ public abstract class AbstractNotificationConfigurator<C extends NotificationCon
     }
 
     private Button createCloseBtn() {
-        final Button closeButton = Components.button()
+        final Button closeButton = ButtonBuilder.create()
                 .icon(new Icon("lumo", "cross"))
                 .styleName("btn--tertiary-inline")
                 .styleName("notification__close-btn")

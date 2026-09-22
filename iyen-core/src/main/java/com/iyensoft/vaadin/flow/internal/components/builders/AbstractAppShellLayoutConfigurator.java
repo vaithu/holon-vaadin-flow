@@ -1,6 +1,7 @@
 package com.iyensoft.vaadin.flow.internal.components.builders;
 
 import com.iyensoft.vaadin.flow.components.AppBar;
+import com.iyensoft.vaadin.flow.components.ShellColor;
 import com.iyensoft.vaadin.flow.components.builders.AppShellLayoutConfigurator;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.applayout.AppLayout;
@@ -40,6 +41,9 @@ public abstract class AbstractAppShellLayoutConfigurator<C extends AppShellLayou
     private String brandVersion;
     private Class<? extends Component> brandView;
     private Component brandLogo;
+
+    // color theme
+    private ShellColor colorTheme;
 
     // search
     private String searchPlaceholder;
@@ -111,6 +115,15 @@ public abstract class AbstractAppShellLayoutConfigurator<C extends AppShellLayou
         this.brandView    = homeView;
         return getConfigurator();
     }
+
+    // ── Color theme ─────────────────────────────────────────────────────────────────
+
+    @Override
+    public C colorTheme(ShellColor color) {
+        this.colorTheme = Objects.requireNonNull(color, "color");
+        return getConfigurator();
+    }
+
 
     // ── Search ─────────────────────────────────────────────────────────────────────
 
@@ -222,6 +235,10 @@ public abstract class AbstractAppShellLayoutConfigurator<C extends AppShellLayou
     // ── Core wiring ────────────────────────────────────────────────────────────────
 
     protected void applyTo(AppLayout layout) {
+        if (colorTheme != null) {
+            layout.getElement().getClassList().add(colorTheme.cssClassName());
+        }
+
         var appBar = new AppBar();
 
         // DrawerToggle — always first in the start slot when a drawer is configured.
@@ -245,8 +262,11 @@ public abstract class AbstractAppShellLayoutConfigurator<C extends AppShellLayou
             if (brandTitle != null) {
                 Component nameComp;
                 if (brandView != null) {
-                    var link = new RouterLink("", brandView);
-                    link.add(new Span(brandTitle));
+                    // The link carries the brand text itself: .app-bar__brand-name styles
+                    // it and relies on overflow/text-overflow, which only take effect on
+                    // the element holding the text — an inner Span would defeat the
+                    // ellipsis as well as costing an extra element.
+                    var link = new RouterLink(brandTitle, brandView);
                     link.addClassName("app-bar__brand-name");
                     nameComp = link;
                 } else {
@@ -447,7 +467,10 @@ public abstract class AbstractAppShellLayoutConfigurator<C extends AppShellLayou
     private static Span navItemLabel(String text, boolean hasChildren) {
         var wrap = new Span();
         wrap.addClassName("app-bar__nav-item-label");
-        wrap.add(new Span(text));
+        // setText() before add(): it clears children. The label is an inline-flex row,
+        // so the text is an anonymous flex item and still gets the gap before the
+        // chevron — without paying for a class-less inner Span on every nav item.
+        wrap.setText(text);
         if (hasChildren) {
             var chevron = VaadinIcon.CHEVRON_DOWN_SMALL.create();
             chevron.addClassName("app-bar__nav-chevron");

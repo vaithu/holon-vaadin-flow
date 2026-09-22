@@ -2,7 +2,6 @@ package com.iyensoft.vaadin.flow.components;
 
 import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.vaadin.flow.components.BeanListing;
-import com.iyensoft.vaadin.flow.components.Components;
 import com.holonplatform.vaadin.flow.components.Input;
 import com.holonplatform.vaadin.flow.components.ItemListing;
 import com.holonplatform.vaadin.flow.components.PropertyListing;
@@ -72,6 +71,8 @@ public class GridToolbar extends Div implements HasTheme {
 
     private Registration selectionRegistration;
     private com.holonplatform.core.Registration listingSelectionRegistration;
+    private com.holonplatform.core.Registration filterPanelApplyRegistration;
+    private com.holonplatform.core.Registration filterPanelChangeRegistration;
     private Component primaryAction;
     private transient Runnable clearSelectionAction = () -> {};
 
@@ -247,6 +248,10 @@ public class GridToolbar extends Div implements HasTheme {
         if (!filterEnabled) {
             return;
         }
+        // The filter UI these listeners drive is about to be discarded, so the
+        // registrations on the (externally owned, potentially longer-lived) panel
+        // must go with it.
+        removeFilterPanelBindings();
         if (defaultRow != null && filterTrigger != null) {
             defaultRow.remove(filterTrigger, filterDialog);
         }
@@ -302,14 +307,33 @@ public class GridToolbar extends Div implements HasTheme {
 
     /**
      * Uses DynamicFilterPanel's built-in Apply filter and Reset controls.
+     *
+     * <p>Calling this method again replaces any previously bound panel: the
+     * listeners registered on the previous panel are removed first. Without that,
+     * a stale panel would keep this toolbar alive and would keep overwriting the
+     * filter badge with <em>its</em> active count, hiding the current panel's
+     * state.</p>
      */
     public void setFilterPanel(DynamicFilterPanel<?> panel) {
         Objects.requireNonNull(panel, "panel must not be null");
         ensureFilterUi();
+        removeFilterPanelBindings();
         setFilterContent(panel);
-        panel.addApplyListener(this::closeFilterDialog);
-        panel.addFilterChangeListener(event -> setFilterActiveCount(panel.isAnyActive() ? 1 : 0));
+        filterPanelApplyRegistration = panel.addApplyListener(this::closeFilterDialog);
+        filterPanelChangeRegistration = panel
+                .addFilterChangeListener(event -> setFilterActiveCount(panel.isAnyActive() ? 1 : 0));
         setFilterActiveCount(panel.isAnyActive() ? 1 : 0);
+    }
+
+    private void removeFilterPanelBindings() {
+        if (filterPanelApplyRegistration != null) {
+            filterPanelApplyRegistration.remove();
+            filterPanelApplyRegistration = null;
+        }
+        if (filterPanelChangeRegistration != null) {
+            filterPanelChangeRegistration.remove();
+            filterPanelChangeRegistration = null;
+        }
     }
 
     public Dialog getFilterDialog() {

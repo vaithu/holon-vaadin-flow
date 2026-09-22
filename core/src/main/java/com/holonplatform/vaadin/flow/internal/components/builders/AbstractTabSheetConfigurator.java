@@ -3,11 +3,11 @@ package com.holonplatform.vaadin.flow.internal.components.builders;
 import com.holonplatform.core.Initializer;
 import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.vaadin.flow.LazyComponent;
-import com.holonplatform.vaadin.flow.components.Components;
 import com.holonplatform.vaadin.flow.components.builders.TabSheetConfigurator;
 import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
 import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.icon.Icon;
+import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.shared.HasTooltip;
 import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.TabSheet;
@@ -77,7 +77,7 @@ public abstract class AbstractTabSheetConfigurator<C extends TabSheetConfigurato
 
     @Override
     public C withTab(Icon icon, String tabText, Component component) {
-        getComponent().add(new Tab(icon, Components.span().text(tabText).build()), component);
+        getComponent().add(new Tab(icon, new Span(tabText)), component);
         return getConfigurator();
     }
 
@@ -98,7 +98,7 @@ public abstract class AbstractTabSheetConfigurator<C extends TabSheetConfigurato
 
     @Override
     public C withTab(Icon icon, String tabText, LazyComponent component) {
-        getComponent().add(new Tab(icon, Components.span().text(tabText).build()), component);
+        getComponent().add(new Tab(icon, new Span(tabText)), component);
         return getConfigurator();
     }
 

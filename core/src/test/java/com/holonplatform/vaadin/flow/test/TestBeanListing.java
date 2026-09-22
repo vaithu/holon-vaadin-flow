@@ -38,6 +38,7 @@ import com.holonplatform.jdbc.DatabasePlatform;
 import com.holonplatform.vaadin.flow.components.*;
 import com.holonplatform.vaadin.flow.components.Selectable.SelectionMode;
 import com.holonplatform.vaadin.flow.components.builders.BeanListingBuilder;
+import com.holonplatform.vaadin.flow.components.builders.ButtonBuilder;
 import com.holonplatform.vaadin.flow.components.builders.ItemListingConfigurator.ColumnAlignment;
 import com.holonplatform.vaadin.flow.components.support.Unit;
 import com.holonplatform.vaadin.flow.data.ItemSort;
@@ -226,11 +227,6 @@ public class TestBeanListing {
         BeanListingBuilder<TestBean> builder = BeanListing.builder(TestBean.class);
         assertNotNull(builder);
         BeanListing<TestBean> listing = builder.build();
-        assertNotNull(listing);
-
-        builder = Components.listing.items(TestBean.class);
-        assertNotNull(builder);
-        listing = builder.build();
         assertNotNull(listing);
 
     }
@@ -1241,8 +1237,9 @@ public class TestBeanListing {
 //                .componentRenderer(ID,testBean -> new Button("skdksdf"))
                 .withComponentColumn(item -> new Button("x"))
                 .editorComponent(new Div(
-                        Components.button("Save", e -> listing.saveEditingItem()),
-                        Components.button("Cancel", e -> listing.cancelEditing())))
+                        ButtonBuilder.create().text("Save").onClick(event -> listing.saveEditingItem()).build(),
+                        ButtonBuilder.create().text("Cancel").onClick(event -> listing.cancelEditing()).build()
+                        ))
                 .displayAsFirst()
                 .header("Actions").add();
 

@@ -2,6 +2,7 @@ package com.iyensoft.vaadin.flow.components.builders;
 
 import com.iyensoft.vaadin.flow.components.AppBar;
 import com.iyensoft.vaadin.flow.components.AppShellLayout;
+import com.iyensoft.vaadin.flow.components.ShellColor;
 import com.iyensoft.vaadin.flow.internal.components.builders.DefaultAppShellLayoutConfigurator;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.html.Div;
@@ -25,6 +26,8 @@ public interface AppShellLayoutConfigurator<C extends AppShellLayoutConfigurator
     C navbarBrand(String title, Class<? extends Component> homeView);
 
     C navbarBrand(String title, String version, Class<? extends Component> homeView);
+
+    C colorTheme(ShellColor color);
 
     C search(String placeholder);
 

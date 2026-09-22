@@ -17,7 +17,6 @@ package com.holonplatform.vaadin.flow.internal.components;
 
 import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.core.internal.utils.ObjectUtils;
-import com.holonplatform.vaadin.flow.components.Components;
 import com.holonplatform.vaadin.flow.components.FilterInput;
 import com.holonplatform.vaadin.flow.components.Input;
 import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
@@ -79,9 +78,9 @@ public class RangeInputField<T extends Comparable<? super T>> extends CustomFiel
         applyPlaceholder(this.fromInput, fromPlaceholder);
         applyPlaceholder(this.toInput, toPlaceholder);
 
-        this.separator = Components.span().text((separatorText == null || separatorText.isBlank())
+        this.separator = new Span((separatorText == null || separatorText.isBlank())
                 ? DEFAULT_SEPARATOR
-                : separatorText).build();
+                : separatorText);
 
         // Structural class names only; visual styling stays in CSS.
         addClassName("range-input-field");

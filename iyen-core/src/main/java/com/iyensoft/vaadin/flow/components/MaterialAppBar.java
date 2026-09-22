@@ -41,10 +41,43 @@ public class MaterialAppBar extends Div implements HasTheme {
         }
     }
 
+    /**
+     * Predefined branded color variants, matching a set of common Material-3
+     * "colored app bar" palettes. Each recolors the bar's background, on-color
+     * text/icon tokens, and (except {@link #GRADIENT}) is safe to combine with
+     * any {@link Variant}. Backed by {@code material-app-bar.css}.
+     */
+    public enum Color {
+        /** Default neutral surface (no override). */
+        NEUTRAL("neutral"),
+        INDIGO("indigo"),
+        TEAL("teal"),
+        EMERALD("emerald"),
+        ORANGE("orange"),
+        ROSE("rose"),
+        PURPLE("purple"),
+        SLATE("slate"),
+        /** Warm amber — matches {@code ShellColor.AMBER} for AppShellLayout/SideNav parity. */
+        AMBER("amber"),
+        /** Expressive brand gradient. */
+        GRADIENT("gradient");
+
+        private final String className;
+
+        Color(String className) {
+            this.className = className;
+        }
+
+        String getClassName() {
+            return className;
+        }
+    }
+
     private final Div leadingSlot = new Div();
     private final Div contentSlot = new Div();
     private final Div trailingSlot = new Div();
     private Variant variant = Variant.SMALL;
+    private Color color = Color.NEUTRAL;
     private Button overflowButton;
     private ContextMenu overflowMenu;
     private final List<ResponsiveAction> responsiveActions = new ArrayList<>();
@@ -74,6 +107,27 @@ public class MaterialAppBar extends Div implements HasTheme {
 
     public Variant getVariant() {
         return variant;
+    }
+
+    /**
+     * Applies a predefined branded color variant. Pass {@link Color#NEUTRAL}
+     * to reset to the default surface.
+     *
+     * @param color the color variant to apply (not null)
+     */
+    public void setColor(Color color) {
+        if (color == null) {
+            throw new IllegalArgumentException("color must not be null");
+        }
+        removeClassName("material-app-bar--color-" + this.color.getClassName());
+        this.color = color;
+        if (color != Color.NEUTRAL) {
+            addClassName("material-app-bar--color-" + color.getClassName());
+        }
+    }
+
+    public Color getColor() {
+        return color;
     }
 
     /** Sets the responsive projection used by responsive actions. */

@@ -3,12 +3,12 @@ package com.holonplatform.vaadin.flow.components.utils;
 import com.holonplatform.core.property.PropertyBox;
 import com.holonplatform.core.property.PropertySet;
 import com.holonplatform.vaadin.flow.HasOptionsBar;
-import com.holonplatform.vaadin.flow.components.BeanListing;
-import com.holonplatform.vaadin.flow.components.Components;
-import com.holonplatform.vaadin.flow.components.HasComponent;
-import com.holonplatform.vaadin.flow.components.PropertyInputForm;
+import com.holonplatform.vaadin.flow.components.*;
+import com.holonplatform.vaadin.flow.components.Input;
+import com.holonplatform.vaadin.flow.components.builders.ButtonBuilder;
 import com.holonplatform.vaadin.flow.components.builders.ButtonConfigurator;
 import com.holonplatform.vaadin.flow.components.builders.LabelBuilder;
+import com.holonplatform.vaadin.flow.components.css.BadgeColor;
 import com.holonplatform.vaadin.flow.components.css.WhiteSpace;
 import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
 import com.holonplatform.vaadin.flow.internal.components.support.BreakPoint;
@@ -30,6 +30,7 @@ import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.grid.dataview.GridLazyDataView;
 import com.vaadin.flow.component.html.*;
+import com.vaadin.flow.component.html.ListItem;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.menubar.MenuBar;
 import com.vaadin.flow.component.menubar.MenuBarVariant;
@@ -167,7 +168,7 @@ public class UIUtils {
     }
 
     public static com.holonplatform.vaadin.flow.components.Input<String> createSearchField() {
-        return Components.input.string()
+        return Input.string()
                 .clearButtonVisible(true)
                 .blankValuesAsNull(true)
                 .emptyValuesAsNull(true)
@@ -198,7 +199,7 @@ public class UIUtils {
 
         // Footer: only [Close] — "Clear all" in the panel actions bar already handles row reset.
         // Having both "Reset All" (footer) and "Clear all" (panel) was redundant.
-        var closeBtn = Components.button()
+        var closeBtn = ButtonBuilder.create()
                 .tertiary()
                 .preset(ButtonPreset.CLOSE)
                 .onClick(event -> filterDialog.close())
@@ -223,22 +224,68 @@ public class UIUtils {
         return Arrays.stream(components).map(HasComponent::getComponent).toArray(Component[]::new);
     }
 
+    /**
+     * Default debounce interval, in milliseconds, applied to the filter text fields created by this class.
+     * <p>
+     * A filter change normally triggers a backend query, so the filter fields use
+     * {@link ValueChangeMode#LAZY} with this timeout instead of {@link ValueChangeMode#EAGER}: without it, a query
+     * would be issued for every single keystroke.
+     * </p>
+     */
+    public static final int DEFAULT_FILTER_VALUE_CHANGE_TIMEOUT = 300;
+
+    /**
+     * Create a filter header, composed by a label and a debounced filter text field.
+     * <p>
+     * The filter field uses {@link ValueChangeMode#LAZY} with a
+     * {@link #DEFAULT_FILTER_VALUE_CHANGE_TIMEOUT} ms debounce, so that the
+     * <code>filterChangeConsumer</code> is invoked once the user pauses typing, not once per keystroke.
+     * </p>
+     *
+     * @param labelText            The filter label text
+     * @param filterChangeConsumer The consumer to invoke with the current filter text
+     * @return The filter header component
+     */
     public static Component createTextFieldFilterHeader(String labelText,
                                                         Consumer<String> filterChangeConsumer) {
+        return createTextFieldFilterHeader(labelText, filterChangeConsumer, DEFAULT_FILTER_VALUE_CHANGE_TIMEOUT);
+    }
+
+    /**
+     * Create a filter header, composed by a label and a debounced filter text field, using the given
+     * <code>valueChangeTimeout</code> as debounce interval.
+     *
+     * @param labelText            The filter label text
+     * @param filterChangeConsumer The consumer to invoke with the current filter text
+     * @param valueChangeTimeout   The debounce interval in milliseconds. Use <code>0</code> to disable the debounce
+     *                             and notify the consumer on every keystroke, which issues a backend query per typed
+     *                             character and should be reserved for in-memory data sets
+     * @return The filter header component
+     */
+    public static Component createTextFieldFilterHeader(String labelText,
+                                                        Consumer<String> filterChangeConsumer,
+                                                        int valueChangeTimeout) {
         NativeLabel label = new NativeLabel(labelText);
         label.addClassNames("filter-header__label");
 
-        TextField textField = textFieldFilter(filterChangeConsumer);
-        VerticalLayout layout = Components.vl().add(label, textField).build();
+        TextField textField = textFieldFilter(filterChangeConsumer, valueChangeTimeout);
+        VerticalLayout layout = new VerticalLayout(label, textField);
         textField.addThemeVariants(TextFieldVariant.LUMO_SMALL);
         layout.getThemeList().add("spacing-xs");
 
         return layout;
     }
 
-    private static TextField textFieldFilter(Consumer<String> filterChangeConsumer) {
+    private static TextField textFieldFilter(Consumer<String> filterChangeConsumer, int valueChangeTimeout) {
         TextField textField = new TextField();
-        textField.setValueChangeMode(ValueChangeMode.EAGER);
+        if (valueChangeTimeout > 0) {
+            // LAZY + debounce: a filter change normally triggers a backend query, so EAGER would
+            // issue one server round-trip (and one query) for every character typed.
+            textField.setValueChangeMode(ValueChangeMode.LAZY);
+            textField.setValueChangeTimeout(valueChangeTimeout);
+        } else {
+            textField.setValueChangeMode(ValueChangeMode.EAGER);
+        }
         textField.setClearButtonVisible(true);
         textField.addClassName("filter-header__field");
         textField.setWidthFull();
@@ -262,13 +309,14 @@ public class UIUtils {
     }
 
     public static Span createDaySpan() {
-        Span daySpan = Components.span().styleName("day-span").build();
+        Span daySpan = new Span();
+        daySpan.addClassName("day-span");
         return daySpan;
     }
 
     public static Button createChangeLanguageButton(AttachEvent attachEvent) {
         final Locale locale = attachEvent.getUI().getLocale();
-        Button changeLanguage = Components.button()
+        Button changeLanguage = ButtonBuilder.create()
                 .styleName("btn-change-language")
                 .withClickListener(e ->
                         VaadinService.getCurrentResponse().addCookie(new Cookie("locale", locale.toLanguageTag())))
@@ -287,7 +335,7 @@ public class UIUtils {
             changeLanguage.setAriaLabel("Switch to Finnish");
         }
         image.setHeightFull();
-        final Span icon = Components.span().build();
+        final Span icon = new Span();
         icon.add(image);
         icon.addClassNames(
                 "align-items-center",
@@ -347,16 +395,13 @@ public class UIUtils {
     }
 
     public static void handleNoValuesFound(VerticalLayout container) {
-        Components.configure(container)
-                .fullSize()
-                .add(createImage("no-values-found.png", "No values found"));
-
+        container.setSizeFull();
+        container.add(createImage("no-values-found.png", "No values found"));
     }
 
     public static void handleNoRecordsFound(VerticalLayout container) {
-        Components.configure(container)
-                .fullSize()
-                .add(createNoRecordsFoundImage());
+        container.setSizeFull();
+        container.add(createNoRecordsFoundImage());
     }
 
     /****************************************/
@@ -686,7 +731,7 @@ public class UIUtils {
     }
 
     public static Component createSectionHeader(String title) {
-        H2 header = Components.h2().text(title).build();
+        H2 header = LabelBuilder.h2().text(title).build();
         header.addClassNames("font-size-medium", "margin-none");
         return header;
     }
@@ -781,24 +826,6 @@ public class UIUtils {
 
     public static void errorNotification(Exception e) {
         notification(ExceptionUtils.getRootCauseMessage(e), NotificationVariant.LUMO_ERROR);
-    }
-
-    @SuppressWarnings("unchecked")
-    public static Component viewPropertyBox(PropertyBox propertyBox) {
-        FlexLayout layout = new FlexLayout();
-        layout.setFlexDirection(FlexLayout.FlexDirection.COLUMN);
-        layout.addClassNames("gap-s");
-        propertyBox.forEach(property -> {
-            layout.add(
-                    Components.hl()
-                            .add(new Text(property.getName()))
-                            .add(new Emphasis(String.valueOf(propertyBox.getValue(property))))
-                            .build()
-
-            );
-        });
-
-        return layout;
     }
 
     public static void primaryNotification(String text) {
@@ -1044,11 +1071,11 @@ public class UIUtils {
         String prefix = " ";
         String theme = "badge";
 
-        H2 welcomeText = Components.h2().text(title).build();
+        H2 welcomeText = LabelBuilder.h2().text(title).build();
         welcomeText.addClassNames("font-weight-normal", "margin-none",
                 "color-text-secondary", "font-size-medium");
 
-        Span accountBalanceSpan = Components.span().text(LocalizationProvider.localize("Account Balance", "utils.account_balance")).build();
+        Span accountBalanceSpan = new Span(LocalizationProvider.localize("Account Balance", "utils.account_balance"));
 
         if (accountBalance > 0) {
             prefix = "+";
@@ -1058,11 +1085,11 @@ public class UIUtils {
         i.addClassNames("box-border", "padding-xsmall");
 
         String balance = currencyFormat().format(accountBalance);
-        Span badge = Components.span().build();
-        badge.add(i, Components.span().text(prefix + balance).build());
+        Span badge = new Span();
+        badge.add(i, new Span(prefix + balance));
         badge.getElement().getThemeList().add(theme);
 
-        VerticalLayout layout = Components.vl().add(welcomeText, accountBalanceSpan, badge).build();
+        VerticalLayout layout = new VerticalLayout(welcomeText, accountBalanceSpan, badge);
         layout.addClassName("padding-large");
         layout.setPadding(false);
         layout.setSpacing(false);
@@ -1071,18 +1098,18 @@ public class UIUtils {
 
     public static Component createWidget(String title, String value, Integer year) {
 
-        H2 titleText = Components.h2().text(title).build();
+        H2 titleText = LabelBuilder.h2().text(title).build();
         titleText.addClassNames("font-weight-normal", "margin-none",
                 "color-text-secondary", "font-size-medium");
 
-        Span valueSpan = Components.span().text(value).build();
+        Span valueSpan = new Span(value);
         valueSpan.addClassNames("font-weight-semibold", "font-size-xxxlarge");
 
         String theme = "badge";
-        Span badge = Components.span().text(year.toString()).build();
+        Span badge = new Span(year.toString());
         badge.getElement().getThemeList().add(theme);
 
-        VerticalLayout layout = Components.vl().add(titleText, valueSpan, badge).build();
+        VerticalLayout layout = new VerticalLayout(titleText, valueSpan, badge);
         layout.addClassName("padding-large");
         layout.setPadding(false);
         layout.setSpacing(false);
@@ -1090,18 +1117,18 @@ public class UIUtils {
     }
 
     public static HorizontalLayout createHeader(String title, String subtitle) {
-        H2 h2 = Components.h2().text(title).build();
+        H2 h2 = LabelBuilder.h2().text(title).build();
         h2.addClassNames("font-size-xlarge", "margin-none");
 
-        Span span = Components.span().text(subtitle).build();
+        Span span = new Span(subtitle);
         span.addClassNames("color-text-secondary", "font-size-xsmall");
         span.getElement().getThemeList().add("badge");
 
-        VerticalLayout column = Components.vl().add(h2, span).build();
+        VerticalLayout column = new VerticalLayout(h2, span);
         column.setPadding(false);
         column.setSpacing(false);
 
-        HorizontalLayout header = Components.hl().add(column).build();
+        HorizontalLayout header = new HorizontalLayout(column);
         header.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
         header.setSpacing(false);
         header.setWidthFull();
@@ -1161,8 +1188,18 @@ public class UIUtils {
     }
 
 
+    /**
+     * Create a standalone debounced filter text field.
+     * <p>
+     * The field uses {@link ValueChangeMode#LAZY} with a {@link #DEFAULT_FILTER_VALUE_CHANGE_TIMEOUT} ms debounce, so
+     * that the <code>filterChangeConsumer</code> is invoked once the user pauses typing, not once per keystroke.
+     * </p>
+     *
+     * @param filterChangeConsumer The consumer to invoke with the current filter text
+     * @return The filter text field
+     */
     public static Component createTextFieldFilterHeader(Consumer<String> filterChangeConsumer) {
-        return textFieldFilter(filterChangeConsumer);
+        return textFieldFilter(filterChangeConsumer, DEFAULT_FILTER_VALUE_CHANGE_TIMEOUT);
     }
 
     public static LitRenderer<String> customerNameRenederer(Supplier<String> name) {
@@ -1294,10 +1331,10 @@ public class UIUtils {
         com.vaadin.flow.component.icon.Icon errorIcon = new com.vaadin.flow.component.icon.Icon(VaadinIcon.EXCLAMATION_CIRCLE_O);
         errorIcon.setSize("2.5em");
 
-        H2 headerMessage = Components.h2().text(LocalizationProvider.localize("Creation failed", "utils.creation_failed")).build();
+        H2 headerMessage = LabelBuilder.h2().text(LocalizationProvider.localize("Creation failed", "utils.creation_failed")).build();
         headerMessage.getStyle().set("font-family", "system-ui").set("font-weight", "900");
 
-        HorizontalLayout headerLayout = Components.hl().add(errorIcon, headerMessage).build();
+        HorizontalLayout headerLayout = new HorizontalLayout(errorIcon, headerMessage);
         headerLayout.setDefaultVerticalComponentAlignment(FlexComponent.Alignment.CENTER);
 
         dialog.setHeader(headerLayout);
@@ -1570,10 +1607,7 @@ public class UIUtils {
     }
 
     public static Span createNoRecordsFoundSpan() {
-        return Components.Badge
-                .badgeError()
-                .text(LocalizationProvider.localize("No Records Found", "utils.no_records_found"))
-                .build();
+        return new com.holonplatform.vaadin.flow.components.Badge(LocalizationProvider.localize("No Records Found", "utils.no_records_found"), BadgeColor.ERROR);
     }
 
     public static Image createImage(String imageName, String altText) {
@@ -1752,14 +1786,14 @@ public class UIUtils {
         }
 
         public static Button createButton(String text, ButtonVariant... variants) {
-            Button button = Components.button().text(text).ariaLabel(text).build();
+            Button button = ButtonBuilder.create().text(text).ariaLabel(text).build();
             button.addThemeVariants(variants);
             return button;
         }
 
         public static Button createButton(VaadinIcon icon,
                                               ButtonVariant... variants) {
-            Button button = Components.button().icon(icon).build();
+            Button button = ButtonBuilder.create().icon(icon).build();
             button.addThemeVariants(variants);
             return button;
         }
@@ -1768,7 +1802,7 @@ public class UIUtils {
                                               ButtonVariant... variants) {
             com.vaadin.flow.component.icon.Icon i = new com.vaadin.flow.component.icon.Icon(icon);
             i.addClassName("icon-size-small");
-            Button button = Components.button().text(text).build();
+            Button button = ButtonBuilder.create().text(text).build();
             button.setPrefixComponent(i);
             button.addThemeVariants(variants);
             return button;
@@ -1787,14 +1821,14 @@ public class UIUtils {
         }
 
         public static Button createButton(String text, LumoIcon lumoIcon, ButtonVariant... variants) {
-            Button button = Components.button().text(text).build();
+            Button button = ButtonBuilder.create().text(text).build();
             button.setPrefixComponent(lumoIcon.create());
             button.addThemeVariants(variants);
             return button;
         }
 
         public static Button createCloseButton() {
-            return Components.button()
+            return ButtonBuilder.create()
                     .icon(Icon.createCloseIcon())
                     .iconAfterText(true)
                     .ariaLabel("Close", "close.code")
@@ -2001,7 +2035,7 @@ public class UIUtils {
         }
 
         public static Span createBadge(int value) {
-            Span badge = Components.span().text(String.valueOf(value)).build();
+            Span badge = new Span(String.valueOf(value));
             badge.getElement().getThemeList().add("badge small contrast");
             badge.getStyle().set("margin-inline-start", "var(--lumo-space-xs)");
             return badge;
@@ -2190,14 +2224,14 @@ public class UIUtils {
             icon.addClassName("color-text-primary");
             icon.setSize("15px");
 
-            return Components.hl()
-                    .fullWidth()
-                    .spacing()
-                    .padding(false)
-                    .alignItems(FlexComponent.Alignment.CENTER)
-                    .add(icon)
-                    .add(new Text(text))
-                    .build();
+            HorizontalLayout layout = new HorizontalLayout();
+            layout.setWidthFull();
+            layout.setSpacing(true);
+            layout.setPadding(false);
+            layout.setAlignItems(FlexComponent.Alignment.CENTER);
+            layout.add(icon);
+            layout.add(new Text(text));
+            return layout;
         }
 
         public static MenuItem createIconItem(MenuBar menu, VaadinIcon iconName,

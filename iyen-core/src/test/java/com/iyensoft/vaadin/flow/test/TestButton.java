@@ -1,12 +1,12 @@
 /*
  * Copyright 2016-2018 Axioma srl.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -16,7 +16,6 @@
 package com.iyensoft.vaadin.flow.test;
 
 import com.holonplatform.core.i18n.Localizable;
-import com.iyensoft.vaadin.flow.components.Components;
 import com.holonplatform.vaadin.flow.components.builders.ButtonBuilder;
 import com.holonplatform.vaadin.flow.components.builders.ButtonConfigurator;
 import com.holonplatform.vaadin.flow.components.builders.ButtonConfigurator.BaseButtonConfigurator;
@@ -47,12 +46,6 @@ public class TestButton {
 		assertTrue(button.getId().isPresent());
 		assertEquals("testid", button.getId().get());
 
-		cfg = Components.configure(button);
-		assertNotNull(cfg);
-
-		cfg.id("testid");
-		assertTrue(button.getId().isPresent());
-		assertEquals("testid", button.getId().get());
 	}
 
 	@Test
@@ -64,8 +57,6 @@ public class TestButton {
 		Button button = builder.build();
 		assertNotNull(button);
 
-		builder = Components.button();
-		assertNotNull(builder);
 
 	}
 

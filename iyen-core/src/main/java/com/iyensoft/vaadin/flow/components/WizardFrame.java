@@ -1,11 +1,8 @@
 package com.iyensoft.vaadin.flow.components;
 
-import com.iyensoft.vaadin.flow.components.Components;
 import com.holonplatform.vaadin.flow.components.builders.ButtonBuilder;
 import com.iyensoft.vaadin.flow.components.builders.WizardFrameBuilder;
 import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
-import com.iyensoft.vaadin.flow.components.Layout;
-import com.iyensoft.vaadin.flow.components.Panel;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.StyleSheet;

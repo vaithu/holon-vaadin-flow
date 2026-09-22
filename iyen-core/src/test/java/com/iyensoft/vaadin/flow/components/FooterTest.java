@@ -1,6 +1,5 @@
 package com.iyensoft.vaadin.flow.components;
 
-import com.iyensoft.vaadin.flow.components.Components;
 import com.iyensoft.vaadin.flow.utils.Color;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Span;

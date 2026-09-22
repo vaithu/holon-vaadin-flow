@@ -217,8 +217,13 @@ public class BeanListingDemoView extends Div {
                     .height("280px")
                     .build();
 
-                // Supply data as a List or varargs.
-                listing.setItems(products);
+                // PERFORMANCE: Use lazy loading with callback to only send visible items over the wire.
+                // This scales to 1M+ items without memory overhead on the server.
+                listing.setItems(q -> items.stream()
+                    .skip(q.getOffset()).limit(q.getLimit()));
+
+                // For simple cases with small fixed datasets, you can also use:
+                // listing.setItems(List.of(...)) — but this loads entire collection into memory
 
                 // Get the underlying Vaadin component (e.g. to embed in a layout):
                 Component grid = listing.getComponent();

@@ -1,12 +1,10 @@
 package com.iyensoft.vaadin.flow.components;
 
-import com.iyensoft.vaadin.flow.components.Components;
-import com.iyensoft.vaadin.flow.components.ListingBundle;
+import com.holonplatform.vaadin.flow.components.ItemListing;
 import com.holonplatform.vaadin.flow.components.support.ViewMode;
 import com.iyensoft.vaadin.flow.internal.components.masterdetail.SelectionHighlighter;
 import com.iyensoft.vaadin.flow.internal.components.masterdetail.UrlSelectionSync;
 import com.vaadin.flow.component.UI;
-import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.data.provider.ItemIndexProvider;
 import com.vaadin.flow.dom.Element;
@@ -99,9 +97,30 @@ public class MasterDetailLayout<T> extends Div {
 
     // ── Setup methods — called by the configurator during build phase ───────────
 
-    /** Registers a detail-sync handler. Called by {@code DefaultDetailNode.add()}. */
+    /**
+     * Registers a detail-sync handler invoked whenever the selection changes.
+     *
+     * <p><strong>PERFORMANCE NOTE:</strong> Dispatchers are stored in a list that persists
+     * for the lifetime of this layout. In typical usage (1-3 detail panels per master), this
+     * is negligible. However, if this layout is reused with frequently changing detail sets,
+     * consider the memory footprint. Each dispatcher holds a reference to its owning component,
+     * preventing garbage collection until this layout is removed from the UI.</p>
+     *
+     * Called by {@code DefaultDetailNode.add()}.
+     */
     public void addSyncDispatcher(SerializableConsumer<T> dispatcher) {
         syncDispatchers.add(dispatcher);
+    }
+
+    /**
+     * Removes a previously registered detail-sync handler.
+     * Use this if the detail panel is dynamically removed and recreated frequently.
+     *
+     * @param dispatcher the dispatcher to remove
+     * @return {@code true} if the dispatcher was found and removed, {@code false} otherwise
+     */
+    public boolean removeSyncDispatcher(SerializableConsumer<T> dispatcher) {
+        return syncDispatchers.remove(dispatcher);
     }
 
     /**
@@ -215,20 +234,22 @@ public class MasterDetailLayout<T> extends Div {
     @SuppressWarnings({"unchecked", "rawtypes"})
     private void scrollMasterTo(T item, Scroll scroll) {
         if (scroll == Scroll.NONE || masterBundle == null) return;
-        if (!(masterBundle.listing().getComponent() instanceof Grid<?> raw)) return;
-        final Grid<T> grid = (Grid<T>) raw;
+
+        ItemListing<T, ?> listing = masterBundle.listing();
+
         try {
             if (scroll == Scroll.START) {
                 // The first row is index 0 by definition, so no index lookup is needed.
-                grid.scrollToStart();
+                listing.scrollToStart();
                 return;
             }
             if (item == null) return;
             if (itemIndexProvider != null && !itemIndexProviderInstalled) {
-                grid.getLazyDataView().setItemIndexProvider((ItemIndexProvider) itemIndexProvider);
+                listing.setItemIndexProvider((ItemIndexProvider) itemIndexProvider);
                 itemIndexProviderInstalled = true;
             }
-            grid.scrollToItem(item);
+            listing.scrollToItem(item);
+
         } catch (IllegalStateException | IllegalArgumentException | UnsupportedOperationException e) {
             // Not a lazy data view, no index provider, or the item is not resolvable.
             // Scrolling is cosmetic, so the selection itself must still succeed.
@@ -387,16 +408,21 @@ public class MasterDetailLayout<T> extends Div {
      * Sets the desktop width of the master panel. The value is used only by the
      * desktop layout rule; mobile remains a single-panel layout.
      *
+     * <p><strong>PERFORMANCE FIX:</strong> Style operations are batched to avoid multiple
+     * DOM updates. The CSS custom property is either set or removed in a single operation.</p>
+     *
      * @param width a valid CSS length, such as {@code "340px"} or {@code "24rem"};
      *              {@code null} or blank restores the default width
      * @return this layout
      */
     public MasterDetailLayout<T> setDesktopMasterWidth(String width) {
         desktopMasterWidth = width == null || width.isBlank() ? null : width;
+        // PERFORMANCE: Batch style operations — get reference once, then update
+        var style = getStyle();
         if (desktopMasterWidth == null) {
-            getStyle().remove("--mdl-master-width");
+            style.remove("--mdl-master-width");
         } else {
-            getStyle().set("--mdl-master-width", desktopMasterWidth);
+            style.set("--mdl-master-width", desktopMasterWidth);
         }
         return this;
     }

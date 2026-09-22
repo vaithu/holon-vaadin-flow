@@ -1,12 +1,12 @@
 /*
  * Copyright 2016-2018 Axioma srl.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -32,7 +32,7 @@ import java.util.function.Function;
 
 /**
  * {@link PropertyListing} configurator.
- * 
+ *
  * @param <C> Concrete configurator type
  *
  * @since 5.2.0
@@ -60,9 +60,18 @@ public interface PropertyListingConfigurator<C extends PropertyListingConfigurat
 	 * The virtual property {@link PropertyValueProvider} will be invoked for each listing item to obtain the Component
 	 * to display.
 	 * </p>
+	 * <p>
+	 * <strong>Performance note:</strong> a component column creates a <em>server-side</em> {@link Component} instance
+	 * for every rendered cell, each one with its own state node kept in the user session. On large listings this is by
+	 * far the most expensive kind of column. Prefer {@link #withColumn(VirtualProperty)} for plain values, and
+	 * {@link com.holonplatform.vaadin.flow.components.Components#litRenderer()} to render rich cell contents on the
+	 * client side, which requires no server-side component per row. Reserve this method for columns which really need
+	 * server-side interactive components, for example action buttons.
+	 * </p>
 	 * @param property The virtual property which represent the column.
 	 * @return An {@link ItemListingColumnBuilder} which allow further column configuration and provides the
 	 *         {@link ItemListingColumnBuilder#add()} method to content the column to the listing
+	 * @see com.holonplatform.vaadin.flow.components.Components#litRenderer()
 	 */
 	ItemListingColumnBuilder<PropertyBox, Property<?>, PropertyListing, C> withComponentColumn(
 			VirtualProperty<? extends Component> property);

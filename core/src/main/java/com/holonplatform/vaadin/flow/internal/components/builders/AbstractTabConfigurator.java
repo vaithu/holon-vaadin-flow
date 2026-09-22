@@ -2,7 +2,6 @@ package com.holonplatform.vaadin.flow.internal.components.builders;
 
 import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.vaadin.flow.components.Badge;
-import com.holonplatform.vaadin.flow.components.Components;
 import com.holonplatform.vaadin.flow.components.builders.TabConfigurator;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasEnabled;
@@ -78,7 +77,7 @@ public abstract class AbstractTabConfigurator<C extends TabConfigurator<C>>
 
     @Override
     public C span(String label) {
-        getComponent().add(Components.span().text(label).build());
+        getComponent().add(new Span(label));
         return getConfigurator();
     }
 
@@ -86,7 +85,8 @@ public abstract class AbstractTabConfigurator<C extends TabConfigurator<C>>
      * Helper method for creating a badge.
      */
     private Span createBadge(int value) {
-        Span badge = Components.span().text(String.valueOf(value)).styleName("tab__badge").build();
+        Span badge = new Span(String.valueOf(value));
+        badge.addClassName("tab__badge");
         badge.getElement().getThemeList().add("badge small contrast");
         return badge;
     }

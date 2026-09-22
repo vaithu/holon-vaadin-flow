@@ -23,7 +23,6 @@ import com.holonplatform.core.property.Property;
 import com.holonplatform.core.property.PropertyBox;
 import com.holonplatform.core.property.PropertySet;
 import com.holonplatform.vaadin.flow.components.BeanPropertyInputForm;
-import com.iyensoft.vaadin.flow.components.Components;
 import com.holonplatform.vaadin.flow.components.Input;
 import com.holonplatform.vaadin.flow.components.PropertyInputForm;
 import com.holonplatform.vaadin.flow.components.builders.BeanPropertyInputFormBuilder;
@@ -38,7 +37,6 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.component.html.Span;
 
 import java.io.Serial;
 import java.util.ArrayList;
@@ -337,7 +335,10 @@ public class EntityFormPanel<T> extends Div {
         }
 
         if (title != null && !title.isBlank()) {
-            Div titleDiv = new Div(new Span(title));
+            // The title Div carries the text directly: .entity-form-panel__title already
+            // styles it (font-size/weight/colour/line-height), so an inner Span would be
+            // an unstyled, class-less extra Component, state node and DOM node.
+            Div titleDiv = new Div(title);
             titleDiv.addClassName("entity-form-panel__title");
             add(titleDiv);
         }

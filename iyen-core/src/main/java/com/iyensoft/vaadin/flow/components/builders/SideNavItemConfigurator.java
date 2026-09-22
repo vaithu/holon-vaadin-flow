@@ -83,6 +83,18 @@ public interface SideNavItemConfigurator<B extends SideNavItemConfigurator<B>>
     List<SideNavItem> getItems();
 
     /**
+     * Appends a small rounded badge (count or short label, e.g. {@code "17"}, {@code "NEW"})
+     * to the trailing edge of the item, replacing any previously set suffix component.
+     * Styled via the {@code .sidenav-item__badge} CSS class and colored using the
+     * {@code --sidenav-badge-bg} custom property, so it automatically follows the
+     * active {@link com.iyensoft.vaadin.flow.components.ShellColor} theme, if any.
+     *
+     * @param text badge text (not null/blank — pass {@code null} or empty to remove any badge)
+     * @return this configurator
+     */
+    B badge(String text);
+
+    /**
      * Configure an existing {@link SideNavItem}.
      *
      * @param item the item to configure (not null)

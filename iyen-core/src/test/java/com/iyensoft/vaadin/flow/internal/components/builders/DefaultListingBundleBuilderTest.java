@@ -83,7 +83,7 @@ class DefaultListingBundleBuilderTest {
 	 */
 	@Test
 	void autoCreateColumnsTrue_withHiddenColumn_visibleColumnsExcludesHidden() {
-		ListingBundle<Person> bundle = Components.listing(Person.class)
+		ListingBundle<Person> bundle = new DefaultListingBundleBuilder<>(Person.class)
 				.autoCreateColumns(true)
 				.columns("firstName", "lastName")
 				.hidden("lastName")

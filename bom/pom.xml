@@ -58,11 +58,6 @@
                 <artifactId>holon-vaadin-flow-calendar</artifactId>
                 <version>${project.version}</version>
             </dependency>
-            <dependency>
-                <groupId>com.holon-platform.vaadin</groupId>
-                <artifactId>holon-vaadin-flow-test</artifactId>
-                <version>${project.version}</version>
-            </dependency>
 
             <!-- NOTE: Tenant SaaS framework modules have been moved to holon-saas project.
                  Use com.holon-platform.saas:holon-saas-bom instead. -->

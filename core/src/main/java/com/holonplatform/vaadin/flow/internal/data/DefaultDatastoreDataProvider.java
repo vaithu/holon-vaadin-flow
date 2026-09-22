@@ -1,12 +1,12 @@
 /*
  * Copyright 2016-2018 Axioma srl.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -133,7 +133,7 @@ public class DefaultDatastoreDataProvider<T, F> extends AbstractBackEndDataProvi
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * com.holonplatform.vaadin.flow.data.DatastoreDataProvider#getItemIdentifier()
 	 */
@@ -144,7 +144,7 @@ public class DefaultDatastoreDataProvider<T, F> extends AbstractBackEndDataProvi
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * com.holonplatform.vaadin.flow.data.DatastoreDataProvider#setItemIdentifier(
 	 * java.util.function.Function)
@@ -156,7 +156,7 @@ public class DefaultDatastoreDataProvider<T, F> extends AbstractBackEndDataProvi
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * com.holonplatform.vaadin.flow.data.DatastoreDataProvider#getFilterConverter()
 	 */
@@ -167,7 +167,7 @@ public class DefaultDatastoreDataProvider<T, F> extends AbstractBackEndDataProvi
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * com.holonplatform.vaadin.flow.data.DatastoreDataProvider#setFilterConverter(
 	 * java.util.function.Function)
@@ -180,7 +180,7 @@ public class DefaultDatastoreDataProvider<T, F> extends AbstractBackEndDataProvi
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see com.holonplatform.vaadin.flow.data.DatastoreDataProvider#
 	 * getQueryConfigurationProviders()
 	 */
@@ -191,7 +191,7 @@ public class DefaultDatastoreDataProvider<T, F> extends AbstractBackEndDataProvi
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see com.holonplatform.vaadin.flow.data.DatastoreDataProvider#
 	 * addQueryConfigurationProvider(com.holonplatform.core.
 	 * query.QueryConfigurationProvider)
@@ -204,7 +204,7 @@ public class DefaultDatastoreDataProvider<T, F> extends AbstractBackEndDataProvi
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * com.holonplatform.vaadin.flow.data.DatastoreDataProvider#getDefaultSort()
 	 */
@@ -215,7 +215,7 @@ public class DefaultDatastoreDataProvider<T, F> extends AbstractBackEndDataProvi
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * com.holonplatform.vaadin.flow.data.DatastoreDataProvider#setDefaultSort(com.
 	 * holonplatform.core.query.QuerySort)
@@ -227,7 +227,7 @@ public class DefaultDatastoreDataProvider<T, F> extends AbstractBackEndDataProvi
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see com.holonplatform.vaadin.flow.data.DatastoreDataProvider#
 	 * getQuerySortOrderConverter()
 	 */
@@ -238,7 +238,7 @@ public class DefaultDatastoreDataProvider<T, F> extends AbstractBackEndDataProvi
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see com.holonplatform.vaadin.flow.data.DatastoreDataProvider#
 	 * setQuerySortOrderConverter(java.util.function.Function)
 	 */
@@ -260,7 +260,7 @@ public class DefaultDatastoreDataProvider<T, F> extends AbstractBackEndDataProvi
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see com.vaadin.flow.data.provider.DataProvider#isInMemory()
 	 */
 	@Override
@@ -270,7 +270,7 @@ public class DefaultDatastoreDataProvider<T, F> extends AbstractBackEndDataProvi
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see com.vaadin.flow.data.provider.DataProvider#getId(java.lang.Object)
 	 */
 	@Override
@@ -295,26 +295,36 @@ public class DefaultDatastoreDataProvider<T, F> extends AbstractBackEndDataProvi
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * com.vaadin.flow.data.provider.AbstractBackEndDataProvider#fetchFromBackEnd(
 	 * com.vaadin.flow.data.provider.Query)
 	 */
 	@Override
 	protected Stream<T> fetchFromBackEnd(Query<T, F> query) {
+		final boolean paged = query.getLimit() < Integer.MAX_VALUE;
+
+		// For a paged request beyond the first page the additional items are never part of the
+		// result: only their count is needed, in order to shift the back end query offset.
+		// Avoid invoking the additional items provider, which would hit the Datastore on every
+		// scrolled page and then discard the result.
+		if (paged && query.getOffset() > 0) {
+			final int additionalCount = _countAdditional();
+			if (additionalCount <= 0) {
+				return _fetch(query);
+			}
+			return _fetch(modifyQuery(query, 0, -Math.min(additionalCount, query.getLimit())));
+		}
+
 		final List<T> additional = _fetchAdditional();
 		if (!additional.isEmpty()) {
 			int additionalSize = additional.size();
-			if (query.getLimit() < Integer.MAX_VALUE && additionalSize > query.getLimit()) {
+			if (paged && additionalSize > query.getLimit()) {
 				additionalSize = query.getLimit();
 			}
 			// check page
-			if (query.getLimit() < Integer.MAX_VALUE) {
-				if (query.getOffset() == 0) {
-					return Stream.concat(additional.stream(), _fetch(modifyQuery(query, -additionalSize, 0)));
-				} else {
-					return _fetch(modifyQuery(query, 0, -additionalSize));
-				}
+			if (paged) {
+				return Stream.concat(additional.stream(), _fetch(modifyQuery(query, -additionalSize, 0)));
 			}
 			return Stream.concat(additional.stream(), _fetch(query));
 		}
@@ -330,6 +340,15 @@ public class DefaultDatastoreDataProvider<T, F> extends AbstractBackEndDataProvi
 				.orElse(Collections.emptyList());
 	}
 
+	/**
+	 * Get the additional items count, without fetching the items themselves.
+	 * @return The additional items count, <code>0</code> if no additional items provider is configured
+	 */
+	private int _countAdditional() {
+		return getAdditionalItemsProvider().map(p -> p.getAdditionalItemsCount(datastore, target, propertySet))
+				.orElse(0);
+	}
+
 	private static <QT, QF> Query<QT, QF> modifyQuery(Query<QT, QF> query, int limit, int offset) {
 		return new Query<>(query.getOffset() + offset, query.getLimit() + limit, query.getSortOrders(),
 				query.getInMemorySorting(), query.getFilter().orElse(null));
@@ -337,7 +356,7 @@ public class DefaultDatastoreDataProvider<T, F> extends AbstractBackEndDataProvi
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * com.vaadin.flow.data.provider.AbstractBackEndDataProvider#sizeInBackEnd(com.
 	 * vaadin.flow.data.provider.Query)
@@ -582,7 +601,7 @@ public class DefaultDatastoreDataProvider<T, F> extends AbstractBackEndDataProvi
 
 		/*
 		 * (non-Javadoc)
-		 * 
+		 *
 		 * @see
 		 * com.holonplatform.vaadin.flow.internal.data.DefaultDatastoreDataProvider.
 		 * AbstractBuilder#getBuilder()
@@ -621,7 +640,7 @@ public class DefaultDatastoreDataProvider<T, F> extends AbstractBackEndDataProvi
 
 		/*
 		 * (non-Javadoc)
-		 * 
+		 *
 		 * @see com.holonplatform.vaadin.flow.data.DatastoreDataProvider.
 		 * PropertyBoxItemBuilder#itemIdentifier(com.
 		 * holonplatform.core.property.Property)
@@ -642,7 +661,7 @@ public class DefaultDatastoreDataProvider<T, F> extends AbstractBackEndDataProvi
 
 		/*
 		 * (non-Javadoc)
-		 * 
+		 *
 		 * @see
 		 * com.holonplatform.vaadin.flow.internal.data.DefaultDatastoreDataProvider.
 		 * AbstractBuilder#getBuilder()

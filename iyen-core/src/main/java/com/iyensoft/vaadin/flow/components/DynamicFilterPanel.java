@@ -38,7 +38,6 @@ import com.holonplatform.core.property.PropertyBox;
 import com.holonplatform.core.property.PropertySet;
 import com.holonplatform.core.property.StringProperty;
 import com.holonplatform.core.query.QueryFilter;
-import com.iyensoft.vaadin.flow.components.Components;
 import com.holonplatform.vaadin.flow.components.FilterInput;
 import com.holonplatform.vaadin.flow.components.FilterInputGroup;
 import com.holonplatform.vaadin.flow.components.Input;
@@ -91,7 +90,7 @@ import com.vaadin.flow.function.SerializableSupplier;
  * </p>
  *
  * <h3>Usage with Datastore (QueryFilter path)</h3>
- * 
+ *
  * <pre>{@code
  * DynamicFilterPanel<Product> panel = DynamicFilterPanel.of(Product.class);
  * content(panel);
@@ -106,7 +105,7 @@ import com.vaadin.flow.function.SerializableSupplier;
  * }</pre>
  *
  * <h3>Usage with in-memory data</h3>
- * 
+ *
  * <pre>{@code
  * panel.addFilterChangeListener(e -> {
  *     shown.clear();
@@ -468,7 +467,7 @@ public class DynamicFilterPanel<T> extends Div implements FilterInputGroup {
      *
      * <p>
      * <strong>Usage:</strong>
-     * 
+     *
      * <pre>{@code
      * Dialog dialog = new Dialog();
      * dialog.add(filterPanel);
@@ -519,7 +518,7 @@ public class DynamicFilterPanel<T> extends Div implements FilterInputGroup {
      *
      * <p>
      * Opt-in usage:
-     * 
+     *
      * <pre>{@code
      * DynamicFilterPanel<Product> panel = DynamicFilterPanel.of(Product.class);
      * panel.setAdvancedMode(true);
@@ -569,7 +568,7 @@ public class DynamicFilterPanel<T> extends Div implements FilterInputGroup {
      * <p>
      * Use this for in-memory data or when all options are known upfront:
      * </p>
-     * 
+     *
      * <pre>{@code
      * panel.setItems("team", List.of("Engineering", "Design", "Product"));
      * }</pre>
@@ -595,7 +594,7 @@ public class DynamicFilterPanel<T> extends Div implements FilterInputGroup {
      * <p>
      * Use this for database-backed dropdowns where filtering is done server-side:
      * </p>
-     * 
+     *
      * <pre>{@code
      * panel.setLazyItems("team",
      *         query -> teamService.find(query.getFilter().orElse(""), query.getOffset(), query.getLimit()),
@@ -647,7 +646,7 @@ public class DynamicFilterPanel<T> extends Div implements FilterInputGroup {
      * <p>
      * Use this to show a badge on the button that opens the filter dialog:
      * </p>
-     * 
+     *
      * <pre>{@code
      * panel.addFilterChangeListener(e -> {
      *     int n = panel.getActiveFilterCount();
@@ -695,7 +694,7 @@ public class DynamicFilterPanel<T> extends Div implements FilterInputGroup {
      * the filter, while keeping the dialog open when rows are interactively
      * removed:
      * </p>
-     * 
+     *
      * <pre>{@code
      * panel.addApplyListener(dialog::close);
      * }</pre>
@@ -797,7 +796,7 @@ public class DynamicFilterPanel<T> extends Div implements FilterInputGroup {
      * Useful for in-memory data sources where no Holon {@code Datastore} is
      * involved:
      * </p>
-     * 
+     *
      * <pre>{@code
      * panel.addFilterChangeListener(e -> {
      *     shown.clear();

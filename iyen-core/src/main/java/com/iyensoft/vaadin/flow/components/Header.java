@@ -1,9 +1,7 @@
 package com.iyensoft.vaadin.flow.components;
 
-import com.iyensoft.vaadin.flow.components.Components;
 import com.holonplatform.vaadin.flow.components.builders.LabelBuilder;
 import com.holonplatform.vaadin.flow.internal.lumo.Gap;
-import com.iyensoft.vaadin.flow.components.Layout;
 import com.iyensoft.vaadin.flow.utils.Color;
 import com.iyensoft.vaadin.flow.utils.Font;
 import com.iyensoft.vaadin.flow.enums.HeadingLevel;

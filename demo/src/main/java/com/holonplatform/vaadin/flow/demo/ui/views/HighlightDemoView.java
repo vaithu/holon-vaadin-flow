@@ -92,7 +92,7 @@ public class HighlightDemoView extends Div {
         return new DemoExample("Minimal (heading + value)", preview, """
                 // Via Components façade:
                 Components.highlight("Total Revenue", "$128,430").build();
-                
+
                 // Via static factory on Highlight:
                 Highlight.builder("Active Users", "4,291").build();
                 """);
@@ -125,7 +125,7 @@ public class HighlightDemoView extends Div {
                     .prefix(VaadinIcon.USER.create())
                     .ariaLabel("New Users KPI")   // WAI-ARIA for screen readers
                     .build();
-                
+
                 // Constructor-style prefix shorthand:
                 Highlight.builder("Growth Rate", "+12.5%")
                     .prefix(VaadinIcon.TRENDING_UP.create())
@@ -197,7 +197,7 @@ public class HighlightDemoView extends Div {
         return new DemoExample("With Details", preview, """
                 // details() renders a flex-wrap row of Components below the value.
                 var trend = new Span("↑ 8.1% vs last month");
-                
+
                 Highlight.builder("Total Orders", "1,364")
                     .details(trend, new Span("Avg: $94.30"))
                     .build();
@@ -234,12 +234,12 @@ public class HighlightDemoView extends Div {
         return new DemoExample("KPI Dashboard Grid", grid, """
                 // Components.highlight() is the Components-façade shortcut.
                 // Arrange the cards in a CSS grid for a dashboard row.
-                
+
                 Components.highlight("Revenue", "$284,290")
                     .valueFontSize(Font.Size.XXLARGE)
                     .details(new Span("↑ 12.4%"))
                     .build();
-                
+
                 // .kpi-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:1rem; }
                 """);
     }
@@ -281,9 +281,9 @@ public class HighlightDemoView extends Div {
         return new DemoExample("KPI Stat Cards (value-first + accent + badge)", grid, """
                 // Image 1 pattern: large KPI number on top, heading below,
                 // trend in details, icon-badge suffix, coloured left-border accent.
-                
+
                 var trend = new Span("↑ 3%  from last month");
-                
+
                 Highlight.builder("Downloads", "101.1K")
                     .valueFontSize(Font.Size.XXLARGE)
                     .valueFirst()                              // number above heading
@@ -334,7 +334,7 @@ public class HighlightDemoView extends Div {
         return new DemoExample("Project Cards (card-header + progress bar)", grid, """
                 // Image 2 pattern: card-header row at top (icon left, action right),
                 // title + subtitle body, progress label + Vaadin ProgressBar at footer.
-                
+
                 Highlight.builder("Fresh Start Inc.", "4/10 Tasks")
                     .valueFirst()
                     .accentColor(AccentColor.PURPLE)
@@ -387,9 +387,9 @@ public class HighlightDemoView extends Div {
         return new DemoExample("Financial Cards (accent + inline trend metric)", grid, """
                 // Image 3 pattern: small uppercase heading, large value with
                 // a trend metric inline to its right, subtext in details row.
-                
+
                 var trend = new Span("↗ 24%");
-                
+
                 Highlight.builder("Gross Revenue", "$32,502.00")
                     .valueFontSize(Font.Size.XLARGE)
                     .accentColor(AccentColor.PURPLE)
@@ -442,10 +442,10 @@ public class HighlightDemoView extends Div {
                 // Image 4 pattern: circular avatar prefix, bold company name as heading,
                 // muted secondary line via subheading(), price as value,
                 // arrow icon + percentage as inline metric beside the price.
-                
+
                 Span trend = new Span();
                 trend.add(VaadinIcon.ARROW_UP.create(), new Span("11.01%"));
-                
+
                 Highlight.builder("Apple, Inc", "$1,232.00")
                     .subheading("Apple, Inc")                     // muted secondary line
                     .valueFontSize(Font.Size.XLARGE)
@@ -523,7 +523,7 @@ public class HighlightDemoView extends Div {
                 //
                 // Highlight.SPARKLINE_OPTIONS strips all Chart.js chrome (legend,
                 // axes, grid, tooltips, point dots) leaving only the bare area line.
-                
+
                 var sparkline = ChartJs.builder()
                     .type(ChartType.LINE)
                     .categories("1","2","3","4","5","6","7","8","9","10","11","12")
@@ -537,7 +537,7 @@ public class HighlightDemoView extends Div {
                     .options(Highlight.SPARKLINE_OPTIONS)
                     .height("70px").width("100%")
                     .build();
-                
+
                 Highlight.builder("Total Revenue", "$48,295")
                     .details(new Span("↗ +12.5% vs last month"))
                     .suffix(IconBadge.builder(VaadinIcon.DOLLAR, Alert.Variant.WARNING).build())

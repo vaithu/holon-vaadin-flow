@@ -9,6 +9,7 @@ import com.iyensoft.vaadin.flow.components.KeyValuePair;
 import com.iyensoft.vaadin.flow.components.KeyValuePairs;
 import com.iyensoft.vaadin.flow.components.Layout;
 import com.iyensoft.vaadin.flow.components.Separator;
+import com.iyensoft.vaadin.flow.components.builders.LayoutConfigurator;
 
 /**
  * UI helpers that operate on components owned by this library, kept separate
@@ -31,7 +32,7 @@ public final class LayoutUtils {
     }
 
     public static void handleNoRecordsFound(Layout container) {
-        Components.configure(container)
+        LayoutConfigurator.configure(container)
                 .fullSize()
                 .add(UIUtils.createNoRecordsFoundImage());
     }

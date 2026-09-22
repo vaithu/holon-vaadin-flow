@@ -151,12 +151,17 @@ public class EntityCreationForm extends Div {
 
         this.mainCol = new Div();
         mainCol.addClassName("ecf__main");
-        Div body = new Div(mainCol);
-        body.addClassName("ecf__body");
 
         this.actionBar = new StickyActionBar();
 
-        add(pageHead, body, actionBar);
+        // mainCol is added directly to the root: it used to sit inside an extra
+        // ".ecf__body" Div whose only child it was. That wrapper contributed nothing
+        // but a bottom padding (its flex "gap" was inert with a single child), so it
+        // cost one server-side Component, one state node and one more DOM level for
+        // the browser to lay out. The padding now lives on .ecf__main itself, which
+        // also fixes the legacy externally-assembled path below, where the wrapper
+        // was never created and the sticky-bar space was therefore never reserved.
+        add(pageHead, mainCol, actionBar);
     }
 
     // ── Constructor (package-private) ─────────────────────────────────────

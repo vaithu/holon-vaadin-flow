@@ -156,6 +156,30 @@ public class DefaultBeanListing<T> extends AbstractItemListing<T, String> implem
         return virtualColumnProperties;
     }
 
+    /**
+     * PERFORMANCE WARNING: ComponentRenderer creates one Java component instance per row.
+     * For large grids, this causes significant server-side memory overhead and slower rendering.
+     *
+     * <p><b>Recommendation:</b> Consider alternatives for better performance:
+     * <ul>
+     *   <li><b>Simple text/HTML:</b> Use {@code grid.addColumn(renderer)} with text values
+     *   <li><b>Status badges/icons:</b> Use {@code LitRenderer} for client-side HTML templates
+     *   <li><b>Conditional rendering:</b> Use {@code LitRenderer} with template expressions
+     *   <li><b>Complex layouts:</b> Only use ComponentRenderer if absolutely required
+     * </ul>
+     *
+     * <p><b>LitRenderer example for badges:</b>
+     * <pre>{@code
+     * grid.addColumn(LitRenderer.<Product>of(
+     *     "<span theme='badge ${item.theme}'>${item.status}</span>"
+     * ).withProperty("status", Product::getStatus)
+     *  .withProperty("theme", p -> p.getStatus().equals("ACTIVE") ? "success" : "error"));
+     * }</pre>
+     *
+     * @param valueProvider the provider that creates a component for each row item
+     * @return the Grid column (frozen to end position)
+     * @see com.vaadin.flow.data.renderer.LitRenderer
+     */
     @Override
     public <V extends Component> Column<T> addComponentColumn(ValueProvider<T, V> valueProvider) {
         ObjectUtils.argumentNotNull(valueProvider, "ValueProvider must be not null");
@@ -220,22 +244,6 @@ public class DefaultBeanListing<T> extends AbstractItemListing<T, String> implem
     @Override
     protected Optional<String> getSortPropertyName(String property) {
         return Optional.of(property);
-    }
-
-    /*
-     * (non-Javadoc)
-     * @see com.holonplatform.vaadin.flow.internal.components.AbstractItemListing#
-     * getDefaultColumnHeader(java.lang.Object)
-     */
-    @Override
-    protected Optional<Localizable> getDefaultColumnHeader(String property) {
-        return propertySet.getProperty(property).map(p -> {
-            if (p.getMessage() != null || p.getMessageCode() != null) {
-                return Localizable.builder().message((p.getMessage() != null) ? p.getMessage() : p.getName())
-                        .messageCode(p.getMessageCode()).build();
-            }
-            return Localizable.of(p.getName());
-        });
     }
 
     /*
@@ -310,6 +318,26 @@ public class DefaultBeanListing<T> extends AbstractItemListing<T, String> implem
     @Override
     protected void refreshVirtualProperties() {
         // noop
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see com.holonplatform.vaadin.flow.internal.components.AbstractItemListing#
+     * getDefaultColumnHeader(java.lang.Object)
+     */
+    @Override
+    protected Optional<Localizable> getDefaultColumnHeader(String property) {
+        return propertySet.getProperty(property).flatMap(p -> {
+            if (p.getMessage() != null || p.getMessageCode() != null) {
+                return Optional.of(Localizable.builder()
+                        .message((p.getMessage() != null) ? p.getMessage() : p.getName())
+                        .messageCode(p.getMessageCode()).build());
+            }
+            if (p.getName() != null) {
+                return Optional.of(Localizable.of(p.getName()));
+            }
+            return Optional.<Localizable>empty();
+        });
     }
 
 
@@ -819,6 +847,12 @@ public class DefaultBeanListing<T> extends AbstractItemListing<T, String> implem
             return this;
         }
 
+        @Override
+        public DatastoreBeanListingBuilder<T> visibleColumns(List<? extends String> visibleColumns) {
+            builder.visibleColumns(visibleColumns);
+            return this;
+        }
+
         /*
          * (non-Javadoc)
          * @see com.holonplatform.vaadin.flow.components.builders.ItemListingConfigurator#
@@ -914,17 +948,6 @@ public class DefaultBeanListing<T> extends AbstractItemListing<T, String> implem
         @Override
         public DatastoreBeanListingBuilder<T> displayAfter(String property, String afterProperty) {
             builder.displayAfter(property, afterProperty);
-            return this;
-        }
-
-        /*
-         * (non-Javadoc)
-         * @see com.holonplatform.vaadin.flow.components.builders.ItemListingConfigurator#
-         * visibleColumns(java.util.List)
-         */
-        @Override
-        public DatastoreBeanListingBuilder<T> visibleColumns(List<? extends String> visibleColumns) {
-            builder.visibleColumns(visibleColumns);
             return this;
         }
 

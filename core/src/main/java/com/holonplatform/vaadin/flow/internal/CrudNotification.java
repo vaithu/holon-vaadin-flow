@@ -2,7 +2,7 @@ package com.holonplatform.vaadin.flow.internal;
 
 import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.vaadin.flow.Operation;
-import com.holonplatform.vaadin.flow.components.Components;
+import com.holonplatform.vaadin.flow.components.builders.NotificationBuilder;
 
 public class CrudNotification {
     public static void insertNotification(Operation operation) {
@@ -22,7 +22,7 @@ public class CrudNotification {
     }
 
     static void failureNotification(String message, String messageCode) {
-        Components.notification()
+        NotificationBuilder.create()
                 .error()
                 .autoClose(false)
                 .text(Localizable.of(message,messageCode))
@@ -30,7 +30,7 @@ public class CrudNotification {
     }
 
     static void successNotification(String message, String messageCode) {
-        Components.notification()
+        NotificationBuilder.create()
                 .success()
                 .autoClose()
                 .text(Localizable.of(message,messageCode))

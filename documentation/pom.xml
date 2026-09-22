@@ -76,8 +76,8 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>com.holon-platform.vaadin</groupId>
-			<artifactId>holon-vaadin-flow</artifactId>
+			<groupId>com.iyensoft.vaadin</groupId>
+			<artifactId>iyen-core</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>com.holon-platform.vaadin</groupId>

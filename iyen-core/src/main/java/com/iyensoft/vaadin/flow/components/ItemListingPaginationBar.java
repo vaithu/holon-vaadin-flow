@@ -22,6 +22,7 @@ import com.holonplatform.core.internal.utils.ObjectUtils;
 import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
 import com.iyensoft.vaadin.flow.components.*;
 import com.vaadin.flow.component.AttachEvent;
+import com.vaadin.flow.component.DetachEvent;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.data.provider.DataProvider;
 import com.vaadin.flow.data.provider.Query;
@@ -198,6 +199,11 @@ public class ItemListingPaginationBar<T, P> extends Pagination {
     @Override
     protected void onAttach(AttachEvent attachEvent) {
         super.onAttach(attachEvent);
+        // Re-establish the data provider binding, which is dropped on detach (see onDetach).
+        // This is done explicitly rather than being left to refreshState() below, because in
+        // managed mode that call is skipped — the binding would then be lost for good after
+        // a detach/re-attach cycle.
+        ensureDataProviderAutoRefreshBinding();
         // the look-ahead fetch will update hasNextPage → setHasNextPage() → re-render.
         // Skip refreshState() to avoid a spurious COUNT(*) against the data provider's
         // count callback (which in managed mode just returns currentPageSz, giving totalPages=1).
@@ -207,6 +213,17 @@ public class ItemListingPaginationBar<T, P> extends Pagination {
         // Managed mode: render initial skeleton with hasNextPage=true (optimistic),
         // the look-ahead fetch will correct it immediately.
         renderPages();
+    }
+
+    @Override
+    protected void onDetach(DetachEvent detachEvent) {
+        // The data provider is owned by the listing and can outlive this bar. Leaving the
+        // listener registered would keep the detached bar (and everything it captures)
+        // reachable, and would run refreshState() — a size() COUNT query plus a full
+        // re-render — on every data change for a component nobody can see.
+        // onAttach() re-binds, so this is symmetric rather than one-way teardown.
+        removeDataProviderRegistration();
+        super.onDetach(detachEvent);
     }
     // -----------------------------------------------------------------------
     // Navigation

@@ -1,7 +1,7 @@
 package com.iyensoft.vaadin.flow.components;
 
 import java.io.Serial;
-import com.iyensoft.vaadin.flow.components.Components;
+
 import com.iyensoft.vaadin.flow.components.builders.TransferListBuilder;
 import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
 import com.vaadin.flow.component.ComponentEvent;
@@ -87,6 +87,15 @@ public class TransferList extends Div {
     private final Span selectedCountSpan;
     private final Span availableTitleSpan;
     private final Span selectedTitleSpan;
+
+    /**
+     * Row lookup by item id, rebuilt on every full render. Lets a single
+     * highlight toggle patch just the affected row instead of tearing down
+     * and re-creating every row in the panel (see {@link #toggleAvailableHighlight}
+     * / {@link #toggleSelectedHighlight}).
+     */
+    private final Map<String, Div> availableRowIndex = new LinkedHashMap<>();
+    private final Map<String, Div> selectedRowIndex = new LinkedHashMap<>();
 
     private final Button moveRightBtn;
     private final Button moveAllRightBtn;
@@ -346,26 +355,34 @@ public class TransferList extends Div {
 
     private void renderAvailableList() {
         availableListDiv.removeAll();
+        availableRowIndex.clear();
         if (availableItems.isEmpty()) {
             availableListDiv.add(Components.span()
                     .text(LocalizationProvider.localize("No items available", "transfer_list.empty_available"))
                     .styleName("transfer-list__empty").build());
         } else {
-            availableItems.forEach(item -> availableListDiv.add(
-                    buildItemRow(item, highlightedAvailable, id -> toggleAvailableHighlight(id))));
+            availableItems.forEach(item -> {
+                Div row = buildItemRow(item, highlightedAvailable, id -> toggleAvailableHighlight(id));
+                availableRowIndex.put(item.id(), row);
+                availableListDiv.add(row);
+            });
         }
         updateMoveButtonStates();
     }
 
     private void renderSelectedList() {
         selectedListDiv.removeAll();
+        selectedRowIndex.clear();
         if (selectedItems.isEmpty()) {
             selectedListDiv.add(Components.span()
                     .text(LocalizationProvider.localize("No items selected", "transfer_list.empty_selected"))
                     .styleName("transfer-list__empty").build());
         } else {
-            selectedItems.forEach(item -> selectedListDiv.add(
-                    buildItemRow(item, highlightedSelected, id -> toggleSelectedHighlight(id))));
+            selectedItems.forEach(item -> {
+                Div row = buildItemRow(item, highlightedSelected, id -> toggleSelectedHighlight(id));
+                selectedRowIndex.put(item.id(), row);
+                selectedListDiv.add(row);
+            });
         }
         updateMoveButtonStates();
     }
@@ -403,14 +420,37 @@ public class TransferList extends Div {
 
     // €€ Highlight toggles €€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€
 
+    /**
+     * PERFORMANCE: rather than tearing down and rebuilding every row in the
+     * panel (previously {@code renderAvailableList()}, an O(n) DOM rebuild
+     * for a single click), only the affected row's highlight class and
+     * checkmark icon are patched. See Vaadin's "Optimizing sluggish UI"
+     * guidance: render as few components as possible per interaction.
+     */
     private void toggleAvailableHighlight(String id) {
         toggle(highlightedAvailable, id);
-        renderAvailableList();
+        applyHighlight(availableRowIndex.get(id), highlightedAvailable.contains(id));
+        updateMoveButtonStates();
     }
 
     private void toggleSelectedHighlight(String id) {
         toggle(highlightedSelected, id);
-        renderSelectedList();
+        applyHighlight(selectedRowIndex.get(id), highlightedSelected.contains(id));
+        updateMoveButtonStates();
+    }
+
+    /** Patches a single row's highlighted class + checkmark icon in place. */
+    private static void applyHighlight(Div row, boolean highlighted) {
+        if (row == null) {
+            return;
+        }
+        row.setClassName("transfer-list__item--highlighted", highlighted);
+        row.getChildren().findFirst().ifPresent(checkBox -> {
+            checkBox.getElement().removeAllChildren();
+            if (highlighted) {
+                checkBox.getElement().appendChild(VaadinIcon.CHECK.create().getElement());
+            }
+        });
     }
 
     private static void toggle(Set<String> set, String id) {

@@ -49,14 +49,14 @@ class TestSelectionController {
     @Test
     void initialState_selectionIsEmpty() {
         assertTrue(sut.peek().isEmpty(),
-                "Selection must be empty before any set() call");
+                   "Selection must be empty before any set() call");
     }
 
     @Test
     void initialState_readIsEmpty() {
         // read() requires a reactive context; use Signal.untracked to call safely in unit tests.
         assertTrue(com.vaadin.flow.signals.Signal.untracked(sut::read).isEmpty(),
-                "read() must return empty Optional initially");
+                   "read() must return empty Optional initially");
     }
 
     // ── 2. set / peek ─────────────────────────────────────────────────────────
@@ -67,7 +67,7 @@ class TestSelectionController {
         sut.set(Optional.of(p));
 
         assertEquals(Optional.of(p), sut.peek(),
-                "peek() must return the item just set");
+                     "peek() must return the item just set");
     }
 
     @Test
@@ -79,7 +79,7 @@ class TestSelectionController {
         sut.set(Optional.of(b));
 
         assertEquals(Optional.of(b), sut.peek(),
-                "peek() must return the most-recently set item");
+                     "peek() must return the most-recently set item");
     }
 
     @Test
@@ -88,7 +88,7 @@ class TestSelectionController {
         sut.set(Optional.empty());
 
         assertTrue(sut.peek().isEmpty(),
-                "peek() must return empty after setting Optional.empty()");
+                   "peek() must return empty after setting Optional.empty()");
     }
 
     // ── 3. read ───────────────────────────────────────────────────────────────
@@ -100,8 +100,8 @@ class TestSelectionController {
 
         // read() requires a reactive context — wrap with Signal.untracked in tests.
         assertEquals(Optional.of(p),
-                com.vaadin.flow.signals.Signal.untracked(sut::read),
-                "read() must return the current selection");
+                     com.vaadin.flow.signals.Signal.untracked(sut::read),
+                     "read() must return the current selection");
     }
 
     // ── 4. clear ──────────────────────────────────────────────────────────────
@@ -112,7 +112,7 @@ class TestSelectionController {
         sut.clear();
 
         assertTrue(sut.peek().isEmpty(),
-                "clear() must reset the selection to empty");
+                   "clear() must reset the selection to empty");
     }
 
     @Test
@@ -127,7 +127,7 @@ class TestSelectionController {
     @Test
     void selectionSignal_isNotNull() {
         assertNotNull(sut.selectionSignal(),
-                "selectionSignal() must never return null");
+                      "selectionSignal() must never return null");
     }
 
     @Test
@@ -136,7 +136,7 @@ class TestSelectionController {
         sut.set(Optional.of(p));
 
         assertEquals(sut.peek(), sut.selectionSignal().peek(),
-                "selectionSignal().peek() must equal controller.peek()");
+                     "selectionSignal().peek() must equal controller.peek()");
     }
 
     // ── 6. notifyDataChanged — fires listeners ────────────────────────────────
@@ -189,7 +189,7 @@ class TestSelectionController {
         sut.notifyDataChanged();
 
         assertTrue(log.isEmpty(),
-                "Removed listener must NOT fire after its removal handle is run");
+                   "Removed listener must NOT fire after its removal handle is run");
     }
 
     @Test
@@ -203,7 +203,7 @@ class TestSelectionController {
         sut.notifyDataChanged();
 
         assertEquals(List.of("stable"), log,
-                "Only the removed listener should be absent");
+                     "Only the removed listener should be absent");
     }
 
     // ── 8. Listener throws — others still fire ────────────────────────────────
@@ -220,7 +220,7 @@ class TestSelectionController {
         sut.notifyDataChanged();
 
         assertEquals(List.of("after-throw"), log,
-                "A throwing listener must not prevent subsequent listeners from firing");
+                     "A throwing listener must not prevent subsequent listeners from firing");
     }
 
     // ── 9. Interaction: set then notifyDataChanged ────────────────────────────
@@ -236,9 +236,8 @@ class TestSelectionController {
 
         assertEquals(1, snapshots.size());
         assertEquals(Optional.of(p), snapshots.getFirst(),
-                "Listener should see the currently set item via peek()");
+                     "Listener should see the currently set item via peek()");
     }
 }
-
 
 

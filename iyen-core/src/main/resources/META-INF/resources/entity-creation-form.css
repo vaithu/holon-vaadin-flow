@@ -30,20 +30,16 @@
 
 /* ── Header actions — handled by Header component ─────── */
 
-/* ── Body — single column (no side grid) ───────────────── */
-.ecf__body {
-  display: flex;
-  flex-direction: column;
-  gap: var(--lumo-space-m);
-  padding-bottom: 88px; /* reserve space for sticky action bar */
-}
-
-/* ── Main column ───────────────────────────────────────── */
+/* ── Main column ───────────────────────────────────────────
+   Sits directly inside .ecf — there is deliberately no extra
+   "body" wrapper element: it would only have carried the
+   padding below, at the cost of one more DOM level to lay out. */
 .ecf__main {
   display: flex;
   flex-direction: column;
   gap: var(--lumo-space-m);
   width: 100%;
+  padding-bottom: 88px; /* reserve space for sticky action bar */
 }
 
 /* ── Draft badge variants (data-badge-variant attribute) ── */

@@ -2,13 +2,13 @@ package com.holonplatform.vaadin.flow.internal;
 
 import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.vaadin.flow.Operation;
-import com.holonplatform.vaadin.flow.components.Components;
+import com.holonplatform.vaadin.flow.components.builders.DialogBuilder;
 
 
 public class CrudDialogs {
 
     public static void deleteDialog(Operation deleteOperation) {
-        Components.dialog.delete(confirmSelected -> {
+        DialogBuilder.delete(confirmSelected -> {
 
                     if (confirmSelected) {
                         deleteOperation.execute(aBoolean -> {

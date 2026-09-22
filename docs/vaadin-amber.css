@@ -1,0 +1,42 @@
+/* Vaadin AppLayout theme: amber */
+:root {
+  --vaadin-app-brand: #b54708;
+  --vaadin-app-nav-active: #fff3e0;
+  --vaadin-app-nav-active-text: #8a2f00;
+}
+
+.vaadin-app-layout .app-navbar {
+  background: #ffffff;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.vaadin-app-layout .app-logo {
+  background: var(--vaadin-app-brand);
+  color: #ffffff;
+}
+
+.vaadin-app-layout .app-search {
+  background: #f3f5f7;
+  border: 1px solid #e1e5e9;
+}
+
+.vaadin-app-layout .side-nav .nav-item.active {
+  background: var(--vaadin-app-nav-active);
+  color: var(--vaadin-app-nav-active-text);
+}
+
+.vaadin-app-layout .drawer-toggle:hover,
+.vaadin-app-layout .navbar-action:hover {
+  background: #f1f3f5;
+}
+
+.vaadin-app-layout .avatar {
+  background: color-mix(in srgb, var(--vaadin-app-brand) 15%, #ffffff);
+}
+
+@media (max-width: 900px) {
+  .vaadin-app-layout .side-nav {
+    /* Responsive drawer behavior */
+    width: 245px;
+  }
+}

@@ -1,7 +1,6 @@
 package com.iyensoft.vaadin.flow.components;
 
 import com.holonplatform.core.i18n.Localizable;
-import com.iyensoft.vaadin.flow.components.Components;
 import com.holonplatform.vaadin.flow.components.HasComponent;
 import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
 import com.iyensoft.vaadin.flow.components.ItemLineEditor.Column;

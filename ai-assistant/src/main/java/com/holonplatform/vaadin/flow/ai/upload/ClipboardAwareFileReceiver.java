@@ -80,6 +80,19 @@ public class ClipboardAwareFileReceiver extends Component implements AIFileRecei
         }
     }
 
+    @Override
+    protected void onDetach(com.vaadin.flow.component.DetachEvent detachEvent) {
+        // PERFORMANCE FIX: Remove paste event listener to prevent memory leaks.
+        // Without this cleanup, the listener would persist in the document even after
+        // this component is removed from the UI, causing memory accumulation and duplicate
+        // event handling if the component is re-attached.
+        if (pasteListenerRegistered) {
+            unregisterPasteListener();
+            pasteListenerRegistered = false;
+        }
+        super.onDetach(detachEvent);
+    }
+
     private void registerPasteListener() {
         // Listens for paste anywhere in the document while this component is attached; images
         // found in the clipboard data are base64-encoded client-side and handed to the
@@ -104,6 +117,18 @@ public class ClipboardAwareFileReceiver extends Component implements AIFileRecei
                 };
                 document.addEventListener('paste', listener);
                 this._aiClipboardPasteListener = listener;
+                """);
+    }
+
+    private void unregisterPasteListener() {
+        // PERFORMANCE: Remove the paste listener from the document to prevent memory leaks.
+        // This is critical because the listener was registered on the global document object,
+        // not on the component's element, so it persists even after component detachment.
+        getElement().executeJs("""
+                if (this._aiClipboardPasteListener) {
+                    document.removeEventListener('paste', this._aiClipboardPasteListener);
+                    this._aiClipboardPasteListener = null;
+                }
                 """);
     }
 

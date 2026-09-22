@@ -20,7 +20,7 @@ import com.holonplatform.vaadin.flow.components.utils.UIUtils;
 import java.io.Serial;
 import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.core.internal.utils.ObjectUtils;
-import com.holonplatform.vaadin.flow.components.Components;
+import com.holonplatform.vaadin.flow.components.builders.ButtonBuilder;
 import com.holonplatform.vaadin.flow.components.builders.DialogConfigurator;
 import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
 import com.vaadin.flow.component.AttachEvent;
@@ -127,7 +127,7 @@ public class DefaultDialog extends Dialog {
         // Close button  lives at the dialog root (NOT in the header slot) so it does not
         // affect the title/description layout. Absolutely positioned via CSS at top-right
         // of the overlay, mirroring the shadcn/ui DialogClose pattern.
-        this.closeButton = Components.button()
+        this.closeButton = ButtonBuilder.create()
                 .icon(VaadinIcon.CLOSE_SMALL)
                 .styleName("h-dialog__close-btn")
                 .ariaLabel(LocalizationProvider.localize("Close", "dialog.close_aria"))

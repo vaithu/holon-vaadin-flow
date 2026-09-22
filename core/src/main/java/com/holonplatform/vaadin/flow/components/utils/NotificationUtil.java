@@ -1,6 +1,7 @@
 package com.holonplatform.vaadin.flow.components.utils;
 
-import com.holonplatform.vaadin.flow.components.Components;
+import com.holonplatform.vaadin.flow.components.builders.ButtonBuilder;
+import com.holonplatform.vaadin.flow.components.builders.NotificationBuilder;
 import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.button.Button;
@@ -21,7 +22,7 @@ public final class NotificationUtil {
     private NotificationUtil() {}
 
     public static void notificationError(String msg) {
-        Notification notification = Components.notification()
+        Notification notification = NotificationBuilder.create()
                 .withThemeVariants(NotificationVariant.LUMO_ERROR)
                 .duration(3000)
                 .topEnd()
@@ -31,7 +32,7 @@ public final class NotificationUtil {
     }
 
     public static void notificationSuccess(String msg) {
-        Notification notification = Components.notification()
+        Notification notification = NotificationBuilder.create()
                 .withThemeVariants(NotificationVariant.LUMO_SUCCESS)
                 .duration(3000)
                 .topEnd()
@@ -41,7 +42,7 @@ public final class NotificationUtil {
     }
 
     public static void notificationWarning(String msg) {
-        Notification notification = Components.notification()
+        Notification notification = NotificationBuilder.create()
                 .duration(3000)
                 .topEnd()
                 .build();
@@ -51,16 +52,14 @@ public final class NotificationUtil {
 
     private static void addContentAndOpen(Notification notification, String msg) {
         Icon icon = VaadinIcon.CHECK_CIRCLE.create();
-        Button closeButton = Components.button()
+        Button closeButton = ButtonBuilder.create()
                 .icon("lumo", "cross")
                 .styleName("notification__close-btn")
                 .withClickListener(e -> notification.close())
                 .build();
 
-        HorizontalLayout layout = Components.hl()
-                .add(icon, new Text(msg), closeButton)
-                .alignItems(FlexComponent.Alignment.CENTER)
-                .build();
+        HorizontalLayout layout = new HorizontalLayout(icon, new Text(msg), closeButton);
+        layout.setAlignItems(FlexComponent.Alignment.CENTER);
 
         notification.add(layout);
         notification.open();

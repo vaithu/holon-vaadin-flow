@@ -149,6 +149,8 @@ class TestItemListingPaginationBarLazy {
         @Override public void scrollToIndex(int i)                      { /* no-op in unit tests */ }
         @Override public void scrollToStart()                           { /* no-op */ }
         @Override public void scrollToEnd()                             { /* no-op */ }
+        @Override public void setItemIndexProvider(com.vaadin.flow.data.provider.ItemIndexProvider p) { /* no-op */ }
+        @Override public void scrollToItem(String i)                   { /* no-op */ }
         @Override public com.holonplatform.vaadin.flow.components.Selectable.SelectionMode getSelectionMode() { throw new UnsupportedOperationException(); }
         @Override public java.util.Set<String> getSelectedItems()      { throw new UnsupportedOperationException(); }
         @Override public java.util.Optional<String> getFirstSelectedItem() { throw new UnsupportedOperationException(); }

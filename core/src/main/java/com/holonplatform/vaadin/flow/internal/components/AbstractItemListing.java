@@ -1589,6 +1589,39 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
     /*
      * (non-Javadoc)
      *
+     * @see
+     * com.holonplatform.vaadin.flow.components.ItemListing#setItemIndexProvider(
+     * com.vaadin.flow.data.provider.ItemIndexProvider)
+     */
+    @Override
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    public void setItemIndexProvider(ItemIndexProvider itemIndexProvider) {
+        ObjectUtils.argumentNotNull(itemIndexProvider, "The item index provider must be not null");
+        // Only meaningful for a lazy (backend-paged) data view: getLazyDataView()
+        // throws IllegalStateException if the grid is currently bound to an
+        // in-memory / generic data provider instead.
+        getGrid().getLazyDataView().setItemIndexProvider(itemIndexProvider);
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see
+     * com.holonplatform.vaadin.flow.components.ItemListing#scrollToItem(java.lang.
+     * Object)
+     */
+    @Override
+    public void scrollToItem(T item) {
+        ObjectUtils.argumentNotNull(item, "Item must be not null");
+        // Delegates to Grid#scrollToItem(Object), which resolves the item's row
+        // index via the data view (using the ItemIndexProvider registered with
+        // setItemIndexProvider(ItemIndexProvider) when the grid is lazy-loaded).
+        getGrid().scrollToItem(item);
+    }
+
+    /*
+     * (non-Javadoc)
+     *
      * @see com.holonplatform.vaadin.flow.components.ItemListing#isFrozen()
      */
     @Override
@@ -1813,8 +1846,13 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
             addAndRegisterSelectionListener(selectionListener);
         }
         return () -> {
+            // Remove the listener from the listener set too: otherwise it would be retained for the
+            // whole listing lifetime (together with everything it captures) and, worse, it would be
+            // registered again by any subsequent setupSelectionListeners() call, for example when the
+            // selection mode changes, resurrecting a listener the caller already removed.
+            this.selectionListeners.remove(selectionListener);
             final com.vaadin.flow.shared.Registration registration = this.selectionListenerRegistrations
-                    .get(selectionListener);
+                    .remove(selectionListener);
             if (registration != null) {
                 registration.remove();
             }

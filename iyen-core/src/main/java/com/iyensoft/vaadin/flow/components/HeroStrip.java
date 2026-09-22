@@ -619,7 +619,10 @@ public class HeroStrip extends Div {
 
         Div nameDiv = new Div();
         nameDiv.addClassName("hstrip__name");
-        nameDiv.add(new Span(header.name() != null ? header.name() : ""));
+        // setText() first, then add(): it replaces all children, so the decorative star
+        // must be appended afterwards. Holding the name as text rather than in a
+        // class-less Span matches metaDiv/ribbon below and saves an element per strip.
+        nameDiv.setText(header.name() != null ? header.name() : "");
         if (header.starred()) {
             Span star = new Span("★");
             star.addClassName("hstrip__name-star");
@@ -696,14 +699,16 @@ public class HeroStrip extends Div {
         // Label row (optionally with pulse dot)
         Div labelDiv = new Div();
         labelDiv.addClassName("hstrip__label");
+        // setText() first (it clears children), then prepend the dot. .hstrip__label is a
+        // flex row, so the text is an anonymous flex item and still gets the 6px gap.
+        labelDiv.setText(cell.header() != null ? cell.header() : "");
         if (cell.pulse()) {
             Span dot = new Span();
             dot.addClassName("hstrip__pulse");
             // A11Y: the pulsing dot is a decorative animation; hide from AT
             dot.getElement().setAttribute("aria-hidden", "true");
-            labelDiv.add(dot);
+            labelDiv.addComponentAsFirst(dot);
         }
-        labelDiv.add(new Span(cell.header() != null ? cell.header() : ""));
         contentDiv.add(labelDiv);
 
         // Value (large mono)
@@ -717,8 +722,9 @@ public class HeroStrip extends Div {
 
         // Render value + optional inline footer
         if (cell.icon() != null && cell.footer() != null && !cell.footer().isBlank()) {
-            // Icon mode: render footer inline as <small>
-            valueDiv.add(new Span(cell.content() != null ? cell.content() : ""));
+            // Icon mode: render footer inline as <small>.
+            // setText() before add(), matching the no-icon branch below.
+            valueDiv.setText(cell.content() != null ? cell.content() : "");
             Span smallFooter = new Span(" " + cell.footer());
             smallFooter.addClassName("hstrip__value-small");
             valueDiv.add(smallFooter);

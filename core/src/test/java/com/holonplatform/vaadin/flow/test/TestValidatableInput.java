@@ -1,12 +1,12 @@
 /*
  * Copyright 2016-2018 Axioma srl.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -20,6 +20,7 @@ import com.holonplatform.core.Validator.ValidationException;
 import com.holonplatform.vaadin.flow.components.*;
 import com.holonplatform.vaadin.flow.components.ValidationStatusHandler.Status;
 import com.holonplatform.vaadin.flow.components.ValidationStatusHandler.ValidationStatusEvent;
+import com.holonplatform.vaadin.flow.components.builders.LabelBuilder;
 import com.vaadin.flow.component.HasValidation;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.textfield.TextField;
@@ -240,7 +241,7 @@ public class TestValidatableInput {
 	@Test
 	public void testLabelValidationStatusHandler() {
 
-		final Div label = Components.label().build();
+		final Div label = LabelBuilder.div().build();
 
 		ValidatableInput<String> input = Input.string().validatable().withValidator(Validator.max(2))
 				.validationStatusHandler(ValidationStatusHandler.label(label)).build();
@@ -255,7 +256,7 @@ public class TestValidatableInput {
 		input.clear();
 		assertFalse(label.isVisible());
 
-		final Div label2 = Components.label().build();
+		final Div label2 = LabelBuilder.div().build();
 
 		input = Input.string().validatable().withValidator(Validator.max(2))
 				.validationStatusHandler(ValidationStatusHandler.label(label2, false)).build();

@@ -28,10 +28,7 @@ import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.grid.ItemClickEvent;
 import com.vaadin.flow.component.grid.dataview.GridLazyDataView;
 import com.vaadin.flow.component.grid.editor.Editor;
-import com.vaadin.flow.data.provider.BackEndDataProvider;
-import com.vaadin.flow.data.provider.CallbackDataProvider;
-import com.vaadin.flow.data.provider.DataProvider;
-import com.vaadin.flow.data.provider.QuerySortOrder;
+import com.vaadin.flow.data.provider.*;
 import com.vaadin.flow.data.renderer.Renderer;
 import com.vaadin.flow.function.SerializableFunction;
 import com.vaadin.flow.function.ValueProvider;
@@ -545,6 +542,10 @@ public interface ItemListing<T, P> extends ItemSet, Selectable<T>, HasComponent 
      * @since 5.4.0
      */
     void scrollToEnd();
+
+    void setItemIndexProvider(ItemIndexProvider itemIndexProvider);
+
+    void scrollToItem(T item);
 
     // ------- listing sections handlers
 

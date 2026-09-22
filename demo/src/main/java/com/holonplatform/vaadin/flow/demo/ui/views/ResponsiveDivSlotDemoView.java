@@ -14,6 +14,7 @@ import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
+import com.vaadin.flow.data.renderer.LitRenderer;
 import java.util.List;
 
 /**
@@ -126,7 +127,24 @@ public class ResponsiveDivSlotDemoView extends Div {
         grid.addColumn(Product::name).setHeader("Name").setFlexGrow(2);
         grid.addColumn(Product::category).setHeader("Category").setFlexGrow(1);
         grid.addColumn(p -> String.format("$%.2f", p.price())).setHeader("Price").setFlexGrow(1);
-        grid.addComponentColumn(p -> statusBadge(p.status())).setHeader("Status").setFlexGrow(1);
+
+        // PERFORMANCE FIX: Use LitRenderer instead of addComponentColumn for status badge
+        // ComponentRenderer creates one Tag component per row (heavy); LitRenderer renders HTML
+        // client-side with zero server-side components per row.
+        grid.addColumn(LitRenderer.<Product>of(
+                "<span theme='badge ${item.theme}'>${item.status}</span>"
+        ).withProperty("status", Product::status)
+         .withProperty("theme", p -> {
+             return switch (p.status()) {
+                 case "In Stock" -> "success";
+                 case "Low Stock" -> "warning";
+                 case "Out of Stock", "Shipped" -> "neutral";
+                 case "Processing" -> "info";
+                 case "Delivered" -> "success";
+                 default -> "neutral";
+             };
+         })).setHeader("Status").setFlexGrow(1);
+
         grid.setItems(PRODUCTS);
         grid.setAllRowsVisible(true);
         grid.addClassName("product-grid");
