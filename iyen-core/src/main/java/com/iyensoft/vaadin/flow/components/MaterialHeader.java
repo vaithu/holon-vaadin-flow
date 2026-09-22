@@ -1,6 +1,5 @@
 package com.iyensoft.vaadin.flow.components;
 
-import com.iyensoft.vaadin.flow.components.Components;
 import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasTheme;
@@ -321,7 +320,7 @@ public class MaterialHeader extends Div implements HasTheme {
     }
 
     private void ensureContentMounted() {
-        if ((headlineSlot.getComponentCount() > 0 || bodySlot.getComponentCount() > 0) 
+        if ((headlineSlot.getComponentCount() > 0 || bodySlot.getComponentCount() > 0)
                 && contentSlot.getParent().isEmpty()) {
             int index = 0;
             if (breadcrumbSlot.getParent().isPresent()) index++;

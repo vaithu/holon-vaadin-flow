@@ -1,12 +1,12 @@
 /*
  * Copyright 2016-2018 Axioma srl.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -458,7 +458,7 @@ public class TestPropertyInputGroup {
 
 	@Test
 	public void testValidators() {
-		
+
 		final UI ui = new UI();
 		ui.setLocale(Locale.US);
 		CurrentInstance.set(UI.class, ui);
@@ -492,7 +492,7 @@ public class TestPropertyInputGroup {
 		assertTrue(group4.isValid());
 		group4.setValue(PropertyBox.builder(SET).set(ID, 0L).set(NAME, "abc").build());
 		assertFalse(group4.isValid());
-		
+
 		CurrentInstance.set(UI.class, null);
 
 	}

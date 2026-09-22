@@ -15,12 +15,9 @@
  */
 package com.iyensoft.vaadin.flow.test;
 
+import com.iyensoft.vaadin.flow.components.*;
 import com.iyensoft.vaadin.flow.components.builders.InputOTPBuilder;
 import com.iyensoft.vaadin.flow.components.builders.InputOTPConfigurator;
-import com.iyensoft.vaadin.flow.components.InputOTP;
-import com.iyensoft.vaadin.flow.components.InputOTPGroup;
-import com.iyensoft.vaadin.flow.components.InputOTPSeparator;
-import com.iyensoft.vaadin.flow.components.InputOTPSlot;
 import com.vaadin.flow.component.html.Span;
 import org.junit.jupiter.api.Test;
 
@@ -608,7 +605,7 @@ class TestInputOTP {
     @Test
     void fullComposition_Components_factory() {
         // Verify the Components.inputOTP() integration point
-        InputOTP otp = com.iyensoft.vaadin.flow.components.Components.inputOTP()
+        InputOTP otp = Components.inputOTP()
                 .group(3)
                 .separator()
                 .group(3)

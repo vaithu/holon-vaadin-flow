@@ -16,16 +16,21 @@
 package com.holonplatform.vaadin.flow.components;
 
 import com.holonplatform.core.Registration;
+import com.holonplatform.core.Registration;
+import com.holonplatform.core.internal.utils.ObjectUtils;
 import com.holonplatform.core.property.Property;
 import com.holonplatform.core.query.QueryFilter;
 import com.holonplatform.vaadin.flow.components.builders.FilterInputGroupBuilder;
 import com.holonplatform.vaadin.flow.components.events.FilterChangeListener;
 import com.holonplatform.vaadin.flow.internal.components.DefaultFilterInputGroup;
+import com.vaadin.flow.component.Component;
 import com.vaadin.flow.signals.Signal;
 import com.vaadin.flow.signals.local.ValueSignal;
 
 import java.io.Serializable;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Stream;
 import java.util.stream.Stream;
 
 /**
@@ -129,16 +134,39 @@ public interface FilterInputGroup extends Serializable {
      * on each subsequent filter change.
      * </p>
      * <p>
-     * Note: create once and reuse the returned signal, to avoid adding multiple
-     * internal listener bridges.
+     * <strong>Note:</strong> this method installs an internal listener bridge which is kept for the whole lifetime of
+     * this group, so the returned signal should be created once and reused. Prefer
+     * {@link #queryFilterSignal(Component)} whenever an owner component is available: that variant removes the bridge
+     * when the owner is detached.
      * </p>
      *
      * @return read-only signal of the current combined filter
      * @since 10.0.1
+     * @see #queryFilterSignal(Component)
      */
     default Signal<Optional<QueryFilter>> queryFilterSignal() {
         final ValueSignal<Optional<QueryFilter>> signal = new ValueSignal<>(getQueryFilter());
         addFilterChangeListener(event -> signal.set(getQueryFilter()));
+        return signal.asReadonly();
+    }
+
+    /**
+     * Exposes the combined query filter as a read-only {@link Signal}, using the given <code>owner</code> component to
+     * scope the lifetime of the internal listener bridge.
+     * <p>
+     * The bridge is registered while the owner is attached and removed when the owner is detached, so no listener (and
+     * nothing it captures) is retained after the owner goes away. The signal is re-synchronized with the current group
+     * state whenever the owner is attached again.
+     * </p>
+     *
+     * @param owner the component whose lifecycle scopes the internal listener bridge (not null)
+     * @return read-only signal of the current combined filter
+     * @since 10.0.2
+     */
+    default Signal<Optional<QueryFilter>> queryFilterSignal(Component owner) {
+        ObjectUtils.argumentNotNull(owner, "Owner component must be not null");
+        final ValueSignal<Optional<QueryFilter>> signal = new ValueSignal<>(getQueryFilter());
+        bindFilterChangeBridge(this, owner, () -> signal.set(getQueryFilter()));
         return signal.asReadonly();
     }
 
@@ -149,17 +177,69 @@ public interface FilterInputGroup extends Serializable {
      * each subsequent filter change.
      * </p>
      * <p>
-     * Note: create once and reuse the returned signal, to avoid adding multiple
-     * internal listener bridges.
+     * <strong>Note:</strong> this method installs an internal listener bridge which is kept for the whole lifetime of
+     * this group, so the returned signal should be created once and reused. Prefer
+     * {@link #anyActiveSignal(Component)} whenever an owner component is available: that variant removes the bridge
+     * when the owner is detached.
      * </p>
      *
      * @return read-only signal of the active-state flag
      * @since 10.0.1
+     * @see #anyActiveSignal(Component)
      */
     default Signal<Boolean> anyActiveSignal() {
         final ValueSignal<Boolean> signal = new ValueSignal<>(isAnyActive());
         addFilterChangeListener(event -> signal.set(isAnyActive()));
         return signal.asReadonly();
+    }
+
+    /**
+     * Exposes whether any filter is active as a read-only {@link Signal}, using the given <code>owner</code> component
+     * to scope the lifetime of the internal listener bridge.
+     * <p>
+     * The bridge is registered while the owner is attached and removed when the owner is detached, so no listener (and
+     * nothing it captures) is retained after the owner goes away. The signal is re-synchronized with the current group
+     * state whenever the owner is attached again.
+     * </p>
+     *
+     * @param owner the component whose lifecycle scopes the internal listener bridge (not null)
+     * @return read-only signal of the active-state flag
+     * @since 10.0.2
+     */
+    default Signal<Boolean> anyActiveSignal(Component owner) {
+        ObjectUtils.argumentNotNull(owner, "Owner component must be not null");
+        final ValueSignal<Boolean> signal = new ValueSignal<>(isAnyActive());
+        bindFilterChangeBridge(this, owner, () -> signal.set(isAnyActive()));
+        return signal.asReadonly();
+    }
+
+    /**
+     * Register a filter change listener bridge whose lifetime is bound to the given <code>owner</code> component: the
+     * bridge is active only while the owner is attached, and is removed on detach.
+     *
+     * @param group the filter input group to observe (not null)
+     * @param owner the component whose lifecycle scopes the bridge (not null)
+     * @param sync  the action synchronizing the target signal with the current group state (not null)
+     */
+    private static void bindFilterChangeBridge(FilterInputGroup group, Component owner, Runnable sync) {
+        final AtomicReference<Registration> bridge = new AtomicReference<>();
+        final Runnable register = () -> {
+            if (bridge.get() == null) {
+                bridge.set(group.addFilterChangeListener(event -> sync.run()));
+                // the group state may have changed while the owner was detached
+                sync.run();
+            }
+        };
+        owner.addAttachListener(event -> register.run());
+        owner.addDetachListener(event -> {
+            final Registration registration = bridge.getAndSet(null);
+            if (registration != null) {
+                registration.remove();
+            }
+        });
+        if (owner.isAttached()) {
+            register.run();
+        }
     }
 
     // -----------------------------------------------------------------------

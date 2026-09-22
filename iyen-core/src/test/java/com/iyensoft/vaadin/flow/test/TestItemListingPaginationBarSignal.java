@@ -89,6 +89,8 @@ class TestItemListingPaginationBarSignal extends AbstractSessionTest {
         @Override public void scrollToIndex(int i)                        { /* no-op */ }
         @Override public void scrollToStart()                             { /* no-op */ }
         @Override public void scrollToEnd()                               { /* no-op */ }
+        @Override public void setItemIndexProvider(com.vaadin.flow.data.provider.ItemIndexProvider p) { /* no-op */ }
+        @Override public void scrollToItem(String i)                     { /* no-op */ }
 
         // ── stub-out unused methods ──────────────────────────────────────────
         @Override public List<String> getVisibleColumns()               { throw new UnsupportedOperationException(); }

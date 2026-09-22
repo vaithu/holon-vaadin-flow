@@ -49,6 +49,12 @@ public abstract class AbstractMaterialAppBarConfigurator<C extends MaterialAppBa
     }
 
     @Override
+    public C color(MaterialAppBar.Color color) {
+        getComponent().setColor(color);
+        return getConfigurator();
+    }
+
+    @Override
     public C headline(Component headline) {
         getComponent().setHeadline(headline);
         return getConfigurator();

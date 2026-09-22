@@ -111,7 +111,8 @@ public class SessionLocalizationInitializer implements VaadinServiceInitListener
 		final Localization.Builder localization = Localization
 				.builder((locale != null) ? locale : Locale.getDefault());
 		if (zone != null) {
-			localization.zone(zone);
+            //this needs to updated from holon core - srini 09/21/2026
+//			localization.zone(zone);
 		}
 		localizationContext.localize(localization.build());
 	}

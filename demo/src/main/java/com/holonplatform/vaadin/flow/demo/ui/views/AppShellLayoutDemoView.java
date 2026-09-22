@@ -5,6 +5,7 @@ import com.holonplatform.vaadin.flow.demo.ui.DemoExample;
 import com.holonplatform.vaadin.flow.demo.ui.DemoMainLayout;
 import com.iyensoft.vaadin.flow.components.ResponsiveDiv;
 import com.iyensoft.vaadin.flow.components.AppShellLayout;
+import com.iyensoft.vaadin.flow.components.ShellColor;
 import com.iyensoft.vaadin.flow.components.builders.SideNavBuilder;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.html.Div;
@@ -51,6 +52,8 @@ public class AppShellLayoutDemoView extends Div {
         examples.add(withSearchExample());
         examples.add(withNotificationsAndLanguagesExample());
         examples.add(fullFeaturedExample());
+        examples.add(colorThemesExample());
+        examples.add(surfaceThemesExample());
         examples.add(customizeEndExample());
 
         add(title, desc, examples);
@@ -201,7 +204,62 @@ public class AppShellLayoutDemoView extends Div {
                 """);
     }
 
-    // ── Example 5: Escape hatch (customizeEnd) ────────────────────────────────
+    // ── Example 5: Color themes ────────────────────────────────────────────────
+
+    private DemoExample colorThemesExample() {
+        var nav = SideNavBuilder.create()
+                .withNavItem("Dashboard", "/dashboard", VaadinIcon.DASHBOARD.create()).add()
+                .withNavItem("Customers", "/customers", VaadinIcon.USERS.create()).add()
+                .withNavItem("Reports",   "/reports",   VaadinIcon.CHART.create()).add()
+                .buildWrapper();
+
+        var shell = Components.appShell()
+                .navbarBrandLogo(brandLogo("A"))
+                .navbarBrand("Insight")
+                .colorTheme(ShellColor.INDIGO)
+                .nav(nav)
+                .build();
+
+        return new DemoExample("Color themes — ShellColor.INDIGO", preview(shell), """
+                AppShellLayout shell = Components.appShell()
+                        .navbarBrandLogo(logoTile)
+                        .navbarBrand("Insight")
+                        .colorTheme(ShellColor.INDIGO)   // BLUE, INDIGO, TEAL, RED,
+                                                          // CYAN, AMBER, PINK, SLATE
+                        .nav(nav)
+                        .build();
+                """);
+    }
+
+    // ── Example 5b: Surface themes ─────────────────────────────────────────────
+
+    private DemoExample surfaceThemesExample() {
+        var nav = SideNavBuilder.create()
+                .withNavItem("Dashboard", "/dashboard", VaadinIcon.DASHBOARD.create()).add()
+                .withNavItem("Customers", "/customers", VaadinIcon.USERS.create()).add()
+                .withNavItem("Reports",   "/reports",   VaadinIcon.CHART.create()).add()
+                .withNavItem("Settings",  "/settings",  VaadinIcon.COG.create()).add()
+                .buildWrapper();
+
+        var shell = Components.appShell()
+                .navbarBrandLogo(brandLogo("A"))
+                .navbarBrand("Acme")
+                .colorTheme(ShellColor.MODERN_SAAS)
+                .nav(nav)
+                .build();
+
+        return new DemoExample("Surface themes — ShellColor.MODERN_SAAS", preview(shell), """
+                AppShellLayout shell = Components.appShell()
+                        .navbarBrandLogo(logoTile)
+                        .navbarBrand("Acme")
+                        .colorTheme(ShellColor.MODERN_SAAS)   // MODERN_SAAS, MATERIAL, ENTERPRISE,
+                                                               // GRADIENT, COLLAPSIBLE_DARK, PREMIUM_BLUE
+                        .nav(nav)
+                        .build();
+                """);
+    }
+
+    // ── Example 6: Escape hatch (customizeEnd) ────────────────────────────────
 
     private DemoExample customizeEndExample() {
         var nav = SideNavBuilder.create()
@@ -267,5 +325,14 @@ public class AppShellLayoutDemoView extends Div {
         var header = new VerticalLayout(appLogo, nameSpan);
         header.setAlignItems(FlexComponent.Alignment.CENTER);
         return header;
+    }
+
+    /**
+     * Plain-text logo tile passed to {@code navbarBrandLogo(...)}; recolored
+     * automatically by {@code shell-color-themes.css} via {@code --brand-500}
+     * once a {@link com.iyensoft.vaadin.flow.components.ShellColor} is applied.
+     */
+    private static Span brandLogo(String initial) {
+        return new Span(initial);
     }
 }

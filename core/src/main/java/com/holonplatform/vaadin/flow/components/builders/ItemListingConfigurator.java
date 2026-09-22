@@ -125,6 +125,17 @@ public interface ItemListingConfigurator<T, P, L extends ItemListing<T, P>, C ex
     /**
      * Add a column which contents will be rendered as a {@link Component} using
      * given <code>valueProvider</code>.
+     * <p>
+     * <strong>Performance note:</strong> a component column creates a
+     * <em>server-side</em> {@link Component} instance for every rendered cell, each
+     * one with its own state node kept in the user session. On large listings this
+     * is by far the most expensive kind of column. Prefer
+     * {@link #withColumn(ValueProvider)} for plain values, and
+     * {@link com.holonplatform.vaadin.flow.components.Components#litRenderer()} to
+     * render rich cell contents on the client side, which requires no server-side
+     * component per row. Reserve this method for columns which really need
+     * server-side interactive components, for example action buttons.
+     * </p>
      *
      * @param valueProvider The value provider to use to provide the column
      *                      {@link Component} using the current row item instance
@@ -132,6 +143,7 @@ public interface ItemListingConfigurator<T, P, L extends ItemListing<T, P>, C ex
      * @return An {@link ItemListingColumnBuilder} which allow further column
      * configuration and provides the {@link ItemListingColumnBuilder#add()}
      * method to content the column to the listing
+     * @see com.holonplatform.vaadin.flow.components.Components#litRenderer()
      */
     ItemListingColumnBuilder<T, P, L, C> withComponentColumn(ValueProvider<T, Component> valueProvider);
 
@@ -177,9 +189,17 @@ public interface ItemListingConfigurator<T, P, L extends ItemListing<T, P>, C ex
      * {@link #displayBefore(Object, Object)} and
      * {@link #displayAfter(Object, Object)} will be ignored.
      * </p>
+     * <p>
+     * <strong>Performance note:</strong> a hidden column is still <em>created</em>, so its value provider is still
+     * invoked for every rendered row and its data is still sent to the client. Hiding is the right choice only when
+     * the column has to be shown again later, for example through {@link ItemListing#setColumnVisible(Object,
+     * boolean)} or a column toggle menu. To exclude a column for good, list only the columns you need with
+     * {@link #visibleColumns(Object[])} so that the column is never created in the first place.
+     * </p>
      *
      * @param hiddenColumns The visible column properties (not null)
      * @return this
+     * @see #visibleColumns(Object[])
      */
     @SuppressWarnings("unchecked")
     default C hiddenColumns(P... hiddenColumns) {

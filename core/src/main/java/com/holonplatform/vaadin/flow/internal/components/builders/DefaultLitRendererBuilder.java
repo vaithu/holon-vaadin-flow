@@ -123,6 +123,14 @@ public class DefaultLitRendererBuilder<T> implements LitRendererBuilder<T> {
     }
 
     @Override
+    public LitRendererBuilder<T> actionMenu(Consumer<ActionMenuElement> configurator) {
+        var el = new ActionMenuElementImpl();
+        configurator.accept(el);
+        fragments.add(el.render());
+        return this;
+    }
+
+    @Override
     public LitRendererBuilder<T> html(String rawTemplate) {
         fragments.add(rawTemplate);
         return this;
@@ -300,6 +308,11 @@ public class DefaultLitRendererBuilder<T> implements LitRendererBuilder<T> {
         }
 
         @Override
+        public LayoutElement actionMenu(Consumer<ActionMenuElement> configurator) {
+            var el = new ActionMenuElementImpl(); configurator.accept(el); children.add(el.render()); return this;
+        }
+
+        @Override
         public LayoutElement html(String rawHtml) { children.add(rawHtml); return this; }
 
         String render() {
@@ -461,6 +474,74 @@ public class DefaultLitRendererBuilder<T> implements LitRendererBuilder<T> {
             if (max   != null) sb.append(" max=\"").append(max).append('"');
             appendCommonAttrs(sb);
             return sb.append("></vaadin-progress-bar>").toString();
+        }
+    }
+
+    // ── ActionMenuElement ───────────────────────────────────────────────────
+
+    private static class ActionMenuElementImpl
+            extends AbstractElementImpl<ActionMenuElementImpl>
+            implements ActionMenuElement {
+
+        private String triggerIcon = "vaadin:ellipsis-dots-v";
+        private String triggerAriaLabel = "More actions";
+        private final List<Item> items = new ArrayList<>();
+
+        private record Item(String iconName, String label, String theme, String functionName) {}
+
+        @Override public ActionMenuElement triggerIcon(String iconName)       { this.triggerIcon = iconName;      return this; }
+        @Override public ActionMenuElement triggerAriaLabel(String ariaLabel) { this.triggerAriaLabel = ariaLabel; return this; }
+
+        @Override
+        public ActionMenuElement withItem(String label, String functionName) {
+            items.add(new Item(null, label, null, functionName));
+            return this;
+        }
+
+        @Override
+        public ActionMenuElement withItem(String iconName, String label, String functionName) {
+            items.add(new Item(iconName, label, null, functionName));
+            return this;
+        }
+
+        @Override
+        public ActionMenuElement withItem(String iconName, String label, String theme, String functionName) {
+            items.add(new Item(iconName, label, theme, functionName));
+            return this;
+        }
+
+        String render() {
+            var sb = new StringBuilder("<details class=\"holon-action-menu\"");
+            appendCommonAttrs(sb);
+            sb.append('>');
+
+            // Trigger — clicking it closes any other open action menu on the page.
+            sb.append("<summary class=\"holon-action-menu__trigger\" aria-label=\"")
+                    .append(triggerAriaLabel).append('"')
+                    .append(" @click=\"${(e) => { const d = e.currentTarget.parentElement; " +
+                            "document.querySelectorAll('details.holon-action-menu[open]')" +
+                            ".forEach((o) => { if (o !== d) { o.removeAttribute('open'); } }); }}\">")
+                    .append("<vaadin-icon icon=\"").append(triggerIcon).append("\"></vaadin-icon>")
+                    .append("</summary>");
+
+            sb.append("<div class=\"holon-action-menu__panel\">");
+            for (Item item : items) {
+                sb.append("<vaadin-button theme=\"tertiary");
+                if (item.theme() != null) sb.append(' ').append(item.theme());
+                sb.append('"')
+                        // Close the panel, then invoke the registered server function with no args.
+                        .append(" @click=\"${(e) => { e.currentTarget.closest('details')")
+                        .append(".removeAttribute('open'); ").append(item.functionName()).append("(); }}\">");
+                if (item.iconName() != null) {
+                    sb.append("<vaadin-icon icon=\"").append(item.iconName())
+                            .append("\" slot=\"prefix\"></vaadin-icon>");
+                }
+                sb.append(item.label());
+                sb.append("</vaadin-button>");
+            }
+            sb.append("</div>");
+
+            return sb.append("</details>").toString();
         }
     }
 }

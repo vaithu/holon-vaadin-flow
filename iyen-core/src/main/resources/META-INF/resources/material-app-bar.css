@@ -99,6 +99,135 @@
     box-shadow: 0 1px 2px rgb(0 0 0 / 12%);
 }
 
+/* ==========================================================================
+ * Color variants — recolor the container + on-container tokens only.
+ * Everything else (headline size, slot layout, grid columns) is untouched,
+ * so any Variant (small/centered/medium/large/search) can combine with
+ * any Color.
+ *
+ * Descendant vaadin-button / vaadin-icon inherit the on-container tokens so
+ * leading/trailing tertiary icon buttons remain legible without per-button
+ * overrides in consumer code.
+ * ========================================================================== */
+
+.material-app-bar--color-indigo,
+.material-app-bar--color-teal,
+.material-app-bar--color-emerald,
+.material-app-bar--color-orange,
+.material-app-bar--color-rose,
+.material-app-bar--color-purple,
+.material-app-bar--color-slate,
+.material-app-bar--color-amber,
+.material-app-bar--color-gradient {
+    color: var(--material-app-bar-on-container);
+}
+
+.material-app-bar--color-indigo vaadin-button[theme~="tertiary"],
+.material-app-bar--color-teal vaadin-button[theme~="tertiary"],
+.material-app-bar--color-emerald vaadin-button[theme~="tertiary"],
+.material-app-bar--color-orange vaadin-button[theme~="tertiary"],
+.material-app-bar--color-rose vaadin-button[theme~="tertiary"],
+.material-app-bar--color-purple vaadin-button[theme~="tertiary"],
+.material-app-bar--color-slate vaadin-button[theme~="tertiary"],
+.material-app-bar--color-amber vaadin-button[theme~="tertiary"],
+.material-app-bar--color-gradient vaadin-button[theme~="tertiary"] {
+    --vaadin-button-text-color: var(--material-app-bar-on-container);
+    color: var(--material-app-bar-on-container);
+}
+
+
+.material-app-bar--color-indigo vaadin-button[theme~="tertiary"]:hover,
+.material-app-bar--color-teal vaadin-button[theme~="tertiary"]:hover,
+.material-app-bar--color-emerald vaadin-button[theme~="tertiary"]:hover,
+.material-app-bar--color-orange vaadin-button[theme~="tertiary"]:hover,
+.material-app-bar--color-rose vaadin-button[theme~="tertiary"]:hover,
+.material-app-bar--color-purple vaadin-button[theme~="tertiary"]:hover,
+.material-app-bar--color-slate vaadin-button[theme~="tertiary"]:hover,
+.material-app-bar--color-amber vaadin-button[theme~="tertiary"]:hover,
+.material-app-bar--color-gradient vaadin-button[theme~="tertiary"]:hover {
+    --vaadin-button-background: rgb(255 255 255 / 0.16);
+}
+
+.material-app-bar--color-indigo .material-app-bar__subtitle,
+.material-app-bar--color-teal .material-app-bar__subtitle,
+.material-app-bar--color-emerald .material-app-bar__subtitle,
+.material-app-bar--color-orange .material-app-bar__subtitle,
+.material-app-bar--color-rose .material-app-bar__subtitle,
+.material-app-bar--color-purple .material-app-bar__subtitle,
+.material-app-bar--color-slate .material-app-bar__subtitle,
+.material-app-bar--color-amber .material-app-bar__subtitle,
+.material-app-bar--color-gradient .material-app-bar__subtitle {
+    color: var(--material-app-bar-on-container-variant);
+}
+
+.material-app-bar--color-indigo {
+    --material-app-bar-container:            #3f51b5;
+    --material-app-bar-on-container:         #ffffff;
+    --material-app-bar-on-container-variant: rgb(255 255 255 / 0.78);
+}
+
+.material-app-bar--color-teal {
+    --material-app-bar-container:            #00695c;
+    --material-app-bar-on-container:         #ffffff;
+    --material-app-bar-on-container-variant: rgb(255 255 255 / 0.78);
+}
+
+.material-app-bar--color-emerald {
+    --material-app-bar-container:            #087f5b;
+    --material-app-bar-on-container:         #ffffff;
+    --material-app-bar-on-container-variant: rgb(255 255 255 / 0.78);
+}
+
+.material-app-bar--color-orange {
+    --material-app-bar-container:            #e65100;
+    --material-app-bar-on-container:         #ffffff;
+    --material-app-bar-on-container-variant: rgb(255 255 255 / 0.78);
+}
+
+.material-app-bar--color-rose {
+    --material-app-bar-container:            #ad1457;
+    --material-app-bar-on-container:         #ffffff;
+    --material-app-bar-on-container-variant: rgb(255 255 255 / 0.78);
+}
+
+.material-app-bar--color-purple {
+    --material-app-bar-container:            #512da8;
+    --material-app-bar-on-container:         #ffffff;
+    --material-app-bar-on-container-variant: rgb(255 255 255 / 0.78);
+}
+
+.material-app-bar--color-slate {
+    --material-app-bar-container:            #263238;
+    --material-app-bar-on-container:         #ffffff;
+    --material-app-bar-on-container-variant: rgb(255 255 255 / 0.78);
+}
+
+.material-app-bar--color-amber {
+    --material-app-bar-container:            #b45309;
+    --material-app-bar-on-container:         #ffffff;
+    --material-app-bar-on-container-variant: rgb(255 255 255 / 0.78);
+}
+
+.material-app-bar--color-gradient {
+    --material-app-bar-on-container:         #ffffff;
+    --material-app-bar-on-container-variant: rgb(255 255 255 / 0.78);
+    background: linear-gradient(100deg, #4527a0, #1565c0);
+}
+
+/* A color variant already implies its own elevated tone; don't let the
+   .material-app-bar--scrolled surface swap override the brand color. */
+.material-app-bar--color-indigo.material-app-bar--scrolled,
+.material-app-bar--color-teal.material-app-bar--scrolled,
+.material-app-bar--color-emerald.material-app-bar--scrolled,
+.material-app-bar--color-orange.material-app-bar--scrolled,
+.material-app-bar--color-rose.material-app-bar--scrolled,
+.material-app-bar--color-purple.material-app-bar--scrolled,
+.material-app-bar--color-slate.material-app-bar--scrolled,
+.material-app-bar--color-amber.material-app-bar--scrolled,
+.material-app-bar--color-gradient.material-app-bar--scrolled {
+    box-shadow: 0 2px 8px rgb(0 0 0 / 24%);
+}
+
 @media (max-width: 639px) {
     .material-app-bar {
         column-gap: 0.5rem;

@@ -1,11 +1,9 @@
 package com.iyensoft.vaadin.flow.components;
 
 import com.holonplatform.core.i18n.Localizable;
-import com.iyensoft.vaadin.flow.components.Components;
 import com.iyensoft.vaadin.flow.components.builders.HighlightBuilder;
 import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
 import com.holonplatform.vaadin.flow.internal.lumo.*;
-import com.iyensoft.vaadin.flow.components.Layout;
 import com.iyensoft.vaadin.flow.utils.Font;
 import com.iyensoft.vaadin.flow.enums.HeadingLevel;
 import com.vaadin.flow.component.AttachEvent;

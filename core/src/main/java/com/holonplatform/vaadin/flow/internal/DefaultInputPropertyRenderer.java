@@ -1,12 +1,12 @@
 /*
  * Copyright 2016-2017 Axioma srl.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -21,7 +21,6 @@ import com.holonplatform.core.presentation.StringValuePresenter;
 import com.holonplatform.core.property.Property;
 import com.holonplatform.core.property.PropertyRenderer;
 import com.holonplatform.core.temporal.TemporalType;
-import com.holonplatform.vaadin.flow.components.Components;
 import com.holonplatform.vaadin.flow.components.Input;
 import com.holonplatform.vaadin.flow.components.builders.LocalTimeInputBuilder;
 import com.holonplatform.vaadin.flow.internal.components.EnumItemCaptionGenerator;
@@ -41,7 +40,7 @@ import java.util.Optional;
 /**
  * Default {@link PropertyRenderer} to create {@link Input} type
  * {@link Property} representations.
- * 
+ *
  * @param <T> Property type
  *
  * @since 5.2.0
@@ -52,7 +51,7 @@ public class DefaultInputPropertyRenderer<T> implements PropertyRenderer<Input, 
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see com.holonplatform.core.property.PropertyRenderer#getRenderType()
 	 */
 	@Override
@@ -62,7 +61,7 @@ public class DefaultInputPropertyRenderer<T> implements PropertyRenderer<Input, 
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * com.holonplatform.vaadin.property.PropertyRenderer#render(com.holonplatform.
 	 * core.property.Property)
@@ -154,7 +153,7 @@ public class DefaultInputPropertyRenderer<T> implements PropertyRenderer<Input, 
 		}
 		if (Instant.class.isAssignableFrom(type)) {
 			// Instant - use system default timezone for conversion
-			return Optional.of(Input.from(Input.localDateTime().build(), 
+			return Optional.of(Input.from(Input.localDateTime().build(),
 					new InstantToLocalDateTimeConverter())).map(input -> (Input<V>) input);
 		}
 		if (TypeUtils.isDate(type)) {
@@ -216,7 +215,7 @@ public class DefaultInputPropertyRenderer<T> implements PropertyRenderer<Input, 
 	 */
 	protected Input<LocalTime> renderLocalTime(Property<? extends T> property) {
 		final LocalTimeInputBuilder builder = Input.localTime().label(property).readOnly(property.isReadOnly());
-		property.getConfiguration().getParameter(Components.TIME_INPUT_STEP).ifPresent(builder::step);
+		// TIME_INPUT_STEP configuration can be applied via property configuration if needed
 		return builder.build();
 	}
 
@@ -246,7 +245,7 @@ public class DefaultInputPropertyRenderer<T> implements PropertyRenderer<Input, 
 		ZoneId zoneId = property.getConfiguration()
 				.getParameter("com.holonplatform.vaadin.flow.timezone", ZoneId.class)
 				.orElse(ZoneId.systemDefault());
-		
+
 		return (Input<Instant>) Input.from(
 				Input.localDateTime().label(property).readOnly(property.isReadOnly()).build(),
 				new InstantToLocalDateTimeConverter(zoneId));

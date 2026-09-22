@@ -225,6 +225,20 @@ abstract class AbstractSideNavItemConfigurator<B extends SideNavItemConfigurator
         return getConfigurator();
     }
 
+    // ── Badge ─────────────────────────────────────────────────────────────────
+
+    @Override
+    public B badge(String text) {
+        if (text == null || text.isBlank()) {
+            rootItem.setSuffixComponent(null);
+            return getConfigurator();
+        }
+        com.vaadin.flow.component.html.Span badge = new com.vaadin.flow.component.html.Span(text);
+        badge.addClassName("sidenav-item__badge");
+        rootItem.setSuffixComponent(badge);
+        return getConfigurator();
+    }
+
     // ── Read ──────────────────────────────────────────────────────────────────
 
     @Override

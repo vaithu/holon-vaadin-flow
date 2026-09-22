@@ -16,7 +16,7 @@
 package com.iyensoft.vaadin.flow.components;
 
 import java.io.Serial;
-import com.iyensoft.vaadin.flow.components.Components;
+
 import com.vaadin.flow.component.html.Span;
 
 /**

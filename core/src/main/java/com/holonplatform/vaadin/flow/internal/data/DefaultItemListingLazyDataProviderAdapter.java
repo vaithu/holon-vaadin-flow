@@ -1,12 +1,12 @@
 /*
  * Copyright 2016-2019 Axioma srl.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -24,6 +24,7 @@ import com.vaadin.flow.data.provider.BackEndDataProvider;
 import com.vaadin.flow.data.provider.Query;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
@@ -33,7 +34,7 @@ import java.util.stream.Stream;
  *
  * @param <T> Data type
  * @param <F> Filter type
- * 
+ *
  * @since 5.2.2
  */
 public class DefaultItemListingLazyDataProviderAdapter<T, F> extends AbstractBackEndDataProvider<T, F>
@@ -106,10 +107,7 @@ public class DefaultItemListingLazyDataProviderAdapter<T, F> extends AbstractBac
 		if (isFrozen()) {
 			return Stream.empty();
 		}
-		if (!this.additionalItems.isEmpty()) {
-			return Stream.concat(this.additionalItems.stream(), getDataProvider().fetch(query));
-		}
-		return getDataProvider().fetch(query);
+		return AdditionalItemsSupport.fetch(this.additionalItems, getDataProvider(), query);
 	}
 
 	/*
@@ -152,12 +150,44 @@ public class DefaultItemListingLazyDataProviderAdapter<T, F> extends AbstractBac
 
 	/*
 	 * (non-Javadoc)
+	 * @see com.holonplatform.vaadin.flow.data.ItemListingDataProviderAdapter#addAdditionalItems(java.util.Collection)
+	 */
+	@Override
+	public void addAdditionalItems(Collection<? extends T> items) {
+		ObjectUtils.argumentNotNull(items, "Additional items to add must be not null");
+		if (!items.isEmpty()) {
+			this.additionalItems.addAll(items);
+			// refresh only once for the whole batch
+			refreshAll();
+		}
+	}
+
+	/*
+	 * (non-Javadoc)
 	 * @see com.holonplatform.vaadin.flow.data.ItemListingDataProviderAdapter#removeAdditionalItem(java.lang.Object)
 	 */
 	@Override
 	public boolean removeAdditionalItem(T item) {
 		ObjectUtils.argumentNotNull(item, "Additional item to remove must be not null");
 		if (this.additionalItems.remove(item)) {
+			refreshAll();
+			return true;
+		}
+		return false;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see com.holonplatform.vaadin.flow.data.ItemListingDataProviderAdapter#removeAdditionalItems(java.util.Collection)
+	 */
+	@Override
+	public boolean removeAdditionalItems(Collection<? extends T> items) {
+		ObjectUtils.argumentNotNull(items, "Additional items to remove must be not null");
+		if (items.isEmpty() || this.additionalItems.isEmpty()) {
+			return false;
+		}
+		if (this.additionalItems.removeAll(items)) {
+			// refresh only once for the whole batch
 			refreshAll();
 			return true;
 		}

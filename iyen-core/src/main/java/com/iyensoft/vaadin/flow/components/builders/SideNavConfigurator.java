@@ -4,6 +4,7 @@ import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.vaadin.flow.components.builders.ComponentConfigurator;
 import com.holonplatform.vaadin.flow.components.builders.HasSizeConfigurator;
 import com.holonplatform.vaadin.flow.components.builders.HasStyleConfigurator;
+import com.iyensoft.vaadin.flow.components.ShellColor;
 import com.iyensoft.vaadin.flow.internal.components.builders.DefaultSideNavConfigurator;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.sidenav.SideNav;
@@ -38,6 +39,16 @@ public interface SideNavConfigurator<C extends SideNavConfigurator<C>>
      * @return this configurator
      */
     C label(Localizable label);
+
+    /**
+     * Applies a predefined {@link ShellColor} theme to the navigation host,
+     * recoloring the active item background/text/border, active icon, badges,
+     * and collapse-toggle hover state. Applied to the {@code sidenav-host}
+     * wrapper Div produced by {@code SideNavBuilder.buildWrapper()}.
+     *
+     * @param color the color theme to apply (not null)
+     */
+    C colorTheme(ShellColor color);
 
     List<SideNavItem> getItems();
 
@@ -147,6 +158,16 @@ public interface SideNavConfigurator<C extends SideNavConfigurator<C>>
      * Use {@code SideNavBuilder.buildWrapper()} to obtain the composite component.
      */
     C withCollapse();
+
+    /**
+     * Adds a footer area below the navigation items (above the collapse toggle, if any) —
+     * e.g. a promo/upsell card or pinned "Settings" / "Sign out" items.
+     * Wrapped in a {@code .sidenav-footer} Div; use {@code SideNavBuilder.buildWrapper()} to
+     * obtain the composite component.
+     *
+     * @param footer the footer content (not null)
+     */
+    C withFooter(Component footer);
 
     // ── configure factory ─────────────────────────────────────────────────────────────
 

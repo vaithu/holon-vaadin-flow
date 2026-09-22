@@ -15,35 +15,24 @@
  */
 package com.iyensoft.vaadin.flow.components;
 
-import com.iyensoft.vaadin.flow.components.Components;
-import com.holonplatform.vaadin.flow.components.ItemListing;
-import com.iyensoft.vaadin.flow.components.ItemListingPageSizeSelector;
-import com.holonplatform.vaadin.flow.components.PropertyListing;
-
 import com.holonplatform.core.property.PathProperty;
 import com.holonplatform.core.property.Property;
 import com.holonplatform.core.property.PropertyBox;
 import com.holonplatform.core.property.PropertySet;
 import com.holonplatform.core.query.QueryFilter;
 import com.holonplatform.core.query.QuerySort;
+import com.holonplatform.vaadin.flow.components.ItemListing;
+import com.holonplatform.vaadin.flow.components.PropertyListing;
+import com.holonplatform.vaadin.flow.components.builders.LitRendererBuilder;
 import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
-import com.iyensoft.vaadin.flow.components.DynamicFilterPanel;
-import com.iyensoft.vaadin.flow.components.Empty;
-import com.iyensoft.vaadin.flow.components.GridHeader;
-import com.iyensoft.vaadin.flow.components.GridToolbar;
 import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.contextmenu.MenuItem;
-import com.vaadin.flow.component.contextmenu.SubMenu;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
-import com.vaadin.flow.component.menubar.MenuBar;
-import com.vaadin.flow.component.menubar.MenuBarVariant;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.provider.CallbackDataProvider;
 import com.vaadin.flow.data.provider.Query;
 import com.vaadin.flow.data.provider.QuerySortOrder;
-import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.data.renderer.LitRenderer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -158,7 +147,8 @@ public final class PropertyListingBundleBuilder {
      */
     private final List<ListingBundleConfigurer.RowAction<PropertyBox>> rowActions = new ArrayList<>();
     /**
-     * When true, use the O(1) LitRenderer+ContextMenu/Sheet strategy instead of ComponentRenderer.
+     * When true, render one icon button per action instead of the default ⋮ dropdown.
+     * Both are O(1) server-side (LitRenderer-based); this only changes the visual style.
      */
     private boolean highPerformanceActions;
     /**
@@ -166,9 +156,13 @@ public final class PropertyListingBundleBuilder {
      */
     private Consumer<ItemListing<PropertyBox, ?>> postProcessor;
     private Consumer<com.iyensoft.vaadin.flow.components.builders.GridToolbarBuilder> toolbarCustomizer;
-    /** Optional empty state shown when dataset is genuinely empty (no search/filter). */
+    /**
+     * Optional empty state shown when dataset is genuinely empty (no search/filter).
+     */
     private Empty emptyState;
-    /** Optional empty state shown when search/filter is active but yields no results. */
+    /**
+     * Optional empty state shown when search/filter is active but yields no results.
+     */
     private Empty noResultsState;
 
     // ── Package constructors ───────────────────────────────────────────────
@@ -419,9 +413,8 @@ public final class PropertyListingBundleBuilder {
     }
 
     /**
-     * Switches the action column to high-performance mode: a single shared
-     * {@code ContextMenu} (desktop) / bottom {@code Sheet} (mobile touch) per grid
-     * instead of one {@code MenuBar} per visible row.
+     * Switches the action column to render one icon button per action directly in the row
+     * (e.g. [✏][🗑]) instead of the default ⋮ dropdown. Both variants are O(1) server-side.
      *
      * @see ListingBundleConfigurer#withHighPerformanceActions()
      */
@@ -478,10 +471,10 @@ public final class PropertyListingBundleBuilder {
      */
     public PropertyListingBundleBuilder emptyState() {
         return emptyState(Empty.builder()
-                .icon(new Icon(VaadinIcon.INBOX))
-                .title(LocalizationProvider.localize("No items", "listing.empty_title"))
-                .description(LocalizationProvider.localize("There are no items to display.", "listing.empty_description"))
-                .build());
+                                  .icon(new Icon(VaadinIcon.INBOX))
+                                  .title(LocalizationProvider.localize("No items", "listing.empty_title"))
+                                  .description(LocalizationProvider.localize("There are no items to display.", "listing.empty_description"))
+                                  .build());
     }
 
     /**
@@ -503,10 +496,10 @@ public final class PropertyListingBundleBuilder {
      */
     public PropertyListingBundleBuilder noResultsState() {
         return noResultsState(Empty.builder()
-                .icon(new Icon(VaadinIcon.SEARCH))
-                .title(LocalizationProvider.localize("No results found", "listing.no_results_title"))
-                .description(LocalizationProvider.localize("No records match the current search or filter criteria. Try adjusting your search.", "listing.no_results_description"))
-                .build());
+                                      .icon(new Icon(VaadinIcon.SEARCH))
+                                      .title(LocalizationProvider.localize("No results found", "listing.no_results_title"))
+                                      .description(LocalizationProvider.localize("No records match the current search or filter criteria. Try adjusting your search.", "listing.no_results_description"))
+                                      .build());
     }
 
     // ── Build ──────────────────────────────────────────────────────────────
@@ -615,8 +608,8 @@ public final class PropertyListingBundleBuilder {
         }
 
         ListingBundle<PropertyBox> bundle = (ListingBundle<PropertyBox>) new ListingBundle(listing, bar, selector, toolbar, panel,
-                                                                              gridHeaderTitle, paginatedMode,
-                                                                              emptyState, noResultsState);
+                                                                                           gridHeaderTitle, paginatedMode,
+                                                                                           emptyState, noResultsState);
 
         // Wire item-count listener for empty-state visibility after each fetch.
         if (selector != null && (emptyState != null || noResultsState != null)) {
@@ -652,29 +645,37 @@ public final class PropertyListingBundleBuilder {
     // Both operate on the underlying Grid<T> so the logic is identical.
 
     /**
-     * Standard action column — one {@code MenuBar} per visible row (O(rows)).
-     * Suitable for small or moderately-sized paginated grids.
+     * Default ⋮ dropdown action column — O(1) server-side. Renders a native
+     * {@code <details>}/{@code <summary>} disclosure per row via
+     * {@link LitRendererBuilder#actionMenu(Consumer)}; no per-row {@code MenuBar}
+     * or {@code ComponentRenderer} instance is created.
      */
     private static void addActionColumn(Grid<PropertyBox> grid,
                                         List<ListingBundleConfigurer.RowAction<PropertyBox>> actions) {
-        var col = grid.addColumn(new ComponentRenderer<>(item -> {
-            MenuBar menuBar = new MenuBar();
-            menuBar.addThemeVariants(MenuBarVariant.LUMO_TERTIARY_INLINE);
-            menuBar.addClassName("action-column__menu");
-            MenuItem trigger = menuBar.addItem(new Icon(VaadinIcon.ELLIPSIS_DOTS_V));
-            SubMenu subMenu = trigger.getSubMenu();
-            for (ListingBundleConfigurer.RowAction<PropertyBox> action : actions) {
-                MenuItem actionItem = subMenu.addItem(action.label(),
-                                                      e -> action.handler().accept(item));
-                if (action.icon() != null) {
-                    actionItem.addComponentAsFirst(new Icon(action.icon()));
-                }
-                if (action.destructive()) {
-                    actionItem.getElement().setAttribute("theme", "error");
-                }
-            }
-            return menuBar;
-        }));
+        LitRendererBuilder<PropertyBox> builder = LitRendererBuilder.<PropertyBox>create()
+                .actionMenu(menu -> {
+                    for (int i = 0; i < actions.size(); i++) {
+                        ListingBundleConfigurer.RowAction<PropertyBox> action = actions.get(i);
+                        String functionName = "action" + i;
+                        if (action.icon() != null) {
+                            String iconName = "vaadin:" + action.icon().name().toLowerCase().replace('_', '-');
+                            if (action.destructive()) {
+                                menu.withItem(iconName, action.label(), "error", functionName);
+                            } else {
+                                menu.withItem(iconName, action.label(), functionName);
+                            }
+                        } else {
+                            menu.withItem(action.label(), functionName);
+                        }
+                    }
+                });
+        for (int i = 0; i < actions.size(); i++) {
+            final ListingBundleConfigurer.RowAction<PropertyBox> action = actions.get(i);
+            builder.withFunction("action" + i, (item, key) -> action.handler().accept(item));
+        }
+
+        LitRenderer<PropertyBox> litRenderer = builder.build();
+        var col = grid.addColumn(litRenderer);
         col.setKey("__actions");
         col.setHeader("");
         col.setAutoWidth(true);
@@ -684,40 +685,46 @@ public final class PropertyListingBundleBuilder {
     }
 
     /**
-     * High-performance action column — a single {@code ContextMenu} (desktop) or
-     * bottom {@code Sheet} (mobile touch) per grid regardless of row count (O(1)).
+     * High-performance action column — a single client-side {@code LitRenderer} per grid
+     * regardless of row count (O(1) server-side, zero components per row).
      * Use via {@link #withHighPerformanceActions()} for high-concurrency deployments.
+     *
+     * <p>Built via the type-safe {@link LitRendererBuilder} DSL instead of a hand-rolled
+     * HTML template string: one {@code <vaadin-button>} per registered action, each wired
+     * to its own {@code withFunction} handler.</p>
      */
     private static void addHighPerformanceActionColumn(Grid<PropertyBox> grid,
                                                        List<ListingBundleConfigurer.RowAction<PropertyBox>> actions) {
-        // Correct Vaadin 25 LitRenderer pattern: one button + one withFunction per action.
-        // @click="${action0}" — direct binding, NO arrow-function wrapper.
-        // Arrow functions look up the name as a closure variable (undefined = does nothing).
-        StringBuilder tpl = new StringBuilder("<span class=\"action-column__wrap\">");
-        for (int i = 0; i < actions.size(); i++) {
-            ListingBundleConfigurer.RowAction<PropertyBox> a = actions.get(i);
-            if (a.icon() != null) {
-                String iconName = "vaadin:" + a.icon().name().toLowerCase().replace('_', '-');
-                String btnTheme = a.destructive() ? "icon tertiary error" : "icon tertiary";
-                tpl.append(String.format(
-                        "<vaadin-button theme=\"%s\" @click=\"${action%d}\" title=\"%s\">" +
-                        "<vaadin-icon icon=\"%s\"></vaadin-icon></vaadin-button>",
-                        btnTheme, i, a.label(), iconName));
-            } else {
-                String btnTheme = a.destructive() ? "tertiary error" : "tertiary";
-                tpl.append(String.format(
-                        "<vaadin-button theme=\"%s\" @click=\"${action%d}\">%s</vaadin-button>",
-                        btnTheme, i, a.label()));
-            }
-        }
-        tpl.append("</span>");
+        // Function names "action0", "action1", ... avoid any browser-global name collision.
+        LitRendererBuilder<PropertyBox> builder = LitRendererBuilder.<PropertyBox>create()
+                .horizontalLayout(row -> {
+                    row.className("action-column__wrap");
+                    for (int i = 0; i < actions.size(); i++) {
+                        ListingBundleConfigurer.RowAction<PropertyBox> action = actions.get(i);
+                        String functionName = "action" + i;
+                        row.vaadinButton(b -> {
+                            if (action.icon() != null) {
+                                String iconName = "vaadin:" + action.icon().name().toLowerCase().replace('_', '-');
+                                b.theme(action.destructive() ? "icon tertiary error" : "icon tertiary")
+                                        .onClick(functionName)
+                                        .attribute("title", action.label())
+                                        .icon(ic -> ic.icon(iconName));
+                            } else {
+                                b.theme(action.destructive() ? "tertiary error" : "tertiary")
+                                        .onClick(functionName)
+                                        .text(action.label());
+                            }
+                        });
+                    }
+                });
 
-        LitRenderer<PropertyBox> litRenderer = LitRenderer.of(tpl.toString());
+        // Register one withFunction per action — each handler receives the row item directly.
         for (int i = 0; i < actions.size(); i++) {
             final ListingBundleConfigurer.RowAction<PropertyBox> action = actions.get(i);
-            litRenderer = litRenderer.withFunction("action" + i,
-                                                   item -> action.handler().accept(item));
+            builder.withFunction("action" + i, (item, key) -> action.handler().accept(item));
         }
+
+        LitRenderer<PropertyBox> litRenderer = builder.build();
 
         var col = grid.addColumn(litRenderer);
         col.setKey("__actions");

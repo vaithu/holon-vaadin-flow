@@ -73,6 +73,15 @@ import java.util.function.Consumer;
  *         .onClick("handleDelete"))
  *     .withFunction("handleDelete", (task, ignored) -> taskService.delete(task))
  *     .build();
+ *
+ * // Row action dropdown (⋮ trigger + Edit/Delete)
+ * LitRenderer<Order> renderer = LitRendererBuilder.<Order>create()
+ *     .actionMenu(menu -> menu
+ *         .withItem("vaadin:edit", "Edit", "edit")
+ *         .withItem("vaadin:trash", "Delete", "error", "delete"))
+ *     .withFunction("edit", (order, ignored) -> openEditor(order))
+ *     .withFunction("delete", (order, ignored) -> deleteOrder(order))
+ *     .build();
  * }</pre>
  *
  * @param <T> the type of the data item
@@ -133,6 +142,18 @@ public interface LitRendererBuilder<T> {
      * Add a {@code <vaadin-progress-bar>} element.
      */
     LitRendererBuilder<T> progressBar(Consumer<ProgressBarElement> configurator);
+
+    /**
+     * Add a dropdown-style row action menu ({@code ⋮} trigger + list of clickable actions),
+     * rendered as a native {@code <details>}/{@code <summary>} disclosure — no per-row
+     * server-side {@code ComponentRenderer}/{@code MenuBar} instance required.
+     *
+     * <p>Requires {@code action-menu-lit-renderer.css} to be loaded in the consuming view
+     * (via {@code @StyleSheet("context://action-menu-lit-renderer.css")}).
+     *
+     * @see ActionMenuElement
+     */
+    LitRendererBuilder<T> actionMenu(Consumer<ActionMenuElement> configurator);
 
     /**
      * Add raw Lit template HTML.
@@ -211,6 +232,7 @@ public interface LitRendererBuilder<T> {
         LayoutElement img(Consumer<ImgElement> configurator);
         LayoutElement checkbox(Consumer<CheckboxElement> configurator);
         LayoutElement progressBar(Consumer<ProgressBarElement> configurator);
+        LayoutElement actionMenu(Consumer<ActionMenuElement> configurator);
         LayoutElement html(String rawHtml);
     }
 
@@ -267,6 +289,60 @@ public interface LitRendererBuilder<T> {
         ProgressBarElement value(String valueBinding);
         ProgressBarElement min(String minBinding);
         ProgressBarElement max(String maxBinding);
+    }
+
+    /**
+     * Dropdown-style row action menu configurator — a {@code ⋮} trigger button that opens
+     * a small panel of clickable actions (e.g. Edit / Delete), rendered client-side with a
+     * native {@code <details>}/{@code <summary>} disclosure element. No server-side
+     * {@code ComponentRenderer} or per-row {@code MenuBar} instance is required.
+     *
+     * <p>Each action is registered by name via {@link #withItem} and must be backed by a
+     * server-side function registered with
+     * {@link LitRendererBuilder#withFunction(String, SerializableBiConsumer)}:
+     * <pre>{@code
+     * LitRenderer<Order> renderer = LitRendererBuilder.<Order>create()
+     *     .actionMenu(menu -> menu
+     *         .withItem("vaadin:edit", "Edit", "edit")
+     *         .withItem("vaadin:trash", "Delete", "error", "delete"))
+     *     .withFunction("edit", (order, ignored) -> openEditor(order))
+     *     .withFunction("delete", (order, ignored) -> deleteOrder(order))
+     *     .build();
+     * }</pre>
+     *
+     * <p>The {@code theme} parameter accepts the same variant tokens as
+     * {@link ButtonElement#theme(String)} (e.g. {@code "error"} to render a destructive
+     * action in red), since each item is rendered as a {@code <vaadin-button theme="tertiary ...">}.
+     *
+     * <p>Only one menu panel is open at a time; opening a menu closes any other open menu
+     * in the same page. Selecting an item automatically closes its panel.
+     *
+     * <p>Note: since the panel is rendered inside the grid cell markup, place this element
+     * in a dedicated, adequately-sized column (typically the last one) to reduce the risk
+     * of the panel being visually clipped by grid row/column overflow.
+     *
+     * <p>Requires {@code action-menu-lit-renderer.css} to be loaded in the consuming view
+     * (via {@code @StyleSheet("context://action-menu-lit-renderer.css")}).
+     */
+    interface ActionMenuElement extends BaseElement<ActionMenuElement> {
+
+        /** Icon for the {@code ⋮} trigger button. Defaults to {@code "vaadin:ellipsis-dots-v"}. */
+        ActionMenuElement triggerIcon(String iconName);
+
+        /** Accessible label for the trigger button. Defaults to {@code "More actions"}. */
+        ActionMenuElement triggerAriaLabel(String ariaLabel);
+
+        /** Add a text-only action item, invoking {@code functionName} when clicked. */
+        ActionMenuElement withItem(String label, String functionName);
+
+        /** Add an action item with a leading icon, invoking {@code functionName} when clicked. */
+        ActionMenuElement withItem(String iconName, String label, String functionName);
+
+        /**
+         * Add an action item with a leading icon and an explicit {@code vaadin-button} theme
+         * variant (e.g. {@code "error"} for a destructive action such as "Delete").
+         */
+        ActionMenuElement withItem(String iconName, String label, String theme, String functionName);
     }
 
     // -----------------------------------------------------------------------

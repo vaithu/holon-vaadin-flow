@@ -14,6 +14,13 @@ public interface MaterialAppBarConfigurator<C extends MaterialAppBarConfigurator
 
     C variant(Variant variant);
 
+    /**
+     * Applies a predefined branded color variant (e.g. {@code MaterialAppBar.Color.INDIGO}).
+     *
+     * @param color the color variant to apply (not null)
+     */
+    C color(com.iyensoft.vaadin.flow.components.MaterialAppBar.Color color);
+
     C headline(Component headline);
 
     default C headline(String headline) {

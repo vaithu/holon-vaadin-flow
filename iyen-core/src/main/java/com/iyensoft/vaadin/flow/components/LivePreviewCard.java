@@ -121,10 +121,9 @@ public class LivePreviewCard extends Div {
      * @return this (fluent)
      */
     public LivePreviewCard setHeader(String title) {
-        titleDiv.removeAll();
-        if (title != null && !title.isEmpty()) {
-            titleDiv.add(new Span(title));
-        }
+        // setText() both clears the previous content and holds the text directly,
+        // so no class-less wrapper Span is needed.
+        titleDiv.setText(title != null ? title : "");
         return this;
     }
 

@@ -18,7 +18,6 @@ package com.iyensoft.vaadin.flow.components;
 import com.holonplatform.core.Validator;
 import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.core.internal.utils.ObjectUtils;
-import com.iyensoft.vaadin.flow.components.Components;
 import com.holonplatform.vaadin.flow.components.HasComponent;
 import com.iyensoft.vaadin.flow.components.builders.ItemLineEditorBuilder;
 import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
@@ -359,6 +358,17 @@ public class ItemLineEditor<T> extends Composite<Div> implements HasComponent, H
      * Adds a column. The renderer receives the row instance and must return the component to
      * render/edit that cell (a text field, combo box, {@link StatusBadge}, plain span, etc.).
      * Columns are appended in call order; the automatic per-row delete action always stays last.
+     *
+     * <p><strong>PERFORMANCE NOTE:</strong> This component uses {@code ComponentRenderer}
+     * for inline editing grids, where each cell must be a real interactive component
+     * (TextField, ComboBox, etc.) with event handlers and validation logic. This is
+     * <em>not</em> a performance antipattern in this context because:
+     * <ul>
+     *   <li>Editing requires component state and real event listeners per cell</li>
+     *   <li>LitRenderer cannot handle complex editing logic or dynamic validation</li>
+     *   <li>Rows are typically small (10-50) and in user's focus</li>
+     * </ul>
+     * For display-only grids with hundreds of rows, use {@code LitRenderer} instead.</p>
      */
     public void addColumn(Column<T> column) {
         ObjectUtils.argumentNotNull(column, "Column must be not null");
@@ -450,7 +460,7 @@ public class ItemLineEditor<T> extends Composite<Div> implements HasComponent, H
         this.changeListener = listener;
     }
 
-    // ── Public row API ───────────────────────────────────────────────────────
+    // ── Public row API ───────────────────────���───────────────────────────────
 
     /** Appends a new row created via the configured row factory, then refreshes the view. */
     public void addRow() {
@@ -915,8 +925,11 @@ public class ItemLineEditor<T> extends Composite<Div> implements HasComponent, H
                 .styleName("ile-card-value").build();
 
         Div left = Components.div().add(titleSpan, subtitleSpan).styleName("ile-card-left").build();
-        Div right = Components.div().add(valueSpan).styleName("ile-card-right").build();
-        Div card = Components.div().add(left, right).styleName("ile-card").build();
+        // valueSpan is a direct flex child of .ile-card: the old ".ile-card-right"
+        // wrapper only contributed "flex-shrink: 0", which now lives on
+        // .ile-card-value itself. buildCard() runs once per row, so that wrapper cost
+        // one Component, one state node and one DOM node on every card.
+        Div card = Components.div().add(left, valueSpan).styleName("ile-card").build();
         if (newlyAddedRows.contains(row)) {
             card.addClassName("ile-card-new");
         }

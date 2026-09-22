@@ -1,8 +1,9 @@
 package com.holonplatform.vaadin.flow.internal.components;
 
-import com.holonplatform.vaadin.flow.components.Components;
 import com.holonplatform.vaadin.flow.components.SingleSelect;
 import com.holonplatform.vaadin.flow.components.support.Timeline;
+import com.holonplatform.vaadin.flow.components.builders.DialogBuilder;
+import com.holonplatform.vaadin.flow.components.Input;
 import com.holonplatform.vaadin.flow.internal.DateRange;
 import com.holonplatform.vaadin.flow.internal.DateRangeField;
 import com.vaadin.flow.component.Component;
@@ -13,8 +14,7 @@ public class DefaultTimeline {
     private DateRange dateRange;
 
     public DefaultTimeline() {
-        timelineInput = Components.input
-                .enumSelect(Timeline.class)
+        timelineInput = Input.enumSelect(Timeline.class)
                 .itemCaptionGenerator(Timeline::getDisplayValue)
                 .withValueChangeListener(event -> decideDateRange(event.getValue()))
                 .allowCustomValue(false)
@@ -30,13 +30,13 @@ public class DefaultTimeline {
         if (timeline.equals(Timeline.CUSTOM) || timeline.getDisplayValue().equalsIgnoreCase(Timeline.CUSTOM.getDisplayValue())) {
             DateRangeField dateRangeField = new DateRangeField();
 
-            Components.dialog
-                    .question(confirmSelected -> {
+            DialogBuilder.question(confirmSelected -> {
                         if (confirmSelected) {
                             setDateRange(dateRangeField.getValue());
                         }
                     })
                     .withComponent(dateRangeField)
+                    .build()
                     .open();
         } else {
             setDateRange(timeline.getDateRange());

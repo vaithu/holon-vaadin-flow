@@ -1,10 +1,11 @@
 package com.iyensoft.vaadin.flow.test;
 
 import com.holonplatform.core.i18n.Localizable;
-import com.iyensoft.vaadin.flow.components.Components;
 import com.holonplatform.vaadin.flow.components.BeanListing;
+import com.iyensoft.vaadin.flow.components.Components;
 import com.iyensoft.vaadin.flow.components.DynamicFilterPanel;
 import com.iyensoft.vaadin.flow.components.GridToolbar;
+import com.iyensoft.vaadin.flow.components.builders.GridToolbarBuilder;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.grid.Grid;
@@ -209,6 +210,35 @@ class TestGridToolbarBuilder {
         assertTrue(panel.toPredicate().test(new Product("Beta", 10, "B")));
         assertEquals(2, filterChanges.get());
         assertFalse(filterBadge.isVisible());
+    }
+
+    @Test
+    void rebindingFilterPanel_stopsTheReplacedPanelFromDrivingTheToolbar() {
+        DynamicFilterPanel<Product> first = DynamicFilterPanel.of(Product.class);
+        DynamicFilterPanel<Product> second = DynamicFilterPanel.of(Product.class);
+        GridToolbar toolbar = GridToolbarBuilder.create()
+                .filterPanel(first)
+                .build();
+
+        toolbar.setFilterPanel(second);
+
+        Component filterBadge = findComponentByTestId(toolbar, "grid-toolbar-filter-badge");
+        assertFalse(filterBadge.isVisible());
+
+        // The replaced panel is no longer bound: activating a filter on it must not
+        // touch this toolbar's badge. Before the fix its listener was never removed,
+        // so a stale panel kept overwriting the badge of the current one.
+        first.applyFilterProgrammatically(
+                QueryFilter.eq(PathProperty.create("name", String.class), "Alpha"));
+
+        assertTrue(first.isAnyActive());
+        assertFalse(filterBadge.isVisible(), "replaced panel must not update the badge");
+
+        // ...while the currently bound panel still does.
+        second.applyFilterProgrammatically(
+                QueryFilter.eq(PathProperty.create("name", String.class), "Beta"));
+
+        assertTrue(filterBadge.isVisible());
     }
 
     private static Button findButton(Component component, String text) {

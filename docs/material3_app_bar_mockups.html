@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Material 3 App Bar Mockups</title>
+<style>
+:root{
+  --primary:#6750a4;
+  --on-primary:#fff;
+  --surface:#fffbfe;
+  --surface-container:#f3edf7;
+  --surface-container-high:#ece6f0;
+  --on-surface:#1d1b20;
+  --on-surface-variant:#49454f;
+  --outline:#79747e;
+  --outline-variant:#cac4d0;
+  --radius:24px;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;background:#f5f3f7;color:var(--on-surface);
+  font-family:Inter,Roboto,Arial,sans-serif;
+}
+.page{max-width:1280px;margin:0 auto;padding:32px}
+h1{font-size:32px;margin:0 0 8px}
+.intro{color:var(--on-surface-variant);margin-bottom:30px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:28px}
+.card{
+  background:#fff;border:1px solid #e4dfe6;border-radius:28px;
+  padding:18px;box-shadow:0 2px 6px rgba(0,0,0,.06);
+}
+.card h2{font-size:18px;margin:0 0 5px}
+.card p{font-size:13px;color:var(--on-surface-variant);margin:0 0 14px}
+.phone{
+  height:390px;border-radius:22px;overflow:hidden;background:var(--surface);
+  border:1px solid var(--outline-variant);position:relative;
+}
+.content{padding:20px 22px}
+.content h3{font-size:22px;margin:5px 0 8px}
+.content p{line-height:1.55;color:var(--on-surface-variant);font-size:14px}
+.appbar{
+  display:flex;align-items:center;gap:4px;padding:8px 12px;
+  min-height:64px;background:var(--surface);color:var(--on-surface);
+}
+.appbar .title{font-size:22px;font-weight:500;line-height:1.2;flex:1;padding:0 8px}
+.icon{
+  width:48px;height:48px;border:0;background:transparent;border-radius:50%;
+  display:grid;place-items:center;color:inherit;font-size:22px;cursor:pointer;
+}
+.icon:hover{background:var(--surface-container)}
+.trailing{display:flex;align-items:center}
+.small .title{font-size:22px}
+.center .title{text-align:center}
+.center{justify-content:space-between}
+.center .title{position:absolute;left:50%;transform:translateX(-50%);white-space:nowrap}
+.medium{height:112px;align-items:flex-end;padding-bottom:20px}
+.medium .title{font-size:28px}
+.large{height:152px;align-items:flex-end;padding-bottom:22px}
+.large .title{font-size:34px;font-weight:400}
+.large .title small{display:block;font-size:13px;color:var(--on-surface-variant);margin-bottom:5px}
+.colored{background:var(--primary);color:var(--on-primary)}
+.scrolled{box-shadow:0 2px 8px rgba(0,0,0,.16);background:var(--surface-container)}
+.search{background:var(--surface-container);border-radius:30px;min-height:64px}
+.search .title{font-size:16px;color:var(--on-surface-variant)}
+.navrail{
+  position:absolute;left:0;top:0;bottom:0;width:74px;background:var(--surface-container);
+  display:flex;flex-direction:column;align-items:center;padding-top:10px;gap:6px
+}
+.navrail + .main{margin-left:74px}
+.navrail .icon{font-size:20px}
+.main{height:100%;overflow:hidden}
+.menu-demo{display:flex;height:100%}
+.menu-demo .main{flex:1}
+.fab{
+  position:absolute;right:18px;bottom:18px;background:var(--primary);color:#fff;
+  width:56px;height:56px;border-radius:18px;display:grid;place-items:center;font-size:24px;
+  box-shadow:0 3px 8px rgba(0,0,0,.22)
+}
+
+.indigo{background:#3f51b5}
+.teal{background:#00695c}
+.emerald{background:#087f5b}
+.orange{background:#e65100}
+.rose{background:#ad1457}
+.purple{background:#512da8}
+.slate{background:#263238}
+.gradient{background:linear-gradient(100deg,#4527a0,#1565c0)}
+
+@media(max-width:850px){.grid{grid-template-columns:1fr}.page{padding:18px}}
+
+.desktop-section{grid-column:1/-1}
+.desktop-window{
+  background:#fff;border:1px solid #ddd7e0;border-radius:24px;overflow:hidden;
+  box-shadow:0 8px 28px rgba(0,0,0,.08);height:360px;
+}
+.desktop-toolbar{
+  height:76px;display:flex;align-items:center;padding:0 18px;gap:16px;
+  background:var(--surface);border-bottom:1px solid var(--outline-variant);
+}
+.desktop-brand{
+  display:flex;align-items:center;gap:11px;min-width:250px;
+  font-size:21px;font-weight:600;white-space:nowrap;
+}
+.brand-logo{
+  width:38px;height:38px;border-radius:11px;background:var(--primary);
+  color:white;display:grid;place-items:center;font-weight:700;
+}
+.desktop-search{
+  height:46px;max-width:620px;flex:1;margin:0 auto;
+  background:var(--surface-container);border:1px solid transparent;
+  border-radius:14px;display:flex;align-items:center;gap:10px;
+  padding:0 15px;color:var(--on-surface-variant);
+}
+.desktop-search .search-icon{font-size:21px}
+.desktop-search span{font-size:14px}
+.desktop-actions{
+  min-width:250px;display:flex;justify-content:flex-end;align-items:center;gap:3px;
+}
+.desktop-actions .icon{width:44px;height:44px}
+.avatar{
+  width:38px;height:38px;border-radius:50%;background:#ddd6e7;
+  display:grid;place-items:center;font-size:13px;font-weight:600;margin-left:5px;
+}
+.desktop-content{display:flex;height:284px}
+.desktop-side{
+  width:220px;background:var(--surface-container);padding:18px 12px;
+}
+.side-item{padding:11px 14px;border-radius:10px;margin-bottom:4px;font-size:14px}
+.side-item.active{background:#e8def8;color:#4f378b;font-weight:600}
+.desktop-main{padding:28px;flex:1}
+.desktop-main h3{margin:0 0 8px;font-size:25px}
+.desktop-main p{color:var(--on-surface-variant);font-size:14px;max-width:650px}
+.desktop-toolbar.indigo-bg{background:#3f51b5;color:#fff}
+.desktop-toolbar.teal-bg{background:#00695c;color:#fff}
+.desktop-toolbar.slate-bg{background:#263238;color:#fff}
+.desktop-toolbar.orange-bg{background:#e65100;color:#fff}
+.desktop-toolbar .brand-logo.on-color{background:rgba(255,255,255,.18)}
+.desktop-toolbar .desktop-search.on-color{background:rgba(255,255,255,.15);color:#fff}
+.desktop-toolbar .desktop-actions .icon:hover{background:rgba(255,255,255,.14)}
+
+</style>
+</head>
+<body>
+<div class="page">
+  <h1>Material 3 — App Bar Mockups</h1>
+  <div class="intro">A visual playground based on the Material 3 top app bar patterns: small, centered, medium, large, search, colored, and scrolled states.</div>
+
+  <div class="grid">
+
+    <section class="card">
+      <h2>1. Small Top App Bar</h2>
+      <p>Standard compact app bar with navigation, title and actions.</p>
+      <div class="phone">
+        <div class="appbar small">
+          <button class="icon">☰</button><div class="title">Dashboard</div>
+          <div class="trailing"><button class="icon">⌕</button><button class="icon">⋮</button></div>
+        </div>
+        <div class="content"><h3>Welcome back</h3><p>Your recent activity, tasks and notifications appear below the top app bar.</p></div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>2. Center-Aligned Top App Bar</h2>
+      <p>Useful when the product identity or page title should remain visually centered.</p>
+      <div class="phone">
+        <div class="appbar center">
+          <button class="icon">‹</button><div class="title">Orders</div>
+          <div class="trailing"><button class="icon">⌕</button><button class="icon">⋮</button></div>
+        </div>
+        <div class="content"><h3>Recent orders</h3><p>Order cards and page content start below the centered title.</p></div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>3. Medium Top App Bar</h2>
+      <p>Larger title treatment for pages where the heading deserves more emphasis.</p>
+      <div class="phone">
+        <div class="appbar medium">
+          <button class="icon">‹</button><div class="title">Customers</div>
+          <div class="trailing"><button class="icon">⌕</button><button class="icon">⋮</button></div>
+        </div>
+        <div class="content"><h3>Customer list</h3><p>Use the extra vertical space to establish page hierarchy before the content.</p></div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>4. Large Top App Bar</h2>
+      <p>Strong editorial-style heading with generous vertical space.</p>
+      <div class="phone">
+        <div class="appbar large">
+          <button class="icon">‹</button>
+          <div class="title"><small>Sales</small>Pipeline</div>
+          <div class="trailing"><button class="icon">⌕</button><button class="icon">⋮</button></div>
+        </div>
+        <div class="content"><h3>Open opportunities</h3><p>Large app bars work well for high-level destination pages.</p></div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>5. Search App Bar</h2>
+      <p>Search-focused variant with the search field taking the primary visual role.</p>
+      <div class="phone">
+        <div class="appbar search">
+          <button class="icon">‹</button>
+          <div class="title">Search customers, invoices...</div>
+          <button class="icon">×</button>
+        </div>
+        <div class="content"><h3>Search results</h3><p>Results, filters and suggestions can appear beneath the search-focused bar.</p></div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>6. Primary-Colored App Bar</h2>
+      <p>A branded treatment using a primary container color while retaining Material-style spacing.</p>
+      <div class="phone">
+        <div class="appbar colored">
+          <button class="icon">☰</button><div class="title">My Business</div>
+          <div class="trailing"><button class="icon">⌕</button><button class="icon">◎</button></div>
+        </div>
+        <div class="content"><h3>Business overview</h3><p>Brand color can establish a strong product identity at the top of the page.</p></div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>7. Scrolled / Elevated State</h2>
+      <p>Example of an app bar gaining tonal separation/elevation after content scrolls underneath.</p>
+      <div class="phone">
+        <div class="appbar scrolled">
+          <button class="icon">‹</button><div class="title">Invoice #1048</div>
+          <div class="trailing"><button class="icon">⇧</button><button class="icon">⋮</button></div>
+        </div>
+        <div class="content"><h3>Invoice details</h3><p>The app bar remains visible while the page content continues underneath.</p><p>Customer<br>Items<br>Payments<br>Notes</p></div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>8. App Bar + Navigation</h2>
+      <p>Top app bar combined with a compact navigation rail pattern for a desktop/tablet layout.</p>
+      <div class="phone">
+        <div class="menu-demo">
+          <aside class="navrail">
+            <button class="icon">⌂</button><button class="icon">▣</button><button class="icon">♙</button><button class="icon">⚙</button>
+          </aside>
+          <div class="main">
+            <div class="appbar">
+              <button class="icon">☰</button><div class="title">Workspace</div>
+              <div class="trailing"><button class="icon">⌕</button><button class="icon">◎</button></div>
+            </div>
+            <div class="content"><h3>Workspace</h3><p>Use navigation alongside the top app bar when your application has multiple major destinations.</p></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>9. Indigo App Bar</h2>
+      <p>Cool, professional branded palette.</p>
+      <div class="phone">
+        <div class="appbar colored indigo"><button class="icon">☰</button><div class="title">Projects</div><div class="trailing"><button class="icon">⌕</button><button class="icon">⋮</button></div></div>
+        <div class="content"><h3>Active projects</h3><p>Clean blue-indigo branding works especially well for business applications.</p></div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>10. Teal App Bar</h2>
+      <p>Fresh accent color for dashboards and productivity apps.</p>
+      <div class="phone">
+        <div class="appbar colored teal"><button class="icon">‹</button><div class="title">Analytics</div><div class="trailing"><button class="icon">↻</button><button class="icon">⋮</button></div></div>
+        <div class="content"><h3>Performance</h3><p>A teal surface gives the interface a lighter, modern character.</p></div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>11. Emerald App Bar</h2>
+      <p>Positive, financial and operational visual language.</p>
+      <div class="phone">
+        <div class="appbar colored emerald"><button class="icon">☰</button><div class="title">Payments</div><div class="trailing"><button class="icon">⌕</button><button class="icon">◎</button></div></div>
+        <div class="content"><h3>Payment summary</h3><p>Deep green creates a strong financial/productivity identity.</p></div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>12. Orange App Bar</h2>
+      <p>High-energy accent for sales, tasks and action-oriented products.</p>
+      <div class="phone">
+        <div class="appbar colored orange"><button class="icon">‹</button><div class="title">Sales</div><div class="trailing"><button class="icon">＋</button><button class="icon">⋮</button></div></div>
+        <div class="content"><h3>Sales pipeline</h3><p>Warm orange creates a more energetic application header.</p></div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>13. Rose App Bar</h2>
+      <p>Contemporary warm accent with strong visual personality.</p>
+      <div class="phone">
+        <div class="appbar colored rose"><button class="icon">☰</button><div class="title">Messages</div><div class="trailing"><button class="icon">⌕</button><button class="icon">⋮</button></div></div>
+        <div class="content"><h3>Inbox</h3><p>A rose palette can distinguish communication or customer-facing areas.</p></div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>14. Deep Purple App Bar</h2>
+      <p>Premium-feeling alternative to the standard Material purple.</p>
+      <div class="phone">
+        <div class="appbar colored purple"><button class="icon">‹</button><div class="title">Premium</div><div class="trailing"><button class="icon">☆</button><button class="icon">⋮</button></div></div>
+        <div class="content"><h3>Premium workspace</h3><p>A deeper purple gives the application a more distinctive branded header.</p></div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>15. Slate / Dark App Bar</h2>
+      <p>Neutral dark treatment for enterprise applications.</p>
+      <div class="phone">
+        <div class="appbar colored slate"><button class="icon">☰</button><div class="title">Admin Console</div><div class="trailing"><button class="icon">⌕</button><button class="icon">◎</button></div></div>
+        <div class="content"><h3>System overview</h3><p>A restrained dark header works well with dense enterprise interfaces.</p></div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>16. Gradient Brand App Bar</h2>
+      <p>A more expressive branded treatment for a modern SaaS product.</p>
+      <div class="phone">
+        <div class="appbar colored gradient"><button class="icon">☰</button><div class="title">StaffOS</div><div class="trailing"><button class="icon">⌕</button><button class="icon">◎</button></div></div>
+        <div class="content"><h3>Team dashboard</h3><p>A gradient can be used as a brand layer while retaining the same app-bar structure.</p></div>
+      </div>
+    </section>
+
+    <section class="card desktop-section">
+      <h2>17. Desktop — Classic Material 3 App Bar</h2>
+      <p>Desktop layout: title on the left, centered search field, and actions grouped at the far right.</p>
+      <div class="desktop-window">
+        <div class="desktop-toolbar">
+          <div class="desktop-brand"><div class="brand-logo">S</div>StaffOS</div>
+          <div class="desktop-search"><span class="search-icon">⌕</span><span>Search customers, invoices, employees...</span></div>
+          <div class="desktop-actions">
+            <button class="icon">＋</button><button class="icon">⌕</button><button class="icon">♧</button><button class="icon">⚙</button><div class="avatar">KS</div>
+          </div>
+        </div>
+        <div class="desktop-content">
+          <aside class="desktop-side"><div class="side-item active">Dashboard</div><div class="side-item">Customers</div><div class="side-item">Invoices</div><div class="side-item">Reports</div></aside>
+          <main class="desktop-main"><h3>Dashboard</h3><p>The search remains visually central while navigation and application identity stay anchored to the left.</p></main>
+        </div>
+      </div>
+    </section>
+
+    <section class="card desktop-section">
+      <h2>18. Desktop — Indigo Brand</h2>
+      <p>Strong branded header while preserving the same desktop information architecture.</p>
+      <div class="desktop-window">
+        <div class="desktop-toolbar indigo-bg">
+          <div class="desktop-brand"><div class="brand-logo on-color">A</div>Acme CRM</div>
+          <div class="desktop-search on-color"><span class="search-icon">⌕</span><span>Search anything...</span></div>
+          <div class="desktop-actions"><button class="icon">＋</button><button class="icon">♢</button><button class="icon">🔔</button><button class="icon">⚙</button><div class="avatar">AB</div></div>
+        </div>
+        <div class="desktop-content"><aside class="desktop-side"><div class="side-item active">Overview</div><div class="side-item">Contacts</div><div class="side-item">Deals</div><div class="side-item">Activities</div></aside><main class="desktop-main"><h3>Overview</h3><p>Desktop app bars can use the full width to balance identity, search and global actions.</p></main></div>
+      </div>
+    </section>
+
+    <section class="card desktop-section">
+      <h2>19. Desktop — Teal Productivity</h2>
+      <p>Compact title, generous central search, and a clean action cluster on the right.</p>
+      <div class="desktop-window">
+        <div class="desktop-toolbar teal-bg">
+          <div class="desktop-brand"><div class="brand-logo on-color">P</div>Projects</div>
+          <div class="desktop-search on-color"><span class="search-icon">⌕</span><span>Search projects and tasks</span></div>
+          <div class="desktop-actions"><button class="icon">＋</button><button class="icon">☼</button><button class="icon">🔔</button><div class="avatar">KS</div></div>
+        </div>
+        <div class="desktop-content"><aside class="desktop-side"><div class="side-item active">My Work</div><div class="side-item">Projects</div><div class="side-item">Team</div><div class="side-item">Calendar</div></aside><main class="desktop-main"><h3>My Work</h3><p>Tasks, milestones and team activity can occupy the main workspace beneath the app bar.</p></main></div>
+      </div>
+    </section>
+
+    <section class="card desktop-section">
+      <h2>20. Desktop — Neutral Enterprise</h2>
+      <p>Dark slate header for a dense enterprise/admin application.</p>
+      <div class="desktop-window">
+        <div class="desktop-toolbar slate-bg">
+          <div class="desktop-brand"><div class="brand-logo on-color">E</div>Enterprise Admin</div>
+          <div class="desktop-search on-color"><span class="search-icon">⌕</span><span>Search users, services, settings...</span></div>
+          <div class="desktop-actions"><button class="icon">⌕</button><button class="icon">🔔</button><button class="icon">⚙</button><div class="avatar">AD</div></div>
+        </div>
+        <div class="desktop-content"><aside class="desktop-side"><div class="side-item active">System</div><div class="side-item">Users</div><div class="side-item">Security</div><div class="side-item">Audit</div></aside><main class="desktop-main"><h3>System overview</h3><p>A neutral desktop header works particularly well when the application contains many administrative tools.</p></main></div>
+      </div>
+    </section>
+
+  </div>
+</div>
+</body>
+</html>

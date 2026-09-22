@@ -1,0 +1,124 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Vaadin AppLayout Color Variants</title><style>
+*{box-sizing:border-box}body{margin:0;background:#eef1f4;color:#20252b;font-family:Inter,Roboto,Arial,sans-serif}.page{max-width:1500px;margin:auto;padding:30px}h1{margin:0 0 6px;font-size:30px}.intro{color:#667085;margin-bottom:28px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:24px}.card{background:#fff;border:1px solid #dfe3e8;border-radius:20px;padding:18px;box-shadow:0 3px 12px #0000000b}.card h2{font-size:18px;margin:0 0 5px}.card>p{font-size:13px;color:#667085;margin:0 0 14px}.app{height:460px;border:1px solid #d9dee4;border-radius:16px;overflow:hidden;display:flex;background:#f8f9fa}.drawer{width:225px;background:#fff;border-right:1px solid #e3e6e8;flex-shrink:0}.drawer-brand{height:72px;padding:15px;display:flex;align-items:center;gap:10px;border-bottom:1px solid #eef0f2}.logo{width:34px;height:34px;border-radius:9px;background:var(--brand);color:#fff;display:grid;place-items:center;font-weight:700}.nav{padding:12px 9px}.nav-section{font-size:10px;text-transform:uppercase;color:#98a0a8;padding:10px 10px 5px;letter-spacing:.07em}.nav-item{height:42px;border-radius:9px;padding:0 11px;display:flex;align-items:center;gap:11px;font-size:14px;margin:2px 0}.nav-item span{width:20px;text-align:center}.nav-item.active{background:var(--active);color:var(--active-text);font-weight:600}.content{flex:1;min-width:0}.navbar{height:64px;background:#fff;border-bottom:1px solid #e3e6e8;display:flex;align-items:center;padding:0 12px;gap:8px}.toggle,.actions button{border:0;background:transparent;border-radius:9px;width:40px;height:40px;font-size:18px;color:#56606a}.toggle:hover,.actions button:hover{background:#f1f3f5}.brand{display:flex;align-items:center;gap:9px;min-width:175px;white-space:nowrap}.brand .logo{width:32px;height:32px}.search{height:42px;max-width:560px;flex:1;margin:auto;background:#f3f5f7;border:1px solid #e1e5e9;border-radius:10px;display:flex;align-items:center;gap:9px;padding:0 12px;color:#69727c;font-size:14px}.search span{flex:1}kbd{font-size:10px;background:#fff;border:1px solid #d7dce1;border-radius:4px;padding:3px 6px}.actions{display:flex;align-items:center;gap:1px;margin-left:auto}.avatar{width:33px;height:33px;border-radius:50%;background:#dce3e8;display:grid;place-items:center;font-size:11px;font-weight:700;margin-left:5px}.view{padding:27px 30px}.view small{color:#7b8490;font-size:12px}.view h3{font-size:26px;margin:10px 0 7px}.view p{font-size:14px;color:#667085;line-height:1.55;max-width:650px}.tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:25px}.tiles>div{background:#fff;border:1px solid #e1e5e9;border-radius:11px;padding:15px}.tiles b{display:block;font-size:20px;margin-bottom:5px}.tiles small{color:#667085}@media(max-width:900px){.grid{grid-template-columns:1fr}}@media(max-width:650px){.page{padding:15px}.drawer{width:190px}.brand b{display:none}.search{display:none}.tiles{grid-template-columns:1fr}}
+</style></head><body><div class="page"><h1>Vaadin AppLayout — Color Variants</h1><div class="intro">Same Vaadin-style AppLayout structure across different visual themes: navbar, global search, actions, drawer navigation and routed content.</div><div class="grid">
+<section class="card" style="--brand:#0b6e99;--active:#e3f2f9;--active-text:#075985">
+<h2>1. Blue — StaffOS</h2><p>Vaadin AppLayout theme with the same navbar, drawer and content architecture.</p>
+<div class="app">
+<aside class="drawer"><div class="drawer-brand"><div class="logo">S</div><b>StaffOS</b></div>
+<nav class="nav"><div class="nav-section">Workspace</div>
+<div class="nav-item active"><span>⌂</span>Dashboard</div><div class="nav-item"><span>♙</span>Customers</div>
+<div class="nav-item"><span>▣</span>Projects</div><div class="nav-item"><span>▤</span>Reports</div>
+<div class="nav-section">System</div><div class="nav-item"><span>⚙</span>Settings</div></nav></aside>
+<main class="content"><header class="navbar"><button class="toggle">☰</button>
+<div class="brand"><div class="logo">S</div><b>StaffOS</b></div>
+<div class="search">⌕ <span>Search everything...</span><kbd>Ctrl K</kbd></div>
+<div class="actions"><button>＋</button><button>🔔</button><button>?</button><button>⚙</button><div class="avatar">KS</div></div></header>
+<section class="view"><small>Workspace / Dashboard</small><h3>Dashboard</h3><p>Global search and actions remain in the navbar. Primary navigation stays in the AppLayout drawer.</p>
+<div class="tiles"><div><b>248</b><small>Employees</small></div><div><b>84</b><small>Open tasks</small></div><div><b>$48K</b><small>Revenue</small></div></div></section></main>
+</div></section>
+<section class="card" style="--brand:#4f46e5;--active:#eef2ff;--active-text:#3730a3">
+<h2>2. Indigo — Insight</h2><p>Vaadin AppLayout theme with the same navbar, drawer and content architecture.</p>
+<div class="app">
+<aside class="drawer"><div class="drawer-brand"><div class="logo">I</div><b>Insight</b></div>
+<nav class="nav"><div class="nav-section">Workspace</div>
+<div class="nav-item active"><span>⌂</span>Dashboard</div><div class="nav-item"><span>♙</span>Customers</div>
+<div class="nav-item"><span>▣</span>Projects</div><div class="nav-item"><span>▤</span>Reports</div>
+<div class="nav-section">System</div><div class="nav-item"><span>⚙</span>Settings</div></nav></aside>
+<main class="content"><header class="navbar"><button class="toggle">☰</button>
+<div class="brand"><div class="logo">I</div><b>Insight</b></div>
+<div class="search">⌕ <span>Search everything...</span><kbd>Ctrl K</kbd></div>
+<div class="actions"><button>＋</button><button>🔔</button><button>?</button><button>⚙</button><div class="avatar">KS</div></div></header>
+<section class="view"><small>Workspace / Dashboard</small><h3>Dashboard</h3><p>Global search and actions remain in the navbar. Primary navigation stays in the AppLayout drawer.</p>
+<div class="tiles"><div><b>248</b><small>Employees</small></div><div><b>84</b><small>Open tasks</small></div><div><b>$48K</b><small>Revenue</small></div></div></section></main>
+</div></section>
+<section class="card" style="--brand:#0f766e;--active:#e6fffb;--active-text:#115e59">
+<h2>3. Teal — Operations</h2><p>Vaadin AppLayout theme with the same navbar, drawer and content architecture.</p>
+<div class="app">
+<aside class="drawer"><div class="drawer-brand"><div class="logo">O</div><b>Operations</b></div>
+<nav class="nav"><div class="nav-section">Workspace</div>
+<div class="nav-item active"><span>⌂</span>Dashboard</div><div class="nav-item"><span>♙</span>Customers</div>
+<div class="nav-item"><span>▣</span>Projects</div><div class="nav-item"><span>▤</span>Reports</div>
+<div class="nav-section">System</div><div class="nav-item"><span>⚙</span>Settings</div></nav></aside>
+<main class="content"><header class="navbar"><button class="toggle">☰</button>
+<div class="brand"><div class="logo">O</div><b>Operations</b></div>
+<div class="search">⌕ <span>Search everything...</span><kbd>Ctrl K</kbd></div>
+<div class="actions"><button>＋</button><button>🔔</button><button>?</button><button>⚙</button><div class="avatar">KS</div></div></header>
+<section class="view"><small>Workspace / Dashboard</small><h3>Dashboard</h3><p>Global search and actions remain in the navbar. Primary navigation stays in the AppLayout drawer.</p>
+<div class="tiles"><div><b>248</b><small>Employees</small></div><div><b>84</b><small>Open tasks</small></div><div><b>$48K</b><small>Revenue</small></div></div></section></main>
+</div></section>
+<section class="card" style="--brand:#c62828;--active:#ffebee;--active-text:#a61b1b">
+<h2>4. Red — Service Desk</h2><p>Vaadin AppLayout theme with the same navbar, drawer and content architecture.</p>
+<div class="app">
+<aside class="drawer"><div class="drawer-brand"><div class="logo">S</div><b>Service Desk</b></div>
+<nav class="nav"><div class="nav-section">Workspace</div>
+<div class="nav-item active"><span>⌂</span>Dashboard</div><div class="nav-item"><span>♙</span>Customers</div>
+<div class="nav-item"><span>▣</span>Projects</div><div class="nav-item"><span>▤</span>Reports</div>
+<div class="nav-section">System</div><div class="nav-item"><span>⚙</span>Settings</div></nav></aside>
+<main class="content"><header class="navbar"><button class="toggle">☰</button>
+<div class="brand"><div class="logo">S</div><b>Service Desk</b></div>
+<div class="search">⌕ <span>Search everything...</span><kbd>Ctrl K</kbd></div>
+<div class="actions"><button>＋</button><button>🔔</button><button>?</button><button>⚙</button><div class="avatar">KS</div></div></header>
+<section class="view"><small>Workspace / Dashboard</small><h3>Dashboard</h3><p>Global search and actions remain in the navbar. Primary navigation stays in the AppLayout drawer.</p>
+<div class="tiles"><div><b>248</b><small>Employees</small></div><div><b>84</b><small>Open tasks</small></div><div><b>$48K</b><small>Revenue</small></div></div></section></main>
+</div></section>
+<section class="card" style="--brand:#087f8c;--active:#e0f7fa;--active-text:#006064">
+<h2>5. Cyan — Analytics</h2><p>Vaadin AppLayout theme with the same navbar, drawer and content architecture.</p>
+<div class="app">
+<aside class="drawer"><div class="drawer-brand"><div class="logo">A</div><b>Analytics</b></div>
+<nav class="nav"><div class="nav-section">Workspace</div>
+<div class="nav-item active"><span>⌂</span>Dashboard</div><div class="nav-item"><span>♙</span>Customers</div>
+<div class="nav-item"><span>▣</span>Projects</div><div class="nav-item"><span>▤</span>Reports</div>
+<div class="nav-section">System</div><div class="nav-item"><span>⚙</span>Settings</div></nav></aside>
+<main class="content"><header class="navbar"><button class="toggle">☰</button>
+<div class="brand"><div class="logo">A</div><b>Analytics</b></div>
+<div class="search">⌕ <span>Search everything...</span><kbd>Ctrl K</kbd></div>
+<div class="actions"><button>＋</button><button>🔔</button><button>?</button><button>⚙</button><div class="avatar">KS</div></div></header>
+<section class="view"><small>Workspace / Dashboard</small><h3>Dashboard</h3><p>Global search and actions remain in the navbar. Primary navigation stays in the AppLayout drawer.</p>
+<div class="tiles"><div><b>248</b><small>Employees</small></div><div><b>84</b><small>Open tasks</small></div><div><b>$48K</b><small>Revenue</small></div></div></section></main>
+</div></section>
+<section class="card" style="--brand:#b45309;--active:#fff7df;--active-text:#92400e">
+<h2>6. Amber — Sales Hub</h2><p>Vaadin AppLayout theme with the same navbar, drawer and content architecture.</p>
+<div class="app">
+<aside class="drawer"><div class="drawer-brand"><div class="logo">S</div><b>Sales Hub</b></div>
+<nav class="nav"><div class="nav-section">Workspace</div>
+<div class="nav-item active"><span>⌂</span>Dashboard</div><div class="nav-item"><span>♙</span>Customers</div>
+<div class="nav-item"><span>▣</span>Projects</div><div class="nav-item"><span>▤</span>Reports</div>
+<div class="nav-section">System</div><div class="nav-item"><span>⚙</span>Settings</div></nav></aside>
+<main class="content"><header class="navbar"><button class="toggle">☰</button>
+<div class="brand"><div class="logo">S</div><b>Sales Hub</b></div>
+<div class="search">⌕ <span>Search everything...</span><kbd>Ctrl K</kbd></div>
+<div class="actions"><button>＋</button><button>🔔</button><button>?</button><button>⚙</button><div class="avatar">KS</div></div></header>
+<section class="view"><small>Workspace / Dashboard</small><h3>Dashboard</h3><p>Global search and actions remain in the navbar. Primary navigation stays in the AppLayout drawer.</p>
+<div class="tiles"><div><b>248</b><small>Employees</small></div><div><b>84</b><small>Open tasks</small></div><div><b>$48K</b><small>Revenue</small></div></div></section></main>
+</div></section>
+<section class="card" style="--brand:#be185d;--active:#fce7f3;--active-text:#9d174d">
+<h2>7. Pink — People</h2><p>Vaadin AppLayout theme with the same navbar, drawer and content architecture.</p>
+<div class="app">
+<aside class="drawer"><div class="drawer-brand"><div class="logo">P</div><b>People</b></div>
+<nav class="nav"><div class="nav-section">Workspace</div>
+<div class="nav-item active"><span>⌂</span>Dashboard</div><div class="nav-item"><span>♙</span>Customers</div>
+<div class="nav-item"><span>▣</span>Projects</div><div class="nav-item"><span>▤</span>Reports</div>
+<div class="nav-section">System</div><div class="nav-item"><span>⚙</span>Settings</div></nav></aside>
+<main class="content"><header class="navbar"><button class="toggle">☰</button>
+<div class="brand"><div class="logo">P</div><b>People</b></div>
+<div class="search">⌕ <span>Search everything...</span><kbd>Ctrl K</kbd></div>
+<div class="actions"><button>＋</button><button>🔔</button><button>?</button><button>⚙</button><div class="avatar">KS</div></div></header>
+<section class="view"><small>Workspace / Dashboard</small><h3>Dashboard</h3><p>Global search and actions remain in the navbar. Primary navigation stays in the AppLayout drawer.</p>
+<div class="tiles"><div><b>248</b><small>Employees</small></div><div><b>84</b><small>Open tasks</small></div><div><b>$48K</b><small>Revenue</small></div></div></section></main>
+</div></section>
+<section class="card" style="--brand:#334155;--active:#e2e8f0;--active-text:#334155">
+<h2>8. Slate — Enterprise</h2><p>Vaadin AppLayout theme with the same navbar, drawer and content architecture.</p>
+<div class="app">
+<aside class="drawer"><div class="drawer-brand"><div class="logo">E</div><b>Enterprise</b></div>
+<nav class="nav"><div class="nav-section">Workspace</div>
+<div class="nav-item active"><span>⌂</span>Dashboard</div><div class="nav-item"><span>♙</span>Customers</div>
+<div class="nav-item"><span>▣</span>Projects</div><div class="nav-item"><span>▤</span>Reports</div>
+<div class="nav-section">System</div><div class="nav-item"><span>⚙</span>Settings</div></nav></aside>
+<main class="content"><header class="navbar"><button class="toggle">☰</button>
+<div class="brand"><div class="logo">E</div><b>Enterprise</b></div>
+<div class="search">⌕ <span>Search everything...</span><kbd>Ctrl K</kbd></div>
+<div class="actions"><button>＋</button><button>🔔</button><button>?</button><button>⚙</button><div class="avatar">KS</div></div></header>
+<section class="view"><small>Workspace / Dashboard</small><h3>Dashboard</h3><p>Global search and actions remain in the navbar. Primary navigation stays in the AppLayout drawer.</p>
+<div class="tiles"><div><b>248</b><small>Employees</small></div><div><b>84</b><small>Open tasks</small></div><div><b>$48K</b><small>Revenue</small></div></div></section></main>
+</div></section></div></div></body></html>

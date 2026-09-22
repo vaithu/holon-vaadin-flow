@@ -15,10 +15,11 @@
  */
 package com.iyensoft.vaadin.flow.test;
 
-import com.iyensoft.vaadin.flow.components.Components;
 import com.iyensoft.vaadin.flow.components.Breadcrumb;
 import com.iyensoft.vaadin.flow.components.BreadcrumbItem;
 import com.iyensoft.vaadin.flow.components.BreadcrumbPage;
+import com.iyensoft.vaadin.flow.components.builders.BreadcrumbBuilder;
+import com.iyensoft.vaadin.flow.components.Components;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.router.RouterLink;
 import org.junit.jupiter.api.Test;
@@ -54,7 +55,7 @@ class TestBreadcrumbBuilder {
 
     @Test
     void breadcrumbBuilder_clearsExistingItems() {
-        Breadcrumb breadcrumb = Components.breadcrumb()
+        Breadcrumb breadcrumb = BreadcrumbBuilder.create()
                 .item(new BreadcrumbItem(linkWithHref("home")))
                 .clear()
                 .page("Current")

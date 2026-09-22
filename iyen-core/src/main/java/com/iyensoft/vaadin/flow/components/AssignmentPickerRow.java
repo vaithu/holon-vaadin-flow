@@ -66,7 +66,15 @@ public class AssignmentPickerRow extends Div {
 
     // ── DOM structure ─────────────────────────────────────────────────────
 
-    private final Span initialsSpan = new Span();
+    /**
+     * The avatar circle. It carries the initials as its own text: the
+     * {@code .apr__avatar} rule already centres and styles that text
+     * ({@code inline-flex} + {@code align-items}/{@code justify-content}, font,
+     * colour), so an inner {@code Span} would be an unstyled, class-less element
+     * that only costs an extra server-side Component, state node and DOM node
+     * on every row.
+     */
+    private final Div  avatar        = new Div();
     private final Span nameSpan     = new Span();
     private final Span descSpan     = new Span();
     private final Span actionSpan   = new Span();
@@ -87,8 +95,7 @@ public class AssignmentPickerRow extends Div {
         getElement().setAttribute("role",    "button");
         getElement().setAttribute("tabindex", "0");
 
-        // Avatar circle
-        Div avatar = new Div(initialsSpan);
+        // Avatar circle — holds the initials directly as its own text
         avatar.addClassName(CSS_AVATAR);
         avatar.addClassName(CSS_COLOR_PFX + colorIndex);
 
@@ -135,7 +142,7 @@ public class AssignmentPickerRow extends Div {
     public AssignmentPickerRow setName(String name) {
         nameSpan.setText(name != null ? name : "");
         if (overrideInitials == null) {
-            initialsSpan.setText(deriveInitials(name));
+            avatar.setText(deriveInitials(name));
         }
         return this;
     }
@@ -164,7 +171,7 @@ public class AssignmentPickerRow extends Div {
      */
     public AssignmentPickerRow setInitials(String initials) {
         this.overrideInitials = initials;
-        initialsSpan.setText(initials != null ? initials : deriveInitials(nameSpan.getText()));
+        avatar.setText(initials != null ? initials : deriveInitials(nameSpan.getText()));
         return this;
     }
 
@@ -180,15 +187,10 @@ public class AssignmentPickerRow extends Div {
      * @return this (fluent)
      */
     public AssignmentPickerRow setColorIndex(int index) {
-        Div avatar = (Div) getChildren()
-                .filter(c -> c.getElement().getClassList().contains(CSS_AVATAR))
-                .findFirst()
-                .orElse(null);
-        if (avatar != null) {
-            avatar.removeClassName(CSS_COLOR_PFX + colorIndex);
-            this.colorIndex = Math.abs(index) % COLOR_PRESETS;
-            avatar.addClassName(CSS_COLOR_PFX + colorIndex);
-        }
+        // The avatar is held as a field, so no child lookup is needed.
+        avatar.removeClassName(CSS_COLOR_PFX + colorIndex);
+        this.colorIndex = Math.abs(index) % COLOR_PRESETS;
+        avatar.addClassName(CSS_COLOR_PFX + colorIndex);
         return this;
     }
 

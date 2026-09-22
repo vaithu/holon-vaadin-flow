@@ -1,12 +1,12 @@
 /*
  * Copyright 2016-2019 Axioma srl.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -15,17 +15,19 @@
  */
 package com.holonplatform.vaadin.flow.data;
 
+import com.holonplatform.core.internal.utils.ObjectUtils;
 import com.holonplatform.vaadin.flow.internal.data.DefaultItemListingLazyDataProviderAdapter;
 import com.vaadin.flow.data.provider.BackEndDataProvider;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
  * A {@link BackEndDataProvider} adapter to be used in item listings.
- * 
+ *
  * @param <T> Data type
  * @param <F> Filter type
- * 
+ *
  * @since 5.2.2
  */
 public interface ItemListingLazyDataProviderAdapter<T, F> extends BackEndDataProvider<T, F> {
@@ -81,6 +83,21 @@ public interface ItemListingLazyDataProviderAdapter<T, F> extends BackEndDataPro
 	void addAdditionalItem(T item);
 
 	/**
+	 * Add a set of additional items to the data provider.
+	 * <p>
+	 * This method should be preferred to {@link #addAdditionalItem(Object)} when more than one item has to be added,
+	 * since the listing data is refreshed only once, instead of once per item.
+	 * </p>
+	 * @param items The items to add (not null)
+	 * @see #addAdditionalItem(Object)
+	 * @since 5.2.2
+	 */
+	default void addAdditionalItems(Collection<? extends T> items) {
+		ObjectUtils.argumentNotNull(items, "Additional items to add must be not null");
+		items.forEach(this::addAdditionalItem);
+	}
+
+	/**
 	 * Remove an additional item from the data provider.
 	 * @param item The item to remove (not null)
 	 * @return <code>true</code> if given item was an additional item and it's been removed, <code>false</code>
@@ -89,6 +106,29 @@ public interface ItemListingLazyDataProviderAdapter<T, F> extends BackEndDataPro
 	 * @see #removeAdditionalItems()
 	 */
 	boolean removeAdditionalItem(T item);
+
+	/**
+	 * Remove a set of additional items from the data provider.
+	 * <p>
+	 * This method should be preferred to {@link #removeAdditionalItem(Object)} when more than one item has to be
+	 * removed, since the listing data is refreshed only once, instead of once per item.
+	 * </p>
+	 * @param items The items to remove (not null)
+	 * @return <code>true</code> if at least one of the given items was an additional item and it's been removed,
+	 *         <code>false</code> otherwise
+	 * @see #removeAdditionalItem(Object)
+	 * @since 5.2.2
+	 */
+	default boolean removeAdditionalItems(Collection<? extends T> items) {
+		ObjectUtils.argumentNotNull(items, "Additional items to remove must be not null");
+		boolean removed = false;
+		for (T item : items) {
+			if (removeAdditionalItem(item)) {
+				removed = true;
+			}
+		}
+		return removed;
+	}
 
 	/**
 	 * Remove all the additional items from the data provider.

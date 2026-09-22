@@ -225,7 +225,8 @@ public interface ListingBundleConfigurer<T, C extends ListingBundleConfigurer<T,
     /**
      * Registers an <em>Edit</em> action in the per-row actions column.
      * The column is rendered as a frozen-to-end column with a vertical ellipsis (⋮)
-     * trigger that opens a {@code MenuBar} sub-menu listing all registered actions.
+     * trigger that opens a small panel listing all registered actions, rendered entirely
+     * client-side (O(1) server cost, no per-row server-side component).
      * The column is added automatically when at least one action is registered.
      *
      * <pre>{@code
@@ -264,26 +265,19 @@ public interface ListingBundleConfigurer<T, C extends ListingBundleConfigurer<T,
     // ── High-performance mode ─────────────────────────────────────────────────
 
     /**
-     * Switches the per-row actions column from the default
-     * {@code ComponentRenderer} (one {@code MenuBar} instance <em>per visible row</em>)
-     * to a high-performance mode that uses:
-     * <ul>
-     *   <li>A <b>single shared {@code ContextMenu}</b> for the entire grid — O(1) server
-     *       components regardless of row count or page size.</li>
-     *   <li>A <b>{@code LitRenderer}</b> for the trigger cell — purely client-side DOM,
-     *       zero server-side component cost per row.</li>
-     *   <li>The grid's native {@code itemClickListener} (carries {@code clientX/Y}) to
-     *       open the menu at the exact cursor position.</li>
-     * </ul>
+     * Switches the per-row actions column from the default ⋮ dropdown (a {@code <details>}
+     * disclosure rendered via {@code LitRenderer}) to a variant that renders one icon button
+     * per action directly in the row (e.g. [✏][🗑]).
      *
-     * <p><b>When to use:</b> high-concurrency deployments (hundreds of simultaneous
-     * sessions), or grids with virtual scroll and large visible row counts.</p>
+     * <p>Both variants are O(1) server-side — zero server-side components per row regardless
+     * of grid size or concurrent session count. This method only changes the <em>visual</em>
+     * presentation, not the performance characteristics.</p>
      *
      * <pre>{@code
      * Components.listing(Product.class)
      *     .withEditAction(p -> navigator.navigateTo(EditView.class, p.getId()))
      *     .withDeleteAction(p -> service.delete(p.getId()))
-     *     .withHighPerformanceActions()  // flip to O(1) mode
+     *     .withHighPerformanceActions()  // render icon buttons instead of a ⋮ dropdown
      *     .build();
      * }</pre>
      */

@@ -1,14 +1,14 @@
 package com.holonplatform.vaadin.flow.internal.components;
 
-import com.holonplatform.vaadin.flow.components.Components;
 import com.holonplatform.vaadin.flow.components.HasEditButton;
+import com.holonplatform.vaadin.flow.components.builders.ButtonBuilder;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.icon.VaadinIcon;
 
 public class DefaultEditButton extends Button implements HasEditButton<DefaultEditButton> {
 
     public DefaultEditButton() {
-        this.editBtn = Components.button()
+        this.editBtn = ButtonBuilder.create()
                 .tertiaryInline()
                 .icon(VaadinIcon.EDIT)
                 .visible(false)

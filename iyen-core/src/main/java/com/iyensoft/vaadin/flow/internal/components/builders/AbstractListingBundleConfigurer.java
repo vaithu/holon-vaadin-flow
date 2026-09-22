@@ -14,6 +14,7 @@ import com.holonplatform.core.property.Property;
 import com.holonplatform.core.query.QueryFilter;
 import com.holonplatform.core.query.QuerySort;
 import com.holonplatform.vaadin.flow.components.*;
+import com.holonplatform.vaadin.flow.components.builders.LitRendererBuilder;
 import com.iyensoft.vaadin.flow.components.builders.GridToolbarBuilder;
 import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
 import com.iyensoft.vaadin.flow.components.DynamicFilterPanel;
@@ -25,19 +26,14 @@ import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.DetachEvent;
-import com.vaadin.flow.component.contextmenu.MenuItem;
-import com.vaadin.flow.component.contextmenu.SubMenu;
 import com.vaadin.flow.component.grid.ItemClickEvent;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
-import com.vaadin.flow.component.menubar.MenuBar;
-import com.vaadin.flow.component.menubar.MenuBarVariant;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.provider.CallbackDataProvider;
 import com.vaadin.flow.data.provider.QuerySortOrder;
-import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.data.renderer.LitRenderer;
 import com.vaadin.flow.data.renderer.Renderer;
 import com.vaadin.flow.dom.DomEventListener;
@@ -425,7 +421,7 @@ public abstract class AbstractListingBundleConfigurer<T, C extends ListingBundle
             }
         }
 
-        // ── Actions column ────────────────────────────────────────────────────
+        // ── Actions column ──────────────────────────────────────────────��─────
         if (!rowActions.isEmpty()) {
             if (highPerformanceActions) {
                 addHighPerformanceActionColumn(grid, List.copyOf(rowActions));
@@ -531,33 +527,61 @@ public abstract class AbstractListingBundleConfigurer<T, C extends ListingBundle
     }
 
     /**
-     * Adds a frozen-to-end actions column to the grid.  Each row renders a
-     * {@code MenuBar} (tertiary-inline, icon-only) with an ellipsis trigger;
-     * clicking opens a sub-menu listing all registered {@link ListingBundleConfigurer.RowAction}s.
+     * Adds a frozen-to-end actions column to the grid.
      *
-     * <p><b>Cost:</b> O(rows) — one {@code MenuBar} instance per visible row.</p>
+     * <p>Both variants are O(1) server-side — zero server-side components per row, entirely
+     * rendered client-side via {@link LitRendererBuilder}. The two only differ visually:</p>
+     * <ul>
+     *   <li><b>Default (⋮ dropdown):</b> a single {@code <details>} disclosure trigger per row,
+     *       opening a small panel listing all registered actions — visually equivalent to the
+     *       former {@code MenuBar}-based rendering, but without any per-row server component.</li>
+     *   <li><b>{@code withHighPerformanceActions()}:</b> renders one icon button per action
+     *       directly in the row (e.g. [✏][🗑]) instead of a dropdown.</li>
+     * </ul>
      */
     @SuppressWarnings("unchecked")
     private void addActionColumn(com.vaadin.flow.component.grid.Grid<T> grid,
                                  List<ListingBundleConfigurer.RowAction<T>> actions) {
-        var col = grid.addColumn(new ComponentRenderer<>(item -> {
-            MenuBar menuBar = new MenuBar();
-            menuBar.addThemeVariants(MenuBarVariant.LUMO_TERTIARY_INLINE);
-            menuBar.addClassName("action-column__menu");
-            MenuItem trigger = menuBar.addItem(new Icon(VaadinIcon.ELLIPSIS_DOTS_V));
-            SubMenu subMenu = trigger.getSubMenu();
-            for (ListingBundleConfigurer.RowAction<T> action : actions) {
-                MenuItem actionItem = subMenu.addItem(action.label(),
-                        e -> action.handler().accept(item));
-                if (action.icon() != null) {
-                    actionItem.addComponentAsFirst(new Icon(action.icon()));
-                }
-                if (action.destructive()) {
-                    actionItem.getElement().setAttribute("theme", "error");
-                }
-            }
-            return menuBar;
-        }));
+        if (highPerformanceActions) {
+            addHighPerformanceActionColumn(grid, actions);
+        } else {
+            addDropdownActionColumn(grid, actions);
+        }
+    }
+
+    /**
+     * Default ⋮ dropdown variant — O(1) server-side. Renders a native
+     * {@code <details>}/{@code <summary>} disclosure per row via
+     * {@link LitRendererBuilder#actionMenu(Consumer)}; no per-row {@code MenuBar}
+     * or {@code ComponentRenderer} instance is created.
+     */
+    @SuppressWarnings("unchecked")
+    private void addDropdownActionColumn(com.vaadin.flow.component.grid.Grid<T> grid,
+                                         List<ListingBundleConfigurer.RowAction<T>> actions) {
+        LitRendererBuilder<T> builder = LitRendererBuilder.<T>create()
+                .actionMenu(menu -> {
+                    for (int i = 0; i < actions.size(); i++) {
+                        ListingBundleConfigurer.RowAction<T> action = actions.get(i);
+                        String functionName = "action" + i;
+                        if (action.icon() != null) {
+                            String iconName = "vaadin:" + action.icon().name().toLowerCase().replace('_', '-');
+                            if (action.destructive()) {
+                                menu.withItem(iconName, action.label(), "error", functionName);
+                            } else {
+                                menu.withItem(iconName, action.label(), functionName);
+                            }
+                        } else {
+                            menu.withItem(action.label(), functionName);
+                        }
+                    }
+                });
+        for (int i = 0; i < actions.size(); i++) {
+            final ListingBundleConfigurer.RowAction<T> action = actions.get(i);
+            builder.withFunction("action" + i, (item, key) -> action.handler().accept(item));
+        }
+
+        LitRenderer<T> litRenderer = builder.build();
+        var col = grid.addColumn(litRenderer);
         col.setKey("__actions");
         col.setHeader("");
         col.setAutoWidth(true);
@@ -570,58 +594,49 @@ public abstract class AbstractListingBundleConfigurer<T, C extends ListingBundle
      * High-performance variant of the actions column.
      *
      * <p><b>Cost:</b> O(1) server-side — <em>zero</em> server-side components per row.
-     * The entire cell is rendered client-side by a {@code LitRenderer}: one icon button
-     * per registered action, each wired to its own {@code withFunction} handler.</p>
-     *
-     * <p><b>Correct Vaadin 25 {@code LitRenderer} pattern (from the official example):</b>
-     * <pre>{@code
-     * // Template: direct binding — no arrow-function wrapper
-     * @click="${action0}"
-     *
-     * // Java: item-only SerializableConsumer
-     * .withFunction("action0", item -> handler.accept(item))
-     * }</pre>
-     * An arrow-function wrapper {@code (e) => action0(...)} looks up {@code action0}
-     * as a closure variable in the browser scope, finds nothing, and silently does nothing.</p>
+     * The entire cell is rendered client-side by a {@code LitRenderer}, built here via the
+     * type-safe {@link LitRendererBuilder} DSL instead of a hand-rolled HTML template
+     * string: one {@code <vaadin-button>} per registered action, each wired to its own
+     * {@code withFunction} handler.</p>
      *
      * <p><b>Visual:</b> renders individual icon buttons per row (e.g. [✏][🗑]) rather
-     * than a ⋮ dropdown.  For the ⋮ dropdown style omit {@code withHighPerformanceActions()}
-     * and use the default {@code ComponentRenderer} path.</p>
+     * than a ⋮ dropdown. For the ⋮ dropdown style omit {@code withHighPerformanceActions()}
+     * and use the default {@code actionMenu()}-based path — both are O(1).</p>
      */
     @SuppressWarnings("unchecked")
     private void addHighPerformanceActionColumn(com.vaadin.flow.component.grid.Grid<T> grid,
                                                 List<ListingBundleConfigurer.RowAction<T>> actions) {
-        // Build the Lit template — one <vaadin-button> per action.
         // Function names "action0", "action1", ... avoid any browser-global name collision.
-        StringBuilder tpl = new StringBuilder("<span class=\"action-column__wrap\">");
-        for (int i = 0; i < actions.size(); i++) {
-            ListingBundleConfigurer.RowAction<T> a = actions.get(i);
-            if (a.icon() != null) {
-                // EDIT → vaadin:edit,  ELLIPSIS_DOTS_V → vaadin:ellipsis-dots-v
-                String iconName = "vaadin:" + a.icon().name().toLowerCase().replace('_', '-');
-                // Destructive actions (e.g. Delete) get the "error" Lumo theme → red icon
-                String btnTheme = a.destructive() ? "icon tertiary error" : "icon tertiary";
-                tpl.append(String.format(
-                        "<vaadin-button theme=\"%s\" @click=\"${action%d}\" title=\"%s\">" +
-                        "<vaadin-icon icon=\"%s\"></vaadin-icon></vaadin-button>",
-                        btnTheme, i, a.label(), iconName));
-            } else {
-                String btnTheme = a.destructive() ? "tertiary error" : "tertiary";
-                tpl.append(String.format(
-                        "<vaadin-button theme=\"%s\" @click=\"${action%d}\">%s</vaadin-button>",
-                        btnTheme, i, a.label()));
-            }
-        }
-        tpl.append("</span>");
+        LitRendererBuilder<T> builder = LitRendererBuilder.<T>create()
+                .horizontalLayout(row -> {
+                    row.className("action-column__wrap");
+                    for (int i = 0; i < actions.size(); i++) {
+                        ListingBundleConfigurer.RowAction<T> action = actions.get(i);
+                        String functionName = "action" + i;
+                        row.vaadinButton(b -> {
+                            if (action.icon() != null) {
+                                // EDIT → vaadin:edit,  ELLIPSIS_DOTS_V → vaadin:ellipsis-dots-v
+                                String iconName = "vaadin:" + action.icon().name().toLowerCase().replace('_', '-');
+                                b.theme(action.destructive() ? "icon tertiary error" : "icon tertiary")
+                                        .onClick(functionName)
+                                        .attribute("title", action.label())
+                                        .icon(ic -> ic.icon(iconName));
+                            } else {
+                                b.theme(action.destructive() ? "tertiary error" : "tertiary")
+                                        .onClick(functionName)
+                                        .text(action.label());
+                            }
+                        });
+                    }
+                });
 
-        // Register one withFunction per action — the exact pattern from the Vaadin 25
-        // LitRenderer documentation. Each handler receives the row item directly.
-        LitRenderer<T> litRenderer = LitRenderer.of(tpl.toString());
+        // Register one withFunction per action — each handler receives the row item directly.
         for (int i = 0; i < actions.size(); i++) {
             final ListingBundleConfigurer.RowAction<T> action = actions.get(i);
-            litRenderer = litRenderer.withFunction("action" + i,
-                    item -> action.handler().accept(item));
+            builder.withFunction("action" + i, (item, key) -> action.handler().accept(item));
         }
+
+        LitRenderer<T> litRenderer = builder.build();
 
         var col = grid.addColumn(litRenderer);
         col.setKey("__actions");

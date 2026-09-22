@@ -13,7 +13,6 @@ import com.holonplatform.core.Registration;
 import com.iyensoft.vaadin.flow.components.Components;
 import com.holonplatform.vaadin.flow.components.ItemListing;
 import com.holonplatform.vaadin.flow.components.Selectable;
-import com.holonplatform.vaadin.flow.components.Selectable.SelectionListener;
 import com.holonplatform.vaadin.flow.data.ItemSort;
 import com.iyensoft.vaadin.flow.components.MasterDetailLayout;
 import com.iyensoft.vaadin.flow.internal.components.masterdetail.SelectionHighlighter;
@@ -28,6 +27,7 @@ import com.vaadin.flow.component.grid.editor.Editor;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.data.provider.CallbackDataProvider;
 import com.vaadin.flow.data.provider.DataProvider;
+import com.vaadin.flow.data.provider.ItemIndexProvider;
 import com.vaadin.flow.data.provider.QuerySortOrder;
 import com.vaadin.flow.data.renderer.Renderer;
 import com.vaadin.flow.function.SerializableFunction;
@@ -369,6 +369,8 @@ class TestSelectionHighlighter {
         @Override public void scrollToIndex(int i)                             { /* no-op */ }
         @Override public void scrollToStart()                                  { /* no-op */ }
         @Override public void scrollToEnd()                                    { /* no-op */ }
+        @Override public void setItemIndexProvider(ItemIndexProvider p)        { /* no-op */ }
+        @Override public void scrollToItem(T i)                                { /* no-op */ }
         @Override public Selectable.SelectionMode getSelectionMode()           { throw new UnsupportedOperationException(); }
         @Override public Set<T> getSelectedItems()                             { throw new UnsupportedOperationException(); }
         @Override public Optional<T> getFirstSelectedItem()                    { throw new UnsupportedOperationException(); }

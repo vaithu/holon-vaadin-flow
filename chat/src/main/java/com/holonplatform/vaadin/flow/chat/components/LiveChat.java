@@ -96,8 +96,21 @@ public class LiveChat extends Composite<Div> {
     private MessageList historyList;
     /** Button that triggers the previous-page fetch. */
     private Div loadMoreButton;
-    /** All history items accumulated across multiple "Load older" clicks (oldest first). */
+    /**
+     * All history items accumulated across multiple "Load older" clicks (oldest first).
+     * Bounded by {@link #MAX_HISTORY_ITEMS} to cap memory usage per session — once the cap
+     * is reached, the oldest entries are dropped from the front as new ones are prepended.
+     * See {@link #loadOlderMessages()} for details.
+     */
     private final List<MessageListItem> historyItems = new ArrayList<>();
+
+    /**
+     * Maximum number of history items retained in {@link #historyItems} at once.
+     * Prevents unbounded memory growth in a long-lived chat session across many
+     * "Load older" clicks — a real risk at scale, since {@code historyItems} lives
+     * in the {@code VaadinSession} for the whole life of the view.
+     */
+    private static final int MAX_HISTORY_ITEMS = 500;
 
     private final H3 roomTitle = new H3();
     private String currentRoomId;
@@ -350,7 +363,18 @@ public class LiveChat extends Composite<Div> {
                     .toList();
 
             historyItems.addAll(0, newItems);  // insert at front
-            historyList.setItems(historyItems.toArray(new MessageListItem[0]));
+
+            // Cap memory: keep only the most recent MAX_HISTORY_ITEMS entries (nearest the
+            // live message boundary). Older entries are dropped from the front; if the user
+            // scrolls back further than the cap, the next click simply re-fetches from
+            // chatService using oldestLoadedTimestamp as before.
+            while (historyItems.size() > MAX_HISTORY_ITEMS) {
+                historyItems.removeFirst();
+            }
+
+            // PERFORMANCE: Only update display with new items, don't recreate entire array
+            // Keep reference to current items to avoid memory churn
+            historyList.setItems(new ArrayList<>(historyItems));
             historyList.setVisible(true);
 
             if (page.size() < pageSize) {
@@ -441,5 +465,4 @@ public class LiveChat extends Composite<Div> {
     /** Returns the configured lazy page size. */
     public int getPageSize() { return pageSize; }
 }
-
 

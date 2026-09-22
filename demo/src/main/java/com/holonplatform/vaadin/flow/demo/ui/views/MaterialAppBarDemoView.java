@@ -37,6 +37,7 @@ public class MaterialAppBarDemoView extends Div {
         examples.add(modeAwareExample());
         examples.add(mediumFlexibleExample());
         examples.add(largeFlexibleExample());
+        examples.add(colorVariantsExample());
 
         add(title, description, examples);
     }
@@ -186,6 +187,48 @@ public class MaterialAppBarDemoView extends Div {
         button.addThemeVariants(ButtonVariant.LUMO_TERTIARY, ButtonVariant.LUMO_ICON);
         button.setAriaLabel(label);
         return button;
+    }
+
+    private DemoExample colorVariantsExample() {
+        var indigo = Components.materialAppBar()
+                .headline("Projects")
+                .color(MaterialAppBar.Color.INDIGO)
+                .leading(action(VaadinIcon.MENU, "Open navigation"))
+                .actions(action(VaadinIcon.SEARCH, "Search"), action(VaadinIcon.ELLIPSIS_DOTS_H, "More actions"))
+                .build();
+
+        var teal = Components.materialAppBar()
+                .headline("Analytics")
+                .color(MaterialAppBar.Color.TEAL)
+                .leading(action(VaadinIcon.ARROW_LEFT, "Go back"))
+                .actions(action(VaadinIcon.REFRESH, "Refresh"), action(VaadinIcon.ELLIPSIS_DOTS_H, "More actions"))
+                .build();
+
+        var gradient = Components.materialAppBar()
+                .headline("StaffOS")
+                .color(MaterialAppBar.Color.GRADIENT)
+                .leading(action(VaadinIcon.MENU, "Open navigation"))
+                .actions(action(VaadinIcon.SEARCH, "Search"), action(VaadinIcon.BELL, "Notifications"))
+                .build();
+
+        var preview = ResponsiveDiv.flex().column().gapM().build();
+        preview.add(indigo, teal, gradient);
+
+        return new DemoExample("Color variants", preview, """
+                MaterialAppBar indigo = Components.materialAppBar()
+                        .headline("Projects")
+                        .color(MaterialAppBar.Color.INDIGO)
+                        .leading(new Button(VaadinIcon.MENU.create()))
+                        .actions(new Button(VaadinIcon.SEARCH.create()),
+                                 new Button(VaadinIcon.ELLIPSIS_DOTS_H.create()))
+                        .build();
+
+                // Also available: TEAL, EMERALD, ORANGE, ROSE, PURPLE, SLATE, GRADIENT
+                MaterialAppBar gradient = Components.materialAppBar()
+                        .headline("StaffOS")
+                        .color(MaterialAppBar.Color.GRADIENT)
+                        .build();
+                """);
     }
 
     private static Div wrap(MaterialAppBar appBar) {

@@ -1,7 +1,7 @@
 package com.holonplatform.vaadin.flow.internal.components.builders;
 
 import com.holonplatform.core.internal.utils.ObjectUtils;
-import com.holonplatform.vaadin.flow.components.Components;
+import com.holonplatform.vaadin.flow.components.builders.ButtonBuilder;
 import com.holonplatform.vaadin.flow.components.builders.ButtonConfigurator;
 import com.holonplatform.vaadin.flow.components.builders.HasAccordionHeaderConfigurator;
 import com.holonplatform.vaadin.flow.components.builders.LabelBuilder;
@@ -25,7 +25,7 @@ public class DefaultAccordionHeaderBuilder
 
     public DefaultAccordionHeaderBuilder() {
 
-        addNewButton = Components.button()
+        addNewButton = ButtonBuilder.create()
                 .iconConfigurator(VaadinIcon.PLUS)
                 .styleNames("icon-size-small")
                 .add()
@@ -33,7 +33,7 @@ public class DefaultAccordionHeaderBuilder
                 .iconAfterText(false)
                 .build();
 
-        statusButton = Components.button()
+        statusButton = ButtonBuilder.create()
                 .iconAfterText(true)
                 .icon(VaadinIcon.CHEVRON_DOWN)
                 .text(LocalizationProvider.localize("Status: All", "accordion.status_all"))
@@ -42,12 +42,10 @@ public class DefaultAccordionHeaderBuilder
         getComponent().setWidthFull();
         getComponent().addClassName("color-bg-contrast-5");
 
-        rightSide = Components.flexLayout()
-                .styleNames("justify-end", "flex-grow-1", "gap-m")
-                .add(statusButton, addNewButton)
-                .flexDirection(FlexLayout.FlexDirection.ROW)
-                .fullWidth()
-                .build();
+        rightSide = new FlexLayout(statusButton, addNewButton);
+        rightSide.addClassNames("justify-end", "flex-grow-1", "gap-m");
+        rightSide.setFlexDirection(FlexLayout.FlexDirection.ROW);
+        rightSide.setWidthFull();
 
         getComponent().add(rightSide);
         alignItems(FlexComponent.Alignment.CENTER);

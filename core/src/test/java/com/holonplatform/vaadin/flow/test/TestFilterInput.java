@@ -752,12 +752,12 @@ public class TestFilterInput {
     }
 
     // -----------------------------------------------------------------------
-    // Components.input builders
+    // Input builders
     // -----------------------------------------------------------------------
 
     @Test
     public void testComponentsInput_stringBuilder() {
-        Input<String> input = Components.input.string().build();
+        Input<String> input = Input.string().build();
         FilterInput<String> fi = FilterInput.from(input,
                 v -> (v != null && !v.trim().isEmpty()) ? Optional.of(QueryFilter.isNotNull(NAME)) : Optional.empty());
 
@@ -768,7 +768,7 @@ public class TestFilterInput {
 
     @Test
     public void testComponentsInput_numberBuilder() {
-        Input<Integer> input = Components.input.number(Integer.class).build();
+        Input<Integer> input = Input.number(Integer.class).build();
         FilterInput<Integer> fi = FilterInput.from(input,
                 v -> (v != null) ? Optional.of(QueryFilter.isNotNull(NAME)) : Optional.empty());
 
@@ -779,7 +779,7 @@ public class TestFilterInput {
 
     @Test
     public void testComponentsInput_booleanBuilder() {
-        Input<Boolean> input = Components.input.boolean_().build();
+        Input<Boolean> input = Input.boolean_().build();
         FilterInput<Boolean> fi = FilterInput.from(input,
                 v -> (v != null) ? Optional.of(QueryFilter.isNotNull(NAME)) : Optional.empty());
 
@@ -790,7 +790,7 @@ public class TestFilterInput {
 
     @Test
     public void testComponentsInput_localDateBuilder() {
-        Input<LocalDate> input = Components.input.localDate().build();
+        Input<LocalDate> input = Input.localDate().build();
         FilterInput<LocalDate> fi = FilterInput.from(input,
                 v -> (v != null) ? Optional.of(QueryFilter.isNotNull(NAME)) : Optional.empty());
 
@@ -801,7 +801,7 @@ public class TestFilterInput {
 
     @Test
     public void testComponentsInput_enumSelectBuilder() {
-        Input<Status> input = Components.input.enumSelect(Status.class).build();
+        Input<Status> input = Input.enumSelect(Status.class).build();
         assertNotNull(input);
         input.setValue(Status.PENDING);
         assertEquals(Status.PENDING, input.getValue());
@@ -809,14 +809,14 @@ public class TestFilterInput {
 
     @Test
     public void testComponentsInput_propertyGroupBuilder() {
-        var group = Components.input.propertyGroup(NAME, AGE).build();
+        var group = PropertyInputGroup.builder(NAME, AGE).build();
         assertNotNull(group);
         assertEquals(2, group.getProperties().size());
     }
 
     @Test
     public void testComponentsInput_formBuilder() {
-        var form = Components.input.form(NAME).build();
+        var form = PropertyViewForm.formLayout(NAME).build();
         assertNotNull(form);
         assertInstanceOf(FormLayout.class, form.getComponent());
     }
@@ -824,21 +824,21 @@ public class TestFilterInput {
     @Test
     public void testComponentsInput_formBuilderWithCustomContent() {
         VerticalLayout layout = new VerticalLayout();
-        var form = Components.input.form(layout, NAME).build();
+        var form = PropertyViewForm.builder(layout, NAME).build();
         assertNotNull(form);
         assertSame(layout, form.getComponent());
     }
 
     @Test
     public void testComponentsInput_formVerticalBuilder() {
-        var form = Components.input.formVertical(NAME).build();
+        var form = PropertyViewForm.verticalLayout(NAME).build();
         assertNotNull(form);
         assertInstanceOf(VerticalLayout.class, form.getComponent());
     }
 
     @Test
     public void testComponentsInput_formHorizontalBuilder() {
-        var form = Components.input.formHorizontal(NAME).build();
+        var form = PropertyViewForm.horizontalLayout(NAME).build();
         assertNotNull(form);
         assertInstanceOf(HorizontalLayout.class, form.getComponent());
     }

@@ -2,6 +2,7 @@ package com.iyensoft.vaadin.flow.components;
 
 import com.iyensoft.vaadin.flow.components.builders.AppShellLayoutBuilder;
 import com.vaadin.flow.component.applayout.AppLayout;
+import com.vaadin.flow.component.dependency.StyleSheet;
 
 /**
  * A fully-configured application shell that extends {@link AppLayout}.

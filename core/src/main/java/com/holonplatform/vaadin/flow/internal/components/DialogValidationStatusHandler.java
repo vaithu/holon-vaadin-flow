@@ -1,12 +1,12 @@
 /*
  * Copyright 2016-2018 Axioma srl.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -15,12 +15,9 @@
  */
 package com.holonplatform.vaadin.flow.internal.components;
 
-import com.holonplatform.vaadin.flow.components.utils.UIUtils;
-
-import com.holonplatform.vaadin.flow.components.Components;
 import com.holonplatform.vaadin.flow.components.ValidationStatusHandler;
-import com.holonplatform.vaadin.flow.components.builders.DialogBuilder.ConfirmDialogBuilder;
 import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
+import com.vaadin.flow.component.confirmdialog.ConfirmDialog;
 import com.vaadin.flow.component.html.Div;
 
 import java.io.Serial;
@@ -30,7 +27,7 @@ import java.util.List;
  * A {@link ValidationStatusHandler} which opens a dialog when validation fails.
  *
  * @param <S> Source type
- * 
+ *
  * @since 5.2.0
  */
 public class DialogValidationStatusHandler<S> implements ValidationStatusHandler<S> {
@@ -48,25 +45,25 @@ public class DialogValidationStatusHandler<S> implements ValidationStatusHandler
 	public void validationStatusChange(ValidationStatusEvent<S> statusChangeEvent) {
 		if (statusChangeEvent.isInvalid()) {
 
-			final ConfirmDialogBuilder builder = Components.dialog.confirm()
-					.styleName("dialog-validation-status-error");
+            ConfirmDialog dialog = new ConfirmDialog();
 
 			final List<String> messages = statusChangeEvent.getErrorMessages();
 			if (messages.isEmpty()) {
-				builder.text(LocalizationProvider.localize("Validation failed", "dialog.validation_failed"));
+				dialog.add(LocalizationProvider.localize("Validation failed", "dialog.validation_failed"));
 			} else {
-				builder.text(messages.getFirst());
+                dialog.add(messages.getFirst());
 				if (messages.size() > 1) {
 					for (int i = 1; i < messages.size(); i++) {
 						final String text = messages.get(i);
-						final Div message = UIUtils.div("message");
-						message.setText((text != null) ? text : "");
-						builder.withComponent(message);
+                        final Div message = new Div();
+                        message.addClassName("message");
+                        message.setText((text != null) ? text : "");
+						dialog.add(message);
 					}
 				}
 			}
 
-			builder.open();
+			dialog.open();
 		}
 	}
 

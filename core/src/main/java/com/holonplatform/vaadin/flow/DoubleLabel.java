@@ -1,7 +1,6 @@
 package com.holonplatform.vaadin.flow;
 
 import com.holonplatform.core.i18n.Localizable;
-import com.holonplatform.vaadin.flow.components.Components;
 import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.html.Div;
@@ -30,8 +29,10 @@ public class DoubleLabel extends Div {
     public DoubleLabel(String titleTop, String titleBottom) {
         addClassName("double-label");
 
-        spanTop = Components.span().text(titleTop).styleName("double-label__top").build();
-        spanBottom = Components.span().text(titleBottom).styleName("double-label__bottom").build();
+        spanTop = new Span(titleTop);
+        spanTop.addClassName("double-label__top");
+        spanBottom = new Span(titleBottom);
+        spanBottom.addClassName("double-label__bottom");
 
         add(spanTop, spanBottom);
     }
@@ -46,8 +47,10 @@ public class DoubleLabel extends Div {
     public DoubleLabel(Localizable titleTop, Localizable titleBottom) {
         addClassName("double-label");
 
-        spanTop = Components.span().text(resolve(titleTop)).styleName("double-label__top").build();
-        spanBottom = Components.span().text(resolve(titleBottom)).styleName("double-label__bottom").build();
+        spanTop = new Span(resolve(titleTop));
+        spanTop.addClassName("double-label__top");
+        spanBottom = new Span(resolve(titleBottom));
+        spanBottom.addClassName("double-label__bottom");
 
         add(spanTop, spanBottom);
     }

@@ -1,7 +1,7 @@
 package com.holonplatform.vaadin.flow.internal.components.builders;
 
 import com.holonplatform.vaadin.flow.components.BeanListing;
-import com.holonplatform.vaadin.flow.components.Components;
+import com.holonplatform.vaadin.flow.components.builders.ButtonBuilder;
 import com.holonplatform.vaadin.flow.components.builders.ShowAndHideColumns;
 import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
 import com.vaadin.flow.component.Component;
@@ -11,6 +11,7 @@ import com.vaadin.flow.component.checkbox.CheckboxGroup;
 import com.vaadin.flow.component.checkbox.CheckboxGroupVariant;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -31,7 +32,8 @@ public class DefaultShowAndHideColumns<T> implements ShowAndHideColumns<T> {
 
     private void createPopOver(CheckboxGroup<String> group, HorizontalLayout footer) {
 
-        this.showHideBtn = Components.button().icon(VaadinIcon.GRID_H)
+        this.showHideBtn = //Components.button()
+    ButtonBuilder.create().icon(VaadinIcon.GRID_H)
                 .ariaLabel(LocalizationProvider.localize("Show / hide columns", "grid.show_hide_columns_aria")).build();
         this.showHideBtn.addThemeVariants(ButtonVariant.LUMO_ICON);
 
@@ -41,8 +43,7 @@ public class DefaultShowAndHideColumns<T> implements ShowAndHideColumns<T> {
         popover.setPosition(PopoverPosition.BOTTOM_END);
         popover.setTarget(this.showHideBtn );
 
-        Div heading = new Div(Components.span()
-                .text(LocalizationProvider.localize("Configure columns", "grid.configure_columns")).build());
+        Div heading = new Div(new Span(LocalizationProvider.localize("Configure columns", "grid.configure_columns")));
         heading.getStyle().set("font-weight", "600");
         heading.getStyle().set("padding", "var(--lumo-space-xs)");
 
@@ -54,15 +55,17 @@ public class DefaultShowAndHideColumns<T> implements ShowAndHideColumns<T> {
 
         group.setValue(defaultColumns);
 
-        Button showAll = Components.button().text(LocalizationProvider.localize("Show all", "grid.show_all_columns"))
+        Button showAll = ButtonBuilder.create()
+                .text(LocalizationProvider.localize("Show all", "grid.show_all_columns"))
                 .withClickListener(e -> group.setValue(new HashSet<>(allColumns))).build();
         showAll.addThemeVariants(ButtonVariant.LUMO_SMALL);
 
-        Button reset = Components.button().text(LocalizationProvider.localize("Reset", "grid.reset_columns"))
+        Button reset = ButtonBuilder.create()
+                .text(LocalizationProvider.localize("Reset", "grid.reset_columns"))
                 .withClickListener(e -> group.setValue(defaultColumns)).build();
         reset.addThemeVariants(ButtonVariant.LUMO_SMALL);
 
-        HorizontalLayout footer = Components.hl().add(showAll, reset).build();
+        HorizontalLayout footer = new HorizontalLayout(showAll, reset);
         footer.setSpacing(false);
         footer.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
         return footer;

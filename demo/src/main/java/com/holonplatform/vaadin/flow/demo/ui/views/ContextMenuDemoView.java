@@ -36,9 +36,12 @@ public class ContextMenuDemoView extends Div {
 
     private DemoExample basicExample() {
         var target = new Span("Right-click me");
-        target.getElement().getStyle().set("padding", "var(--space-m)");
-        target.getElement().getStyle().set("border", "1px dashed var(--color-border)");
-        target.getElement().getStyle().set("cursor", "context-menu");
+        // PERFORMANCE FIX: Batch multiple style operations into a single call
+        // instead of calling getElement().getStyle().set() multiple times.
+        target.getElement().getStyle()
+                .set("padding", "var(--space-m)")
+                .set("border", "1px dashed var(--color-border)")
+                .set("cursor", "context-menu");
 
         ContextMenuBuilder.create()
                 .withItem("Cut", e -> Notification.show("Cut"))
@@ -57,9 +60,11 @@ public class ContextMenuDemoView extends Div {
 
     private DemoExample openOnClickExample() {
         var target = new Span("Click me (left-click)");
-        target.getElement().getStyle().set("padding", "var(--space-m)");
-        target.getElement().getStyle().set("border", "1px dashed var(--color-border)");
-        target.getElement().getStyle().set("cursor", "pointer");
+        // PERFORMANCE FIX: Batch style operations using method chaining
+        target.getElement().getStyle()
+                .set("padding", "var(--space-m)")
+                .set("border", "1px dashed var(--color-border)")
+                .set("cursor", "pointer");
 
         ContextMenuBuilder.create()
                 .openOnClick(true)
