@@ -1,0 +1,81 @@
+/*
+ * action-menu-lit-renderer.css
+ *
+ * Styles for the row action dropdown produced by LitRendererBuilder.actionMenu().
+ *
+ * ── HTML structure produced ───────────────────────────────────────────────
+ *
+ *   <details class="holon-action-menu">
+ *     <summary class="holon-action-menu__trigger" aria-label="More actions">
+ *       <vaadin-icon icon="vaadin:ellipsis-dots-v"></vaadin-icon>
+ *     </summary>
+ *     <div class="holon-action-menu__panel">
+ *       <vaadin-button theme="tertiary">...</vaadin-button>
+ *       <vaadin-button theme="tertiary error">...</vaadin-button>
+ *     </div>
+ *   </details>
+ *
+ * Used with: LitRendererBuilder.actionMenu()
+ *
+ * Note: the dropdown panel is positioned with `position: absolute` relative to
+ * the `<details>` element. If it is placed inside a grid column/row whose
+ * ancestor clips overflow, the panel may be visually cut off. Prefer using
+ * this element in the last column of a grid and give the grid/row enough
+ * room, or increase `z-index` as needed for your layout.
+ */
+
+.holon-action-menu {
+    position: relative;
+    display: inline-block;
+}
+
+/* Trigger button (⋮) */
+.holon-action-menu > summary.holon-action-menu__trigger {
+    list-style: none;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    color: var(--lumo-secondary-text-color, #6b7280);
+}
+
+/* Hide the default disclosure marker across browsers */
+.holon-action-menu > summary.holon-action-menu__trigger::-webkit-details-marker {
+    display: none;
+}
+
+.holon-action-menu > summary.holon-action-menu__trigger::marker {
+    content: '';
+}
+
+.holon-action-menu > summary.holon-action-menu__trigger:hover {
+    background: var(--lumo-contrast-10pct, rgba(0, 0, 0, .06));
+}
+
+/* Dropdown panel */
+.holon-action-menu__panel {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 160px;
+    padding: 4px;
+    margin-top: 4px;
+    background: var(--lumo-base-color, #fff);
+    border: 1px solid var(--lumo-contrast-10pct, #e5e5e5);
+    border-radius: var(--lumo-border-radius-m, 6px);
+    box-shadow: var(--lumo-box-shadow-m, 0 4px 12px rgba(0, 0, 0, .15));
+}
+
+.holon-action-menu__panel vaadin-button {
+    justify-content: flex-start;
+    width: 100%;
+    margin: 0;
+}
+
