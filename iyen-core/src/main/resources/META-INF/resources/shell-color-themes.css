@@ -1,0 +1,306 @@
+/*
+ * shell-color-themes.css
+ *
+ * Color variants for AppShellLayout (AppBar + SideNav drawer).
+ *
+ * Each ".shell-color-*" class is applied to the AppShellLayout root
+ * (a <vaadin-app-layout>) by AppShellLayoutConfigurator#colorTheme(ShellColor).
+ * CSS custom properties inherit across shadow-DOM boundaries, so overriding
+ * them here recolors:
+ *   - the brand logo tile        (.app-bar__brand-logo)
+ *   - the focus ring             (--brand-500, used in app-bar.css)
+ *   - the active SideNav item    (--sidenav-item-active-*, menu.css)
+ *   - the active SideNav icon    (--sidenav-icon-active-color, menu.css)
+ *   - the collapse-toggle hover  (--sidenav-toggle-hover-color, menu.css)
+ *   - notification/nav badges   (--sidenav-badge-bg, menu.css)
+ *
+ * No selector here duplicates app-bar.css / menu.css rules — only the
+ * custom-property *values* they already read are redefined, so consumer
+ * theme overrides declared with normal or higher specificity still win.
+ */
+
+/* -----------------------------------------------------------------------
+ * Brand logo tile — shared base look for all colored themes.
+ * Only applies when a plain Component (icon, initials Span, etc.) is
+ * passed to .navbarBrandLogo(); an already-styled/img component is
+ * unaffected unless it inherits these properties.
+ * ----------------------------------------------------------------------- */
+.app-bar__brand-logo {
+    display:         inline-flex;
+    align-items:     center;
+    justify-content: center;
+    box-sizing:      border-box;
+    width:           2rem;
+    height:          2rem;
+    border-radius:   var(--radius-md, 8px);
+    background:      var(--brand-500, #2563eb);
+    color:           #ffffff;
+    flex-shrink:     0;
+}
+
+/* ========================================================================
+ * 1. Blue
+ * ==================================================================== */
+vaadin-app-layout.shell-color-blue {
+    --brand-500:                  #0b6e99;
+    --brand-600:                  #0b6e99;
+    --brand-700:                  #075985;
+    --sidenav-item-active-bg:     #e3f2f9;
+    --sidenav-item-active-color:  #075985;
+    --sidenav-item-active-border: #0b6e99;
+    --sidenav-icon-active-color:  #0b6e99;
+    --sidenav-badge-bg:           #0b6e99;
+    --sidenav-toggle-hover-color: #075985;
+}
+
+/* ========================================================================
+ * 2. Indigo
+ * ==================================================================== */
+vaadin-app-layout.shell-color-indigo {
+    --brand-500:                  #4f46e5;
+    --brand-600:                  #4f46e5;
+    --brand-700:                  #3730a3;
+    --sidenav-item-active-bg:     #eef2ff;
+    --sidenav-item-active-color:  #3730a3;
+    --sidenav-item-active-border: #4f46e5;
+    --sidenav-icon-active-color:  #4f46e5;
+    --sidenav-badge-bg:           #4f46e5;
+    --sidenav-toggle-hover-color: #3730a3;
+}
+
+/* ========================================================================
+ * 3. Teal
+ * ==================================================================== */
+vaadin-app-layout.shell-color-teal {
+    --brand-500:                  #0f766e;
+    --brand-600:                  #0f766e;
+    --brand-700:                  #115e59;
+    --sidenav-item-active-bg:     #e6fffb;
+    --sidenav-item-active-color:  #115e59;
+    --sidenav-item-active-border: #0f766e;
+    --sidenav-icon-active-color:  #0f766e;
+    --sidenav-badge-bg:           #0f766e;
+    --sidenav-toggle-hover-color: #115e59;
+}
+
+/* ========================================================================
+ * 4. Red
+ * ==================================================================== */
+vaadin-app-layout.shell-color-red {
+    --brand-500:                  #c62828;
+    --brand-600:                  #c62828;
+    --brand-700:                  #a61b1b;
+    --sidenav-item-active-bg:     #ffebee;
+    --sidenav-item-active-color:  #a61b1b;
+    --sidenav-item-active-border: #c62828;
+    --sidenav-icon-active-color:  #c62828;
+    --sidenav-badge-bg:           #c62828;
+    --sidenav-toggle-hover-color: #a61b1b;
+}
+
+/* ========================================================================
+ * 5. Cyan
+ * ==================================================================== */
+vaadin-app-layout.shell-color-cyan {
+    --brand-500:                  #087f8c;
+    --brand-600:                  #087f8c;
+    --brand-700:                  #006064;
+    --sidenav-item-active-bg:     #e0f7fa;
+    --sidenav-item-active-color:  #006064;
+    --sidenav-item-active-border: #087f8c;
+    --sidenav-icon-active-color:  #087f8c;
+    --sidenav-badge-bg:           #087f8c;
+    --sidenav-toggle-hover-color: #006064;
+}
+
+/* ========================================================================
+ * 6. Amber
+ * ==================================================================== */
+vaadin-app-layout.shell-color-amber {
+    --brand-500:                  #b45309;
+    --brand-600:                  #b45309;
+    --brand-700:                  #92400e;
+    --sidenav-item-active-bg:     #fff7df;
+    --sidenav-item-active-color:  #92400e;
+    --sidenav-item-active-border: #b45309;
+    --sidenav-icon-active-color:  #b45309;
+    --sidenav-badge-bg:           #b45309;
+    --sidenav-toggle-hover-color: #92400e;
+}
+
+/* ========================================================================
+ * 7. Pink
+ * ==================================================================== */
+vaadin-app-layout.shell-color-pink {
+    --brand-500:                  #be185d;
+    --brand-600:                  #be185d;
+    --brand-700:                  #9d174d;
+    --sidenav-item-active-bg:     #fce7f3;
+    --sidenav-item-active-color:  #9d174d;
+    --sidenav-item-active-border: #be185d;
+    --sidenav-icon-active-color:  #be185d;
+    --sidenav-badge-bg:           #be185d;
+    --sidenav-toggle-hover-color: #9d174d;
+}
+
+/* ========================================================================
+ * 8. Slate
+ * ==================================================================== */
+vaadin-app-layout.shell-color-slate {
+    --brand-500:                  #334155;
+    --brand-600:                  #334155;
+    --brand-700:                  #1e293b;
+    --sidenav-item-active-bg:     #e2e8f0;
+    --sidenav-item-active-color:  #1e293b;
+    --sidenav-item-active-border: #334155;
+    --sidenav-icon-active-color:  #334155;
+    --sidenav-badge-bg:           #334155;
+    --sidenav-toggle-hover-color: #1e293b;
+}
+
+/* ========================================================================
+ * Surface themes — full sidebar "looks" (dark/gradient background + shape),
+ * mirroring the .sidenav-host.shell-color-* blocks in menu.css so AppBar
+ * brand elements (logo tile, focus ring) match when SideNav is used inside
+ * an AppShellLayout. See menu.css for the per-mockup reference notes.
+ * ==================================================================== */
+
+/* 9. Modern SaaS — docs/04-modern-saas-sidenav.html */
+vaadin-app-layout.shell-color-modern-saas {
+    --brand-500:                  #f97316;
+    --brand-600:                  #f97316;
+    --brand-700:                  #c2410c;
+    --sidenav-bg:                  #101828;
+    --sidenav-item-color:          #98a2b3;
+    --sidenav-icon-color:          #98a2b3;
+    --sidenav-label-color:         #667085;
+    --sidenav-group-color:         #98a2b3;
+    --sidenav-border:              #1d2939;
+    --sidenav-item-hover-bg:       #182230;
+    --sidenav-item-hover-color:    #ffffff;
+    --sidenav-item-active-bg:      #1d2939;
+    --sidenav-item-active-color:   #ffffff;
+    --sidenav-item-active-border:  #f97316;
+    --sidenav-icon-active-color:   #f97316;
+    --sidenav-badge-bg:            #f97316;
+    --sidenav-toggle-color:        #667085;
+    --sidenav-toggle-hover-color:  #ffffff;
+    --sidenav-footer-color:        #ffffff;
+    --sidenav-footer-border:       1px solid #344054;
+}
+
+/* 10. Material — docs/05-material-sidenav.html */
+vaadin-app-layout.shell-color-material {
+    --brand-500:                  #3f51b5;
+    --brand-600:                  #3f51b5;
+    --brand-700:                  #3949ab;
+    --sidenav-label-color:         #757575;
+    --sidenav-group-color:         #424242;
+    --sidenav-item-color:          #424242;
+    --sidenav-icon-color:          #616161;
+    --sidenav-item-active-bg:      #e8eaf6;
+    --sidenav-item-active-color:   #3949ab;
+    --sidenav-item-active-border:  #3f51b5;
+    --sidenav-item-active-border-start-width: 0;
+    --sidenav-item-active-border-end-width:   3px;
+    --sidenav-icon-active-color:   #3949ab;
+    --sidenav-badge-bg:            #3f51b5;
+}
+
+/* 11. Enterprise — docs/06-enterprise-sidenav.html */
+vaadin-app-layout.shell-color-enterprise {
+    --brand-500:                  #24579a;
+    --brand-600:                  #24579a;
+    --brand-700:                  #172b4d;
+    --sidenav-bg:                  #172b4d;
+    --sidenav-item-color:          #dbe5f2;
+    --sidenav-icon-color:          #dbe5f2;
+    --sidenav-label-color:         #8da5c3;
+    --sidenav-group-color:         #dbe5f2;
+    --sidenav-border:              #203b63;
+    --sidenav-item-hover-bg:       #203b63;
+    --sidenav-item-hover-color:    #ffffff;
+    --sidenav-item-active-bg:      #24579a;
+    --sidenav-item-active-color:   #ffffff;
+    --sidenav-item-active-border-start-width: 0;
+    --sidenav-icon-active-color:   #ffffff;
+    --sidenav-badge-bg:            #d97706;
+    --sidenav-toggle-color:        #8da5c3;
+    --sidenav-toggle-hover-color:  #ffffff;
+}
+
+/* 12. Gradient — docs/08-gradient-sidenav.html */
+vaadin-app-layout.shell-color-gradient {
+    --brand-500:                  #4c1d95;
+    --brand-600:                  #4c1d95;
+    --brand-700:                  #312e81;
+    --sidenav-bg:                  linear-gradient(160deg, #312e81, #4c1d95 55%, #831843);
+    --sidenav-item-color:          #dbeafe;
+    --sidenav-icon-color:          #dbeafe;
+    --sidenav-label-color:         #c4b5fd;
+    --sidenav-group-color:         #dbeafe;
+    --sidenav-item-hover-bg:       rgb(255 255 255 / 0.08);
+    --sidenav-item-hover-color:    #ffffff;
+    --sidenav-item-active-bg:      #ffffff;
+    --sidenav-item-active-color:   #4c1d95;
+    --sidenav-item-active-border-start-width: 0;
+    --sidenav-item-active-shadow:  0 10px 25px rgb(0 0 0 / 0.20);
+    --sidenav-icon-active-color:   #4c1d95;
+    --sidenav-badge-bg:            #fbbf24;
+    --sidenav-badge-color:         #4c1d95;
+    --sidenav-toggle-color:        #c4b5fd;
+    --sidenav-toggle-hover-color:  #ffffff;
+    --sidenav-footer-color:        #ffffff;
+}
+
+/* 13. Collapsible Dark — docs/11-collapsible-style-sidenav.html */
+vaadin-app-layout.shell-color-collapsible-dark {
+    --brand-500:                  #10b981;
+    --brand-600:                  #10b981;
+    --brand-700:                  #064e3b;
+    --sidenav-bg:                  #111827;
+    --sidenav-item-color:          #9ca3af;
+    --sidenav-icon-color:          #9ca3af;
+    --sidenav-label-color:         #4b5563;
+    --sidenav-group-color:         #9ca3af;
+    --sidenav-border:              #1f2937;
+    --sidenav-item-hover-bg:       #1f2937;
+    --sidenav-item-hover-color:    #ffffff;
+    --sidenav-item-active-bg:      #064e3b;
+    --sidenav-item-active-color:   #a7f3d0;
+    --sidenav-item-active-border-start-width: 0;
+    --sidenav-icon-active-color:   #a7f3d0;
+    --sidenav-badge-bg:            #10b981;
+    --sidenav-badge-color:         #06251b;
+    --sidenav-toggle-color:        #9ca3af;
+    --sidenav-toggle-hover-color:  #ffffff;
+    --sidenav-footer-color:        #9ca3af;
+    --sidenav-footer-border:       1px solid #1f2937;
+}
+
+/* 14. Premium Blue — docs/12-premium-blue-sidenav.html */
+vaadin-app-layout.shell-color-premium-blue {
+    --brand-500:                  #1670d2;
+    --brand-600:                  #1670d2;
+    --brand-700:                  #1262b5;
+    --sidenav-bg:                  #0b2a4a;
+    --sidenav-item-color:          #b8cbe0;
+    --sidenav-icon-color:          #b8cbe0;
+    --sidenav-label-color:         #6282a5;
+    --sidenav-group-color:         #b8cbe0;
+    --sidenav-border:              #12385f;
+    --sidenav-item-hover-bg:       #12385f;
+    --sidenav-item-hover-color:    #ffffff;
+    --sidenav-item-active-bg:      #1670d2;
+    --sidenav-item-active-color:   #ffffff;
+    --sidenav-item-active-border-start-width: 0;
+    --sidenav-item-active-shadow:  0 8px 20px rgb(22 112 210 / 0.27);
+    --sidenav-icon-active-color:   #ffffff;
+    --sidenav-badge-bg:            #ffffff;
+    --sidenav-badge-color:         #1262b5;
+    --sidenav-toggle-color:        #6282a5;
+    --sidenav-toggle-hover-color:  #ffffff;
+    --sidenav-footer-color:        #b8cbe0;
+}
+
+
