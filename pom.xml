@@ -65,10 +65,15 @@
 		<!-- Vaadin -->
 		<vaadin.version>25.3.0</vaadin.version>
 		<spring-boot.version>4.1.1</spring-boot.version>
+		<!-- junit: the ONLY deliberate override of a Spring-Boot-managed version. Spring Framework 7's
+		     SpringExtension requires the JUnit 6.1 API (ExtensionContext.Store#computeIfAbsent), while
+		     Spring Boot 4.1.1 manages JUnit 6.0.3, which fails at runtime with NoSuchMethodError.
+		     6.1.3 is also the version shipped by Vaadin 25.3.0 and pinned by holon-core.
+		     The junit.jupiter.api/engine properties override the com.holon-platform:parent pom, whose
+		     inherited dependencyManagement (JUnit 5.12.2) otherwise beats the junit-bom import. -->
 		<junit.jupiter.version>6.1.3</junit.jupiter.version>
-
-		<!-- Servlet API — must match what vaadin flow-server 25.3.x declares (6.1.0 / Jakarta EE 11). -->
-		<servlet.version>6.1.0</servlet.version>
+		<junit.jupiter.api.version>${junit.jupiter.version}</junit.jupiter.api.version>
+		<junit.jupiter.engine.version>${junit.jupiter.version}</junit.jupiter.engine.version>
 
 		<holon.jdbc.datastore.version>12.0.0</holon.jdbc.datastore.version>
 		<holon.jpa.datastore.version>12.0.0</holon.jpa.datastore.version>
@@ -76,32 +81,17 @@
 		<!-- line-awesome (latest; built against Vaadin 24.2.0 but used as pure CSS/font static assets  no Java API coupling) -->
 		<line-awesome.version>2.1.0</line-awesome.version>
 
-		<!-- Mockito (test) -->
-		<mockito.version>5.23.0</mockito.version>
-		<lombok.version>1.18.38</lombok.version>
 		<jetbrains.annotations.version>26.0.2</jetbrains.annotations.version>
+		<!-- guava: not managed by the Spring Boot or Vaadin BOMs; aligned with the version Vaadin
+		     25.3.0 builds against. Everything else that Spring Boot manages (Mockito, AssertJ,
+		     Lombok, Logback, SnakeYAML, commons-lang3, H2, HikariCP, jakarta.servlet-api) is left to
+		     the spring-boot-dependencies BOM import below — do not pin it here. -->
 		<guava.version>33.7.1-jre</guava.version>
 
-		<!-- HikariCP — managed explicitly for version transparency and easy CVE override.
-		     Spring Boot 4.1.1 manages HikariCP 7.0.2 via spring-boot-starter-jdbc; this pin keeps
-		     the project on the 6.x line. No known CVEs as of 2026-07-10; bump if a CVE arises. -->
-		<hikaricp.version>6.3.0</hikaricp.version>
-
-		<!-- CVE-patched dependency versions -->
-		<!-- h2: fixes CVE-2021-23463, CVE-2021-42392, CVE-2022-23221, CVE-2022-45868 -->
-		<h2.version>2.3.232</h2.version>
-		<!-- assertj: fixes CVE-2026-24400 (XXE in isXmlEqualTo) -->
-		<assertj.version>3.27.7</assertj.version>
-		<!-- spring-security: version managed by the spring-boot-dependencies BOM import below
-		     (Spring Boot 4.1.1 -> Spring Security 7.1.1). Pin here only to override a CVE. -->
-		<!-- logback: 1.5.38 is the version managed by Spring Boot 4.1.1 and the latest available;
-		     CVE-2026-1225 is flagged as 'Insufficient Information' (GHSA-qqpg-mvqg-649v) with no
-		     confirmed fix in any 1.5.x release yet. Monitor for a patched release. -->
+		<!-- logback: realigns the stale pin inherited from com.holon-platform:parent (1.5.18, which
+		     applies to logback-classic only and would mix with logback-core 1.5.38 coming from Spring
+		     Boot) with the version Spring Boot 4.1.1 manages. Not an override of Spring Boot. -->
 		<logback.version>1.5.38</logback.version>
-		<!-- snakeyaml: fixes CVE-2022-1471 (Constructor RCE) -->
-		<snakeyaml.version>2.6</snakeyaml.version>
-		<!-- commons-lang3: fixes CVE-2025-48924 -->
-		<commons-lang3.version>3.20.0</commons-lang3.version>
 
         <!-- Code quality plugin versions -->
         <spotbugs-maven-plugin.version>4.10.3.0</spotbugs-maven-plugin.version>
@@ -113,10 +103,8 @@
 
 	<dependencyManagement>
 		<dependencies>
-			<!-- JUnit — imported first so that all JUnit artifacts (jupiter + platform) resolve to a
-			     single version. Vaadin 25.3 manages JUnit through junit-bom; importing it here avoids
-			     mixing junit-jupiter-engine with an older junit-platform-commons from the Spring Boot
-			     BOM, which fails at runtime with IllegalAccessError. -->
+			<!-- JUnit — imported before spring-boot-dependencies so every JUnit artifact (jupiter and
+			     platform) resolves to 6.1.3; mixing versions fails with IllegalAccessError. -->
 			<dependency>
 				<groupId>org.junit</groupId>
 				<artifactId>junit-bom</artifactId>
@@ -125,7 +113,9 @@
 				<scope>import</scope>
 			</dependency>
 
-			<!-- Spring Boot dependency versions -->
+			<!-- Spring Boot dependency versions — also manages Mockito,
+			     AssertJ, Lombok, Logback, SnakeYAML, commons-lang3, H2, HikariCP and
+			     jakarta.servlet-api. None of those are pinned in this project. -->
 			<dependency>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-dependencies</artifactId>
@@ -227,82 +217,16 @@
 				<version>${project.version}</version>
 			</dependency>
 
-			<!-- Explicit versions not always provided by parent BOMs -->
+			<!-- Explicit versions not provided by the Spring Boot or Vaadin BOMs -->
 			<dependency>
 				<groupId>org.jetbrains</groupId>
 				<artifactId>annotations</artifactId>
 				<version>${jetbrains.annotations.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>org.projectlombok</groupId>
-				<artifactId>lombok</artifactId>
-				<version>${lombok.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.mockito</groupId>
-				<artifactId>mockito-core</artifactId>
-				<version>${mockito.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.junit.jupiter</groupId>
-				<artifactId>junit-jupiter-api</artifactId>
-				<version>${junit.jupiter.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.junit.jupiter</groupId>
-				<artifactId>junit-jupiter-engine</artifactId>
-				<version>${junit.jupiter.version}</version>
-			</dependency>
-			<dependency>
 				<groupId>com.google.guava</groupId>
 				<artifactId>guava</artifactId>
 				<version>${guava.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>com.h2database</groupId>
-				<artifactId>h2</artifactId>
-				<version>${h2.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.assertj</groupId>
-				<artifactId>assertj-core</artifactId>
-				<version>${assertj.version}</version>
-			</dependency>
-
-			<!-- Transitive CVE overrides  force safe versions regardless of what upstream BOMs resolve -->
-
-			<!-- Servlet API — lock to 6.1.0 (Jakarta EE 11) to match vaadin flow-server 25.2.x -->
-			<dependency>
-				<groupId>jakarta.servlet</groupId>
-				<artifactId>jakarta.servlet-api</artifactId>
-				<version>${servlet.version}</version>
-				<scope>provided</scope>
-			</dependency>
-
-			<!-- CVE-2022-1471: SnakeYAML Constructor deserialization RCE, fixed in 2.x -->
-			<dependency>
-				<groupId>org.yaml</groupId>
-				<artifactId>snakeyaml</artifactId>
-				<version>${snakeyaml.version}</version>
-			</dependency>
-
-			<!-- CVE-2026-1225: logback malicious-config class instantiation, fixed in 1.5.20 -->
-			<dependency>
-				<groupId>ch.qos.logback</groupId>
-				<artifactId>logback-core</artifactId>
-				<version>${logback.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>ch.qos.logback</groupId>
-				<artifactId>logback-classic</artifactId>
-				<version>${logback.version}</version>
-			</dependency>
-
-			<!-- CVE-2025-48924: commons-lang3, fixed in 3.18.0 -->
-			<dependency>
-				<groupId>org.apache.commons</groupId>
-				<artifactId>commons-lang3</artifactId>
-				<version>${commons-lang3.version}</version>
 			</dependency>
 
 			<!-- P6Spy — SQL logging proxy, raw library (Spring Boot 4 compatible) -->
@@ -318,14 +242,6 @@
 				<groupId>com.github.gavlyukovskiy</groupId>
 				<artifactId>p6spy-spring-boot-starter</artifactId>
 				<version>2.0.1</version>
-			</dependency>
-
-			<!-- HikariCP — explicit version pin; Spring Boot 4.1 manages this transitively
-			     via spring-boot-starter-jdbc, but declared here for CVE override capability -->
-			<dependency>
-				<groupId>com.zaxxer</groupId>
-				<artifactId>HikariCP</artifactId>
-				<version>${hikaricp.version}</version>
 			</dependency>
 
 			<!-- Line Awesome icon font  static CSS/font assets only, no Java API coupling -->
