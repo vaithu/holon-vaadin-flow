@@ -64,8 +64,8 @@
 
 		<!-- Vaadin -->
 		<vaadin.version>25.3.0</vaadin.version>
-		<spring-boot.version>4.1.0</spring-boot.version>
-		<junit.jupiter.version>6.0.3</junit.jupiter.version>
+		<spring-boot.version>4.1.1</spring-boot.version>
+		<junit.jupiter.version>6.1.3</junit.jupiter.version>
 
 		<!-- Servlet API — must match what vaadin flow-server 25.3.x declares (6.1.0 / Jakarta EE 11). -->
 		<servlet.version>6.1.0</servlet.version>
@@ -77,14 +77,14 @@
 		<line-awesome.version>2.1.0</line-awesome.version>
 
 		<!-- Mockito (test) -->
-		<mockito.version>5.11.0</mockito.version>
+		<mockito.version>5.23.0</mockito.version>
 		<lombok.version>1.18.38</lombok.version>
 		<jetbrains.annotations.version>26.0.2</jetbrains.annotations.version>
-		<guava.version>33.5.0-jre</guava.version>
+		<guava.version>33.7.1-jre</guava.version>
 
 		<!-- HikariCP — managed explicitly for version transparency and easy CVE override.
-		     Spring Boot 4.1.0 ships HikariCP 6.x via spring-boot-starter-jdbc.
-		     No known CVEs as of 2026-07-10; bump this property if a CVE arises. -->
+		     Spring Boot 4.1.1 manages HikariCP 7.0.2 via spring-boot-starter-jdbc; this pin keeps
+		     the project on the 6.x line. No known CVEs as of 2026-07-10; bump if a CVE arises. -->
 		<hikaricp.version>6.3.0</hikaricp.version>
 
 		<!-- CVE-patched dependency versions -->
@@ -92,21 +92,16 @@
 		<h2.version>2.3.232</h2.version>
 		<!-- assertj: fixes CVE-2026-24400 (XXE in isXmlEqualTo) -->
 		<assertj.version>3.27.7</assertj.version>
-		<!-- spring-security: 6.5.10 fixes CVE-2026-22751 (TOCTOU race in JdbcOneTimeTokenService).
-		     Compatible with Spring Boot 4.1 / Spring Framework 7.1 (Spring Boot 4.1 ships 6.5.x).
-		     NOTE: CVE-2026-22746 (LOW — DaoAuthenticationProvider timing-attack bypass) affects
-		     6.5.0–6.5.9 and has no patched version available yet. Monitor for 6.5.11+.
-		     NOTE: CVE-2026-22732 (CRITICAL — HTTP headers not written) has no released fix in any
-		     version as of 2026-06-30. Monitor for a patched release. -->
-		<spring-security.version>6.5.10</spring-security.version>
-		<!-- logback: 1.5.20 is the latest available; CVE-2026-1225 is flagged as 'Insufficient
-		     Information' (GHSA-qqpg-mvqg-649v) with no confirmed fix in any 1.5.x release yet.
-		     Using latest to minimize exposure. Monitor for a patched release. -->
-		<logback.version>1.5.32</logback.version>
+		<!-- spring-security: version managed by the spring-boot-dependencies BOM import below
+		     (Spring Boot 4.1.1 -> Spring Security 7.1.1). Pin here only to override a CVE. -->
+		<!-- logback: 1.5.38 is the version managed by Spring Boot 4.1.1 and the latest available;
+		     CVE-2026-1225 is flagged as 'Insufficient Information' (GHSA-qqpg-mvqg-649v) with no
+		     confirmed fix in any 1.5.x release yet. Monitor for a patched release. -->
+		<logback.version>1.5.38</logback.version>
 		<!-- snakeyaml: fixes CVE-2022-1471 (Constructor RCE) -->
-		<snakeyaml.version>2.3</snakeyaml.version>
+		<snakeyaml.version>2.6</snakeyaml.version>
 		<!-- commons-lang3: fixes CVE-2025-48924 -->
-		<commons-lang3.version>3.18.0</commons-lang3.version>
+		<commons-lang3.version>3.20.0</commons-lang3.version>
 
         <!-- Code quality plugin versions -->
         <spotbugs-maven-plugin.version>4.10.3.0</spotbugs-maven-plugin.version>
@@ -118,6 +113,18 @@
 
 	<dependencyManagement>
 		<dependencies>
+			<!-- JUnit — imported first so that all JUnit artifacts (jupiter + platform) resolve to a
+			     single version. Vaadin 25.3 manages JUnit through junit-bom; importing it here avoids
+			     mixing junit-jupiter-engine with an older junit-platform-commons from the Spring Boot
+			     BOM, which fails at runtime with IllegalAccessError. -->
+			<dependency>
+				<groupId>org.junit</groupId>
+				<artifactId>junit-bom</artifactId>
+				<version>${junit.jupiter.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+
 			<!-- Spring Boot dependency versions -->
 			<dependency>
 				<groupId>org.springframework.boot</groupId>
@@ -221,16 +228,6 @@
 			</dependency>
 
 			<!-- Explicit versions not always provided by parent BOMs -->
-			<dependency>
-				<groupId>org.springframework.security</groupId>
-				<artifactId>spring-security-core</artifactId>
-				<version>${spring-security.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework.security</groupId>
-				<artifactId>spring-security-web</artifactId>
-				<version>${spring-security.version}</version>
-			</dependency>
 			<dependency>
 				<groupId>org.jetbrains</groupId>
 				<artifactId>annotations</artifactId>
