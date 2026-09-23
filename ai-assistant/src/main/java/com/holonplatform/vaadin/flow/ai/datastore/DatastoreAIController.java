@@ -1,6 +1,7 @@
 package com.holonplatform.vaadin.flow.ai.datastore;
 
 import com.vaadin.flow.component.ai.orchestrator.AIController;
+import com.vaadin.flow.component.ai.orchestrator.ResponseListener;
 import com.vaadin.flow.component.ai.provider.LLMProvider;
 
 import java.util.ArrayList;
@@ -57,7 +58,7 @@ public final class DatastoreAIController implements AIController {
     }
 
     @Override
-    public void onResponse(Throwable error) {
+    public void onResponse(ResponseListener.ResponseEvent event) {
         // No per-turn state is captured by this controller; nothing to release/apply here.
         // Subclass or wrap this controller if deferred UI updates are required.
     }

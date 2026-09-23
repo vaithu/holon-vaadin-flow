@@ -1,10 +1,11 @@
 # holon-vaadin-flow-ai-assistant
 
 AI chat assistant components for Vaadin Flow, built on top of the **free, Apache-2.0-licensed**
-`com.vaadin:vaadin-ai-components-flow` module (`AIOrchestrator` / `LLMProvider` / `AIController`),
+`com.vaadin:vaadin-ai-core-flow` module (`AIOrchestrator` / `LLMProvider` / `AIController`),
 with data access delegated to the **Holon Datastore API** — never raw JDBC handed to the LLM.
 
-> **Preview feature.** `vaadin-ai-components-flow` is a Vaadin 25.1+ preview feature. Enable it in
+> **Preview feature.** `vaadin-ai-core-flow` is a Vaadin 25.1+ preview feature (named
+> `vaadin-ai-components-flow` before Vaadin 25.3). Enable it in
 > `src/main/resources/vaadin-featureflags.properties`:
 > ```properties
 > com.vaadin.experimental.aiComponents=true
@@ -47,7 +48,7 @@ touch, and route every write through the existing Datastore/validator/authorizat
    ```
 4. Provide an `LLMProvider` bean — either `SpringAILLMProvider` (wraps a Spring AI `ChatModel`) or
    `LangChain4JLLMProvider` (wraps a LangChain4j `ChatModel`), both shipped in
-   `vaadin-ai-components-flow`. Read the API key from configuration — never hard-code it:
+   `vaadin-ai-core-flow`. Read the API key from configuration — never hard-code it:
    ```java
    @Bean
    LLMProvider llmProvider(@Value("${app.ai.api-key}") String apiKey) {
@@ -288,10 +289,12 @@ Style the highlight in your theme, e.g.:
 
 ### Using Vaadin's built-in controllers
 
-`GridAIController` / `ChartAIController` / `FormAIController` are genuinely part of the free
-`vaadin-ai-components-flow` jar (Apache-2.0) and can be used directly for quick, generic
+`GridAIController` / `ChartAIController` / `FormAIController` ship in the **commercial**
+`vaadin-ai-extensions-flow` jar (since Vaadin 25.3; they were part of the free
+`vaadin-ai-components-flow` jar before) and can be used directly for quick, generic
 scenarios — e.g. `FormAIController` auto-scans *any* `HasValue` field inside a `FormLayout` (or
-other `Component & HasComponents` container) with no whitelist:
+other `Component & HasComponents` container) with no whitelist. This module does not depend on
+them; add `com.vaadin:vaadin-ai-extensions-flow` yourself if you want to use them:
 
 ```java
 FormAIController formController = new FormAIController(formLayout);

@@ -10,6 +10,7 @@ import com.holonplatform.core.query.QuerySort.SortDirection;
 import com.holonplatform.vaadin.flow.ai.datastore.PropertyValues;
 import com.holonplatform.vaadin.flow.components.BeanListing;
 import com.vaadin.flow.component.ai.orchestrator.AIController;
+import com.vaadin.flow.component.ai.orchestrator.ResponseListener;
 import com.vaadin.flow.component.ai.provider.LLMProvider;
 
 import java.util.ArrayList;
@@ -209,7 +210,7 @@ public final class BeanListingAIController<T> implements AIController, QueryConf
     }
 
     @Override
-    public void onResponse(Throwable error) {
+    public void onResponse(ResponseListener.ResponseEvent event) {
         // No per-turn state retained; the applied filter/sort persists until the next tool call.
     }
 

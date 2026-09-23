@@ -63,11 +63,11 @@
 		<holon.core.version>12.0.0</holon.core.version>
 
 		<!-- Vaadin -->
-		<vaadin.version>25.2.1</vaadin.version>
+		<vaadin.version>25.3.0</vaadin.version>
 		<spring-boot.version>4.1.0</spring-boot.version>
 		<junit.jupiter.version>6.0.3</junit.jupiter.version>
 
-		<!-- Servlet API — must match what vaadin flow-server 25.2.x declares (6.1.0 / Jakarta EE 11). -->
+		<!-- Servlet API — must match what vaadin flow-server 25.3.x declares (6.1.0 / Jakarta EE 11). -->
 		<servlet.version>6.1.0</servlet.version>
 
 		<holon.jdbc.datastore.version>12.0.0</holon.jdbc.datastore.version>

@@ -8,6 +8,7 @@ import com.holonplatform.vaadin.flow.components.chartjs.ChartJsData;
 import com.holonplatform.vaadin.flow.components.chartjs.ChartJsDataset;
 import com.holonplatform.vaadin.flow.components.chartjs.ChartType;
 import com.vaadin.flow.component.ai.orchestrator.AIController;
+import com.vaadin.flow.component.ai.orchestrator.ResponseListener;
 import com.vaadin.flow.component.ai.provider.LLMProvider;
 
 import java.util.List;
@@ -116,7 +117,7 @@ public final class ChartJsAIController implements AIController {
     }
 
     @Override
-    public void onResponse(Throwable error) {
+    public void onResponse(ResponseListener.ResponseEvent event) {
         // No per-turn state retained.
     }
 

@@ -12,7 +12,7 @@
 
     <name>${project.groupId}:${project.artifactId}</name>
     <description>Holon Vaadin Flow AI Assistant — chat-based AI assistant components backed by the free
-        Vaadin AI (vaadin-ai-components-flow) module, with data access delegated to the Holon Datastore API
+        Vaadin AI (vaadin-ai-core-flow) module, with data access delegated to the Holon Datastore API
     </description>
 
     <url>https://holon-platform.com</url>
@@ -40,17 +40,19 @@
         </dependency>
 
         <!-- Vaadin AI support (free, Apache-2.0-licensed) — AIOrchestrator, LLMProvider, AIController,
-             DatabaseProvider, plus the ready-made GridAIController/ChartAIController/FormAIController.
+             DatabaseProvider and the LLM providers. Since Vaadin 25.3 the AI modules are split by tier:
+             vaadin-ai-core-flow (free) and vaadin-ai-extensions-flow (commercial), the latter holding the
+             ready-made GridAIController/ChartAIController/FormAIController, which this module does not use.
              This is a Vaadin 25.1+ preview feature (com.vaadin.experimental.aiComponents feature flag). -->
         <dependency>
             <groupId>com.vaadin</groupId>
-            <artifactId>vaadin-ai-components-flow</artifactId>
+            <artifactId>vaadin-ai-core-flow</artifactId>
             <version>${vaadin.version}</version>
         </dependency>
 
         <!-- Jackson databind (Jackson 3.x "tools.jackson" coordinates) — used to read LLM tool-call
              JSON arguments (LLMProvider.ToolSpec#execute(tools.jackson.databind.JsonNode)); this is
-             the exact Jackson generation vaadin-ai-components-flow itself is compiled against. -->
+             the exact Jackson generation vaadin-ai-core-flow itself is compiled against. -->
         <dependency>
             <groupId>tools.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
@@ -60,7 +62,7 @@
              vaadin-core via holon-vaadin-flow above — they have no Holon equivalent, so they are
              the only raw Vaadin components allowed in this module. -->
 
-        <!-- NOTE: SpringAILLMProvider / LangChain4JLLMProvider ship as part of vaadin-ai-components-flow.
+        <!-- NOTE: SpringAILLMProvider / LangChain4JLLMProvider ship as part of vaadin-ai-core-flow.
              Applications that build the underlying Spring AI ChatModel / LangChain4j ChatModel
              themselves must add their own org.springframework.ai / dev.langchain4j dependency —
              this module does not impose a specific LLM framework. -->
