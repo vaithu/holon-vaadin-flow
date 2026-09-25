@@ -45,8 +45,12 @@ public class DemoI18NProvider implements I18NProvider {
                     ? MessageFormat.format(pattern, params)
                     : pattern;
         } catch (MissingResourceException e) {
-            // Return the key itself as fallback so missing translations are visible during development
-            return key;
+            // Return null — not the key — so callers can fall back. Vaadin's I18NProvider
+            // contract treats null as "no translation available", and Holon's
+            // LocalizationProvider.localize(defaultMessage, messageCode) then yields the
+            // default message. Returning the key instead defeats that fallback and leaks
+            // raw codes (e.g. "close.code") into the UI.
+            return null;
         }
     }
 }

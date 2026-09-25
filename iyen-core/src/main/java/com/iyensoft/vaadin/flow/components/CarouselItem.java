@@ -18,6 +18,7 @@ package com.iyensoft.vaadin.flow.components;
 import java.io.Serial;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.dependency.StyleSheet;
 
 /**
  * An individual slide inside a {@link CarouselContent}.
@@ -36,6 +37,7 @@ import com.vaadin.flow.component.html.Div;
  * @see Carousel
  * @see CarouselContent
  */
+@StyleSheet("context://carousel.css")
 public class CarouselItem extends Div {
 
     @Serial

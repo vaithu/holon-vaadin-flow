@@ -19,6 +19,7 @@ import com.holonplatform.core.i18n.Localizable;
 import com.vaadin.flow.component.html.Div;
 
 import java.io.Serial;
+import com.vaadin.flow.component.dependency.StyleSheet;
 
 /**
  * A single label/value row of a {@link TotalsCard}.
@@ -30,6 +31,7 @@ import java.io.Serial;
  *  └── TotalsValue ({@link #setValue(String)} / {@link #setValue(Localizable)})
  * </pre>
  */
+@StyleSheet("context://totals-card.css")
 public class TotalsRow extends Div {
 
     @Serial

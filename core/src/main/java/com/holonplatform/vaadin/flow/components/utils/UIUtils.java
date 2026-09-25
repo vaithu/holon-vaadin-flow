@@ -99,6 +99,7 @@ public class UIUtils {
      * @return the created {@link Div}
      */
     public static Div div(String className, com.vaadin.flow.component.Component... children) {
+        StyleSheetSupport.require("utilities.css", "layout.css");
         final Div div = new Div(children);
         if (className != null && !className.isEmpty()) {
             div.addClassName(className);
@@ -184,6 +185,7 @@ public class UIUtils {
      * @return the configured dialog
      */
     public static Dialog createFilterDialog(String title, Component filterContent, Component... footerComponents) {
+        StyleSheetSupport.require("filter-panel.css");
 
         var body = new Div(filterContent);
         body.addClassName("listing-filter-dialog__body");
@@ -221,6 +223,7 @@ public class UIUtils {
     }
 
     public static Component[] toComponents(HasComponent[] components) {
+        StyleSheetSupport.require("utilities.css");
         return Arrays.stream(components).map(HasComponent::getComponent).toArray(Component[]::new);
     }
 
@@ -277,6 +280,7 @@ public class UIUtils {
     }
 
     private static TextField textFieldFilter(Consumer<String> filterChangeConsumer, int valueChangeTimeout) {
+        StyleSheetSupport.require("utilities.css");
         TextField textField = new TextField();
         if (valueChangeTimeout > 0) {
             // LAZY + debounce: a filter change normally triggers a backend query, so EAGER would
@@ -294,6 +298,7 @@ public class UIUtils {
     }
 
     public static LabelBuilder<H4> createH4(String title) {
+        StyleSheetSupport.require("utilities.css");
         return LabelBuilder.h4()
                 .text(title)
                 .title(title)
@@ -309,12 +314,14 @@ public class UIUtils {
     }
 
     public static Span createDaySpan() {
+        StyleSheetSupport.require("utilities.css");
         Span daySpan = new Span();
         daySpan.addClassName("day-span");
         return daySpan;
     }
 
     public static Button createChangeLanguageButton(AttachEvent attachEvent) {
+        StyleSheetSupport.require("utilities.css");
         final Locale locale = attachEvent.getUI().getLocale();
         Button changeLanguage = ButtonBuilder.create()
                 .styleName("btn-change-language")
@@ -326,6 +333,7 @@ public class UIUtils {
     }
 
     private static void updateChangeLanguageButtonIcon(UI ui, Button changeLanguage) {
+        StyleSheetSupport.require("utilities.css");
         Image image;
         if (ui.getLocale() != null) {
             image = new Image("icons/finnish.png", "Finnish");
@@ -453,6 +461,7 @@ public class UIUtils {
     );
 
     public static Anchor createAnchor(String href, String text) {
+        StyleSheetSupport.require("utilities.css", "layout.css");
         Anchor anchor = new Anchor(href, text);
 
         anchor.getStyle()
@@ -561,6 +570,7 @@ public class UIUtils {
     }
 
     public static H3 createUnitsLabel(int units) {
+        StyleSheetSupport.require("utilities.css");
         H3 label = new H3(formatUnits(units));
         label.addClassName("font-weight-thin");
 //        CSSUtils.FontFamily.MONOSPACE
@@ -576,6 +586,7 @@ public class UIUtils {
     }
 
     public static void setTextColor(String textColor, Component... components) {
+        StyleSheetSupport.require("utilities.css");
         for (Component component : components) {
             component.addClassName(textColor);
         }
@@ -657,6 +668,7 @@ public class UIUtils {
     }
 
     public static Div createCard(Component... components) {
+        StyleSheetSupport.require("utilities.css", "layout.css");
         final var div = UIUtils.div("card", components);
         return div;
     }
@@ -670,6 +682,7 @@ public class UIUtils {
         return layout;
     }*/
     public static FlexLayout createCard(String heading, Component... components) {
+        StyleSheetSupport.require("utilities.css", "layout.css");
         FlexLayout layout = new FlexLayout();
         layout.setFlexDirection(FlexLayout.FlexDirection.COLUMN);
         layout.addClassName("card");
@@ -682,6 +695,7 @@ public class UIUtils {
     }
 
     public static FlexLayout createCard(String heading, String classnames, Component... components) {
+        StyleSheetSupport.require("utilities.css", "layout.css");
         FlexLayout layout = new FlexLayout();
         layout.setFlexDirection(FlexLayout.FlexDirection.COLUMN);
         layout.addClassName("card");
@@ -725,12 +739,14 @@ public class UIUtils {
     }
 
     public static Div createWrapDiv(Component... components) {
+        StyleSheetSupport.require("utilities.css", "layout.css");
         Div wrapDiv = new Div(components);
         wrapDiv.addClassNames("flex", "flex-wrap", "margin-top-medium", "padding-start-small");
         return wrapDiv;
     }
 
     public static Component createSectionHeader(String title) {
+        StyleSheetSupport.require("utilities.css");
         H2 header = LabelBuilder.h2().text(title).build();
         header.addClassNames("font-size-medium", "margin-none");
         return header;
@@ -842,12 +858,14 @@ public class UIUtils {
 
 
     public static void createReadOnlyTextArea(TextArea textArea) {
+        StyleSheetSupport.require("utilities.css");
         textArea.addClassNames("color-text-disabled", "border-color-contrast-10",
                 "color-bg-contrast-5");
         textArea.setSizeFull();
     }
 
     public static TextArea createReadOnlyTextArea() {
+        StyleSheetSupport.require("utilities.css");
         TextArea textArea = new TextArea();
         textArea.setWidthFull();
         textArea.addClassNames("color-text-disabled", "border-color-contrast-10",
@@ -975,6 +993,7 @@ public class UIUtils {
     }
 
     public static DataProviderListener<?> gridNoDataListener(Grid<?> grid, Div noDataWarningMsg) {
+        StyleSheetSupport.require("utilities.css");
         DataProvider<?, ?> dataProvider = grid.getDataProvider();
         DataProviderListener<?> listener = dataChangeEvent -> {
             if (dataProvider.size(new Query<>()) == 0) {
@@ -1067,6 +1086,7 @@ public class UIUtils {
     }
 
     public static Component createWidget(String title, Double accountBalance) {
+        StyleSheetSupport.require("utilities.css", "layout.css");
         VaadinIcon icon = VaadinIcon.MONEY;
         String prefix = " ";
         String theme = "badge";
@@ -1097,6 +1117,7 @@ public class UIUtils {
     }
 
     public static Component createWidget(String title, String value, Integer year) {
+        StyleSheetSupport.require("utilities.css", "layout.css");
 
         H2 titleText = LabelBuilder.h2().text(title).build();
         titleText.addClassNames("font-weight-normal", "margin-none",
@@ -1117,6 +1138,7 @@ public class UIUtils {
     }
 
     public static HorizontalLayout createHeader(String title, String subtitle) {
+        StyleSheetSupport.require("utilities.css", "layout.css");
         H2 h2 = LabelBuilder.h2().text(title).build();
         h2.addClassNames("font-size-xlarge", "margin-none");
 
@@ -1328,7 +1350,7 @@ public class UIUtils {
     public static void showFailureDialog(String title, String errMessage) {
         ConfirmDialog dialog = new ConfirmDialog();
 
-        com.vaadin.flow.component.icon.Icon errorIcon = new com.vaadin.flow.component.icon.Icon(VaadinIcon.EXCLAMATION_CIRCLE_O);
+        com.vaadin.flow.component.icon.Icon errorIcon = new com.vaadin.flow.component.icon.Icon(VaadinIcon.EXCLAMATION_CIRCLE);
         errorIcon.setSize("2.5em");
 
         H2 headerMessage = LabelBuilder.h2().text(LocalizationProvider.localize("Creation failed", "utils.creation_failed")).build();
@@ -1381,6 +1403,7 @@ public class UIUtils {
     }
 
     public static UnorderedList unorderedPriceList() {
+        StyleSheetSupport.require("utilities.css");
         UnorderedList unorderedList = new UnorderedList();
         unorderedList.addClassNames(
 //                FontFamily.MONO,
@@ -1396,6 +1419,7 @@ public class UIUtils {
 
 
     public static ListItem listItem(Span timeSpan, Span priceSpan) {
+        StyleSheetSupport.require("utilities.css");
         ListItem listItem = new ListItem(timeSpan, priceSpan);
         listItem.addClassNames(
                 "border-bottom",
@@ -1692,6 +1716,7 @@ public class UIUtils {
     }
 
     public static Optional<ViewMode> findScreenSize(UI ui, int width) {
+        StyleSheetSupport.require("utilities.css", "layout.css");
         final ViewMode[] viewMode = new ViewMode[1];
         ui.getPage().addBrowserWindowResizeListener(browserWindowResizeEvent -> {
 
@@ -2180,7 +2205,7 @@ public class UIUtils {
         }
 
         public static com.vaadin.flow.component.icon.Icon createCloseIcon() {
-            final com.vaadin.flow.component.icon.Icon closeIcon = VaadinIcon.CLOSE_SMALL.create();
+            final com.vaadin.flow.component.icon.Icon closeIcon = VaadinIcon.CLOSE.create();
             closeIcon.addClassName("icon-size-small");
             closeIcon.addClassName("color-text-primary");
             return closeIcon;
@@ -2204,7 +2229,7 @@ public class UIUtils {
                 icon = VaadinIcon.CHECK.create();
                 icon.getElement().getThemeList().add("badge success");
             } else {
-                icon = VaadinIcon.CLOSE_SMALL.create();
+                icon = VaadinIcon.CLOSE.create();
                 icon.getElement().getThemeList().add("badge error");
             }
             icon.addClassName("padding-xsmall");

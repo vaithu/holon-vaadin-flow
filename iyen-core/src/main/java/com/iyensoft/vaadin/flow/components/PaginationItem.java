@@ -18,6 +18,7 @@ package com.iyensoft.vaadin.flow.components;
 import java.io.Serial;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.html.ListItem;
+import com.vaadin.flow.component.dependency.StyleSheet;
 
 /**
  * A {@code <li>} wrapper for a single pagination control
@@ -28,6 +29,7 @@ import com.vaadin.flow.component.html.ListItem;
  *
  * @see PaginationContent
  */
+@StyleSheet("context://pagination.css")
 public class PaginationItem extends ListItem {
 
     @Serial

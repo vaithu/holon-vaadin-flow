@@ -95,6 +95,14 @@ public interface ButtonConfigurator<C extends ButtonConfigurator<C>> extends Com
 
 	C icon();
 
+	/**
+	 * Styles this button as an icon-only button with a rounded rectangular border.
+	 * Applies the icon-only sizing and the {@code btn--icon-rounded} CSS class.
+	 *
+	 * @return this
+	 */
+	C iconRounded();
+
 	C image(Image image);
 
 	C marginInlineEndAuto();

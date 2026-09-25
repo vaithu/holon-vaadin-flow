@@ -291,7 +291,7 @@ public class MaterialHeader extends Div implements HasTheme {
         if (overflowMenu != null) {
             return;
         }
-        overflowButton = new Button(VaadinIcon.ELLIPSIS_DOTS_V.create());
+        overflowButton = new Button(VaadinIcon.ELLIPSIS_V.create());
         overflowButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY, ButtonVariant.LUMO_ICON);
         overflowButton.addClassName("material-header__overflow");
         overflowButton.setAriaLabel(LocalizationProvider.localize("More actions", "material_header.more_actions_aria"));
@@ -307,31 +307,43 @@ public class MaterialHeader extends Div implements HasTheme {
     }
 
     private void ensureBreadcrumbMounted() {
-        if (breadcrumbSlot.getComponentCount() > 0 && breadcrumbSlot.getParent().isEmpty()) {
-            addComponentAtIndex(0, breadcrumbSlot);
-        }
+        mountOrUnmount(breadcrumbSlot, breadcrumbSlot.getComponentCount() > 0,
+                () -> addComponentAtIndex(0, breadcrumbSlot));
     }
 
     private void ensureLeadingMounted() {
-        if (leadingSlot.getComponentCount() > 0 && leadingSlot.getParent().isEmpty()) {
+        mountOrUnmount(leadingSlot, leadingSlot.getComponentCount() > 0, () -> {
             int index = breadcrumbSlot.getParent().isPresent() ? 1 : 0;
             addComponentAtIndex(index, leadingSlot);
-        }
+        });
     }
 
     private void ensureContentMounted() {
-        if ((headlineSlot.getComponentCount() > 0 || bodySlot.getComponentCount() > 0)
-                && contentSlot.getParent().isEmpty()) {
+        boolean hasContent = headlineSlot.getComponentCount() > 0 || bodySlot.getComponentCount() > 0;
+        mountOrUnmount(contentSlot, hasContent, () -> {
             int index = 0;
             if (breadcrumbSlot.getParent().isPresent()) index++;
             if (leadingSlot.getParent().isPresent()) index++;
             addComponentAtIndex(index, contentSlot);
-        }
+        });
     }
 
     private void ensureTrailingMounted() {
-        if (trailingSlot.getComponentCount() > 0 && trailingSlot.getParent().isEmpty()) {
-            addComponentAtIndex(getComponentCount(), trailingSlot);
+        mountOrUnmount(trailingSlot, trailingSlot.getComponentCount() > 0,
+                () -> addComponentAtIndex(getComponentCount(), trailingSlot));
+    }
+
+    /**
+     * Mounts {@code slot} into this header only while it actually has content, detaching it
+     * again once it becomes empty — so an empty slot never lingers in the DOM.
+     */
+    private void mountOrUnmount(Div slot, boolean shouldBeMounted, Runnable mountAction) {
+        if (shouldBeMounted) {
+            if (slot.getParent().isEmpty()) {
+                mountAction.run();
+            }
+        } else if (slot.getParent().isPresent()) {
+            remove(slot);
         }
     }
 

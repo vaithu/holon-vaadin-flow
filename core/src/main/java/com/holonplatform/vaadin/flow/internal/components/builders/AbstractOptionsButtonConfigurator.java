@@ -42,7 +42,7 @@ public abstract class AbstractOptionsButtonConfigurator<C extends HasOptionsButt
     private static Button getOptionsBtn() {
         return ButtonBuilder.create()
                 .tertiaryInline()
-                .icon(VaadinIcon.ELLIPSIS_DOTS_V)
+                .icon(VaadinIcon.ELLIPSIS_V)
                 .withFocusShortcutKey(Key.KEY_O, KeyModifier.ALT)
                 .build();
     }

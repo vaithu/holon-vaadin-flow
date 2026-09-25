@@ -1,306 +1,634 @@
 /*
  * shell-color-themes.css
  *
- * Color variants for AppShellLayout (AppBar + SideNav drawer).
+ * SINGLE SOURCE OF TRUTH for every ShellColor theme.
  *
- * Each ".shell-color-*" class is applied to the AppShellLayout root
- * (a <vaadin-app-layout>) by AppShellLayoutConfigurator#colorTheme(ShellColor).
- * CSS custom properties inherit across shadow-DOM boundaries, so overriding
- * them here recolors:
- *   - the brand logo tile        (.app-bar__brand-logo)
- *   - the focus ring             (--brand-500, used in app-bar.css)
- *   - the active SideNav item    (--sidenav-item-active-*, menu.css)
- *   - the active SideNav icon    (--sidenav-icon-active-color, menu.css)
- *   - the collapse-toggle hover  (--sidenav-toggle-hover-color, menu.css)
- *   - notification/nav badges   (--sidenav-badge-bg, menu.css)
+ * Each ".shell-color-*" class is a pure *token* block — it declares custom
+ * property VALUES only, never selectors that paint. The painting rules all
+ * live in menu.css (SideNav) and app-bar.css (AppBar), which read these
+ * tokens. Nothing here duplicates a rule from those files.
  *
- * No selector here duplicates app-bar.css / menu.css rules — only the
- * custom-property *values* they already read are redefined, so consumer
- * theme overrides declared with normal or higher specificity still win.
+ * The selector is a bare class (not scoped to a tag) on purpose, because the
+ * class is applied to BOTH:
+ *   - the .sidenav-host wrapper  — SideNavConfigurator#colorTheme(...)
+ *   - the <vaadin-app-layout>    — AppShellLayoutConfigurator#colorTheme(...)
+ *                                  (and mirrored onto the ancestor app-layout
+ *                                   by AbstractSideNavConfigurator, so the
+ *                                   drawer width/background follow the theme)
+ * Custom properties inherit across shadow-DOM boundaries, so declaring them on
+ * either host recolors the whole subtree including ::part()s.
+ *
+ * ── Fidelity contract ───────────────────────────────────────────────────────
+ * Every value below is transcribed from a reference mockup in docs/. The
+ * Playwright spec demo/e2e/shell-color-themes.spec.ts asserts, per theme, that
+ * the computed style of the live <vaadin-side-nav> equals the computed style of
+ * the corresponding mockup element. If you change a value here, change it in
+ * the mockup too — or the test fails.
+ *
+ *   BLUE INDIGO TEAL RED CYAN AMBER PINK SLATE
+ *                              docs/vaadin_applayout_mockups(1).html (cards 1-8)
+ *   MODERN_SAAS                docs/04-modern-saas-sidenav.html
+ *   MATERIAL                   docs/05-material-sidenav.html
+ *   ENTERPRISE                 docs/06-enterprise-sidenav.html
+ *   GRADIENT                   docs/08-gradient-sidenav.html
+ *   COLLAPSIBLE_DARK           docs/11-collapsible-style-sidenav.html
+ *   PREMIUM_BLUE               docs/12-premium-blue-sidenav.html
  */
 
-/* -----------------------------------------------------------------------
- * Brand logo tile — shared base look for all colored themes.
- * Only applies when a plain Component (icon, initials Span, etc.) is
- * passed to .navbarBrandLogo(); an already-styled/img component is
- * unaffected unless it inherits these properties.
- * ----------------------------------------------------------------------- */
-.app-bar__brand-logo {
-    display:         inline-flex;
-    align-items:     center;
-    justify-content: center;
-    box-sizing:      border-box;
-    width:           2rem;
-    height:          2rem;
-    border-radius:   var(--radius-md, 8px);
-    background:      var(--brand-500, #2563eb);
-    color:           #ffffff;
-    flex-shrink:     0;
+
+/* ===========================================================================
+ * ACCENT THEMES (1-8) — docs/vaadin_applayout_mockups(1).html
+ *
+ * Shared chrome across all eight cards; only --brand-500 / the active pill
+ * colors differ. Transcribed from that file's <style> block:
+ *
+ *   .drawer      { width:225px; background:#fff; border-right:1px solid #e3e6e8 }
+ *   .nav         { padding:12px 9px }
+ *   .nav-section { font-size:10px; text-transform:uppercase; color:#98a0a8;
+ *                  padding:10px 10px 5px; letter-spacing:.07em }
+ *   .nav-item    { height:42px; border-radius:9px; padding:0 11px;
+ *                  gap:11px; font-size:14px; margin:2px 0 }
+ *   .nav-item.active { background:var(--active); color:var(--active-text);
+ *                      font-weight:600 }   <-- note: NO left border accent
+ *   .logo        { width:34px; height:34px; border-radius:9px;
+ *                  background:var(--brand); color:#fff; font-weight:700 }
+ *   .nav-item span { width:20px }
+ * ======================================================================== */
+
+.shell-color-blue,
+.shell-color-indigo,
+.shell-color-teal,
+.shell-color-red,
+.shell-color-cyan,
+.shell-color-amber,
+.shell-color-pink,
+.shell-color-slate {
+    --sidenav-width:                          225px;
+    --sidenav-bg:                             #ffffff;
+    --sidenav-border:                         #e3e6e8;
+    --sidenav-nav-padding:                    12px 9px;
+
+    --sidenav-label-color:                    #98a0a8;
+    --sidenav-label-font-size:                10px;
+    --sidenav-label-font-weight:              400;
+    --sidenav-label-letter-spacing:           0.07em;
+    --sidenav-label-padding:                  10px 10px 5px;
+
+    --sidenav-item-min-height:                42px;
+    --sidenav-item-padding:                   0 11px;
+    --sidenav-item-radius:                    9px;
+    --sidenav-item-gap:                       11px;
+    --sidenav-item-margin:                    2px 0;
+    --sidenav-item-font-size:                 14px;
+    --sidenav-item-font-weight:               400;
+    --sidenav-item-color:                     #20252b;
+
+    /* The mockup's active pill is background + text + weight only. */
+    --sidenav-item-active-border-start-width: 0px;
+    --sidenav-item-active-font-weight:        600;
+
+    --sidenav-icon-size:                      20px;
+
+    --sidenav-logo-size:                      34px;
+    --sidenav-logo-radius:                    9px;
+    --sidenav-logo-color:                     #ffffff;
+    --sidenav-logo-font-weight:               700;
 }
 
-/* ========================================================================
- * 1. Blue
- * ==================================================================== */
-vaadin-app-layout.shell-color-blue {
+/* 1. Blue — "StaffOS" ---------------------------------------------------- */
+.shell-color-blue {
     --brand-500:                  #0b6e99;
     --brand-600:                  #0b6e99;
     --brand-700:                  #075985;
     --sidenav-item-active-bg:     #e3f2f9;
     --sidenav-item-active-color:  #075985;
-    --sidenav-item-active-border: #0b6e99;
-    --sidenav-icon-active-color:  #0b6e99;
+    --sidenav-icon-active-color:  #075985;
+    --sidenav-logo-bg:            #0b6e99;
     --sidenav-badge-bg:           #0b6e99;
     --sidenav-toggle-hover-color: #075985;
 }
 
-/* ========================================================================
- * 2. Indigo
- * ==================================================================== */
-vaadin-app-layout.shell-color-indigo {
+/* 2. Indigo — "Insight" -------------------------------------------------- */
+.shell-color-indigo {
     --brand-500:                  #4f46e5;
     --brand-600:                  #4f46e5;
     --brand-700:                  #3730a3;
     --sidenav-item-active-bg:     #eef2ff;
     --sidenav-item-active-color:  #3730a3;
-    --sidenav-item-active-border: #4f46e5;
-    --sidenav-icon-active-color:  #4f46e5;
+    --sidenav-icon-active-color:  #3730a3;
+    --sidenav-logo-bg:            #4f46e5;
     --sidenav-badge-bg:           #4f46e5;
     --sidenav-toggle-hover-color: #3730a3;
 }
 
-/* ========================================================================
- * 3. Teal
- * ==================================================================== */
-vaadin-app-layout.shell-color-teal {
+/* 3. Teal — "Operations" ------------------------------------------------- */
+.shell-color-teal {
     --brand-500:                  #0f766e;
     --brand-600:                  #0f766e;
     --brand-700:                  #115e59;
     --sidenav-item-active-bg:     #e6fffb;
     --sidenav-item-active-color:  #115e59;
-    --sidenav-item-active-border: #0f766e;
-    --sidenav-icon-active-color:  #0f766e;
+    --sidenav-icon-active-color:  #115e59;
+    --sidenav-logo-bg:            #0f766e;
     --sidenav-badge-bg:           #0f766e;
     --sidenav-toggle-hover-color: #115e59;
 }
 
-/* ========================================================================
- * 4. Red
- * ==================================================================== */
-vaadin-app-layout.shell-color-red {
+/* 4. Red — "Service Desk" ------------------------------------------------ */
+.shell-color-red {
     --brand-500:                  #c62828;
     --brand-600:                  #c62828;
     --brand-700:                  #a61b1b;
     --sidenav-item-active-bg:     #ffebee;
     --sidenav-item-active-color:  #a61b1b;
-    --sidenav-item-active-border: #c62828;
-    --sidenav-icon-active-color:  #c62828;
+    --sidenav-icon-active-color:  #a61b1b;
+    --sidenav-logo-bg:            #c62828;
     --sidenav-badge-bg:           #c62828;
     --sidenav-toggle-hover-color: #a61b1b;
 }
 
-/* ========================================================================
- * 5. Cyan
- * ==================================================================== */
-vaadin-app-layout.shell-color-cyan {
+/* 5. Cyan — "Analytics" -------------------------------------------------- */
+.shell-color-cyan {
     --brand-500:                  #087f8c;
     --brand-600:                  #087f8c;
     --brand-700:                  #006064;
     --sidenav-item-active-bg:     #e0f7fa;
     --sidenav-item-active-color:  #006064;
-    --sidenav-item-active-border: #087f8c;
-    --sidenav-icon-active-color:  #087f8c;
+    --sidenav-icon-active-color:  #006064;
+    --sidenav-logo-bg:            #087f8c;
     --sidenav-badge-bg:           #087f8c;
     --sidenav-toggle-hover-color: #006064;
 }
 
-/* ========================================================================
- * 6. Amber
- * ==================================================================== */
-vaadin-app-layout.shell-color-amber {
+/* 6. Amber — "Sales Hub" ------------------------------------------------- */
+.shell-color-amber {
     --brand-500:                  #b45309;
     --brand-600:                  #b45309;
     --brand-700:                  #92400e;
     --sidenav-item-active-bg:     #fff7df;
     --sidenav-item-active-color:  #92400e;
-    --sidenav-item-active-border: #b45309;
-    --sidenav-icon-active-color:  #b45309;
+    --sidenav-icon-active-color:  #92400e;
+    --sidenav-logo-bg:            #b45309;
     --sidenav-badge-bg:           #b45309;
     --sidenav-toggle-hover-color: #92400e;
 }
 
-/* ========================================================================
- * 7. Pink
- * ==================================================================== */
-vaadin-app-layout.shell-color-pink {
+/* 7. Pink — "People" ----------------------------------------------------- */
+.shell-color-pink {
     --brand-500:                  #be185d;
     --brand-600:                  #be185d;
     --brand-700:                  #9d174d;
     --sidenav-item-active-bg:     #fce7f3;
     --sidenav-item-active-color:  #9d174d;
-    --sidenav-item-active-border: #be185d;
-    --sidenav-icon-active-color:  #be185d;
+    --sidenav-icon-active-color:  #9d174d;
+    --sidenav-logo-bg:            #be185d;
     --sidenav-badge-bg:           #be185d;
     --sidenav-toggle-hover-color: #9d174d;
 }
 
-/* ========================================================================
- * 8. Slate
- * ==================================================================== */
-vaadin-app-layout.shell-color-slate {
+/* 8. Slate — "Enterprise" ------------------------------------------------
+ * The mockup card uses --active-text:#334155 (same as --brand), not a darker
+ * shade like the other seven. Transcribed as-is.
+ * ------------------------------------------------------------------------ */
+.shell-color-slate {
     --brand-500:                  #334155;
     --brand-600:                  #334155;
     --brand-700:                  #1e293b;
     --sidenav-item-active-bg:     #e2e8f0;
-    --sidenav-item-active-color:  #1e293b;
-    --sidenav-item-active-border: #334155;
+    --sidenav-item-active-color:  #334155;
     --sidenav-icon-active-color:  #334155;
+    --sidenav-logo-bg:            #334155;
     --sidenav-badge-bg:           #334155;
     --sidenav-toggle-hover-color: #1e293b;
 }
 
-/* ========================================================================
- * Surface themes — full sidebar "looks" (dark/gradient background + shape),
- * mirroring the .sidenav-host.shell-color-* blocks in menu.css so AppBar
- * brand elements (logo tile, focus ring) match when SideNav is used inside
- * an AppShellLayout. See menu.css for the per-mockup reference notes.
- * ==================================================================== */
 
-/* 9. Modern SaaS — docs/04-modern-saas-sidenav.html */
-vaadin-app-layout.shell-color-modern-saas {
-    --brand-500:                  #f97316;
-    --brand-600:                  #f97316;
-    --brand-700:                  #c2410c;
-    --sidenav-bg:                  #101828;
-    --sidenav-item-color:          #98a2b3;
-    --sidenav-icon-color:          #98a2b3;
-    --sidenav-label-color:         #667085;
-    --sidenav-group-color:         #98a2b3;
-    --sidenav-border:              #1d2939;
-    --sidenav-item-hover-bg:       #182230;
-    --sidenav-item-hover-color:    #ffffff;
-    --sidenav-item-active-bg:      #1d2939;
-    --sidenav-item-active-color:   #ffffff;
-    --sidenav-item-active-border:  #f97316;
-    --sidenav-icon-active-color:   #f97316;
-    --sidenav-badge-bg:            #f97316;
-    --sidenav-toggle-color:        #667085;
-    --sidenav-toggle-hover-color:  #ffffff;
-    --sidenav-footer-color:        #ffffff;
-    --sidenav-footer-border:       1px solid #344054;
+/* ===========================================================================
+ * SURFACE THEMES (9-14) — full sidebar "looks": the background, item shape
+ * and accent geometry all change, not just the accent hue.
+ * ======================================================================== */
+
+/* ---------------------------------------------------------------------------
+ * 9. MODERN_SAAS — docs/04-modern-saas-sidenav.html
+ *
+ *   .sidenav     { width:275px; background:#101828; color:#98a2b3; padding:18px 12px }
+ *   .logo        { background:#f97316; width:35px; height:35px; border-radius:9px; color:#fff }
+ *   .item        { gap:12px; padding:11px 12px; border-radius:7px; margin:3px 0; font-size:14px }
+ *   .item:hover  { background:#182230; color:#fff }
+ *   .item.active { background:#1d2939; color:#fff; box-shadow:inset 3px 0 #f97316 }
+ *   .group       { font-size:10px; letter-spacing:1.2px; color:#667085; padding:18px 12px 7px }
+ *   .icon        { width:20px }
+ *   .pro         { margin-top:22px; padding:15px; background:#182230;
+ *                  border:1px solid #344054; border-radius:10px; color:#fff; font-size:12px }
+ *
+ * NOTE the active accent is an INSET BOX-SHADOW, not a border — so the border
+ * widths are zeroed and --sidenav-item-active-shadow carries the orange bar.
+ * ------------------------------------------------------------------------- */
+.shell-color-modern-saas {
+    --brand-500:                              #f97316;
+    --brand-600:                              #f97316;
+    --brand-700:                              #c2410c;
+
+    --sidenav-width:                          275px;
+    --sidenav-bg:                             #101828;
+    --sidenav-border:                         #1d2939;
+    --sidenav-nav-padding:                    18px 12px;
+
+    --sidenav-label-color:                    #667085;
+    --sidenav-label-font-size:                10px;
+    --sidenav-label-font-weight:              400;
+    --sidenav-label-letter-spacing:           1.2px;
+    --sidenav-label-padding:                  18px 12px 7px;
+
+    --sidenav-item-min-height:                auto;
+    --sidenav-item-padding:                   11px 12px;
+    --sidenav-item-radius:                    7px;
+    --sidenav-item-gap:                       12px;
+    --sidenav-item-margin:                    3px 0;
+    --sidenav-item-font-size:                 14px;
+    --sidenav-item-font-weight:               400;
+    --sidenav-item-color:                     #98a2b3;
+
+    --sidenav-item-hover-bg:                  #182230;
+    --sidenav-item-hover-color:               #ffffff;
+
+    --sidenav-item-active-bg:                 #1d2939;
+    --sidenav-item-active-color:              #ffffff;
+    --sidenav-item-active-font-weight:        400;
+    --sidenav-item-active-border-start-width: 0px;
+    --sidenav-item-active-shadow:             inset 3px 0 0 0 #f97316;
+
+    --sidenav-icon-color:                     #98a2b3;
+    --sidenav-icon-active-color:              #f97316;
+    --sidenav-icon-size:                      20px;
+
+    --sidenav-badge-bg:                       #f97316;
+    --sidenav-badge-color:                    #ffffff;
+
+    --sidenav-toggle-color:                   #667085;
+    --sidenav-toggle-hover-color:             #ffffff;
+
+    /* ".pro" upsell card — a bordered card, not a top divider. */
+    --sidenav-footer-margin:                  22px 12px 18px;
+    --sidenav-footer-padding:                 15px;
+    --sidenav-footer-bg:                      #182230;
+    --sidenav-footer-border:                  1px solid #344054;
+    --sidenav-footer-radius:                  10px;
+    --sidenav-footer-color:                   #ffffff;
+    --sidenav-footer-font-size:               12px;
+
+    --sidenav-logo-bg:                        #f97316;
+    --sidenav-logo-color:                     #ffffff;
+    --sidenav-logo-size:                      35px;
+    --sidenav-logo-radius:                    9px;
 }
 
-/* 10. Material — docs/05-material-sidenav.html */
-vaadin-app-layout.shell-color-material {
-    --brand-500:                  #3f51b5;
-    --brand-600:                  #3f51b5;
-    --brand-700:                  #3949ab;
-    --sidenav-label-color:         #757575;
-    --sidenav-group-color:         #424242;
-    --sidenav-item-color:          #424242;
-    --sidenav-icon-color:          #616161;
-    --sidenav-item-active-bg:      #e8eaf6;
-    --sidenav-item-active-color:   #3949ab;
-    --sidenav-item-active-border:  #3f51b5;
-    --sidenav-item-active-border-start-width: 0;
+/* ---------------------------------------------------------------------------
+ * 10. MATERIAL — docs/05-material-sidenav.html
+ *
+ *   .sidenav     { width:280px; background:#fff; box-shadow:2px 0 8px #0002;
+ *                  color:#424242; padding-top:16px }
+ *   .group       { font-size:12px; color:#757575; padding:13px 24px 6px; uppercase }
+ *                  (no letter-spacing in the mockup → normal)
+ *   .item        { height:48px; gap:18px; padding:0 24px; font-size:14px }
+ *                  (no border-radius, no margin)
+ *   .item:hover  { background:#f5f5f5 }
+ *   .item.active { background:#e8eaf6; color:#3949ab;
+ *                  border-right:3px solid #3f51b5; font-weight:500 }
+ *   .icon        { width:20px; font-size:18px }
+ *   .badge       { background:#3f51b5; color:#fff; border-radius:12px;
+ *                  padding:2px 7px; font-size:10px }
+ * ------------------------------------------------------------------------- */
+.shell-color-material {
+    --brand-500:                              #3f51b5;
+    --brand-600:                              #3f51b5;
+    --brand-700:                              #3949ab;
+
+    --sidenav-width:                          280px;
+    --sidenav-bg:                             #ffffff;
+    --sidenav-border:                         transparent;
+    --sidenav-shadow:                         2px 0 8px rgb(0 0 0 / 0.133);
+    --sidenav-nav-padding:                    16px 0 0;
+
+    --sidenav-label-color:                    #757575;
+    --sidenav-label-font-size:                12px;
+    --sidenav-label-font-weight:              400;
+    --sidenav-label-letter-spacing:           normal;
+    --sidenav-label-padding:                  13px 24px 6px;
+
+    --sidenav-item-min-height:                48px;
+    --sidenav-item-padding:                   0 24px;
+    --sidenav-item-radius:                    0px;
+    --sidenav-item-gap:                       18px;
+    --sidenav-item-margin:                    0;
+    --sidenav-item-font-size:                 14px;
+    --sidenav-item-font-weight:               400;
+    --sidenav-item-color:                     #424242;
+
+    --sidenav-item-hover-bg:                  #f5f5f5;
+    --sidenav-item-hover-color:               #424242;
+
+    --sidenav-item-active-bg:                 #e8eaf6;
+    --sidenav-item-active-color:              #3949ab;
+    --sidenav-item-active-font-weight:        500;
+    --sidenav-item-active-border:             #3f51b5;
+    --sidenav-item-active-border-start-width: 0px;
     --sidenav-item-active-border-end-width:   3px;
-    --sidenav-icon-active-color:   #3949ab;
-    --sidenav-badge-bg:            #3f51b5;
+
+    --sidenav-icon-color:                     #616161;
+    --sidenav-icon-active-color:              #3949ab;
+    --sidenav-icon-size:                      20px;
+
+    --sidenav-badge-bg:                       #3f51b5;
+    --sidenav-badge-color:                    #ffffff;
+    --sidenav-badge-radius:                   12px;
+    --sidenav-badge-padding:                  2px 7px;
+    --sidenav-badge-font-size:                10px;
+    --sidenav-badge-font-weight:              400;
+
+    --sidenav-logo-bg:                        #3f51b5;
+    --sidenav-logo-color:                     #ffffff;
 }
 
-/* 11. Enterprise — docs/06-enterprise-sidenav.html */
-vaadin-app-layout.shell-color-enterprise {
-    --brand-500:                  #24579a;
-    --brand-600:                  #24579a;
-    --brand-700:                  #172b4d;
-    --sidenav-bg:                  #172b4d;
-    --sidenav-item-color:          #dbe5f2;
-    --sidenav-icon-color:          #dbe5f2;
-    --sidenav-label-color:         #8da5c3;
-    --sidenav-group-color:         #dbe5f2;
-    --sidenav-border:              #203b63;
-    --sidenav-item-hover-bg:       #203b63;
-    --sidenav-item-hover-color:    #ffffff;
-    --sidenav-item-active-bg:      #24579a;
-    --sidenav-item-active-color:   #ffffff;
-    --sidenav-item-active-border-start-width: 0;
-    --sidenav-icon-active-color:   #ffffff;
-    --sidenav-badge-bg:            #d97706;
-    --sidenav-toggle-color:        #8da5c3;
-    --sidenav-toggle-hover-color:  #ffffff;
+/* ---------------------------------------------------------------------------
+ * 11. ENTERPRISE — docs/06-enterprise-sidenav.html
+ *
+ *   .sidenav     { width:285px; background:#172b4d; color:#dbe5f2; padding:18px 10px }
+ *   .item        { gap:13px; padding:11px 14px; border-radius:4px; margin:2px 0; font-size:13px }
+ *   .item:hover  { background:#203b63 }
+ *   .item.active { background:#24579a; color:#fff }   <-- flat fill, no accent
+ *   .group       { font-size:10px; letter-spacing:1px; color:#8da5c3; padding:18px 14px 7px }
+ *   .icon        { width:20px }
+ *   .badge       { background:#d97706; color:#fff; padding:2px 6px;
+ *                  border-radius:3px; font-size:10px }
+ * ------------------------------------------------------------------------- */
+.shell-color-enterprise {
+    --brand-500:                              #24579a;
+    --brand-600:                              #24579a;
+    --brand-700:                              #172b4d;
+
+    --sidenav-width:                          285px;
+    --sidenav-bg:                             #172b4d;
+    --sidenav-border:                         #203b63;
+    --sidenav-nav-padding:                    18px 10px;
+
+    --sidenav-label-color:                    #8da5c3;
+    --sidenav-label-font-size:                10px;
+    --sidenav-label-font-weight:              400;
+    --sidenav-label-letter-spacing:           1px;
+    --sidenav-label-padding:                  18px 14px 7px;
+
+    --sidenav-item-min-height:                auto;
+    --sidenav-item-padding:                   11px 14px;
+    --sidenav-item-radius:                    4px;
+    --sidenav-item-gap:                       13px;
+    --sidenav-item-margin:                    2px 0;
+    --sidenav-item-font-size:                 13px;
+    --sidenav-item-font-weight:               400;
+    --sidenav-item-color:                     #dbe5f2;
+
+    --sidenav-item-hover-bg:                  #203b63;
+    --sidenav-item-hover-color:               #dbe5f2;
+
+    --sidenav-item-active-bg:                 #24579a;
+    --sidenav-item-active-color:              #ffffff;
+    --sidenav-item-active-font-weight:        400;
+    --sidenav-item-active-border-start-width: 0px;
+
+    --sidenav-icon-color:                     #dbe5f2;
+    --sidenav-icon-active-color:              #ffffff;
+    --sidenav-icon-size:                      20px;
+
+    --sidenav-badge-bg:                       #d97706;
+    --sidenav-badge-color:                    #ffffff;
+    --sidenav-badge-radius:                   3px;
+    --sidenav-badge-padding:                  2px 6px;
+    --sidenav-badge-font-size:                10px;
+    --sidenav-badge-font-weight:              400;
+
+    --sidenav-toggle-color:                   #8da5c3;
+    --sidenav-toggle-hover-color:             #ffffff;
+
+    --sidenav-logo-bg:                        #24579a;
+    --sidenav-logo-color:                     #ffffff;
 }
 
-/* 12. Gradient — docs/08-gradient-sidenav.html */
-vaadin-app-layout.shell-color-gradient {
-    --brand-500:                  #4c1d95;
-    --brand-600:                  #4c1d95;
-    --brand-700:                  #312e81;
-    --sidenav-bg:                  linear-gradient(160deg, #312e81, #4c1d95 55%, #831843);
-    --sidenav-item-color:          #dbeafe;
-    --sidenav-icon-color:          #dbeafe;
-    --sidenav-label-color:         #c4b5fd;
-    --sidenav-group-color:         #dbeafe;
-    --sidenav-item-hover-bg:       rgb(255 255 255 / 0.08);
-    --sidenav-item-hover-color:    #ffffff;
-    --sidenav-item-active-bg:      #ffffff;
-    --sidenav-item-active-color:   #4c1d95;
-    --sidenav-item-active-border-start-width: 0;
-    --sidenav-item-active-shadow:  0 10px 25px rgb(0 0 0 / 0.20);
-    --sidenav-icon-active-color:   #4c1d95;
-    --sidenav-badge-bg:            #fbbf24;
-    --sidenav-badge-color:         #4c1d95;
-    --sidenav-toggle-color:        #c4b5fd;
-    --sidenav-toggle-hover-color:  #ffffff;
-    --sidenav-footer-color:        #ffffff;
+/* ---------------------------------------------------------------------------
+ * 12. GRADIENT — docs/08-gradient-sidenav.html
+ *
+ *   .s      { width:280px; padding:20px 14px; color:#dbeafe;
+ *             background:linear-gradient(160deg,#312e81,#4c1d95 55%,#831843) }
+ *   .i      { gap:13px; padding:13px; border-radius:12px; margin:4px 0; font-size:14px }
+ *   .i:hover{ background:#ffffff14 }                       (= rgb(255 255 255 / 0.078))
+ *   .i.a    { background:#fff; color:#4c1d95; box-shadow:0 10px 25px #0002 }
+ *   .g      { font-size:10px; color:#c4b5fd; letter-spacing:1.4px; padding:17px 13px 7px }
+ *   .ic     { width:20px }
+ *   .bd     { background:#fbbf24; color:#4c1d95; border-radius:12px;
+ *             padding:2px 7px; font-size:10px; font-weight:700 }
+ * ------------------------------------------------------------------------- */
+.shell-color-gradient {
+    --brand-500:                              #4c1d95;
+    --brand-600:                              #4c1d95;
+    --brand-700:                              #312e81;
+
+    --sidenav-width:                          280px;
+    --sidenav-bg:                             linear-gradient(160deg, #312e81, #4c1d95 55%, #831843);
+    --sidenav-border:                         transparent;
+    --sidenav-nav-padding:                    20px 14px;
+
+    --sidenav-label-color:                    #c4b5fd;
+    --sidenav-label-font-size:                10px;
+    --sidenav-label-font-weight:              400;
+    --sidenav-label-letter-spacing:           1.4px;
+    --sidenav-label-padding:                  17px 13px 7px;
+
+    --sidenav-item-min-height:                auto;
+    --sidenav-item-padding:                   13px;
+    --sidenav-item-radius:                    12px;
+    --sidenav-item-gap:                       13px;
+    --sidenav-item-margin:                    4px 0;
+    --sidenav-item-font-size:                 14px;
+    --sidenav-item-font-weight:               400;
+    --sidenav-item-color:                     #dbeafe;
+
+    --sidenav-item-hover-bg:                  rgb(255 255 255 / 0.078);
+    --sidenav-item-hover-color:               #dbeafe;
+
+    --sidenav-item-active-bg:                 #ffffff;
+    --sidenav-item-active-color:              #4c1d95;
+    --sidenav-item-active-font-weight:        400;
+    --sidenav-item-active-border-start-width: 0px;
+    --sidenav-item-active-shadow:             0 10px 25px rgb(0 0 0 / 0.133);
+
+    --sidenav-icon-color:                     #dbeafe;
+    --sidenav-icon-active-color:              #4c1d95;
+    --sidenav-icon-size:                      20px;
+
+    --sidenav-badge-bg:                       #fbbf24;
+    --sidenav-badge-color:                    #4c1d95;
+    --sidenav-badge-radius:                   12px;
+    --sidenav-badge-padding:                  2px 7px;
+    --sidenav-badge-font-size:                10px;
+    --sidenav-badge-font-weight:              700;
+
+    --sidenav-toggle-color:                   #c4b5fd;
+    --sidenav-toggle-hover-color:             #ffffff;
+
+    --sidenav-footer-color:                   #ffffff;
+
+    --sidenav-logo-bg:                        #4c1d95;
+    --sidenav-logo-color:                     #ffffff;
 }
 
-/* 13. Collapsible Dark — docs/11-collapsible-style-sidenav.html */
-vaadin-app-layout.shell-color-collapsible-dark {
-    --brand-500:                  #10b981;
-    --brand-600:                  #10b981;
-    --brand-700:                  #064e3b;
-    --sidenav-bg:                  #111827;
-    --sidenav-item-color:          #9ca3af;
-    --sidenav-icon-color:          #9ca3af;
-    --sidenav-label-color:         #4b5563;
-    --sidenav-group-color:         #9ca3af;
-    --sidenav-border:              #1f2937;
-    --sidenav-item-hover-bg:       #1f2937;
-    --sidenav-item-hover-color:    #ffffff;
-    --sidenav-item-active-bg:      #064e3b;
-    --sidenav-item-active-color:   #a7f3d0;
-    --sidenav-item-active-border-start-width: 0;
-    --sidenav-icon-active-color:   #a7f3d0;
-    --sidenav-badge-bg:            #10b981;
-    --sidenav-badge-color:         #06251b;
-    --sidenav-toggle-color:        #9ca3af;
-    --sidenav-toggle-hover-color:  #ffffff;
-    --sidenav-footer-color:        #9ca3af;
-    --sidenav-footer-border:       1px solid #1f2937;
+/* ---------------------------------------------------------------------------
+ * 13. COLLAPSIBLE_DARK — docs/11-collapsible-style-sidenav.html
+ *
+ *   .s      { width:255px; background:#111827; color:#9ca3af; padding:17px 10px }
+ *   .logo   { width:32px; height:32px; border-radius:8px; background:#10b981; color:#06251b }
+ *   .i      { gap:12px; padding:11px 12px; border-radius:8px; margin:3px 0; font-size:13px }
+ *   .i:hover{ background:#1f2937; color:#fff }
+ *   .i.a    { background:#064e3b; color:#a7f3d0 }
+ *   .g      { font-size:10px; letter-spacing:1.3px; color:#4b5563; padding:17px 12px 7px }
+ *   .foot   { border-top:1px solid #1f2937; padding-top:12px }   <-- divider, not a card
+ * ------------------------------------------------------------------------- */
+.shell-color-collapsible-dark {
+    --brand-500:                              #10b981;
+    --brand-600:                              #10b981;
+    --brand-700:                              #064e3b;
+
+    --sidenav-width:                          255px;
+    --sidenav-bg:                             #111827;
+    --sidenav-border:                         #1f2937;
+    --sidenav-nav-padding:                    17px 10px;
+
+    --sidenav-label-color:                    #4b5563;
+    --sidenav-label-font-size:                10px;
+    --sidenav-label-font-weight:              400;
+    --sidenav-label-letter-spacing:           1.3px;
+    --sidenav-label-padding:                  17px 12px 7px;
+
+    --sidenav-item-min-height:                auto;
+    --sidenav-item-padding:                   11px 12px;
+    --sidenav-item-radius:                    8px;
+    --sidenav-item-gap:                       12px;
+    --sidenav-item-margin:                    3px 0;
+    --sidenav-item-font-size:                 13px;
+    --sidenav-item-font-weight:               400;
+    --sidenav-item-color:                     #9ca3af;
+
+    --sidenav-item-hover-bg:                  #1f2937;
+    --sidenav-item-hover-color:               #ffffff;
+
+    --sidenav-item-active-bg:                 #064e3b;
+    --sidenav-item-active-color:              #a7f3d0;
+    --sidenav-item-active-font-weight:        400;
+    --sidenav-item-active-border-start-width: 0px;
+
+    --sidenav-icon-color:                     #9ca3af;
+    --sidenav-icon-active-color:              #a7f3d0;
+    --sidenav-icon-size:                      20px;
+
+    --sidenav-badge-bg:                       #10b981;
+    --sidenav-badge-color:                    #06251b;
+
+    --sidenav-toggle-color:                   #9ca3af;
+    --sidenav-toggle-hover-color:             #ffffff;
+
+    --sidenav-footer-margin:                  0 10px;
+    --sidenav-footer-padding:                 12px 0 15px;
+    --sidenav-footer-border-top:              1px solid #1f2937;
+    --sidenav-footer-color:                   #9ca3af;
+
+    --sidenav-logo-bg:                        #10b981;
+    --sidenav-logo-color:                     #06251b;
+    --sidenav-logo-size:                      32px;
+    --sidenav-logo-radius:                    8px;
 }
 
-/* 14. Premium Blue — docs/12-premium-blue-sidenav.html */
-vaadin-app-layout.shell-color-premium-blue {
-    --brand-500:                  #1670d2;
-    --brand-600:                  #1670d2;
-    --brand-700:                  #1262b5;
-    --sidenav-bg:                  #0b2a4a;
-    --sidenav-item-color:          #b8cbe0;
-    --sidenav-icon-color:          #b8cbe0;
-    --sidenav-label-color:         #6282a5;
-    --sidenav-group-color:         #b8cbe0;
-    --sidenav-border:              #12385f;
-    --sidenav-item-hover-bg:       #12385f;
-    --sidenav-item-hover-color:    #ffffff;
-    --sidenav-item-active-bg:      #1670d2;
-    --sidenav-item-active-color:   #ffffff;
-    --sidenav-item-active-border-start-width: 0;
-    --sidenav-item-active-shadow:  0 8px 20px rgb(22 112 210 / 0.27);
-    --sidenav-icon-active-color:   #ffffff;
-    --sidenav-badge-bg:            #ffffff;
-    --sidenav-badge-color:         #1262b5;
-    --sidenav-toggle-color:        #6282a5;
-    --sidenav-toggle-hover-color:  #ffffff;
-    --sidenav-footer-color:        #b8cbe0;
+/* ---------------------------------------------------------------------------
+ * 14. PREMIUM_BLUE — docs/12-premium-blue-sidenav.html
+ *
+ *   .s      { width:285px; background:#0b2a4a; color:#b8cbe0; padding:20px 13px }
+ *   .g      { font-size:10px; letter-spacing:1.4px; color:#6282a5; padding:15px 13px 7px }
+ *   .i      { gap:13px; padding:12px 13px; border-radius:9px; margin:3px 0; font-size:14px }
+ *   .i:hover{ background:#12385f; color:#fff }
+ *   .i.a    { background:#1670d2; color:#fff; box-shadow:0 8px 20px #1670d244 }
+ *   .ic     { width:20px }
+ *   .bd     { background:#fff; color:#1262b5; border-radius:12px;
+ *             padding:2px 7px; font-size:10px; font-weight:700 }
+ * ------------------------------------------------------------------------- */
+.shell-color-premium-blue {
+    --brand-500:                              #1670d2;
+    --brand-600:                              #1670d2;
+    --brand-700:                              #1262b5;
+
+    --sidenav-width:                          285px;
+    --sidenav-bg:                             #0b2a4a;
+    --sidenav-border:                         #12385f;
+    --sidenav-nav-padding:                    20px 13px;
+
+    --sidenav-label-color:                    #6282a5;
+    --sidenav-label-font-size:                10px;
+    --sidenav-label-font-weight:              400;
+    --sidenav-label-letter-spacing:           1.4px;
+    --sidenav-label-padding:                  15px 13px 7px;
+
+    --sidenav-item-min-height:                auto;
+    --sidenav-item-padding:                   12px 13px;
+    --sidenav-item-radius:                    9px;
+    --sidenav-item-gap:                       13px;
+    --sidenav-item-margin:                    3px 0;
+    --sidenav-item-font-size:                 14px;
+    --sidenav-item-font-weight:               400;
+    --sidenav-item-color:                     #b8cbe0;
+
+    --sidenav-item-hover-bg:                  #12385f;
+    --sidenav-item-hover-color:               #ffffff;
+
+    --sidenav-item-active-bg:                 #1670d2;
+    --sidenav-item-active-color:              #ffffff;
+    --sidenav-item-active-font-weight:        400;
+    --sidenav-item-active-border-start-width: 0px;
+    --sidenav-item-active-shadow:             0 8px 20px rgb(22 112 210 / 0.267);
+
+    --sidenav-icon-color:                     #b8cbe0;
+    --sidenav-icon-active-color:              #ffffff;
+    --sidenav-icon-size:                      20px;
+
+    --sidenav-badge-bg:                       #ffffff;
+    --sidenav-badge-color:                    #1262b5;
+    --sidenav-badge-radius:                   12px;
+    --sidenav-badge-padding:                  2px 7px;
+    --sidenav-badge-font-size:                10px;
+    --sidenav-badge-font-weight:              700;
+
+    --sidenav-toggle-color:                   #6282a5;
+    --sidenav-toggle-hover-color:             #ffffff;
+
+    --sidenav-footer-color:                   #b8cbe0;
+
+    --sidenav-logo-bg:                        #1670d2;
+    --sidenav-logo-color:                     #ffffff;
 }
 
 
+/* ===========================================================================
+ * Brand logo tile — the one painting rule that belongs here because it has no
+ * home in menu.css (it lives in the AppBar, not the SideNav). Driven by the
+ * --sidenav-logo-* tokens above so it matches each mockup's .logo element.
+ * Only affects a plain Component passed to .navbarBrandLogo(); an <img> or an
+ * already-styled component overrides these via its own rules.
+ * ======================================================================== */
+.app-bar__brand-logo {
+    display:         inline-flex;
+    align-items:     center;
+    justify-content: center;
+    box-sizing:      border-box;
+    flex-shrink:     0;
+    width:           var(--sidenav-logo-size, 2rem);
+    height:          var(--sidenav-logo-size, 2rem);
+    border-radius:   var(--sidenav-logo-radius, var(--radius-md, 8px));
+    background:      var(--sidenav-logo-bg, var(--brand-500, #2563eb));
+    color:           var(--sidenav-logo-color, #ffffff);
+    font-weight:     var(--sidenav-logo-font-weight, 700);
+}

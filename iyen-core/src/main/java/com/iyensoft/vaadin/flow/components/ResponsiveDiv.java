@@ -4,6 +4,7 @@ import com.holonplatform.vaadin.flow.components.utils.UIUtils;
 import com.holonplatform.vaadin.flow.components.support.ColSpan;
 import com.holonplatform.vaadin.flow.components.support.ViewMode;
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.page.WindowSize;
 import com.vaadin.flow.signals.Signal;
@@ -79,6 +80,8 @@ import com.iyensoft.vaadin.flow.utils.responsive.ViewModeContext;
  * @since 10.0.0
  */
 
+@StyleSheet("context://layout.css")
+@StyleSheet("context://utilities.css")
 public class ResponsiveDiv extends Div {
 
     protected ResponsiveDiv() {

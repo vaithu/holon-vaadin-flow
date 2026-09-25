@@ -5,6 +5,8 @@ import com.holonplatform.vaadin.flow.demo.ui.views.*;
 import com.iyensoft.vaadin.flow.components.MaterialAppBar;
 import com.iyensoft.vaadin.flow.components.ShellColor;
 import com.iyensoft.vaadin.flow.components.builders.SideNavBuilder;
+import com.iyensoft.vaadin.flow.enums.MaterialAppBarColor;
+import com.iyensoft.vaadin.flow.enums.MaterialAppBarVariant;
 import com.iyensoft.vaadin.flow.utils.responsive.WindowSizeTracker;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.applayout.AppLayout;
@@ -15,11 +17,8 @@ import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.contextmenu.ContextMenu;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.VaadinIcon;
-import com.vaadin.flow.component.orderedlayout.FlexComponent;
-import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.sidenav.SideNavItem;
 import com.vaadin.flow.component.textfield.TextField;
-import com.vaadin.flow.dom.Style;
 import com.vaadin.flow.theme.lumo.Lumo;
 import com.vaadin.flow.theme.lumo.LumoIcon;
 import org.vaadin.lineawesome.LineAwesomeIcon;
@@ -27,10 +26,19 @@ import org.vaadin.lineawesome.LineAwesomeIcon;
 /**
  * Root application layout -- shared by every demo view.
  *
- * <p>Navbar is a {@link MaterialAppBar} (Material 3 style) rather than the default
- * shell {@code AppBar}, colored with {@link MaterialAppBar.Color#AMBER}; the drawer
- * {@link com.iyensoft.vaadin.flow.components.builders.SideNavBuilder} uses the matching
- * {@link ShellColor#AMBER} theme -- both share the same "amber" palette.
+ * <p>Built on the GRADIENT pattern from {@code docs/08-gradient-sidenav.html}: the drawer
+ * {@link com.iyensoft.vaadin.flow.components.builders.SideNavBuilder} uses
+ * {@link ShellColor#GRADIENT} (280px indigo -> violet -> magenta surface, white elevated
+ * active pill, amber badges) and the navbar is a {@link MaterialAppBar} colored with the
+ * matching {@link MaterialAppBarColor#GRADIENT} -- both share the same palette.
+ *
+ * <p><b>Why the brand lives inside the nav wrapper.</b> {@code menu.css} makes
+ * {@code vaadin-app-layout::part(drawer)} a bare transparent box and lets
+ * {@code .sidenav-host} paint the whole surface, so there is exactly one surface owner and
+ * a dark theme can never show a light strip. A brand block added to the drawer as a
+ * sibling of the wrapper would therefore sit on transparency (and push the 100%-height
+ * host out of view). It is prepended to the wrapper instead, so it is painted by the
+ * theme and scrolls/collapses with the rest of the nav.
  */
 public final class DemoMainLayout extends AppLayout {
 
@@ -41,8 +49,9 @@ public final class DemoMainLayout extends AppLayout {
 
         // Sidebar nav
         var nav = SideNavBuilder.create()
-                .colorTheme(ShellColor.AMBER)
+                .colorTheme(ShellColor.GRADIENT)
                 .withSearch("Filter components")
+                .withFooter(createDrawerFooter())
                 .withCollapse();
 
         // Layout & Structure
@@ -75,10 +84,10 @@ public final class DemoMainLayout extends AppLayout {
                 .prefixComponent(VaadinIcon.MENU.create())
                 .withItems(
                         new SideNavItem("AppBar",           AppBarDemoView.class,           VaadinIcon.TRENDING_UP.create()),
-                        new SideNavItem("AppShellLayout",   AppShellLayoutDemoView.class,   VaadinIcon.VIEWPORT.create()),
+                        new SideNavItem("AppShellLayout",   AppShellLayoutDemoView.class,   VaadinIcon.BROWSER.create()),
                         new SideNavItem("Breadcrumb",       BreadcrumbDemoView.class,       VaadinIcon.ARROW_RIGHT.create()),
                         new SideNavItem("SideNav",          SideNavDemoView.class,          VaadinIcon.MENU.create()),
-                        new SideNavItem("Pagination",       PaginationDemoView.class,       VaadinIcon.ELLIPSIS_DOTS_H.create()),
+                        new SideNavItem("Pagination",       PaginationDemoView.class,       VaadinIcon.ELLIPSIS_H.create()),
                         new SideNavItem("PageSizeSelector", PageSizeSelectorDemoView.class, VaadinIcon.LIST.create())
                 )
                 .add();
@@ -88,7 +97,7 @@ public final class DemoMainLayout extends AppLayout {
                 .prefixComponent(VaadinIcon.FOLDER.create())
                 .withItems(
                         new SideNavItem("Tab",             TabsDemoView.class,            VaadinIcon.FOLDER.create()),
-                        new SideNavItem("LazyTabs",        LazyTabsDemoView.class,        VaadinIcon.FOLDER_O.create()),
+                        new SideNavItem("LazyTabs",        LazyTabsDemoView.class,        VaadinIcon.FOLDER.create()),
                         new SideNavItem("TabSheet",        TabSheetDemoView.class,        VaadinIcon.FILE.create()),
                         new SideNavItem("FlowStepper",     FlowStepperDemoView.class,     VaadinIcon.PROGRESSBAR.create()),
                         new SideNavItem("TimelineStepper", TimelineStepperDemoView.class, VaadinIcon.CLOCK.create())
@@ -103,7 +112,7 @@ public final class DemoMainLayout extends AppLayout {
                         new SideNavItem("BeanListing",             BeanListingDemoView.class,         VaadinIcon.TABLE.create()),
                         new SideNavItem("PropertyListing",         PropertyListingDemoView.class,     VaadinIcon.TABLE.create()),
                         new SideNavItem("KanbanBoard",             KanbanBoardDemoView.class,         VaadinIcon.TASKS.create()),
-                        new SideNavItem("LineItemGrid",            LineItemGridDemoView.class,        VaadinIcon.GRID_BIG_O.create()),
+                        new SideNavItem("LineItemGrid",            LineItemGridDemoView.class,        VaadinIcon.GRID_BIG.create()),
                         new SideNavItem("PawnItemGrid",            PawnItemGridDemoView.class,        VaadinIcon.MONEY.create()),
                         new SideNavItem("ListingBundle",           ListingBundleDemoView.class,       VaadinIcon.DATABASE.create()),
                         new SideNavItem("FilterPanel",             FilterPanelDemoView.class,         VaadinIcon.FILTER.create()),
@@ -131,7 +140,7 @@ public final class DemoMainLayout extends AppLayout {
                         new SideNavItem("InputOTP",          InputOTPDemoView.class,                 VaadinIcon.LOCK.create()),
                         new SideNavItem("IntegerField",      IntegerFieldDemoView.class,             VaadinIcon.PLUS.create()),
                         new SideNavItem("NumberField",       NumberFieldDemoView.class,              VaadinIcon.HASH.create()),
-                        new SideNavItem("MultiSelect",       MultiSelectDemoView.class,              VaadinIcon.CHECK_SQUARE_O.create()),
+                        new SideNavItem("MultiSelect",       MultiSelectDemoView.class,              VaadinIcon.CHECK_SQUARE.create()),
                         new SideNavItem("SingleSelect",      SingleSelectDemoView.class,             VaadinIcon.DOT_CIRCLE.create()),
                         new SideNavItem("Select",            SelectDemoView.class,                   VaadinIcon.ANGLE_DOWN.create()),
                         new SideNavItem("ValidatableInput",  ValidatableInputDemoView.class,         VaadinIcon.CHECK.create()),
@@ -162,21 +171,21 @@ public final class DemoMainLayout extends AppLayout {
                         new SideNavItem("Highlight",          HighlightDemoView.class,          VaadinIcon.CHART.create()),
                         new SideNavItem("KeyValuePairs",      KeyValuePairsDemoView.class,      VaadinIcon.LIST.create()),
                         new SideNavItem("KeyValueList",       KeyValueListDemoView.class,       VaadinIcon.LIST_UL.create()),
-                        new SideNavItem("HeroStrip",          HeroStripDemoView.class,          VaadinIcon.GRID_BIG_O.create()),
-                        new SideNavItem("DoubleLabel",        DoubleLabelDemoView.class,        VaadinIcon.TEXT_LABEL.create()),
+                        new SideNavItem("HeroStrip",          HeroStripDemoView.class,          VaadinIcon.GRID_BIG.create()),
+                        new SideNavItem("DoubleLabel",        DoubleLabelDemoView.class,        VaadinIcon.FONT.create()),
                         new SideNavItem("PriceList",          PriceListDemoView.class,          VaadinIcon.MONEY.create()),
                         new SideNavItem("TotalsCard",         TotalsCardDemoView.class,         VaadinIcon.FILE_TEXT.create()),
                         new SideNavItem("ListItem",           ListItemDemoView.class,           VaadinIcon.LIST_UL.create()),
                         new SideNavItem("LitRendererBuilder", LitRendererBuilderDemoView.class, VaadinIcon.CODE.create()),
                         new SideNavItem("Header",             HeaderDemoView.class,             VaadinIcon.HEADER.create()),
                         new SideNavItem("MaterialHeader",     MaterialHeaderDemoView.class,     VaadinIcon.HEADER.create()),
-                        new SideNavItem("MaterialAppBar",     MaterialAppBarDemoView.class,     VaadinIcon.VIEWPORT.create()),
+                        new SideNavItem("MaterialAppBar",     MaterialAppBarDemoView.class,     VaadinIcon.BROWSER.create()),
                         new SideNavItem("GridHeader",         GridHeaderDemoView.class,         VaadinIcon.GRID_BIG.create()),
                         new SideNavItem("GridToolbar",        GridToolbarDemoView.class,        VaadinIcon.TOOLBOX.create()),
                         new SideNavItem("ComponentView",      ComponentViewDemoView.class,      VaadinIcon.EYE.create()),
                         new SideNavItem("Preview",            PreviewDemoView.class,            VaadinIcon.PICTURE.create()),
                         new SideNavItem("Title",              TitleDemoView.class,              VaadinIcon.FONT.create()),
-                        new SideNavItem("Label",              LabelDemoView.class,              VaadinIcon.TEXT_LABEL.create())
+                        new SideNavItem("Label",              LabelDemoView.class,              VaadinIcon.FONT.create())
                 )
                 .add();
 
@@ -187,7 +196,7 @@ public final class DemoMainLayout extends AppLayout {
                         new SideNavItem("Button",       ButtonDemoView.class,      VaadinIcon.CURSOR.create()),
                         new SideNavItem("ButtonGroup",  ButtonGroupDemoView.class, VaadinIcon.SLIDERS.create()),
                         new SideNavItem("NativeButton", NativeButtonDemoView.class,VaadinIcon.HAND.create()),
-                        new SideNavItem("ContextMenu",  ContextMenuDemoView.class, VaadinIcon.ELLIPSIS_DOTS_V.create()),
+                        new SideNavItem("ContextMenu",  ContextMenuDemoView.class, VaadinIcon.ELLIPSIS_V.create()),
                         new SideNavItem("MenuBar",      MenuBarDemoView.class,     VaadinIcon.MENU.create()),
                         new SideNavItem("TransferList", TransferListDemoView.class,VaadinIcon.ARROWS.create()),
                         new SideNavItem("Fab",          FabDemoView.class,         VaadinIcon.PLUS_CIRCLE.create())
@@ -196,9 +205,9 @@ public final class DemoMainLayout extends AppLayout {
 
         // Rich Components
         nav.withNavItem("Rich Components")
-                .prefixComponent(VaadinIcon.CHART_LINE.create())
+                .prefixComponent(VaadinIcon.LINE_CHART.create())
                 .withItems(
-                        new SideNavItem("ChartJs",  ChartJsDemoView.class,  VaadinIcon.CHART_LINE.create()),
+                        new SideNavItem("ChartJs",  ChartJsDemoView.class,  VaadinIcon.LINE_CHART.create()),
                         new SideNavItem("Calendar", CalendarDemoView.class, VaadinIcon.CALENDAR.create()),
                         new SideNavItem("Carousel", CarouselDemoView.class, VaadinIcon.PICTURE.create()),
                         new SideNavItem("LiveChat", LiveChatDemoView.class, VaadinIcon.CHAT.create())
@@ -248,36 +257,45 @@ public final class DemoMainLayout extends AppLayout {
                 )
                 .add();
 
-        // Build nav wrapper for the drawer.
+        // Build nav wrapper for the drawer, then prepend the brand so it is painted by
+        // the GRADIENT surface rather than by the (transparent) drawer. See class javadoc.
         var navWrapper = nav.buildWrapper();
+        navWrapper.addComponentAsFirst(createDrawerBrand());
 
         // Navbar: MaterialAppBar (Material 3 style) colored to match the SideNav's
-        // ShellColor.AMBER theme via MaterialAppBar.Color.AMBER.
+        // ShellColor.GRADIENT theme via MaterialAppBarColor.GRADIENT.
+        // The search field is placed in the headline (content) slot and the bar
+        // is centered (symmetric 1fr / auto / 1fr grid), so the field sits truly
+        // in the middle while the remaining actions are pinned flush right.
         var appBar = Components.materialAppBar()
-                .color(MaterialAppBar.Color.AMBER)
+//                .color(MaterialAppBarColor.GRADIENT)
+                .variant(MaterialAppBarVariant.SEARCH)
+                .centered()
                 .leading(new DrawerToggle(), createNavbarLogo())
-                .headline("Holon Components")
+                .headline(createSearchField())
                 .actions(
-                        createSearchField(),
                         createNotificationsButton(),
                         createLanguagesButton(),
                         createThemeToggleButton(),
                         createUserAvatar())
                 .build();
 
-        // Assemble shell manually: navbar (MaterialAppBar) + drawer (header + SideNav).
+        // Assemble shell manually: navbar (MaterialAppBar) + drawer (themed nav wrapper).
         setPrimarySection(AppLayout.Section.DRAWER);
         addToNavbar(true, appBar);
-        addToDrawer(createDrawerHeader(), navWrapper);
+        addToDrawer(navWrapper);
     }
 
     /**
-     * Small brand logo for the navbar start slot (20 px, primary colour).
+     * Small brand logo for the navbar start slot (20 px).
+     *
+     * <p>Inherits {@code currentColor} rather than pinning {@code --lumo-primary-color},
+     * so it stays legible on the GRADIENT bar's saturated background.
      */
     private static Component createNavbarLogo() {
         var icon = LineAwesomeIcon.CUBES_SOLID.create();
         icon.setSize("20px");
-        icon.setColor("var(--lumo-primary-color)");
+        icon.setColor("currentColor");
         return icon;
     }
 
@@ -323,7 +341,7 @@ public final class DemoMainLayout extends AppLayout {
                 button.setIcon(VaadinIcon.MOON.create());
             } else {
                 themeList.add(Lumo.DARK);
-                button.setIcon(VaadinIcon.SUN_O.create());
+                button.setIcon(VaadinIcon.SUN.create());
             }
         });
         return button;
@@ -341,19 +359,37 @@ public final class DemoMainLayout extends AppLayout {
     }
 
     /**
-     * Larger logo block for the drawer header -- shown above the navigation items.
+     * Drawer brand block -- the GRADIENT mockup's {@code .brand} wordmark:
+     * {@code font-size:21px; font-weight:800; color:#fff; padding:9px 13px 32px}.
+     *
+     * <p>Unlike the surface themes that draw a rounded logo chip (MODERN_SAAS,
+     * COLLAPSIBLE_DARK), GRADIENT uses a plain left-aligned wordmark and relies on the
+     * gradient itself for identity, so there is no {@code .app-bar__brand-logo} tile here.
+     * Colours are read from the theme's own tokens so switching {@link ShellColor} keeps
+     * the brand coherent instead of hard-coding the gradient's white.
      */
-    private static Component createDrawerHeader() {
-        var appLogo = LineAwesomeIcon.CUBES_SOLID.create();
-        appLogo.setSize("48px");
-        appLogo.setColor("var(--lumo-primary-color)");
+    private static Component createDrawerBrand() {
+        var brand = new Span("Pulse Studio");
+        brand.addClassName("sidenav-brand");
+        brand.getStyle()
+                .set("display", "block")
+                .set("flex-shrink", "0")
+                .set("font-size", "21px")
+                .set("font-weight", "800")
+                .set("padding", "9px 13px 32px")
+                .set("color", "var(--sidenav-brand-color, var(--sidenav-footer-color, #fff))");
+        return brand;
+    }
 
-        var appName = new Span("My Application");
-        appName.getStyle().setFontWeight(Style.FontWeight.BOLD);
-
-        var header = new VerticalLayout(appLogo, appName);
-        header.setAlignItems(FlexComponent.Alignment.CENTER);
-        return header;
+    /**
+     * Drawer footer. GRADIENT sets {@code --sidenav-footer-color:#ffffff} but no border or
+     * card background, so this renders as a plain white-on-gradient line rather than the
+     * bordered "Upgrade to Pro" card that MODERN_SAAS draws from the same API.
+     */
+    private static Component createDrawerFooter() {
+        var footer = new Span("v12.0.1 \u00B7 Pulse Studio");
+        footer.getStyle().set("font-size", "12px").set("opacity", "0.75");
+        return footer;
     }
 
 }

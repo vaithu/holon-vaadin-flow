@@ -37,6 +37,7 @@ dep-list-*.txt
 *-versions.txt
 *.txt
 copilot-*
+*.ps1
 
 # Build output text files (captured stdout/stderr)
 core-err.txt
@@ -60,7 +61,7 @@ playwright-report/
 
 # Vaadin
 node_modules/
-fronend/
+frontend/
 package.json
 webpack.config.js
 webpack.generated.js

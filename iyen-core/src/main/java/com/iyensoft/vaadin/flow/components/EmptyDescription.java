@@ -20,6 +20,7 @@ import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
 import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.dependency.StyleSheet;
 
 /**
  * Description slot of an {@link Empty} component.
@@ -29,6 +30,7 @@ import com.vaadin.flow.component.html.Div;
  *
  * @see Empty
  */
+@StyleSheet("context://empty.css")
 public class EmptyDescription extends Div  {
 
     private Localizable localizable;

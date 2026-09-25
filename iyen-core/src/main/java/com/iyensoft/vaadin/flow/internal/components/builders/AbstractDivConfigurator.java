@@ -16,6 +16,7 @@
 package com.iyensoft.vaadin.flow.internal.components.builders;
 
 import com.holonplatform.vaadin.flow.internal.components.builders.AbstractComponentConfigurator;
+import com.holonplatform.vaadin.flow.components.utils.StyleSheetSupport;
 
 import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.vaadin.flow.components.HasComponent;
@@ -54,6 +55,7 @@ public abstract class AbstractDivConfigurator<C extends DivConfigurator<C>>
 
     public AbstractDivConfigurator(Div component) {
         super(component);
+        StyleSheetSupport.require(component, "utilities.css");
     }
 
     /**

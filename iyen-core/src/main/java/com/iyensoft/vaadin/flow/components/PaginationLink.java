@@ -22,6 +22,7 @@ import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Span;
 
 import java.text.MessageFormat;
+import com.vaadin.flow.component.dependency.StyleSheet;
 
 /**
  * A clickable page-number button inside a {@link PaginationItem}.
@@ -38,6 +39,7 @@ import java.text.MessageFormat;
  *
  * @see PaginationItem
  */
+@StyleSheet("context://pagination.css")
 public class PaginationLink extends Div {
 
     @Serial

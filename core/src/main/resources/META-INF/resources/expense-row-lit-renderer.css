@@ -154,12 +154,9 @@
 
 /* ── Badge base ────────────────────────────────────────────────────────── */
 
-.badge {
-    font-size: 11px;
-    font-weight: 500;
-    padding: 2px 8px;
-    border-radius: 20px;
-}
+/* The `.badge` base rule now lives in utilities.css, shared with the Badge
+   component and the mobile-grid Lit renderer. Views using this renderer must
+   load utilities.css as well. Only the colour variants remain here. */
 
 /* Badge colour variants */
 .b-draft     { background: var(--gray-50,   #F1EFE8); color: var(--gray-800,   #444441); }

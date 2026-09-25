@@ -13,6 +13,7 @@ import com.vaadin.flow.component.orderedlayout.FlexLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.iyensoft.vaadin.flow.components.ResponsiveDiv;
+import com.vaadin.flow.component.dependency.StyleSheet;
 
 
 /**
@@ -32,6 +33,7 @@ import com.iyensoft.vaadin.flow.components.ResponsiveDiv;
  */
 @PageTitle("ButtonGroup – Holon Demo")
 @Route(value = "button-group", layout = DemoMainLayout.class)
+@StyleSheet("context://buttons.css")
 public class ButtonGroupDemoView extends Div {
 
     public ButtonGroupDemoView() {

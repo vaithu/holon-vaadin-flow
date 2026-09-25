@@ -99,6 +99,12 @@
     box-shadow: 0 1px 2px rgb(0 0 0 / 12%);
 }
 
+.material-app-bar--sticky {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
 /* ==========================================================================
  * Color variants — recolor the container + on-container tokens only.
  * Everything else (headline size, slot layout, grid columns) is untouched,
@@ -158,6 +164,49 @@
 .material-app-bar--color-amber .material-app-bar__subtitle,
 .material-app-bar--color-gradient .material-app-bar__subtitle {
     color: var(--material-app-bar-on-container-variant);
+}
+
+/* --------------------------------------------------------------------------
+ * Avatar on a colored bar.
+ *
+ * <vaadin-avatar> is painted by Lumo with low-contrast neutrals
+ * (--lumo-contrast-10pct fill, --lumo-secondary-text-color initials) that are
+ * designed for a white surface. On a saturated container those neutrals are
+ * nearly the same luminance as the bar, so the avatar dissolves into a faint
+ * translucent disc. Unlike the tertiary buttons above it has no
+ * --vaadin-button-text-color equivalent, so it needs its own rule: a
+ * translucent white chip plus the on-container foreground for the initials.
+ *
+ * Deliberately excludes --color-neutral, whose container is still light and
+ * whose on-container is dark — a white-on-white chip there would be invisible.
+ * -------------------------------------------------------------------------- */
+:is(.material-app-bar--color-indigo,
+    .material-app-bar--color-teal,
+    .material-app-bar--color-emerald,
+    .material-app-bar--color-orange,
+    .material-app-bar--color-rose,
+    .material-app-bar--color-purple,
+    .material-app-bar--color-slate,
+    .material-app-bar--color-amber,
+    .material-app-bar--color-gradient) vaadin-avatar {
+    background-color: rgb(255 255 255 / 0.22);
+    color           : var(--material-app-bar-on-container);
+    box-shadow      : inset 0 0 0 1px rgb(255 255 255 / 0.35);
+}
+
+/* The initials/icon live in a shadow part and do not pick up the host `color`
+   on their own; `fill` covers the fallback user icon, `color` the initials. */
+:is(.material-app-bar--color-indigo,
+    .material-app-bar--color-teal,
+    .material-app-bar--color-emerald,
+    .material-app-bar--color-orange,
+    .material-app-bar--color-rose,
+    .material-app-bar--color-purple,
+    .material-app-bar--color-slate,
+    .material-app-bar--color-amber,
+    .material-app-bar--color-gradient) vaadin-avatar::part(abbr) {
+    color: var(--material-app-bar-on-container);
+    fill : var(--material-app-bar-on-container);
 }
 
 .material-app-bar--color-indigo {

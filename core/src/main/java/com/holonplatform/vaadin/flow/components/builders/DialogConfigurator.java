@@ -462,7 +462,7 @@ public interface DialogConfigurator<C extends DialogConfigurator<C>>
      *
      * <pre>{@code
      * DialogBuilder.confirm()
-     *     .closeIcon(new Icon(VaadinIcon.CLOSE_SMALL))
+     *     .closeIcon(new Icon(VaadinIcon.CLOSE))
      *     .withTitle("Confirm action")
      *     .open();
      * }</pre>

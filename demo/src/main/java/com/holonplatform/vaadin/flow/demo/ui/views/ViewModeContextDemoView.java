@@ -7,6 +7,7 @@ import com.iyensoft.vaadin.flow.components.ResponsiveDiv;
 import com.iyensoft.vaadin.flow.components.MaterialAppBar;
 import com.iyensoft.vaadin.flow.components.MaterialHeader;
 import com.holonplatform.vaadin.flow.components.support.ViewMode;
+import com.iyensoft.vaadin.flow.enums.MaterialAppBarVariant;
 import com.iyensoft.vaadin.flow.utils.responsive.ViewModeContext;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
@@ -101,7 +102,7 @@ public class ViewModeContextDemoView extends Div {
      */
     private DemoExample liveAppBarExample() {
         var appBar = Components.materialAppBar()
-                .variant(MaterialAppBar.Variant.SMALL)
+                .variant(MaterialAppBarVariant.SMALL)
                 .headline("Inbox")
                 .leading(action(VaadinIcon.MENU, "Open navigation"))
                 .actions(action(VaadinIcon.PLUS, "Create item"))
@@ -196,7 +197,7 @@ public class ViewModeContextDemoView extends Div {
                 .build();
 
         var appBar = Components.materialAppBar()
-                .variant(MaterialAppBar.Variant.SMALL)
+                .variant(MaterialAppBarVariant.SMALL)
                 .headline("Team members")
                 .leading(action(VaadinIcon.MENU, "Open navigation"))
                 .responsiveAction(new Button("Filter"), "Filter", () -> { })

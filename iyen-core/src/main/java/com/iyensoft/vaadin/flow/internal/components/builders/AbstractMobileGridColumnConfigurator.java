@@ -1,5 +1,7 @@
 package com.iyensoft.vaadin.flow.internal.components.builders;
 
+import com.holonplatform.vaadin.flow.components.utils.StyleSheetSupport;
+
 import com.holonplatform.core.internal.utils.ObjectUtils;
 import com.holonplatform.vaadin.flow.components.Badge;
 import com.iyensoft.vaadin.flow.components.Components;
@@ -44,6 +46,7 @@ public abstract class AbstractMobileGridColumnConfigurator<
 
     protected AbstractMobileGridColumnConfigurator(Layout layout) {
         super(layout);
+        StyleSheetSupport.require(layout, "mobile-grid.css", "utilities.css");
 
         // Root container
         getComponent().addClassName("mobile-grid-column");
@@ -147,7 +150,7 @@ public abstract class AbstractMobileGridColumnConfigurator<
 
         Button actionButton = Components.button()
                 .tertiaryInline()
-                .iconConfigurator(VaadinIcon.ELLIPSIS_DOTS_V)
+                .iconConfigurator(VaadinIcon.ELLIPSIS_V)
                 .add()
                 .tooltipText("Action")
                 .build();

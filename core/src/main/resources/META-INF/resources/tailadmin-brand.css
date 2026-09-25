@@ -178,7 +178,7 @@
   --font-display: 'Outfit', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   --font-body:    'Outfit', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   --font-sans:    'Outfit', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  --font-mono:    'Cascadia Code', 'Fira Code', ui-monospace, 'Courier New', monospace;
+  --font-mono:    'JetBrains Mono', 'Cascadia Code', 'Fira Code', ui-monospace, 'Courier New', monospace;
 
   /* Size scale — kept dense for enterprise but bumped slightly for Outfit's geometry */
   --font-size-xs:   0.6875rem;  /* ≈ 11px — micro labels     */
@@ -294,78 +294,20 @@
   --brand-900:  #161950;
 
 
-  /* ╔══════════════════════════════════════════════════════════════╗
-     ║  10. SIDEBAR  — Light (TailAdmin default)                   ║
-     ║                                                              ║
-     ║  TailAdmin ships a clean white sidebar with brand-tinted    ║
-     ║  active items — no dark nav chrome.  To restore a dark      ║
-     ║  navy sidebar copy the sidenav block from                   ║
-     ║  brand-override-example.css over these tokens.             ║
-     ╚══════════════════════════════════════════════════════════════╝ */
-  --sidenav-width:    240px;
-  --sidenav-bg:       var(--surface-0);      /* white sidebar panel               */
-  --sidenav-border:   var(--zinc-200);        /* gray-200 right edge               */
+  /* SIDEBAR tokens intentionally NOT declared here.
 
-  /* Section group labels — uppercase micro-caps */
-  --sidenav-label-color:     var(--zinc-400);      /* gray-400 muted label — TailAdmin nav section title   */
-  --sidenav-label-font-size: 0.625rem;             /* 10px small-caps                                      */
-  --sidenav-label-padding:   1rem 1rem 0.375rem;
+     This file used to declare a full --sidenav-* token set at :root. A
+     ShellColor theme block (.shell-color-*) and :root have EQUAL specificity,
+     and vaadin-app-layout::part(drawer) reads --sidenav-bg off the
+     <vaadin-app-layout> element -- which carries no theme class when
+     colorTheme() is set on the SideNav builder rather than the AppShell one.
+     So these :root values leaked through and overrode the per-theme mockup
+     geometry, and painted a white drawer behind a dark ShellColor sidebar.
 
-  /* Nav items — default (inactive)
-     TailAdmin source: .menu-item-inactive { color: var(--color-gray-700) }
-     TailAdmin source: .menu-item         { font-weight: var(--font-weight-medium) }  → 500  */
-  --sidenav-item-color:       var(--zinc-700);   /* #344054 = gray-700                         */
-  --sidenav-item-font-size:   0.875rem;           /* 14px = var(--text-theme-sm) in TailAdmin   */
-  --sidenav-item-font-weight: 500;               /* font-weight-medium                          */
-  --sidenav-item-padding:     0.5625rem 1rem;    /* 9px 16px                                    */
-  --sidenav-item-radius:      var(--radius-md);  /* 8px rounded items                           */
-
-  /* Hover — TailAdmin: gray-100 bg, gray-700 text stays (no brand color on hover)
-     TailAdmin source: .menu-item-inactive:hover { background-color: var(--color-gray-100) }   */
-  --sidenav-item-hover-bg:    var(--zinc-100);   /* #f2f4f7 = gray-100                          */
-  --sidenav-item-hover-color: var(--zinc-700);   /* gray-700 — no color change on hover         */
-
-  /* Active — TailAdmin: brand-50 bg + brand-500 text (NOT brand-700)
-     TailAdmin source: .menu-item-active { bg: brand-50; color: brand-500 }                    */
-  --sidenav-item-active-bg:          var(--brand-50);
-  --sidenav-item-active-color:       var(--brand-500);  /* #465fff — TailAdmin uses brand-500   */
-  --sidenav-item-active-border:      transparent;       /* TailAdmin has NO left border accent  */
-  --sidenav-item-active-font-weight: 500;               /* no weight change on active            */
-
-  /* Icons — TailAdmin .menu-item-icon-inactive uses gray-500 (#667085), not gray-400
-     TailAdmin source: .menu-item-icon-inactive { color: var(--color-gray-500) }               */
-  --sidenav-icon-color:        var(--zinc-500);   /* #667085 = gray-500                         */
-  --sidenav-icon-active-color: var(--brand-500);  /* #465fff                                    */
-
-  /* Badge pill */
-  --sidenav-badge-bg:     var(--brand-50);
-  --sidenav-badge-color:  var(--brand-500);      /* align with active item text color            */
-  --sidenav-badge-radius: var(--radius-full);
-
-  /* Toggle / chevron — gray-400 at rest, gray-700 on hover (no brand change)
-     Mirrors icon-inactive hover behaviour in TailAdmin                                         */
-  --sidenav-toggle-color:       var(--zinc-400);
-  --sidenav-toggle-hover-color: var(--zinc-700); /* gray-700, same as text hover — no brand     */
-
-  /* Parent group headers — TailAdmin treats expandable groups as regular .menu-item entries:
-     same gray-700 color + medium (500) weight + same vertical padding as regular items        */
-  --sidenav-group-color:          var(--zinc-700);   /* gray-700, same as inactive items        */
-  --sidenav-group-font-size:      0.875rem;
-  --sidenav-group-font-weight:    500;               /* medium weight, same as all items        */
-  --sidenav-group-padding-top:    0.5625rem;         /* 9px — consistent with item padding      */
-  --sidenav-group-padding-bottom: 0.5625rem;         /* 9px — consistent with item padding      */
-
-  /* Child leaf items — TailAdmin .menu-dropdown-item: gray-700 + medium weight + full opacity */
-  --sidenav-child-color:       var(--zinc-700);  /* #344054                                     */
-  --sidenav-child-opacity:     1;                /* no dimming                                  */
-  --sidenav-child-font-weight: 500;              /* font-weight-medium                          */
-  --sidenav-child-font-size:   0.8125rem;        /* 13px — slightly smaller than parent         */
-
-  /* Vaadin native side-nav properties */
-  --vaadin-side-nav-child-indent:       1.25rem;
-  --vaadin-side-nav-item-border-radius: var(--radius-md);
-  --vaadin-side-nav-item-font-size:     0.875rem;
-  --vaadin-side-nav-item-font-weight:   500;
+     SideNav defaults now live as var() fallbacks in iyen-core menu.css, and
+     per-theme values in shell-color-themes.css. To restyle the sidebar from
+     an application, apply a ShellColor via .colorTheme(...) or override the
+     --sidenav-* properties on the .sidenav-host element -- never at :root. */
 }
 
 
@@ -454,17 +396,10 @@
   /* Inputs — dark mode hover uses brand-500 (lighter #7592ff) for visibility */
   --comp-border-hover: var(--brand-500);
 
-  /* Sidebar — dark variant mirrors surface-2, same TailAdmin hover/active logic */
-  --sidenav-bg:              var(--surface-2);
-  --sidenav-border:          var(--zinc-200);
-  --sidenav-label-color:     var(--zinc-400);
-  --sidenav-item-color:      var(--zinc-700);   /* in dark mode: zinc-700 = #f2f4f7 (near-white) */
-  --sidenav-item-hover-bg:   var(--zinc-100);   /* in dark mode: zinc-100 = #344054 (dark tint)  */
-  --sidenav-item-hover-color: var(--zinc-700);  /* keep same color on hover, no brand change      */
-  --sidenav-item-active-bg:  color-mix(in srgb, var(--brand-500) 15%, transparent);
-  --sidenav-item-active-color: var(--brand-500); /* brand-500 in dark = #7592ff (brand-400 equiv)*/
-  --sidenav-icon-color:       var(--zinc-500);  /* in dark mode: zinc-500 = #d0d5dd              */
-  --sidenav-icon-active-color: var(--brand-500);
+  /* Sidebar — no --sidenav-* tokens here either; see the SIDEBAR note in the
+     :root block above. A dark-mode sidebar is expressed as a ShellColor
+     surface theme (MODERN_SAAS, ENTERPRISE, COLLAPSIBLE_DARK, PREMIUM_BLUE),
+     not as a :root override. */
 }
 
 

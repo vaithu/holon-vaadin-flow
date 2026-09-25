@@ -22,6 +22,7 @@ import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.dependency.StyleSheet;
 
 /**
  * The "Previous page" control inside a {@link PaginationItem}.
@@ -40,6 +41,7 @@ import com.vaadin.flow.component.icon.VaadinIcon;
  * @see PaginationItem
  * @see PaginationNext
  */
+@StyleSheet("context://pagination.css")
 public class PaginationPrevious extends Div {
 
     @Serial

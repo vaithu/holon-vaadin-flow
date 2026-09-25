@@ -17,6 +17,7 @@ package com.iyensoft.vaadin.flow.components;
 
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.dependency.StyleSheet;
 
 /**
  * Action slot of an {@link Empty} component.
@@ -26,6 +27,7 @@ import com.vaadin.flow.component.html.Div;
  *
  * @see Empty
  */
+@StyleSheet("context://empty.css")
 public class EmptyAction extends Div {
 
     /**

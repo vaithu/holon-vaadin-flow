@@ -24,6 +24,7 @@ import com.vaadin.flow.router.Route;
 
 import java.time.Instant;
 import java.util.Locale;
+import com.vaadin.flow.component.dependency.StyleSheet;
 
 /**
  * Demo page: full CRUD over a real JPA-backed {@link Product} entity using
@@ -89,6 +90,7 @@ import java.util.Locale;
  */
 @PageTitle("Product CRUD (JPA) – Holon Demo")
 @Route(value = "product-crud", layout = DemoMainLayout.class)
+@StyleSheet("context://pagination.css")
 public class ProductCrudDemoView extends Div {
 
     private final transient ProductService productService;

@@ -18,6 +18,7 @@ import com.vaadin.flow.component.tabs.Tabs;
 import java.util.Optional;
 
 @StyleSheet("context://header.css")
+@StyleSheet("context://buttons.css")
 public class Header extends Layout implements HasTheme {
 
     private static final String CLASS_HEADER = "iyen-header";
@@ -212,20 +213,19 @@ public class Header extends Layout implements HasTheme {
         this.tabs = tabs;
         if (this.tabs != null) {
             this.tabs.addClassName(CLASS_TABS);
-            refreshTabs();
-        } else {
-            addClassName(CLASS_HEADER_BORDERED);
         }
+        refreshTabs();
     }
 
     public void setTabs(Tab... tabs) {
         if (isEmpty(tabs)) {
-            ensureTabs();
-            this.tabs.removeAll();
+            // Nothing to show: don't create a Tabs component just to leave it empty and detached.
+            if (this.tabs != null) {
+                this.tabs.removeAll();
+            }
             refreshTabs();
             return;
         }
-
         ensureTabs();
         this.tabs.removeAll();
         for (Tab tab : tabs) {

@@ -141,7 +141,7 @@ public abstract class AbstractHeaderConfigurator<C extends HeaderConfigurator<C>
     @Override
     public C options(Consumer<ButtonConfigurator.BaseButtonConfigurator> configurator) {
         Button moreBtn = Components.button()
-                .icon(VaadinIcon.ELLIPSIS_DOTS_V)
+                .icon(VaadinIcon.ELLIPSIS_V)
                 .title("Options")
                 .build();
         return addActions(configurator, moreBtn);

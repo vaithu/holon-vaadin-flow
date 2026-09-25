@@ -1,5 +1,7 @@
 package com.iyensoft.vaadin.flow.internal.components.builders;
 
+import com.holonplatform.vaadin.flow.components.utils.StyleSheetSupport;
+
 import com.iyensoft.vaadin.flow.components.Components;
 import com.iyensoft.vaadin.flow.components.builders.DetailBuilder;
 import com.vaadin.flow.component.html.Div;
@@ -10,6 +12,7 @@ public class DefaultDetailBuilder
 
     public DefaultDetailBuilder(Div detail) {
         super(detail);
+        StyleSheetSupport.require(detail, "master-detail-v2.css");
         Components.configure(detail).styleName("detail-view");
     }
 

@@ -8,6 +8,7 @@ import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.html.ListItem;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.dependency.StyleSheet;
 
 /**
  * Ellipsis placeholder used to collapse the middle section of a long {@link Breadcrumb} trail.
@@ -49,6 +50,7 @@ import com.vaadin.flow.component.icon.VaadinIcon;
  * @see BreadcrumbPage
  * @see BreadcrumbSeparator
  */
+@StyleSheet("context://breadcrumb.css")
 public class BreadcrumbEllipsis extends ListItem {
 
     @Serial

@@ -1,6 +1,8 @@
 package com.iyensoft.vaadin.flow.components;
 
 import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
+import com.iyensoft.vaadin.flow.enums.MaterialAppBarColor;
+import com.iyensoft.vaadin.flow.enums.MaterialAppBarVariant;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasTheme;
 import com.vaadin.flow.component.button.Button;
@@ -23,61 +25,11 @@ import java.util.Objects;
 @StyleSheet("context://material-app-bar.css")
 public class MaterialAppBar extends Div implements HasTheme {
 
-    /** Material 3 app bar variants. */
-    public enum Variant {
-        SEARCH("search"),
-        SMALL("small"),
-        MEDIUM_FLEXIBLE("medium-flexible"),
-        LARGE_FLEXIBLE("large-flexible");
-
-        private final String className;
-
-        Variant(String className) {
-            this.className = className;
-        }
-
-        String getClassName() {
-            return className;
-        }
-    }
-
-    /**
-     * Predefined branded color variants, matching a set of common Material-3
-     * "colored app bar" palettes. Each recolors the bar's background, on-color
-     * text/icon tokens, and (except {@link #GRADIENT}) is safe to combine with
-     * any {@link Variant}. Backed by {@code material-app-bar.css}.
-     */
-    public enum Color {
-        /** Default neutral surface (no override). */
-        NEUTRAL("neutral"),
-        INDIGO("indigo"),
-        TEAL("teal"),
-        EMERALD("emerald"),
-        ORANGE("orange"),
-        ROSE("rose"),
-        PURPLE("purple"),
-        SLATE("slate"),
-        /** Warm amber — matches {@code ShellColor.AMBER} for AppShellLayout/SideNav parity. */
-        AMBER("amber"),
-        /** Expressive brand gradient. */
-        GRADIENT("gradient");
-
-        private final String className;
-
-        Color(String className) {
-            this.className = className;
-        }
-
-        String getClassName() {
-            return className;
-        }
-    }
-
     private final Div leadingSlot = new Div();
     private final Div contentSlot = new Div();
     private final Div trailingSlot = new Div();
-    private Variant variant = Variant.SMALL;
-    private Color color = Color.NEUTRAL;
+    private MaterialAppBarVariant variant = MaterialAppBarVariant.SMALL;
+    private MaterialAppBarColor color = MaterialAppBarColor.NEUTRAL;
     private Button overflowButton;
     private ContextMenu overflowMenu;
     private final List<ResponsiveAction> responsiveActions = new ArrayList<>();
@@ -96,7 +48,7 @@ public class MaterialAppBar extends Div implements HasTheme {
         add(leadingSlot, contentSlot, trailingSlot);
     }
 
-    public void setVariant(Variant variant) {
+    public void setVariant(MaterialAppBarVariant variant) {
         if (variant == null) {
             throw new IllegalArgumentException("variant must not be null");
         }
@@ -105,28 +57,28 @@ public class MaterialAppBar extends Div implements HasTheme {
         addClassName("material-app-bar--" + variant.getClassName());
     }
 
-    public Variant getVariant() {
+    public MaterialAppBarVariant getVariant() {
         return variant;
     }
 
     /**
-     * Applies a predefined branded color variant. Pass {@link Color#NEUTRAL}
+     * Applies a predefined branded color variant. Pass {@link MaterialAppBarColor#NEUTRAL}
      * to reset to the default surface.
      *
      * @param color the color variant to apply (not null)
      */
-    public void setColor(Color color) {
+    public void setColor(MaterialAppBarColor color) {
         if (color == null) {
             throw new IllegalArgumentException("color must not be null");
         }
         removeClassName("material-app-bar--color-" + this.color.getClassName());
         this.color = color;
-        if (color != Color.NEUTRAL) {
+        if (color != MaterialAppBarColor.NEUTRAL) {
             addClassName("material-app-bar--color-" + color.getClassName());
         }
     }
 
-    public Color getColor() {
+    public MaterialAppBarColor getColor() {
         return color;
     }
 
@@ -238,7 +190,7 @@ public class MaterialAppBar extends Div implements HasTheme {
             return;
         }
 
-        overflowButton = new Button(VaadinIcon.ELLIPSIS_DOTS_V.create());
+        overflowButton = new Button(VaadinIcon.ELLIPSIS_V.create());
         overflowButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY, ButtonVariant.LUMO_ICON);
         overflowButton.addClassName("material-app-bar__overflow");
         overflowButton.setAriaLabel(LocalizationProvider.localize("More actions", "material_app_bar.more_actions_aria"));
@@ -262,6 +214,15 @@ public class MaterialAppBar extends Div implements HasTheme {
 
     public void setScrolled(boolean scrolled) {
         getElement().getClassList().set("material-app-bar--scrolled", scrolled);
+    }
+
+    /**
+     * Controls whether the app bar remains visible while its scroll container is scrolled.
+     *
+     * @param sticky {@code true} to make the app bar sticky, {@code false} to use normal flow
+     */
+    public void setSticky(boolean sticky) {
+        getElement().getClassList().set("material-app-bar--sticky", sticky);
     }
 
     public Div getLeadingSlot() {

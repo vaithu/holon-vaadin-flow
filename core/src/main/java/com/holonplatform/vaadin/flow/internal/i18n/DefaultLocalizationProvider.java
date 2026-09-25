@@ -258,9 +258,19 @@ public class DefaultLocalizationProvider implements LocalizationProvider {
 		if (currentLocale != null) {
 			final Optional<I18NProvider> provider = getCurrentI18nProvider();
 			if (provider.isPresent()) {
-				return Optional.ofNullable(provider
-						.map(p -> p.getTranslation(messageCode, currentLocale, localizable.getMessageArguments()))
-						.orElseGet(() -> LocalizationContext.translate(localizable, true)));
+				final String translation = provider.get().getTranslation(messageCode, currentLocale,
+						localizable.getMessageArguments());
+				// A provider may signal "not found" either by returning null or by echoing the
+				// message code back (a common convention). Treat both as unresolved so the
+				// default message can be used, consistently with getMessage(...) above.
+				if (translation != null && !translation.equals(messageCode) && !translation.startsWith("!")) {
+					return Optional.of(translation);
+				}
+				final String defaultMessage = localizable.getMessage();
+				if (defaultMessage != null) {
+					return Optional.of(defaultMessage);
+				}
+				return Optional.ofNullable(LocalizationContext.translate(localizable, true));
 			}
 		}
 		// check LocalizationContext

@@ -6,6 +6,7 @@ import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.html.ListItem;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.dependency.StyleSheet;
 
 /**
  * Visual separator placed <em>between</em> breadcrumb items in a {@link Breadcrumb}.
@@ -48,6 +49,7 @@ import com.vaadin.flow.component.icon.VaadinIcon;
  * @see BreadcrumbItem
  * @see BreadcrumbPage
  */
+@StyleSheet("context://breadcrumb.css")
 public class BreadcrumbSeparator extends ListItem {
 
     @Serial

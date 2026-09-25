@@ -20,6 +20,7 @@ import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
+import com.vaadin.flow.component.dependency.StyleSheet;
 
 /**
  * The "Previous slide" navigation button inside a {@link Carousel}.
@@ -35,6 +36,7 @@ import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
  * @see Carousel
  * @see CarouselNext
  */
+@StyleSheet("context://carousel.css")
 public class CarouselPrevious extends Div {
 
     @Serial

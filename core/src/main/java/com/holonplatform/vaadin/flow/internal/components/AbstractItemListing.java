@@ -36,6 +36,7 @@ import com.holonplatform.vaadin.flow.components.builders.ShortcutConfigurator;
 import com.holonplatform.vaadin.flow.components.css.CSSUtility;
 import com.holonplatform.vaadin.flow.components.events.*;
 import com.holonplatform.vaadin.flow.components.events.ItemClickEvent;
+import com.holonplatform.vaadin.flow.components.utils.StyleSheetSupport;
 import com.holonplatform.vaadin.flow.components.utils.UIUtils;
 import com.holonplatform.vaadin.flow.data.ItemListingDataProviderAdapter;
 import com.holonplatform.vaadin.flow.data.ItemListingLazyDataProviderAdapter;
@@ -387,6 +388,7 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
 
     public void compact() {
         // CSS: vaadin-grid.grid--compact::part(row) in utilities.css
+        StyleSheetSupport.require(getGrid(), "utilities.css");
         getGrid().addClassName("grid--compact");
     }
 
@@ -397,6 +399,7 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
     @Override
     public void wrapCellContent() {
         // CSS: vaadin-grid.grid--wrap-cell-content::part(cell) in utilities.css
+        StyleSheetSupport.require(getGrid(), "utilities.css");
         getGrid().addClassName("grid--wrap-cell-content");
     }
 

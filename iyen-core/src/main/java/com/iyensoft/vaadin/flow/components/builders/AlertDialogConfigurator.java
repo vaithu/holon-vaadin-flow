@@ -330,7 +330,7 @@ public interface AlertDialogConfigurator<C extends AlertDialogConfigurator<C>>
      * <pre>{@code
      * AlertDialog.builder()
      *     .title("Delete account?")
-     *     .closeIcon(new Icon(VaadinIcon.CLOSE_SMALL))
+     *     .closeIcon(new Icon(VaadinIcon.CLOSE))
      *     .onConfirm(() -> accountService.delete(currentUser))
      *     .open();
      * }</pre>

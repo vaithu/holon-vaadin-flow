@@ -42,6 +42,7 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
 import java.util.Locale;
+import com.vaadin.flow.component.dependency.StyleSheet;
 
 /**
  * Bills (AP) master-detail — demonstrates {@link LitRendererBuilder#mobileListItem()} in a
@@ -70,6 +71,7 @@ import java.util.Locale;
  */
 @PageTitle("Bills (AP) — Holon Demo")
 @Route(value = "bills-master-detail", layout = DemoMainLayout.class)
+@StyleSheet("context://mobile-list-lit-renderer.css")
 public class BillsMasterDetailView extends Div {
 
     private final transient ProductService productService;

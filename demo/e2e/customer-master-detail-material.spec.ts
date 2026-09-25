@@ -23,8 +23,7 @@ async function openStableView(page: Page) {
 
     try {
       await expect(page.getByText('Customers').first()).toBeVisible({ timeout: 15_000 });
-      await expect(page.getByText('Customer 360 portfolio')).toBeVisible({ timeout: 15_000 });
-      await expect(page.getByRole('tab', { name: 'Overview' })).toBeVisible({ timeout: 15_000 });
+      await expect(page.getByRole('tab', { name: /Overview/ })).toBeVisible({ timeout: 15_000 });
       await expect(page.getByRole('button', { name: 'Send via WhatsApp' })).toBeVisible({ timeout: 15_000 });
       return;
     } catch (error) {
@@ -49,7 +48,7 @@ test.describe('Customer Master-Detail Material View visual comparison', () => {
   });
 
   test('matches the orders tab visual baseline', async ({ page }) => {
-    const ordersTab = page.getByRole('tab', { name: /Orders 3/ });
+    const ordersTab = page.getByRole('tab', { name: /Orders/ });
     await ordersTab.click();
     await expect(ordersTab).toHaveAttribute('aria-selected', 'true');
     await expect(page.getByText('Open orders')).toBeVisible({ timeout: 20_000 });

@@ -6,6 +6,8 @@ import com.holonplatform.vaadin.flow.demo.ui.DemoMainLayout;
 import com.iyensoft.vaadin.flow.components.MaterialAppBar;
 import com.iyensoft.vaadin.flow.components.ResponsiveDiv;
 import com.holonplatform.vaadin.flow.components.support.ViewMode;
+import com.iyensoft.vaadin.flow.enums.MaterialAppBarColor;
+import com.iyensoft.vaadin.flow.enums.MaterialAppBarVariant;
 import com.vaadin.flow.component.avatar.Avatar;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -66,7 +68,7 @@ public class MaterialAppBarDemoView extends Div {
         search.setPrefixComponent(VaadinIcon.SEARCH.create());
 
         var appBar = Components.materialAppBar()
-                .variant(MaterialAppBar.Variant.SEARCH)
+                .variant(MaterialAppBarVariant.SEARCH)
                 .search()
                 .leading(action(VaadinIcon.ARROW_LEFT, "Close search"))
                 .headline(search)
@@ -81,7 +83,7 @@ public class MaterialAppBarDemoView extends Div {
                 search.setPrefixComponent(VaadinIcon.SEARCH.create());
 
                 MaterialAppBar appBar = Components.materialAppBar()
-                        .variant(MaterialAppBar.Variant.SEARCH)
+                        .variant(MaterialAppBarVariant.SEARCH)
                         .search()
                         .leading(new Button(VaadinIcon.ARROW_LEFT.create()))
                         .headline(search)
@@ -94,7 +96,7 @@ public class MaterialAppBarDemoView extends Div {
 
     private DemoExample modeAwareExample() {
         var appBar = Components.materialAppBar()
-                .variant(MaterialAppBar.Variant.SMALL)
+                .variant(MaterialAppBarVariant.SMALL)
                 .viewMode(ViewMode.MOBILE)
                 .headline("Inbox")
                 .leading(action(VaadinIcon.MENU, "Open navigation"))
@@ -113,7 +115,7 @@ public class MaterialAppBarDemoView extends Div {
 
         return new DemoExample("ViewMode-driven responsiveness", preview, """
                 MaterialAppBar appBar = Components.materialAppBar()
-                        .variant(MaterialAppBar.Variant.SMALL)
+                        .variant(MaterialAppBarVariant.SMALL)
                         .viewMode(ViewMode.MOBILE)
                         .headline("Inbox")
                         .leading(new Button(VaadinIcon.MENU.create()))
@@ -130,27 +132,27 @@ public class MaterialAppBarDemoView extends Div {
 
     private DemoExample mediumFlexibleExample() {
         var appBar = Components.materialAppBar()
-                .variant(MaterialAppBar.Variant.MEDIUM_FLEXIBLE)
+                .variant(MaterialAppBarVariant.MEDIUM_FLEXIBLE)
                 .headline("Orders")
                 .subtitle(new Span("12 open orders"))
                 .leading(action(VaadinIcon.ARROW_LEFT, "Go back"))
-                .actions(action(VaadinIcon.ELLIPSIS_DOTS_H, "More actions"))
+                .actions(action(VaadinIcon.ELLIPSIS_H, "More actions"))
                 .build();
 
         return new DemoExample("Medium flexible app bar", wrap(appBar), """
                 MaterialAppBar appBar = Components.materialAppBar()
-                        .variant(MaterialAppBar.Variant.MEDIUM_FLEXIBLE)
+                        .variant(MaterialAppBarVariant.MEDIUM_FLEXIBLE)
                         .headline("Orders")
                         .subtitle(new Span("12 open orders"))
                         .leading(new Button(VaadinIcon.ARROW_LEFT.create()))
-                        .actions(new Button(VaadinIcon.ELLIPSIS_DOTS_H.create()))
+                        .actions(new Button(VaadinIcon.ELLIPSIS_H.create()))
                         .build();
                 """);
     }
 
     private DemoExample largeFlexibleExample() {
         var appBar = Components.materialAppBar()
-                .variant(MaterialAppBar.Variant.LARGE_FLEXIBLE)
+                .variant(MaterialAppBarVariant.LARGE_FLEXIBLE)
                 .headline("Account")
                 .subtitle(new Span("Personal preferences"))
                 .leading(new Avatar("Jane Doe"))
@@ -171,7 +173,7 @@ public class MaterialAppBarDemoView extends Div {
 
         return new DemoExample("Large flexible, centered, and scrolled", preview, """
                 MaterialAppBar appBar = Components.materialAppBar()
-                        .variant(MaterialAppBar.Variant.LARGE_FLEXIBLE)
+                        .variant(MaterialAppBarVariant.LARGE_FLEXIBLE)
                         .headline("Account")
                         .subtitle(new Span("Personal preferences"))
                         .leading(new Avatar("Jane Doe"))
@@ -192,21 +194,21 @@ public class MaterialAppBarDemoView extends Div {
     private DemoExample colorVariantsExample() {
         var indigo = Components.materialAppBar()
                 .headline("Projects")
-                .color(MaterialAppBar.Color.INDIGO)
+                .color(MaterialAppBarColor.INDIGO)
                 .leading(action(VaadinIcon.MENU, "Open navigation"))
-                .actions(action(VaadinIcon.SEARCH, "Search"), action(VaadinIcon.ELLIPSIS_DOTS_H, "More actions"))
+                .actions(action(VaadinIcon.SEARCH, "Search"), action(VaadinIcon.ELLIPSIS_H, "More actions"))
                 .build();
 
         var teal = Components.materialAppBar()
                 .headline("Analytics")
-                .color(MaterialAppBar.Color.TEAL)
+                .color(MaterialAppBarColor.TEAL)
                 .leading(action(VaadinIcon.ARROW_LEFT, "Go back"))
-                .actions(action(VaadinIcon.REFRESH, "Refresh"), action(VaadinIcon.ELLIPSIS_DOTS_H, "More actions"))
+                .actions(action(VaadinIcon.REFRESH, "Refresh"), action(VaadinIcon.ELLIPSIS_H, "More actions"))
                 .build();
 
         var gradient = Components.materialAppBar()
                 .headline("StaffOS")
-                .color(MaterialAppBar.Color.GRADIENT)
+                .color(MaterialAppBarColor.GRADIENT)
                 .leading(action(VaadinIcon.MENU, "Open navigation"))
                 .actions(action(VaadinIcon.SEARCH, "Search"), action(VaadinIcon.BELL, "Notifications"))
                 .build();
@@ -217,16 +219,16 @@ public class MaterialAppBarDemoView extends Div {
         return new DemoExample("Color variants", preview, """
                 MaterialAppBar indigo = Components.materialAppBar()
                         .headline("Projects")
-                        .color(MaterialAppBar.Color.INDIGO)
+                        .color(MaterialAppBarColor.INDIGO)
                         .leading(new Button(VaadinIcon.MENU.create()))
                         .actions(new Button(VaadinIcon.SEARCH.create()),
-                                 new Button(VaadinIcon.ELLIPSIS_DOTS_H.create()))
+                                 new Button(VaadinIcon.ELLIPSIS_H.create()))
                         .build();
 
                 // Also available: TEAL, EMERALD, ORANGE, ROSE, PURPLE, SLATE, GRADIENT
                 MaterialAppBar gradient = Components.materialAppBar()
                         .headline("StaffOS")
-                        .color(MaterialAppBar.Color.GRADIENT)
+                        .color(MaterialAppBarColor.GRADIENT)
                         .build();
                 """);
     }

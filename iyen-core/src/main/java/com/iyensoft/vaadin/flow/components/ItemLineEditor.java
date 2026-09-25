@@ -401,7 +401,7 @@ public class ItemLineEditor<T> extends Composite<Div> implements HasComponent, H
         }
 
         deleteColumn = grid.addColumn(new ComponentRenderer<>(row -> {
-            Button btn = Components.button().icon(VaadinIcon.CLOSE_SMALL).tertiary().error()
+            Button btn = Components.button().icon(VaadinIcon.CLOSE).tertiary().error()
                     .styleName("ile-delete-btn")
                     .ariaLabel("Remove item", "item_line_editor.delete_row_aria")
                     .withClickListener(e -> removeRow(row)).build();

@@ -4,7 +4,8 @@ import com.holonplatform.vaadin.flow.components.builders.ComponentConfigurator;
 import com.holonplatform.vaadin.flow.components.builders.HasSizeConfigurator;
 import com.holonplatform.vaadin.flow.components.builders.HasStyleConfigurator;
 
-import com.iyensoft.vaadin.flow.components.MaterialAppBar.Variant;
+import com.iyensoft.vaadin.flow.enums.MaterialAppBarColor;
+import com.iyensoft.vaadin.flow.enums.MaterialAppBarVariant;
 import com.vaadin.flow.component.Component;
 import com.holonplatform.vaadin.flow.components.support.ViewMode;
 
@@ -12,14 +13,14 @@ import com.holonplatform.vaadin.flow.components.support.ViewMode;
 public interface MaterialAppBarConfigurator<C extends MaterialAppBarConfigurator<C>>
     extends ComponentConfigurator<C>, HasSizeConfigurator<C>, HasStyleConfigurator<C> {
 
-    C variant(Variant variant);
+    C variant(MaterialAppBarVariant variant);
 
     /**
      * Applies a predefined branded color variant (e.g. {@code MaterialAppBar.Color.INDIGO}).
      *
      * @param color the color variant to apply (not null)
      */
-    C color(com.iyensoft.vaadin.flow.components.MaterialAppBar.Color color);
+    C color(MaterialAppBarColor color);
 
     C headline(Component headline);
 
@@ -57,5 +58,11 @@ public interface MaterialAppBarConfigurator<C extends MaterialAppBarConfigurator
 
     default C scrolled() {
         return scrolled(true);
+    }
+
+    C sticky(boolean sticky);
+
+    default C sticky() {
+        return sticky(true);
     }
 }

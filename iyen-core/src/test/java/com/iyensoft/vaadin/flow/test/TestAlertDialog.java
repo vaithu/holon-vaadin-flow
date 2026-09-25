@@ -953,7 +953,7 @@ class TestAlertDialog {
     @Test
     void setCloseButtonIcon_implicitlyShowsButton() {
         AlertDialog dialog = new AlertDialog();
-        dialog.setCloseButtonIcon(new Icon(VaadinIcon.CLOSE_SMALL));
+        dialog.setCloseButtonIcon(new Icon(VaadinIcon.CLOSE));
         Component wrapper = getWrapper(dialog);
         assertTrue(wrapper.getElement().getClassList().contains("alert-dialog--closeable"),
                 "setCloseButtonIcon must implicitly show the close button");
@@ -976,7 +976,7 @@ class TestAlertDialog {
     @Test
     void alertDialogBuilder_closeIcon_addsCloseableClass() {
         AlertDialog dialog = AlertDialogBuilder.create()
-                .closeIcon(new Icon(VaadinIcon.CLOSE_SMALL))
+                .closeIcon(new Icon(VaadinIcon.CLOSE))
                 .build();
         Component wrapper = getWrapper(dialog);
         assertTrue(wrapper.getElement().getClassList().contains("alert-dialog--closeable"));
@@ -993,7 +993,7 @@ class TestAlertDialog {
     @Test
     void alertDialogConfigurator_closeIcon_addsCloseableClass() {
         AlertDialog dialog = new AlertDialog();
-        AlertDialogConfigurator.configure(dialog).closeIcon(new Icon(VaadinIcon.CLOSE_SMALL));
+        AlertDialogConfigurator.configure(dialog).closeIcon(new Icon(VaadinIcon.CLOSE));
         Component wrapper = getWrapper(dialog);
         assertTrue(wrapper.getElement().getClassList().contains("alert-dialog--closeable"));
     }

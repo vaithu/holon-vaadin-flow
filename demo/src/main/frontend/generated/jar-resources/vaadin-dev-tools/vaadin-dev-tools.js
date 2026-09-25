@@ -1,4 +1,4 @@
-import{LitElement as e,css as t,html as n}from"lit";import{customElement as r,property as i,state as a}from"lit/decorators.js";function o(e,t,n,r){var i=arguments.length,a=i<3?t:r===null?r=Object.getOwnPropertyDescriptor(t,n):r,o;if(typeof Reflect==`object`&&typeof Reflect.decorate==`function`)a=Reflect.decorate(e,t,n,r);else for(var s=e.length-1;s>=0;s--)(o=e[s])&&(a=(i<3?o(a):i>3?o(t,n,a):o(t,n))||a);return i>3&&a&&Object.defineProperty(t,n,a),a}var s=class extends HTMLElement{#e;#t;#n;#r;#i;constructor(){super(),this.#e=null,this.#n=!1,this.#r=null,this.#i=null,this.#t=this.attachShadow({mode:`closed`}),this.render(),this.setupProtection()}static get observedAttributes(){return[`expired`,`start-failure`,`license-download`]}render(){this.#t.innerHTML=`
+import{LitElement as e,css as t,html as n}from"lit";import{customElement as r,property as i,state as a}from"lit/decorators.js";function o(e,t,n,r){var i=arguments.length,a=i<3?t:r===null?r=Object.getOwnPropertyDescriptor(t,n):r,o;if(typeof Reflect==`object`&&typeof Reflect.decorate==`function`)a=Reflect.decorate(e,t,n,r);else for(var s=e.length-1;s>=0;s--)(o=e[s])&&(a=(i<3?o(a):i>3?o(t,n,a):o(t,n))||a);return i>3&&a&&Object.defineProperty(t,n,a),a}var s=class extends HTMLElement{#e;#t;#n;#r;#i;#a;constructor(){super(),this.#e=null,this.#n=!1,this.#r=null,this.#i=null,this.#a=null,this.#t=this.attachShadow({mode:`closed`}),this.render(),this.setupProtection()}static get observedAttributes(){return[`expired`,`start-failure`,`license-download`,`product`]}get isEnterprise(){return this.#a===`vaadin-ee`}render(){this.#t.innerHTML=`
     
       <style>
         :host {
@@ -73,9 +73,12 @@ import{LitElement as e,css as t,html as n}from"lit";import{customElement as r,pr
         }
         
         ul li {
-          align-items: center;
           display: flex;
-          gap: 0.25rem;
+          gap: 0.5rem;
+        }
+
+        ul li svg {
+          flex-shrink: 0;
         }
         
         ul li span:first-of-type {
@@ -157,33 +160,7 @@ import{LitElement as e,css as t,html as n}from"lit";import{customElement as r,pr
     <div class='container'>
       ${this.#n?`
         <h2>Trial expired</h2>
-        <p>
-          Vaadin Core is free and open-source. Sign in to keep using
-          <span class="badge">
-            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M12 15V9.75H15V15H12ZM7.5 15V3H10.5V15H7.5ZM3 15V6.75H6V15H3Z" fill="url(#paint0_linear_85_186)"/>
-              <defs>
-                <linearGradient id="paint0_linear_85_186" x1="9" y1="3" x2="9" y2="15" gradientUnits="userSpaceOnUse">
-                  <stop stop-color="#1A81FA"/>
-                  <stop offset="1" stop-color="#8854FC"/>
-                </linearGradient>
-              </defs>
-            </svg>
-            Pro components
-          </span> and 
-          <span class="badge">
-            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M8.2125 11.6625L12.45 7.425L11.3812 6.35625L8.2125 9.525L6.6375 7.95L5.56875 9.01875L8.2125 11.6625ZM9 16.5C7.2625 16.0625 5.82812 15.0656 4.69687 13.5094C3.56562 11.9531 3 10.225 3 8.325V3.75L9 1.5L15 3.75V8.325C15 10.225 14.4344 11.9531 13.3031 13.5094C12.1719 15.0656 10.7375 16.0625 9 16.5ZM9 14.925C10.3 14.5125 11.375 13.6875 12.225 12.45C13.075 11.2125 13.5 9.8375 13.5 8.325V4.78125L9 3.09375L4.5 4.78125V8.325C4.5 9.8375 4.925 11.2125 5.775 12.45C6.625 13.6875 7.7 14.5125 9 14.925Z" fill="url(#paint0_linear_85_190)"/>
-              <defs>
-                <linearGradient id="paint0_linear_85_190" x1="9" y1="1.5" x2="9" y2="16.5" gradientUnits="userSpaceOnUse">
-                  <stop stop-color="#1A81FA"/>
-                  <stop offset="1" stop-color="#8854FC"/>
-                </linearGradient>
-              </defs>
-            </svg>
-            Team features
-          </span> for 30 more days.
-        </p>
+        ${this.getExpiredIntro()}
         <p>Continue getting full access to:</p>
         ${this.getProductsList()}
         <button ${this.#i===`started`?`disabled`:``} class='primary'>
@@ -192,19 +169,7 @@ import{LitElement as e,css as t,html as n}from"lit";import{customElement as r,pr
         </button>
         `:`
         <h2>Get full access to all features</h2>
-        <p>
-          Vaadin Core is free and open-source. To use Pro components like <span class="badge">
-          <svg width="18" height="18" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M12 15V9.75h3V15h-3Zm-4.5 0V3h3v12h-3ZM3 15V6.75h3V15H3Z" fill="url(#a)"/>
-          <defs>
-            <linearGradient id="a" x1="9" y1="3" x2="9" y2="15" gradientUnits="userSpaceOnUse">
-              <stop stop-color="#1A81FA"/>
-              <stop offset="1" stop-color="#8854FC"/>
-            </linearGradient>
-          </defs>
-        </svg>
-          Charts</span> in your app, activate a free trial.
-        </p>
+        ${this.getAccessIntro()}
         <p>Get full access:</p>
         ${this.getProductsList()}
         <button ${this.#i===`started`?`disabled`:``} class='primary'>
@@ -227,7 +192,90 @@ import{LitElement as e,css as t,html as n}from"lit";import{customElement as r,pr
         By starting your trial, you agree to our <a href='https://vaadin.com/commercial-license-and-service-terms' target='_blank'>terms and conditions</a>.
       </p>
     </div>
-    `,this.#t.querySelector(`button.primary`)?.addEventListener(`click`,()=>{this.dispatchEvent(new CustomEvent(`primary-button-click`,{detail:{expired:this.#n}}))}),this.#t.querySelector(`button.secondary`)?.addEventListener(`click`,()=>{this.dispatchEvent(new CustomEvent(`secondary-button-click`))})}getProductsList(){return`
+    `,this.#t.querySelector(`button.primary`)?.addEventListener(`click`,()=>{this.dispatchEvent(new CustomEvent(`primary-button-click`,{detail:{expired:this.#n}}))}),this.#t.querySelector(`button.secondary`)?.addEventListener(`click`,()=>{this.dispatchEvent(new CustomEvent(`secondary-button-click`))})}getAccessIntro(){return this.isEnterprise?`
+        <p>
+          This application uses <span class="badge">
+          <svg width="18" height="18" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 15V9.75h3V15h-3Zm-4.5 0V3h3v12h-3ZM3 15V6.75h3V15H3Z" fill="url(#ee)"/>
+          <defs>
+            <linearGradient id="ee" x1="9" y1="3" x2="9" y2="15" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#1A81FA"/>
+              <stop offset="1" stop-color="#8854FC"/>
+            </linearGradient>
+          </defs>
+        </svg>
+          Vaadin Enterprise Edition</span>. Activate a free trial to use it.
+        </p>`:`
+        <p>
+          Vaadin Core is free and open-source. To use Pro components like <span class="badge">
+          <svg width="18" height="18" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 15V9.75h3V15h-3Zm-4.5 0V3h3v12h-3ZM3 15V6.75h3V15H3Z" fill="url(#a)"/>
+          <defs>
+            <linearGradient id="a" x1="9" y1="3" x2="9" y2="15" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#1A81FA"/>
+              <stop offset="1" stop-color="#8854FC"/>
+            </linearGradient>
+          </defs>
+        </svg>
+          Charts</span> in your app, activate a free trial.
+        </p>`}getExpiredIntro(){return this.isEnterprise?`
+        <p>
+          Sign in to keep using
+          <span class="badge">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 15V9.75H15V15H12ZM7.5 15V3H10.5V15H7.5ZM3 15V6.75H6V15H3Z" fill="url(#eex)"/>
+              <defs>
+                <linearGradient id="eex" x1="9" y1="3" x2="9" y2="15" gradientUnits="userSpaceOnUse">
+                  <stop stop-color="#1A81FA"/>
+                  <stop offset="1" stop-color="#8854FC"/>
+                </linearGradient>
+              </defs>
+            </svg>
+            Vaadin Enterprise Edition
+          </span> for 30 more days.
+        </p>`:`
+        <p>
+          Vaadin Core is free and open-source. Sign in to keep using
+          <span class="badge">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M12 15V9.75H15V15H12ZM7.5 15V3H10.5V15H7.5ZM3 15V6.75H6V15H3Z" fill="url(#paint0_linear_85_186)"/>
+              <defs>
+                <linearGradient id="paint0_linear_85_186" x1="9" y1="3" x2="9" y2="15" gradientUnits="userSpaceOnUse">
+                  <stop stop-color="#1A81FA"/>
+                  <stop offset="1" stop-color="#8854FC"/>
+                </linearGradient>
+              </defs>
+            </svg>
+            Pro components
+          </span> and
+          <span class="badge">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M8.2125 11.6625L12.45 7.425L11.3812 6.35625L8.2125 9.525L6.6375 7.95L5.56875 9.01875L8.2125 11.6625ZM9 16.5C7.2625 16.0625 5.82812 15.0656 4.69687 13.5094C3.56562 11.9531 3 10.225 3 8.325V3.75L9 1.5L15 3.75V8.325C15 10.225 14.4344 11.9531 13.3031 13.5094C12.1719 15.0656 10.7375 16.0625 9 16.5ZM9 14.925C10.3 14.5125 11.375 13.6875 12.225 12.45C13.075 11.2125 13.5 9.8375 13.5 8.325V4.78125L9 3.09375L4.5 4.78125V8.325C4.5 9.8375 4.925 11.2125 5.775 12.45C6.625 13.6875 7.7 14.5125 9 14.925Z" fill="url(#paint0_linear_85_190)"/>
+              <defs>
+                <linearGradient id="paint0_linear_85_190" x1="9" y1="1.5" x2="9" y2="16.5" gradientUnits="userSpaceOnUse">
+                  <stop stop-color="#1A81FA"/>
+                  <stop offset="1" stop-color="#8854FC"/>
+                </linearGradient>
+              </defs>
+            </svg>
+            Team features
+          </span> for 30 more days.
+        </p>`}getProductsList(){return this.isEnterprise?`
+        <ul>
+          <li>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none">
+            <path d="M16 20v-7h4v7h-4Zm-6 0V4h4v16h-4Zm-6 0V9h4v11H4Z" fill="url(#eel)"/>
+            <defs>
+              <linearGradient id="eel" x1="12" y1="4" x2="12" y2="20" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#1A81FA" />
+                <stop offset="1" stop-color="#8854FC" />
+              </linearGradient>
+            </defs>
+          </svg>
+            <p><span>Vaadin Enterprise Edition</span><br/><span>All Pro components, Team features and Kits</span></p>
+          </li>
+        </ul>
+    `:`
         <ul>
           <li>
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none">
@@ -249,7 +297,7 @@ import{LitElement as e,css as t,html as n}from"lit";import{customElement as r,pr
               </linearGradient>
             </defs>
           </svg>
-            <span>Pro components</span><span>⋅</span><span>Charts, Grid Pro, CRUD and more</span>
+            <p><span>Pro components</span><br/><span>Charts, Grid Pro, CRUD and more</span></p>
           </li>
           <li>
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none">
@@ -271,15 +319,10 @@ import{LitElement as e,css as t,html as n}from"lit";import{customElement as r,pr
               </linearGradient>
             </defs></svg
           >
-            <span>Team features</span><span>⋅</span><span>Acceleration Kits</span>
+            <p><span>Team features</span><br/><span>Acceleration Kits</span></p>
           </li>
         </ul>
-    `}connectedCallback(){this.setupParentRemovalProtection()}disconnectedCallback(){this.cleanup()}attributeChangedCallback(e,t,n){e===`expired`?this.handleExpiredChange(n!==null&&n!==`false`):e===`start-failure`?this.handleStartFailed(n===`expired`):e===`license-download`&&this.handleLicenseDownload(n)}handleLicenseDownload(e){this.#i!==e&&(this.#i=e,this.render())}handleExpiredChange(e){this.#n!==e&&(this.#n=e,this.render())}handleStartFailed(e){(this.#r!==e||this.#n!==e)&&(this.#n=e,this.#r=!0,this.render())}setupProtection(){let e=Element.prototype.remove,t=this;this.remove=function(){console.debug(`Attempt to remove vaadin-pretrial detected - restoring`);let n=t.parentNode;e.call(t),t.restoreSplashScreen(n)},this.protectStyles()}setupParentRemovalProtection(){!this.#e&&this.parentNode&&(this.#e=new MutationObserver(e=>{e.forEach(e=>{e.type===`childList`&&e.removedNodes.forEach(t=>{t===this&&(console.debug(`vaadin-pretrial removal detected - restoring`),this.restoreSplashScreen(e.target))})})}),this.#e.observe(this.parentNode,{childList:!0,subtree:!0}))}protectStyles(){Object.defineProperty(this,"style",{get(){return{}},set(e){}})}cleanup(){this.#e&&this.#e.disconnect()}restoreSplashScreen(e){e&&setTimeout(()=>{console.debug(`Re-adding vaadin-pretrial component`);let t=this.querySelector(`[slot="products"]`);e.contains(this)&&e.removeChild(this);let n=document.createElement(`vaadin-pretrial`);this.#n&&n.setAttribute(`expired`,`true`),this.#r&&n.setAttribute(`start-failure`,this.#n?`expired`:``),t&&n.appendChild(t.cloneNode(!0)),e.appendChild(n)},0)}};customElements.define(`vaadin-pretrial`,s);function c(e){e.detail.expired?A():k()}function l(){A()}var u=(e,t)=>{if(e&&!e.querySelector(`vaadin-pretrial`)){let n=t.preTrial?.trialState===`EXPIRED`,r=document.createElement(`vaadin-pretrial`);n&&r.setAttribute(`expired`,``);let i=document.createElement(`div`);i.setAttribute(`slot`,`products`),i.innerHTML=`
-      This application is using:
-      <ul>
-        <li>${t.product.name}</li>
-      </ul>
-    `,r.appendChild(i),r.addEventListener(`secondary-button-click`,l),r.addEventListener(`primary-button-click`,c),e.innerHTML=`<slot></slot>`,e.appendChild(r)}},d=(e,t)=>{t&&t.querySelector(`vaadin-pretrial`)?.setAttribute(`start-failure`,e?`expired`:``)},f=(e,t)=>{t&&t.querySelector(`vaadin-pretrial`)?.setAttribute(`license-download`,e)},p=1e3,m=`vaadin-license-download-completed`,h=(e,t)=>{let n=Array.from(e.querySelectorAll(t.join(`, `))),r=Array.from(e.querySelectorAll(`*`)).filter(e=>e.shadowRoot).flatMap(e=>h(e.shadowRoot,t));return[...n,...r]},g=!1,_=(e,t)=>{g||=(window.addEventListener(`message`,e=>{e.data===`validate-license`&&window.location.reload()},!1),!0);let n=e._overlayElement;if(n){if(n.shadowRoot){let e=n.shadowRoot.querySelector(`slot:not([name])`);if(e&&e.assignedElements().length>0){_(e.assignedElements()[0],t);return}}_(n,t);return}let r=t.messageHtml?t.messageHtml:`${t.message} <p>Component: ${t.product.name} ${t.product.version}</p>`.replace(/https:([^ ]*)/g,`<a href='https:$1'>https:$1</a>`);e.isConnected&&(e.outerHTML=`<no-license style="display:flex;align-items:center;text-align:center;justify-content:center;"><div>${r}</div></no-license>`)},v={},y={},b={},x={},S=e=>`${e.name}_${e.version}`,C=e=>{let{cvdlName:t,version:n}=e.constructor,r={name:t,version:n},i=e.tagName.toLowerCase();v[t]=v[t]??[],v[t].push(i);let a=b[S(r)];a&&setTimeout(()=>_(e,a),p),b[S(r)]||x[S(r)]||y[S(r)]||(y[S(r)]=!0,window.Vaadin.devTools.checkLicense(r))},w=e=>{x[S(e)]=!0,console.debug(`License check ok for`,e)},T=e=>{let t=e.product.name;b[S(e.product)]=e,console.error(`License check failed for`,t);let n=v[t];n?.length>0&&h(document,n).forEach(t=>{setTimeout(()=>_(t,b[S(e.product)]),p)})},E=e=>{let t=e.message,n=e.product.name;e.messageHtml=`No license found. <a target=_blank onclick="javascript:window.open(this.href);return false;" href="${t}">Go here to start a trial or retrieve your license.</a>`,b[S(e.product)]=e,console.error(`No license found when checking`,n);let r=v[n];r?.length>0&&h(document,r).forEach(t=>{setTimeout(()=>_(t,b[S(e.product)]),p)})},D=(e,t)=>e.command===`license-check-ok`?(w(e.data),!0):e.command===`license-check-failed`?(T(e.data),!0):e.command===`license-check-nokey`?(u(t,e.data),E(e.data),!0):e.command===`license-pretrial-started`?(console.debug(`Pre-trial period started`,e.data),window.location.reload(),!0):e.command===`license-pretrial-expired`?(console.debug(`Pre-trial period expired`,e.data),d(!0,t),!0):e.command===`license-pretrial-failed`?(console.debug(`Pre-trial period start failed`,e.data),d(!1,t),!0):e.command===`license-download-completed`?(console.debug(`License downloaded`),O(e.data),!0):e.command===`license-download-started`?(f(`started`,t),!0):e.command===`license-download-failed`?(f(`failed`,t),!0):!1,O=e=>{let t=new CustomEvent(m,{detail:e,cancelable:!0});document.dispatchEvent(t)&&window.location.reload()},k=()=>{window.Vaadin.devTools.startPreTrial()},A=e=>{let t=Object.values(b);t.length>0&&window.Vaadin.devTools.downloadLicense(t[0].product,e)},j=()=>{window.Vaadin.devTools.createdCvdlElements.forEach(e=>{C(e)}),window.Vaadin.devTools.createdCvdlElements={push:e=>{C(e)}}},M;(function(e){e.ACTIVE=`active`,e.INACTIVE=`inactive`,e.UNAVAILABLE=`unavailable`,e.ERROR=`error`})(M||={});var N=class{constructor(){this.status=M.UNAVAILABLE}static{this.HEARTBEAT_INTERVAL=18e4}onHandshake(){}onConnectionError(e){}onStatusChange(e){}setActive(e){!e&&this.status===M.ACTIVE?this.setStatus(M.INACTIVE):e&&this.status===M.INACTIVE&&this.setStatus(M.ACTIVE)}setStatus(e){this.status!==e&&(this.status=e,this.onStatusChange(e))}},P=class extends N{constructor(e){super(),this.webSocket=new WebSocket(e),this.webSocket.onmessage=e=>this.handleMessage(e),this.webSocket.onerror=e=>this.handleError(e),this.webSocket.onclose=e=>{this.status!==M.ERROR&&this.setStatus(M.UNAVAILABLE),this.webSocket=void 0},setInterval(()=>{this.webSocket&&self.status!==M.ERROR&&this.status!==M.UNAVAILABLE&&this.webSocket.send(``)},N.HEARTBEAT_INTERVAL)}onReload(e){}handleMessage(e){let t;try{t=JSON.parse(e.data)}catch(e){this.handleError(`[${e.name}: ${e.message}`);return}if(t.command===`hello`)this.setStatus(M.ACTIVE),this.onHandshake();else if(t.command===`reload`){if(this.status===M.ACTIVE){let e=t.strategy||`reload`;this.onReload(e)}}else this.handleError(`Unknown message from the livereload server: ${e}`)}handleError(e){console.error(e),this.setStatus(M.ERROR),e instanceof Event&&this.webSocket?this.onConnectionError(`Error in WebSocket connection to ${this.webSocket.url}`):this.onConnectionError(e)}},F=16384,I=class extends N{static{this.HEARTBEAT_INTERVAL=18e4}constructor(e){if(super(),this.canSend=!1,!e)return;let t={transport:`websocket`,fallbackTransport:`websocket`,url:e,contentType:`application/json; charset=UTF-8`,reconnectInterval:5e3,timeout:-1,maxReconnectOnClose:1e7,trackMessageLength:!0,enableProtocol:!0,handleOnlineOffline:!1,executeCallbackBeforeReconnect:!0,messageDelimiter:`|`,onMessage:e=>{let t={data:e.responseBody};this.handleMessage(t)},onError:e=>{this.canSend=!1,this.handleError(e)},onOpen:()=>{this.canSend=!0},onClose:()=>{this.canSend=!1},onClientTimeout:()=>{this.canSend=!1},onReconnect:()=>{this.canSend=!1},onReopen:()=>{this.canSend=!0}};R().then(e=>{this.socket=e.subscribe(t)})}onReload(e){}onUpdate(e,t){}onMessage(e){}handleMessage(e){let t;try{t=JSON.parse(e.data)}catch(e){this.handleError(`[${e.name}: ${e.message}`);return}if(t.command===`hello`)this.setStatus(M.ACTIVE),this.onHandshake();else if(t.command===`reload`){if(this.status===M.ACTIVE){let e=t.strategy||`reload`;this.onReload(e)}}else t.command===`update`?this.status===M.ACTIVE&&this.onUpdate(t.path,t.content):this.onMessage(t)}handleError(e){console.error(e),this.setStatus(M.ERROR),this.onConnectionError(e)}send(e,t){if(!this.socket||!this.canSend){L(()=>this.socket&&this.canSend,n=>this.send(e,t));return}let n=JSON.stringify({command:e,data:t}),r=n.length+`|`+n;for(;r.length;)this.socket.push(r.substring(0,F)),r=r.substring(F)}};function L(e,t){let n=e();n?t(n):setTimeout(()=>L(e,t),50)}function R(){return new Promise((e,t)=>{L(()=>window?.vaadinPush?.atmosphere,e)})}var z=1,B=`vaadin-refresh-ui`;function V(e){if(e.id)return`#`+CSS.escape(e.id);let t=[],n=e;for(;n&&n!==document.documentElement&&n!==document.body;){if(n.id){t.unshift(`#`+CSS.escape(n.id));break}let e=n.parentElement;if(!e)break;let r=1,i=n.previousElementSibling;for(;i;)i.tagName===n.tagName&&r++,i=i.previousElementSibling;t.unshift(n.tagName.toLowerCase()+`:nth-of-type(`+r+`)`),n=e}return t.length>0?t.join(` > `):``}function H(){let e=window.Vaadin;return Object.keys(e?.Flow?.clients||{}).filter(e=>e!==`TypeScript`).map(t=>e.Flow.clients[t])}function U(){let e={};return(window.scrollX!==0||window.scrollY!==0)&&(e.__window__={scrollTop:window.scrollY,scrollLeft:window.scrollX}),document.querySelectorAll(`*`).forEach(t=>{if(t.scrollTop>0||t.scrollLeft>0){let n=V(t);n&&(e[n]={scrollTop:t.scrollTop,scrollLeft:t.scrollLeft})}}),e}function W(e){let t=U();H().forEach(t=>{t.sendEventMessage&&t.sendEventMessage(z,`ui-refresh`,{fullRefresh:e})}),q(t)}var G=!1;function K(){G||(G=!0,window.addEventListener(B,e=>{W(e.detail?.fullRefresh===!0)}))}function q(e){if(Object.keys(e).length===0)return;let t=0,n=()=>{requestAnimationFrame(()=>{for(let[t,n]of Object.entries(e))if(t===`__window__`)window.scrollTo(n.scrollLeft,n.scrollTop);else{let e=document.querySelector(t);e&&(e.scrollTop=n.scrollTop,e.scrollLeft=n.scrollLeft)}})},r=()=>{let e=H();e.length>0&&e.every(e=>!e.isActive())||++t>=200?n():setTimeout(r,50)};setTimeout(r,50)}var J,Y;(function(e){e.LOG=`log`,e.INFORMATION=`information`,e.WARNING=`warning`,e.ERROR=`error`})(Y||={});var X=import.meta.hot?import.meta.hot.hmrClient:void 0,Z=class extends e{constructor(){super(...arguments),this.unhandledMessages=[],this.conf={enable:!1,url:``,contextRelativePath:``,liveReloadPort:-1},this.bodyShadowRoot=null,this.frontendStatus=M.UNAVAILABLE,this.javaStatus=M.UNAVAILABLE,this.componentPickActive=!1}static{J=this}static get styles(){return[t`
+    `}connectedCallback(){this.setupParentRemovalProtection()}disconnectedCallback(){this.cleanup()}attributeChangedCallback(e,t,n){e===`expired`?this.handleExpiredChange(n!==null&&n!==`false`):e===`start-failure`?this.handleStartFailed(n===`expired`):e===`license-download`?this.handleLicenseDownload(n):e===`product`&&this.handleProduct(n)}handleProduct(e){this.#a!==e&&(this.#a=e,this.render())}handleLicenseDownload(e){this.#i!==e&&(this.#i=e,this.render())}handleExpiredChange(e){this.#n!==e&&(this.#n=e,this.render())}handleStartFailed(e){(this.#r!==e||this.#n!==e)&&(this.#n=e,this.#r=!0,this.render())}setupProtection(){let e=Element.prototype.remove,t=this;this.remove=function(){console.debug(`Attempt to remove vaadin-pretrial detected - restoring`);let n=t.parentNode;e.call(t),t.restoreSplashScreen(n)},this.protectStyles()}setupParentRemovalProtection(){!this.#e&&this.parentNode&&(this.#e=new MutationObserver(e=>{e.forEach(e=>{e.type===`childList`&&e.removedNodes.forEach(t=>{t===this&&(console.debug(`vaadin-pretrial removal detected - restoring`),this.restoreSplashScreen(e.target))})})}),this.#e.observe(this.parentNode,{childList:!0,subtree:!0}))}protectStyles(){Object.defineProperty(this,"style",{get(){return{}},set(e){}})}cleanup(){this.#e&&this.#e.disconnect()}restoreSplashScreen(e){e&&setTimeout(()=>{console.debug(`Re-adding vaadin-pretrial component`);let t=this.querySelector(`[slot="products"]`);e.contains(this)&&e.removeChild(this);let n=document.createElement(`vaadin-pretrial`);this.#a&&n.setAttribute(`product`,this.#a),this.#n&&n.setAttribute(`expired`,`true`),this.#r&&n.setAttribute(`start-failure`,this.#n?`expired`:``),t&&n.appendChild(t.cloneNode(!0)),e.appendChild(n)},0)}};customElements.define(`vaadin-pretrial`,s);function c(e){e.detail.expired?A():k()}function l(){A()}var u=(e,t)=>{if(!e)return;let n=t.product?.name,r=e.querySelector(`vaadin-pretrial`);if(r){n===`vaadin-ee`&&r.getAttribute(`product`)!==`vaadin-ee`&&r.setAttribute(`product`,`vaadin-ee`);return}let i=t.preTrial?.trialState===`EXPIRED`,a=document.createElement(`vaadin-pretrial`);n&&a.setAttribute(`product`,n),i&&a.setAttribute(`expired`,``),a.addEventListener(`secondary-button-click`,l),a.addEventListener(`primary-button-click`,c),e.innerHTML=`<slot></slot>`,e.appendChild(a)},d=(e,t)=>{t&&t.querySelector(`vaadin-pretrial`)?.setAttribute(`start-failure`,e?`expired`:``)},f=(e,t)=>{t&&t.querySelector(`vaadin-pretrial`)?.setAttribute(`license-download`,e)},p=1e3,m=`vaadin-license-download-completed`,h=(e,t)=>{let n=Array.from(e.querySelectorAll(t.join(`, `))),r=Array.from(e.querySelectorAll(`*`)).filter(e=>e.shadowRoot).flatMap(e=>h(e.shadowRoot,t));return[...n,...r]},g=!1,_=(e,t)=>{g||=(window.addEventListener(`message`,e=>{e.data===`validate-license`&&window.location.reload()},!1),!0);let n=e._overlayElement;if(n){if(n.shadowRoot){let e=n.shadowRoot.querySelector(`slot:not([name])`);if(e&&e.assignedElements().length>0){_(e.assignedElements()[0],t);return}}_(n,t);return}let r=t.messageHtml?t.messageHtml:`${t.message} <p>Component: ${t.product.name} ${t.product.version}</p>`.replace(/https:([^ ]*)/g,`<a href='https:$1'>https:$1</a>`);e.isConnected&&(e.outerHTML=`<no-license style="display:flex;align-items:center;text-align:center;justify-content:center;"><div>${r}</div></no-license>`)},v={},y={},b={},x={},S=e=>`${e.name}_${e.version}`,C=e=>{let{cvdlName:t,version:n}=e.constructor,r={name:t,version:n},i=e.tagName.toLowerCase();v[t]=v[t]??[],v[t].push(i);let a=b[S(r)];a&&setTimeout(()=>_(e,a),p),b[S(r)]||x[S(r)]||y[S(r)]||(y[S(r)]=!0,window.Vaadin.devTools.checkLicense(r))},w=e=>{x[S(e)]=!0,console.debug(`License check ok for`,e)},T=e=>{let t=e.product.name;b[S(e.product)]=e,console.error(`License check failed for`,t);let n=v[t];n?.length>0&&h(document,n).forEach(t=>{setTimeout(()=>_(t,b[S(e.product)]),p)})},E=e=>{let t=e.message,n=e.product.name;e.messageHtml=`No license found. <a target=_blank onclick="javascript:window.open(this.href);return false;" href="${t}">Go here to start a trial or retrieve your license.</a>`,b[S(e.product)]=e,console.error(`No license found when checking`,n);let r=v[n];r?.length>0&&h(document,r).forEach(t=>{setTimeout(()=>_(t,b[S(e.product)]),p)})},D=(e,t)=>e.command===`license-check-ok`?(w(e.data),!0):e.command===`license-check-failed`?(T(e.data),!0):e.command===`license-check-nokey`?(u(t,e.data),E(e.data),!0):e.command===`license-pretrial-started`?(console.debug(`Pre-trial period started`,e.data),window.location.reload(),!0):e.command===`license-pretrial-expired`?(console.debug(`Pre-trial period expired`,e.data),d(!0,t),!0):e.command===`license-pretrial-failed`?(console.debug(`Pre-trial period start failed`,e.data),d(!1,t),!0):e.command===`license-download-completed`?(console.debug(`License downloaded`),O(e.data),!0):e.command===`license-download-started`?(f(`started`,t),!0):e.command===`license-download-failed`?(f(`failed`,t),!0):!1,O=e=>{let t=new CustomEvent(m,{detail:e,cancelable:!0});document.dispatchEvent(t)&&window.location.reload()},k=()=>{window.Vaadin.devTools.startPreTrial()},A=e=>{let t=Object.values(b);t.length>0&&window.Vaadin.devTools.downloadLicense(t[0].product,e)},j=()=>{window.Vaadin.devTools.createdCvdlElements.forEach(e=>{C(e)}),window.Vaadin.devTools.createdCvdlElements={push:e=>{C(e)}}},M;(function(e){e.ACTIVE=`active`,e.INACTIVE=`inactive`,e.UNAVAILABLE=`unavailable`,e.ERROR=`error`})(M||={});var N=class{constructor(){this.status=M.UNAVAILABLE}static{this.HEARTBEAT_INTERVAL=18e4}onHandshake(){}onConnectionError(e){}onStatusChange(e){}setActive(e){!e&&this.status===M.ACTIVE?this.setStatus(M.INACTIVE):e&&this.status===M.INACTIVE&&this.setStatus(M.ACTIVE)}setStatus(e){this.status!==e&&(this.status=e,this.onStatusChange(e))}},P=class extends N{constructor(e){super(),this.webSocket=new WebSocket(e),this.webSocket.onmessage=e=>this.handleMessage(e),this.webSocket.onerror=e=>this.handleError(e),this.webSocket.onclose=e=>{this.status!==M.ERROR&&this.setStatus(M.UNAVAILABLE),this.webSocket=void 0},setInterval(()=>{this.webSocket&&self.status!==M.ERROR&&this.status!==M.UNAVAILABLE&&this.webSocket.send(``)},N.HEARTBEAT_INTERVAL)}onReload(e){}handleMessage(e){let t;try{t=JSON.parse(e.data)}catch(e){this.handleError(`[${e.name}: ${e.message}`);return}if(t.command===`hello`)this.setStatus(M.ACTIVE),this.onHandshake();else if(t.command===`reload`){if(this.status===M.ACTIVE){let e=t.strategy||`reload`;this.onReload(e)}}else this.handleError(`Unknown message from the livereload server: ${e}`)}handleError(e){console.error(e),this.setStatus(M.ERROR),e instanceof Event&&this.webSocket?this.onConnectionError(`Error in WebSocket connection to ${this.webSocket.url}`):this.onConnectionError(e)}},F=16384,I=class extends N{static{this.HEARTBEAT_INTERVAL=18e4}constructor(e){if(super(),this.canSend=!1,!e)return;let t={transport:`websocket`,fallbackTransport:`websocket`,url:e,contentType:`application/json; charset=UTF-8`,reconnectInterval:5e3,timeout:-1,maxReconnectOnClose:1e7,trackMessageLength:!0,enableProtocol:!0,handleOnlineOffline:!1,executeCallbackBeforeReconnect:!0,messageDelimiter:`|`,onMessage:e=>{let t={data:e.responseBody};this.handleMessage(t)},onError:e=>{this.canSend=!1,this.handleError(e)},onOpen:()=>{this.canSend=!0},onClose:()=>{this.canSend=!1},onClientTimeout:()=>{this.canSend=!1},onReconnect:()=>{this.canSend=!1},onReopen:()=>{this.canSend=!0}};R().then(e=>{this.socket=e.subscribe(t)})}onReload(e){}onUpdate(e,t){}onMessage(e){}handleMessage(e){let t;try{t=JSON.parse(e.data)}catch(e){this.handleError(`[${e.name}: ${e.message}`);return}if(t.command===`hello`)this.setStatus(M.ACTIVE),this.onHandshake();else if(t.command===`reload`){if(this.status===M.ACTIVE){let e=t.strategy||`reload`;this.onReload(e)}}else t.command===`update`?this.status===M.ACTIVE&&this.onUpdate(t.path,t.content):this.onMessage(t)}handleError(e){console.error(e),this.setStatus(M.ERROR),this.onConnectionError(e)}send(e,t){if(!this.socket||!this.canSend){L(()=>this.socket&&this.canSend,n=>this.send(e,t));return}let n=JSON.stringify({command:e,data:t}),r=n.length+`|`+n;for(;r.length;)this.socket.push(r.substring(0,F)),r=r.substring(F)}};function L(e,t){let n=e();n?t(n):setTimeout(()=>L(e,t),50)}function R(){return new Promise((e,t)=>{L(()=>window?.vaadinPush?.atmosphere,e)})}var z=1,B=`vaadin-refresh-ui`;function V(e){if(e.id)return`#`+CSS.escape(e.id);let t=[],n=e;for(;n&&n!==document.documentElement&&n!==document.body;){if(n.id){t.unshift(`#`+CSS.escape(n.id));break}let e=n.parentElement;if(!e)break;let r=1,i=n.previousElementSibling;for(;i;)i.tagName===n.tagName&&r++,i=i.previousElementSibling;t.unshift(n.tagName.toLowerCase()+`:nth-of-type(`+r+`)`),n=e}return t.length>0?t.join(` > `):``}function H(){let e=window.Vaadin;return Object.keys(e?.Flow?.clients||{}).filter(e=>e!==`TypeScript`).map(t=>e.Flow.clients[t])}function U(){let e={};return(window.scrollX!==0||window.scrollY!==0)&&(e.__window__={scrollTop:window.scrollY,scrollLeft:window.scrollX}),document.querySelectorAll(`*`).forEach(t=>{if(t.scrollTop>0||t.scrollLeft>0){let n=V(t);n&&(e[n]={scrollTop:t.scrollTop,scrollLeft:t.scrollLeft})}}),e}function W(e){let t=U();H().forEach(t=>{t.sendEventMessage&&t.sendEventMessage(z,`ui-refresh`,{fullRefresh:e})}),q(t)}var G=!1;function K(){G||(G=!0,window.addEventListener(B,e=>{W(e.detail?.fullRefresh===!0)}))}function q(e){if(Object.keys(e).length===0)return;let t=0,n=()=>{requestAnimationFrame(()=>{for(let[t,n]of Object.entries(e))if(t===`__window__`)window.scrollTo(n.scrollLeft,n.scrollTop);else{let e=document.querySelector(t);e&&(e.scrollTop=n.scrollTop,e.scrollLeft=n.scrollLeft)}})},r=()=>{let e=H();e.length>0&&e.every(e=>!e.isActive())||++t>=200?n():setTimeout(r,50)};setTimeout(r,50)}var J,Y;(function(e){e.LOG=`log`,e.INFORMATION=`information`,e.WARNING=`warning`,e.ERROR=`error`})(Y||={});var X=import.meta.hot?import.meta.hot.hmrClient:void 0,Z=class extends e{constructor(){super(...arguments),this.unhandledMessages=[],this.conf={enable:!1,url:``,contextRelativePath:``,liveReloadPort:-1},this.bodyShadowRoot=null,this.frontendStatus=M.UNAVAILABLE,this.javaStatus=M.UNAVAILABLE,this.componentPickActive=!1}static{J=this}static get styles(){return[t`
         :host {
           --dev-tools-font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen-Sans, Ubuntu, Cantarell,
             'Helvetica Neue', sans-serif;

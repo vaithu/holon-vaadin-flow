@@ -125,7 +125,7 @@ public class EmptyDemoView extends Div {
 
         // No notifications
         container.add(Empty.builder()
-                .icon(VaadinIcon.BELL_O.create())
+                .icon(VaadinIcon.BELL.create())
                 .title("No notifications")
                 .description("You're all caught up. Notifications will appear here when they arrive.")
                 .build());
@@ -140,7 +140,7 @@ public class EmptyDemoView extends Div {
 
         // Offline / error state
         container.add(Empty.builder()
-                .icon(VaadinIcon.CLOUD_O.create())
+                .icon(VaadinIcon.CLOUD.create())
                 .title("Unable to load data")
                 .description("Check your connection and try again. Contact support if the problem persists.")
                 .action(new Button("Retry", VaadinIcon.REFRESH.create()))
@@ -149,7 +149,7 @@ public class EmptyDemoView extends Div {
         return new DemoExample("Common Scenarios", container, """
                 // No notifications
                 Empty.builder()
-                    .icon(VaadinIcon.BELL_O.create())
+                    .icon(VaadinIcon.BELL.create())
                     .title("No notifications")
                     .description("You're all caught up.")
                     .build();
@@ -163,11 +163,10 @@ public class EmptyDemoView extends Div {
 
                 // Error / offline state
                 Empty.builder()
-                    .icon(VaadinIcon.CLOUD_O.create())
+                    .icon(VaadinIcon.CLOUD.create())
                     .title("Unable to load data")
                     .action(new Button("Retry", VaadinIcon.REFRESH.create()))
                     .build();
                 """);
     }
 }
-

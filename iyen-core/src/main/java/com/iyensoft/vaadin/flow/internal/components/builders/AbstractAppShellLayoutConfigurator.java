@@ -255,6 +255,8 @@ public abstract class AbstractAppShellLayoutConfigurator<C extends AppShellLayou
             brandWrap.addClassName("app-bar__brand");
 
             if (brandLogo != null) {
+                com.holonplatform.vaadin.flow.components.utils.StyleSheetSupport
+                        .require(brandLogo, "shell-color-themes.css");
                 brandLogo.addClassName("app-bar__brand-logo");
                 brandWrap.add(brandLogo);
             }

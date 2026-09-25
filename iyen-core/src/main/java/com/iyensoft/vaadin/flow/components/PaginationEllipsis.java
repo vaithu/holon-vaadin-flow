@@ -18,6 +18,7 @@ package com.iyensoft.vaadin.flow.components;
 import java.io.Serial;
 
 import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.dependency.StyleSheet;
 
 /**
  * A gap indicator ({@code â€¦}) shown in a {@link PaginationItem} when page numbers
@@ -34,6 +35,7 @@ import com.vaadin.flow.component.html.Span;
  *
  * @see PaginationItem
  */
+@StyleSheet("context://pagination.css")
 public class PaginationEllipsis extends Span {
 
     @Serial

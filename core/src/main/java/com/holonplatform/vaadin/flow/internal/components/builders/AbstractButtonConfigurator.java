@@ -22,6 +22,7 @@ import com.holonplatform.vaadin.flow.components.events.ClickEvent;
 import com.holonplatform.vaadin.flow.components.events.ClickEventListener;
 import com.holonplatform.vaadin.flow.components.support.ButtonPreset;
 import com.holonplatform.vaadin.flow.components.support.ButtonSize;
+import com.holonplatform.vaadin.flow.components.utils.StyleSheetSupport;
 import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
 import com.holonplatform.vaadin.flow.internal.components.support.ComponentClickListenerAdapter;
 import com.vaadin.flow.component.BlurNotifier.BlurEvent;
@@ -53,6 +54,7 @@ public abstract class AbstractButtonConfigurator<C extends ButtonConfigurator<C>
 
 	public AbstractButtonConfigurator(Button component) {
 		super(component);
+		StyleSheetSupport.require(component, "buttons.css", "chip.css");
 		this.textConfigurator = new DefaultHasTextConfigurator(component, this);
 		this.titleConfigurator = new DefaultHasTitleConfigurator<>(component, title -> {
 			component.getElement().setAttribute("title", (title != null) ? title : "");
@@ -84,6 +86,13 @@ public abstract class AbstractButtonConfigurator<C extends ButtonConfigurator<C>
 	@Override
 	public C icon() {
 		getComponent().addThemeVariants(ButtonVariant.LUMO_ICON);
+		return getConfigurator();
+	}
+
+	@Override
+	public C iconRounded() {
+		icon();
+		getComponent().addClassNames("btn--icon", "btn--icon-rounded");
 		return getConfigurator();
 	}
 

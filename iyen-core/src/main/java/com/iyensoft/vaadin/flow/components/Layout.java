@@ -5,8 +5,10 @@ import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.html.Div;
 
 import java.util.HashMap;
+import com.vaadin.flow.component.dependency.StyleSheet;
 
 
+@StyleSheet("context://utilities.css")
 public class Layout extends Div {
 
     private AlignItems alignItems;

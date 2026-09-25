@@ -5,6 +5,7 @@ import com.holonplatform.vaadin.flow.components.builders.ButtonBuilder;
 import com.holonplatform.vaadin.flow.components.builders.ButtonConfigurator;
 import com.holonplatform.vaadin.flow.components.builders.HasAccordionHeaderConfigurator;
 import com.holonplatform.vaadin.flow.components.builders.LabelBuilder;
+import com.holonplatform.vaadin.flow.components.utils.StyleSheetSupport;
 import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.contextmenu.ContextMenu;
@@ -40,6 +41,7 @@ public class DefaultAccordionHeaderBuilder
                 .build();
 
         getComponent().setWidthFull();
+        StyleSheetSupport.require(getComponent(), "utilities.css", "layout.css");
         getComponent().addClassName("color-bg-contrast-5");
 
         rightSide = new FlexLayout(statusButton, addNewButton);

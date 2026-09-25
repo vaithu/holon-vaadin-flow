@@ -1,5 +1,7 @@
 package com.iyensoft.vaadin.flow.internal.components.builders;
 
+import com.holonplatform.vaadin.flow.components.utils.StyleSheetSupport;
+
 import com.iyensoft.vaadin.flow.components.builders.PanelConfigurator;
 
 import java.util.Optional;
@@ -22,6 +24,7 @@ public abstract class AbstractPanelConfigurator<C extends PanelConfigurator<C>>
 
     public AbstractPanelConfigurator(Panel component) {
         super(component);
+        StyleSheetSupport.require(component, "layout.css");
     }
 
     @Override

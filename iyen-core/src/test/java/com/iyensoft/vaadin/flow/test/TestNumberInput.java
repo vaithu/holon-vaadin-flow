@@ -421,9 +421,9 @@ public class TestNumberInput {
 	@Test
 	public void testTextInput() {
 
-		Input<Integer> input = Input.number(Integer.class).valueChangeMode(ValueChangeMode.ON_BLUR).build();
+		Input<Integer> input = Input.number(Integer.class).valueChangeMode(ValueChangeMode.ON_CHANGE).build();
 		assertTrue(input.getComponent() instanceof HasValueChangeMode);
-		assertEquals(ValueChangeMode.ON_BLUR, ((HasValueChangeMode) input.getComponent()).getValueChangeMode());
+		assertEquals(ValueChangeMode.ON_CHANGE, ((HasValueChangeMode) input.getComponent()).getValueChangeMode());
 
 		input = Input.number(Integer.class).autocomplete(Autocomplete.USERNAME).build();
 		assertTrue(input.getComponent() instanceof HasAutocomplete);

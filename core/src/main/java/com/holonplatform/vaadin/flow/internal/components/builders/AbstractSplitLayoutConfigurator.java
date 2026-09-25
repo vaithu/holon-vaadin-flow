@@ -75,13 +75,13 @@ public abstract class AbstractSplitLayoutConfigurator<C extends SplitLayoutConfi
 
     @Override
     public C primaryStyle(String styleName, String value) {
-        getComponent().setPrimaryStyle(styleName, value);
+        getComponent().getPrimaryComponent().getElement().getStyle().set(styleName, value);
         return getConfigurator();
     }
 
     @Override
     public C secondaryStyle(String styleName, String value) {
-        getComponent().setSecondaryStyle(styleName, value);
+        getComponent().getSecondaryComponent().getElement().getStyle().set(styleName, value);
         return getConfigurator();
     }
 

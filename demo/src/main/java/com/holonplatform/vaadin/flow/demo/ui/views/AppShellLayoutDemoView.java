@@ -158,7 +158,7 @@ public class AppShellLayoutDemoView extends Div {
                 .withSearch("Filter components…")
                 .withCollapse()
                 .withNavItem("Home",      "/",          VaadinIcon.HOME.create()).add()
-                .withNavItem("Analytics", "/analytics", VaadinIcon.CHART_LINE.create()).add()
+                .withNavItem("Analytics", "/analytics", VaadinIcon.LINE_CHART.create()).add()
                 .withNavItem("Users",     "/users",     VaadinIcon.USERS.create()).add()
                 .withNavItem("Settings",  "/settings",  VaadinIcon.COG.create()).add()
                 .buildWrapper();

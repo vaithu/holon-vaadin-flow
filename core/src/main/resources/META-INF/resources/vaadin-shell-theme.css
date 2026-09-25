@@ -79,6 +79,25 @@ body {
   --lumo-header-text-color:       var(--text-primary);
   --lumo-secondary-text-color:    var(--text-secondary);
   --lumo-disabled-text-color:     var(--text-tertiary);
+
+  /* Type scale.
+     Lumo's stock scale is rem-based off a 16px root; this design system is
+     built on a 14px body, which made every Lumo-defaulted component (tabs,
+     buttons, fields, cards, headers) render 15-45% oversized. Re-basing the
+     tokens here rescales all of them uniformly, because custom properties
+     inherit through shadow roots. */
+  --lumo-font-size-xxs:           10px;
+  --lumo-font-size-xs:            11px;
+  --lumo-font-size-s:             12px;
+  --lumo-font-size-m:             13px;
+  --lumo-font-size-l:             14px;
+  --lumo-font-size-xl:            17px;
+  --lumo-font-size-xxl:           20px;
+  --lumo-font-size-xxxl:          26px;
+  --lumo-line-height-xs:          1.2;
+  --lumo-line-height-s:           1.35;
+  --lumo-line-height-m:           1.45;
+
   --vaadin-input-field-required-indicator: "*";
   --vaadin-input-field-required-indicator-color: var(--err, #dc2626);
 
@@ -91,9 +110,13 @@ body {
   --vaadin-background-color:      var(--surface-0);
   --vaadin-background-container:  var(--surface-1);
 
-  /* Shell layout helpers (used in sections 2-3 below) */
+  /* Shell layout helpers (used in section 2 below) */
   --shell-topbar-height:     var(--toolbar-h, 52px);
-  --shell-nav-width:         var(--sidenav-width, 220px);
+  /* NOTE: --shell-nav-width is deliberately NOT declared here. It exists only
+     as the *collapsed* drawer override set by menu.css on
+     `vaadin-app-layout.sidenav-collapsed`. Declaring it at :root would give it
+     a value on every app-layout, shadowing the per-theme --sidenav-width that
+     shell-color-themes.css sets, and pinning every drawer to one width. */
   --shell-content-padding:   1.75rem 2rem;
 }
 
@@ -108,20 +131,18 @@ vaadin-app-layout::part(navbar) {
   background:    var(--surface-0);
   border-bottom: 1px solid var(--zinc-200);
   min-height:    var(--shell-topbar-height);
-  padding:       0 1.25rem;
   box-shadow:    none;
   /* Override focus / link colour scoped to the topbar */
   --lumo-primary-text-color: var(--brand-700);
 }
 
-/* Sidebar / drawer */
-vaadin-app-layout::part(drawer) {
-  background:  var(--sidenav-bg, var(--surface-0));
-  border-right: 1px solid var(--sidenav-border, var(--zinc-200));
-  width:        var(--shell-nav-width);
-  box-shadow:   none;
-  padding-top:  0.75rem;
-}
+/* Sidebar / drawer
+   NOTE: intentionally NOT styled here. menu.css is the sole owner of
+   `vaadin-app-layout::part(drawer)` and of every `vaadin-side-nav*` rule.
+   Declaring them in both files produced two same-specificity rule sets whose
+   values drifted apart, and let this file's `:root`-level `--sidenav-bg`
+   default paint a light drawer strip behind a dark ShellColor sidebar.
+   See menu.css + shell-color-themes.css. */
 
 /* Main content area */
 vaadin-app-layout::part(content) {
@@ -130,80 +151,11 @@ vaadin-app-layout::part(content) {
 
 
 /* ══════════════════════════════════════════════════════════════
-   3. SIDE NAVIGATION  (vaadin-side-nav + vaadin-side-nav-item)
+   3. SIDE NAVIGATION
+   Owned entirely by iyen-core's menu.css (structure/shape) and
+   shell-color-themes.css (per-ShellColor token values). This file
+   deliberately declares no vaadin-side-nav rules — see the note above.
    ══════════════════════════════════════════════════════════════ */
-
-vaadin-side-nav {
-  width:   100%;
-  padding: 0;
-  --vaadin-side-nav-background: transparent;
-}
-
-/* Section group label */
-vaadin-side-nav::part(label) {
-  font-size:      var(--sidenav-label-font-size, var(--font-size-xs, 0.6875rem));
-  font-weight:    600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color:          var(--sidenav-label-color, var(--text-tertiary));
-  padding:        var(--sidenav-label-padding, 0.75rem 0.875rem 0.25rem);
-}
-
-/* Item link — default */
-vaadin-side-nav-item::part(link) {
-  color:         var(--sidenav-item-color, var(--text-secondary));
-  font-size:     var(--sidenav-item-font-size, 0.8125rem);
-  font-weight:   var(--sidenav-item-font-weight, 400);
-  padding:       var(--sidenav-item-padding, 0.4375rem 0.875rem);
-  border-radius: var(--sidenav-item-radius, 0);
-  border-left:   3px solid transparent;
-  background:    transparent;
-  transition:    background var(--transition-fast, 120ms ease),
-                 color      var(--transition-fast, 120ms ease);
-}
-
-vaadin-side-nav-item:hover::part(link) {
-  background: var(--sidenav-item-hover-bg, var(--brand-50));
-  color:      var(--sidenav-item-hover-color, var(--brand-700));
-}
-
-/* Active / current item */
-vaadin-side-nav-item[active]::part(link),
-vaadin-side-nav-item[current]::part(link) {
-  color:             var(--sidenav-item-active-color, var(--brand-700));
-  background:        var(--sidenav-item-active-bg, var(--brand-50));
-  border-left-color: var(--sidenav-item-active-border, var(--brand-500));
-  font-weight:       var(--sidenav-item-active-font-weight, 500);
-}
-
-/* Prefix icon */
-vaadin-side-nav-item > vaadin-icon,
-vaadin-side-nav-item > [slot="prefix"] {
-  color:       var(--sidenav-icon-color, var(--text-tertiary));
-  width:       1rem;
-  height:      1rem;
-  flex-shrink: 0;
-}
-
-vaadin-side-nav-item[active]  > vaadin-icon,
-vaadin-side-nav-item[current] > vaadin-icon,
-vaadin-side-nav-item[active]  > [slot="prefix"],
-vaadin-side-nav-item[current] > [slot="prefix"] {
-  color: var(--sidenav-icon-active-color, var(--brand-500));
-}
-
-/* Suffix / badge chip inside nav item */
-vaadin-side-nav-item > [slot="suffix"] {
-  font-size:     var(--font-size-xs, 0.6875rem);
-  background:    var(--sidenav-badge-bg, var(--brand-50));
-  color:         var(--sidenav-badge-color, var(--brand-700));
-  border-radius: var(--sidenav-badge-radius, var(--radius-xs, 4px));
-  padding:       1px 6px;
-  margin-left:   auto;
-  font-weight:   600;
-  min-width:     18px;
-  text-align:    center;
-}
 
 
 /* ══════════════════════════════════════════════════════════════
@@ -238,14 +190,6 @@ html {
   --vaadin-button-height:        var(--btn-h-md, 36px);
   /* Outline (default): micro-lift drop shadow + 1px ring */
   --vaadin-button-shadow:
-    0 1px 3px 0   rgb(0 0 0 / 0.10),
-    0 1px 2px -1px rgb(0 0 0 / 0.06),
-    0 0 0 1px var(--zinc-200, #e4e4e7);
-}
-
-/* ── OUTLINE (default) ── white + elevation shadow + border ring */
-vaadin-button:not([theme~="primary"]):not([theme~="error"]):not([theme~="success"]):not([theme~="warning"]):not([theme~="tertiary"]):not([theme~="contrast"]) {
-  box-shadow:
     0 1px 3px 0   rgb(0 0 0 / 0.10),
     0 1px 2px -1px rgb(0 0 0 / 0.06),
     0 0 0 1px var(--zinc-200, #e4e4e7);
@@ -554,17 +498,8 @@ vaadin-checkbox.switch[checked]::part(checkbox)::after {
     padding: 0 1rem;
   }
 
-  vaadin-app-layout::part(drawer) {
-    width: min(88vw, var(--shell-nav-width));
-  }
-
-  vaadin-side-nav::part(label) {
-    padding: 0.625rem 0.875rem 0.25rem;
-  }
-
-  vaadin-side-nav-item::part(link) {
-    padding: 0.625rem 0.875rem;
-  }
+  /* The mobile drawer width lives in menu.css, which is the sole owner of every
+     vaadin-app-layout::part(drawer) rule. */
 
   html {
     --vaadin-button-height: 2.75rem; /* WCAG 2.5.8 minimum touch target on mobile.
@@ -788,6 +723,62 @@ h4, .type-h4 {
 .type-caption  { font-size: var(--type-sz-caption, 0.75rem);    font-weight: var(--type-wt-body, 400); line-height: var(--type-lh-caption, 1.4); color: var(--text-tertiary); }
 .type-overline { font-size: var(--type-sz-overline,0.6875rem);  font-weight: var(--type-wt-overline, 600); line-height: 1; letter-spacing: var(--type-ls-overline, 0.1em); text-transform: uppercase; color: var(--text-tertiary); }
 .type-mono     { font-family: var(--font-mono); font-size: var(--type-sz-mono, 0.8125rem); }
+
+/* ── Component typography ────────────────────────────────────────────
+   Weights, monospace accents and link colouring that the Lumo token
+   scale alone cannot express. Applied globally so every view shares one
+   consistent type treatment. */
+
+/* Tabs and buttons — 13px medium. */
+vaadin-tab,
+vaadin-button {
+  font-size:   var(--lumo-font-size-m);
+  font-weight: 500;
+}
+
+/* Inline card actions ("Edit", "+ Add address") read as links, not buttons.
+   tertiary-inline collapses the host to the text width, so the compact-button
+   padding from buttons.css must be dropped or the label overflows and clips. */
+vaadin-button.btn--small {
+  font-size:   var(--lumo-font-size-s);
+  font-weight: 500;
+  color:       var(--lumo-primary-text-color, var(--brand-700));
+}
+
+vaadin-button.btn--small[theme~='tertiary-inline']::part(button) {
+  padding: 0;
+}
+
+/* Page header — semibold name over a monospace meta line. */
+.material-header__headline {
+  font-size:      var(--lumo-font-size-xxl);
+  font-weight:    600;
+  letter-spacing: -0.01em;
+  line-height:    var(--lumo-line-height-xs);
+}
+
+.material-header__subtitle {
+  font-family: var(--font-mono);
+  font-size:   12.5px;
+  line-height: var(--lumo-line-height-s);
+  color:       var(--text-secondary);
+}
+
+/* Cards — compact title over an uppercase caption. Vaadin's card shadow styles
+   are !important, so these must be driven through its own CSS properties. */
+vaadin-card {
+  --vaadin-card-title-font-size:      12.5px;
+  --vaadin-card-title-font-weight:    600;
+  --vaadin-card-title-line-height:    1.2;
+  --vaadin-card-subtitle-font-size:   10.5px;
+  --vaadin-card-subtitle-font-weight: 600;
+  --vaadin-card-subtitle-color:       var(--text-tertiary);
+}
+
+vaadin-card > [slot='subtitle'] {
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
 
 /* ── Surface utilities ───────────────────────────────────────────── */
 

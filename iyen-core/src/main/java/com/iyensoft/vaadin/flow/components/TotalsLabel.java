@@ -22,6 +22,7 @@ import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.html.Span;
 
 import java.io.Serial;
+import com.vaadin.flow.component.dependency.StyleSheet;
 
 /**
  * Label slot of a {@link TotalsRow}.
@@ -29,6 +30,7 @@ import java.io.Serial;
  * <p>Supports plain text, Holon {@link Localizable} (resolved on attach and on explicit set),
  * and arbitrary child components.</p>
  */
+@StyleSheet("context://totals-card.css")
 public class TotalsLabel extends Span {
 
     @Serial

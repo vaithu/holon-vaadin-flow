@@ -128,7 +128,7 @@ public class DefaultDialog extends Dialog {
         // affect the title/description layout. Absolutely positioned via CSS at top-right
         // of the overlay, mirroring the shadcn/ui DialogClose pattern.
         this.closeButton = ButtonBuilder.create()
-                .icon(VaadinIcon.CLOSE_SMALL)
+                .icon(VaadinIcon.CLOSE)
                 .styleName("h-dialog__close-btn")
                 .ariaLabel(LocalizationProvider.localize("Close", "dialog.close_aria"))
                 .withClickListener(e -> attemptClose())

@@ -21,6 +21,7 @@ import com.vaadin.flow.component.html.Div;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import com.vaadin.flow.component.dependency.StyleSheet;
 
 /**
  * A group of adjacent {@link InputOTPSlot}s inside an {@link InputOTP}.
@@ -44,6 +45,7 @@ import java.util.List;
  * @see InputOTPSlot
  * @see InputOTPSeparator
  */
+@StyleSheet("context://input-otp.css")
 public class InputOTPGroup extends Div {
 
     @Serial

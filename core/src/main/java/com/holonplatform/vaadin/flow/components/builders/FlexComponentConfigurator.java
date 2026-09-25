@@ -212,6 +212,7 @@ public interface FlexComponentConfigurator<C extends FlexComponentConfigurator<C
 	}
 
 	default C borderColor(String color) {
+		com.holonplatform.vaadin.flow.components.utils.StyleSheetSupport.require("utilities.css");
 		return styleNames("border-all", color);
 	}
 

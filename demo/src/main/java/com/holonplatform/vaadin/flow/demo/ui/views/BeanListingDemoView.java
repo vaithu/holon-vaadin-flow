@@ -437,7 +437,7 @@ public class BeanListingDemoView extends Div {
             countLabel.setText(filtered.size() + " of " + PRODUCTS.size() + " products shown");
         });
 
-        var resetBtn = new Button("Reset filters", VaadinIcon.CLOSE_CIRCLE_O.create());
+        var resetBtn = new Button("Reset filters", VaadinIcon.CLOSE_CIRCLE.create());
         resetBtn.addClickListener(e -> filterGroup.resetAll());
 
         var filterRow = new Div(
@@ -527,7 +527,7 @@ public class BeanListingDemoView extends Div {
 
         var countLabel = new Span(PRODUCTS.size() + " products shown");
 
-        var resetBtn = new Button("Reset filters", VaadinIcon.CLOSE_CIRCLE_O.create());
+        var resetBtn = new Button("Reset filters", VaadinIcon.CLOSE_CIRCLE.create());
         resetBtn.addClickListener(e -> form.resetAll());
 
         // ── Wire: re-filter in-memory on every input change ────────────────────
@@ -1188,7 +1188,6 @@ public class BeanListingDemoView extends Div {
         }
     }
 }
-
 
 
 

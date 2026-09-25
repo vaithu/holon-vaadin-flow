@@ -1626,7 +1626,7 @@ public class DynamicFilterPanel<T> extends Div implements FilterInputGroup {
             valueContainer = Components.div().styleName("filter-panel__value-container").build();
 
             Button removeBtn = Components.button()
-                    .icon(VaadinIcon.CLOSE_SMALL)
+                    .icon(VaadinIcon.CLOSE)
                     .error()
                     .tooltip("Remove selected filter")
                     .styleName("filter-panel__remove")

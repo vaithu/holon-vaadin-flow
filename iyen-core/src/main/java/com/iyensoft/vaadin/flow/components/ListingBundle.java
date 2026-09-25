@@ -488,7 +488,7 @@ public final class ListingBundle<T> extends Div {
             dirCombo.addClassName("flex-grow-1");
 
             var removeBtn = Components.button()
-                    .icon(VaadinIcon.CLOSE_SMALL)
+                    .icon(VaadinIcon.CLOSE)
                     .error()
                     .ariaLabel("Remove sort level", "listing_bundle.sort_dialog.remove_aria")
                     .tooltip("Remove sort level", "listing_bundle.sort_dialog.remove_tooltip")

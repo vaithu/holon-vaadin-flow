@@ -21,6 +21,7 @@ import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.dependency.StyleSheet;
 
 /**
  * A visual separator between {@link InputOTPGroup}s inside an {@link InputOTP}.
@@ -40,6 +41,7 @@ import com.vaadin.flow.component.icon.VaadinIcon;
  * @see InputOTP
  * @see InputOTPGroup
  */
+@StyleSheet("context://input-otp.css")
 public class InputOTPSeparator extends Div {
 
     @Serial

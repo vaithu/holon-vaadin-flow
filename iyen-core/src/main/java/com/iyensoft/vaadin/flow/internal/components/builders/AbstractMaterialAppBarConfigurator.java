@@ -4,6 +4,8 @@ import com.holonplatform.vaadin.flow.internal.components.builders.AbstractCompon
 
 import com.iyensoft.vaadin.flow.components.builders.MaterialAppBarConfigurator;
 import com.iyensoft.vaadin.flow.components.MaterialAppBar;
+import com.iyensoft.vaadin.flow.enums.MaterialAppBarColor;
+import com.iyensoft.vaadin.flow.enums.MaterialAppBarVariant;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasEnabled;
 import com.vaadin.flow.component.HasSize;
@@ -43,13 +45,13 @@ public abstract class AbstractMaterialAppBarConfigurator<C extends MaterialAppBa
     }
 
     @Override
-    public C variant(MaterialAppBar.Variant variant) {
+    public C variant(MaterialAppBarVariant variant) {
         getComponent().setVariant(variant);
         return getConfigurator();
     }
 
     @Override
-    public C color(MaterialAppBar.Color color) {
+    public C color(MaterialAppBarColor color) {
         getComponent().setColor(color);
         return getConfigurator();
     }
@@ -121,6 +123,12 @@ public abstract class AbstractMaterialAppBarConfigurator<C extends MaterialAppBa
     @Override
     public C scrolled(boolean scrolled) {
         getComponent().setScrolled(scrolled);
+        return getConfigurator();
+    }
+
+    @Override
+    public C sticky(boolean sticky) {
+        getComponent().setSticky(sticky);
         return getConfigurator();
     }
 }

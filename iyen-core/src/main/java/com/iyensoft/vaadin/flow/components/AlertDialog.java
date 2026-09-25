@@ -213,7 +213,7 @@ public class AlertDialog extends Dialog {
         // Optional close button  absolutely positioned at wrapper root so it does
         // not disturb the header layout.
         this.closeButton = Components.button()
-                .icon(VaadinIcon.CLOSE_SMALL)
+                .icon(VaadinIcon.CLOSE)
                 .styleName("alert-dialog__close-btn")
                 .ariaLabel(LocalizationProvider.localize("Close", "alert_dialog.close_aria"))
                 .withClickListener(e -> close())

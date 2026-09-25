@@ -29,13 +29,21 @@ export declare const fetchComponentDefinition: (flowComponent: FlowComponentInfo
 export declare function getUIId(): string | undefined;
 export declare function getFlowComponentId(flowComponent: FlowComponentInfo): FlowComponentReference;
 export declare function isServerRouteContainer(fiber?: FiberNode): boolean;
-export declare const isEditableComponentText: (node: CopilotTreeNode | undefined, propertyToCheck: string) => Promise<{
+/**
+ * Whether the text of a component can be edited in place.
+ *
+ * `unsupportedReason` is set when the answer is no *because Copilot cannot rewrite
+ * that source language*, so the caller can say why instead of falling back to its
+ * "this content is dynamic" explanation, which would be wrong. It is filled in by the
+ * caller, not here: this module is loaded during bootstrap, so it must not depend on
+ * the capability model.
+ */
+export type EditableTextResult = {
     canBeEdited: boolean;
     isTranslation: boolean;
-}> | {
-    canBeEdited: boolean;
-    isTranslation: boolean;
+    unsupportedReason?: string;
 };
+export declare const isEditableComponentText: (node: CopilotTreeNode | undefined, propertyToCheck: string) => EditableTextResult | Promise<EditableTextResult>;
 export declare function isServerRouteContainerElement(element: HTMLElement): boolean;
 export declare function getSimpleName(className: string): string;
 export declare function getPackageName(className: string): string;

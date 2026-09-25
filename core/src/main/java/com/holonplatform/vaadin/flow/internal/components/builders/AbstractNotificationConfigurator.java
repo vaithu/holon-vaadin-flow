@@ -3,6 +3,7 @@ package com.holonplatform.vaadin.flow.internal.components.builders;
 import com.holonplatform.vaadin.flow.components.builders.ButtonBuilder;
 import com.holonplatform.vaadin.flow.components.builders.ButtonConfigurator;
 import com.holonplatform.vaadin.flow.components.builders.NotificationConfigurator;
+import com.holonplatform.vaadin.flow.components.utils.StyleSheetSupport;
 import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
 import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.button.Button;
@@ -23,6 +24,7 @@ public abstract class AbstractNotificationConfigurator<C extends NotificationCon
 
     public AbstractNotificationConfigurator(Notification component) {
         super(component);
+        StyleSheetSupport.require(component, "notification.css", "buttons.css");
     }
 
     @Override

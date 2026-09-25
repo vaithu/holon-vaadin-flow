@@ -849,3 +849,16 @@ vaadin-avatar.avatar--profile-xl::part(abbr) {
     margin-top: 5px;
 }
 
+
+
+/* ── Badge base ───────────────────────────────────────────────────────────
+ * Shared base for every `.badge` span: the `Badge` component, the mobile-grid
+ * Lit renderer and the expense-row Lit renderer. Colour variants stay with the
+ * renderer that owns them (e.g. `.b-*` in expense-row-lit-renderer.css).
+ */
+.badge {
+    font-size: 11px;
+    font-weight: 500;
+    padding: 2px 8px;
+    border-radius: 20px;
+}

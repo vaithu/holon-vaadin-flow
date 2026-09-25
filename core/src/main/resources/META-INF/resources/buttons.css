@@ -12,6 +12,7 @@
  *   .btn--push-end    — pushes a button to the trailing edge inside a flex row
  *   .btn--push-start  — pushes a button to the leading edge inside a flex row
  *   .btn--rounded     — applies medium border-radius
+ *   .btn--icon-rounded — square icon button with a rounded rectangular border
  *
  * Border-color utilities for outlined buttons (used by AbstractButtonConfigurator):
  *   .border-color-contrast
@@ -159,6 +160,14 @@ vaadin-button.btn--icon::part(button) {
 }
 
 /* -----------------------------------------------------------------------
+ * Rounded icon — icon-only button with a rectangular border
+ * ----------------------------------------------------------------------- */
+
+vaadin-button.btn--icon-rounded::part(button) {
+    border-radius: var(--radius-md, 0.5rem);
+}
+
+/* -----------------------------------------------------------------------
  * Large — increased padding and font size
  *
  * THREE-LAYER override required for Aura + Lumo cross-theme correctness:
@@ -221,6 +230,5 @@ vaadin-button.btn--outlined-border::part(button) {
     border-width: 1px;
     border-style: solid;
 }
-
 
 

@@ -6,6 +6,7 @@ import com.holonplatform.vaadin.flow.components.css.BadgeShape;
 import com.holonplatform.vaadin.flow.components.css.BadgeSize;
 import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.html.Span;
 
 import java.util.StringJoiner;
@@ -19,6 +20,7 @@ import static com.holonplatform.vaadin.flow.components.css.BadgeShape.PILL;
  * construction / setter time. Because locale is typically fixed per session, no
  * {@code LocaleChangeObserver} is needed; components are re-created on each navigation.</p>
  */
+@StyleSheet("context://utilities.css")
 public class Badge extends Span {
 
     public Badge(String text) {

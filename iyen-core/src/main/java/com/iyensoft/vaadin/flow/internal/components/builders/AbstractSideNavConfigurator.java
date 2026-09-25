@@ -1,5 +1,7 @@
 package com.iyensoft.vaadin.flow.internal.components.builders;
 
+import com.holonplatform.vaadin.flow.components.utils.StyleSheetSupport;
+
 import com.holonplatform.core.i18n.Localizable;
 import com.iyensoft.vaadin.flow.components.Components;
 import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
@@ -36,6 +38,7 @@ public abstract class AbstractSideNavConfigurator<C extends SideNavConfigurator<
 
     public AbstractSideNavConfigurator(SideNav sideNav) {
         super(sideNav);
+        StyleSheetSupport.require(sideNav, "menu.css");
         this.sideNav = sideNav;
     }
 
@@ -177,6 +180,21 @@ public abstract class AbstractSideNavConfigurator<C extends SideNavConfigurator<
         host.addAttachListener(e -> e.getUI().getPage().addStyleSheet("context://menu.css"));
         if (colorTheme != null) {
             host.addClassName(colorTheme.cssClassName());
+            // Mirror the theme class onto the ancestor <vaadin-app-layout>, if any.
+            //
+            // The drawer's own width and background are painted from
+            // --sidenav-width / --sidenav-bg, which are read off the app-layout
+            // element (::part(drawer) lives in ITS shadow root, so it resolves
+            // custom properties against the app-layout host, not against this
+            // wrapper). Without this mirror a theme set on the SideNav builder
+            // would style the nav but leave the drawer at the default 225px
+            // width — clipping or letterboxing a 275-285px surface theme.
+            //
+            // Same technique already used by the collapse toggle below.
+            String themeClass = colorTheme.cssClassName();
+            host.addAttachListener(e -> e.getUI().getPage().executeJs(
+                    "var al=$0.closest('vaadin-app-layout');" +
+                    "if(al)al.classList.add($1);", host.getElement(), themeClass));
         }
         if (searchEnabled) {
             Input<String> searchField = Components.input.string()

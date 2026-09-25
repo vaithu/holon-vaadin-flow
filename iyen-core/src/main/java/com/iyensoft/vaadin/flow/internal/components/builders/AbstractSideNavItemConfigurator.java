@@ -1,5 +1,7 @@
 package com.iyensoft.vaadin.flow.internal.components.builders;
 
+import com.holonplatform.vaadin.flow.components.utils.StyleSheetSupport;
+
 import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
 import com.iyensoft.vaadin.flow.components.builders.SideNavItemConfigurator;
@@ -22,6 +24,7 @@ abstract class AbstractSideNavItemConfigurator<B extends SideNavItemConfigurator
     protected final SideNavItem rootItem;
 
     protected AbstractSideNavItemConfigurator(SideNavItem rootItem) {
+        StyleSheetSupport.require(rootItem, "menu.css");
         this.rootItem = rootItem;
     }
 

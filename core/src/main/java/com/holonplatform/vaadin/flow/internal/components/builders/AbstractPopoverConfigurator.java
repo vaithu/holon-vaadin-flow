@@ -181,7 +181,7 @@ public abstract class AbstractPopoverConfigurator<C extends PopoverConfigurator<
 
     @Override
     public C role(String role) {
-        getComponent().setRole(role);
+        getComponent().setAriaRole(role);
         return getConfigurator();
     }
 

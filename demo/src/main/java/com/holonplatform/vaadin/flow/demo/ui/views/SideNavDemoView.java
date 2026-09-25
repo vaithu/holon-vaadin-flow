@@ -152,7 +152,7 @@ public class SideNavDemoView extends Div {
         builder.withNavItem("Projects",  "/projects",  VaadinIcon.FOLDER.create()).add();
         builder.withNavItem("Calendar",  "/calendar",  VaadinIcon.CALENDAR.create()).add();
         builder.withNavItem("Inbox",     "/inbox",     VaadinIcon.ENVELOPE.create()).add();
-        builder.withNavItem("Reports",   "/reports",   VaadinIcon.CHART_LINE.create()).add();
+        builder.withNavItem("Reports",   "/reports",   VaadinIcon.LINE_CHART.create()).add();
         builder.withNavItem("Settings",  "/settings",  VaadinIcon.COG.create()).add();
 
         return new DemoExample("withCollapse() — icon-only rail on collapse", builder.buildWrapper(), """
@@ -235,4 +235,3 @@ public class SideNavDemoView extends Div {
         return d;
     }
 }
-

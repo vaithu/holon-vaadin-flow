@@ -17,6 +17,7 @@ package com.iyensoft.vaadin.flow.components;
 
 import java.io.Serial;
 import com.vaadin.flow.component.html.UnorderedList;
+import com.vaadin.flow.component.dependency.StyleSheet;
 
 /**
  * The {@code <ul>} flex container that holds {@link PaginationItem}s inside a
@@ -27,6 +28,7 @@ import com.vaadin.flow.component.html.UnorderedList;
  * @see Pagination
  * @see PaginationItem
  */
+@StyleSheet("context://pagination.css")
 public class PaginationContent extends UnorderedList {
 
     @Serial

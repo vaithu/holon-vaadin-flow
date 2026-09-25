@@ -1,6 +1,23 @@
 /*
  * menu.css
  *
+ * Mobile-first styles for MenuBar / MenuItem components and Tab badges,
+ * plus the complete SideNav (drawer) styling.
+ *
+ * menu.css is the SOLE OWNER of every `vaadin-side-nav*` and
+ * `vaadin-app-layout::part(drawer)` rule in this project. vaadin-shell-theme.css
+ * and tailadmin-brand.css deliberately declare none, so there is no
+ * same-specificity source-order fight and no drifting duplicate values.
+ *
+ * All SideNav rules below paint exclusively from `--sidenav-*` custom
+ * properties whose *values* come from shell-color-themes.css (imported on the
+ * next line). The var() fallbacks here are the "no ShellColor applied"
+ * baseline and mirror the neutral chrome of
+ * docs/vaadin_applayout_mockups(1).html.
+ */
+@import url("shell-color-themes.css");
+
+/*
  * Mobile-first styles for MenuBar / MenuItem components and Tab badges.
  *
  * Classes:
@@ -96,9 +113,12 @@ vaadin-menu-bar.bulk-action__options-menu vaadin-menu-bar-button::part(base) {
     height         : 100%;
     min-height     : 0;
     overflow       : hidden;
+    box-sizing     : border-box;
     transition     : width 0.2s ease, background-color 0.2s ease;
-    background     : var(--sidenav-bg, transparent);
-    color          : var(--sidenav-item-color, inherit);
+    background     : var(--sidenav-bg, #ffffff);
+    color          : var(--sidenav-item-color, #20252b);
+    border-inline-end: 1px solid var(--sidenav-border, #e3e6e8);
+    box-shadow     : var(--sidenav-shadow, none);
 }
 
 /*
@@ -106,18 +126,46 @@ vaadin-menu-bar.bulk-action__options-menu vaadin-menu-bar-button::part(base) {
  * has its own overflow:auto by default which creates a second scroll
  * container around sidenav-host.  Suppress it — vaadin-side-nav below is
  * the single scroll container for the nav list.
- * Width is also driven here so collapse works even without vaadin-shell-theme.css.
+ *
+ * The drawer itself is a bare, transparent, zero-padding box: .sidenav-host
+ * fills it 100% and paints the background, border and shadow. This keeps a
+ * single surface owner, so a dark theme can never show a light drawer strip
+ * behind or above the nav.
+ *
+ * Width is driven here so collapse works even without vaadin-shell-theme.css.
+ * --sidenav-width is set per theme (225-285px depending on the mockup) and is
+ * read off the <vaadin-app-layout>, which AbstractSideNavConfigurator mirrors
+ * the shell-color-* class onto for exactly this reason.
  */
 vaadin-app-layout::part(drawer) {
     overflow   : hidden;
-    width      : var(--shell-nav-width, var(--sidenav-width, 220px));
+    width      : var(--shell-nav-width, var(--sidenav-width, 225px));
     transition : width 0.2s ease;
+    background : transparent;
+    border     : none;
+    padding    : 0;
+    box-shadow : none;
 }
 
+/* On phones a 285px theme would eat the whole viewport, so clamp the drawer to
+   88vw. Collapsed state still wins because --shell-nav-width is only set on
+   .sidenav-collapsed and min() picks the smaller value. */
+@media (max-width: 767px) {
+    vaadin-app-layout::part(drawer) {
+        width: min(88vw, var(--shell-nav-width, var(--sidenav-width, 225px)));
+    }
+}
+
+/* Nav list is the single scroll container, and carries the mockup's
+   .nav / .sidenav padding. */
 .sidenav-host vaadin-side-nav {
     flex      : 1 1 0;
     overflow-y: auto;
     min-height: 0;
+    width     : 100%;
+    box-sizing: border-box;
+    padding   : var(--sidenav-nav-padding, 12px 9px);
+    --vaadin-side-nav-background: transparent;
 }
 
 /* --------------------------------------------------------------------------
@@ -140,6 +188,10 @@ vaadin-app-layout::part(drawer) {
     flex-shrink : 0;
     align-self  : stretch;
     margin-top  : auto;
+    /* vaadin-button carries a Lumo background on its HOST element, which paints a
+       light strip across the bottom of every dark theme. The sidebar surface is
+       owned solely by .sidenav-host, so the toggle must be fully transparent. */
+    background  : transparent;
     border-top  : 1px solid var(--sidenav-border, var(--color-border, #dde0e5));
     border-radius: 0;
 }
@@ -147,6 +199,7 @@ vaadin-app-layout::part(drawer) {
 .sidenav-collapse-toggle::part(button) {
     border        : none;
     box-shadow    : none;
+    background    : transparent;
     width         : 100%;
     justify-content: flex-end;
     padding       : 0.375rem 0.625rem;
@@ -156,8 +209,13 @@ vaadin-app-layout::part(drawer) {
     color         : var(--sidenav-toggle-color, inherit);
 }
 
+/* Hover follows the theme: a dark sidebar needs a light wash, not a black one,
+   so fall back through the item hover colour before the generic tint. */
 .sidenav-collapse-toggle::part(button):hover {
-    background-color : rgb(0 0 0 / 0.06);
+    background-color : var(--sidenav-toggle-hover-bg,
+                       var(--sidenav-item-hover-bg, rgb(0 0 0 / 0.06)));
+    color            : var(--sidenav-toggle-hover-color,
+                       var(--sidenav-toggle-color, inherit));
 }
 
 /* [focus-ring] = Vaadin's keyboard-only focus attribute (like :focus-visible) */
@@ -183,12 +241,12 @@ vaadin-app-layout::part(drawer) {
    -------------------------------------------------------------------------- */
 vaadin-side-nav > [slot="label"] {
     display        : block;
-    padding        : 0.5rem 0.75rem 0.25rem;
-    font-size      : var(--vaadin-side-nav-label-font-size, 0.6875rem);
-    font-weight    : var(--vaadin-side-nav-label-font-weight, 700);
+    padding        : var(--sidenav-label-padding, 10px 10px 5px);
+    font-size      : var(--sidenav-label-font-size, 10px);
+    font-weight    : var(--sidenav-label-font-weight, 400);
     text-transform : uppercase;
-    letter-spacing : 0.06em;
-    color          : var(--sidenav-label-color, var(--text-tertiary));
+    letter-spacing : var(--sidenav-label-letter-spacing, 0.07em);
+    color          : var(--sidenav-label-color, #98a0a8);
     white-space    : nowrap;
     overflow       : hidden;
     transition     : max-height 0.2s ease, opacity 0.15s ease;
@@ -204,22 +262,32 @@ vaadin-side-nav vaadin-side-nav-item {
     display   : block;
     width     : 100%;
     box-sizing: border-box;
+    margin    : var(--sidenav-item-margin, 2px 0);
 }
 
 /* --------------------------------------------------------------------------
-   Nav item base — text colour, size, border-radius transition
+   Nav item base — text colour, size, shape.
    Part: vaadin-side-nav-item::part(link)  (includes prefix + label + suffix)
 
-   border-inline-start is always reserved (transparent at rest) so the active
-   accent border below never causes a layout shift when it turns on.
+   Every geometric value is a token so a ShellColor surface theme can reproduce
+   its mockup's item shape exactly (Material is a 48px-tall square-cornered row,
+   Gradient is a 12px-radius pill, Enterprise is a 4px-radius 13px row, ...).
+
+   border-inline-start/end are always reserved (transparent at rest) so an
+   active accent border never causes a layout shift when it turns on.
    -------------------------------------------------------------------------- */
 vaadin-side-nav-item::part(link) {
-    font-size     : var(--vaadin-side-nav-item-font-size, 0.875rem);
-    font-weight   : var(--vaadin-side-nav-item-font-weight, 450);
-    border-radius : var(--vaadin-side-nav-item-border-radius, var(--radius-md, 8px));
-    border-inline-start: var(--sidenav-item-active-border-start-width, 3px) solid transparent;
+    box-sizing    : border-box;
+    min-height    : var(--sidenav-item-min-height, 42px);
+    padding       : var(--sidenav-item-padding, 0 11px);
+    gap           : var(--sidenav-item-gap, 11px);
+    font-size     : var(--sidenav-item-font-size, 14px);
+    font-weight   : var(--sidenav-item-font-weight, 400);
+    border-radius : var(--sidenav-item-radius, 9px);
+    border-inline-start: var(--sidenav-item-active-border-start-width, 0px) solid transparent;
     border-inline-end  : var(--sidenav-item-active-border-end-width, 0px) solid transparent;
-    color         : var(--sidenav-item-color, inherit);
+    color         : var(--sidenav-item-color, #20252b);
+    background    : transparent;
     transition    : background-color 0.12s ease, color 0.12s ease, border-color 0.12s ease, box-shadow 0.12s ease;
 }
 
@@ -233,49 +301,75 @@ vaadin-side-nav-item::part(link) {
    the hover tint is automatically on-brand for whichever ShellColor theme
    (if any) is applied — no per-color hover block needed.
    -------------------------------------------------------------------------- */
-vaadin-side-nav-item:not([current]):not(:has([slot="children"][current]))::part(link):hover {
+vaadin-side-nav-item:not([current]):not(:not([expanded]):has([slot="children"][current]))::part(link):hover {
     background-color: var(--sidenav-item-hover-bg,
-        color-mix(in srgb, var(--sidenav-item-active-bg, var(--zinc-100, #f4f4f5)) 55%, transparent));
-    color           : var(--sidenav-item-hover-color, var(--sidenav-item-color, inherit));
+        color-mix(in srgb, var(--sidenav-item-active-bg, #f4f4f5) 55%, transparent));
+    color           : var(--sidenav-item-hover-color, var(--sidenav-item-color, #20252b));
 }
 
 /* --------------------------------------------------------------------------
-   Active / current item — background highlight + left accent border.
-   TailAdmin keeps medium (500) weight rather than a hardcoded 600.
+   Active / current item.
+
+   The accent takes one of three mutually exclusive shapes across the mockups,
+   all expressed through tokens so exactly one is live per theme:
+     - inline-start border  (default shape)
+     - inline-end border    (MATERIAL: border-right: 3px solid #3f51b5)
+     - box-shadow           (MODERN_SAAS inset bar; GRADIENT / PREMIUM_BLUE
+                             elevation)
+   Themes that want a flat fill (ENTERPRISE, the 8 accent themes) simply zero
+   the border widths and leave the shadow unset.
    -------------------------------------------------------------------------- */
 vaadin-side-nav-item[current]::part(link) {
     background-color   : var(--sidenav-item-active-bg, transparent);
-    border-inline-start: var(--sidenav-item-active-border-start-width, 3px) solid var(--sidenav-item-active-border, transparent);
+    border-inline-start: var(--sidenav-item-active-border-start-width, 0px) solid var(--sidenav-item-active-border, transparent);
     border-inline-end  : var(--sidenav-item-active-border-end-width, 0px) solid var(--sidenav-item-active-border, transparent);
-    box-shadow          : var(--sidenav-item-active-shadow, none);
-    color               : var(--sidenav-item-active-color, inherit);
-    font-weight        : var(--sidenav-item-active-font-weight, 500);
+    box-shadow         : var(--sidenav-item-active-shadow, none);
+    color              : var(--sidenav-item-active-color, inherit);
+    font-weight        : var(--sidenav-item-active-font-weight, 600);
 }
 
-/* Parent of the active child — same background + accent border as the child
-   itself, so the highlight visually "bubbles up" the group hierarchy when a
-   nested item is the current route. Text color/weight are intentionally left
-   to the group-header rule below so its own styling still applies. */
-vaadin-side-nav-item:has([slot="children"][current])::part(link) {
+/* Parent of the active child.
+ *
+ * Only highlighted while COLLAPSED. When the group is expanded the child itself
+ * already wears the active pill, and stacking a second identical pill on the
+ * parent reads as two selected rows. Collapsed, the parent is the only clue
+ * that the current route lives inside the group, so it takes the pill then.
+ *
+ * Text, icon and toggle all switch to the active foreground: the active
+ * background is frequently the inverse of the surface (white on GRADIENT,
+ * #e8eaf6 on MATERIAL), so keeping the normal item colour here left light text
+ * on a light pill — illegible. */
+vaadin-side-nav-item:not([expanded]):has([slot="children"][current])::part(link) {
     background-color   : var(--sidenav-item-active-bg, transparent);
-    border-inline-start: var(--sidenav-item-active-border-start-width, 3px) solid var(--sidenav-item-active-border, transparent);
+    color              : var(--sidenav-item-active-color, inherit);
+    font-weight        : var(--sidenav-item-active-font-weight, 600);
+    border-inline-start: var(--sidenav-item-active-border-start-width, 0px) solid var(--sidenav-item-active-border, transparent);
     border-inline-end  : var(--sidenav-item-active-border-end-width, 0px) solid var(--sidenav-item-active-border, transparent);
-    box-shadow          : var(--sidenav-item-active-shadow, none);
+    box-shadow         : var(--sidenav-item-active-shadow, none);
 }
 
-/* Prefix icon — default (secondary tone) */
+/* Prefix icon — default (secondary tone). Sized from the mockups' `.icon`
+   rule, which is 20px wide across every reference layout. */
 vaadin-side-nav-item > [slot="prefix"] {
-    color      : var(--sidenav-icon-color, inherit);
+    color      : var(--sidenav-icon-color, var(--sidenav-item-color, #20252b));
+    width      : var(--sidenav-icon-size, 20px);
+    height     : var(--sidenav-icon-size, 20px);
     transition : color 0.12s ease;
     flex-shrink: 0;
 }
 
-/* Hover icon — inactive items: icon brightens to zinc-700 on hover.
-   Active/current items and parents of the active child keep their own
-   active icon color (see the toggle-button rule below) instead of this
-   generic hover tint. */
-vaadin-side-nav-item:not([current]):not(:has([slot="children"][current])):hover > [slot="prefix"] {
-    color: var(--zinc-700, #344054);
+/* Hover icon — inactive items follow the item's hover text colour.
+   The exclusion mirrors the link-hover rule: only items that actually wear the
+   active pill (current, or a COLLAPSED parent of the current child) keep their
+   own active icon colour. An expanded parent hovers like any normal item. */
+vaadin-side-nav-item:not([current]):not(:not([expanded]):has([slot="children"][current])):hover > [slot="prefix"] {
+    color: var(--sidenav-item-hover-color, var(--sidenav-item-color, #20252b));
+}
+
+/* Active icon — matches the active label colour in every mockup. */
+vaadin-side-nav-item[current] > [slot="prefix"],
+vaadin-side-nav-item:not([expanded]):has([slot="children"][current]) > [slot="prefix"] {
+    color: var(--sidenav-icon-active-color, var(--sidenav-item-active-color, inherit));
 }
 
 /* --------------------------------------------------------------------------
@@ -284,48 +378,51 @@ vaadin-side-nav-item:not([current]):not(:has([slot="children"][current])):hover 
    link part, so on dark backgrounds it becomes invisible without this rule.
    -------------------------------------------------------------------------- */
 vaadin-side-nav-item::part(toggle-button) {
-    color     : var(--sidenav-toggle-color, var(--zinc-400));
+    color     : var(--sidenav-toggle-color, var(--sidenav-icon-color, #98a0a8));
     transition: color 0.12s ease, transform 0.15s ease;
 }
 
 vaadin-side-nav-item:hover::part(toggle-button) {
-    color: var(--sidenav-toggle-hover-color, var(--zinc-50));
+    color: var(--sidenav-toggle-hover-color, var(--sidenav-item-hover-color, inherit));
 }
 
 /* Toggle keeps the active colour family when its item is current, or when
    it is the (collapsed or expanded) parent of the currently active child. */
+/* Toggle keeps the active colour family when its item is current, or when it is
+   the COLLAPSED parent of the currently active child — i.e. exactly when the
+   item is wearing the active pill and the default toggle colour would clash. */
 vaadin-side-nav-item[current]::part(toggle-button),
-vaadin-side-nav-item:has([slot="children"][current])::part(toggle-button) {
-    color: var(--sidenav-icon-active-color, #1c1917);
+vaadin-side-nav-item:not([expanded]):has([slot="children"][current])::part(toggle-button) {
+    color: var(--sidenav-icon-active-color, var(--sidenav-item-active-color, inherit));
 }
 
 /* --------------------------------------------------------------------------
    Parent group items  (vaadin-side-nav-item:not([path]))
-   Group headers have no route — they collapse/expand their children.
-   TailAdmin treats expandable groups identically to regular .menu-item:
-   same gray-700 color, same medium (500) weight, same consistent padding.
+   Group headers have no route — they collapse/expand their children. Every
+   reference mockup renders an expandable group identically to a regular item,
+   so these default to the plain item tokens.
    -------------------------------------------------------------------------- */
 vaadin-side-nav-item:not([path])::part(link) {
-    color        : var(--sidenav-group-color, var(--zinc-700));
-    font-size    : var(--sidenav-group-font-size, 0.875rem);
-    font-weight  : var(--sidenav-group-font-weight, 500);
-    padding-top  : var(--sidenav-group-padding-top, 0.5625rem);
-    padding-bottom: var(--sidenav-group-padding-bottom, 0.5625rem);
+    color      : var(--sidenav-group-color, var(--sidenav-item-color, #20252b));
+    font-size  : var(--sidenav-group-font-size, var(--sidenav-item-font-size, 14px));
+    font-weight: var(--sidenav-group-font-weight, var(--sidenav-item-font-weight, 400));
 }
 
-/* Group header icon — same color as text; no opacity dimming (TailAdmin doesn't dim) */
-vaadin-side-nav-item:not([path]) > [slot="prefix"] {
-    color: var(--sidenav-group-color, var(--zinc-700));
+/* Group header icon — same color as text; no opacity dimming. Skips items that
+   wear the active pill (current, or a collapsed parent of the current child),
+   which are coloured by the active-icon rule above. */
+vaadin-side-nav-item:not([path]):not([current]):not(:not([expanded]):has([slot="children"][current])) > [slot="prefix"] {
+    color: var(--sidenav-group-color, var(--sidenav-item-color, #20252b));
 }
 
 /* --------------------------------------------------------------------------
    Child items  (vaadin-side-nav-item[slot="children"])
-   Leaf navigation links — subordinate, slightly smaller, clearly indented.
+   Leaf navigation links — subordinate, slightly smaller.
    -------------------------------------------------------------------------- */
 vaadin-side-nav-item[slot="children"]::part(link) {
-    color      : var(--sidenav-child-color, var(--zinc-300));
-    font-size  : var(--sidenav-child-font-size, 0.8125rem);
-    font-weight: var(--sidenav-child-font-weight, 500);
+    color      : var(--sidenav-child-color, var(--sidenav-item-color, #20252b));
+    font-size  : var(--sidenav-child-font-size, var(--sidenav-item-font-size, 14px));
+    font-weight: var(--sidenav-child-font-weight, var(--sidenav-item-font-weight, 400));
     opacity    : var(--sidenav-child-opacity, 1);
 }
 
@@ -334,8 +431,8 @@ vaadin-side-nav-item[slot="children"]:hover::part(link) {
 }
 
 vaadin-side-nav-item[slot="children"][current]::part(link) {
-    font-weight: var(--sidenav-item-active-font-weight, 500);  /* token-based, TailAdmin = 500 */
-    color      : var(--sidenav-item-active-color, var(--brand-500));
+    font-weight: var(--sidenav-item-active-font-weight, 600);
+    color      : var(--sidenav-item-active-color, inherit);
     opacity    : 1;
 }
 
@@ -406,16 +503,14 @@ vaadin-app-layout.sidenav-collapsed {
     display        : inline-flex;
     align-items    : center;
     justify-content: center;
-    min-width      : 1.125rem;
-    height         : 1.125rem;
-    padding        : 0 0.375rem;
     margin-inline-start: auto;
-    border-radius  : 9999px;
-    font-size      : 0.6875rem;
-    font-weight    : 700;
-    line-height    : 1;
+    padding        : var(--sidenav-badge-padding, 2px 7px);
+    border-radius  : var(--sidenav-badge-radius, 12px);
+    font-size      : var(--sidenav-badge-font-size, 10px);
+    font-weight    : var(--sidenav-badge-font-weight, 400);
+    line-height    : 1.4;
     white-space    : nowrap;
-    background     : var(--sidenav-badge-bg, var(--zinc-400, #a1a1aa));
+    background     : var(--sidenav-badge-bg, var(--brand-500, #98a0a8));
     color          : var(--sidenav-badge-color, #ffffff);
 }
 
@@ -426,16 +521,26 @@ vaadin-app-layout.sidenav-collapsed {
 
 /* ==========================================================================
  * Footer — SideNavConfigurator#withFooter(...)
- * Sits below the nav item list (and above the collapse toggle, if present):
- * a promo/upsell card, or pinned items such as "Settings" / "Sign out".
+ * Sits below the nav item list (and above the collapse toggle, if present).
+ *
+ * Two shapes, selected by which token a theme sets:
+ *   - a bordered promo/upsell CARD  -> --sidenav-footer-border (+ bg, radius)
+ *                                      e.g. MODERN_SAAS ".pro" Upgrade-to-Pro
+ *   - a top DIVIDER above pinned    -> --sidenav-footer-border-top
+ *     items (Settings / Sign out)     e.g. COLLAPSIBLE_DARK ".foot"
  * ========================================================================== */
 .sidenav-footer {
-    flex-shrink : 0;
-    padding     : 0.75rem 0.5rem;
-    box-sizing  : border-box;
-    border-top  : var(--sidenav-footer-border, none);
-    color       : var(--sidenav-footer-color, inherit);
-    transition  : max-height 0.2s ease, opacity 0.15s ease, padding 0.2s ease;
+    flex-shrink   : 0;
+    box-sizing    : border-box;
+    margin        : var(--sidenav-footer-margin, 0);
+    padding       : var(--sidenav-footer-padding, 0.75rem 0.5rem);
+    background    : var(--sidenav-footer-bg, transparent);
+    border        : var(--sidenav-footer-border, none);
+    border-top    : var(--sidenav-footer-border-top, var(--sidenav-footer-border, none));
+    border-radius : var(--sidenav-footer-radius, 0);
+    color         : var(--sidenav-footer-color, inherit);
+    font-size     : var(--sidenav-footer-font-size, inherit);
+    transition    : max-height 0.2s ease, opacity 0.15s ease, padding 0.2s ease;
 }
 
 .sidenav-host--collapsed .sidenav-footer {
@@ -447,235 +552,11 @@ vaadin-app-layout.sidenav-collapsed {
     pointer-events : none;
 }
 
-/* ==========================================================================
- * Color themes — ShellColor applied via SideNavConfigurator#colorTheme(...).
- * Recolors the active item background/text/border, active icon, badges and
- * collapse-toggle hover state by overriding the same custom properties the
- * rules above already read — no selector duplication needed.
- * Scoped to the .sidenav-host wrapper itself (not an ancestor AppLayout), so
- * SideNav coloring works independently of AppShellLayout / ShellColor usage
- * elsewhere in the page.
- * ========================================================================== */
-
-.sidenav-host.shell-color-blue {
-    --sidenav-item-active-bg:     #e3f2f9;
-    --sidenav-item-active-color:  #075985;
-    --sidenav-item-active-border: #0b6e99;
-    --sidenav-icon-active-color:  #0b6e99;
-    --sidenav-badge-bg:           #0b6e99;
-    --sidenav-toggle-hover-color: #075985;
-}
-
-.sidenav-host.shell-color-indigo {
-    --sidenav-item-active-bg:     #eef2ff;
-    --sidenav-item-active-color:  #3730a3;
-    --sidenav-item-active-border: #4f46e5;
-    --sidenav-icon-active-color:  #4f46e5;
-    --sidenav-badge-bg:           #4f46e5;
-    --sidenav-toggle-hover-color: #3730a3;
-}
-
-.sidenav-host.shell-color-teal {
-    --sidenav-item-active-bg:     #e6fffb;
-    --sidenav-item-active-color:  #115e59;
-    --sidenav-item-active-border: #0f766e;
-    --sidenav-icon-active-color:  #0f766e;
-    --sidenav-badge-bg:           #0f766e;
-    --sidenav-toggle-hover-color: #115e59;
-}
-
-.sidenav-host.shell-color-red {
-    --sidenav-item-active-bg:     #ffebee;
-    --sidenav-item-active-color:  #a61b1b;
-    --sidenav-item-active-border: #c62828;
-    --sidenav-icon-active-color:  #c62828;
-    --sidenav-badge-bg:           #c62828;
-    --sidenav-toggle-hover-color: #a61b1b;
-}
-
-.sidenav-host.shell-color-cyan {
-    --sidenav-item-active-bg:     #e0f7fa;
-    --sidenav-item-active-color:  #006064;
-    --sidenav-item-active-border: #087f8c;
-    --sidenav-icon-active-color:  #087f8c;
-    --sidenav-badge-bg:           #087f8c;
-    --sidenav-toggle-hover-color: #006064;
-}
-
-.sidenav-host.shell-color-amber {
-    --sidenav-item-active-bg:     #fff7df;
-    --sidenav-item-active-color:  #92400e;
-    --sidenav-item-active-border: #b45309;
-    --sidenav-icon-active-color:  #b45309;
-    --sidenav-badge-bg:           #b45309;
-    --sidenav-toggle-hover-color: #92400e;
-}
-
-.sidenav-host.shell-color-pink {
-    --sidenav-item-active-bg:     #fce7f3;
-    --sidenav-item-active-color:  #9d174d;
-    --sidenav-item-active-border: #be185d;
-    --sidenav-icon-active-color:  #be185d;
-    --sidenav-badge-bg:           #be185d;
-    --sidenav-toggle-hover-color: #9d174d;
-}
-
-.sidenav-host.shell-color-slate {
-    --sidenav-item-active-bg:     #e2e8f0;
-    --sidenav-item-active-color:  #1e293b;
-    --sidenav-item-active-border: #334155;
-    --sidenav-icon-active-color:  #334155;
-    --sidenav-badge-bg:           #334155;
-    --sidenav-toggle-hover-color: #1e293b;
-}
-
-/* ==========================================================================
- * Surface themes — full sidebar "looks" (background + shape), not just an
- * accent recolor. Reference: docs/0{4,6,8}-*.html, docs/1{1,2}-*.html mockups.
- * ========================================================================== */
-
-/* ------------------------------------------------------------------------
- * MODERN_SAAS — dark navy, warm orange accent, inset left-border highlight.
- * Reference: docs/04-modern-saas-sidenav.html
- * ------------------------------------------------------------------------ */
-.sidenav-host.shell-color-modern-saas {
-    --sidenav-bg:                  #101828;
-    --sidenav-item-color:           #98a2b3;
-    --sidenav-icon-color:           #98a2b3;
-    --sidenav-label-color:          #667085;
-    --sidenav-group-color:          #98a2b3;
-    --sidenav-border:               #1d2939;
-    --sidenav-item-hover-bg:        #182230;
-    --sidenav-item-hover-color:     #ffffff;
-    --sidenav-item-active-bg:       #1d2939;
-    --sidenav-item-active-color:    #ffffff;
-    --sidenav-item-active-border:   #f97316;
-    --sidenav-icon-active-color:    #f97316;
-    --sidenav-badge-bg:             #f97316;
-    --sidenav-toggle-color:         #667085;
-    --sidenav-toggle-hover-color:   #ffffff;
-    --sidenav-footer-color:         #ffffff;
-    --sidenav-footer-border:        1px solid #344054;
-}
-
-/* ------------------------------------------------------------------------
- * MATERIAL — light/white sidebar, filled indigo active item with a
- * *right*-side accent border (instead of the default left border).
- * Reference: docs/05-material-sidenav.html
- * ------------------------------------------------------------------------ */
-.sidenav-host.shell-color-material {
-    --sidenav-label-color:          #757575;
-    --sidenav-group-color:          #424242;
-    --sidenav-item-color:           #424242;
-    --sidenav-icon-color:           #616161;
-    --sidenav-item-active-bg:       #e8eaf6;
-    --sidenav-item-active-color:    #3949ab;
-    --sidenav-item-active-border:   #3f51b5;
-    --sidenav-item-active-border-start-width: 0px;
-    --sidenav-item-active-border-end-width:   3px;
-    --sidenav-icon-active-color:    #3949ab;
-    --sidenav-badge-bg:             #3f51b5;
-}
-
-/* ------------------------------------------------------------------------
- * ENTERPRISE — dark corporate navy, flat solid-blue active fill (no
- * border accent), amber badges.
- * Reference: docs/06-enterprise-sidenav.html
- * ------------------------------------------------------------------------ */
-.sidenav-host.shell-color-enterprise {
-    --sidenav-bg:                   #172b4d;
-    --sidenav-item-color:           #dbe5f2;
-    --sidenav-icon-color:           #dbe5f2;
-    --sidenav-label-color:          #8da5c3;
-    --sidenav-group-color:          #dbe5f2;
-    --sidenav-border:               #203b63;
-    --sidenav-item-hover-bg:        #203b63;
-    --sidenav-item-hover-color:     #ffffff;
-    --sidenav-item-active-bg:       #24579a;
-    --sidenav-item-active-color:    #ffffff;
-    --sidenav-item-active-border-start-width: 0;
-    --sidenav-icon-active-color:    #ffffff;
-    --sidenav-badge-bg:             #d97706;
-    --sidenav-toggle-color:         #8da5c3;
-    --sidenav-toggle-hover-color:   #ffffff;
-}
-
-/* ------------------------------------------------------------------------
- * GRADIENT — violet-to-rose diagonal gradient background; active item is
- * an elevated white "pill" floating above the gradient (no border accent).
- * Reference: docs/08-gradient-sidenav.html
- * ------------------------------------------------------------------------ */
-.sidenav-host.shell-color-gradient {
-    --sidenav-bg:                   linear-gradient(160deg, #312e81, #4c1d95 55%, #831843);
-    --sidenav-item-color:           #dbeafe;
-    --sidenav-icon-color:           #dbeafe;
-    --sidenav-label-color:          #c4b5fd;
-    --sidenav-group-color:          #dbeafe;
-    --sidenav-item-hover-bg:        rgb(255 255 255 / 0.08);
-    --sidenav-item-hover-color:     #ffffff;
-    --sidenav-item-active-bg:       #ffffff;
-    --sidenav-item-active-color:    #4c1d95;
-    --sidenav-item-active-border-start-width: 0;
-    --sidenav-item-active-shadow:   0 10px 25px rgb(0 0 0 / 0.20);
-    --sidenav-icon-active-color:    #4c1d95;
-    --sidenav-badge-bg:             #fbbf24;
-    --sidenav-badge-color:          #4c1d95;
-    --sidenav-toggle-color:         #c4b5fd;
-    --sidenav-toggle-hover-color:   #ffffff;
-    --sidenav-footer-color:         #ffffff;
-}
-
-/* ------------------------------------------------------------------------
- * COLLAPSIBLE_DARK — dark slate sidebar with an emerald-green accent;
- * pairs naturally with withCollapse() + withFooter(...) (pinned items).
- * Reference: docs/11-collapsible-style-sidenav.html
- * ------------------------------------------------------------------------ */
-.sidenav-host.shell-color-collapsible-dark {
-    --sidenav-bg:                   #111827;
-    --sidenav-item-color:           #9ca3af;
-    --sidenav-icon-color:           #9ca3af;
-    --sidenav-label-color:          #4b5563;
-    --sidenav-group-color:          #9ca3af;
-    --sidenav-border:               #1f2937;
-    --sidenav-item-hover-bg:        #1f2937;
-    --sidenav-item-hover-color:     #ffffff;
-    --sidenav-item-active-bg:       #064e3b;
-    --sidenav-item-active-color:    #a7f3d0;
-    --sidenav-item-active-border-start-width: 0;
-    --sidenav-icon-active-color:    #a7f3d0;
-    --sidenav-badge-bg:             #10b981;
-    --sidenav-badge-color:          #06251b;
-    --sidenav-toggle-color:         #9ca3af;
-    --sidenav-toggle-hover-color:   #ffffff;
-    --sidenav-footer-color:         #9ca3af;
-    --sidenav-footer-border:        1px solid #1f2937;
-}
-
-/* ------------------------------------------------------------------------
- * PREMIUM_BLUE — deep navy sidebar, vivid-blue elevated active item, white
- * "NEW"-style text badges.
- * Reference: docs/12-premium-blue-sidenav.html
- * ------------------------------------------------------------------------ */
-.sidenav-host.shell-color-premium-blue {
-    --sidenav-bg:                   #0b2a4a;
-    --sidenav-item-color:           #b8cbe0;
-    --sidenav-icon-color:           #b8cbe0;
-    --sidenav-label-color:          #6282a5;
-    --sidenav-group-color:          #b8cbe0;
-    --sidenav-border:               #12385f;
-    --sidenav-item-hover-bg:        #12385f;
-    --sidenav-item-hover-color:     #ffffff;
-    --sidenav-item-active-bg:       #1670d2;
-    --sidenav-item-active-color:    #ffffff;
-    --sidenav-item-active-border-start-width: 0;
-    --sidenav-item-active-shadow:   0 8px 20px rgb(22 112 210 / 0.27);
-    --sidenav-icon-active-color:    #ffffff;
-    --sidenav-badge-bg:             #ffffff;
-    --sidenav-badge-color:          #1262b5;
-    --sidenav-toggle-color:         #6282a5;
-    --sidenav-toggle-hover-color:   #ffffff;
-    --sidenav-footer-color:         #b8cbe0;
-}
-
-
-
+/* ===========================================================================
+ * Color themes
+ *
+ * The 14 ShellColor token blocks used to be duplicated here AND in
+ * shell-color-themes.css, and had already drifted apart (e.g. MATERIAL's
+ * active border width was "0px" in one file and "0" in the other). They now
+ * live in shell-color-themes.css ONLY, @import-ed at the top of this file.
+ * ======================================================================== */

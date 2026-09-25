@@ -144,6 +144,7 @@ import static com.holonplatform.core.internal.utils.FormatUtils.toSentenceCase;
  * @see PropertyBuilder
  */
 @StyleSheet("context://entity-form-panel.css")
+@StyleSheet("context://layout.css")
 public class EntityFormPanel<T> extends Div {
 
     @Serial

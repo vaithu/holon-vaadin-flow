@@ -110,7 +110,7 @@ public class AlertDemoView extends Div {
 
         preview.add(
             Alert.builder(Alert.Variant.DESTRUCTIVE)
-                .icon(VaadinIcon.EXCLAMATION_CIRCLE_O.create())
+                .icon(VaadinIcon.EXCLAMATION_CIRCLE.create())
                 .title("Authentication Error")
                 .description("Your session has expired. Please sign in again.")
                 .build(),
@@ -128,7 +128,7 @@ public class AlertDemoView extends Div {
 
         return new DemoExample("With Icon", preview, """
                 Alert.builder(Alert.Variant.DESTRUCTIVE)
-                    .icon(VaadinIcon.EXCLAMATION_CIRCLE_O.create())
+                    .icon(VaadinIcon.EXCLAMATION_CIRCLE.create())
                     .title("Authentication Error")
                     .description("Your session has expired. Please sign in again.")
                     .build();
@@ -199,7 +199,7 @@ public class AlertDemoView extends Div {
 
         preview.add(
             Alert.builder(Alert.Variant.DESTRUCTIVE)
-                .icon(VaadinIcon.EXCLAMATION_CIRCLE_O.create())
+                .icon(VaadinIcon.EXCLAMATION_CIRCLE.create())
                 .title("Delete Account")
                 .description("This action is permanent and cannot be undone.")
                 .action(new Button("Delete"), new Button("Cancel"))
@@ -225,7 +225,7 @@ public class AlertDemoView extends Div {
                 // Combine with any variant and optional icon.
 
                 Alert.builder(Alert.Variant.DESTRUCTIVE)
-                    .icon(VaadinIcon.EXCLAMATION_CIRCLE_O.create())
+                    .icon(VaadinIcon.EXCLAMATION_CIRCLE.create())
                     .title("Delete Account")
                     .description("This action is permanent and cannot be undone.")
                     .action(new Button("Delete"), new Button("Cancel"))
@@ -314,4 +314,3 @@ public class AlertDemoView extends Div {
         };
     }
 }
-

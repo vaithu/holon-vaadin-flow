@@ -40,6 +40,7 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
 import java.util.Locale;
+import com.vaadin.flow.component.dependency.StyleSheet;
 
 /**
  * Purchase Orders master-detail — demonstrates {@link LitRendererBuilder#documentRow()} in a
@@ -68,6 +69,7 @@ import java.util.Locale;
  */
 @PageTitle("Purchase Orders — Holon Demo")
 @Route(value = "orders-master-detail", layout = DemoMainLayout.class)
+@StyleSheet("context://document-row-lit-renderer.css")
 public class OrdersMasterDetailView extends Div {
 
     private final transient ProductService productService;

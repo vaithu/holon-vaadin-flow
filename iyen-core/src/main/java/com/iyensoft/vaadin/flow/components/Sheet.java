@@ -294,8 +294,10 @@ public class Sheet extends Div {
                 .withClickListener(e -> close()).build();
         this.closeButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY_INLINE, ButtonVariant.LUMO_ICON);
 
-        // Header: prefix = back, column = title+description, actions = close
-        this.header = createDefaultHeader();
+        // Header (prefix = back, column = title+description, actions = close) is created lazily,
+        // via ensureHeader(), only once actually needed (title/description set, or back/close
+        // shown) — avoids building a full Header + nested layouts for sheets that use
+        // setHeader(Header) to supply a fully custom header instead.
 
         // Content slot  holds arbitrary user components
         this.contentSlot = Components.div().styleName("sheet__content").build();
@@ -734,6 +736,10 @@ public class Sheet extends Div {
      * Default: {@code true} (visible).
      */
     public void setShowBackButton(boolean show) {
+        if (show) {
+            // Only build the default header once the button actually needs to be shown.
+            ensureHeader();
+        }
         backButton.setVisible(show);
         syncHeaderVisibility();
     }
@@ -745,6 +751,10 @@ public class Sheet extends Div {
      * Default: {@code true} (visible).
      */
     public void setShowCloseButton(boolean show) {
+        if (show) {
+            // Only build the default header once the button actually needs to be shown.
+            ensureHeader();
+        }
         closeButton.setVisible(show);
         syncHeaderVisibility();
     }
@@ -791,6 +801,9 @@ public class Sheet extends Div {
 
     /** Hides the header entirely when there is nothing to show inside it. */
     private void syncHeaderVisibility() {
+        if (header == null) {
+            return;
+        }
         header.setVisible(customHeaderVisible
                 || currentTitle != null || currentDescription != null
                 || backButton.isVisible() || closeButton.isVisible());

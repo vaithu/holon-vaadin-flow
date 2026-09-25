@@ -5,6 +5,7 @@ import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
 import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.dependency.StyleSheet;
 
 /**
  * Title slot of an {@link Alert}.
@@ -12,6 +13,7 @@ import com.vaadin.flow.component.html.Div;
  * <p>Supports plain text, Holon {@link Localizable} (resolved on attach and on explicit set),
  * and arbitrary child components.</p>
  */
+@StyleSheet("context://alert.css")
 public class AlertTitle extends Div {
 
     private Localizable localizable;

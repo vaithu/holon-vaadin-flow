@@ -544,9 +544,9 @@ public class TestStringInput {
 	@Test
 	public void testTextInput() {
 
-		Input<String> input = Input.string().valueChangeMode(ValueChangeMode.ON_BLUR).build();
+		Input<String> input = Input.string().valueChangeMode(ValueChangeMode.ON_CHANGE).build();
 		assertTrue(input.getComponent() instanceof HasValueChangeMode);
-		assertEquals(ValueChangeMode.ON_BLUR, ((HasValueChangeMode) input.getComponent()).getValueChangeMode());
+		assertEquals(ValueChangeMode.ON_CHANGE, ((HasValueChangeMode) input.getComponent()).getValueChangeMode());
 
 		input = Input.string().autocomplete(Autocomplete.USERNAME).build();
 		assertTrue(input.getComponent() instanceof HasAutocomplete);

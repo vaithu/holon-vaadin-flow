@@ -3,6 +3,7 @@ package com.holonplatform.vaadin.flow.components.kanban;
 import com.vaadin.flow.component.html.Span;
 
 import java.io.Serial;
+import com.vaadin.flow.component.dependency.StyleSheet;
 
 /**
  * A tinted pill badge for use inside a {@link KanbanCardRenderer} to display
@@ -36,6 +37,7 @@ import java.io.Serial;
  *
  * @since 10.0.0
  */
+@StyleSheet("context://kanban-board.css")
 public final class KanbanStatusBadge extends Span {
 
     @Serial

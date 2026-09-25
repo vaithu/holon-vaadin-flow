@@ -20,6 +20,7 @@ import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.html.Span;
 import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
+import com.vaadin.flow.component.dependency.StyleSheet;
 
 /**
  * A static text or icon addon for use inside an {@link InputGroup}.
@@ -54,6 +55,7 @@ import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
  *
  * @see InputGroup
  */
+@StyleSheet("context://input-group.css")
 public class InputGroupText extends Span {
 
     @Serial

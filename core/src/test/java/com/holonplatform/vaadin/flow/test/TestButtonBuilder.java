@@ -78,6 +78,16 @@ class TestButtonBuilder {
     }
 
     @Test
+    void iconRounded_addsIconThemeAndClass() {
+        Button btn = ButtonBuilder.create()
+                .iconRounded()
+                .build();
+        assertTrue(btn.getThemeNames().contains("icon"));
+        assertTrue(btn.getClassNames().contains("btn--icon"));
+        assertTrue(btn.getClassNames().contains("btn--icon-rounded"));
+    }
+
+    @Test
     void iconAfterText_sets() {
         Button btn = ButtonBuilder.create()
                 .text("Next")

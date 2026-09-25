@@ -21,6 +21,7 @@ import com.holonplatform.vaadin.flow.components.builders.MenuBarConfigurator.Men
 import com.holonplatform.vaadin.flow.components.builders.MenuBarConfigurator.MenuItemClickListener;
 import com.holonplatform.vaadin.flow.components.builders.MenuBarConfigurator.SubMenuBuilder;
 import com.holonplatform.vaadin.flow.components.events.ClickEvent;
+import com.holonplatform.vaadin.flow.components.utils.StyleSheetSupport;
 import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
 import com.vaadin.flow.component.contextmenu.MenuItem;
 
@@ -49,6 +50,7 @@ public class DefaultMenuBarItemBuilder<P> implements MenuItemBuilder<P> {
         this.parent = parent;
         this.menuItem = menuItem;
         this.clickEventConverter = clickEventConverter;
+        StyleSheetSupport.require(menuItem, "utilities.css");
     }
 
     @Override

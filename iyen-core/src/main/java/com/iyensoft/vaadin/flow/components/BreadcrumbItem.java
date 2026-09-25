@@ -6,6 +6,7 @@ import com.vaadin.flow.component.html.ListItem;
 import com.vaadin.flow.router.AfterNavigationEvent;
 import com.vaadin.flow.router.AfterNavigationObserver;
 import com.vaadin.flow.router.RouterLink;
+import com.vaadin.flow.component.dependency.StyleSheet;
 
 /**
  * A single crumb in a {@link Breadcrumb} trail  wraps a navigation link.
@@ -33,6 +34,7 @@ import com.vaadin.flow.router.RouterLink;
  * @see BreadcrumbPage
  * @see BreadcrumbSeparator
  */
+@StyleSheet("context://breadcrumb.css")
 public class BreadcrumbItem extends ListItem implements AfterNavigationObserver {
 
     @Serial

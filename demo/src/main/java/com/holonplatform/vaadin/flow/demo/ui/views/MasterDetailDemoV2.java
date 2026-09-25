@@ -198,7 +198,7 @@ public class MasterDetailDemoV2 extends Div {
             return new Component[]{
                     Components.menuBar()
                             .withThemeVariants(MenuBarVariant.LUMO_TERTIARY_INLINE)
-                            .withMenuItem(VaadinIcon.ELLIPSIS_DOTS_V.create())
+                            .withMenuItem(VaadinIcon.ELLIPSIS_V.create())
                             .withSubMenu(s ->
                                                  s.withMenuItem(LumoIcon.EDIT.create(),"Edit", event -> {})
                                                          .withMenuItem("Clone Product", event -> {})

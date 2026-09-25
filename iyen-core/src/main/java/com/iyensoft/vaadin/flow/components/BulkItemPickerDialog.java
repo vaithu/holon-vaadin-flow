@@ -653,7 +653,7 @@ public class BulkItemPickerDialog extends Dialog {
             checkDiv.add(VaadinIcon.CHECK_CIRCLE.create());
         } else {
             checkDiv.addClassName("bip__item-check--unchecked");
-            checkDiv.add(VaadinIcon.CIRCLE_THIN.create());
+            checkDiv.add(VaadinIcon.CIRCLE.create());
         }
 
         Div row = Components.div().add(info, checkDiv).styleName("bip__item").build();

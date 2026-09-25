@@ -7,6 +7,7 @@ import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.html.ListItem;
 import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.dependency.StyleSheet;
 
 /**
  * The current / active page crumb in a {@link Breadcrumb}  intentionally <strong>not</strong> a link.
@@ -38,6 +39,7 @@ import com.vaadin.flow.component.html.Span;
  * );
  * }</pre>
  */
+@StyleSheet("context://breadcrumb.css")
 public class BreadcrumbPage extends ListItem {
 
     @Serial

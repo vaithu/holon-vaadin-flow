@@ -22,6 +22,7 @@ import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.html.Span;
 
 import java.io.Serial;
+import com.vaadin.flow.component.dependency.StyleSheet;
 
 /**
  * Value slot of a {@link TotalsRow}.
@@ -30,6 +31,7 @@ import java.io.Serial;
  * and arbitrary child components. The value can be rendered in a muted colour via
  * {@link #setMuted(boolean)}, independently of the owning row's {@link TotalsRow.Variant}.</p>
  */
+@StyleSheet("context://totals-card.css")
 public class TotalsValue extends Span {
 
     @Serial

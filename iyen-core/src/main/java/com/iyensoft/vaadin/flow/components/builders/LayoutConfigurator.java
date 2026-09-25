@@ -93,6 +93,7 @@ public interface LayoutConfigurator<C extends LayoutConfigurator<C>> extends Com
     }
 
     default C padding() {
+        com.holonplatform.vaadin.flow.components.utils.StyleSheetSupport.require("utilities.css");
         return styleName("padding-medium");
     }
 

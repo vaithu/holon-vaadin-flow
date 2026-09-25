@@ -52,7 +52,7 @@ public class AppBar extends Layout implements HasTheme {
 
     private void createMobileView() {
         Button button = Components.button()
-                .icon(VaadinIcon.ELLIPSIS_DOTS_H)
+                .icon(VaadinIcon.ELLIPSIS_H)
                 .withThemeVariants(ButtonVariant.LUMO_ICON)
                 .tertiary()
                 .styleName("app-bar__action-btn")

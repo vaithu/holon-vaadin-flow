@@ -3,6 +3,7 @@ package com.holonplatform.vaadin.flow.internal.components.builders;
 import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.vaadin.flow.components.Badge;
 import com.holonplatform.vaadin.flow.components.builders.TabConfigurator;
+import com.holonplatform.vaadin.flow.components.utils.StyleSheetSupport;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasEnabled;
 import com.vaadin.flow.component.HasSize;
@@ -28,6 +29,7 @@ public abstract class AbstractTabConfigurator<C extends TabConfigurator<C>>
      */
     public AbstractTabConfigurator(Tab component) {
         super(component);
+        StyleSheetSupport.require(component, "menu.css");
         this.tooltipConfigurator = new DefaultHasTooltipConfigurator<>(component, tooltip -> {
             component.setTooltipText(tooltip);
         }, this);

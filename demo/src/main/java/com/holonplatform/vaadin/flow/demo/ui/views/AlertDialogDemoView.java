@@ -596,7 +596,7 @@ public class AlertDialogDemoView extends Div {
                         e -> AlertDialog.builder()
                                 .title("Irreversible action warning")
                                 .description("Once you proceed, this action cannot be reversed. Ensure you have backed up your data.")
-                                .headerIcon(new Icon(VaadinIcon.EXCLAMATION_CIRCLE_O), Alert.Variant.WARNING)
+                                .headerIcon(new Icon(VaadinIcon.EXCLAMATION_CIRCLE), Alert.Variant.WARNING)
                                 .withCancelButton(false)
                                 .confirmText("I understand, proceed")
                                 .variant(Alert.Variant.WARNING)
@@ -617,7 +617,7 @@ public class AlertDialogDemoView extends Div {
                 // Single action with warning icon
                 AlertDialog.builder()
                     .title("Irreversible action warning")
-                    .headerIcon(new Icon(VaadinIcon.EXCLAMATION_CIRCLE_O), Alert.Variant.WARNING)
+                    .headerIcon(new Icon(VaadinIcon.EXCLAMATION_CIRCLE), Alert.Variant.WARNING)
                     .withCancelButton(false)
                     .confirmText("I understand, proceed")
                     .variant(Alert.Variant.WARNING)
@@ -663,4 +663,3 @@ public class AlertDialogDemoView extends Div {
         };
     }
 }
-

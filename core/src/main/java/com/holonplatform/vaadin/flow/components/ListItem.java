@@ -9,7 +9,9 @@ import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.NativeLabel;
+import com.vaadin.flow.component.dependency.StyleSheet;
 
+@StyleSheet("context://utilities.css")
 public class ListItem extends FlexBoxLayout {
 
     private static final String CLASS_NAME = "list-item";

@@ -4,6 +4,7 @@ import com.holonplatform.core.internal.utils.ObjectUtils;
 import com.holonplatform.vaadin.flow.components.builders.ButtonBuilder;
 import com.holonplatform.vaadin.flow.components.builders.ButtonConfigurator;
 import com.holonplatform.vaadin.flow.components.builders.HasInputEditorConfigurator;
+import com.holonplatform.vaadin.flow.components.utils.StyleSheetSupport;
 import com.vaadin.flow.component.HasEnabled;
 import com.vaadin.flow.component.HasSize;
 import com.vaadin.flow.component.HasStyle;
@@ -30,6 +31,7 @@ public abstract class AbstractInputEditorConfigurator<C extends HasInputEditorCo
      */
     public AbstractInputEditorConfigurator(HorizontalLayout horizontalLayout) {
         super(horizontalLayout);
+        StyleSheetSupport.require(horizontalLayout, "utilities.css");
         saveBtn = ButtonBuilder.create()
                 .tertiaryInline()
                 .icon(smallIcon("lumo", "checkmark", com.holonplatform.vaadin.flow.internal.lumo.Text.SUCCESS.getClassName()))

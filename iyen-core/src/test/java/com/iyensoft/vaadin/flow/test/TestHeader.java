@@ -216,12 +216,24 @@ class TestHeader {
     }
 
     @Test
-    void setTabs_empty_removesTabsAndKeepsBorderStateManaged() {
+    void setTabs_neverConfigured_doesNotCreateTabsInstance() {
         Header header = new Header("Title");
 
         header.setTabs();
+
+        assertTrue(header.getTabs().isEmpty(),
+                "No Tabs component should be created when none was ever required");
+        assertTrue(header.getClassNames().contains("iyen-header--bordered"));
+    }
+
+    @Test
+    void setTabs_clearingExistingTabs_detachesButKeepsInstance() {
+        Header header = new Header("Title");
+        header.setTabs(new Tab("Tab1"));
+
+        header.setTabs();
         Optional<Tabs> tabsOpt = header.getTabs();
-        assertTrue(tabsOpt.isPresent(), "Tabs instance should still exist");
+        assertTrue(tabsOpt.isPresent(), "Tabs instance should still exist once created");
 
         Tabs tabs = tabsOpt.get();
         assertFalse(tabs.isVisible(), "Tabs should be invisible when empty");

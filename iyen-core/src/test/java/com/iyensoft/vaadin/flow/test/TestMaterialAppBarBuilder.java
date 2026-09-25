@@ -3,6 +3,7 @@ package com.iyensoft.vaadin.flow.test;
 import com.iyensoft.vaadin.flow.components.builders.MaterialAppBarBuilder;
 import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
 import com.iyensoft.vaadin.flow.components.MaterialAppBar;
+import com.iyensoft.vaadin.flow.enums.MaterialAppBarVariant;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Span;
@@ -22,7 +23,7 @@ class TestMaterialAppBarBuilder {
                 .actions(new Button("Settings"))
                 .build();
 
-        assertEquals(MaterialAppBar.Variant.SMALL, appBar.getVariant());
+        assertEquals(MaterialAppBarVariant.SMALL, appBar.getVariant());
         assertEquals("banner", appBar.getElement().getAttribute("role"));
         assertEquals(1, appBar.getLeadingSlot().getComponentCount());
         assertEquals(2, appBar.getContentSlot().getComponentCount());
@@ -32,17 +33,19 @@ class TestMaterialAppBarBuilder {
     @Test
     void configuration_setsM3VariantAndStates() {
         MaterialAppBar appBar = MaterialAppBarBuilder.create()
-                .variant(MaterialAppBar.Variant.LARGE_FLEXIBLE)
+                .variant(MaterialAppBarVariant.LARGE_FLEXIBLE)
                 .centered()
                 .search()
                 .scrolled()
+                .sticky()
                 .build();
 
-        assertEquals(MaterialAppBar.Variant.LARGE_FLEXIBLE, appBar.getVariant());
+        assertEquals(MaterialAppBarVariant.LARGE_FLEXIBLE, appBar.getVariant());
         assertTrue(appBar.getClassNames().contains("material-app-bar--large-flexible"));
         assertTrue(appBar.getClassNames().contains("material-app-bar--centered"));
         assertTrue(appBar.getClassNames().contains("material-app-bar--search-active"));
         assertTrue(appBar.getClassNames().contains("material-app-bar--scrolled"));
+        assertTrue(appBar.getClassNames().contains("material-app-bar--sticky"));
     }
 
     @Test

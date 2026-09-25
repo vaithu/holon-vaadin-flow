@@ -1,6 +1,7 @@
 package com.iyensoft.vaadin.flow.internal.components.builders;
 
 import com.holonplatform.vaadin.flow.internal.components.builders.AbstractLocalizableComponentConfigurator;
+import com.holonplatform.vaadin.flow.components.utils.StyleSheetSupport;
 
 import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.vaadin.flow.components.builders.AvatarColor;
@@ -32,6 +33,7 @@ public abstract class AbstractAvatarConfigurator<C extends AvatarConfigurator<C>
 
     public AbstractAvatarConfigurator(Avatar component) {
         super(component);
+        StyleSheetSupport.require(component, "utilities.css");
     }
 
     // -----------------------------------------------------------------------

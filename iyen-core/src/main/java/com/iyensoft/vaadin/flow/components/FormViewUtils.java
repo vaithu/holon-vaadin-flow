@@ -1,5 +1,7 @@
 package com.iyensoft.vaadin.flow.components;
 
+import com.holonplatform.vaadin.flow.components.utils.StyleSheetSupport;
+
 import com.holonplatform.vaadin.flow.components.Input;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.Focusable;
@@ -17,9 +19,9 @@ import java.util.function.Consumer;
 /**
  * Static helpers for building common recurring UI patterns inside form views.
  *
- * <p>Views that use these helpers must declare
- * {@code @StyleSheet("context://form-utils.css")} on their class to load the
- * required {@code .futil__*} CSS classes.</p>
+ * <p>The {@code .futil__*} CSS classes these helpers apply live in {@code form-utils.css},
+ * which is requested automatically for the returned components — no {@code @StyleSheet}
+ * declaration is required on the calling view.</p>
  *
  * <p><strong>Notifications:</strong> use
  * {@link com.holonplatform.vaadin.flow.components.utils.NotificationUtil} or
@@ -59,6 +61,7 @@ public final class FormViewUtils {
         label.addClassName("futil__field-label");
         Div wrapper = new Div(label, content);
         wrapper.addClassName("futil__field");
+        StyleSheetSupport.require(wrapper, "form-utils.css");
         return wrapper;
     }
 
@@ -82,6 +85,7 @@ public final class FormViewUtils {
         var toggle = Input.boolean_().asSwitch().withValue(checked).build();
         Div row = new Div(left, toggle.getComponent());
         row.addClassName("futil__toggle-row");
+        StyleSheetSupport.require(row, "form-utils.css");
         return row;
     }
 
@@ -111,7 +115,9 @@ public final class FormViewUtils {
         Span text = new Span((prefixText != null ? prefixText : "") + " ");
         Span star = new Span("*");
         star.addClassName("futil__required-star");
-        return new Span(text, star);
+        Span hint = new Span(text, star);
+        StyleSheetSupport.require(hint, "form-utils.css");
+        return hint;
     }
 
     // ── Progress tracking ─────────────────────────────────────────────────

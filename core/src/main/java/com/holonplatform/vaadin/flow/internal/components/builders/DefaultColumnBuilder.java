@@ -3,6 +3,7 @@ package com.holonplatform.vaadin.flow.internal.components.builders;
 import com.holonplatform.vaadin.flow.components.builders.ColumnBuilder;
 import com.holonplatform.vaadin.flow.components.support.ColSpan;
 import com.holonplatform.vaadin.flow.internal.components.DefaultXPanel;
+import com.holonplatform.vaadin.flow.internal.components.LayoutDiv;
 import com.holonplatform.vaadin.flow.components.support.ViewMode;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.html.Div;
@@ -13,7 +14,7 @@ public class DefaultColumnBuilder implements ColumnBuilder {
     private final Div columnDiv;
 
     public DefaultColumnBuilder() {
-        columnDiv = new Div();
+        columnDiv = new LayoutDiv();
     }
 
     // -------------------------------------------------------------------------

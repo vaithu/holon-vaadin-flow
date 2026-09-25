@@ -51,6 +51,7 @@ public final class NotificationUtil {
     }
 
     private static void addContentAndOpen(Notification notification, String msg) {
+        StyleSheetSupport.require(notification, "notification.css");
         Icon icon = VaadinIcon.CHECK_CIRCLE.create();
         Button closeButton = ButtonBuilder.create()
                 .icon("lumo", "cross")
