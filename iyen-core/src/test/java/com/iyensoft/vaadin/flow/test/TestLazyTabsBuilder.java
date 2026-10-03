@@ -1,13 +1,17 @@
 package com.iyensoft.vaadin.flow.test;
 
 import com.iyensoft.vaadin.flow.components.builders.LazyTabsBuilder;
+import com.iyensoft.vaadin.flow.components.DetailSyncAware;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.tabs.Tabs;
 import org.junit.jupiter.api.Test;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -142,5 +146,108 @@ class TestLazyTabsBuilder {
                 .build();
         assertNotNull(tabs);
         assertTrue(tabs.getTabCount() >= 2);
+    }
+
+    @Test
+    void eagerTabContents_areDirectChildrenAndRemainSyncableWhenRevisited() {
+        SyncAwareDiv tabContents = new SyncAwareDiv();
+        Span child = new Span("Overview content");
+        tabContents.add(child);
+
+        LazyTabsBuilder builder = LazyTabsBuilder.create()
+                .withEagerTabContents("Overview", tabContents)
+                .withEagerTab("Other", new Span("Other content"));
+        Div contentContainer = builder.getContentContainer();
+        sync(contentContainer, "customer-1");
+        builder.selectedIndex(0);
+
+        assertTrue(contentContainer.getClassNames().contains("d-body"));
+        assertEquals(1, contentContainer.getChildren().count());
+        assertSame(child, contentContainer.getChildren().findFirst().orElseThrow());
+        assertSame(contentContainer, child.getParent().orElseThrow());
+        assertEquals("customer-1", tabContents.lastItem);
+
+        builder.getTabs().setSelectedIndex(1);
+        assertSame(tabContents, child.getParent().orElseThrow());
+
+        builder.getTabs().setSelectedIndex(0);
+        assertEquals(1, contentContainer.getChildren().count());
+        assertSame(child, contentContainer.getChildren().findFirst().orElseThrow());
+        assertEquals("customer-1", tabContents.lastItem);
+    }
+
+    @Test
+    void lazyTabContents_addsChildrenDirectlyWhenSelected() {
+        AtomicInteger factoryCalls = new AtomicInteger();
+        Span content = new Span("Lazy content");
+        LazyTabsBuilder builder = LazyTabsBuilder.create()
+                .withEagerTab("Overview", new Span("Overview"))
+                .withLazyTabContents("Orders", 3, () -> {
+                    factoryCalls.incrementAndGet();
+                    Div contents = new Div(content);
+                    return contents;
+                });
+
+        assertEquals(0, factoryCalls.get());
+        builder.getTabs().setSelectedIndex(1);
+
+        assertEquals(1, factoryCalls.get());
+        assertSame(content, builder.getContentContainer().getChildren().findFirst().orElseThrow());
+        assertSame(builder.getContentContainer(), content.getParent().orElseThrow());
+    }
+
+    @Test
+    void selectionCounter_isHiddenUntilSelectionThenTracksEachItem() {
+        AtomicInteger counterCalls = new AtomicInteger();
+        LazyTabsBuilder builder = LazyTabsBuilder.create()
+                .withEagerTab("Overview", new Span("Overview"))
+                .withLazyTab("Orders", (String item) -> {
+                    counterCalls.incrementAndGet();
+                    return item.length();
+                }, () -> new Span("Orders"));
+        Span badge = badgeOf(builder, 1);
+
+        assertFalse(badge.isVisible(), "No selection yet: the badge must not show a stale value");
+        assertEquals(0, counterCalls.get());
+
+        sync(builder.getContentContainer(), "abc");
+        assertTrue(badge.isVisible());
+        assertEquals("3", badge.getText());
+
+        sync(builder.getContentContainer(), "abcdef");
+        assertEquals("6", badge.getText());
+        assertEquals(2, counterCalls.get(),
+                "Counters refresh on selection even when their tab has never been opened");
+    }
+
+    @Test
+    void selectionCounter_hidesBadgeWhenCounterReturnsNull() {
+        LazyTabsBuilder builder = LazyTabsBuilder.create()
+                .withLazyTabContents("Files", (String item) -> null, Div::new);
+        Span badge = badgeOf(builder, 0);
+
+        sync(builder.getContentContainer(), "customer-1");
+
+        assertFalse(badge.isVisible());
+    }
+
+    private static Span badgeOf(LazyTabsBuilder builder, int tabIndex) {
+        return builder.getTabs().getTabAt(tabIndex).getChildren()
+                .filter(Span.class::isInstance).map(Span.class::cast)
+                .reduce((first, second) -> second).orElseThrow();
+    }
+
+    @SuppressWarnings("unchecked")
+    private static void sync(Div container, Object item) {
+        ((DetailSyncAware<Object>) container).onItemSelected(item);
+    }
+
+    private static final class SyncAwareDiv extends Div implements DetailSyncAware<String> {
+        private String lastItem;
+
+        @Override
+        public void onItemSelected(String item) {
+            lastItem = item;
+        }
     }
 }

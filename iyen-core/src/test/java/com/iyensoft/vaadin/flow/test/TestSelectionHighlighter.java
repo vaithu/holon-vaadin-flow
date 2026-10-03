@@ -320,6 +320,7 @@ class TestSelectionHighlighter {
         @Override public void hide(String p)                                   { throw new UnsupportedOperationException(); }
         @Override public void addIndexColumn()                                 { throw new UnsupportedOperationException(); }
         @Override public void addIndexColumn(String p)                         { throw new UnsupportedOperationException(); }
+        @Override public java.util.Optional<com.vaadin.flow.component.grid.Grid.Column<T>> getIndexColumn() { return java.util.Optional.empty(); }
         @Override public <V extends Component> Grid.Column<T> addComponentColumn(ValueProvider<T, V> cp) { throw new UnsupportedOperationException(); }
         @Override public com.vaadin.flow.shared.Registration addItemClickListener(com.vaadin.flow.component.ComponentEventListener<ItemClickEvent<T>> l) { throw new UnsupportedOperationException(); }
         @Override public com.vaadin.flow.shared.Registration addSelectionListener(com.vaadin.flow.data.selection.SelectionListener<Grid<T>, T> l) { throw new UnsupportedOperationException(); }

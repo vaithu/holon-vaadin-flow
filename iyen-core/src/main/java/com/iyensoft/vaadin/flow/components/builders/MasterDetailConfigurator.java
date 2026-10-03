@@ -12,6 +12,7 @@ import com.iyensoft.vaadin.flow.components.builders.MaterialHeaderConfigurator;
 import com.iyensoft.vaadin.flow.components.Sheet;
 import com.iyensoft.vaadin.flow.components.MasterDetailAccent;
 import com.iyensoft.vaadin.flow.components.MasterDetailLayout;
+import com.iyensoft.vaadin.flow.components.ListingQueryContext;
 import com.holonplatform.vaadin.flow.components.support.ViewMode;
 import com.iyensoft.vaadin.flow.internal.components.builders.DefaultMasterDetailConfigurator;
 import com.vaadin.flow.component.Component;
@@ -239,6 +240,23 @@ public interface MasterDetailConfigurator<T, C extends MasterDetailConfigurator<
      * @param itemIndexProvider maps an item to its zero-based row index (not null)
      */
     C withItemIndexProvider(ItemIndexProvider<T, ?> itemIndexProvider);
+
+    /**
+     * Registers an item-index callback that receives the master listing's active search,
+     * filter, and sort criteria.
+     *
+     * <p>Use this instead of retaining fetch criteria in the view. The listing owns the
+     * context and updates it immediately before each managed fetch.</p>
+     *
+     * @param itemIndexProvider context-aware item index provider
+     * @return this configurator
+     */
+    C withListingItemIndexProvider(ContextualItemIndexProvider<T> itemIndexProvider);
+
+    @FunctionalInterface
+    interface ContextualItemIndexProvider<T> extends java.io.Serializable {
+        Integer indexOf(T item, ListingQueryContext context);
+    }
 
 
     /**

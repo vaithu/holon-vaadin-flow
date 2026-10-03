@@ -9,8 +9,6 @@ import com.holonplatform.core.query.BeanProjection;
 import com.holonplatform.core.query.QueryFilter;
 import com.holonplatform.core.query.QuerySort;
 import com.holonplatform.vaadin.flow.demo.data.entity.Product;
-import com.vaadin.flow.data.provider.QuerySortOrder;
-import com.vaadin.flow.data.provider.SortDirection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -90,15 +88,15 @@ public class ProductService {
      * @param product     the item to locate
      * @param text        the search text active on the listing, or {@code null}
      * @param filter      the filter-panel filter active on the listing, or {@code null}
-     * @param sortOrders  the Grid's current sort orders; empty means the default name-ascending
+     * @param sort        the current Holon sort; {@code null} means the default name-ascending
      */
     @Transactional(readOnly = true)
     public Optional<Integer> indexOf(Product product, String text, QueryFilter filter,
-                                     List<QuerySortOrder> sortOrders) {
+                                     QuerySort sort) {
         if (product == null) {
             return Optional.empty();
         }
-        Optional<QueryFilter> preceding = precedingFilter(product, sortOrders);
+        Optional<QueryFilter> preceding = precedingFilter(product, sort);
         if (preceding.isEmpty()) {
             return Optional.empty();
         }
@@ -120,18 +118,16 @@ public class ProductService {
      * without a database: an error here scrolls the grid to the wrong row, which is hard to
      * notice by eye but trivial to assert.</p>
      */
-    static Optional<QueryFilter> precedingFilter(Product product,
-                                                         List<QuerySortOrder> sortOrders) {
-        if (sortOrders == null || sortOrders.isEmpty()) {
+    static Optional<QueryFilter> precedingFilter(Product product, QuerySort sort) {
+        if (sort == null) {
             // Matches the default sort applied by fetch().
             return comparison(NAME_PROP, product.getName(), true);
         }
-        if (sortOrders.size() > 1) {
-            return Optional.empty();  // composite sort: a single range count cannot express it
+        if (!(sort instanceof QuerySort.PathQuerySort<?> pathSort)) {
+            return Optional.empty();
         }
-        QuerySortOrder order = sortOrders.get(0);
-        boolean asc = order.getDirection() != SortDirection.DESCENDING;
-        return switch (order.getSorted()) {
+        boolean asc = pathSort.getDirection() != QuerySort.SortDirection.DESCENDING;
+        return switch (pathSort.getPath().getName()) {
             case "name" -> comparison(NAME_PROP, product.getName(), asc);
             case "category" -> comparison(CATEGORY_PROP, product.getCategory(), asc);
             case "id" -> comparison(ID_PROP, product.getId(), asc);
@@ -175,6 +171,7 @@ public class ProductService {
      * @param limit  max number of rows
      * @param text   optional search filter (name or category)
      */
+    @Transactional(readOnly = true)
     public Stream<Product> fetch(int offset, int limit, String text) {
         var q = helper.getDatastore()
                 .query(TARGET)
@@ -183,13 +180,15 @@ public class ProductService {
         if (text != null && !text.isBlank()) {
             q = q.filter(nameOrCategoryFilter(text));
         }
-        return q.stream(BeanProjection.of(Product.class));
+        return q.stream(BeanProjection.of(Product.class)).toList().stream();
     }
 
+    @Transactional(readOnly = true)
     public long count(String text) {
         return count(text, null);
     }
 
+    @Transactional(readOnly = true)
     public long count(String text, QueryFilter filter) {
         var q = helper.getDatastore().query(TARGET);
         if (text != null && !text.isBlank()) {
@@ -223,7 +222,7 @@ public class ProductService {
         if (filter != null) {
             q = q.filter(filter);
         }
-        return q.stream(BeanProjection.of(Product.class));
+        return q.stream(BeanProjection.of(Product.class)).toList().stream();
     }
 
     // ── Write operations ──────────────────────────────────────────────────────
@@ -274,6 +273,7 @@ public class ProductService {
      * @param sort    optional sort from grid column headers (null → name asc)
      * @param columns visible column names; empty means "all columns"
      */
+    @Transactional(readOnly = true)
     public Stream<Product> fetch(int offset, int limit, String text,
                                  QueryFilter filter, QuerySort sort, List<String> columns) {
         // columns is empty when .columns(…) was not called — fetch everything
@@ -284,10 +284,16 @@ public class ProductService {
             textFilter = nameOrCategoryFilter(text);
         }
 
-        if (filter != null && textFilter != null) {
-            filter = filter.and(textFilter);
+        if (textFilter != null) {
+            filter = filter != null ? filter.and(textFilter) : textFilter;
         }
 
-        return helper.findSlice(offset, limit, filter, sort,columns);
+        if (sort == null) {
+            sort = NAME_PROP.asc();
+        }
+        Stream<Product> rows = columns == null || columns.isEmpty()
+                ? helper.findSlice(limit, offset, filter, sort)
+                : helper.findSlice(limit, offset, filter, sort, columns);
+        return rows.toList().stream();
     }
 }

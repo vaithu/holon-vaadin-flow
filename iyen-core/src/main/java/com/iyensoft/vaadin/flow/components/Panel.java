@@ -15,6 +15,8 @@ public class Panel extends Div {
     private Component footer;
     private final List<Component> contentComponents = new ArrayList<>();
     private String emptyStateTitle;
+    private Layout panelContent;
+    private PanelVariant.Background background;
 
     public Panel() {
         addClassName(CLASS_PANEL);
@@ -42,10 +44,13 @@ public class Panel extends Div {
     }
 
     public void setContent(Component... components) {
-        removeEmptyState();
-        contentComponents.forEach(this::remove);
-        contentComponents.clear();
+
         if (components != null) {
+
+            removeEmptyState();
+            contentComponents.forEach(this::remove);
+            contentComponents.clear();
+
             for (Component component : components) {
                 if (component != null) {
                     contentComponents.add(component);
@@ -57,10 +62,10 @@ public class Panel extends Div {
             return;
         }
         int insertIndex = header != null ? 1 : 0;
-        for (Component component : contentComponents) {
-            component.addClassName("panel-content");
-            addComponentAtIndex(insertIndex++, component);
-        }
+        panelContent = Components.layout(components)
+                .styleName("panel-content")
+                .build();
+        addComponentAtIndex(insertIndex, panelContent);
     }
 
     public void setFooter(Component footer) {
@@ -77,6 +82,21 @@ public class Panel extends Div {
     public void setEmptyState(String title) {
         this.emptyStateTitle = title;
         syncEmptyState();
+    }
+
+    /** Replaces the current panel background variant. */
+    public void setBackground(PanelVariant.Background background) {
+        if (this.background != null) {
+            removeClassName(this.background.getClassName());
+        }
+        this.background = background;
+        if (background != null) {
+            addClassName(background.getClassName());
+        }
+    }
+
+    public PanelVariant.Background getBackground() {
+        return background;
     }
 
     private void syncEmptyState() {

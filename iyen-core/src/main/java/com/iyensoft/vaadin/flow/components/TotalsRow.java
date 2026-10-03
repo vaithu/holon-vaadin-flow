@@ -90,7 +90,19 @@ public class TotalsRow extends Div {
         /**
          * The final, emphasised grand-total row: bold, larger font, top border and accent value colour.
          */
-        GRAND_TOTAL("grand");
+        GRAND_TOTAL("grand"),
+        /**
+         * A tax row (e.g. VAT); only the value is rendered in the muted colour, the label is unchanged.
+         */
+        TAX("tax"),
+        /**
+         * An amount already received / paid; the whole row is rendered in the success colour.
+         */
+        PAID("paid"),
+        /**
+         * The outstanding balance due; rendered in the danger colour with a dashed top separator.
+         */
+        DUE("due");
 
         private final String cssModifier;
 

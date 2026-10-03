@@ -43,7 +43,6 @@ public class MaterialAppBar extends Div implements HasTheme {
 
         addClassName("material-app-bar");
         addClassName("material-app-bar--small");
-        setWidthFull();
         getElement().setAttribute("role", "banner");
         add(leadingSlot, contentSlot, trailingSlot);
     }

@@ -64,6 +64,25 @@ public interface ItemListingConfigurator<T, P, L extends ItemListing<T, P>, C ex
         InputGroupConfigurator<P, T, EditorComponentGroup<P, T>, C> {
 
     /**
+     * Add a Grid/matrix switch to the listing component. Only the current page
+     * (five records by default) is fetched when the matrix is shown. The Grid
+     * remains the default view; callers add the listing's usual getComponent().
+     */
+    C matrixView();
+
+    /** Enable matrix view with a bounded number of record columns (1-10). */
+    C matrixView(int pageSize);
+
+    /** Supply the heading displayed above each record column. */
+    C matrixHeading(SerializableFunction<T, String> heading);
+
+    /**
+     * Supply plain text for a column whose Grid renderer cannot be represented
+     * as text automatically.
+     */
+    C matrixValue(P property, SerializableFunction<T, String> presenter);
+
+    /**
      * Configure the column represented by given <code>property</code> to be
      * displayed before any other listing column by default.
      *

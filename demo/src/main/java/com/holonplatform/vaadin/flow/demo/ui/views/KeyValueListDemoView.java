@@ -30,6 +30,7 @@ import com.vaadin.flow.router.Route;
  *   <li>Dashboard Summary Cards — delta trends, pills, 4-card responsive grid</li>
  *   <li>Confirmation Step — dense rows, review banner</li>
  *   <li>Widescreen Detail Layout — 2-column: detail card + activity side panel</li>
+ *   <li>Inventory Detail — compact two-column product fields with code values</li>
  * </ol>
  */
 @PageTitle("KeyValueList Holon Demo")
@@ -59,7 +60,13 @@ public class KeyValueListDemoView extends Div {
                 pattern04(), CODE_04),
             section("05", "Widescreen Detail Layout",
                 "Two-column pattern: primary detail card on the left, activity side panel on the right.",
-                pattern05(), CODE_05)
+                pattern05(), CODE_05),
+            section("06", "Inventory Detail",
+                "Compact two-column product fields with automatic monospace treatment for SKU, barcode, and HS code.",
+                pattern06(), CODE_06),
+            section("07", "Supplier Drawer Details",
+                "Compact supplier contact, tax, banking, and contract statistics with dashed row separators.",
+                pattern07(), CODE_07)
         );
         sections.getStyle()
             .set("display", "flex")
@@ -485,6 +492,47 @@ public class KeyValueListDemoView extends Div {
     }
 
     // -------------------------------------------------------------------------
+    // Pattern 06 — Inventory Detail
+    // -------------------------------------------------------------------------
+
+    private Component pattern06() {
+        var details = new KeyValueList().asInventory()
+            .addItem("SKU", "PT-SEN-PS100")
+            .addItem("Barcode", "5901234123457")
+            .addItem("Category", "Electronics & sensors")
+            .addItem("Class", "Class B · Tracked")
+            .addItem("Unit of measure", "pcs (each)")
+            .addItem("Weight", "0.18 kg")
+            .addItem("Dimensions", "8 × 4 × 2 cm")
+            .addItem("HS code", "9026204000")
+            .addItem("Country of origin", "Czechia (CZ)")
+            .addItem("Shelf life", "— (non-perishable)")
+            .addItem("Hazmat", "No")
+            .addItem("Created", "2024-03-12 · by M. Tanaka")
+            .addItem("Last movement", "2026-06-03 09:48");
+        return details;
+    }
+
+    // -------------------------------------------------------------------------
+    // Pattern 07 — Supplier Drawer Details
+    // -------------------------------------------------------------------------
+
+    private Component pattern07() {
+        var details = new KeyValueList().asSupplier()
+            .addItem("Account manager", "Ralf Bausch")
+            .addItem("Email", "ralf.bausch@praha.tech")
+            .addItem("Phone", "+420 226 211 200")
+            .addItem("Country", "🇨🇿 Czech Republic")
+            .addItem("Tax ID", "CZ28145678")
+            .addItem("IBAN", "CZ6508000000192000145398")
+            .addItem("Bank", "Komerční banka · CEKOCZPP")
+            .addItem("Address", "Holečkova 12 · 150 00 Prague")
+            .addItem("Contract", "2024-01-01 → 2026-12-31")
+            .addItem("Payment terms", "Net 30 · SEPA Intl");
+        return card("PrahaTech Sensors s.r.o.", "VEND-2026-0001 · Preferred", details);
+    }
+
+    // -------------------------------------------------------------------------
     // Code snippets shown in the "Code" tab of each section
     // -------------------------------------------------------------------------
 
@@ -559,4 +607,33 @@ public class KeyValueListDemoView extends Div {
         activity.addItem(KeyValueItem.builder()
                 .key("Jun 15").value("+$2,400.00").superText("DIRECT DEPOSIT")
                 .numeric(true).category(Category.STATUS).build());""";
+
+    private static final String CODE_06 = """
+        var details = new KeyValueList().asInventory()
+            .addItem("SKU", "PT-SEN-PS100")
+            .addItem("Barcode", "5901234123457")
+            .addItem("Category", "Electronics & sensors")
+            .addItem("Class", "Class B · Tracked")
+            .addItem("Unit of measure", "pcs (each)")
+            .addItem("Weight", "0.18 kg")
+            .addItem("Dimensions", "8 × 4 × 2 cm")
+            .addItem("HS code", "9026204000")
+            .addItem("Country of origin", "Czechia (CZ)")
+            .addItem("Shelf life", "— (non-perishable)")
+            .addItem("Hazmat", "No")
+            .addItem("Created", "2024-03-12 · by M. Tanaka")
+            .addItem("Last movement", "2026-06-03 09:48");""";
+
+    private static final String CODE_07 = """
+        var details = new KeyValueList().asSupplier()
+            .addItem("Account manager", "Ralf Bausch")
+            .addItem("Email", "ralf.bausch@praha.tech")
+            .addItem("Phone", "+420 226 211 200")
+            .addItem("Country", "🇨🇿 Czech Republic")
+            .addItem("Tax ID", "CZ28145678")
+            .addItem("IBAN", "CZ6508000000192000145398")
+            .addItem("Bank", "Komerční banka · CEKOCZPP")
+            .addItem("Address", "Holečkova 12 · 150 00 Prague")
+            .addItem("Contract", "2024-01-01 → 2026-12-31")
+            .addItem("Payment terms", "Net 30 · SEPA Intl");""";
 }

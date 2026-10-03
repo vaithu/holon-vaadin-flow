@@ -23,9 +23,7 @@ import com.holonplatform.vaadin.flow.demo.data.service.ProductService;
 import com.holonplatform.vaadin.flow.demo.ui.DemoMainLayout;
 import com.iyensoft.vaadin.flow.components.ResponsiveDiv;
 import com.iyensoft.vaadin.flow.components.Alert.Variant;
-import com.iyensoft.vaadin.flow.components.Breadcrumb;
-import com.iyensoft.vaadin.flow.components.BreadcrumbItem;
-import com.iyensoft.vaadin.flow.components.BreadcrumbPage;
+
 import com.iyensoft.vaadin.flow.components.IconBadge.Size;
 import com.iyensoft.vaadin.flow.components.Sheet;
 import com.iyensoft.vaadin.flow.components.MasterDetailLayout;

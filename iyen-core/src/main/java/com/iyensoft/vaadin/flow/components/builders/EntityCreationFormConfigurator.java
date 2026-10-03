@@ -4,6 +4,7 @@ import com.holonplatform.vaadin.flow.components.builders.ComponentConfigurator;
 import com.holonplatform.vaadin.flow.components.builders.HasSizeConfigurator;
 import com.holonplatform.vaadin.flow.components.builders.HasStyleConfigurator;
 
+import com.iyensoft.vaadin.flow.components.BreadcrumbItem;
 import com.iyensoft.vaadin.flow.internal.components.builders.DefaultEntityCreationFormConfigurator;
 import com.iyensoft.vaadin.flow.components.EntityCreationForm;
 import com.iyensoft.vaadin.flow.components.FormStepCard;
@@ -19,7 +20,7 @@ import com.vaadin.flow.component.html.ListItem;
 public interface EntityCreationFormConfigurator<C extends EntityCreationFormConfigurator<C>>
         extends ComponentConfigurator<C>, HasSizeConfigurator<C>, HasStyleConfigurator<C> {
 
-    C breadcrumb(ListItem... items);
+    C breadcrumb(BreadcrumbItem... breadcrumbItems);
     C title(String title);
     C subtitle(String subtitle);
     C subtitle(Component component);

@@ -103,6 +103,11 @@ public class TotalsCard extends Div {
          */
         DEFAULT("default"),
         /**
+         * A compact invoice summary surface with invoice-specific total, payment and balance
+         * styling.
+         */
+        INVOICE("invoice"),
+        /**
          * A dark, self-contained "live appraisal" surface: eyebrow + editable highlight field,
          * optional {@link TotalsGauge} ring, rows, an LTV-style slider, a term toggle and action
          * buttons.

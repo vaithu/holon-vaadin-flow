@@ -2,6 +2,7 @@ package com.iyensoft.vaadin.flow.components.builders;
 
 import com.holonplatform.vaadin.flow.components.builders.*;
 import com.iyensoft.vaadin.flow.components.Panel;
+import com.iyensoft.vaadin.flow.components.PanelVariant;
 import com.iyensoft.vaadin.flow.internal.components.builders.DefaultPanelConfigurator;
 import com.vaadin.flow.component.Component;
 
@@ -23,6 +24,16 @@ public interface PanelConfigurator<C extends PanelConfigurator<C>>
 
     C card();
 
+    C padding(boolean padding);
+
+    C background(PanelVariant.Background background);
+
+    C withThemeVariants(PanelVariant.Background... variants);
+
+    default C withoutPadding() {
+        return padding(false);
+    }
+
     static BasePanelConfigurator configure(Panel panel) {
         return new DefaultPanelConfigurator(panel);
     }
@@ -34,6 +45,7 @@ public interface PanelConfigurator<C extends PanelConfigurator<C>>
     interface HeaderBuilder<B extends PanelConfigurator<B>> extends HeaderConfigurator<HeaderBuilder<B>> {
         B add();
     }
+
     interface FooterBuilder<D extends PanelConfigurator<D>> extends FooterConfigurator<FooterBuilder<D>> {
         D add();
     }

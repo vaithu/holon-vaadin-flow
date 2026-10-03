@@ -17,7 +17,7 @@ package com.holonplatform.vaadin.flow.components.builders;
 
 import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.vaadin.flow.components.HasComponent;
-import com.holonplatform.vaadin.flow.components.utils.UIUtils;
+import com.holonplatform.vaadin.flow.components.utils.CoreUIUtils;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasComponents;
 
@@ -44,7 +44,7 @@ public interface HasComponentsConfigurator<C extends HasComponentsConfigurator<C
 	 * @return this
 	 */
 	default C add(HasComponent... components) {
-		return add(UIUtils.toComponents(components));
+		return add(CoreUIUtils.toComponents(components));
 	}
 
 	C addComponentAsFirst(Component component);

@@ -57,8 +57,6 @@ import com.vaadin.flow.data.provider.*;
 import com.vaadin.flow.data.renderer.LitRenderer;
 import com.vaadin.flow.data.renderer.Renderer;
 import com.vaadin.flow.function.ValueProvider;
-import lombok.Getter;
-import lombok.Setter;
 import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
@@ -151,8 +149,6 @@ public class TestBeanListing {
         }
     }
 
-    @Getter
-    @Setter
     public static class TestConstructorWithInstant {
         private Instant instant;
         public TestConstructorWithInstant(Instant instant) {
@@ -169,8 +165,6 @@ public class TestBeanListing {
     }
 
     /** Helper row bean used to project the instant_epoch column via BeanProjection. */
-    @Getter
-    @Setter
     public static class InstantEpochRow {
         @DataPath("instant_epoch")
         private Long instantEpoch;
@@ -1327,6 +1321,7 @@ public class TestBeanListing {
              java.sql.Statement statement = connection.createStatement()) {
             statement.execute("drop table if exists test_version_grid");
             statement.execute("create table test_version_grid (id bigint primary key, name varchar(100), version bigint default 0 not null)");
+            //noinspection SqlResolve
             statement.execute("create trigger test_version_grid_version_trigger before insert, update on test_version_grid for each row call \"com.holonplatform.vaadin.flow.test.TestBeanListing$VersionedTestBeanTrigger\"");
         }
 
@@ -1671,7 +1666,7 @@ public class TestBeanListing {
         }
     }
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @SuppressWarnings({ "unchecked", "rawtypes", "SqlResolve" })
     @Test
     public void testFilterInputFormIntegrationWithBeanListingMultipleInputTypes() throws Exception {
 

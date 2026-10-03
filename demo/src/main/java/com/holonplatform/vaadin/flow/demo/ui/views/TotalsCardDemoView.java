@@ -27,6 +27,7 @@ import java.util.Locale;
  *   <li>Muted (informational) value</li>
  *   <li>Grand-total closing row</li>
  *   <li>Full account-summary composition (all variants together)</li>
+ *   <li>Compact invoice summary using {@link TotalsCard.Variant#INVOICE}</li>
  *   <li>The dark "live appraisal" {@link TotalsCard.Variant#APPRAISAL} variant: eyebrow + editable
  *       highlight field, {@code TotalsGauge} ring, rows, LTV slider, term toggle and actions</li>
  *   <li>{@link TotalsCard.Variant#APPRAISAL} used for <strong>only</strong> the rows list (no
@@ -59,6 +60,8 @@ public class TotalsCardDemoView extends Div {
         examples.add(signedValuesExample());
         examples.add(mutedValueExample());
         examples.add(fullSummaryExample());
+        examples.add(invoiceExample());
+        examples.add(quoteExample());
         examples.add(appraisalExample());
         examples.add(appraisalRowsOnlyExample());
 
@@ -165,6 +168,70 @@ public class TotalsCardDemoView extends Div {
 
                 // Mute the informational recurring-fee row
                 totals.getRows().get(3).setValueMuted(true);
+                """);
+    }
+
+    private DemoExample invoiceExample() {
+        var preview = TotalsCard.builder()
+                .variant(TotalsCard.Variant.INVOICE)
+                .row("Subtotal", "€52,022.88")
+                .row("Volume discount (10%)", "−€5,202.29", TotalsRow.Variant.DISCOUNT)
+                .row("Implementation bundle", "€5,400.00")
+                .row("VAT (19%)", "€9,921.91", TotalsRow.Variant.TAX)
+                .row("Invoice total", "€62,142.50", TotalsRow.Variant.GRAND_TOTAL)
+                .row("Received (Jun 12)", "€0.00", TotalsRow.Variant.PAID)
+                .row("Balance due now", "€62,142.50", TotalsRow.Variant.DUE)
+                .termsNote("⏰ Late fee accrued: €382.41 (as of today)\n" +
+                        "If paid today, total due: €62,524.91")
+                .build();
+        preview.setWidth("24rem");
+
+        return new DemoExample("Invoice variant", preview, """
+                TotalsCard invoice = TotalsCard.builder()
+                    .variant(TotalsCard.Variant.INVOICE)
+                    .row("Subtotal", "€52,022.88")
+                    .row("Volume discount (10%)", "−€5,202.29", TotalsRow.Variant.DISCOUNT)
+                    .row("Implementation bundle", "€5,400.00")
+                    .row("VAT (19%)", "€9,921.91", TotalsRow.Variant.TAX)
+                    .row("Invoice total", "€62,142.50", TotalsRow.Variant.GRAND_TOTAL)
+                    .row("Received (Jun 12)", "€0.00", TotalsRow.Variant.PAID)
+                    .row("Balance due now", "€62,142.50", TotalsRow.Variant.DUE)
+                    .termsNote("⏰ Late fee accrued: €382.41 (as of today)\\n" +
+                            "If paid today, total due: €62,524.91")
+                    .build();
+                """);
+    }
+
+    private DemoExample quoteExample() {
+        var preview = TotalsCard.builder()
+                .variant(TotalsCard.Variant.INVOICE)
+                .row("Subtotal", "€52,022.88")
+                .row("Volume discount (10%)", "−€5,202.29", TotalsRow.Variant.DISCOUNT)
+                .row("Subtotal after discount", "€46,820.59")
+                .row("Implementation bundle", "€5,400.00")
+                .row("VAT (19%)", "€9,921.91", TotalsRow.Variant.TAX)
+                .row("Recurring annual fee", "+ €24,000/yr", TotalsRow.Variant.DEFAULT)
+                .row("Total · due", "€62,142.50", TotalsRow.Variant.GRAND_TOTAL)
+                .termsNote("3-year contract value: €186,427.50 · €17,800 saved with commit")
+                .build();
+        preview.getRows().get(5).setValueMuted(true);
+
+        return new DemoExample("Quote totals (invoice variant)", preview, """
+                TotalsCard quote = TotalsCard.builder()
+                    .variant(TotalsCard.Variant.INVOICE)
+                    .row("Subtotal", "€52,022.88")
+                    .row("Volume discount (10%)", "−€5,202.29", TotalsRow.Variant.DISCOUNT)
+                    .row("Subtotal after discount", "€46,820.59")
+                    .row("Implementation bundle", "€5,400.00")
+                    .row("VAT (19%)", "€9,921.91", TotalsRow.Variant.TAX)
+                    // Explicit DEFAULT disables "+" auto-detection (would be green)
+                    .row("Recurring annual fee", "+ €24,000/yr", TotalsRow.Variant.DEFAULT)
+                    .row("Total · due", "€62,142.50", TotalsRow.Variant.GRAND_TOTAL)
+                    .termsNote("3-year contract value: €186,427.50 · €17,800 saved with commit")
+                    .build();
+
+                // Informational recurring fee: muted value only
+                quote.getRows().get(5).setValueMuted(true);
                 """);
     }
 
@@ -369,4 +436,3 @@ public class TotalsCardDemoView extends Div {
                 """);
     }
 }
-

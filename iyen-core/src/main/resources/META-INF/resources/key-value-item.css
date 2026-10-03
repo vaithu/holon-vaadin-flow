@@ -17,6 +17,8 @@
  *
  * List variants:
  *   .kv-list--fields    - stacked label-above-value 2-column grid (field-display mode)
+ *   .kv-list--inventory - compact two-column inventory detail fields
+ *   .kv-list--supplier  - compact supplier drawer statistics
  *   .kv-list.kv-summary - no card chrome (transparent, no border/shadow)
  *   .kv-list.kv-dense   - compact row padding (all rows)
  *
@@ -429,6 +431,124 @@
     text-align:            start;
     max-width:             none;   /* field grid should fill its container */
     width:                 100%;
+}
+
+/* =======================================================================
+ * 15b. INVENTORY DETAIL VARIANT
+ *
+ *     Compact two-column field grid matching inventory/product detail cards.
+ * ======================================================================= */
+
+.kv-list--inventory {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.875rem;
+    padding: 0.875rem;
+    max-width: none;
+    width: 100%;
+    background: var(--surface, var(--color-surface, #ffffff));
+    border: 1px solid var(--line, var(--slate-200, #e4e9f0));
+    border-radius: 0.5rem;
+    box-shadow: none;
+}
+
+.kv-list--inventory .kv-item {
+    display: grid;
+    grid-template-columns: 8.125rem minmax(0, 1fr);
+    gap: 0.875rem;
+    align-items: baseline;
+    padding: 0.375rem 0;
+    border-bottom: 0;
+}
+
+.kv-list--inventory .kv-key-col,
+.kv-list--inventory .kv-value-col {
+    display: block;
+    width: auto;
+    min-width: 0;
+}
+
+.kv-list--inventory .kv-key-col {
+    flex: none;
+}
+
+.kv-list--inventory .kv-key {
+    display: block;
+    font-size: 0.78125rem;
+    font-weight: 400;
+    color: var(--text-mute, var(--slate-500, #5b6878));
+    line-height: 1.4;
+}
+
+.kv-list--inventory .kv-value-col {
+    text-align: start;
+}
+
+.kv-list--inventory .kv-value {
+    display: block;
+    font-size: 0.78125rem;
+    font-weight: 500;
+    color: var(--text, var(--slate-900, #0f1b2d));
+    text-align: start;
+    line-height: 1.4;
+}
+
+.kv-list--inventory .kv-value.kv-mono {
+    display: inline-block;
+    padding: 0.0625rem 0.3125rem;
+    border-radius: 0.1875rem;
+    background: var(--surface-2, var(--slate-50, #f8fafc));
+    font-size: 0.71875rem;
+    font-weight: 400;
+}
+
+.kv-list--inventory .kv-sep,
+.kv-list--inventory .kv-super {
+    display: none;
+}
+
+@media (max-width: 639px) {
+    .kv-list--inventory {
+        grid-template-columns: 1fr;
+    }
+
+    /* =======================================================================
+     * 15c. SUPPLIER DRAWER VARIANT
+     *
+     *     A compact label/value statistic list with dashed row separators.
+     * ======================================================================= */
+
+    .kv-list--supplier {
+        background: var(--surface, var(--color-surface, #ffffff));
+        border: 0;
+        border-radius: 0;
+        box-shadow: none;
+        max-width: none;
+        width: 100%;
+        padding: 0.875rem 1.125rem;
+    }
+
+    .kv-list--supplier .kv-item {
+        align-items: baseline;
+        padding: 0.375rem 0;
+        border-bottom: 1px dashed var(--line, var(--slate-200, #e4e9f0));
+    }
+
+    .kv-list--supplier .kv-item:last-child {
+        border-bottom: 0;
+    }
+
+    .kv-list--supplier .kv-key {
+        font-size: 0.75rem;
+        font-weight: 400;
+        color: var(--text-mute, var(--slate-500, #5b6878));
+    }
+
+    .kv-list--supplier .kv-value {
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: var(--text, var(--slate-900, #0f1b2d));
+    }
 }
 
 /* Each item is a stacked cell - flex-col */

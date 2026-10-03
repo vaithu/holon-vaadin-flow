@@ -5,12 +5,14 @@ import com.holonplatform.vaadin.flow.components.builders.ComponentConfigurator;
 import com.holonplatform.vaadin.flow.components.builders.HasEnabledConfigurator;
 import com.holonplatform.vaadin.flow.components.builders.HasSizeConfigurator;
 import com.holonplatform.vaadin.flow.components.builders.HasStyleConfigurator;
+import com.holonplatform.vaadin.flow.components.builders.HasThemeVariantConfigurator;
 
 import com.iyensoft.vaadin.flow.internal.components.builders.DefaultHeaderConfigurator;
 import com.iyensoft.vaadin.flow.components.Layout;
 import com.iyensoft.vaadin.flow.components.Breadcrumb;
 import com.iyensoft.vaadin.flow.components.BreadcrumbItem;
 import com.iyensoft.vaadin.flow.components.Header;
+import com.iyensoft.vaadin.flow.enums.HeaderVariant;
 import com.iyensoft.vaadin.flow.enums.HeadingLevel;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.menubar.MenuBar;
@@ -22,7 +24,8 @@ import java.util.function.Consumer;
 
 @SuppressWarnings("all")
 public interface HeaderConfigurator<C extends HeaderConfigurator<C>> extends ComponentConfigurator<C>,
-        HasSizeConfigurator<C>, HasStyleConfigurator<C>, HasEnabledConfigurator<C> {
+        HasSizeConfigurator<C>, HasStyleConfigurator<C>, HasEnabledConfigurator<C>,
+        HasThemeVariantConfigurator<HeaderVariant, C> {
 
     C prefix(Component... components);
 

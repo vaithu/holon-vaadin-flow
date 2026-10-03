@@ -220,6 +220,13 @@ public class DefaultBeanListing<T> extends AbstractItemListing<T, String> implem
         return getGrid().addColumn(item -> propertySet.getProperty(property).map(p -> p.present(propertySet.read(p, item))).orElse(null));
     }
 
+    @Override
+    protected String getMatrixValue(String property, T item) {
+        return propertySet.getProperty(property)
+                .map(p -> p.present(propertySet.read(p, item)))
+                .orElseThrow(() -> new IllegalArgumentException("No text presenter for matrix column " + property));
+    }
+
     /*
      * (non-Javadoc)
      * @see com.holonplatform.vaadin.flow.internal.components.AbstractItemListing#
@@ -633,6 +640,30 @@ public class DefaultBeanListing<T> extends AbstractItemListing<T, String> implem
     }
 
     public static class DefaultDatastoreBeanListingBuilder<T> implements DatastoreBeanListingBuilder<T> {
+
+        @Override
+        public DatastoreBeanListingBuilder<T> matrixView() {
+            builder.matrixView();
+            return this;
+        }
+
+        @Override
+        public DatastoreBeanListingBuilder<T> matrixView(int pageSize) {
+            builder.matrixView(pageSize);
+            return this;
+        }
+
+        @Override
+        public DatastoreBeanListingBuilder<T> matrixHeading(SerializableFunction<T, String> heading) {
+            builder.matrixHeading(heading);
+            return this;
+        }
+
+        @Override
+        public DatastoreBeanListingBuilder<T> matrixValue(String property, SerializableFunction<T, String> presenter) {
+            builder.matrixValue(property, presenter);
+            return this;
+        }
 
         private interface QueryConfigurator<T> {
 
@@ -1731,9 +1762,6 @@ public class DefaultBeanListing<T> extends AbstractItemListing<T, String> implem
     }
 
 }
-
-
-
 
 
 

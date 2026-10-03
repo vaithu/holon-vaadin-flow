@@ -7,7 +7,7 @@ import com.holonplatform.vaadin.flow.components.ItemListing;
 import com.holonplatform.vaadin.flow.components.PropertyListing;
 import com.holonplatform.vaadin.flow.components.Selectable;
 import com.holonplatform.vaadin.flow.components.builders.ButtonBuilder;
-import com.holonplatform.vaadin.flow.components.utils.UIUtils;
+import com.iyensoft.vaadin.flow.components.utils.UIUtils;
 import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasTheme;

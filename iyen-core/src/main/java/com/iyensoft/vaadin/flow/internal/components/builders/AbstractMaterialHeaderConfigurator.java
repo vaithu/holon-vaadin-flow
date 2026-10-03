@@ -47,4 +47,5 @@ public abstract class AbstractMaterialHeaderConfigurator<C extends MaterialHeade
     @Override public C responsiveAction(Component desktopComponent, String label, Runnable action) { getComponent().addResponsiveAction(desktopComponent, label, action); return getConfigurator(); }
     @Override public C viewMode(ViewMode viewMode) { getComponent().setViewMode(viewMode); return getConfigurator(); }
     @Override public C responsiveAction(ViewMode viewMode, Component desktopComponent, String label, Runnable action) { getComponent().addResponsiveAction(viewMode, desktopComponent, label, action); return getConfigurator(); }
+    @Override public C sticky(boolean sticky) { getComponent().setSticky(sticky); return getConfigurator(); }
 }

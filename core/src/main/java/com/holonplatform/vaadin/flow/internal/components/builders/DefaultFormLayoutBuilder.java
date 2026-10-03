@@ -16,7 +16,7 @@
 package com.holonplatform.vaadin.flow.internal.components.builders;
 
 import com.holonplatform.vaadin.flow.components.builders.FormLayoutBuilder;
-import com.holonplatform.vaadin.flow.components.utils.UIUtils;
+import com.holonplatform.vaadin.flow.components.utils.CoreUIUtils;
 import com.vaadin.flow.component.formlayout.FormLayout;
 
 /**
@@ -35,7 +35,7 @@ public class DefaultFormLayoutBuilder extends AbstractFormLayoutConfigurator<For
     public FormLayout build() {
         if (isAutoUpdateResponsiveStepColumnSizeEnabled()) {
             final int sum = getColumnSizeList().stream().mapToInt(Integer::intValue).sum();
-            getComponent().setResponsiveSteps(UIUtils.updateColumnValues(
+            getComponent().setResponsiveSteps(CoreUIUtils.updateColumnValues(
                     getComponent().getResponsiveSteps(), sum
             ));
         }

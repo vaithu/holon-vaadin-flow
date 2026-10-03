@@ -2,6 +2,7 @@ package com.iyensoft.vaadin.flow.internal.components.builders;
 
 import com.holonplatform.vaadin.flow.internal.components.builders.AbstractComponentConfigurator;
 
+import com.iyensoft.vaadin.flow.components.BreadcrumbItem;
 import com.iyensoft.vaadin.flow.components.builders.EntityCreationFormConfigurator;
 import com.iyensoft.vaadin.flow.components.EntityCreationForm;
 import com.iyensoft.vaadin.flow.components.FormStepCard;
@@ -26,7 +27,7 @@ public abstract class AbstractEntityCreationFormConfigurator<C extends EntityCre
         extends AbstractComponentConfigurator<EntityCreationForm, C>
         implements EntityCreationFormConfigurator<C> {
 
-    private final List<ListItem> breadcrumbItems = new ArrayList<>();
+    private final List<BreadcrumbItem> breadcrumbItems = new ArrayList<>();
     private String title;
     private String subtitle;
     private Component subtitleComponent;
@@ -45,10 +46,10 @@ public abstract class AbstractEntityCreationFormConfigurator<C extends EntityCre
     }
 
     @Override
-    public C breadcrumb(ListItem... items) {
-        if (items != null) {
-            for (ListItem item : items) {
-                if (item != null) breadcrumbItems.add(item);
+    public C breadcrumb(BreadcrumbItem... breadcrumbItems) {
+        if (breadcrumbItems != null) {
+            for (BreadcrumbItem item : breadcrumbItems) {
+                if (item != null) this.breadcrumbItems.add(item);
             }
         }
         return getConfigurator();

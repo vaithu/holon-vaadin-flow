@@ -16,9 +16,7 @@
 package com.iyensoft.vaadin.flow.components;
 
 import java.io.Serial;
-import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
 import com.vaadin.flow.component.dependency.StyleSheet;
-import com.vaadin.flow.component.html.Nav;
 
 /**
  * Root navigation element for a shadcn/ui-inspired Pagination control.
@@ -58,12 +56,10 @@ import com.vaadin.flow.component.html.Nav;
  * @see PaginationEllipsis
  */
 @StyleSheet("context://pagination.css")
-public class Pagination extends Nav {
+public class Pagination extends com.holonplatform.vaadin.flow.components.PaginationBase {
 
     @Serial
     private static final long serialVersionUID = 1L;
-
-    private final PaginationContent content;
 
     // -----------------------------------------------------------------------
     // Constructor
@@ -73,12 +69,7 @@ public class Pagination extends Nav {
      * Creates an empty Pagination nav with an inner {@link PaginationContent}.
      */
     public Pagination() {
-        addClassName("pagination");
-        getElement().setAttribute("role", "navigation");
-        getElement().setAttribute("aria-label",
-                LocalizationProvider.localize("Page navigation", "pagination.aria_label"));
-        this.content = new PaginationContent();
-        add(content);
+        super(new PaginationContent());
     }
 
     // -----------------------------------------------------------------------
@@ -92,6 +83,6 @@ public class Pagination extends Nav {
      * @return the content list (never null)
      */
     public PaginationContent getContent() {
-        return content;
+        return (PaginationContent) super.getContent();
     }
 }

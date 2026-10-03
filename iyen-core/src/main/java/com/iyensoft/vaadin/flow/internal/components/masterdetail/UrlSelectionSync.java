@@ -34,6 +34,8 @@ public final class UrlSelectionSync<T> implements java.io.Serializable {
     private final SerializableFunction<T, String> idExtractor;
     private final SerializableFunction<String, Optional<T>> itemLoader;
     private final String paramName;
+    private transient String preloadedId;
+    private transient T preloadedItem;
 
     /** Use {@link #builder()} instead. */
     UrlSelectionSync(SerializableFunction<T, String> idExtractor,
@@ -124,7 +126,30 @@ public final class UrlSelectionSync<T> implements java.io.Serializable {
      */
     public Optional<T> load(String idStr) {
         if (itemLoader == null || idStr == null || idStr.isBlank()) return Optional.empty();
+        if (preloadedItem != null && Objects.equals(preloadedId, idStr)) {
+            T item = preloadedItem;
+            clearPreloadedItem();
+            return Optional.of(item);
+        }
         return itemLoader.apply(idStr);
+    }
+
+    /**
+     * Resolves and caches an item for the next {@link #load(String)} call with the same ID.
+     * This supports route validation without making URL restoration query the backend twice.
+     *
+     * @param idStr item identifier
+     * @return the resolved item, or empty if the loader is unavailable or finds no item
+     */
+    public Optional<T> preload(String idStr) {
+        clearPreloadedItem();
+        if (itemLoader == null || idStr == null || idStr.isBlank()) return Optional.empty();
+        Optional<T> item = itemLoader.apply(idStr);
+        item.ifPresent(value -> {
+            preloadedId = idStr;
+            preloadedItem = value;
+        });
+        return item;
     }
 
     /**
@@ -139,5 +164,9 @@ public final class UrlSelectionSync<T> implements java.io.Serializable {
     private static boolean isMobile(ViewMode mode) {
         return mode != null && mode.isMobile();
     }
-}
 
+    private void clearPreloadedItem() {
+        preloadedId = null;
+        preloadedItem = null;
+    }
+}

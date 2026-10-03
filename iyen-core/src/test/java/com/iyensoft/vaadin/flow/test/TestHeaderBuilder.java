@@ -4,6 +4,7 @@ import com.iyensoft.vaadin.flow.components.builders.HeaderBuilder;
 import com.iyensoft.vaadin.flow.components.builders.HeaderConfigurator;
 import com.iyensoft.vaadin.flow.components.BreadcrumbItem;
 import com.iyensoft.vaadin.flow.components.Header;
+import com.iyensoft.vaadin.flow.enums.HeaderVariant;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.tabs.Tab;
@@ -36,6 +37,48 @@ class TestHeaderBuilder {
         Header header = HeaderBuilder.create("Dashboard").build();
         assertNotNull(header);
         assertTrue(header.getClassNames().contains("iyen-header"));
+    }
+
+    @Test
+    void smallAndTertiaryVariants_styleHeadingAndDetails() {
+        Header header = HeaderBuilder.create("Dashboard")
+                .details(new Span("Updated today"))
+                .withThemeVariants(HeaderVariant.SMALL, HeaderVariant.TERTIARY)
+                .build();
+
+        assertEquals("h4", heading(header).getElement().getTag());
+        assertFalse(heading(header).getClassNames().contains("font-size-xlarge"));
+        assertTrue(header.getClassNames().contains("iyen-header--small"));
+        assertTrue(header.getClassNames().contains("iyen-header--tertiary"));
+    }
+
+    @Test
+    void mediumAndLargeVariants_useDefaultHeadingLevels() {
+        Header medium = HeaderBuilder.create("Medium")
+                .withThemeVariants(HeaderVariant.MEDIUM)
+                .build();
+        assertEquals("h3", heading(medium).getElement().getTag());
+
+        Header large = HeaderBuilder.create("Large")
+                .withThemeVariants(HeaderVariant.LARGE)
+                .build();
+        assertEquals("h2", heading(large).getElement().getTag());
+    }
+
+    @Test
+    void laterSizeVariantReplacesEarlierSizeVariant() {
+        Header header = HeaderBuilder.create("Dashboard")
+                .withThemeVariants(HeaderVariant.SMALL, HeaderVariant.MEDIUM)
+                .build();
+
+        assertEquals("h3", heading(header).getElement().getTag());
+        assertFalse(header.getClassNames().contains("iyen-header--small"));
+        assertTrue(header.getClassNames().contains("iyen-header--medium"));
+    }
+
+    private static com.vaadin.flow.component.Component heading(Header header) {
+        return header.getColumnLayout().getComponentAt(0)
+                .getChildren().findFirst().orElseThrow();
     }
 
     // =========================================================================

@@ -1,7 +1,7 @@
 package com.holonplatform.vaadin.flow.internal.components.builders;
 
 import com.holonplatform.vaadin.flow.components.builders.FormResponsiveStepBuilder;
-import com.holonplatform.vaadin.flow.components.utils.UIUtils;
+import com.holonplatform.vaadin.flow.components.utils.CoreUIUtils;
 import com.holonplatform.vaadin.flow.internal.components.support.BreakPoint;
 import com.vaadin.flow.component.formlayout.FormLayout;
 
@@ -39,7 +39,7 @@ public class DefaultFormResponsiveStepBuilder
     public List<FormLayout.ResponsiveStep> build() {
 //        printResponsiveStepsValue();
         // Sort the array based on the minWidth in ascending order
-        responsiveSteps.sort(Comparator.comparingInt(UIUtils::parseMinWidth));
+        responsiveSteps.sort(Comparator.comparingInt(CoreUIUtils::parseMinWidth));
 //        printResponsiveStepsValue();
         return responsiveSteps;
     }

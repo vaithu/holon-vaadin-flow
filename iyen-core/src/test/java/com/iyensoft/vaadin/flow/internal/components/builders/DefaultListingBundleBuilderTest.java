@@ -3,9 +3,13 @@ package com.iyensoft.vaadin.flow.internal.components.builders;
 import com.iyensoft.vaadin.flow.components.Components;
 import com.iyensoft.vaadin.flow.components.ListingBundle;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.data.provider.Query;
+import com.vaadin.flow.data.provider.QuerySortOrder;
+import com.vaadin.flow.data.provider.SortDirection;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -96,6 +100,22 @@ class DefaultListingBundleBuilderTest {
 		assertThat(bundle.listing().getHiddenColumns()).extracting(Object::toString).containsExactly("lastName");
 	}
 
+	@Test
+	void managedFetch_updatesListingOwnedQueryContext() {
+		QuerySortOrder sort = new QuerySortOrder("lastName", SortDirection.DESCENDING);
+		ListingBundle<Person> bundle = Components.listing(Person.class)
+				.fetch((query, text, querySort) -> Stream.empty())
+				.build();
+
+		bundle.listing().getDataProvider()
+				.fetch(new Query<>(0, 10, List.of(sort), null, null))
+				.close();
+
+		assertThat(bundle.queryContext().searchText()).isEmpty();
+		assertThat(bundle.queryContext().getQueryFilter()).isNull();
+		assertThat(bundle.queryContext().getQuerySort()).isNotNull();
+	}
+
 	static class Person {
 		private String firstName;
 		private String lastName;
@@ -117,4 +137,3 @@ class DefaultListingBundleBuilderTest {
 		}
 	}
 }
-

@@ -1,9 +1,12 @@
 package com.iyensoft.vaadin.flow.components;
 
+import com.iyensoft.vaadin.flow.components.builders.EntityCreationFormBuilder;
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.breadcrumbs.Breadcrumbs;
+import com.vaadin.flow.component.breadcrumbs.BreadcrumbsItem;
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.html.H4;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -89,6 +92,7 @@ import java.io.Serializable;
  * @see StickyActionBar
  */
 @StyleSheet("context://entity-creation-form.css")
+@StyleSheet("context://utilities.css")
 public class EntityCreationForm extends Div {
 
     @Serial
@@ -115,14 +119,11 @@ public class EntityCreationForm extends Div {
 
     // ── Mutable DOM references ────────────────────────────────────────────
 
-    private Span  titleSpan;
-    private Span  subtitleSpan;
-    private Div   titleRow;
     private       Chip  draftBadgeChip;
     private Div   mainCol;
     private StickyActionBar actionBar;
     /** Reference to the page header — {@code null} when built by the legacy constructor. */
-    private Header pageHead;
+    private MaterialHeader pageHead;
 
     // ── Public no-arg constructor ──────────────────────────────────────────
 
@@ -132,27 +133,15 @@ public class EntityCreationForm extends Div {
      * configure via {@link com.iyensoft.vaadin.flow.components.builders.EntityCreationFormConfigurator}.
      */
     public EntityCreationForm() {
-        addClassName(CSS_ROOT);
 
-        this.titleSpan = new Span("");
-        this.titleRow  = new Div(titleSpan);
-        titleRow.addClassName("ecf__head-title");
-        this.draftBadgeChip = null;
+        this.pageHead = new MaterialHeader();
+        pageHead.setSticky(false);
 
-        this.subtitleSpan = new Span();
-        subtitleSpan.addClassName("ecf__head-sub");
-        subtitleSpan.setVisible(false);
+        this.mainCol = Components.div().styleName("d-body").build();
 
-        this.pageHead = new Header("");
-        pageHead.setHeadingFontSize(null);
-        pageHead.setHeading(titleRow);
-        pageHead.setDetails(subtitleSpan);
-        pageHead.withoutSticky();
-
-        this.mainCol = new Div();
-        mainCol.addClassName("ecf__main");
 
         this.actionBar = new StickyActionBar();
+        pageHead.addToTrailing(actionBar);
 
         // mainCol is added directly to the root: it used to sit inside an extra
         // ".ecf__body" Div whose only child it was. That wrapper contributed nothing
@@ -161,21 +150,9 @@ public class EntityCreationForm extends Div {
         // the browser to lay out. The padding now lives on .ecf__main itself, which
         // also fixes the legacy externally-assembled path below, where the wrapper
         // was never created and the sticky-bar space was therefore never reserved.
-        add(pageHead, mainCol, actionBar);
-    }
-
-    // ── Constructor (package-private) ─────────────────────────────────────
-
-    EntityCreationForm(Span titleSpan, Span subtitleSpan, Div titleRow,
-                       Chip draftBadgeChip, Div mainCol, StickyActionBar actionBar) {
-        addClassName(CSS_ROOT);
-        this.titleSpan      = titleSpan;
-        this.subtitleSpan   = subtitleSpan;
-        this.titleRow       = titleRow;
-        this.draftBadgeChip = draftBadgeChip;
-        this.mainCol        = mainCol;
-        this.actionBar      = actionBar;
-        this.pageHead       = null; // DOM was assembled externally by the legacy builder
+        Components.configure(this)
+                .add(pageHead, mainCol)
+                .styleName(CSS_ROOT);
     }
 
     /**
@@ -185,10 +162,11 @@ public class EntityCreationForm extends Div {
      * @param items breadcrumb list items; {@code null} or empty = no-op
      * @return this (fluent)
      */
-    public EntityCreationForm setBreadcrumbItems(java.util.List<com.vaadin.flow.component.html.ListItem> items) {
+    public EntityCreationForm setBreadcrumbItems(java.util.List<BreadcrumbsItem> items) {
         if (pageHead != null && items != null && !items.isEmpty()) {
-            Breadcrumb breadcrumb = new Breadcrumb();
-            breadcrumb.addWithSeparators(items.toArray(com.vaadin.flow.component.html.ListItem[]::new));
+            Breadcrumbs breadcrumb = new Breadcrumbs();
+//            breadcrumb.addWithSeparators(items.toArray(BreadcrumbItem[]::new));
+            items.forEach(breadcrumbItem -> breadcrumb.add(breadcrumbItem));
             pageHead.setBreadcrumb(breadcrumb);
         }
         return this;
@@ -203,7 +181,7 @@ public class EntityCreationForm extends Div {
      */
     public EntityCreationForm setPageHeaderActions(java.util.List<Component> actions) {
         if (pageHead != null && actions != null && !actions.isEmpty()) {
-            pageHead.setActions(actions.toArray(Component[]::new));
+            pageHead.addToTrailing(actions.toArray(Component[]::new));
         }
         return this;
     }
@@ -216,7 +194,7 @@ public class EntityCreationForm extends Div {
      * @return this (fluent)
      */
     public EntityCreationForm setHeader(String title) {
-        titleSpan.setText(title != null ? title : "");
+        pageHead.setHeadline(title != null ? title : "");
         return this;
     }
 
@@ -229,13 +207,7 @@ public class EntityCreationForm extends Div {
      * @return this (fluent)
      */
     public EntityCreationForm setSubtitle(String subtitle) {
-        subtitleSpan.getElement().removeAllChildren();
-        if (subtitle != null && !subtitle.isBlank()) {
-            subtitleSpan.setText(subtitle);
-            subtitleSpan.setVisible(true);
-        } else {
-            subtitleSpan.setVisible(false);
-        }
+        pageHead.setDetails(new H4(subtitle != null ? subtitle : ""));
         return this;
     }
 
@@ -247,13 +219,7 @@ public class EntityCreationForm extends Div {
      * @return this (fluent)
      */
     public EntityCreationForm setSubtitle(Component component) {
-        subtitleSpan.getElement().removeAllChildren();
-        if (component != null) {
-            subtitleSpan.add(component);
-            subtitleSpan.setVisible(true);
-        } else {
-            subtitleSpan.setVisible(false);
-        }
+        pageHead.setSubtitle(component);
         return this;
     }
 
@@ -279,7 +245,7 @@ public class EntityCreationForm extends Div {
                 draftBadgeChip = new Chip(badgeText);
                 draftBadgeChip.getElement().setAttribute("tabindex", "-1");
                 draftBadgeChip.getElement().getStyle().set("cursor", "default");
-                titleRow.add(draftBadgeChip);
+               pageHead.addToLeading(draftBadgeChip);
             } else {
                 draftBadgeChip.setLabel(badgeText);
                 draftBadgeChip.setVisible(true);

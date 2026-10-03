@@ -5,6 +5,7 @@ import com.holonplatform.vaadin.flow.components.Input;
 import com.holonplatform.vaadin.flow.components.utils.NotificationUtil;
 import com.holonplatform.vaadin.flow.demo.ui.DemoMainLayout;
 import com.iyensoft.vaadin.flow.components.*;
+import com.iyensoft.vaadin.flow.components.utils.UIUtils;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasValidation;
 import com.vaadin.flow.component.avatar.Avatar;
@@ -43,7 +44,7 @@ import java.util.Set;
  */
 @PageTitle("New Customer — CRM Demo")
 @Route(value = "new-customer-crm", layout = DemoMainLayout.class)
-@StyleSheet("context://new-customer-demo.css")
+//@StyleSheet("context://new-customer-demo.css")
 @StyleSheet("context://form-utils.css")
 public class NewCustomerDemoView extends Div implements BeforeLeaveObserver {
 
@@ -51,7 +52,6 @@ public class NewCustomerDemoView extends Div implements BeforeLeaveObserver {
     private boolean saved = false;
 
     public NewCustomerDemoView() {
-        addClassName("ncd");
 
         // Only extract the inputs that genuinely need to be accessible outside their panel:
         //   accountNameInput — drives the page title and avatar name reactively
@@ -133,9 +133,7 @@ public class NewCustomerDemoView extends Div implements BeforeLeaveObserver {
 
         EntityCreationForm form = Components.entityCreationForm()
                 .breadcrumb(
-                        new BreadcrumbItem(new Span("CRM")),
-                        new BreadcrumbItem(new Span("Customers")),
-                        breadcrumbPage)
+                )
                 .title("New customer")
                 .subtitle(FormViewUtils.requiredFieldsHint())
                 .draftBadge("Unsaved draft")
@@ -217,7 +215,7 @@ public class NewCustomerDemoView extends Div implements BeforeLeaveObserver {
                 })
                 .build();
 
-        add(form);
+        add(form,UIUtils.addDummyDiv());
     }
 
     // ─────────────────────────────────────────────────────────────────────────

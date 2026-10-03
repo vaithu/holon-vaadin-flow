@@ -1,5 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Outfit:wght@400;500;600;700&display=swap');
-
 /*
  * master-detail-v2.css
  *
@@ -30,31 +28,6 @@
     --mdl-selected-bg: rgba(24, 100, 255, 0.08);
     --mdl-selected-hover-bg: rgba(24, 100, 255, 0.15);
     --mdl-master-width: 340px;
-    --surface-0: #ffffff;
-    --surface-1: #f3f5f8;
-    --surface-2: #f8fafc;
-    --line: #e4e9f0;
-    --line-soft: #eef1f6;
-    --text-strong: #0f1b2d;
-    --text-mute: #5b6878;
-    --text-dim: #8a96a6;
-    --primary: #1576d3;
-    --primary-soft: #e6f1fb;
-    --success: #2e9a6a;
-    --success-soft: #e7f6ee;
-    --warn: #b8860b;
-    --warn-soft: #fbf3dc;
-    --danger: #d35a4b;
-    --danger-soft: #fdecec;
-    --violet: #8472eb;
-    --violet-soft: #efeafd;
-
-    /* CRM mockup typography — applied here so every MasterDetailLayout consumer
-     * gets the correct look regardless of whether the active theme defines
-     * --font-body (falls back to the literal Outfit stack otherwise). */
-    font-family: var(--font-body, 'Outfit', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
-    font-size: 14px;
-    line-height: 1.45;
 
     display: flex;
     flex-direction: column;
@@ -239,7 +212,7 @@
     background: var(--surface-0, #ffffff);
     color: var(--text-dim, #8a96a6);
     border-bottom: 1px solid var(--line, #e4e9f0);
-    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    font-family: var(--font-mono, ui-monospace, SFMono-Regular, Consolas, monospace);
     font-size: 11px;
     font-weight: 500;
     letter-spacing: 0.05em;

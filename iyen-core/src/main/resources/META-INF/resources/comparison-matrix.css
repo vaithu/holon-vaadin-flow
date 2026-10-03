@@ -1,0 +1,117 @@
+/* A native table preserves row/column headers while keeping wide comparisons scrollable. */
+.matrix {
+  overflow-x: auto;
+  --matrix-line: var(--line, #e4e9f0);
+  --matrix-line-soft: var(--line-soft, #eef1f6);
+  --matrix-surface: var(--surface-2, #f8fafc);
+  --matrix-text: var(--text, #0f1b2d);
+  --matrix-muted: var(--text-mute, #5b6878);
+  --matrix-accent: var(--success, #2e9a6a);
+  --matrix-accent-soft: var(--success-soft, #e6f5ee);
+}
+
+.matrix .mx-table {
+  min-width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-family: var(--font-body, 'Outfit', system-ui, sans-serif);
+}
+
+.matrix .mx-table th,
+.matrix .mx-table td {
+  padding: 10px 12px;
+  font-size: 12px;
+  text-align: center;
+  border-bottom: 1px solid var(--matrix-line-soft);
+  vertical-align: middle;
+}
+
+.matrix .mx-table thead th {
+  background: var(--matrix-surface);
+  border-bottom-color: var(--matrix-line);
+}
+
+.matrix .mx-table .label {
+  text-align: left;
+  font-weight: 500;
+  color: var(--matrix-text);
+  background: var(--matrix-surface);
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  min-width: 160px;
+  max-width: 200px;
+  border-right: 1px solid var(--matrix-line);
+}
+
+.matrix .mx-table thead .label {
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  font-size: 10.5px;
+  font-weight: 600;
+  color: var(--matrix-muted);
+}
+
+.matrix .mx-table .col-hd {
+  padding: 14px 10px;
+  min-width: 155px;
+  color: var(--matrix-text);
+}
+
+.matrix .mx-table .col-hd.win {
+  background: linear-gradient(180deg, color-mix(in srgb, var(--matrix-accent) 8%, transparent), transparent);
+  position: relative;
+}
+
+.matrix .mx-table .col-hd.closed {
+  background: var(--matrix-surface);
+  opacity: .6;
+}
+
+.matrix .mx-table .matrix-header-icon {
+  width: 36px;
+  height: 36px;
+  margin: 0 auto 6px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-weight: 700;
+  font-size: 13px;
+}
+.matrix .mx-table .matrix-header-title { font-size: 12px; font-weight: 600; }
+.matrix .mx-table .matrix-header-meta { font-size: 10.5px; color: var(--matrix-muted); }
+.matrix .mx-table .matrix-header-note { font-size: 11px; color: var(--matrix-accent); }
+
+.matrix .mx-table .val {
+  font-family: 'JetBrains Mono', var(--font-mono, monospace);
+  font-size: 12.5px;
+  font-weight: 500;
+}
+
+.matrix .mx-table .val.b,
+.matrix .mx-table .val .star { color: var(--matrix-accent); font-weight: 600; }
+.matrix .mx-table .val.w { color: var(--danger, #c0392b); font-weight: 600; }
+.matrix .mx-table .val .dash { color: var(--matrix-muted); }
+
+.matrix .mx-table .row-best td { background: color-mix(in srgb, var(--matrix-accent) 6%, transparent); }
+.matrix .mx-table .row-best .best-cell { background: var(--matrix-accent-soft); }
+.matrix .mx-table .row-best .label {
+  border-left: 3px solid var(--matrix-accent);
+  background: color-mix(in srgb, var(--matrix-accent) 6%, transparent);
+}
+
+.matrix .mx-table tbody tr:hover td { background: var(--matrix-surface); }
+
+.matrix .mx-table .action-row td,
+.matrix .mx-table .action-row .label,
+.matrix .mx-table .award-row td,
+.matrix .mx-table .award-row .label {
+  background: var(--matrix-accent-soft);
+  border-top: 2px solid var(--matrix-accent);
+}
+.matrix .mx-table .action-row .label,
+.matrix .mx-table .award-row .label { color: var(--matrix-accent); }
+.matrix .mx-table .action-row td > *,
+.matrix .mx-table .award-row td > * { font-size: 11px; }

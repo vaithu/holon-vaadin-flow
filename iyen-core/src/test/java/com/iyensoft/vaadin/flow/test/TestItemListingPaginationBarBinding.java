@@ -180,6 +180,7 @@ class TestItemListingPaginationBarBinding extends AbstractSessionTest {
         @Override public void hide(String p)                            { throw new UnsupportedOperationException(); }
         @Override public void addIndexColumn()                          { throw new UnsupportedOperationException(); }
         @Override public void addIndexColumn(String p)                  { throw new UnsupportedOperationException(); }
+        @Override public java.util.Optional<com.vaadin.flow.component.grid.Grid.Column<String>> getIndexColumn() { return java.util.Optional.empty(); }
         @Override public <V extends Component> com.vaadin.flow.component.grid.Grid.Column<String> addComponentColumn(com.vaadin.flow.function.ValueProvider<String, V> cp) { throw new UnsupportedOperationException(); }
         @Override public com.vaadin.flow.shared.Registration addItemClickListener(com.vaadin.flow.component.ComponentEventListener<com.vaadin.flow.component.grid.ItemClickEvent<String>> l) { throw new UnsupportedOperationException(); }
         @Override public com.vaadin.flow.shared.Registration addSelectionListener(com.vaadin.flow.data.selection.SelectionListener<com.vaadin.flow.component.grid.Grid<String>, String> l) { throw new UnsupportedOperationException(); }

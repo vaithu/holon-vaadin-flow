@@ -20,7 +20,7 @@ import com.holonplatform.vaadin.flow.components.PropertyListing;
 import com.holonplatform.vaadin.flow.components.ItemListing;
 
 import com.holonplatform.core.internal.utils.FormatUtils;
-import com.holonplatform.vaadin.flow.components.utils.UIUtils;
+import com.iyensoft.vaadin.flow.components.utils.UIUtils;
 import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.checkbox.Checkbox;
@@ -33,6 +33,7 @@ import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.provider.SortDirection;
+import com.iyensoft.vaadin.flow.internal.components.builders.ListingQueryContextTracker;
 import org.vaadin.lineawesome.LineAwesomeIcon;
 
 import java.util.ArrayList;
@@ -126,6 +127,7 @@ public final class ListingBundle<T> extends Div {
      * Shown when search/filter is active but yields no results. {@code null} = feature disabled.
      */
     private final Empty noResultsState;
+    private final ListingQueryContextTracker queryContextTracker;
 
     public ListingBundle(ItemListing<T, ?> listing,
                          ItemListingPaginationBar<T, ?> bar,
@@ -135,7 +137,8 @@ public final class ListingBundle<T> extends Div {
                          String title,
                          boolean paginatedMode,
                          Empty emptyState,
-                         Empty noResultsState) {
+                         Empty noResultsState,
+                         ListingQueryContextTracker queryContextTracker) {
         super();
         this.listing = listing;
         this.bar = bar;
@@ -144,6 +147,7 @@ public final class ListingBundle<T> extends Div {
         this.paginatedMode = paginatedMode;
         this.emptyState = emptyState;
         this.noResultsState = noResultsState;
+        this.queryContextTracker = queryContextTracker;
 
         // When explicitly starting in paginated mode, switch the selector (which defaults to
         // virtual-scroll) so the first data fetch uses page-based offsets and fixed count.
@@ -166,16 +170,20 @@ public final class ListingBundle<T> extends Div {
             if (emptyState != null && noResultsState != null) {
                 // Both states: wrap them in a single container so the Grid's one empty-state
                 // slot is occupied by the wrapper; onDataFetched() toggles each child's
-                // visibility inside the wrapper to show the correct state.
-                noResultsState.setVisible(false); // emptyState is shown by default
+                // visibility inside the wrapper to show the correct state. Neither state is
+                // visible until the first backend fetch has reported its actual row count.
+                emptyState.setVisible(false);
+                noResultsState.setVisible(false);
                 var wrapper = Components.div()
                         .styleName("listing-empty-state-wrapper")
                         .add(emptyState, noResultsState)
                         .build();
                 listing.setEmptyStateComponent(wrapper);
             } else {
-                // Single state: set it directly; the Grid shows/hides it automatically.
-                listing.setEmptyStateComponent(emptyState != null ? emptyState : noResultsState);
+                // Single state: keep it hidden until the first backend fetch reports zero rows.
+                Empty state = emptyState != null ? emptyState : noResultsState;
+                state.setVisible(false);
+                listing.setEmptyStateComponent(state);
             }
         }
 
@@ -262,6 +270,13 @@ public final class ListingBundle<T> extends Div {
      */
     public Grid<T> grid() {
         return listing.getGrid();
+    }
+
+    /**
+     * Returns the criteria used by the most recent managed fetch.
+     */
+    public ListingQueryContext queryContext() {
+        return queryContextTracker.current();
     }
 
     /**
@@ -641,4 +656,3 @@ public final class ListingBundle<T> extends Div {
         dialog.open();
     }
 }
-

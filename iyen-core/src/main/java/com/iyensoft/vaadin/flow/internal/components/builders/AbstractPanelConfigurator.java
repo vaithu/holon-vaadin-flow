@@ -10,6 +10,7 @@ import com.holonplatform.vaadin.flow.internal.components.builders.AbstractCompon
 import com.iyensoft.vaadin.flow.components.Footer;
 import com.iyensoft.vaadin.flow.components.Header;
 import com.iyensoft.vaadin.flow.components.Panel;
+import com.iyensoft.vaadin.flow.components.PanelVariant;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasEnabled;
 import com.vaadin.flow.component.HasSize;
@@ -55,6 +56,31 @@ public abstract class AbstractPanelConfigurator<C extends PanelConfigurator<C>>
         return getConfigurator();
     }
 
+    @Override
+    public C padding(boolean padding) {
+        if (padding) {
+            getComponent().removeClassName("iyen-panel--no-padding");
+        } else {
+            getComponent().addClassName("iyen-panel--no-padding");
+        }
+        return getConfigurator();
+    }
+
+    @Override
+    public C background(PanelVariant.Background background) {
+        getComponent().setBackground(background);
+        return getConfigurator();
+    }
+
+    @Override
+    public C withThemeVariants(PanelVariant.Background... variants) {
+        if (variants != null) {
+            for (PanelVariant.Background variant : variants) {
+                background(variant);
+            }
+        }
+        return getConfigurator();
+    }
 
     @Override
     public C footer(Component footer) {

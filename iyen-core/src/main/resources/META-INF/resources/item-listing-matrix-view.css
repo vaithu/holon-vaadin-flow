@@ -1,0 +1,9 @@
+/* A switch and pagination bound to a transposed ItemListing need distinct layout slots. */
+.item-listing-matrix-view {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  gap: 12px;
+}
+.item-listing-matrix-view > vaadin-switch { align-self: flex-end; }
+.item-listing-matrix-view > .listing-pagination-bar { align-self: center; }

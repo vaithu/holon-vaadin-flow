@@ -34,6 +34,7 @@ import com.vaadin.flow.data.provider.CallbackDataProvider;
 import com.vaadin.flow.data.provider.Query;
 import com.vaadin.flow.data.provider.QuerySortOrder;
 import com.vaadin.flow.data.renderer.LitRenderer;
+import com.iyensoft.vaadin.flow.internal.components.builders.ListingQueryContextTracker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -561,6 +562,7 @@ public final class PropertyListingBundleBuilder {
         sb.withOptions(new ArrayList<>(pageSizes));
         sb.withDefaultSize(defaultPageSize);
         sb.withPaginationBar(bar);
+        ListingQueryContextTracker queryContextTracker = new ListingQueryContextTracker();
 
         if (fetchCallback != null || filteredFetchCallback != null) {
             // Misconfiguration guard: withFilterPanel() declared but only plain FetchCallback provided.
@@ -579,6 +581,7 @@ public final class PropertyListingBundleBuilder {
                 String text = fSearchEnabled ? fSearch.getValue() : "";
                 QueryFilter qf = fPanel != null ? fPanel.getQueryFilter().orElse(null) : null;
                 QuerySort sort = toQuerySort(q.getSortOrders());
+                queryContextTracker.update(new ListingQueryContext(text, qf, sort));
                 if (fFiltCb != null) {
                     return fFiltCb.fetch((Query<PropertyBox, Void>) q, text, qf, sort);
                 }
@@ -609,7 +612,8 @@ public final class PropertyListingBundleBuilder {
 
         ListingBundle<PropertyBox> bundle = (ListingBundle<PropertyBox>) new ListingBundle(listing, bar, selector, toolbar, panel,
                                                                                            gridHeaderTitle, paginatedMode,
-                                                                                           emptyState, noResultsState);
+                                                                                           emptyState, noResultsState,
+                                                                                           queryContextTracker);
 
         // Wire item-count listener for empty-state visibility after each fetch.
         if (selector != null && (emptyState != null || noResultsState != null)) {
@@ -735,4 +739,3 @@ public final class PropertyListingBundleBuilder {
         col.addClassName("action-column");
     }
 }
-

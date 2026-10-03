@@ -2,6 +2,7 @@ package com.iyensoft.vaadin.flow.internal.components.builders;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -69,6 +70,7 @@ public abstract class AbstractMasterDetailConfigurator<T, C extends MasterDetail
 
     /** Optional per-item, always-on row status CSS part name provider (see {@link #withRowPartNameGenerator}). */
     private SerializableFunction<T, String> rowPartNameGenerator;
+    private MasterDetailConfigurator.ContextualItemIndexProvider<T> contextualItemIndexProvider;
 
     /** Bean-typed constructor. */
     protected AbstractMasterDetailConfigurator(MasterDetailLayout<T> component, Class<T> beanType) {
@@ -254,6 +256,14 @@ public abstract class AbstractMasterDetailConfigurator<T, C extends MasterDetail
     }
 
     @Override
+    public C withListingItemIndexProvider(
+            MasterDetailConfigurator.ContextualItemIndexProvider<T> itemIndexProvider) {
+        this.contextualItemIndexProvider = Objects.requireNonNull(itemIndexProvider,
+                "itemIndexProvider must not be null");
+        return getConfigurator();
+    }
+
+    @Override
     public C mobile(Div master) {
         getComponent().add(master);
         return getConfigurator();
@@ -267,7 +277,9 @@ public abstract class AbstractMasterDetailConfigurator<T, C extends MasterDetail
 
     @Override
     public C master(Consumer<MasterDetailConfigurator.MasterOptions<T>> configure) {
-        DefaultMasterOptions<T> opts = new DefaultMasterOptions<>(new Div(), getComponent(), beanType, propertySet, highlightPartName, accentColorProvider, rowPartNameGenerator);
+        DefaultMasterOptions<T> opts = new DefaultMasterOptions<>(new Div(), getComponent(), beanType,
+                propertySet, highlightPartName, accentColorProvider, rowPartNameGenerator,
+                contextualItemIndexProvider);
         configure.accept(opts);
         opts.wire();
         return getConfigurator();
@@ -431,13 +443,15 @@ public abstract class AbstractMasterDetailConfigurator<T, C extends MasterDetail
         private final String highlightPartName;
         private final SerializableFunction<T, String> accentColorProvider;
         private final SerializableFunction<T, String> rowPartNameGenerator;
+        private final MasterDetailConfigurator.ContextualItemIndexProvider<T> contextualItemIndexProvider;
         private SerializableFunction<T, ?> selectionKeyExtractor;
         private ListingBundle<?> builtBundle;
 
         DefaultMasterOptions(Div div, MasterDetailLayout<T> layout,
                              Class<T> beanType, PropertySet<?> propertySet,
                              String highlightPartName, SerializableFunction<T, String> accentColorProvider,
-                             SerializableFunction<T, String> rowPartNameGenerator) {
+                             SerializableFunction<T, String> rowPartNameGenerator,
+                             MasterDetailConfigurator.ContextualItemIndexProvider<T> contextualItemIndexProvider) {
             super(div);
             this.layout = layout;
             this.beanType = beanType;
@@ -445,6 +459,7 @@ public abstract class AbstractMasterDetailConfigurator<T, C extends MasterDetail
             this.highlightPartName = highlightPartName;
             this.accentColorProvider = accentColorProvider;
             this.rowPartNameGenerator = rowPartNameGenerator;
+            this.contextualItemIndexProvider = contextualItemIndexProvider;
             div.addClassNames("master-view", "master-view-content");
         }
 
@@ -533,6 +548,10 @@ public abstract class AbstractMasterDetailConfigurator<T, C extends MasterDetail
                                 rowPartNameGenerator);
                 layout.setMasterBundle(typedBundle);
                 layout.setMasterHighlighter(highlighter);
+                if (contextualItemIndexProvider != null) {
+                    layout.setItemIndexProvider((item, query) ->
+                            contextualItemIndexProvider.indexOf(item, typedBundle.queryContext()));
+                }
 
                 typedBundle.listing().addItemClickListener(event ->
                         layout.selectItem(event.getItem()));

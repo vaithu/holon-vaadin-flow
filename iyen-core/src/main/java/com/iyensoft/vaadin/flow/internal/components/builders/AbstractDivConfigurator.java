@@ -23,7 +23,7 @@ import com.holonplatform.vaadin.flow.components.HasComponent;
 import com.iyensoft.vaadin.flow.components.builders.DivConfigurator;
 import com.holonplatform.vaadin.flow.components.builders.LabelBuilder;
 import com.iyensoft.vaadin.flow.components.builders.LayoutBuilder;
-import com.holonplatform.vaadin.flow.components.utils.UIUtils;
+import com.iyensoft.vaadin.flow.components.utils.UIUtils;
 import com.holonplatform.vaadin.flow.internal.lumo.ColumnSpan;
 import com.holonplatform.vaadin.flow.internal.lumo.FlexDirection;
 import com.holonplatform.vaadin.flow.internal.lumo.Gap;

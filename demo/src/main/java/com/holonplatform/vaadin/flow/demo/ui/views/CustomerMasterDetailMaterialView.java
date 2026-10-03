@@ -1,10 +1,13 @@
 package com.holonplatform.vaadin.flow.demo.ui.views;
 
-import com.holonplatform.core.query.QueryFilter;
+import com.holonplatform.vaadin.flow.components.builders.ColumnBuilder;
+import com.holonplatform.vaadin.flow.components.builders.RowBuilder;
+import com.holonplatform.vaadin.flow.components.support.ColSpan;
 import com.iyensoft.vaadin.flow.components.Components;
 import com.holonplatform.vaadin.flow.components.builders.LitRendererBuilder;
 import com.holonplatform.vaadin.flow.components.builders.LitRendererBuilder.MobileListItemBuilder.StatusVariant;
 import com.holonplatform.vaadin.flow.demo.data.entity.Product;
+import com.holonplatform.vaadin.flow.demo.data.service.CustomerDetailService;
 import com.holonplatform.vaadin.flow.demo.data.service.ProductService;
 import com.holonplatform.vaadin.flow.demo.ui.DemoMainLayout;
 import com.iyensoft.vaadin.flow.components.Alert.Variant;
@@ -19,15 +22,12 @@ import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.avatar.Avatar;
 import com.vaadin.flow.component.card.Card;
 import com.vaadin.flow.component.card.CardVariant;
-import com.vaadin.flow.component.grid.Grid;
-import com.vaadin.flow.component.grid.GridVariant;
+import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
-import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.data.renderer.LitRenderer;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
@@ -43,47 +43,38 @@ import java.util.Optional;
 /**
  * Customer 360 demo rebuilt as a pixel-faithful port of the {@code customer-detail.html} mockup.
  *
- * <p>The view carries <strong>no stylesheet of its own</strong>: every visual token — the Outfit /
- * JetBrains Mono type stack, the CRM palette, card shadows and the {@code .mli-*} master-row
- * geometry — already ships with the framework components it composes ({@code master-detail-v2.css},
- * {@code mobile-list-lit-renderer.css}, {@code material-header.css}, {@code hero-strip.css},
- * {@code panel.css}, …), each auto-loaded via its component's {@code @StyleSheet}. Matching the
- * mockup is therefore purely a matter of configuration, not of overriding CSS.</p>
+ * <p>Framework stylesheets own component structure and behavior. This view's scoped stylesheet
+ * owns its CRM palette, density, and typography so those application choices do not leak into
+ * every {@code MasterDetailLayout} consumer.</p>
  */
 @PageTitle("Customer 360 (Material) - Holon Demo")
 @Route(value = "customer-master-detail-material", layout = DemoMainLayout.class)
+@StyleSheet("context://customer-master-detail-material.css")
 public class CustomerMasterDetailMaterialView extends Div implements BeforeEnterObserver {
 
-    /** Portfolio-wide counters shown in the master header, mirroring the mockup's filter rail. */
-    private static final int TOTAL_CUSTOMERS = 342;
-
     private final transient ProductService productService;
+    private final transient CustomerDetailService customerDetailService;
+    private final MasterDetailLayout<Product> layout;
 
-    /** Criteria of the most recent listing fetch, replayed by the item-index provider. */
-    private transient String lastFetchText;
-    private transient QueryFilter lastFetchFilter;
+    Avatar avatar;
+    Span heading;
+    Span subtitle;
+    BreadcrumbPage numberPage;
+    BreadcrumbPage namePage;
+    HorizontalLayout tags;
 
-    /**
-     * The product resolved by {@link #beforeEnter}, handed to the URL-sync item loader so the
-     * deep link costs a single lookup rather than one per validation and restore.
-     */
-    private transient Product preloadedProduct;
-
-    private Avatar avatar;
-    private Span heading;
-    private Span subtitle;
-    private BreadcrumbPage numberPage;
-    private BreadcrumbPage namePage;
-    private HorizontalLayout tags;
-
-    public CustomerMasterDetailMaterialView(ProductService productService) {
+    public CustomerMasterDetailMaterialView(ProductService productService,
+                                            CustomerDetailService customerDetailService) {
         this.productService = productService;
+        this.customerDetailService = customerDetailService;
 
         ViewMode viewMode = ViewModeContext.getCurrent().orElse(ViewMode.DESKTOP);
+        layout = buildLayout(viewMode);
 
         Components.configure(this)
+                .styleName("customer-master-detail-material")
                 .fullHeight()
-                .add(buildLayout(viewMode));
+                .add(layout);
     }
 
     /**
@@ -91,44 +82,28 @@ public class CustomerMasterDetailMaterialView extends Div implements BeforeEnter
      * malformed link renders {@link NotFoundErrorView} with a real 404 status instead of
      * silently falling back to the first row.
      *
-     * <p>Validating here — during navigation, before the view's content is built — means a
-     * bad link never constructs the grid or issues a listing fetch. The resolved product is
-     * cached for the URL-sync item loader, so a <em>valid</em> deep link still costs exactly
-     * one lookup.</p>
+     * <p>The view instance is constructed before this callback. Validation still happens before
+     * navigation completes and before the attached listing performs its first fetch. A resolved
+     * product is cached for URL restore, so a valid deep link costs exactly one lookup.</p>
      */
     @Override
     public void beforeEnter(BeforeEnterEvent event) {
-        preloadedProduct = null;
         String id = event.getLocation().getQueryParameters()
                 .getSingleParameter("id").orElse(null);
         if (id == null || id.isBlank()) {
             return;
         }
-        Optional<Product> product;
         try {
-            product = productService.findById(Long.parseLong(id));
-        } catch (NumberFormatException e) {
-            product = Optional.empty();
+            if (layout.preloadFromUrl(id).isEmpty()) {
+                event.rerouteToError(NotFoundException.class, "No customer with id " + id);
+            }
+        } catch (NumberFormatException exception) {
+            event.rerouteToError(NotFoundException.class, "Invalid customer id " + id);
         }
-        if (product.isEmpty()) {
-            event.rerouteToError(NotFoundException.class, "No customer with id " + id);
-            return;
-        }
-        preloadedProduct = product.get();
     }
 
-    /** Serves the item cached by {@link #beforeEnter} once, then falls back to the service. */
-    private Optional<Product> loadById(String id) {
-        Product cached = preloadedProduct;
-        if (cached != null && id.equals(String.valueOf(cached.getId()))) {
-            preloadedProduct = null;
-            return Optional.of(cached);
-        }
-        try {
-            return productService.findById(Long.parseLong(id));
-        } catch (NumberFormatException e) {
-            return Optional.empty();
-        }
+    Optional<Product> loadById(String id) {
+        return productService.findById(Long.parseLong(id));
     }
 
     private MasterDetailLayout<Product> buildLayout(ViewMode mode) {
@@ -137,8 +112,9 @@ public class CustomerMasterDetailMaterialView extends Div implements BeforeEnter
                 .withMobileSheet(Sheet.Side.RIGHT)
                 .withUrlSync(product -> String.valueOf(product.getId()), this::loadById)
                 .withInitialItem(productService::findFirst)
-                .withItemIndexProvider((item, query) ->
-                        productService.indexOf(item, lastFetchText, lastFetchFilter, query.getSortOrders())
+                .withListingItemIndexProvider((item, context) ->
+                        productService.indexOf(item, context.searchText(),
+                                        context.getQueryFilter(), context.getQuerySort())
                                 .orElse(null))
                 .withAutoSelect()
                 .master(master -> master
@@ -154,14 +130,14 @@ public class CustomerMasterDetailMaterialView extends Div implements BeforeEnter
                                 .mobileViewHeader("Customer", "open AR")
                                 .mobileViewColumn(mobileColumn())
                                 .search("Search customer #, name, VAT...")
+                                .emptyState(EmptyStates.noItems(
+                                        "No customers found",
+                                        "Add a customer to start building your portfolio."))
+                                .noResultsState(EmptyStates.noResults())
                                 .withToolbarCustomizer(toolbar -> toolbar.optionsMenu(false))
-                                .fetch((query, text, filter, sort) -> {
-                                    // Remembered so withItemIndexProvider can count against
-                                    // exactly the criteria this fetch used (see indexOf).
-                                    lastFetchText = text;
-                                    lastFetchFilter = filter;
-                                    return productService.fetch(query.getOffset(), query.getLimit(), text, filter, sort);
-                                }))
+                                .fetch((query, text, filter, sort) ->
+                                        productService.fetch(query.getOffset(), query.getLimit(),
+                                                text, filter, sort)))
                         .selectionKey(Product::getId))
                 .lazyDetail(detail -> detail
                         .materialHeader(header -> header
@@ -172,6 +148,7 @@ public class CustomerMasterDetailMaterialView extends Div implements BeforeEnter
                                 .headline(detailHeading())
                                 .subtitle(detailSubtitle())
                                 .tags(detailTags())
+                                .sticky()
                                 .actions(detailActions()))
                         .withDetailSync(this::syncDetail)
                         .content(detailTabs()))
@@ -183,7 +160,7 @@ public class CustomerMasterDetailMaterialView extends Div implements BeforeEnter
     /** The mockup's segmented filter rail, rendered by the framework's chip styling. */
     private Component masterFilters() {
         return Components.chipGroup()
-                .addChip("All", TOTAL_CUSTOMERS, true)
+                .addChip("All", (int) productService.count(null), true)
                 .addChip("★ T1", 28)
                 .addChip("★ T2", 64)
                 .addChip("Trial", 18)
@@ -227,56 +204,47 @@ public class CustomerMasterDetailMaterialView extends Div implements BeforeEnter
     }
 
     private Span detailHeading() {
-        heading = new Span("Select a customer");
+        heading = Components.span().text("Select a customer").build();
         return heading;
     }
 
     private Span detailSubtitle() {
-        subtitle = new Span("Open AR and health snapshot");
+        subtitle = Components.span().text("Open AR and health snapshot").build();
         return subtitle;
     }
 
     private Component detailTags() {
-        tags = Components.hl().spacing().build();
-        tags.setAlignItems(FlexComponent.Alignment.CENTER);
+        tags = Components.hl()
+                .spacing()
+                .alignItems(FlexComponent.Alignment.CENTER)
+                .build();
         return tags;
     }
 
     private Component[] detailActions() {
         return new Component[]{
                 Components.button().icon(VaadinIcon.PRINT).tertiary()
-                        .styleName("btn--icon")
+                        .iconRounded()
                         .build(),
-                Components.button().icon(VaadinIcon.COPY).tertiary().build(),
-                Components.button().icon(VaadinIcon.DOWNLOAD_ALT).tertiary().build(),
+                Components.button().icon(VaadinIcon.COPY).tertiary().iconRounded().build(),
+                Components.button().icon(VaadinIcon.DOWNLOAD_ALT).tertiary().iconRounded().build(),
                 Components.button().text("Send via WhatsApp").icon(VaadinIcon.COMMENT).build(),
                 Components.button().text("Re-send dunning").icon(VaadinIcon.ENVELOPE).primary().build()
         };
     }
 
     private Component detailTabs() {
-        LazyTabsBuilder builder = LazyTabsBuilder.create()
-                .withEagerTab("Overview", new OverviewTab())
-                .withLazyTab("Orders", 3, OrdersTab::new)
-                .withLazyTab("Invoices", 12, InvoicesTab::new)
-                .withLazyTab("Activity", 42, ActivityTab::new)
-                .withLazyTab("Files", 6, FilesTab::new);
-
-        Tabs tabs = builder.selectedIndex(0).build();
-        tabs.setWidthFull();
-        Component content = builder.getContentContainer();
-        content.getElement().getStyle().set("width", "100%");
-        VerticalLayout result = new VerticalLayout(tabs, content);
-        result.setPadding(false);
-        result.setSpacing(false);
-        result.setWidthFull();
-        // The detail body stretches its children; without this the tab content
-        // shrinks to fit and the panels no longer span the detail column.
-        result.setAlignItems(FlexComponent.Alignment.STRETCH);
-        return result;
+        Div tabs = Components.div().build();
+        LazyTabsBuilder.create(tabs)
+                .withEagerTabContents("Overview", new OverviewTab())
+                .withLazyTab("Orders", () -> ordersList(customerDetailService))
+                .withLazyTab("Invoices", () -> invoicesList(customerDetailService))
+                .withLazyTabContents("Activity", () -> new ActivityTab(customerDetailService))
+                .withLazyTab("Files", () -> filesList(customerDetailService));
+        return tabs;
     }
 
-    private void syncDetail(Product product) {
+    void syncDetail(Product product) {
         avatar.setName(product.getName());
         heading.setText(customerName(product));
         subtitle.setText(customerNumber(product)
@@ -412,100 +380,96 @@ public class CustomerMasterDetailMaterialView extends Div implements BeforeEnter
 
     // ── Card scaffolding ──────────────────────────────────────────────────────
 
-    private static Div section(String title, Component... content) {
-        return stretch(Components.panel().header(title).content(content).card().build());
-    }
-
-    /** Panel whose header carries the mockup's right-aligned affordance ("Edit", "+ Add address"). */
-    private static Div section(String title, String actionLabel, Component... content) {
-        HorizontalLayout header = Components.hl().spacing().build();
-        header.setWidthFull();
-        header.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
-        header.setAlignItems(FlexComponent.Alignment.CENTER);
-        header.add(Components.span().styleName("section-heading").text(title).build(),
-                Components.button().text(actionLabel).tertiaryInline().small().build());
-        return stretch(Components.panel().header(header).content(content).card().build());
-    }
-
-    /**
-     * Makes a card fill the detail column. {@code .iyen-panel} is {@code align-items: flex-start}
-     * and carries its own margin, so stretching the cross axis — rather than forcing
-     * {@code width: 100%} — keeps the card flush with its siblings without overflowing the margin.
-     */
-    private static <C extends Component> C stretch(C component) {
-        component.getElement().getStyle().set("align-self", "stretch");
-        return component;
-    }
-
-    /** A bordered mini-card — the mockup's address and contact blocks. */
-    private static Card block(String caption, String title, String... lines) {
-        Card card = Components.card()
-                .title(Components.divLabel().text(title))
-                .subtitle(new Span(caption))
+    private static Component sectionAction(String label) {
+        return Components.button()
+                .text(label)
+                .tertiaryInline()
+                .small()
+                .onClick(event -> Components.notification()
+                        .error()
+                        .text("Not implemented")
+                        .build()
+                        .open())
                 .build();
-        card.addThemeVariants(CardVariant.LUMO_OUTLINED);
-        for (String line : lines) {
-            // Block-level so each address line keeps its own row, as in the mockup.
-            card.add(new Div(new Span(line)));
-        }
-        return card;
     }
 
-    private static HorizontalLayout blockRow(Component... blocks) {
-        HorizontalLayout row = Components.hl().spacing().build();
-        row.setWidthFull();
-        for (Component block : blocks) {
-            row.add(block);
-            row.setFlexGrow(1, block);
+    /** A bordered mini-panel — the mockup's address and contact blocks. */
+    private static Component block(String caption, String title, String... lines) {
+        Component[] content = new Component[lines.length];
+        for (int i = 0; i < lines.length; i++) {
+            content[i] = Components.div()
+                    .add(Components.span().text(lines[i]).build())
+                    .build();
         }
-        return row;
+
+        return Components.detailPanel(title)
+                .details(new Span(caption))
+                .content(content)
+                .background(PanelVariant.Background.SURFACE_2)
+                .build();
+    }
+
+    private static Div blockRow(Component... blocks) {
+        RowBuilder row = RowBuilder.create().styleName("gap-m");
+        for (Component block : blocks) {
+            row.add(ColumnBuilder.create()
+                    .span(ColSpan.COL_12)
+                    .at(ViewMode.TABLET, 2)
+                    .add(block));
+        }
+        return row.build();
     }
 
     // ── Tabs ──────────────────────────────────────────────────────────────────
 
-    private static final class OverviewTab extends VerticalLayout implements DetailSyncAware<Product> {
+    static final class OverviewTab extends Div implements DetailSyncAware<Product> {
 
         /**
          * The mockup's 360 strip is metrics-only: the thumbnail, star and tag rail it shows in the
          * reference screenshot live in the page header above, so no {@link HeroStrip.Header} is set.
          */
-        private final HeroStrip hero = Components.heroStrip().variant(HeroStrip.Variant.DARK).build();
+        private final HeroStrip hero = Components.heroStrip()
+                .variant(HeroStrip.Variant.DARK)
+                .emptyState("No account metrics available.")
+                .fullWidth()
+                .build();
 
         private final EntityFormPanel<Product> accountForm = EntityFormPanel.<Product>bean(Product.class)
                 .readOnly()
                 .responsiveSteps(steps -> steps.mobile(1).tablet(2).desktop(3))
                 .properties("name", "category", "price", "active", "createdDate")
+                .autoLabels(true)
                 .build();
 
         private final ArAgingBar aging = Components.arAgingBar()
                 .header(header -> header.title("AR aging").variant(ArAgingBar.Variant.INFO))
+                .emptyState("No AR aging data available.")
+                .fullWidth()
                 .build();
-        private final TotalsCard totals = TotalsCard.builder().build();
+        private final TotalsCard totals = TotalsCard.builder()
+                .emptyState("No totals available.")
+                .fullWidth()
+                .build();
 
-        private final Div billTo = new Div();
-        private final Div addresses = new Div();
-        private final Div contacts = new Div();
+        private final Div billTo = Components.div().fullWidth().build();
+        private final Div addresses = Components.div().fullWidth().build();
+        private final Div contacts = Components.div().fullWidth().build();
 
         OverviewTab() {
-            setWidthFull();
-            setPadding(false);
-            setSpacing(false);
-            hero.setWidthFull();
-            aging.setWidthFull();
-            totals.setWidthFull();
-            billTo.setWidthFull();
-            addresses.setWidthFull();
-            contacts.setWidthFull();
-            // The hero strip has no margin of its own; match the panels' so the column aligns.
-            hero.getStyle().set("margin", "var(--lumo-space-m)");
-            hero.getStyle().set("width", "auto");
-            stretch(hero);
-            add(hero,
-                    section("Account & terms", "Edit", billTo, accountForm),
-                    section("Addresses", "+ Add address", addresses),
-                    section("AR aging", aging),
-                    section("Contacts", contacts),
-                    section("YTD totals", totals));
+            Components.configure(this)
+                    .fullWidth()
+                    .add(hero,
+                    Components.detailPanel("Addresses")
+                            .actions(sectionAction("+ Add address"))
+                            .content(addresses)
+                            .build(),
+                    Components.detailPanel("Account & terms")
+                            .actions(sectionAction("Edit"))
+                            .content(billTo, accountForm)
+                            .build(),
+                    Components.detailPanel("AR aging").content(aging).build(),
+                    Components.detailPanel("Contacts").content(contacts).build(),
+                    Components.detailPanel("YTD totals").content(totals).build());
         }
 
         @Override
@@ -564,12 +528,15 @@ public class CustomerMasterDetailMaterialView extends Div implements BeforeEnter
                     .title(Components.divLabel().text(product.getName()))
                     .subtitle(new Span(vatId(product) + " · Landsberger Straße 410, " + city(product)))
                     .headerSuffix(Components.button().text("View 360 →").tertiaryInline().small().build())
+                    .fullWidth()
                     .build();
             card.addThemeVariants(CardVariant.LUMO_HORIZONTAL, CardVariant.LUMO_OUTLINED);
-            card.setWidthFull();
             return card;
         }
     }
+
+    // ── List tabs ─────────────────────────────────────────────────────────────
+    // Each loader is the single source for both the tab rows and its badge counter.
 
     private record OrderRow(String order, String date, String status, String amount) {
     }
@@ -580,110 +547,76 @@ public class CustomerMasterDetailMaterialView extends Div implements BeforeEnter
     private record FileRow(String file, String type, String uploaded, String size) {
     }
 
-    private static final class OrdersTab extends VerticalLayout implements DetailSyncAware<Product> {
-        private final Grid<OrderRow> grid = grid(OrderRow.class, "order", "date", "status", "amount");
-
-        OrdersTab() {
-            setWidthFull();
-            setPadding(false);
-            setSpacing(false);
-            add(section("Open orders", grid));
-        }
-
-        @Override
-        public void onItemSelected(Product product) {
-            grid.setItems(List.of(
-                    new OrderRow("SO-2026-" + String.format("%04d", product.getId() * 10 + 1), "14 Sep 2026",
-                            "In fulfilment", money(price(product).multiply(BigDecimal.valueOf(3)))),
-                    new OrderRow("SO-2026-" + String.format("%04d", product.getId() * 10 + 2), "02 Sep 2026",
-                            "Confirmed", money(price(product).multiply(BigDecimal.valueOf(2))))));
-        }
+    static DetailList<Product, OrderRow> ordersList(CustomerDetailService service) {
+        return Components.<Product, OrderRow>detailList("Open orders", OrderRow.class,
+                        product -> service.findOpenOrders(product).stream()
+                                .map(row -> new OrderRow(row.order(), row.date(), row.status(), row.amount()))
+                                .toList())
+                .emptyState("No open orders.", "This customer has no open orders.")
+                .column(OrderRow::order, "Order")
+                .column(OrderRow::date, "Date")
+                .column(OrderRow::status, "Status")
+                .column(OrderRow::amount, "Amount")
+                .build();
     }
 
-    private static final class InvoicesTab extends VerticalLayout implements DetailSyncAware<Product> {
-        private final Grid<InvoiceRow> grid = grid(InvoiceRow.class, "invoice", "dueDate", "status", "balance");
-
-        InvoicesTab() {
-            setWidthFull();
-            setPadding(false);
-            setSpacing(false);
-            add(section("Invoices", grid));
-        }
-
-        @Override
-        public void onItemSelected(Product product) {
-            grid.setItems(List.of(
-                    new InvoiceRow("INV-2026-" + String.format("%04d", product.getId()), "28 Sep 2026",
-                            overdue(product) ? "14d overdue" : "Open", openAr(product)),
-                    new InvoiceRow("INV-2026-" + String.format("%04d", product.getId() + 30), "12 Oct 2026",
-                            "Scheduled", money(price(product)))));
-        }
+    static DetailList<Product, InvoiceRow> invoicesList(CustomerDetailService service) {
+        return Components.<Product, InvoiceRow>detailList("Invoices", InvoiceRow.class,
+                        product -> service.findInvoices(product).stream()
+                                .map(row -> new InvoiceRow(row.invoice(), row.dueDate(), row.status(), row.balance()))
+                                .toList())
+                .emptyState("No invoices.", "This customer has no invoices.")
+                .column(InvoiceRow::invoice, "Invoice")
+                .column(InvoiceRow::dueDate, "Due date")
+                .column(InvoiceRow::status, "Status")
+                .column(InvoiceRow::balance, "Balance")
+                .build();
     }
 
-    private static final class ActivityTab extends VerticalLayout implements DetailSyncAware<Product> {
-        private final TimelineStepper activity = Components.timelineStepper()
+    static DetailList<Product, FileRow> filesList(CustomerDetailService service) {
+        return Components.<Product, FileRow>detailList("Files", FileRow.class,
+                        product -> service.findFiles(product).stream()
+                                .map(row -> new FileRow(row.file(), row.type(), row.uploaded(), row.size()))
+                                .toList())
+                .emptyState("No files uploaded.", "Upload a file to keep customer documents together.")
+                .column(FileRow::file, "File")
+                .column(FileRow::type, "Type")
+                .column(FileRow::uploaded, "Uploaded")
+                .column(FileRow::size, "Size")
+                .build();
+    }
+
+    static final class ActivityTab extends Div implements DetailSyncAware<Product> {
+        private final TimelineStepper timeline = Components.timelineStepper()
                 .pageSize(10).hasMore(false).width("100%").build();
+        private final Empty emptyState = EmptyStates.relatedItems("No activity recorded");
+        private final CustomerDetailService service;
 
-        ActivityTab() {
-            setWidthFull();
-            setPadding(false);
-            setSpacing(false);
-            add(section("Activity", activity));
+        ActivityTab(CustomerDetailService service) {
+            this.service = service;
+            Components.configure(this).fullWidth()
+                    .add(Components.detailPanel("Activity")
+                            .content(timeline, emptyState)
+                            .build());
+            emptyState.setVisible(false);
         }
 
         @Override
         public void onItemSelected(Product product) {
-            activity.setItems(List.of(
-                    new AuditEntry("1", "2h ago", "System", "SEPA DD scheduled")
-                            .detail(openAr(product)).severity(Severity.SUCCESS),
-                    new AuditEntry("2", "Yesterday", owner(product), "Order shipped partial")
-                            .severity(Severity.INFO),
-                    new AuditEntry("3", "4 days ago", "System", "Dunning +7 sent")
-                            .severity(Severity.WARNING)));
+            List<CustomerDetailService.Activity> entries = service.findActivity(product);
+            timeline.setItems(entries.stream()
+                    .map(entry -> {
+                        AuditEntry audit = new AuditEntry(entry.id(), entry.time(),
+                                entry.actor(), entry.description());
+                        if (entry.detail() != null) {
+                            audit.detail(entry.detail());
+                        }
+                        return audit.severity(Severity.valueOf(entry.severity()));
+                    })
+                    .toList());
+            timeline.setVisible(!entries.isEmpty());
+            emptyState.setVisible(entries.isEmpty());
         }
-    }
-
-    private static final class FilesTab extends VerticalLayout implements DetailSyncAware<Product> {
-        private final Grid<FileRow> grid = grid(FileRow.class, "file", "type", "uploaded", "size");
-
-        FilesTab() {
-            setWidthFull();
-            setPadding(false);
-            setSpacing(false);
-            add(section("Files", grid));
-        }
-
-        @Override
-        public void onItemSelected(Product product) {
-            grid.setItems(List.of(
-                    new FileRow("Master agreement " + customerNumber(product) + ".pdf", "PDF", "12 Sep 2026", "412 KB"),
-                    new FileRow("NDA + DPA bundle.pdf", "PDF", "08 Sep 2026", "2.1 MB"),
-                    new FileRow("Account forecast.xlsx", "XLSX", "01 Sep 2026", "84 KB")));
-        }
-    }
-
-    private static <T> Grid<T> grid(Class<T> type, String... properties) {
-        Grid<T> grid = new Grid<>(type, false);
-        for (String property : properties) {
-            grid.addColumn(item -> value(item, property)).setHeader(title(property)).setAutoWidth(true).setFlexGrow(1);
-        }
-        grid.addThemeVariants(GridVariant.LUMO_COMPACT, GridVariant.LUMO_NO_BORDER, GridVariant.LUMO_ROW_STRIPES);
-        grid.setAllRowsVisible(true);
-        grid.setWidthFull();
-        return grid;
-    }
-
-    private static String value(Object record, String property) {
-        try {
-            return String.valueOf(record.getClass().getMethod(property).invoke(record));
-        } catch (ReflectiveOperationException exception) {
-            throw new IllegalArgumentException("Unknown record property: " + property, exception);
-        }
-    }
-
-    private static String title(String property) {
-        String spaced = property.replaceAll("([A-Z])", " $1");
-        return spaced.substring(0, 1).toUpperCase(Locale.ROOT) + spaced.substring(1);
     }
 
 }

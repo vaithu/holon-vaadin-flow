@@ -4,7 +4,7 @@ import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.vaadin.flow.components.css.Right;
 import com.holonplatform.vaadin.flow.components.css.WhiteSpace;
 import com.holonplatform.vaadin.flow.components.css.Wide;
-import com.holonplatform.vaadin.flow.components.utils.UIUtils;
+import com.holonplatform.vaadin.flow.components.utils.CoreUIUtils;
 import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.html.Div;
@@ -87,7 +87,7 @@ public class ListItem extends FlexBoxLayout {
     }
 
     public void setWhiteSpace(WhiteSpace whiteSpace) {
-        UIUtils.setWhiteSpace(whiteSpace, this);
+        CoreUIUtils.setWhiteSpace(whiteSpace, this);
     }
 
     public void setReverse(boolean reverse) {

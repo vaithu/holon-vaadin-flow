@@ -29,7 +29,7 @@ import com.holonplatform.vaadin.flow.components.builders.BeanPropertyInputFormBu
 import com.holonplatform.vaadin.flow.components.builders.ButtonConfigurator;
 import com.holonplatform.vaadin.flow.components.builders.FormResponsiveStepBuilder;
 import com.holonplatform.vaadin.flow.components.builders.PropertyInputFormBuilder;
-import com.holonplatform.vaadin.flow.components.utils.UIUtils;
+import com.iyensoft.vaadin.flow.components.utils.UIUtils;
 import com.holonplatform.vaadin.flow.components.support.ViewMode;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.Focusable;

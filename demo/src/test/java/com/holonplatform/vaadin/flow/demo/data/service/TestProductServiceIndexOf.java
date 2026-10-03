@@ -5,20 +5,19 @@ import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.math.BigDecimal;
-import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 
 import com.holonplatform.core.query.QueryFilter;
+import com.holonplatform.core.query.QuerySort;
 import com.holonplatform.core.internal.query.filter.OperationQueryFilter;
 import com.holonplatform.core.internal.query.filter.OperationQueryFilter.FilterOperator;
+import com.holonplatform.core.property.PathProperty;
 import com.holonplatform.vaadin.flow.demo.data.entity.Product;
-import com.vaadin.flow.data.provider.QuerySortOrder;
-import com.vaadin.flow.data.provider.SortDirection;
 
 /**
- * Unit tests for {@link ProductService#precedingFilter(Product, List)} — the predicate that
+ * Unit tests for {@link ProductService#precedingFilter(Product, QuerySort)} — the predicate that
  * turns "where does this row sit in the listing?" into a single range {@code COUNT}.
  *
  * <p>This is the Grid's {@code ItemIndexProvider} input: a wrong operator or a wrong column
@@ -39,8 +38,8 @@ class TestProductServiceIndexOf {
         return p;
     }
 
-    private static List<QuerySortOrder> sort(String column, SortDirection direction) {
-        return List.of(new QuerySortOrder(column, direction));
+    private static QuerySort sort(String column, QuerySort.SortDirection direction) {
+        return QuerySort.of(PathProperty.create(column, Object.class), direction);
     }
 
     /** Asserts the filter is a strict comparison on {@code path} against {@code value}. */
@@ -70,12 +69,6 @@ class TestProductServiceIndexOf {
 
     @Test
     void noSortOrders_countsByNameAscending_matchingTheListingDefault() {
-        assertComparison(ProductService.precedingFilter(product(), List.of()),
-                "name", "Widget", true);
-    }
-
-    @Test
-    void nullSortOrders_countsByNameAscending() {
         assertComparison(ProductService.precedingFilter(product(), null),
                 "name", "Widget", true);
     }
@@ -84,49 +77,49 @@ class TestProductServiceIndexOf {
 
     @Test
     void nameAscending() {
-        assertComparison(ProductService.precedingFilter(product(), sort("name", SortDirection.ASCENDING)),
+        assertComparison(ProductService.precedingFilter(product(), sort("name", QuerySort.SortDirection.ASCENDING)),
                 "name", "Widget", true);
     }
 
     @Test
     void nameDescending() {
-        assertComparison(ProductService.precedingFilter(product(), sort("name", SortDirection.DESCENDING)),
+        assertComparison(ProductService.precedingFilter(product(), sort("name", QuerySort.SortDirection.DESCENDING)),
                 "name", "Widget", false);
     }
 
     @Test
     void categoryAscending() {
-        assertComparison(ProductService.precedingFilter(product(), sort("category", SortDirection.ASCENDING)),
+        assertComparison(ProductService.precedingFilter(product(), sort("category", QuerySort.SortDirection.ASCENDING)),
                 "category", "Tools", true);
     }
 
     @Test
     void categoryDescending() {
-        assertComparison(ProductService.precedingFilter(product(), sort("category", SortDirection.DESCENDING)),
+        assertComparison(ProductService.precedingFilter(product(), sort("category", QuerySort.SortDirection.DESCENDING)),
                 "category", "Tools", false);
     }
 
     @Test
     void idAscending() {
-        assertComparison(ProductService.precedingFilter(product(), sort("id", SortDirection.ASCENDING)),
+        assertComparison(ProductService.precedingFilter(product(), sort("id", QuerySort.SortDirection.ASCENDING)),
                 "id", 42L, true);
     }
 
     @Test
     void idDescending() {
-        assertComparison(ProductService.precedingFilter(product(), sort("id", SortDirection.DESCENDING)),
+        assertComparison(ProductService.precedingFilter(product(), sort("id", QuerySort.SortDirection.DESCENDING)),
                 "id", 42L, false);
     }
 
     @Test
     void priceAscending() {
-        assertComparison(ProductService.precedingFilter(product(), sort("price", SortDirection.ASCENDING)),
+        assertComparison(ProductService.precedingFilter(product(), sort("price", QuerySort.SortDirection.ASCENDING)),
                 "price", new BigDecimal("19.99"), true);
     }
 
     @Test
     void priceDescending() {
-        assertComparison(ProductService.precedingFilter(product(), sort("price", SortDirection.DESCENDING)),
+        assertComparison(ProductService.precedingFilter(product(), sort("price", QuerySort.SortDirection.DESCENDING)),
                 "price", new BigDecimal("19.99"), false);
     }
 
@@ -134,9 +127,9 @@ class TestProductServiceIndexOf {
 
     @Test
     void compositeSort_isNotExpressibleAsARangeCount() {
-        List<QuerySortOrder> composite = List.of(
-                new QuerySortOrder("category", SortDirection.ASCENDING),
-                new QuerySortOrder("name", SortDirection.ASCENDING));
+        QuerySort composite = QuerySort.of(
+                sort("category", QuerySort.SortDirection.ASCENDING),
+                sort("name", QuerySort.SortDirection.ASCENDING));
 
         assertTrue(ProductService.precedingFilter(product(), composite).isEmpty(),
                 "A two-column sort needs a compound predicate; the caller must skip the scroll instead");
@@ -145,12 +138,14 @@ class TestProductServiceIndexOf {
     @Test
     void unsupportedColumn_yieldsNoPredicate() {
         // 'active' is a boolean: there is no useful strict ordering predicate for it.
-        assertTrue(ProductService.precedingFilter(product(), sort("active", SortDirection.ASCENDING)).isEmpty());
+        assertTrue(ProductService.precedingFilter(product(),
+                sort("active", QuerySort.SortDirection.ASCENDING)).isEmpty());
     }
 
     @Test
     void unknownColumn_yieldsNoPredicate() {
-        assertTrue(ProductService.precedingFilter(product(), sort("createdDate", SortDirection.ASCENDING)).isEmpty());
+        assertTrue(ProductService.precedingFilter(product(),
+                sort("createdDate", QuerySort.SortDirection.ASCENDING)).isEmpty());
     }
 
     @Test
@@ -159,7 +154,8 @@ class TestProductServiceIndexOf {
         Product noName = product();
         noName.setName(null);
 
-        assertTrue(ProductService.precedingFilter(noName, sort("name", SortDirection.ASCENDING)).isEmpty());
+        assertTrue(ProductService.precedingFilter(noName,
+                sort("name", QuerySort.SortDirection.ASCENDING)).isEmpty());
     }
 
     @Test
@@ -167,6 +163,7 @@ class TestProductServiceIndexOf {
         Product noPrice = product();
         noPrice.setPrice(null);
 
-        assertTrue(ProductService.precedingFilter(noPrice, sort("price", SortDirection.ASCENDING)).isEmpty());
+        assertTrue(ProductService.precedingFilter(noPrice,
+                sort("price", QuerySort.SortDirection.ASCENDING)).isEmpty());
     }
 }

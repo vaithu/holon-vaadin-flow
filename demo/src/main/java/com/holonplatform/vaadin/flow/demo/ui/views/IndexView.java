@@ -61,6 +61,12 @@ public class IndexView extends Div {
                 new Entry("ComponentView",
                         "Semantic <main> page section with addH2() and addPreview() helpers for documentation layouts.",
                         ComponentViewDemoView.class),
+                new Entry("ComparisonMatrix",
+                        "Scrollable comparison table with arbitrary column headers, criteria rows, highlights and actions.",
+                        ComparisonMatrixDemoView.class),
+                new Entry("ItemListing Matrix",
+                        "Toggle an ItemListing between its Grid and a paginated, transposed record comparison.",
+                        ItemListingMatrixDemoView.class),
                 new Entry("Empty",
                         "Empty-state placeholder with icon/illustration, title, description, and action slots.",
                         EmptyDemoView.class),
@@ -166,5 +172,3 @@ public class IndexView extends Div {
         return card;
     }
 }
-
-

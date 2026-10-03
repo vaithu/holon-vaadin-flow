@@ -37,7 +37,7 @@ import com.holonplatform.vaadin.flow.components.css.CSSUtility;
 import com.holonplatform.vaadin.flow.components.events.*;
 import com.holonplatform.vaadin.flow.components.events.ItemClickEvent;
 import com.holonplatform.vaadin.flow.components.utils.StyleSheetSupport;
-import com.holonplatform.vaadin.flow.components.utils.UIUtils;
+import com.holonplatform.vaadin.flow.components.utils.CoreUIUtils;
 import com.holonplatform.vaadin.flow.data.ItemListingDataProviderAdapter;
 import com.holonplatform.vaadin.flow.data.ItemListingLazyDataProviderAdapter;
 import com.holonplatform.vaadin.flow.data.ItemSort;
@@ -120,6 +120,7 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
      * Grid
      */
     private final Grid<T> grid;
+    private ItemListingMatrix<T, P> matrixView;
 
     /**
      * Data provider
@@ -271,6 +272,7 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
      */
     private transient EditableItemListingSection<P> cachedHeaderSection;
     private transient EditableItemListingSection<P> cachedFooterSection;
+    private Column<T> indexColumn;
 //    private boolean autoCreateColumns = true;
 //    private final MobileColumn mobileColumn  = new MobileColumn();
 
@@ -321,6 +323,9 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
         ObjectUtils.argumentNotNull(dataProvider, "DataProvider must be not null");
         this.dataProvider = ItemListingDataProviderAdapter.adapt(dataProvider);
         getGrid().setDataProvider(this.dataProvider);
+        if (matrixView != null) {
+            matrixView.refresh();
+        }
     }
 
     /*
@@ -354,6 +359,9 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
         ObjectUtils.argumentNotNull(backEndDataProvider, "DataProvider must be not null");
         this.backEndDataProvider = ItemListingLazyDataProviderAdapter.adapt(backEndDataProvider);
         getGrid().setDataProvider(this.backEndDataProvider);
+        if (matrixView != null) {
+            matrixView.refresh();
+        }
     }
 
     /*
@@ -371,12 +379,20 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
 
     @Override
     public GridLazyDataView<T> setItems(CallbackDataProvider.FetchCallback<T, Void> fetchCallback) {
-        return getGrid().setItems(fetchCallback);
+        GridLazyDataView<T> view = getGrid().setItems(fetchCallback);
+        if (matrixView != null) {
+            matrixView.refresh();
+        }
+        return view;
     }
 
     public GridLazyDataView<T> setItems(CallbackDataProvider.FetchCallback<T, Void> fetchCallback,
                                         CallbackDataProvider.CountCallback<T, Void> countCallback) {
-        return getGrid().setItems(fetchCallback, countCallback);
+        GridLazyDataView<T> view = getGrid().setItems(fetchCallback, countCallback);
+        if (matrixView != null) {
+            matrixView.refresh();
+        }
+        return view;
     }
 
     @Override
@@ -457,7 +473,20 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
      */
     @Override
     public Component getComponent() {
-        return getGrid();
+        return matrixView == null ? getGrid() : matrixView;
+    }
+
+    @Override
+    public Optional<ItemListingMatrix<T, P>> getMatrixView() {
+        return Optional.ofNullable(matrixView);
+    }
+
+    protected void setMatrixView(ItemListingMatrix<T, P> matrixView) {
+        this.matrixView = matrixView;
+    }
+
+    protected String getMatrixValue(P property, T item) {
+        throw new IllegalArgumentException("No text presenter for matrix column " + property);
     }
 
     /*
@@ -468,7 +497,7 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
      */
     @Override
     public void setVisible(boolean visible) {
-        getGrid().setVisible(visible);
+        getComponent().setVisible(visible);
     }
 
     /*
@@ -478,7 +507,7 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
      */
     @Override
     public boolean isVisible() {
-        return getGrid().isVisible();
+        return getComponent().isVisible();
     }
 
     /*
@@ -760,12 +789,22 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
 
     @Override
     public void addIndexColumn(P id) {
-        String columnKey = addGridColumn(id);
-        Column<T> column = getGrid().getColumnByKey(columnKey);
+        configureIndexColumn(getGrid().getColumnByKey(addGridColumn(id)));
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public void addIndexColumn() {
+        final Column<T> rowIndex = (Column<T>) getGrid().addColumn(item -> "").setKey("rowIndex").setHeader("#ID");
+        indexColumn = rowIndex;
+        indexColumn.addClassName("bay-num");
+        configureIndexColumn(rowIndex);
+    }
+
+    private void configureIndexColumn(Column<T> column) {
         column.setHeader("#ID");
         column.setWidth("50px");
         column.setFrozen(true);
-
         executeIndexColumnJs(column);
         displayIndexColumnAsFirst(column);
     }
@@ -785,14 +824,11 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
             ));
     }
 
+
+
     @Override
-    public void addIndexColumn() {
-        final Grid.Column<?> rowIndex = getGrid().addColumn(item -> "").setKey("rowIndex").setHeader("#ID");
-        rowIndex.setWidth("50px");
-        rowIndex.setFrozen(true);
-        final Column<T> column = getGrid().getColumnByKey(rowIndex.getKey());
-        executeIndexColumnJs(column);
-        displayIndexColumnAsFirst(column);
+    public Optional<Column<T>> getIndexColumn() {
+        return Optional.ofNullable(indexColumn);
     }
 
     @Override
@@ -971,7 +1007,7 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
         if (!toggleableColumns.isEmpty()) {
             Column<T> settingColumn = getGrid().addColumn(box -> "").setWidth("auto").setFlexGrow(0);
             getGrid().getHeaderRows().getFirst().getCell(settingColumn)
-                    .setComponent(UIUtils.createMenuToggle(toggleableColumns));
+                    .setComponent(CoreUIUtils.createMenuToggle(toggleableColumns));
         } else {
             throw new IllegalArgumentException("No columns added to toggleableColumns map");
         }
@@ -2805,6 +2841,10 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
 
         private boolean frozen;
         private boolean toggleableColumns;
+        private boolean matrixEnabled;
+        private int matrixPageSize = 5;
+        private SerializableFunction<T, String> matrixHeading;
+        private final Map<P, SerializableFunction<T, String>> matrixValues = new HashMap<>();
         @SuppressWarnings("unused") // set via configurator but not yet consumed
         private boolean removeAllColumns;
 
@@ -2815,6 +2855,34 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
             this.styleConfigurator = new DefaultHasStyleConfigurator(instance.getGrid());
             this.enabledConfigurator = new DefaultHasEnabledConfigurator(instance.getGrid());
 
+        }
+
+        @Override
+        public C matrixView() {
+            matrixEnabled = true;
+            return getConfigurator();
+        }
+
+        @Override
+        public C matrixView(int pageSize) {
+            if (pageSize < 1 || pageSize > 10) {
+                throw new IllegalArgumentException("Matrix page size must be between 1 and 10");
+            }
+            matrixPageSize = pageSize;
+            return matrixView();
+        }
+
+        @Override
+        public C matrixHeading(SerializableFunction<T, String> heading) {
+            matrixHeading = Objects.requireNonNull(heading, "heading");
+            return matrixView();
+        }
+
+        @Override
+        public C matrixValue(P property, SerializableFunction<T, String> presenter) {
+            matrixValues.put(Objects.requireNonNull(property, "property"),
+                    Objects.requireNonNull(presenter, "presenter"));
+            return matrixView();
         }
 
         @Override
@@ -2891,6 +2959,27 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
 
             // build
             instance.build(editable);
+            if (matrixEnabled) {
+                final I listing = instance;
+                final Map<P, SerializableFunction<T, String>> presenters = new HashMap<>(matrixValues);
+                instance.setMatrixView(new ItemListingMatrix<>(instance, matrixPageSize,
+                        matrixHeading,
+                        (property, item) -> {
+                            SerializableFunction<T, String> presenter = presenters.get(property);
+                            if (presenter != null) {
+                                return presenter.apply(item);
+                            }
+                            ItemListingColumn<P, T, ?> column = listing.getColumnConfiguration(property);
+                            if (column.getRenderer().isPresent()) {
+                                throw new IllegalArgumentException("Matrix column " + property
+                                        + " has a renderer; configure matrixValue for it");
+                            }
+                            if (column.getValueProvider().isPresent()) {
+                                return column.getValueProvider().get().apply(item);
+                            }
+                            return listing.getMatrixValue(property, item);
+                        }));
+            }
 
             // header and footer
             if (headerConfigurator != null) {
@@ -3548,7 +3637,7 @@ public abstract class AbstractItemListing<T, P> implements ItemListing<T, P>, Ed
         @Override
         public C statusColumn(P property, String available) {
 
-            return renderer(property, new ComponentRenderer<>(() -> UIUtils.Icon.createStatusIcon(available)));
+            return renderer(property, new ComponentRenderer<>(() -> CoreUIUtils.Icon.createStatusIcon(available)));
         }
 
         /*

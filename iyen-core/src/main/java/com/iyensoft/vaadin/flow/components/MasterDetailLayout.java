@@ -505,6 +505,18 @@ public class MasterDetailLayout<T> extends Div {
     }
 
     /**
+     * Resolves and caches a URL item for the next {@link #restoreFromUrl(String)} call.
+     * Route guards can use this to reject invalid links without causing a second backend lookup
+     * when automatic selection restores the validated item.
+     *
+     * @param id item identifier
+     * @return the resolved item, or empty when URL sync is unavailable or the item is not found
+     */
+    public Optional<T> preloadFromUrl(String id) {
+        return urlSync != null ? urlSync.preload(id) : Optional.empty();
+    }
+
+    /**
      * Looks up the item by {@code id} (using the loader from {@code withUrlSync})
      * and selects it — highlight, accent, detail sync and URL state.
      * No-op if URL sync was not configured or {@code id} is blank.

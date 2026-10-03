@@ -384,7 +384,7 @@ public abstract class AbstractAppShellLayoutConfigurator<C extends AppShellLayou
                             "try{localStorage.setItem('vaadin-theme','light')}catch(_){}");
                 } else {
                     themeList.add(Lumo.DARK);
-                    themeBtn.setIcon(VaadinIcon.SUN_O.create());
+                    themeBtn.setIcon(VaadinIcon.SUN.create());
                     ui.getPage().executeJs(
                             "document.documentElement.style.colorScheme='dark';" +
                             "try{localStorage.setItem('vaadin-theme','dark')}catch(_){}");
@@ -403,7 +403,7 @@ public abstract class AbstractAppShellLayoutConfigurator<C extends AppShellLayou
                 if (Lumo.DARK.equals(theme)) {
                     e.getUI().getElement().getThemeList().add(Lumo.DARK);
                     e.getUI().getPage().executeJs("document.documentElement.style.colorScheme='dark'");
-                    themeBtn.setIcon(VaadinIcon.SUN_O.create());
+                    themeBtn.setIcon(VaadinIcon.SUN.create());
                 }
             }));
 

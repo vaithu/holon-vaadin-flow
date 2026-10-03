@@ -160,11 +160,29 @@ vaadin-button.btn--icon::part(button) {
 }
 
 /* -----------------------------------------------------------------------
- * Rounded icon — icon-only button with a rectangular border
+ * Rounded icon — icon-only button with a visible rounded rectangular border.
+ * Double class selector (0,2,1) beats vaadin-button[theme~="tertiary"]
+ * (0,1,1) in vaadin-shell-theme.css, which strips border and shadow.
+ * Aura draws the border via --vaadin-button-shadow; the host box-shadow
+ * is the light-DOM fallback, so the host radius must match.
  * ----------------------------------------------------------------------- */
 
-vaadin-button.btn--icon-rounded::part(button) {
-    border-radius: var(--radius-md, 0.5rem);
+vaadin-button.btn--icon.btn--icon-rounded {
+    --vaadin-button-border-radius : var(--radius-md, 0.5rem);
+    --vaadin-button-border-color  : var(--zinc-200, #e4e4e7);
+    --vaadin-button-border-width  : 1px;
+    --vaadin-button-shadow        : 0 0 0 1px var(--zinc-200, #e4e4e7);
+    border-radius                 : var(--radius-md, 0.5rem);
+    box-shadow                    : 0 0 0 1px var(--zinc-200, #e4e4e7);
+}
+
+vaadin-button.btn--icon.btn--icon-rounded::part(button) {
+    border-radius : var(--radius-md, 0.5rem);
+}
+
+vaadin-button.btn--icon.btn--icon-rounded:not([disabled]):hover {
+    --vaadin-button-shadow : 0 0 0 1px var(--zinc-300, #d4d4d8);
+    box-shadow             : 0 0 0 1px var(--zinc-300, #d4d4d8);
 }
 
 /* -----------------------------------------------------------------------

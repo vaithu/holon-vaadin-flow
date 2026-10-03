@@ -5,6 +5,7 @@ import com.holonplatform.vaadin.flow.internal.lumo.Gap;
 import com.iyensoft.vaadin.flow.utils.Color;
 import com.iyensoft.vaadin.flow.utils.Font;
 import com.iyensoft.vaadin.flow.enums.HeadingLevel;
+import com.iyensoft.vaadin.flow.enums.HeaderVariant;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasTheme;
 import com.vaadin.flow.component.avatar.Avatar;
@@ -38,6 +39,7 @@ public class Header extends Layout implements HasTheme {
     private static final String CLASS_ACTIONS = "iyen-header__actions";
     private static final String CLASS_ACTIONS_COMPACT = "iyen-header__actions--compact";
     private static final String CLASS_TABS = "iyen-header__tabs";
+    private static final String CLASS_HEADING = "iyen-header__heading";
 
     private final Layout row = new Layout();
     private final Layout topRow = new Layout();
@@ -49,6 +51,9 @@ public class Header extends Layout implements HasTheme {
     private Layout actions;
     private Tabs tabs;
     private Component heading;
+    private HeadingLevel headingLevel = HeadingLevel.H2;
+    private boolean generatedHeading;
+    private HeaderVariant headingSizeVariant;
     private Avatar avatar;
     private Color.Text headingTextColor;
     private Font.Size headingFontSize;
@@ -245,6 +250,8 @@ public class Header extends Layout implements HasTheme {
             return;
         }
         heading = component;
+        generatedHeading = false;
+        heading.addClassName(CLASS_HEADING);
         heading.setVisible(true);
         applyHeadingStyles(heading);
         refreshColumn();
@@ -266,11 +273,59 @@ public class Header extends Layout implements HasTheme {
     }
 
     public void setHeading(String newTitle, HeadingLevel headingLevel) {
-        HeadingLevel level = headingLevel != null ? headingLevel : HeadingLevel.H2;
-        heading = level.getComponent(newTitle != null ? newTitle : "");
+        this.headingLevel = headingLevel != null ? headingLevel : HeadingLevel.H2;
+        generatedHeading = true;
+        heading = effectiveHeadingLevel().getComponent(newTitle != null ? newTitle : "");
+        heading.addClassName(CLASS_HEADING);
         heading.setVisible(true);
         applyHeadingStyles(heading);
         refreshColumn();
+    }
+
+    /** Adds visual variants and reapplies the semantic heading level when needed. */
+    public void addThemeVariants(HeaderVariant... variants) {
+        if (variants == null) {
+            return;
+        }
+        for (HeaderVariant variant : variants) {
+            if (variant == null) {
+                continue;
+            }
+            addClassName("iyen-header--" + variant.getClassName());
+            if (isHeadingSizeVariant(variant)) {
+                if (headingSizeVariant != null) {
+                    removeClassName("iyen-header--" + headingSizeVariant.getClassName());
+                }
+                headingSizeVariant = variant;
+                setHeadingFontSize(null);
+                if (generatedHeading) {
+                    String text = heading.getElement().getText();
+                    heading = effectiveHeadingLevel().getComponent(text);
+                    heading.addClassName(CLASS_HEADING);
+                    heading.setVisible(true);
+                    applyHeadingStyles(heading);
+                    refreshColumn();
+                }
+            }
+        }
+    }
+
+    private boolean isHeadingSizeVariant(HeaderVariant variant) {
+        return variant == HeaderVariant.SMALL
+                || variant == HeaderVariant.MEDIUM
+                || variant == HeaderVariant.LARGE;
+    }
+
+    private HeadingLevel effectiveHeadingLevel() {
+        if (headingLevel == HeadingLevel.NONE || headingSizeVariant == null) {
+            return headingLevel;
+        }
+        return switch (headingSizeVariant) {
+            case SMALL -> HeadingLevel.H4;
+            case MEDIUM -> HeadingLevel.H3;
+            case LARGE -> HeadingLevel.H2;
+            case TERTIARY -> headingLevel;
+        };
     }
 
     public void setHeadingFontSize(Font.Size fontSize) {

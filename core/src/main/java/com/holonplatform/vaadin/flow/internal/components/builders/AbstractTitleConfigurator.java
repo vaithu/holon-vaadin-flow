@@ -2,7 +2,7 @@ package com.holonplatform.vaadin.flow.internal.components.builders;
 
 import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.vaadin.flow.components.builders.TitleConfigurator;
-import com.holonplatform.vaadin.flow.components.utils.UIUtils;
+import com.holonplatform.vaadin.flow.components.utils.CoreUIUtils;
 import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasEnabled;
@@ -119,7 +119,7 @@ public abstract class AbstractTitleConfigurator<C extends TitleConfigurator<C>>
 
     @Override
     public C border() {
-        border(UIUtils.borderStyles());
+        border(CoreUIUtils.borderStyles());
         return getConfigurator();
     }
 
@@ -131,7 +131,7 @@ public abstract class AbstractTitleConfigurator<C extends TitleConfigurator<C>>
 
     @Override
     public void removeBorder() {
-        getComponent().removeClassNames(UIUtils.borderStyles());
+        getComponent().removeClassNames(CoreUIUtils.borderStyles());
     }
 
     @Override

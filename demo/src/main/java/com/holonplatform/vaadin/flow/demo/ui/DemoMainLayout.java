@@ -113,6 +113,8 @@ public final class DemoMainLayout extends AppLayout {
                         new SideNavItem("PropertyListing",         PropertyListingDemoView.class,     VaadinIcon.TABLE.create()),
                         new SideNavItem("KanbanBoard",             KanbanBoardDemoView.class,         VaadinIcon.TASKS.create()),
                         new SideNavItem("LineItemGrid",            LineItemGridDemoView.class,        VaadinIcon.GRID_BIG.create()),
+                        new SideNavItem("ComparisonMatrix",        ComparisonMatrixDemoView.class,   VaadinIcon.TABLE.create()),
+                        new SideNavItem("ItemListing Matrix",      ItemListingMatrixDemoView.class, VaadinIcon.GRID_H.create()),
                         new SideNavItem("PawnItemGrid",            PawnItemGridDemoView.class,        VaadinIcon.MONEY.create()),
                         new SideNavItem("ListingBundle",           ListingBundleDemoView.class,       VaadinIcon.DATABASE.create()),
                         new SideNavItem("FilterPanel",             FilterPanelDemoView.class,         VaadinIcon.FILTER.create()),

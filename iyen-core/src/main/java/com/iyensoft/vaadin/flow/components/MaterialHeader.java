@@ -100,6 +100,10 @@ public class MaterialHeader extends Div implements HasTheme {
         renderResponsiveActions();
     }
 
+    public void setSticky(boolean sticky) {
+        getElement().getClassList().set("material-header--sticky", sticky);
+    }
+
     public ViewMode getViewMode() {
         return viewMode;
     }

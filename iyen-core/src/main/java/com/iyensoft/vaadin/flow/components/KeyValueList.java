@@ -32,7 +32,8 @@ import java.util.List;
  *   UPS Next Day Air Saver® 06/30/2026
  * </pre>
  *
- * <p>CSS hook class: {@code kv-list} / {@code kv-list--fields}
+ * <p>CSS hook class: {@code kv-list} / {@code kv-list--fields} /
+ * {@code kv-list--inventory}
  *
  * <p>Usage:
  * <pre>{@code
@@ -57,10 +58,80 @@ import java.util.List;
 @StyleSheet("context://key-value-item.css")
 public class KeyValueList extends Composite<Div> {
 
+    /**
+     * Visual variant for the list container.
+     */
+    public enum Variant {
+        DEFAULT(""),
+        INVENTORY("kv-list--inventory"),
+        SUPPLIER("kv-list--supplier");
+
+        private final String cssClass;
+
+        Variant(String cssClass) {
+            this.cssClass = cssClass;
+        }
+
+        String getCssClass() {
+            return cssClass;
+        }
+    }
+
     public KeyValueList() {
         getContent().addClassName("kv-list");
         // Announce as a list so screen readers enumerate items correctly
         getContent().getElement().setAttribute("role", "list");
+    }
+
+    /**
+     * Applies the compact two-column inventory detail layout.
+     *
+     * <p>Code-like fields named SKU, Barcode, or HS code are automatically rendered in
+     * monospace when added through {@link #addItem(String, String)}.</p>
+     *
+     * @return {@code this}
+     */
+    public KeyValueList asInventory() {
+        return setVariant(Variant.INVENTORY);
+    }
+
+    /**
+     * Applies the compact supplier drawer statistic layout.
+     *
+     * @return {@code this}
+     */
+    public KeyValueList asSupplier() {
+        return setVariant(Variant.SUPPLIER);
+    }
+
+    /**
+     * Sets the visual variant of this list.
+     *
+     * @param variant the variant; {@code null} resets to {@link Variant#DEFAULT}
+     * @return {@code this}
+     */
+    public KeyValueList setVariant(Variant variant) {
+        getContent().removeClassName(Variant.INVENTORY.getCssClass());
+        getContent().removeClassName(Variant.SUPPLIER.getCssClass());
+        if (variant != null && !variant.getCssClass().isEmpty()) {
+            getContent().addClassName(variant.getCssClass());
+        }
+        return this;
+    }
+
+    /**
+     * Returns the active visual variant.
+     *
+     * @return the current variant
+     */
+    public Variant getVariant() {
+        if (getContent().hasClassName(Variant.INVENTORY.getCssClass())) {
+            return Variant.INVENTORY;
+        }
+        if (getContent().hasClassName(Variant.SUPPLIER.getCssClass())) {
+            return Variant.SUPPLIER;
+        }
+        return Variant.DEFAULT;
     }
 
     // ── Display mode ─────────────────────────────────────────────────────────
@@ -214,6 +285,43 @@ public class KeyValueList extends Composite<Div> {
     }
 
     /**
+     * Adds a text key/value item without requiring callers to instantiate {@link KeyValueItem}.
+     *
+     * @param key the field label
+     * @param value the field value
+     * @return {@code this}
+     */
+    public KeyValueList addItem(String key, String value) {
+        KeyValueItem item = new KeyValueItem(key, value);
+        if (isInventoryCodeField(key)) {
+            item.setValueMono(true);
+        }
+        return addItem(item);
+    }
+
+    /**
+     * Adds a key with a custom value component without requiring callers to instantiate
+     * {@link KeyValueItem}.
+     *
+     * @param key the field label
+     * @param value the value component
+     * @return {@code this}
+     */
+    public KeyValueList addItem(String key, com.vaadin.flow.component.Component value) {
+        return addItem(new KeyValueItem(key, value));
+    }
+
+    private static boolean isInventoryCodeField(String key) {
+        if (key == null) {
+            return false;
+        }
+        String normalized = key.trim().toLowerCase(java.util.Locale.ROOT);
+        return normalized.equals("sku")
+                || normalized.equals("barcode")
+                || normalized.equals("hs code");
+    }
+
+    /**
      * Removes a specific {@link KeyValueItem} from this list. Returns {@code this} for fluent chaining.
      */
     public KeyValueList removeItem(KeyValueItem item) {
@@ -351,4 +459,3 @@ public class KeyValueList extends Composite<Div> {
                 .toList();
     }
 }
-

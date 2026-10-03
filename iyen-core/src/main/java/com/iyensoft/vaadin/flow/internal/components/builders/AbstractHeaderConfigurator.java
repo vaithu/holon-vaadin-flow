@@ -11,6 +11,7 @@ import com.iyensoft.vaadin.flow.components.Layout;
 import com.iyensoft.vaadin.flow.components.Breadcrumb;
 import com.iyensoft.vaadin.flow.components.BreadcrumbItem;
 import com.iyensoft.vaadin.flow.components.Header;
+import com.iyensoft.vaadin.flow.enums.HeaderVariant;
 import com.iyensoft.vaadin.flow.enums.HeadingLevel;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasEnabled;
@@ -78,6 +79,12 @@ public abstract class AbstractHeaderConfigurator<C extends HeaderConfigurator<C>
     @Override
     public C sticky(boolean sticky) {
         getComponent().setSticky(sticky);
+        return getConfigurator();
+    }
+
+    @Override
+    public C withThemeVariants(HeaderVariant... variants) {
+        getComponent().addThemeVariants(variants);
         return getConfigurator();
     }
 

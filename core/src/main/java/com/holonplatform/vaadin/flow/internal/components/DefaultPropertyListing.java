@@ -224,9 +224,11 @@ public class DefaultPropertyListing extends AbstractItemListing<PropertyBox, Pro
 				if (item.contains(property)) {
 					return item.getValue(componentProperty);
 				}
+
 				return null;
 			});
 		}
+
 		// default provider using property presenter
 		return getGrid().addColumn(item -> {
 			if (item.contains(property)) {
@@ -234,6 +236,15 @@ public class DefaultPropertyListing extends AbstractItemListing<PropertyBox, Pro
 			}
 			return null;
 		});
+	}
+
+	@Override
+	protected String getMatrixValue(Property<?> property, PropertyBox item) {
+		if (Component.class.isAssignableFrom(property.getType())) {
+			throw new IllegalArgumentException("Matrix column " + property
+					+ " contains components; configure matrixValue for it");
+		}
+		return item.contains(property) ? item.present(property) : null;
 	}
 
 	/*

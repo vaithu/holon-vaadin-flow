@@ -35,7 +35,7 @@ import java.util.function.IntConsumer;
  * <p>Extends the standard Holon Platform {@link ComponentConfigurator}, {@link HasSizeConfigurator}
  * and {@link HasStyleConfigurator} contracts, adding rows configuration methods, plus the
  * {@link TotalsCard.Variant#APPRAISAL TotalsCard.Variant.APPRAISAL} sections (header, gauge, terms,
- * actions).</p>
+ * actions), and the compact {@link TotalsCard.Variant#INVOICE} summary variant.</p>
  *
  * @param <C> Concrete configurator type (for fluent chaining)
  *

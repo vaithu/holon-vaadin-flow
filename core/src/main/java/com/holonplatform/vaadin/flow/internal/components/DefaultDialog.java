@@ -15,7 +15,7 @@
  */
 package com.holonplatform.vaadin.flow.internal.components;
 
-import com.holonplatform.vaadin.flow.components.utils.UIUtils;
+import com.holonplatform.vaadin.flow.components.utils.CoreUIUtils;
 
 import java.io.Serial;
 import com.holonplatform.core.i18n.Localizable;
@@ -121,7 +121,7 @@ public class DefaultDialog extends Dialog {
         getElement().getThemeList().add("h-dialog");
 
         // Header text wrapper  groups title + description in a flex-col (shadcn/ui DialogHeader)
-        this.headerText = UIUtils.div("h-dialog__header-text");
+        this.headerText = CoreUIUtils.div("h-dialog__header-text");
         getHeader().add(this.headerText);
 
         // Close button  lives at the dialog root (NOT in the header slot) so it does not
@@ -136,7 +136,7 @@ public class DefaultDialog extends Dialog {
         add(this.closeButton);
 
         // Scrollable body content area
-        this.body = UIUtils.div("h-dialog__body");
+        this.body = CoreUIUtils.div("h-dialog__body");
         add(body);
 
         // Vaadin 25.2 fix: route ESC and outside-click through the same condition/callback
@@ -429,7 +429,7 @@ public class DefaultDialog extends Dialog {
                 .findFirst()
                 .ifPresent(getHeader()::remove);
 
-        Div iconContainer = UIUtils.div("h-dialog__icon", icon);
+        Div iconContainer = CoreUIUtils.div("h-dialog__icon", icon);
         iconContainer.addClassNames(variantClass);
         iconContainer.getElement().setAttribute("aria-hidden", "true");
         // Always the first element  headerText and closeButton follow naturally

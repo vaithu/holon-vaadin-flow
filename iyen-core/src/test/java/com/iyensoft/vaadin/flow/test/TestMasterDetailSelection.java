@@ -165,6 +165,27 @@ class TestMasterDetailSelection {
     }
 
     @Test
+    void preloadFromUrl_reusesResolvedItemDuringRestore() {
+        assertEquals(Optional.of(SECOND), layout.preloadFromUrl("2"));
+
+        layout.restoreFromUrl("2");
+
+        assertEquals(List.of(SECOND), synced);
+        assertEquals(1, loadByIdCalls.get(),
+                "Route validation and URL restoration must share one backend lookup");
+    }
+
+    @Test
+    void preloadFromUrl_doesNotCacheMissingItem() {
+        assertEquals(Optional.empty(), layout.preloadFromUrl("99999"));
+
+        layout.restoreFromUrl("99999");
+
+        assertEquals(2, loadByIdCalls.get());
+        assertEquals(List.of(FIRST), synced);
+    }
+
+    @Test
     void restoreFromUrl_staleId_fallsBackToFirstItem() {
         layout.restoreFromUrl("99999");
 

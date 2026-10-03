@@ -11,26 +11,42 @@
    re-themed without touching Java code.
 */
 
+/* Amounts are typeset in JetBrains Mono (as in the CRM mockups). Only Outfit is
+   loaded globally by the brand stylesheet, so load the mono face here; without it
+   values fall back to a wide Courier-style system font. */
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+
 .totals-card {
   --totals-card-bg: linear-gradient(135deg, var(--primary-soft, #e6f1fb), var(--surface-0, #fafbfd));
   --totals-card-border-color: var(--primary-soft-border, #cfe0f5);
   --totals-card-radius: var(--radius-md, 0.625rem);
-  --totals-card-font-size: 0.75rem;
-  --totals-card-label-color: var(--text-mute, #5b6878);
-  --totals-card-value-font: var(--font-mono, 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace);
+  /* Typography: shared by every variant (DEFAULT, INVOICE, APPRAISAL).
+     Variants may change colours and spacing, but not these values. */
+  --totals-card-label-font: var(--font-body, 'Outfit', ui-sans-serif, system-ui, -apple-system, sans-serif);
+  --totals-card-value-font: 'JetBrains Mono', var(--font-mono, ui-monospace), SFMono-Regular, monospace;
+  --totals-card-font-size: 0.78125rem;            /* 12.5px */
+  --totals-card-line-height: 1.4;
+  --totals-card-label-weight: 400;
   --totals-card-value-weight: 500;
+  --totals-card-grand-font-size: 0.875rem;        /* 14px */
+  --totals-card-grand-label-weight: 600;
+  --totals-card-grand-value-font-size: 1.125rem;  /* 18px */
+  --totals-card-note-font-size: 0.65625rem;       /* 10.5px */
+
+  --totals-card-label-color: var(--text-mute, #5b6878);
   --totals-card-discount-color: var(--success, #2e9a6a);
   --totals-card-warning-color: var(--warn, #b8860b);
   --totals-card-positive-color: var(--success, #2e9a6a);
   --totals-card-negative-color: var(--danger, #c0392b);
   --totals-card-grand-border-color: var(--line, #e4e9f0);
-  --totals-card-grand-font-size: 0.84375rem;
   --totals-card-grand-label-color: var(--text, #0f1b2d);
   --totals-card-grand-value-color: var(--primary, #1576d3);
-  --totals-card-grand-value-font-size: 1rem;
   --totals-card-muted-color: var(--text-dim, #8a96a6);
 
   display: block;
+  font-family: var(--totals-card-label-font);
+  font-size: var(--totals-card-font-size);
+  line-height: var(--totals-card-line-height);
   background: var(--totals-card-bg);
   border: 1px solid var(--totals-card-border-color);
   border-radius: var(--totals-card-radius);
@@ -47,11 +63,14 @@
   gap: 0.75rem;
   padding: 0.1875rem 0;
   font-size: var(--totals-card-font-size);
+  line-height: var(--totals-card-line-height);
 }
 
 /* --- Label --- */
 
 .totals-card__label {
+  font-family: var(--totals-card-label-font);
+  font-weight: var(--totals-card-label-weight);
   color: var(--totals-card-label-color);
   min-width: 0;
 }
@@ -123,12 +142,22 @@
 
 .totals-card__row--grand .totals-card__label {
   color: var(--totals-card-grand-label-color);
-  font-weight: 600;
+  font-weight: var(--totals-card-grand-label-weight);
 }
 
 .totals-card__row--grand .totals-card__value {
   color: var(--totals-card-grand-value-color);
   font-size: var(--totals-card-grand-value-font-size);
+}
+
+/* --- Footer / terms note (same typography in every variant) --- */
+
+.totals-card__terms-note {
+  display: block;
+  font-family: var(--totals-card-label-font);
+  font-size: var(--totals-card-note-font-size);
+  line-height: var(--totals-card-line-height);
+  white-space: pre-line;
 }
 
 /* ============================================================
@@ -203,7 +232,6 @@
 
 .totals-card--appraisal .totals-card__row--grand .totals-card__value {
   color: var(--amber-500, #d9a441);
-  font-size: 1rem;
 }
 
 /* --- Header: eyebrow + editable highlight field --- */
@@ -305,10 +333,7 @@
 }
 
 .totals-card--appraisal .totals-card__terms-note {
-  display: block;
-  font-size: 0.71875rem;
   color: oklch(0.62 0.01 260);
-  line-height: 1.5;
 }
 
 /* --- Actions --- */
@@ -338,4 +363,80 @@
   color: #ffffff;
 }
 
+/* ============================================================
+   Invoice variant
+   BEM: .totals-card--invoice
 
+   Compact invoice balance summary based on the invoice detail mockup.
+   The existing terms note is intentionally reused as the optional late-fee/footer note,
+   keeping the variant composable with the existing builder API.
+   ============================================================ */
+
+.totals-card--invoice {
+  --totals-card-bg: var(--surface-2, #f8fafc);
+  --totals-card-border-color: var(--line, #e4e9f0);
+  --totals-card-radius: 0.5rem;
+  --totals-card-label-color: var(--text-mute, #5b6878);
+  --totals-card-muted-color: var(--text-mute, #5b6878);
+  --totals-card-grand-border-color: var(--line, #e4e9f0);
+  --totals-card-grand-value-color: var(--primary, #1576d3);
+
+  background: var(--totals-card-bg);
+  border-color: var(--totals-card-border-color);
+  border-radius: var(--totals-card-radius);
+  padding: 0.875rem 1rem;
+}
+
+.totals-card--invoice .totals-card__row {
+  padding: 0.25rem 0;
+}
+
+.totals-card--invoice .totals-card__row--grand {
+  border-top-width: 2px;
+  padding-top: 0.5rem;
+  margin-top: 0.375rem;
+}
+
+.totals-card--invoice .totals-card__terms {
+  display: block;
+  margin-top: 0.375rem;
+  padding: 0;
+  background: none;
+}
+
+.totals-card--invoice .totals-card__terms-note {
+  margin: 0;
+  color: var(--text-dim, #8a96a6);
+}
+
+/* ============================================================
+   Tax / paid / due rows (usable with any card variant)
+   ============================================================ */
+
+/* Tax: only the value is muted; the label keeps the normal label colour. */
+.totals-card__row--tax .totals-card__value {
+  color: var(--text-mute, #5b6878);
+}
+
+/* Paid / received: whole row in the success colour. */
+.totals-card__row--paid,
+.totals-card__row--paid .totals-card__label,
+.totals-card__row--paid .totals-card__value {
+  color: var(--totals-card-positive-color);
+}
+
+/* Balance due: danger colour with a dashed separator above. */
+.totals-card__row--due {
+  border-top: 1px dashed var(--totals-card-negative-color);
+  padding-top: 0.375rem;
+  margin-top: 0.25rem;
+}
+
+.totals-card__row--due .totals-card__label,
+.totals-card__row--due .totals-card__value {
+  color: var(--totals-card-negative-color);
+}
+
+.totals-card__row--due .totals-card__value {
+  font-weight: 700;
+}

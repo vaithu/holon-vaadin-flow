@@ -18,7 +18,7 @@ package com.holonplatform.vaadin.flow.internal.components.builders;
 import com.holonplatform.vaadin.flow.components.HasComponent;
 import com.holonplatform.vaadin.flow.components.builders.FlexLayoutConfigurator;
 import com.holonplatform.vaadin.flow.components.builders.LabelBuilder;
-import com.holonplatform.vaadin.flow.components.utils.UIUtils;
+import com.holonplatform.vaadin.flow.components.utils.CoreUIUtils;
 import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.html.H4;
 import com.vaadin.flow.component.orderedlayout.FlexLayout;
@@ -126,16 +126,16 @@ public abstract class AbstractFlexLayoutConfigurator<C extends FlexLayoutConfigu
 
 	@Override
 	public C title(String title) {
-		return title(UIUtils.createH4(title));
+		return title(CoreUIUtils.createH4(title));
 	}
 
 	@Override
 	public C add(String title, Component... components) {
-		return title(UIUtils.createH4(title)).add(components);
+		return title(CoreUIUtils.createH4(title)).add(components);
 	}
 
 	@Override
 	public C add(String title, HasComponent... components) {
-		return title(UIUtils.createH4(title)).add(components);
+		return title(CoreUIUtils.createH4(title)).add(components);
 	}
 }

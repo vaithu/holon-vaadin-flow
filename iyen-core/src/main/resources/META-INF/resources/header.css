@@ -24,6 +24,10 @@
     position: static;
 }
 
+.iyen-header--tertiary .iyen-header__details {
+    color: var(--color-muted-foreground-light, #a1a1aa);
+}
+
 .iyen-header--bordered {
     border-block-end: 1px solid var(--border-default, #e4e4e7);
 }

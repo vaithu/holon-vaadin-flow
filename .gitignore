@@ -7,6 +7,9 @@
 .idea/
 *.iml
 *.iws
+*.png
+*.err
+*.html
 .vscode
 .copilot
 .claude
@@ -66,7 +69,9 @@ package.json
 webpack.config.js
 webpack.generated.js
 package-lock.json
-src/main/frontend/
-demo/src/main/frontend/
+
+
+**/src/main/frontend/
+**/src/main/bundles/
 
 

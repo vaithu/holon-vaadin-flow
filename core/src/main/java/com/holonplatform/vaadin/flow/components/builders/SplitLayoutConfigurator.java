@@ -1,7 +1,7 @@
 package com.holonplatform.vaadin.flow.components.builders;
 
 import com.holonplatform.vaadin.flow.components.HasComponent;
-import com.holonplatform.vaadin.flow.components.utils.UIUtils;
+import com.holonplatform.vaadin.flow.components.utils.CoreUIUtils;
 import com.holonplatform.vaadin.flow.internal.components.builders.DefaultSplitLayoutConfigurator;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.splitlayout.SplitLayout;
@@ -14,13 +14,13 @@ public interface SplitLayoutConfigurator<C extends SplitLayoutConfigurator<C>>
     C primaryComponent(Component... components);
 
     default C primaryComponent(HasComponent... components) {
-        return primaryComponent(UIUtils.toComponents(components));
+        return primaryComponent(CoreUIUtils.toComponents(components));
     }
 
     C secondaryComponent(Component... components);
 
     default C secondaryComponent(HasComponent... components) {
-        return secondaryComponent(UIUtils.toComponents(components));
+        return secondaryComponent(CoreUIUtils.toComponents(components));
     }
 
     void toggle(ToggleMode toggleMode);
@@ -28,7 +28,7 @@ public interface SplitLayoutConfigurator<C extends SplitLayoutConfigurator<C>>
     void remove(Component... components);
 
     default void remove(HasComponent... components) {
-        remove(UIUtils.toComponents(components));
+        remove(CoreUIUtils.toComponents(components));
     }
 
     void removeAll();

@@ -1,6 +1,6 @@
 package com.holonplatform.vaadin.flow.internal.components;
 
-import com.holonplatform.vaadin.flow.components.utils.UIUtils;
+import com.holonplatform.vaadin.flow.components.utils.CoreUIUtils;
 
 import com.holonplatform.core.i18n.Localizable;
 import com.holonplatform.core.internal.utils.ObjectUtils;
@@ -378,12 +378,12 @@ public class DefaultKanbanBoard<T, C> extends Div implements KanbanBoard<T, C> {
     }
 
     private Div buildColumnComponent(KanbanColumn<C> column, String serializedColumnId) {
-        final Div columnRoot = UIUtils.div("kanban-board-column");
+        final Div columnRoot = CoreUIUtils.div("kanban-board-column");
         if (column.className() != null && !column.className().isBlank()) {
             columnRoot.addClassName(column.className());
         }
 
-        final Div header = UIUtils.div("kanban-board-column-header");
+        final Div header = CoreUIUtils.div("kanban-board-column-header");
 
         final Span title = new Span(column.label());
         title.addClassName("kanban-board-column-title");
@@ -398,14 +398,14 @@ public class DefaultKanbanBoard<T, C> extends Div implements KanbanBoard<T, C> {
                 })
                 .build();
 
-        final Div cards = UIUtils.div("kanban-board-column-cards");
+        final Div cards = CoreUIUtils.div("kanban-board-column-cards");
         wireDropTarget(cards, serializedColumnId);
 
         final List<T> items = fetchColumnItems(column.id());
         final Span count = new Span(String.valueOf(resolveColumnCount(column.id(), items.size())));
         count.addClassName("kanban-board-column-count");
 
-        final Div heading = UIUtils.div("kanban-board-column-heading", title, count);
+        final Div heading = CoreUIUtils.div("kanban-board-column-heading", title, count);
         header.add(heading, optionsButton);
         columnRoot.add(header, cards);
 
@@ -452,7 +452,7 @@ public class DefaultKanbanBoard<T, C> extends Div implements KanbanBoard<T, C> {
     }
 
     private Div buildCardComponent(T item) {
-        final Div card = UIUtils.div("kanban-board-card");
+        final Div card = CoreUIUtils.div("kanban-board-card");
 
         final Component rendered = cardRenderer.apply(item);
         if (rendered != null) {
@@ -460,7 +460,7 @@ public class DefaultKanbanBoard<T, C> extends Div implements KanbanBoard<T, C> {
         }
 
         if (cardActionHandler != null) {
-            final Div actions = UIUtils.div("kanban-board-card-actions");
+            final Div actions = CoreUIUtils.div("kanban-board-card-actions");
 
             final Button openButton = ButtonBuilder.create().text(resolveLabel(i18n.getOpen())).styleName("kanban-board-card-action-open").withClickListener(event -> cardActionHandler.onOpen(item)).build();
             final Button editButton = ButtonBuilder.create().text(resolveLabel(i18n.getEdit())).styleName("kanban-board-card-action-edit").withClickListener(event -> cardActionHandler.onEdit(item)).build();
@@ -472,9 +472,9 @@ public class DefaultKanbanBoard<T, C> extends Div implements KanbanBoard<T, C> {
 
         final Collection<KanbanComment> comments = getComments(item);
         if (!comments.isEmpty()) {
-            final Div commentsContainer = UIUtils.div("kanban-board-card-comments");
+            final Div commentsContainer = CoreUIUtils.div("kanban-board-card-comments");
             for (KanbanComment comment : comments) {
-                final Div commentRow = UIUtils.div("kanban-board-card-comment");
+                final Div commentRow = CoreUIUtils.div("kanban-board-card-comment");
                 commentRow.getElement().setText(comment.message());
                 commentsContainer.add(commentRow);
             }
@@ -658,7 +658,6 @@ public class DefaultKanbanBoard<T, C> extends Div implements KanbanBoard<T, C> {
         }
     }
 }
-
 
 
 

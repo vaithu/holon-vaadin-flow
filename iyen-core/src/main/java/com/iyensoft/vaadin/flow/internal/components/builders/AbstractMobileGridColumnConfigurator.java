@@ -10,7 +10,7 @@ import com.holonplatform.vaadin.flow.components.builders.FlexLayoutConfigurator;
 import com.holonplatform.vaadin.flow.components.css.BadgeColor;
 import com.holonplatform.vaadin.flow.components.css.BadgeShape;
 import com.holonplatform.vaadin.flow.components.css.BadgeSize;
-import com.holonplatform.vaadin.flow.components.utils.UIUtils;
+import com.iyensoft.vaadin.flow.components.utils.UIUtils;
 import com.holonplatform.vaadin.flow.internal.components.builders.AbstractComponentConfigurator;
 import com.holonplatform.vaadin.flow.internal.lumo.FlexDirection;
 import com.iyensoft.vaadin.flow.components.Layout;

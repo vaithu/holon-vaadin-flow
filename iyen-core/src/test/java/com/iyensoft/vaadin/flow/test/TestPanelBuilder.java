@@ -5,7 +5,9 @@ import com.iyensoft.vaadin.flow.components.Empty;
 import com.iyensoft.vaadin.flow.components.Footer;
 import com.iyensoft.vaadin.flow.components.Header;
 import com.iyensoft.vaadin.flow.components.Panel;
+import com.iyensoft.vaadin.flow.components.PanelVariant;
 import com.iyensoft.vaadin.flow.components.builders.PanelBuilder;
+import com.iyensoft.vaadin.flow.components.builders.PanelConfigurator;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.html.Div;
@@ -50,6 +52,22 @@ class TestPanelBuilder {
                 .build();
 
         assertTrue(panel.getClassNames().contains("my-panel"));
+    }
+
+    @Test
+    void backgroundVariant_setsAndReplacesPanelBackground() {
+        Panel panel = PanelBuilder.create()
+                .withThemeVariants(PanelVariant.Background.PRIMARY)
+                .build();
+
+        assertEquals(PanelVariant.Background.PRIMARY, panel.getBackground());
+        assertTrue(panel.getClassNames().contains("iyen-panel--bg-primary"));
+
+        PanelConfigurator.configure(panel).background(PanelVariant.Background.SUCCESS_SOFT);
+
+        assertEquals(PanelVariant.Background.SUCCESS_SOFT, panel.getBackground());
+        assertFalse(panel.getClassNames().contains("iyen-panel--bg-primary"));
+        assertTrue(panel.getClassNames().contains("iyen-panel--bg-success-soft"));
     }
 
     @Test

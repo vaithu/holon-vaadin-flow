@@ -60,16 +60,16 @@
    or nested sections that need the same treatment.
    ══════════════════════════════════════════════════════════════ */
 .app-view {
-  padding:    clamp(1rem, 2.5vw, 1.75rem) clamp(1rem, 3vw, 2rem);
+  padding: clamp(1rem, 2.5vw, 1.75rem) clamp(1rem, 3vw, 2rem);
   background: var(--surface-1);
   min-height: 100%;
 }
 
 .app-view h2,
 .app-view h3 {
-  color:       var(--text-primary);
+  color: var(--text-primary);
   font-weight: 500;
-  margin-top:  0;
+  margin-top: 0;
 }
 
 
@@ -77,35 +77,35 @@
    PAGE HEADER  (title + subtitle left, action buttons right)
    ══════════════════════════════════════════════════════════════ */
 .app-page-header {
-  display:         flex;
-  align-items:     stretch;
+  display: flex;
+  align-items: stretch;
   justify-content: space-between;
-  gap:             var(--sp-4, 16px);
-  margin-bottom:   var(--sp-6, 24px);
-  flex-wrap:       wrap;
+  gap: var(--sp-4, 16px);
+  margin-bottom: var(--sp-6, 24px);
+  flex-wrap: wrap;
 }
 
 .app-page-title {
-  font-size:   clamp(1.375rem, 1.1rem + 0.8vw, 1.875rem);
+  font-size: clamp(1.375rem, 1.1rem + 0.8vw, 1.875rem);
   font-weight: 600;
-  color:       var(--text-primary);
-  margin:      0;
+  color: var(--text-primary);
+  margin: 0;
   line-height: 1.15;
 }
 
 .app-page-subtitle {
-  font-size:  var(--font-size-sm, 0.875rem);
-  color:      var(--text-secondary);
+  font-size: var(--font-size-sm, 0.875rem);
+  color: var(--text-secondary);
   line-height: 1.5;
   margin-top: var(--sp-1, 4px);
 }
 
 .app-page-actions {
-  display:     flex;
+  display: flex;
   align-items: center;
-  gap:         var(--sp-2, 8px);
+  gap: var(--sp-2, 8px);
   flex-shrink: 0;
-  flex-wrap:   wrap;
+  flex-wrap: wrap;
 }
 
 
@@ -113,16 +113,16 @@
    CARD
    ══════════════════════════════════════════════════════════════ */
 .app-card {
-  background:    var(--surface-0);
-  border:        1px solid var(--zinc-200);
+  background: var(--surface-0);
+  border: 1px solid var(--zinc-200);
   border-radius: var(--radius-lg, 10px);
-  padding:       clamp(1rem, 0.85rem + 0.4vw, 1.25rem) clamp(1rem, 0.9rem + 0.7vw, 1.5rem);
+  padding: clamp(1rem, 0.85rem + 0.4vw, 1.25rem) clamp(1rem, 0.9rem + 0.7vw, 1.5rem);
 }
 
 /* Shadow variant — no border */
 .app-card--elevated {
   box-shadow: var(--shadow-md);
-  border:     none;
+  border: none;
 }
 
 /* No padding — use when embedding a Grid or list flush to the edges */
@@ -132,18 +132,18 @@
 
 /* Row inside card: label on the left, optional action on the right */
 .app-card__header {
-  display:         flex;
-  align-items:     center;
+  display: flex;
+  align-items: center;
   justify-content: space-between;
-  margin-bottom:   var(--sp-4, 16px);
-  gap:             var(--sp-2, 8px);
-  flex-wrap:       wrap;
+  margin-bottom: var(--sp-4, 16px);
+  gap: var(--sp-2, 8px);
+  flex-wrap: wrap;
 }
 
 .app-card__title {
-  font-size:   var(--font-size-md, 0.875rem);
+  font-size: var(--font-size-md, 0.875rem);
   font-weight: 600;
-  color:       var(--text-primary);
+  color: var(--text-primary);
 }
 
 
@@ -151,11 +151,11 @@
    TOOLBAR  (horizontal group of actions above a table / list)
    ══════════════════════════════════════════════════════════════ */
 .app-toolbar {
-  display:       flex;
-  align-items:   center;
-  gap:           var(--sp-2, 8px);
-  flex-wrap:     wrap;
-  width:         100%;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2, 8px);
+  flex-wrap: wrap;
+  width: 100%;
   margin-bottom: var(--sp-4, 16px);
 }
 
@@ -170,45 +170,45 @@
    Usage: <span class="app-badge app-badge--success">Active</span>
    ══════════════════════════════════════════════════════════════ */
 .app-badge {
-  display:       inline-flex;
-  align-items:   center;
-  font-size:     var(--font-size-xs, 0.6875rem);
-  line-height:   1.2;
-  padding:       4px 10px;
+  display: inline-flex;
+  align-items: center;
+  font-size: var(--font-size-xs, 0.6875rem);
+  line-height: 1.2;
+  padding: 4px 10px;
   border-radius: var(--radius-full, 9999px);
-  font-weight:   500;
-  white-space:   nowrap;
+  font-weight: 500;
+  white-space: nowrap;
 }
 
 .app-badge--primary {
   background: var(--brand-50);
-  color:      var(--brand-700);
+  color: var(--brand-700);
 }
 
 .app-badge--success {
   background: var(--ok-light);
-  color:      var(--ok-dark);
+  color: var(--ok-dark);
 }
 
 .app-badge--warning {
   background: var(--warn-light);
-  color:      var(--warn-dark);
+  color: var(--warn-dark);
 }
 
 .app-badge--danger {
   background: var(--err-light);
-  color:      var(--err-dark);
+  color: var(--err-dark);
 }
 
 .app-badge--neutral {
   background: var(--zinc-100);
-  color:      var(--zinc-600);
+  color: var(--zinc-600);
 }
 
 .app-badge--outline {
   background: transparent;
-  border:     1px solid var(--zinc-300);
-  color:      var(--text-secondary);
+  border: 1px solid var(--zinc-300);
+  color: var(--text-secondary);
 }
 
 
@@ -216,57 +216,62 @@
    STAT / KPI  — responsive grid of metric tiles
    ══════════════════════════════════════════════════════════════ */
 .app-stats-row {
-  display:               grid;
-  gap:                   clamp(0.75rem, 1.5vw, 1rem);
+  display: grid;
+  gap: clamp(0.75rem, 1.5vw, 1rem);
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
 }
 
 .app-stat-card {
-  background:    var(--surface-0);
-  border:        1px solid var(--zinc-200);
+  background: var(--surface-0);
+  border: 1px solid var(--zinc-200);
   border-radius: var(--radius-lg, 10px);
-  padding:       clamp(1rem, 0.85rem + 0.4vw, 1.25rem) clamp(1rem, 0.9rem + 0.7vw, 1.5rem);
+  padding: clamp(1rem, 0.85rem + 0.4vw, 1.25rem) clamp(1rem, 0.9rem + 0.7vw, 1.5rem);
 }
 
 .app-stat-label {
-  font-size:   var(--font-size-sm, 0.75rem);
-  color:       var(--text-secondary);
+  font-size: var(--font-size-sm, 0.75rem);
+  color: var(--text-secondary);
   font-weight: 500;
 }
 
 .app-stat-value {
-  font-size:   var(--font-size-lg, 1rem);
+  font-size: var(--font-size-lg, 1rem);
   font-weight: 700;
-  color:       var(--text-primary);
+  color: var(--text-primary);
   line-height: 1.2;
-  margin-top:  var(--sp-1, 4px);
-}
-
-.app-stat-change {
-  font-size:  var(--font-size-xs, 0.6875rem);
   margin-top: var(--sp-1, 4px);
 }
 
-.app-stat-change--up   { color: var(--ok);  }
-.app-stat-change--down { color: var(--err); }
+.app-stat-change {
+  font-size: var(--font-size-xs, 0.6875rem);
+  margin-top: var(--sp-1, 4px);
+}
+
+.app-stat-change--up {
+  color: var(--ok);
+}
+
+.app-stat-change--down {
+  color: var(--err);
+}
 
 
 /* ══════════════════════════════════════════════════════════════
    SECTION HEADER  (label + optional action inside a card)
    ══════════════════════════════════════════════════════════════ */
 .app-section-header {
-  display:         flex;
-  align-items:     center;
+  display: flex;
+  align-items: center;
   justify-content: space-between;
-  gap:             var(--sp-2, 8px);
-  flex-wrap:       wrap;
-  margin-bottom:   var(--sp-4, 16px);
+  gap: var(--sp-2, 8px);
+  flex-wrap: wrap;
+  margin-bottom: var(--sp-4, 16px);
 }
 
 .app-section-title {
-  font-size:   var(--font-size-base, 0.9375rem);
+  font-size: var(--font-size-base, 0.9375rem);
   font-weight: 600;
-  color:       var(--text-primary);
+  color: var(--text-primary);
 }
 
 
@@ -274,11 +279,11 @@
    DIVIDER
    ══════════════════════════════════════════════════════════════ */
 .app-divider {
-  width:        100%;
-  height:       1px;
-  background:   var(--zinc-200);
+  width: 100%;
+  height: 1px;
+  background: var(--zinc-200);
   margin-block: var(--sp-4, 16px);
-  border:       none;
+  border: none;
 }
 
 
@@ -286,31 +291,31 @@
    EMPTY STATE
    ══════════════════════════════════════════════════════════════ */
 .app-empty {
-  display:         flex;
-  flex-direction:  column;
-  align-items:     center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   justify-content: center;
-  padding:         clamp(2rem, 4vw, 3rem) clamp(1rem, 3vw, 2rem);
-  text-align:      center;
-  gap:             var(--sp-3, 12px);
+  padding: clamp(2rem, 4vw, 3rem) clamp(1rem, 3vw, 2rem);
+  text-align: center;
+  gap: var(--sp-3, 12px);
 }
 
 .app-empty__icon {
-  color:  var(--zinc-300);
-  width:  3rem;
+  color: var(--zinc-300);
+  width: 3rem;
   height: 3rem;
 }
 
 .app-empty__title {
-  font-size:   var(--font-size-md, 0.875rem);
+  font-size: var(--font-size-md, 0.875rem);
   font-weight: 500;
-  color:       var(--text-primary);
+  color: var(--text-primary);
 }
 
 .app-empty__description {
   font-size: var(--font-size-base, 0.8125rem);
   max-width: 28rem;
-  color:     var(--text-secondary);
+  color: var(--text-secondary);
 }
 
 @media (max-width: 767px) {
@@ -341,6 +346,5 @@
     grid-template-columns: 1fr;
   }
 }
-
 
 

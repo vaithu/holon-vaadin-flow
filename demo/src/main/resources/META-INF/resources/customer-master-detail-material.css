@@ -1,0 +1,12 @@
+/*
+ * Customer 360 presentation tokens.
+ *
+ * MasterDetailLayout owns only structure and selection behavior. The CRM palette,
+ * typography, and density belong to this demo view and are scoped accordingly.
+ */
+.customer-master-detail-material .master-detail-container {
+
+    font-family: var(--font-body, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
+    font-size: 14px;
+    line-height: 1.45;
+}

@@ -63,6 +63,19 @@
     background:  transparent;
     width:       100%;
     align-items: stretch;
+    border:      0;
+    border-radius: 0;
+}
+
+/* The bar supplies its own card layout; do not inherit generic panel chrome. */
+.arb > .iyen-panel > .panel-header {
+    padding:       14px 16px 10px;
+    border-bottom: 0;
+}
+
+.arb > .iyen-panel > .panel-content {
+    padding: 0;
+    gap:     0;
 }
 
 /* ── Header area ────────────────────────────────────────────────────────── */
@@ -185,6 +198,7 @@
     justify-content: space-between;
     padding:         0 16px 10px;
     gap:             8px;
+  margin: var(--lumo-space-m);
 }
 
 /* Individual stat span */

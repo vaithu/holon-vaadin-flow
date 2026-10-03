@@ -1,6 +1,6 @@
 package com.iyensoft.vaadin.flow.utils.responsive;
 
-import com.holonplatform.vaadin.flow.components.utils.UIUtils;
+import com.iyensoft.vaadin.flow.components.utils.UIUtils;
 import com.holonplatform.vaadin.flow.components.support.ViewMode;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.UI;
@@ -120,4 +120,3 @@ public final class WindowSizeTracker {
         });
     }
 }
-

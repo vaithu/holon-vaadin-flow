@@ -41,6 +41,31 @@ public abstract class AbstractDatastorePropertyListingBuilder implements Propert
     }
 
     @Override
+    public PropertyListingBuilder.DatastorePropertyListingBuilder matrixView() {
+        builder.matrixView();
+        return this;
+    }
+
+    @Override
+    public PropertyListingBuilder.DatastorePropertyListingBuilder matrixView(int pageSize) {
+        builder.matrixView(pageSize);
+        return this;
+    }
+
+    @Override
+    public PropertyListingBuilder.DatastorePropertyListingBuilder matrixHeading(SerializableFunction<PropertyBox, String> heading) {
+        builder.matrixHeading(heading);
+        return this;
+    }
+
+    @Override
+    public PropertyListingBuilder.DatastorePropertyListingBuilder matrixValue(
+            Property<?> property, SerializableFunction<PropertyBox, String> presenter) {
+        builder.matrixValue(property, presenter);
+        return this;
+    }
+
+    @Override
     public PropertyListingBuilder.DatastorePropertyListingBuilder freezeMultiSelectCheckBoxColumn(boolean freeze) {
         builder.freezeMultiSelectCheckBoxColumn(freeze);
         return this;

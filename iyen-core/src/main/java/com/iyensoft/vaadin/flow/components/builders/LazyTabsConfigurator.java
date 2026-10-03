@@ -14,6 +14,7 @@ import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.TabVariant;
 import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.component.tabs.TabsVariant;
+import com.vaadin.flow.function.SerializableFunction;
 
 import java.util.function.Supplier;
 
@@ -46,6 +47,15 @@ public interface LazyTabsConfigurator<C extends LazyTabsConfigurator<C>>
     // ── Eager tabs (String label) ─────────────────────────────────────────────
 
     C withEagerTab(String label, Component component);
+    /**
+     * Register eager tab contents whose child components should be added directly to the content
+     * container, without attaching the supplied {@link Div} as an additional wrapper.
+     *
+     * @param label Tab label
+     * @param contents Container whose children are rendered directly in the content container
+     * @return this configurator
+     */
+    C withEagerTabContents(String label, Div contents);
     C withEagerTab(String label, Icon icon, Component component);
     C withEagerTab(String label, int counter, Component component);
     C withEagerTab(String label, int counter, TabVariant tabVariant, Component component);
@@ -63,6 +73,16 @@ public interface LazyTabsConfigurator<C extends LazyTabsConfigurator<C>>
     // ── Lazy tabs (String label) ──────────────────────────────────────────────
 
     C withLazyTab(String label, Supplier<Component> factory);
+    /**
+     * Register lazy tab contents whose child components should be added directly to the content
+     * container, without attaching the supplied {@link Div} as an additional wrapper.
+     *
+     * @param label Tab label
+     * @param factory Factory for the container whose children are rendered directly
+     * @return this configurator
+     */
+    C withLazyTabContents(String label, Supplier<Div> factory);
+    C withLazyTabContents(String label, int counter, Supplier<Div> factory);
     C withLazyTab(String label, Icon icon, Supplier<Component> factory);
     C withLazyTab(String label, int counter, Supplier<Component> factory);
     C withLazyTab(String label, Icon icon, TabVariant tabVariant, Supplier<Component> factory);
@@ -76,6 +96,51 @@ public interface LazyTabsConfigurator<C extends LazyTabsConfigurator<C>>
     C withLazyTab(Localizable label, int counter, Supplier<Component> factory);
     C withLazyTab(Localizable label, int counter, TabVariant tabVariant, Supplier<Component> factory);
     C withLazyTab(Localizable label, Icon icon, TabVariant tabVariant, Supplier<Component> factory);
+
+    // ── Selection-driven counters ────────────────────────────────────────────
+
+    /**
+     * Registers an eager tab whose badge is recomputed from the selected master item.
+     *
+     * <p>Counters are refreshed for every tab, visible or not, each time the master-detail
+     * selection changes, so keep {@code counter} to a cheap count query. The badge stays hidden
+     * until the first selection and whenever {@code counter} returns {@code null}. Requires the
+     * default content container, i.e. do not replace it with {@link #withContainer(Div)}.</p>
+     *
+     * <pre>{@code
+     * Components.lazyTabs()
+     *     .withLazyTab("Orders", orderService::countByCustomer, OrdersTab::new)
+     * }</pre>
+     *
+     * @param <T> selected item type
+     * @param label tab label
+     * @param counter maps the selected item to the badge value (not null)
+     * @param component tab content
+     * @return this configurator
+     */
+    <T> C withEagerTab(String label, SerializableFunction<T, Integer> counter, Component component);
+
+    /**
+     * Registers a lazy tab whose badge is recomputed from the selected master item.
+     *
+     * @see #withEagerTab(String, SerializableFunction, Component)
+     */
+    <T> C withLazyTab(String label, SerializableFunction<T, Integer> counter, Supplier<Component> factory);
+
+    /**
+     * Registers a localized lazy tab whose badge is recomputed from the selected master item.
+     *
+     * @see #withEagerTab(String, SerializableFunction, Component)
+     */
+    <T> C withLazyTab(Localizable label, SerializableFunction<T, Integer> counter, Supplier<Component> factory);
+
+    /**
+     * Registers flattened lazy tab contents whose badge is recomputed from the selected master item.
+     *
+     * @see #withLazyTabContents(String, int, Supplier)
+     * @see #withEagerTab(String, SerializableFunction, Component)
+     */
+    <T> C withLazyTabContents(String label, SerializableFunction<T, Integer> counter, Supplier<Div> factory);
 
     C withContainer(Div div);
 

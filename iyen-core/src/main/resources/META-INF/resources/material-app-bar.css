@@ -1,108 +1,108 @@
 .material-app-bar {
-    --material-app-bar-container: var(--lumo-base-color, #ffffff);
-    --material-app-bar-on-container: var(--lumo-header-text-color, #1d1b20);
-    --material-app-bar-on-container-variant: var(--lumo-secondary-text-color, #49454f);
-    display: grid;
-    grid-template-columns: minmax(0, auto) minmax(0, 1fr) minmax(0, auto);
-    align-items: center;
-    column-gap: 1rem;
-    box-sizing: border-box;
-    min-height: 4rem;
-    padding: 0 1rem;
-    color: var(--material-app-bar-on-container);
-    background: var(--material-app-bar-container);
-    transition: background-color 160ms ease, box-shadow 160ms ease;
+  --material-app-bar-container: var(--lumo-base-color, #ffffff);
+  --material-app-bar-on-container: var(--lumo-header-text-color, #1d1b20);
+  --material-app-bar-on-container-variant: var(--lumo-secondary-text-color, #49454f);
+  display: grid;
+  grid-template-columns: minmax(0, auto) minmax(0, 1fr) minmax(0, auto);
+  align-items: center;
+  column-gap: 1rem;
+  box-sizing: border-box;
+  min-height: 4rem;
+  color: var(--material-app-bar-on-container);
+  background: var(--material-app-bar-container);
+  transition: background-color 160ms ease, box-shadow 160ms ease;
+  width: 100%;
 }
 
 .material-app-bar--search,
 .material-app-bar--search-active {
-    min-height: 4rem;
+  min-height: 4rem;
 }
 
 .material-app-bar--search .material-app-bar__content {
-    align-items: center;
+  align-items: center;
 }
 
 .material-app-bar--search vaadin-text-field.material-app-bar__headline {
-    width: min(100%, clamp(200px, 40vw, 520px));
-    max-width: 100%;
+  width: min(100%, clamp(200px, 40vw, 520px));
+  max-width: 100%;
 }
 
 .material-app-bar--medium-flexible {
-    min-height: 7rem;
-    align-items: end;
-    padding-block: 1rem;
+  min-height: 7rem;
+  align-items: end;
+  padding-block: 1rem;
 }
 
 .material-app-bar--large-flexible {
-    min-height: 9.5rem;
-    align-items: end;
-    padding-block: 1rem;
+  min-height: 9.5rem;
+  align-items: end;
+  padding-block: 1rem;
 }
 
 .material-app-bar__leading,
 .material-app-bar__trailing {
-    display: flex;
-    align-items: center;
-    gap: 0.25rem;
-    min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  min-width: 0;
 }
 
 .material-app-bar__content {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    min-width: 0;
-    overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-width: 0;
+  overflow: hidden;
 }
 
 .material-app-bar__headline,
 .material-app-bar__subtitle {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .material-app-bar__headline {
-    font-size: 1.5rem;
-    line-height: 2rem;
-    font-weight: 400;
+  font-size: 1.5rem;
+  line-height: 2rem;
+  font-weight: 400;
 }
 
 .material-app-bar__subtitle {
-    color: var(--material-app-bar-on-container-variant);
-    font-size: 0.875rem;
-    line-height: 1.25rem;
+  color: var(--material-app-bar-on-container-variant);
+  font-size: 0.875rem;
+  line-height: 1.25rem;
 }
 
 .material-app-bar--medium-flexible .material-app-bar__headline,
 .material-app-bar--large-flexible .material-app-bar__headline {
-    font-size: 2rem;
-    line-height: 2.5rem;
+  font-size: 2rem;
+  line-height: 2.5rem;
 }
 
 .material-app-bar--centered .material-app-bar__content {
-    align-items: center;
-    text-align: center;
+  align-items: center;
+  text-align: center;
 }
 
 .material-app-bar--centered {
-    grid-template-columns: minmax(0, 1fr) minmax(0, auto) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr) minmax(0, auto) minmax(0, 1fr);
 }
 
 .material-app-bar--centered .material-app-bar__trailing {
-    justify-content: end;
+  justify-content: end;
 }
 
 .material-app-bar--scrolled {
-    --material-app-bar-container: var(--lumo-contrast-5pct, #f7f2fa);
-    box-shadow: 0 1px 2px rgb(0 0 0 / 12%);
+  --material-app-bar-container: var(--lumo-contrast-5pct, #f7f2fa);
+  box-shadow: 0 1px 2px rgb(0 0 0 / 12%);
 }
 
 .material-app-bar--sticky {
-    position: sticky;
-    top: 0;
-    z-index: 1;
+  position: sticky;
+  top: 0;
+  z-index: 1;
 }
 
 /* ==========================================================================
@@ -125,7 +125,7 @@
 .material-app-bar--color-slate,
 .material-app-bar--color-amber,
 .material-app-bar--color-gradient {
-    color: var(--material-app-bar-on-container);
+  color: var(--material-app-bar-on-container);
 }
 
 .material-app-bar--color-indigo vaadin-button[theme~="tertiary"],
@@ -137,8 +137,8 @@
 .material-app-bar--color-slate vaadin-button[theme~="tertiary"],
 .material-app-bar--color-amber vaadin-button[theme~="tertiary"],
 .material-app-bar--color-gradient vaadin-button[theme~="tertiary"] {
-    --vaadin-button-text-color: var(--material-app-bar-on-container);
-    color: var(--material-app-bar-on-container);
+  --vaadin-button-text-color: var(--material-app-bar-on-container);
+  color: var(--material-app-bar-on-container);
 }
 
 
@@ -151,7 +151,7 @@
 .material-app-bar--color-slate vaadin-button[theme~="tertiary"]:hover,
 .material-app-bar--color-amber vaadin-button[theme~="tertiary"]:hover,
 .material-app-bar--color-gradient vaadin-button[theme~="tertiary"]:hover {
-    --vaadin-button-background: rgb(255 255 255 / 0.16);
+  --vaadin-button-background: rgb(255 255 255 / 0.16);
 }
 
 .material-app-bar--color-indigo .material-app-bar__subtitle,
@@ -163,7 +163,7 @@
 .material-app-bar--color-slate .material-app-bar__subtitle,
 .material-app-bar--color-amber .material-app-bar__subtitle,
 .material-app-bar--color-gradient .material-app-bar__subtitle {
-    color: var(--material-app-bar-on-container-variant);
+  color: var(--material-app-bar-on-container-variant);
 }
 
 /* --------------------------------------------------------------------------
@@ -189,9 +189,9 @@
     .material-app-bar--color-slate,
     .material-app-bar--color-amber,
     .material-app-bar--color-gradient) vaadin-avatar {
-    background-color: rgb(255 255 255 / 0.22);
-    color           : var(--material-app-bar-on-container);
-    box-shadow      : inset 0 0 0 1px rgb(255 255 255 / 0.35);
+  background-color: rgb(255 255 255 / 0.22);
+  color: var(--material-app-bar-on-container);
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.35);
 }
 
 /* The initials/icon live in a shadow part and do not pick up the host `color`
@@ -205,62 +205,62 @@
     .material-app-bar--color-slate,
     .material-app-bar--color-amber,
     .material-app-bar--color-gradient) vaadin-avatar::part(abbr) {
-    color: var(--material-app-bar-on-container);
-    fill : var(--material-app-bar-on-container);
+  color: var(--material-app-bar-on-container);
+  fill: var(--material-app-bar-on-container);
 }
 
 .material-app-bar--color-indigo {
-    --material-app-bar-container:            #3f51b5;
-    --material-app-bar-on-container:         #ffffff;
-    --material-app-bar-on-container-variant: rgb(255 255 255 / 0.78);
+  --material-app-bar-container: #3f51b5;
+  --material-app-bar-on-container: #ffffff;
+  --material-app-bar-on-container-variant: rgb(255 255 255 / 0.78);
 }
 
 .material-app-bar--color-teal {
-    --material-app-bar-container:            #00695c;
-    --material-app-bar-on-container:         #ffffff;
-    --material-app-bar-on-container-variant: rgb(255 255 255 / 0.78);
+  --material-app-bar-container: #00695c;
+  --material-app-bar-on-container: #ffffff;
+  --material-app-bar-on-container-variant: rgb(255 255 255 / 0.78);
 }
 
 .material-app-bar--color-emerald {
-    --material-app-bar-container:            #087f5b;
-    --material-app-bar-on-container:         #ffffff;
-    --material-app-bar-on-container-variant: rgb(255 255 255 / 0.78);
+  --material-app-bar-container: #087f5b;
+  --material-app-bar-on-container: #ffffff;
+  --material-app-bar-on-container-variant: rgb(255 255 255 / 0.78);
 }
 
 .material-app-bar--color-orange {
-    --material-app-bar-container:            #e65100;
-    --material-app-bar-on-container:         #ffffff;
-    --material-app-bar-on-container-variant: rgb(255 255 255 / 0.78);
+  --material-app-bar-container: #e65100;
+  --material-app-bar-on-container: #ffffff;
+  --material-app-bar-on-container-variant: rgb(255 255 255 / 0.78);
 }
 
 .material-app-bar--color-rose {
-    --material-app-bar-container:            #ad1457;
-    --material-app-bar-on-container:         #ffffff;
-    --material-app-bar-on-container-variant: rgb(255 255 255 / 0.78);
+  --material-app-bar-container: #ad1457;
+  --material-app-bar-on-container: #ffffff;
+  --material-app-bar-on-container-variant: rgb(255 255 255 / 0.78);
 }
 
 .material-app-bar--color-purple {
-    --material-app-bar-container:            #512da8;
-    --material-app-bar-on-container:         #ffffff;
-    --material-app-bar-on-container-variant: rgb(255 255 255 / 0.78);
+  --material-app-bar-container: #512da8;
+  --material-app-bar-on-container: #ffffff;
+  --material-app-bar-on-container-variant: rgb(255 255 255 / 0.78);
 }
 
 .material-app-bar--color-slate {
-    --material-app-bar-container:            #263238;
-    --material-app-bar-on-container:         #ffffff;
-    --material-app-bar-on-container-variant: rgb(255 255 255 / 0.78);
+  --material-app-bar-container: #263238;
+  --material-app-bar-on-container: #ffffff;
+  --material-app-bar-on-container-variant: rgb(255 255 255 / 0.78);
 }
 
 .material-app-bar--color-amber {
-    --material-app-bar-container:            #b45309;
-    --material-app-bar-on-container:         #ffffff;
-    --material-app-bar-on-container-variant: rgb(255 255 255 / 0.78);
+  --material-app-bar-container: #b45309;
+  --material-app-bar-on-container: #ffffff;
+  --material-app-bar-on-container-variant: rgb(255 255 255 / 0.78);
 }
 
 .material-app-bar--color-gradient {
-    --material-app-bar-on-container:         #ffffff;
-    --material-app-bar-on-container-variant: rgb(255 255 255 / 0.78);
-    background: linear-gradient(100deg, #4527a0, #1565c0);
+  --material-app-bar-on-container: #ffffff;
+  --material-app-bar-on-container-variant: rgb(255 255 255 / 0.78);
+  background: linear-gradient(100deg, #4527a0, #1565c0);
 }
 
 /* A color variant already implies its own elevated tone; don't let the
@@ -274,17 +274,17 @@
 .material-app-bar--color-slate.material-app-bar--scrolled,
 .material-app-bar--color-amber.material-app-bar--scrolled,
 .material-app-bar--color-gradient.material-app-bar--scrolled {
-    box-shadow: 0 2px 8px rgb(0 0 0 / 24%);
+  box-shadow: 0 2px 8px rgb(0 0 0 / 24%);
 }
 
 @media (max-width: 639px) {
-    .material-app-bar {
-        column-gap: 0.5rem;
-        padding-inline: 0.75rem;
-    }
+  .material-app-bar {
+    column-gap: 0.5rem;
+    padding-inline: 0.75rem;
+  }
 
-    .material-app-bar--medium-flexible,
-    .material-app-bar--large-flexible {
-        min-height: 6rem;
-    }
+  .material-app-bar--medium-flexible,
+  .material-app-bar--large-flexible {
+    min-height: 6rem;
+  }
 }

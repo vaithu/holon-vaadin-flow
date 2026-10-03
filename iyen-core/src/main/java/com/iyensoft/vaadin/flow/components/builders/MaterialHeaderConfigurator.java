@@ -49,4 +49,10 @@ public interface MaterialHeaderConfigurator<C extends MaterialHeaderConfigurator
     C viewMode(ViewMode viewMode);
 
     C responsiveAction(ViewMode viewMode, Component desktopComponent, String label, Runnable action);
+
+    C sticky(boolean sticky);
+
+    default C sticky() {
+        return sticky(true);
+    }
 }

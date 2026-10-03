@@ -373,7 +373,7 @@ public class DynamicFilterPanel<T> extends Div implements FilterInputGroup {
 
         // Validation error bar — hidden until Apply is clicked with no complete
         // criteria.
-        var errIcon = new Icon(VaadinIcon.EXCLAMATION_CIRCLE_O);
+        var errIcon = new Icon(VaadinIcon.EXCLAMATION_CIRCLE);
         errIcon.addClassName("filter-panel__validation-error-icon");
         validationErrorText = Components.span().text(LocalizationProvider.localize(
                 "Please fill in at least one filter condition before applying.", "filter.validation_error")).build();

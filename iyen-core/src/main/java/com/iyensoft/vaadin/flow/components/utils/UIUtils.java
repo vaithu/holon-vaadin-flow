@@ -1,4 +1,4 @@
-package com.holonplatform.vaadin.flow.components.utils;
+package com.iyensoft.vaadin.flow.components.utils;
 
 import com.holonplatform.core.property.PropertyBox;
 import com.holonplatform.core.property.PropertySet;
@@ -10,10 +10,13 @@ import com.holonplatform.vaadin.flow.components.builders.ButtonConfigurator;
 import com.holonplatform.vaadin.flow.components.builders.LabelBuilder;
 import com.holonplatform.vaadin.flow.components.css.BadgeColor;
 import com.holonplatform.vaadin.flow.components.css.WhiteSpace;
+import com.holonplatform.vaadin.flow.components.events.ClickEventListener;
+import com.holonplatform.vaadin.flow.components.utils.StyleSheetSupport;
 import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
 import com.holonplatform.vaadin.flow.internal.components.support.BreakPoint;
 import com.holonplatform.vaadin.flow.components.support.ButtonPreset;
 import com.holonplatform.vaadin.flow.components.support.ViewMode;
+import com.iyensoft.vaadin.flow.components.Components;
 import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -526,14 +529,6 @@ public class UIUtils {
         inputForms.forEach(form -> form.setEnabled(enabled));
     }
 
-    // Size
-
-    // Text
-
-    // Icon
-
-    // Text and icon
-
     /* ==== TEXTFIELDS ==== */
 
     public static TextField createSmallTextField() {
@@ -541,9 +536,6 @@ public class UIUtils {
         textField.addThemeVariants(TextFieldVariant.LUMO_SMALL);
         return textField;
     }
-
-
-    /* === MISC === */
 
 
     /* === NUMBERS === */
@@ -745,12 +737,26 @@ public class UIUtils {
         return wrapDiv;
     }
 
+    public static Component createSectionHeader(String title, String actionLabel,
+                                                ClickEventListener<Button, com.holonplatform.vaadin.flow.components.events.ClickEvent<Button>> clickListener) {
+        return Components.layout()
+                .add(new H4(title))
+                .add(
+                      Components.button().text(actionLabel).tertiaryInline()
+                              .small()
+                              .onClick(clickListener).build()
+                )
+                .build();
+    }
+
     public static Component createSectionHeader(String title) {
         StyleSheetSupport.require("utilities.css");
         H2 header = LabelBuilder.h2().text(title).build();
         header.addClassNames("font-size-medium", "margin-none");
         return header;
     }
+
+
 
     public static Div addSection(Div div, String title) {
         final var overviewDiv = createWrapDiv();
@@ -877,6 +883,20 @@ public class UIUtils {
         Tooltip.forComponent(component)
                 .withText(tip)
                 .withPosition(Tooltip.TooltipPosition.BOTTOM_END);
+    }
+
+    public static Component mobileViewHeader(String column1, String column2) {
+        Span startLabel = new Span(column1);
+        startLabel.addClassName("mobile-grid-header-start");
+        Span endLabel = new Span(column2);
+        endLabel.addClassName("mobile-grid-header-end");
+
+        return Components.hl()
+                .addToStart(startLabel)
+                .styleName("mobile-grid-header")
+                .addToEnd(endLabel)
+                .build();
+
     }
 
     public static final class DeleteDialog extends ConfirmDialog {

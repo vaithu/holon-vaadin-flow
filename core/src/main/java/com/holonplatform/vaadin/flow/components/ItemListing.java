@@ -43,12 +43,22 @@ import java.util.Optional;
 /**
  * A component to display a set of items as tabular data, using the item
  * properties as column ids.
+ * <p>
+ * Matrix mode is opt-in: {@code BeanListing.builder(MyBean.class, true)
+ * .matrixView().build().getComponent()} includes a switch between the Grid
+ * and a paginated, transposed view. Rendered/component columns need a
+ * {@code matrixValue(property, presenter)} on the builder.
  *
  * @param <T> Item type
  * @param <P> Item property type
  * @since 5.2.0
  */
 public interface ItemListing<T, P> extends ItemSet, Selectable<T>, HasComponent {
+
+    /** Matrix presentation, when enabled on the listing builder. */
+    default Optional<ItemListingMatrix<T, P>> getMatrixView() {
+        return Optional.empty();
+    }
 
     /**
      * Gets the listing visible columns, in the order thay are displayed.
@@ -108,6 +118,8 @@ public interface ItemListing<T, P> extends ItemSet, Selectable<T>, HasComponent 
     void hide(P propertyToHide);
 
     void addIndexColumn();
+
+    Optional<Grid.Column<T>> getIndexColumn();
 
     void addIndexColumn(P p);
 

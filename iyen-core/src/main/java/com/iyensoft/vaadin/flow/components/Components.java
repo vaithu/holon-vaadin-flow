@@ -54,7 +54,7 @@ import com.holonplatform.vaadin.flow.components.builders.ThemableFlexComponentCo
 import com.holonplatform.vaadin.flow.components.builders.ThemableFlexComponentConfigurator.VerticalLayoutConfigurator;
 import com.holonplatform.vaadin.flow.components.events.ClickEvent;
 import com.holonplatform.vaadin.flow.components.events.ClickEventListener;
-import com.holonplatform.vaadin.flow.components.utils.UIUtils;
+import com.iyensoft.vaadin.flow.components.utils.UIUtils;
 import com.holonplatform.vaadin.flow.data.ItemConverter;
 import com.holonplatform.vaadin.flow.i18n.LocalizationProvider;
 import com.iyensoft.vaadin.flow.internal.components.DefaultFormFooter;
@@ -98,10 +98,12 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Collection;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.function.Function;
+import com.vaadin.flow.function.SerializableFunction;
 
 /**
  * Main provider of UI components builders and configurators.
@@ -1249,6 +1251,45 @@ public interface Components {
 
     static PanelBuilder panel(Panel panel) {
         return PanelBuilder.create(panel);
+    }
+
+    static ComparisonMatrixBuilder comparisonMatrix() {
+        return ComparisonMatrixBuilder.create();
+    }
+
+    static ComparisonMatrixBuilder comparisonMatrix(ComparisonMatrix matrix) {
+        return ComparisonMatrixBuilder.create(matrix);
+    }
+
+    static <T, P> ItemListingMatrixView<T, P> itemListingMatrixView(
+            com.holonplatform.vaadin.flow.components.ItemListing<T, P> listing) {
+        return new ItemListingMatrixView<>(listing);
+    }
+
+    /**
+     * Creates a compact panel for grouping content in a detail view.
+     *
+     * @param title panel title
+     * @return a new detail panel builder
+     */
+    static DetailPanelBuilder detailPanel(String title) {
+        return DetailPanelBuilder.create(title);
+    }
+
+    /**
+     * Creates a compact detail panel listing the rows related to the selected master item.
+     * The result is {@link DetailSyncAware}, so it can be used directly as lazy tab content.
+     *
+     * @param <I> selected master item type
+     * @param <R> row type
+     * @param title panel title
+     * @param rowType row type
+     * @param rows maps the selected item to its rows
+     * @return a new detail list builder
+     */
+    static <I, R> DetailListBuilder<I, R> detailList(String title, Class<R> rowType,
+                                                     SerializableFunction<? super I, ? extends Collection<R>> rows) {
+        return DetailListBuilder.create(title, rowType, rows);
     }
 
     // -----------------------------------------------------------------------

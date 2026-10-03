@@ -4,6 +4,7 @@ import com.iyensoft.vaadin.flow.components.ItemListingPageSizeSelector;
 
 import com.iyensoft.vaadin.flow.components.ItemListingPaginationBar;
 import com.iyensoft.vaadin.flow.components.ListingBundle;
+import com.iyensoft.vaadin.flow.components.ListingQueryContext;
 import com.iyensoft.vaadin.flow.components.ListingBundleConfigurer;
 
 import com.holonplatform.core.beans.BeanPropertySet;
@@ -22,6 +23,7 @@ import com.iyensoft.vaadin.flow.components.Empty;
 import com.iyensoft.vaadin.flow.components.GridToolbar;
 import com.iyensoft.vaadin.flow.components.Components;
 import com.holonplatform.vaadin.flow.components.support.ViewMode;
+import com.iyensoft.vaadin.flow.components.utils.UIUtils;
 import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ComponentEventListener;
@@ -284,18 +286,7 @@ public abstract class AbstractListingBundleConfigurer<T, C extends ListingBundle
 
     @Override
     public C mobileViewHeader(String column1, String column2) {
-        Span startLabel = new Span(column1);
-        startLabel.addClassName("mobile-grid-header-start");
-        Span endLabel = new Span(column2);
-        endLabel.addClassName("mobile-grid-header-end");
-
-        HorizontalLayout header = Components.hl()
-                .addToStart(startLabel)
-                .styleName("mobile-grid-header")
-                .addToEnd(endLabel)
-                .build();
-
-        return mobileViewHeader(header);
+        return mobileViewHeader(UIUtils.mobileViewHeader(column1,column2));
     }
 
     @Override
@@ -479,6 +470,7 @@ public abstract class AbstractListingBundleConfigurer<T, C extends ListingBundle
         sb.withDefaultSize(defaultPageSize);
         var bar = new ItemListingPaginationBar<>(listing);
         sb.withPaginationBar(bar);
+        ListingQueryContextTracker queryContextTracker = new ListingQueryContextTracker();
 
         if (fetchCallback != null || filteredFetchCallback != null || columnAwareFilteredFetchCallback != null) {
             if (includeFilterPanel && filteredFetchCallback == null && columnAwareFilteredFetchCallback == null) {
@@ -494,6 +486,7 @@ public abstract class AbstractListingBundleConfigurer<T, C extends ListingBundle
                 String text = fSearchEnabled ? fSearch.getValue() : "";
                 QueryFilter qf = fPanel != null ? fPanel.getQueryFilter().orElse(null) : null;
                 QuerySort sort = toQuerySort(q.getSortOrders(), fBeanType);
+                queryContextTracker.update(new ListingQueryContext(text, qf, sort));
                 if (fColAware != null)
                     return fColAware.fetch(q, text, qf, sort, fColumns);
                 if (fFiltered != null)
@@ -510,7 +503,7 @@ public abstract class AbstractListingBundleConfigurer<T, C extends ListingBundle
 
         ListingBundle<T> bundle = new ListingBundle<>(listing, bar, selector, toolbar, panel,
                 gridHeaderTitle, paginatedMode,
-                emptyState, noResultsState);
+                emptyState, noResultsState, queryContextTracker);
 
 
         // Wire item-count listener so the bundle can update empty-state visibility after each fetch.
